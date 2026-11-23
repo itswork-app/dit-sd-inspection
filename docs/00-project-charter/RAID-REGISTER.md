@@ -20,6 +20,7 @@ Owner convention: accountable role is recorded; named individuals are not invent
 | R-010 | Risk | Production backup exists but restore has not been proven | Critical | Medium | Define RPO/RTO, backup schedule, restore runbook, and conduct restore drills before release | CTO / Engineering Lead | OPEN |
 | R-011 | Risk | Evidence or personal data is retained, disclosed, or deleted contrary to institutional requirements | Critical | Medium | Approve data classification, legal basis, retention schedule, legal hold, access and deletion workflow before collection | Project Sponsor / Records Owner | OPEN |
 | R-012 | Risk | Provider region, quota, billing or plan limits are unknown and may interrupt production | High | Medium | Verify actual account plan, region, quotas, overage behavior, budget owner and alert thresholds before go-live | Project Sponsor / CTO | OPEN |
+| R-015 | Risk | Batch printing may produce duplicate, missing or falsely successful print records during partial failure/retry | High | Medium | Use bounded batches, per-document outcomes, failed-only retry, immutable document-version linkage and atomic print ordinals; verify with concurrency and failure-injection tests | CTO / Engineering Lead | OPEN |
 
 ## Assumptions
 
@@ -109,7 +110,7 @@ Product Owner explicitly approved T-01=A, T-02=B, T-03=C and T-04=A, then T-05=A
 - T-07 Super Admin session creation/configuration and scoped Korlap operation are PO-approved; state/permission implementation and tests remain open.
 - T-08 Korlap attendance verification within assigned scope is PO-approved; separate permissions and verification tests remain open.
 
-The Decision Register and affected specifications have been updated and fetched back for verification. T-05 through T-09 are PO-approved; T-10 option B is PO APPROVED as the required formal institutional records/legal/privacy review path; written institutional policy remains BLOCKED. T-11 option B is PO APPROVED for current mainstream stable browsers with explicit exclusions; exact device/OS/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; institutional ownership arrangement and provider/recovery verification remain BLOCKED. T-13 through T-18 remain OPEN/BLOCKED. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
+The Decision Register and affected specifications have been updated and fetched back for verification. T-05 through T-09 are PO-approved; T-10 option B is PO APPROVED as the required formal institutional records/legal/privacy review path; written institutional policy remains BLOCKED. T-11 option B is PO APPROVED for current mainstream stable browsers with explicit exclusions; exact device/OS/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; institutional ownership arrangement and provider/recovery verification remain BLOCKED. T-13 is PO APPROVED option B (individual + bounded batch printing); detailed implementation and tests remain pending. T-14 through T-18 remain OPEN/BLOCKED. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
 
 
 ## Package T T-09 decision update (2026-11-23)
@@ -134,3 +135,7 @@ The 100 concurrent authenticated-user load-test target remains the required acce
 
 
 | R-014 | Alternative provider-ownership arrangement may lack clear legal owner, billing authority, custodian continuity or exit rights | High | Medium | Obtain institutionally approved written ownership/billing/custodian/region/exit arrangement; name primary and secondary recovery contacts; verify access and offboarding | Project Sponsor / Institutional Authority | OPEN |
+
+### T-13 mitigation — print batch integrity
+
+PO approved individual and bounded batch printing. Risk R-015 remains OPEN until per-document outcome persistence, failed-only retry, immutable document-version linkage and atomic sequence allocation are implemented and verified. The PO decision does not authorize implementation before the overall scope-freeze gate.
