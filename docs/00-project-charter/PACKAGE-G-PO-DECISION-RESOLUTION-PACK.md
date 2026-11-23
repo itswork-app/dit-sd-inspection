@@ -119,9 +119,9 @@ Approve append-only audit coverage for authentication/account lifecycle, role/sc
 - Super Admin controls the configured value and allocation between locations.
 - Capacity changes and account activation are atomic and audited.
 - Separate performance target: up to 100 concurrent authenticated users.
-- The permitted minimum is not yet explicitly decided and must be set before implementation.
+- Configurable minimum: 1; configurable maximum: 100; default: 50.
 
-**Status:** APPROVED for default 50 and hard maximum 100 under OPS-001; minimum value remains OPEN. This replaces the earlier incorrect statement that 50 was the minimum.
+**Status:** APPROVED under OPS-001: minimum 1, default 50, hard maximum 100. This replaces the earlier incorrect statement that 50 was the minimum.
 
 ## Freeze gate
 
