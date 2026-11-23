@@ -127,3 +127,8 @@ Changes to target, schedule, location, instrument, assignment, and team membersh
 - Exact pause behavior for already-open drafts and offline submissions.
 - Detailed operational closure checklist and privileged reopening command contract.
 - Final source-of-truth rule for target quantity when project, instrument, and session targets do not reconcile.
+
+
+## Super Admin authority for team structure and staffing (PO clarification, 2026-11-24)
+
+Super Admin controls the number of teams created for the project/session and the personnel assigned to each team. Personnel must first have registered application accounts; registration does not automatically place a person on a team or grant an operational role. Super Admin approves the account and assigns role(s), permissions, scope, team membership, and the operational assignment. Users cannot self-enroll into teams or self-assign inspection work. Team size and staffing are explicit planning data and must respect the approved combined Inspector cap and session/location/instrument plan.
