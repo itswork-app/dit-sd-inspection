@@ -50,7 +50,7 @@ Scope is explicit and hierarchical: project → session → operational assignme
 - A Korlap assigned to Location A does not gain Inspector or Reviewer access at Location B.
 - A user assigned to multiple teams must have a distinct explicit assignment for each.
 - Super Admin has global administration permissions. When acting as Inspector or Reviewer, Super Admin still needs an explicit operational assignment.
-- The 50-Inspector cap is global across both locations combined. A person counts once toward the cap if they hold Inspector role, regardless of number of assignments. Assignment creation/activation must enforce the cap atomically.
+- Inspector capacity is configurable from a baseline of 50 up to a hard maximum of 99 users across both locations combined. It is one global capacity, not 50–99 per location. Super Admin may increase the configured capacity within that range; the combined active Inspector count must never exceed it. A person counts once if they hold the Inspector role, regardless of assignment count. Capacity changes and Inspector activation must be authorized, audited, and enforced atomically.
 
 ## 6. Separation of duties
 
