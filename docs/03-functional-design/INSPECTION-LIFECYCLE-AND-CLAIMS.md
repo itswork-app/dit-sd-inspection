@@ -1,0 +1,109 @@
+# Inspection Lifecycle, Unit Claims, Review, and Revision
+
+**Status:** Draft v0.1.0 — requires Product Owner validation  
+**Package:** C — Functional and Operational Design
+
+## 1. Scope
+
+Defines the lifecycle of an individual physical unit from claim through inspection, evidence capture, submission, review, approval, PDF generation, printing, and completion.
+
+## 2. Proposed state model
+
+Inspection states:
+
+- `DRAFT`: claimed or started; editable by assigned Inspector.
+- `SUBMITTED`: Inspector submitted; locked from ordinary Inspector edits.
+- `RETURNED`: Reviewer returned with reason; correction required.
+- `APPROVED`: Reviewer approved a specific immutable submission version.
+- `REOPENED`: authorized reopening of an approved inspection; creates a new editable revision context.
+
+Document processing is tracked separately:
+- PDF: `NOT_GENERATED`, `GENERATED`, `SUPERSEDED`.
+- Print: zero or more immutable print events, each with sequence number/time/operator.
+- Unit completion is derived only when approved + final PDF generated + print event recorded.
+
+## 3. Claim rules
+
+- Inspector may claim only an available unit in an active session and explicitly assigned operational assignment.
+- Claim acquisition must be atomic, using a database transaction/unique active-claim constraint or equivalent serialization mechanism.
+- Two Inspectors cannot hold active claims for the same unit simultaneously.
+- Inspector may manually release a claim while in an editable draft state.
+- Claims expire after a configurable timeout. Expiry must not discard draft data or uploaded media.
+- If a unit is under review or approved, ordinary release is prohibited.
+- Claim expiry must not erase local unsynchronized work. The server must preserve the draft and flag claim ownership/expiry for controlled recovery.
+
+## 4. Inspection capture
+
+Each inspection binds to:
+- project/session/assignment;
+- unit identity and serial number;
+- instrument type and immutable instrument configuration version;
+- checklist version;
+- required evidence/photo slot version;
+- Inspector identity and active role.
+
+Checklist answers must be explicit. A UI default checkmark must never be treated as proof that the Inspector verified the item.
+
+For each checklist item:
+- record answer and actor/time;
+- support only configured response values;
+- non-compliance requires an explanation and configured evidence where applicable;
+- N/A or NOT_TESTABLE may be used only if enabled for that item and accompanied by a reason;
+- authorized evidence waiver requires actor, reason, and audit event.
+
+Submission is blocked if required checklist items, required photos, serial identity, or required notes are incomplete or if unresolved synchronization conflicts exist.
+
+## 5. Submission and review
+
+1. Inspector validates the inspection.
+2. Backend checks all required data, assignment scope, claim ownership, configuration version, and sync/conflict state.
+3. Submission creates an immutable submission version and locks that version.
+4. Assigned Reviewer sees the submitted version.
+5. Reviewer either approves or returns it with a mandatory reason.
+6. Reviewer cannot approve an inspection created/submitted by the same user.
+7. A returned inspection is routed back to the Inspector for correction; Reviewer does not directly edit Inspector responses.
+8. Inspector creates a new revision and resubmits. Prior versions and reviewer decisions remain accessible.
+
+## 6. Reopen after approval
+
+- Approved inspection can be reopened only by Super Admin or Admin with explicit `inspection.reopen` permission.
+- Reopen requires a reason.
+- Reopen creates a new revision; it does not mutate the approved version.
+- Actor, active role, timestamp, prior approved version, reason, and resulting revision are audited.
+- Existing PDFs and print events remain historical artifacts and are marked superseded where appropriate; they are not deleted.
+
+## 7. Concurrency and idempotency
+
+- Claim acquisition and submission must be transaction-safe.
+- Repeated submit requests with the same idempotency key must not create duplicate versions.
+- Review actions must be conditional on the expected current state/version.
+- A stale client must receive a conflict response and reconcile; it must not overwrite newer server state silently.
+
+## 8. Proposed entities
+
+- `inspections`
+- `inspection_revisions`
+- `inspection_answers`
+- `inspection_evidence`
+- `inspection_claims`
+- `inspection_reviews`
+- `inspection_events`
+- `idempotency_records`
+
+## 9. Acceptance criteria
+
+- Duplicate simultaneous claims are impossible.
+- Draft and media survive manual release, timeout, refresh, and reconnect.
+- No submission bypasses required checklist/evidence validation.
+- Reviewer cannot edit submitted answers.
+- Inspector cannot self-review or self-approve.
+- Return/correction/resubmission preserves complete version history.
+- Reopen requires permission and reason, preserving approved versions.
+- Duplicate network retries do not duplicate submissions or review decisions.
+
+## 10. Open decisions
+
+- Exact claim timeout duration and warning period.
+- Whether more than one Inspector may collaborate on one unit (current design assumes one active claim/owner).
+- Whether a reviewer may delegate a review to another assigned Reviewer.
+- Exact answer value set and per-checklist-item validation schema.
