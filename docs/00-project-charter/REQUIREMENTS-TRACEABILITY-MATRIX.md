@@ -145,7 +145,6 @@ Audit outcome: documentation review completed; security posture not tested/certi
 - Changes to approved requirements require impact analysis across UX, data, authorization, audit, migration, reporting, tests, and operations.
 - Unknown source details remain OPEN; do not fill gaps with assumptions.
 
-
 ## Package E — UX and Quality traceability
 
 | ID | Requirement | Design / Test Artifact | Verification | Status |
@@ -155,7 +154,6 @@ Audit outcome: documentation review completed; security posture not tested/certi
 | UX-003 | Consistent responsive and accessible UI components | Design System and Responsive UX | Responsive, keyboard, contrast, and screen-reader checks | DESIGN DRAFT |
 | QA-001 | Layered quality gates for functional, security, data integrity, and recovery | Test Strategy and Quality Gates | CI and release evidence | DESIGN DRAFT |
 | QA-002 | Traceable test cases for authorization, capacity, lifecycle, offline, documents, and reporting | Test Case Catalog and UAT | Executed test records and Product Owner sign-off | CATALOG DRAFT |
-
 
 ## Package R — Audit event catalogue and governance
 
@@ -169,7 +167,6 @@ Audit outcome: documentation review completed; security posture not tested/certi
 
 New source evidence: the 23-November Standing Bracket form and 20-November BA are reconciled in the Standing Bracket Instrument Specification and Instrument Requirements Verification Matrix. The Product Owner confirmed the 23-November document as the official Standing Bracket instrument source on 2026-11-23. Its 19-row checklist (6 physical + 13 accessories) is the project baseline; the earlier screenshot transcription remains a separate observation to be mapped without silent merging. The BA sample supports serial-annex/count-reconciliation requirements but does not approve signatory policy.
 
-
 ## Package S — Final audit disposition
 
 | ID | Requirement / gate | Audit artifact | Verification / approval evidence | Status |
@@ -181,13 +178,11 @@ New source evidence: the 23-November Standing Bracket form and 20-November BA ar
 | AUD-S-001 | INS-016 audit policy and institutional governance must be approved or explicitly deferred | Audit Event Catalogue and Governance; Package S | Formal approval/deferment with compensating controls | BLOCKED |
 | OPS-S-001 | Provider, region, quota, billing, backup and restore capability must be verified | Packages O/P/Q; Package S | Provider capability sheet, approved budget/region, successful restore drill | BLOCKED |
 
-
 ## Package T decision traceability
 
 The detailed PO decision closure register is maintained in `docs/00-project-charter/PACKAGE-T-PO-DECISION-CLOSURE-PACK.md`. Decision IDs T-01 through T-18 cover authoritative instrument masters, BA signatories, executive-summary signature, client report delivery, actual report metrics, project closure, session authority, attendance verification, offline scope, evidence privacy/retention, device/performance baseline, provider operations, print workflow, Inspector capacity semantics, INS-016 audit policy, serial/evidence integrity, CFG-001 publication governance and privileged command boundary.
 
 These IDs are decision-tracking references, not implementation-complete requirements. T-01 through T-04 have explicit PO outcomes recorded in the Decision Register and detailed Package T update; T-01 Standing Bracket source is confirmed; official IFP source and SB photo/evidence rules remain outstanding. T-02 institutional signatory authority remains outstanding. T-05 through T-09 are PO APPROVED (2026-11-23); T-10 option B is PO APPROVED as a formal institutional records/legal/privacy review path; written institutional policy remains BLOCKED. T-11 option B is PO APPROVED for current mainstream stable browsers with explicit exclusions; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED as an alternative provider-ownership arrangement subject to formal institutional definition and approval; actual ownership, billing, region, provider capability and recovery evidence remain BLOCKED. T-13 is PO APPROVED option B (individual + bounded batch printing); T-14 through T-18 remain OPEN/BLOCKED. T-09 option B approves limited offline editing only for already claimed drafts; device/local-data safeguards remain open. Each decision must be reconciled into the relevant requirement/specification and verification case. PO approval does not replace institutional approval or implementation verification.
-
 
 ## Package T — accepted PO decisions and traceability (2026-11-23)
 
@@ -205,13 +200,11 @@ These IDs are decision-tracking references, not implementation-complete requirem
 
 T-01 through T-08 are partial decision closures, not blanket closure of Package S. Remaining decisions and evidence dependencies remain active. Do not mark scope freeze ready based on these partial closures.
 
-
 ## Package T-10 — Product Owner decision (2026-11-23)
 
 **Decision: PO APPROVED option B — formal institutional records/legal/privacy review before defining the evidence policy.** The project must obtain a documented review by the institution's authorized records, legal and privacy functions before approving data classification, permitted personal information and processing purpose, accepted evidence formats, per-file/per-inspection/per-project limits, retention periods and triggers, legal-hold authority, deletion eligibility/approval/audit, private access rules, backup/restore and post-deletion treatment, and any local/offline copy controls.
 
 **Important boundary:** this is Product Owner approval of the governance path, not institutional legal/records approval and not approval of any numeric limit, retention period, lawful basis, deletion schedule or production evidence collection. Until the authorized institutional review supplies written direction, retain all such values as OPEN/NOT SET; do not invent limits or retention durations, enable irreversible deletion, or authorize production evidence collection. T-10 remains BLOCKED for scope freeze and production activation pending that external evidence. No implementation or tests are claimed.
-
 
 ## T-11 traceability update
 | Requirement | PO decision | Verification | Status |
@@ -221,14 +214,11 @@ T-01 through T-08 are partial decision closures, not blanket closure of Package 
 | Concurrent load profile | 100 concurrent authenticated users; staged 10/25/50/75/100 | TC-LOAD-001..002 | Target approved; execution pending |
 | Numeric performance SLO | Set only after workload/provider verification and baseline measurement | Performance baseline and load evidence | OPEN |
 
-
 | OPS-005 | Provider ownership arrangement must be institutionally defined and approved; account/billing owners, custodians, region authority and recovery roles must be evidenced | Package T-12; Package Q/P | Signed ownership/governance record, provider capability sheet, named recovery contacts, successful PostgreSQL + Storage restore drill | PO option C APPROVED; institutional/provider verification BLOCKED |
-
 
 ### T-13 — Print workflow decision (PO approved 2026-11-23)
 
-T-13 option B is PO APPROVED. Traceable acceptance requirements AC-DOC-008 through AC-DOC-012 and test cases TC-DOC-009 through TC-DOC-015 cover permissioned individual/batch print, per-document outcomes, failed-only retry, atomic reprint sequence, exact document-version linkage, and the boundary that application print events do not prove physical paper output. Detailed implementation and test execution remain pending.
-
+T-13 option B is PO APPROVED. Traceable acceptance requirements AC-DOC-008 through AC-DOC-012 and test cases TC-PRINT-001 through TC-PRINT-007 cover permissioned individual/batch print, per-document outcomes, failed-only retry, atomic reprint sequence, exact document-version linkage, and the boundary that application print events do not prove physical paper output. Detailed implementation and test execution remain pending.
 
 ### T-13 — Print workflow decision (PO approved 2026-11-23)
 
