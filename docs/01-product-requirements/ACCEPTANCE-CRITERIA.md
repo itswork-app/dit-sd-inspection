@@ -153,6 +153,7 @@ The open-decision list reflects remaining external evidence and detailed accepta
 
 
 ## T-11 acceptance criteria
+Numeric latency/error-rate SLOs remain OPEN until workload, provider plan/region/quotas and measured baseline are reviewed and approved.
 - Supported baseline is current stable Chrome on Android for Inspector; current stable Chrome or Edge desktop for Korlap, Reviewer, Super Admin and Print Officer.
 - Tablet is supported only after responsive, camera, upload and PDF/print validation.
 - Unsupported/obsolete releases, embedded in-app browsers and modified browsers are excluded.
