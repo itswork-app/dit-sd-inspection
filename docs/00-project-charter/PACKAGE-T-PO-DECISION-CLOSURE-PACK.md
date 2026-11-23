@@ -70,7 +70,7 @@ No item in this pack is marked APPROVED.
 
 **Decision required:** Identify who has authority to approve each master instrument definition and whether a provisional pilot is permitted.
 
-**State:** BLOCKED pending authoritative source and approval authority.
+**State after PO response (2026-11-23): PO APPROVED option A.** Institutional source documents and formal approval evidence are still required; this evidence dependency remains BLOCKED.
 
 ### T-02 — BA signatories and signing authority
 
@@ -86,7 +86,7 @@ No item in this pack is marked APPROVED.
 
 **Decision required:** Confirm template-level flexibility and identify the authority that approves signatory names/titles.
 
-**State:** OPEN; final BA release blocked.
+**State after PO response (2026-11-23): PO APPROVED option B.** Configurable signatory blocks per approved template are accepted. Actual authorized signatory identities/roles and institutional approval remain OPEN/BLOCKED.
 
 ### T-03 — Executive-summary signature
 
@@ -102,7 +102,7 @@ No item in this pack is marked APPROVED.
 
 **Decision required:** Choose A, B or C.
 
-**State:** OPEN.
+**State after PO response (2026-11-23): PO APPROVED option C.** Signature behavior is configurable per report template; no signature by default unless the approved template requires it.
 
 ### T-04 — Client report delivery
 
@@ -118,7 +118,7 @@ No item in this pack is marked APPROVED.
 
 **Decision required:** Approve initial delivery channel and whether portal is explicitly out of initial scope.
 
-**State:** OPEN.
+**State after PO response (2026-11-23): PO APPROVED option A.** PDF-only client report delivery is approved for initial release; client portal is deferred and requires a later change request.
 
 ### T-05 — Actual report headline/count basis
 
