@@ -10,7 +10,7 @@ Only explicitly approved decisions are marked APPROVED.
 | TECH-002 | Supabase PostgreSQL is the single source of truth | APPROVED | No second primary database |
 | TECH-003 | GitHub for source control and CI | APPROVED | Existing private repository |
 | PRD-001 | Replace existing Dit. SD inspection application | APPROVED | Not SaaS |
-| PRD-002 | Initial scope is IFP and Standing Bracket only | APPROVED | No other instruments in initial scope |
+| PRD-002 | Initial rollout contains IFP and Standing Bracket; platform supports additional Super Admin-configured instrument types | APPROVED | CFG-001 governs extensibility; additional types require configuration and project-use approval |
 | PRD-003 | Feature parity first; improvements second | APPROVED | Legacy app is reference, not code dependency |
 | PRD-004 | No access to legacy source code is assumed | CONFIRMED | Reconstruct from supplied references |
 | RBAC-001 | Google sign-in; new users require approval and role assignment | APPROVED | No self-role elevation |
