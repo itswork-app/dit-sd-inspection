@@ -168,3 +168,15 @@ Audit outcome: documentation review completed; security posture not tested/certi
 | AUD-005 | Audit access/export, legal holds, retention disposition, and security administration are permissioned and audited | Audit Event Catalogue and Governance | AUD-T08, AUD-T10 | DESIGN DRAFT; institutional approval pending |
 
 New source evidence: the 23-November Standing Bracket form and 20-November BA are reconciled in the Standing Bracket Instrument Specification and Instrument Requirements Verification Matrix. The 19-row sample form and earlier 19-row screenshot transcription remain distinct source observations pending controlled master confirmation. The BA sample supports serial-annex/count-reconciliation requirements but does not approve signatory policy.
+
+
+## Package S — Final audit disposition
+
+| ID | Requirement / gate | Audit artifact | Verification / approval evidence | Status |
+|---|---|---|---|---|
+| GOV-005-S | Cross-document baseline must be reconciled before scope freeze | Package S — Final Cross-Document Audit and Scope-Freeze Readiness | Approved closure of S-01..S-12 and completed scope-freeze checklist | NOT READY |
+| INS-S-001 | Standing Bracket controlled source checklist and item mapping must be approved | Standing Bracket Instrument Specification; Package S | Controlled source/version and Product Owner/institution approval | BLOCKED |
+| DOC-S-001 | BA signatory, attendance verification, and report reconciliation authority must be approved | Reports, Documents, Printing, Attendance, and Audit Design; Package S | Approved document governance and UAT | BLOCKED |
+| OFF-S-001 | Offline/device/local data protection contract must be approved | Offline Sync and Recovery; Package S | Approved device matrix, retention, encryption, conflict and recovery acceptance | BLOCKED |
+| AUD-S-001 | INS-016 audit policy and institutional governance must be approved or explicitly deferred | Audit Event Catalogue and Governance; Package S | Formal approval/deferment with compensating controls | BLOCKED |
+| OPS-S-001 | Provider, region, quota, billing, backup and restore capability must be verified | Packages O/P/Q; Package S | Provider capability sheet, approved budget/region, successful restore drill | BLOCKED |
