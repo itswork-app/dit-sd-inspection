@@ -49,12 +49,16 @@ This document defines observable acceptance outcomes. Detailed test cases and au
 
 ## 5. Offline and synchronization
 
-- AC-OFF-001: Inspector can save an allowed draft and evidence while disconnected.
+- AC-OFF-001: Inspector can continue editing a draft offline only after the unit was claimed while online; offline claim acquisition is rejected.
 - AC-OFF-002: Repeated sync retries do not create duplicate inspection, evidence, or submission records.
 - AC-OFF-003: Local draft/evidence is retained until server acknowledgement.
 - AC-OFF-004: Conflicts never silently overwrite either side.
-- AC-OFF-005: Final submit, review, approval, final PDF, and print action require server connectivity.
+- AC-OFF-005: Final submit, review, approval, final PDF, print action, role/assignment changes, session administration and privileged actions require server connectivity.
 - AC-OFF-006: Device loss/reassignment follows an authorized recovery process with reason and audit history.
+- AC-OFF-007: Reconnect rechecks current identity, authorization, assignment, claim ownership and server state before applying queued operations.
+- AC-OFF-008: Stale/conflicting writes are rejected and shown for explicit resolution; neither local nor server data is silently overwritten.
+- AC-OFF-009: Required evidence is not treated as synchronized/ready until server acknowledgement; final submission is blocked while required media remains pending.
+- AC-OFF-010: Replaying the same queued operation is idempotent and creates no duplicate inspection, evidence or revision.
 
 ## 6. Review and approval
 
@@ -136,3 +140,6 @@ This document defines observable acceptance outcomes. Detailed test cases and au
 - T-08 acceptance: Korlap verifies attendance only within assigned scope and explicit verifier permission; upload never automatically marks VERIFIED; all attendance actions have separate permissions.
 
 The open-decision list reflects remaining external evidence and detailed acceptance items, not reversal of these PO approvals.
+
+
+**T-09 PO decision:** Option B (limited offline draft editing) approved on 2026-11-23. Production acceptance remains conditional on approved device/browser, local-data protection, retention/purge, shared-device logout and recovery controls; these are not deemed complete by this PO decision.
