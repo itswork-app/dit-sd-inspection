@@ -35,6 +35,9 @@ Purpose: Track all source material used to reconstruct the legacy workflow and i
 | Ref ID | Artifact | Observed content | Evidence status | Remaining limitation |
 |---|---|---|---|---|
 | REF-015 | `Pemeriksaan Barang.pdf` (user-uploaded, 2 pages) | Filled IFP inspection report no. 189; PT Hisense International Indonesia; 24/11/2026; Purwakarta; IFP 75WM61FE; physical/packaging serial numbers; five checklist sections; Ya/Tdk responses; Inspector signature area | Available and parsed; suitable as a sample-output and checklist-transcription baseline | Authority, controlled revision, and whether this is the canonical PDF template are not established |
+| REF-016 | BA sample photograph | Activity/date/location narrative; IFP and SB summary rows; inspected/good/defective counts; two party signature blocks | Visible and transcribed as sample structure | Confirm approved template/version and signatory authority |
+| REF-017 | Attendance sheet photograph | Activity/location; roster name and institution; daily attendance columns for 23–25 November 2026 | Visible and transcribed as sample structure; personal data intentionally not reproduced here | Confirm approved template and required personnel fields/attendance verification authority |
+| REF-018 | Standing Bracket serial-number annex photograph | Good/defective documentation references; instrument sections; serial number and condition table; two paraf columns | Visible and transcribed as sample structure; 13 SB rows shown as good in this sample | Confirm template authority, condition coding, link/access behavior, and whether paraf blocks are mandatory |
 
 ## Controlled source documents required
 
@@ -44,8 +47,8 @@ Purpose: Track all source material used to reconstruct the legacy workflow and i
 | SRC-002 | Official Standing Bracket inspection checklist/specification | Establish complete criteria | Product Owner confirms source authority and version | BLOCKED |
 | SRC-003 | Official IFP and Bracket photo/evidence requirements | Establish mandatory evidence | Approved slot matrix | OPEN |
 | SRC-004 | Approved inspection PDF template/sample | Establish output parity | Approved template comparison | OPEN |
-| SRC-005 | Approved BA template and signatory policy | Establish parties and signature authority | Signed-off template and authority record | OPEN |
-| SRC-006 | Approved attendance template and verification policy | Establish attendance evidence lifecycle | Approved template and role assignment | OPEN |
+| SRC-005 | Approved BA template and signatory policy | Establish parties and signature authority | Supplied BA sample reconciled for layout; authorized template/version and signatory policy confirmed | PARTIAL — sample available; approval OPEN |
+| SRC-006 | Approved attendance template and verification policy | Establish attendance evidence lifecycle | Supplied attendance sample reconciled for columns/date layout; approved fields and verification role confirmed | PARTIAL — sample available; policy OPEN |
 | SRC-007 | Approved daily/weekly/final report samples | Establish reporting parity and definitions | Reconciled sample reports | OPEN |
 | SRC-008 | Institutional privacy, retention, and data-handling policy | Establish lawful processing and retention | Written institutional policy/approval | OPEN |
 
