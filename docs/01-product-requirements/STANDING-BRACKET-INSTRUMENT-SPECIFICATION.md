@@ -1,6 +1,6 @@
 # Standing Bracket Instrument Specification
 
-Status: Draft — partial screenshot evidence captured; official source validation still required  
+Status: Draft — reconciled with supplied legacy screenshots and serial-number annex sample; controlled checklist authority/version remains open  
 Instrument: Standing Bracket
 
 ## 1. Configuration and versioning
@@ -23,7 +23,7 @@ Five labels have been described from earlier legacy reference material. This lis
 | BRK-PH-004 | Foto Baut Only | Label known; required status OPEN |
 | BRK-PH-005 | Nomor Seri pada Bracket | Label known; required status OPEN |
 
-The newly supplied screenshots show the Instrument checklist tab, not the Documentation tab. They do not validate or expand the five photo labels above.
+The supplied photographs include a paper attachment titled `Lampiran. Daftar Serial Number Standing Bracket yang Sudah Dicek`. It references two documentation links for Standing Bracket conditions (baik/cacat), and contains a serial-number table with a condition column. This supports the need for a generated serial-number annex linked to the inspection documentation. It does not prove that the five legacy photo slots above are complete or mandatory.
 
 ## 3. Checklist items transcribed from newly supplied screenshots
 
@@ -67,7 +67,26 @@ The following 13 rows are visible after the initial six:
 - The screenshot does not show the full category headings, so the grouping above is descriptive, not a claim about official category names.
 - The screenshots do not establish whether each row is mandatory, optional, conditional, or supports N/A.
 
-## 4. Required validation
+## 4. Serial-number annex evidence and requirements
+
+The supplied sample annex establishes the following visible structure:
+- Title identifying it as a list of Standing Bracket serial numbers already checked.
+- Documentation links separated by condition: `Kondisi Baik` and `Kondisi Cacat`.
+- A separate Interactive Flat Panel (IFP) section is also shown, with condition headings; the sample leaves its entries blank.
+- Table columns: `No`, `Serial Number`, and `Kondisi (baik/cacat)`.
+- A `Paraf` area with two columns: `Tim Pemeriksa Dit.SD` and `PT Hisense`.
+
+System requirements derived from this sample:
+1. Generate annex rows from the authoritative inspection records, not manually retyped serial lists.
+2. Preserve the exact physical serial number and condition outcome for each inspected unit.
+3. Separate instrument and condition groups in the output.
+4. Include links or document references to the corresponding evidence package, subject to access control; do not expose permanent public storage URLs.
+5. Support the two paraf columns as configurable document blocks; whether both are mandatory remains an open Product Owner decision.
+6. Reconcile annex totals and serial rows against the inspection register before issuance.
+
+The photograph visibly shows 13 Standing Bracket serial-number rows, each marked `BAIK`. This is a sample, not a fixed limit or a rule that all records must be good.
+
+## 5. Required validation
 
 1. Obtain the complete authorized source checklist and version.
 2. Obtain complete original screenshots for every checklist and evidence screen.
@@ -78,6 +97,6 @@ The following 13 rows are visible after the initial six:
 7. Confirm official PDF/report grouping and finding presentation.
 8. Confirm whether the six initial physical-condition rows use the same wording and semantics as IFP.
 
-## 5. Submission behavior
+## 6. Submission behavior
 
 The common inspection engine rules apply: serial claim, versioned checklist, explicit verification, finding note/evidence, configured exceptions, pre-submit validation, immutable revisions, and server-side submission. Instrument-specific criteria must not be inferred from IFP.
