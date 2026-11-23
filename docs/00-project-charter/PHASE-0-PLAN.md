@@ -21,12 +21,23 @@ Exit condition: Project foundation reviewed and approved; open assumptions and o
 | P0-02 | Define roles and decision authority | Stakeholder/RACI matrix | Drafted; validate |
 | P0-03 | Establish Git and PR governance | Branch/PR policy | Drafted; configure |
 | P0-04 | Establish quality and cost gates | Approved governance | Drafted; validate |
-| P0-05 | Create decision and requirement traceability | Decision Register and requirement IDs | Pending |
-| P0-06 | Inventory reference material and evidence gaps | Reference inventory | Pending review |
-| P0-07 | Record risks, assumptions, dependencies | RAID register | Pending |
+| P0-05 | Create decision and requirement traceability | Decision Register and requirement IDs | Drafted; validate |
+| P0-06 | Inventory reference material and evidence gaps | Reference inventory | Drafted; source artifacts still required |
+| P0-07 | Record risks, assumptions, dependencies | RAID register | Drafted; review owners and mitigations |
 | P0-08 | Define production constraints and cost envelope | Hosting, privacy, retention, budget and operations decisions | Pending stakeholder input |
 | P0-09 | Record Supabase/Vercel platform baseline | ADR-001 | Drafted |
 | P0-10 | Validate production plan eligibility and quotas | Cost and operational assessment | Pending |
+
+## Capacity constraint
+- Maximum 50 Inspector users across both inspection locations combined; allocation is controlled by Super Admin. This is recorded as OPS-001 in the Decision Register.
+
+## Newly drafted governance artifacts
+- `RAID-REGISTER.md`
+- `RACI-MATRIX.md`
+- `REQUIREMENTS-TRACEABILITY-MATRIX.md`
+- `REFERENCE-EVIDENCE-INVENTORY.md`
+
+These artifacts are drafts and do not constitute stakeholder approval.
 
 ## Phase 0 exit checklist
 - [ ] Charter approved by Product Owner.
