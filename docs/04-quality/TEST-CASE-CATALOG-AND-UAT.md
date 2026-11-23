@@ -19,8 +19,8 @@ Each executed case records ID, build SHA, environment, preconditions, steps, exp
 
 ## 3. Capacity and concurrency
 - TC-CAP-001: Default configured Inspector capacity is 50.
-- TC-CAP-002: Super Admin can increase capacity up to 100.
-- TC-CAP-003: Capacity may be configured below or above 50, but cannot exceed 100 or be set to an invalid value below the approved minimum; approved minimum must be explicit in the Product Owner capacity policy.
+- TC-CAP-002: Super Admin can configure capacity to any integer from 1 through 100, including values below 50.
+- TC-CAP-003: Capacity accepts 1 and 100, rejects 0 and 101, and accepts valid intermediate values below and above default 50.
 - TC-CAP-004: Capacity reduction below current active Inspector count is rejected.
 - TC-CAP-005: Concurrent Inspector activations cannot exceed configured capacity.
 - TC-LOAD-001: Representative workload at 10/25/50/75/100 concurrent users.
