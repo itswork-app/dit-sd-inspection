@@ -228,3 +228,8 @@ T-01 through T-08 are partial decision closures, not blanket closure of Package 
 ### T-13 — Print workflow decision (PO approved 2026-11-23)
 
 T-13 option B is PO APPROVED. Traceable acceptance requirements AC-DOC-008 through AC-DOC-012 and test cases TC-DOC-009 through TC-DOC-015 cover permissioned individual/batch print, per-document outcomes, failed-only retry, atomic reprint sequence, exact document-version linkage, and the boundary that application print events do not prove physical paper output. Detailed implementation and test execution remain pending.
+
+
+### T-13 — Print workflow decision (PO approved 2026-11-23)
+
+T-13 option B is PO APPROVED. Traceable acceptance requirements AC-DOC-008 through AC-DOC-012 and test cases TC-DOC-009 through TC-DOC-015 cover permissioned individual/batch print, per-document outcomes, failed-only retry, atomic reprint sequence, exact document-version linkage, and the boundary that application print events do not prove physical paper output. Detailed implementation and test execution remain pending.
