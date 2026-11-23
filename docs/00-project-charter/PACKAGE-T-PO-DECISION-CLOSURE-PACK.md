@@ -30,10 +30,10 @@ No item in this pack is marked APPROVED.
 
 | ID | Topic | Current state | Recommended direction | Scope-freeze impact |
 |---|---|---|---|---|
-| T-01 | Official IFP and Standing Bracket master requirements | BLOCKED | Approve controlled master checklists and evidence-slot matrix from authoritative signed/issued source | Blocker |
-| T-02 | BA signatories and signing authority | OPEN | Configurable signatory blocks, ordered by document template; require explicit authorized signatory records | Blocker for final BA |
-| T-03 | Executive-summary signature | OPEN | No signature by default; enable only through approved template configuration | High |
-| T-04 | Client report delivery | OPEN | PDF-only for initial release; defer client portal | High |
+| T-01 | Official IFP and Standing Bracket master requirements | PO APPROVED; evidence BLOCKED | Approve controlled master checklists and evidence-slot matrix from authoritative signed/issued source | Blocker |
+| T-02 | BA signatories and signing authority | PO APPROVED; institutional authority OPEN | Configurable signatory blocks, ordered by document template; require explicit authorized signatory records | Blocker for final BA |
+| T-03 | Executive-summary signature | PO APPROVED | No signature by default; enable only through approved template configuration | High |
+| T-04 | Client report delivery | PO APPROVED | PDF-only for initial release; defer client portal | High |
 | T-05 | Actual report headline/count basis | OPEN | Show separate counts for inspected, submitted, approved, and completed; never collapse into one ambiguous total | Blocker for report acceptance |
 | T-06 | Project closure and reconciliation | OPEN | Explicit closure gate after all sessions, inspections, reviews, documents, attendance and reconciliation are complete | Blocker |
 | T-07 | Session creation authority and state transitions | OPEN | Super Admin creates/configures; Korlap operates assigned session within bounded transitions | Blocker |
