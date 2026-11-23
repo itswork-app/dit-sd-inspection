@@ -58,7 +58,7 @@ Production release requires agreed scope implemented and verified, critical jour
 Optimize total lifecycle cost, not only initial hosting price. Start with the smallest suitable plans, measure actual consumption, and scale only when usage or production risk requires it. Retain non-negotiable security, privacy, evidence integrity, backup, and recovery controls.
 
 ## Operational capacity constraint
-- The project has a maximum of 50 Inspector users across the two inspection locations combined. This is a combined project cap, not 50 per location. Super Admin controls allocation through explicit assignments.
+- Inspector capacity starts at 50 and may be increased by Super Admin to a hard maximum of 100 distinct users across the two inspection locations combined. This is a combined project cap, not 100 per location. Super Admin controls allocation through explicit assignments.
 
 ## Constraints
 Legacy source code is unavailable. Reference material is based on screenshots and workflow descriptions; some checklist details remain incomplete. Data residency, privacy, retention, procurement, official logos, signatories, and institutional content require authorized stakeholder confirmation.
