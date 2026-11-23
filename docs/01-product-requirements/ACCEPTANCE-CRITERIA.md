@@ -182,3 +182,14 @@ Numeric latency/error-rate SLOs remain OPEN until workload, provider plan/region
 - Enforce the configured combined cap atomically across both locations; valid range 1–100, default 50.
 - Reject 0, values above 100, and cap reductions below the current qualifying count until reconciled; never silently deactivate accounts.
 - Verify concurrent changes cannot exceed the cap. These are acceptance requirements; execution remains pending.
+
+
+## Registration-first and Super Admin staffing acceptance criteria
+
+- AC-STAFF-001: A person must register/authenticate before an application account can be approved or assigned.
+- AC-STAFF-002: Registration alone grants no operational access, role, team membership, assignment or Inspector capacity eligibility.
+- AC-STAFF-003: Only Super Admin can approve/activate accounts and assign roles, permissions, scope, team membership and operational assignments.
+- AC-STAFF-004: Only Super Admin can create/configure team count and assign personnel to teams.
+- AC-STAFF-005: Users cannot self-assign roles, teams, scope or operational work.
+- AC-STAFF-006: Pending/rejected/suspended/disabled accounts cannot be team members or operational assignees.
+- AC-STAFF-007: Capacity counts only distinct enabled accounts with active Inspector role and effective operational Inspector assignment, once per account.
