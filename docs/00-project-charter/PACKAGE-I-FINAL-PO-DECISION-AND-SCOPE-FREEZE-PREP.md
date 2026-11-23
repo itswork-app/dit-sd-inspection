@@ -34,7 +34,7 @@ This package does not approve decisions on the user's behalf and does not author
 | Workflow | Reviewer returns corrections to Inspector; immutable version history; authorized reopen with reason and audit |
 | Reports | Actual and Target are separate; actual timestamps never rewritten to fit targets |
 | Per-unit documents | Wet signature in Phase 1; approval + final PDF + recorded print action defines per-unit completion |
-| Inspector capacity | Default 50; configurable below or above 50; hard maximum 100 distinct active Inspector accounts across both locations combined. Permitted minimum remains OPEN. |
+| Inspector capacity | Configurable minimum 1, default 50, hard maximum 100 distinct active Inspector accounts across both locations combined. |
 | Performance | 100 concurrent authenticated users is a load-test target, not a proven capacity claim |
 | Offline | High-level limited offline inspection and safe sync approved; detailed technical and recovery contract remains to be finalized |
 
@@ -54,16 +54,11 @@ No personal names, NIP values, or other personal identifiers from the sample att
 
 ## 5. Decision worksheet
 
-### I-01 — Minimum Inspector capacity
+### I-01 — Inspector capacity bounds
 
-**Current approved:** default 50; may be configured lower or higher; hard maximum 100 combined across both locations.  
-**Open:** minimum valid configured value.
+**Approved:** minimum 1, default 50, maximum 100 distinct active Inspector accounts combined across both locations. Super Admin may configure any integer in the range 1–100. Capacity counts distinct active Inspector accounts once, regardless of assignments. Any reduction below the current active count must be rejected until the count is brought within the new cap; do not silently deactivate accounts.
 
-**Recommendation:** minimum 1 active Inspector account; default 50; maximum 100. Super Admin may configure an integer in the range 1–100. Capacity counts distinct active Inspector accounts once, regardless of assignments. Any reduction below the current active count must be rejected until the count is brought within the new cap; do not silently deactivate accounts.
-
-**Reason:** supports a smaller pilot while preserving the approved global ceiling and explicit account control.
-
-**Status:** RECOMMENDED — PENDING.
+**Status:** APPROVED — recorded in OPS-001 following user confirmation on 2026-11-23.
 
 ### I-02 — IFP and Standing Bracket source authority
 
@@ -184,7 +179,7 @@ No personal names, NIP values, or other personal identifiers from the sample att
 2. Link each requirement to acceptance criteria and positive/negative test cases.
 3. Link BA summary, attendance multi-date columns, and serial-number annex to test IDs.
 4. Ensure open decisions are marked consistently in Decision Register, PRD, RTM, RAID, and detailed design.
-5. Confirm capacity minimum and test values at minimum, default, 100, and above 100.
+5. Test capacity values 1, 50, and 100; reject 0 and 101; verify concurrent activation cannot exceed the configured cap.
 6. Confirm offline recovery, evidence retention, and document authority requirements have testable acceptance criteria.
 7. Re-run a full document consistency audit after decisions are approved.
 
