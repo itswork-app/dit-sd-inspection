@@ -57,6 +57,7 @@ Purpose: Link product intent to specifications, implementation units, and verifi
 | DATA-002 | Physical schema defines instrument catalog/versioning, serial identity, claims, revisions, evidence links, and transaction invariants | Package L | Physical Database Schema and Integrity Specification | Constraint, concurrency, immutability, and snapshot tests | DRAFT COMPLETE; PO ITEMS OPEN |
 | CFG-001 | Super Admin can create/configure/version supported instrument types without code changes; active sessions and history retain frozen versions | Decision Register CFG-001 | PRD; Data Model and ERD; Physical Database Schema and Integrity Specification | Instrument configuration UAT; version freeze and historical snapshot tests | APPROVED; DESIGN DRAFT |
 | SEC-001 | All exposed application data and evidence access are protected by server authorization and RLS | ADR-001, security decisions | RLS and Authorization Design; Security Threat Model | RLS matrix and negative authorization tests | DESIGN DRAFT |
+| SEC-002 | Every application table and private Storage object class has an explicit deny-by-default policy and role/scope access matrix | Package M | Table-by-Table RLS Policy Catalogue | Staging RLS, RPC, view, and Storage positive/negative test matrix | DRAFT COMPLETE; REVIEW/EXECUTION OPEN |
 | EVD-002 | Evidence uses private storage, verified upload lifecycle, and immutable originals | ADR-001, evidence decisions | Evidence Storage and Media Lifecycle | Upload, checksum, access-control, and recovery tests | DESIGN DRAFT |
 | API-001 | Critical commands are idempotent and transactionally enforce claims, submission, approval, and capacity | Functional decisions | API and Transaction Contracts | Duplicate/retry/concurrency/transaction tests | DESIGN DRAFT |
 
@@ -92,6 +93,13 @@ Purpose: Link product intent to specifications, implementation units, and verifi
 
 All are design drafts, not formal Product Owner approvals. Open decisions are explicitly retained in each document.
 
+## Package L/M — Database integrity and authorization policy artifacts
+
+- `docs/02-architecture/PHYSICAL-DATABASE-SCHEMA-AND-INTEGRITY-SPECIFICATION.md`
+- `docs/02-architecture/TABLE-BY-TABLE-RLS-POLICY-CATALOGUE.md`
+
+These are design artifacts only. They do not constitute migrations, deployed RLS, or executed security tests.
+
 ## Package D technical architecture artifacts
 
 - `docs/02-architecture/SYSTEM-ARCHITECTURE.md`
@@ -103,6 +111,12 @@ All are design drafts, not formal Product Owner approvals. Open decisions are ex
 - `docs/02-architecture/PERFORMANCE-AND-OPERATIONS-BASELINE.md`
 
 Package D is a technical design draft, not an implementation authorization. Physical schema, provider plans, offline storage, media limits, numeric SLOs, and operations ownership remain subject to review and approval.
+
+## Package K — Security, Data Integrity & Production Readiness Audit
+
+- `docs/00-project-charter/PACKAGE-K-SECURITY-DATA-INTEGRITY-PRODUCTION-READINESS-AUDIT.md`
+
+Audit outcome: documentation review completed; security posture not tested/certified; production readiness not ready.
 
 ## Change-control rules
 
