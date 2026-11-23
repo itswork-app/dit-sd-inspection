@@ -57,7 +57,6 @@ Only explicitly approved decisions are marked APPROVED.
 
 Proposed or illustrative decisions are not approved until explicitly accepted.
 
-
 ## Product Owner decisions — Package T (2026-11-23)
 
 | ID | Decision | State | Qualification / remaining dependency |
@@ -72,8 +71,7 @@ Product Owner additionally confirmed on 2026-11-23 that `Pemeriksaan Barang_SB.p
 ## Remaining open decisions
 - T-01: Standing Bracket official instrument document confirmed by Product Owner on 2026-11-23. Reconcile the 19-row checklist verbatim and preserve ambiguous wording. Remaining: confirm photo-slot requirements, any additional annex/specification, and authoritative IFP source document.
 - T-02: obtain institutional approval for authorized BA signatory roles/identities and final template.
-- T-09: PO APPROVED option B (limited offline draft editing with controls still gated). T-10: PO APPROVED option B (formal institutional records/legal/privacy review path); resulting institutional policy remains BLOCKED pending written authority. T-11: PO APPROVED option B (current mainstream stable browsers with explicit exclusions); exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12: PO APPROVED option C (alternative provider-ownership arrangement subject to formal institutional definition and approval); actual owner, billing owner, custodians, region, provider plan and recovery evidence remain BLOCKED. T-13 through T-18: see Package T decision closure pack; no approval is inferred.
-
+- T-09: PO APPROVED option B (limited offline draft editing with controls still gated). T-10: PO APPROVED option B (formal institutional records/legal/privacy review path); resulting institutional policy remains BLOCKED pending written authority. T-11: PO APPROVED option B (current mainstream stable browsers with explicit exclusions); exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12: PO APPROVED option C (alternative provider-ownership arrangement subject to formal institutional definition and approval); actual owner, billing owner, custodians, region, provider plan and recovery evidence remain BLOCKED. T-13 is PO APPROVED option B (individual + bounded batch printing); T-14 through T-18 remain open in Package T.
 
 ## Product Owner decisions — Package T continuation (2026-11-23)
 
@@ -88,20 +86,17 @@ Product Owner additionally confirmed on 2026-11-23 that `Pemeriksaan Barang_SB.p
 
 These are Product Owner decisions recorded from the explicit response dated 2026-11-23. They settle the product direction for T-05 through T-08 but do not constitute implementation, UAT, or institutional approval where required.
 
-
 ## Product Owner decision — Package T T-09 (2026-11-23)
 
 **T-09: PO APPROVED option B — limited offline draft editing.** Offline continuation is permitted only for an inspection draft whose unit was already claimed while online. Offline claim acquisition, approval, final submission, role/assignment changes, session administration and privileged actions are prohibited. Reconnection must use authenticated, idempotent synchronization, recheck server authorization and claim/state, reject stale conflicting writes, preserve local and server versions for explicit resolution, and never silently overwrite newer server data. Required evidence must be server-confirmed before final submission.
 
 This approval does not authorize production activation of offline persistence. Supported device/browser matrix, local-data protection/encryption, shared-device logout, retention/purge, local recovery and institutional records/privacy approval remain open dependencies (T-10/T-11). T-09 PO direction is approved; implementation and tests remain pending. T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 option B is PO APPROVED; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; the actual alternative arrangement and institutional/provider verification remain BLOCKED. T-13 is PO APPROVED option B (individual + bounded batch printing); T-14 through T-18 remain OPEN/BLOCKED.
 
-
 ## Package T-10 — Product Owner decision (2026-11-23)
 
 **Decision: PO APPROVED option B — formal institutional records/legal/privacy review before defining the evidence policy.** The project must obtain a documented review by the institution's authorized records, legal and privacy functions before approving data classification, permitted personal information and processing purpose, accepted evidence formats, per-file/per-inspection/per-project limits, retention periods and triggers, legal-hold authority, deletion eligibility/approval/audit, private access rules, backup/restore and post-deletion treatment, and any local/offline copy controls.
 
 **Important boundary:** this is Product Owner approval of the governance path, not institutional legal/records approval and not approval of any numeric limit, retention period, lawful basis, deletion schedule or production evidence collection. Until the authorized institutional review supplies written direction, retain all such values as OPEN/NOT SET; do not invent limits or retention durations, enable irreversible deletion, or authorize production evidence collection. T-10 remains BLOCKED for scope freeze and production activation pending that external evidence. No implementation or tests are claimed.
-
 
 ## Package T-11 — Product Owner decision (2026-11-23)
 
@@ -114,7 +109,6 @@ This approval does not authorize production activation of offline persistence. S
 
 Exact OS/device minimum versions and the tested browser build numbers must be recorded in the release/UAT compatibility matrix; this PO decision does not invent exact version numbers. The 100 concurrent authenticated-user load-test target remains the required acceptance load profile and must be tested at staged levels (10, 25, 50, 75, 100). This is a test target, not a demonstrated production capacity or service-level guarantee. Numeric latency/error-rate SLOs remain OPEN until workload and actual Supabase/Vercel plan/region/quotas are verified and baseline measurements are collected. No implementation, compatibility test or load test is claimed as executed.
 
-
 ## Package T-12 — Product Owner decision (2026-11-23)
 
 **Decision: PO APPROVED option C — an alternative provider-ownership arrangement, subject to formal institutional approval and written definition.** The Product Owner does not designate a specific legal entity, account holder, billing owner, custodian, or contractual arrangement in this approval. Those identities and responsibilities must not be inferred or invented.
@@ -123,11 +117,9 @@ Before any production provider account or production data is used, the instituti
 
 This PO decision approves the alternative-arrangement path only. It does not establish institutional authorization, identify the actual owner/custodians, approve a region or provider plan, approve billing, or prove backup/recovery capability. Provider plan/quotas, region, budget, RPO/RTO, Storage object recovery and restore-drill evidence remain OPEN/BLOCKED until verified against actual accounts and approved by authorized institutional parties. No production data deployment or production readiness is authorized by this decision. No implementation or restore test is claimed as executed.
 
-
 ## Product Owner decision — Package T T-13 (2026-11-23)
 
 PO APPROVED option B — individual and batch printing. Initial release includes individual print and bounded/configurable batch print through the permissioned Print Officer queue. Each document in a batch has an independent outcome; retry targets failed documents only and must not duplicate successful print events. Print/reprint events preserve actor, timestamp, document version, atomic sequence and outcome where available. The application records the print action, not physical printer output. Direct printer integration is excluded from this decision. Implementation and tests remain pending.
-
 
 ## Product Owner decision — Package T T-13 (2026-11-23)
 
