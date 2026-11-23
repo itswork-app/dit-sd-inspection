@@ -13,7 +13,7 @@ The initial offline-capable workflow should be limited to an already authenticat
 
 New claims, role changes, assignment changes, approvals, session administration, and other privileged actions require connectivity unless a separately approved design explicitly permits them.
 
-**PO decision:** T-09 option B was explicitly approved on 2026-11-23. This is the approved product boundary for the initial release. It does not authorize production activation until device/browser support, local-data protection, retention/purge, shared-device logout and recovery controls are approved.
+**PO decision:** T-09 option B was explicitly approved on 2026-11-23. The scope choice is APPROVED; implementation and production activation remain gated. This is the approved product boundary for the initial release. It does not authorize production activation until device/browser support, local-data protection, retention/purge, shared-device logout and recovery controls are approved.
 
 ## 3. Local persistence
 
