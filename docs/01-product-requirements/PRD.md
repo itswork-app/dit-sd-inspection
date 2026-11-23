@@ -16,7 +16,7 @@ This is a replacement project, not a SaaS offering. The legacy application is a 
 1. Feature parity with the known legacy workflow and outputs comes first; controlled improvements follow.
 2. Initial instruments are only Interactive Flat Panel (IFP) and Standing Bracket.
 3. There are two inspection locations in the initial project.
-4. Inspector capacity is at most 50 users total across both locations combined. Allocation is controlled by Super Admin.
+4. Inspector capacity starts at 50 users and may be increased by Super Admin, but must remain below 100 (hard maximum 99) across both locations combined. Allocation between locations is controlled by Super Admin; the capacity is not per location.
 5. Supabase PostgreSQL is the single source of truth; Supabase Auth and private Storage are used. Vercel hosts/deploys the web/PWA. GitHub is source control and CI.
 6. Cost-first engineering must not weaken security, privacy, evidence integrity, backup/recovery, or production reliability.
 7. Official inspection criteria and report meanings must not be changed by UX or engineering convenience.
