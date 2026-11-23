@@ -68,7 +68,6 @@ Purpose: Link product intent to specifications, implementation units, and verifi
 ## Instrument-specific traceability (pending official source validation)
 
 | Requirement ID | Instrument | Requirement area | Known source coverage | Verification plan | Status |
-|---|---|---|---|---|---|
 | IFP-001 | IFP | Checklist categories and 49 checklist statements across five categories | Reconciled against supplied two-page `Pemeriksaan Barang.pdf` sample report and legacy screenshots | Confirm controlled authority/version and current validity; retain exact text/order from sample | RECONCILED TO SAMPLE / AUTHORITY OPEN |
 | IFP-002 | IFP | Ten identified photo-slot labels | Legacy reference screenshots; sample PDF does not establish photo-slot completeness or mandatory status | Confirm full slot list, required rules, exceptions, and PDF placement | PARTIAL / COMPLETENESS OPEN |
 | BRK-001 | Standing Bracket | Checklist categories and item list | 19 visible checklist rows from supplied screenshots; serial-number annex sample separately reconciled; complete authoritative list not established | Confirm full checklist, grouping, text, and response rules | PARTIAL / SOURCE VALIDATION OPEN |
@@ -148,7 +147,6 @@ Audit outcome: documentation review completed; security posture not tested/certi
 ## Package E — UX and Quality traceability
 
 | ID | Requirement | Design / Test Artifact | Verification | Status |
-|---|---|---|---|---|
 | UX-001 | Role-based information architecture and scoped navigation | Information Architecture and Navigation | Role-based navigation and scope tests | DESIGN DRAFT |
 | UX-002 | Mobile-first inspection flows with explicit save/sync states | Screen Flows and Wireframe Specification | Mobile E2E and usability UAT | DESIGN DRAFT |
 | UX-003 | Consistent responsive and accessible UI components | Design System and Responsive UX | Responsive, keyboard, contrast, and screen-reader checks | DESIGN DRAFT |
@@ -157,8 +155,6 @@ Audit outcome: documentation review completed; security posture not tested/certi
 
 ## Package R — Audit event catalogue and governance
 
-| ID | Requirement | Specification | Verification | Status |
-|---|---|---|---|---|
 | AUD-001 | Material business, security, and governance actions use a canonical event envelope with actor, active role, scope, resource, outcome, and timestamp | Audit Event Catalogue and Governance | AUD-T01..T12 | DESIGN DRAFT; INS-016 approval pending |
 | AUD-002 | Critical state changes and their audit event commit atomically; audit append failure rolls back the protected mutation | Audit Event Catalogue and Governance; Privileged Command Boundary | AUD-T01..T03 | DESIGN DRAFT |
 | AUD-003 | Audit history is append-only for application roles; corrections use compensating events | Audit Event Catalogue and Governance; RLS Catalogue | AUD-T03, AUD-T11 | DESIGN DRAFT |
@@ -170,7 +166,6 @@ New source evidence: the 23-November Standing Bracket form and 20-November BA ar
 ## Package S — Final audit disposition
 
 | ID | Requirement / gate | Audit artifact | Verification / approval evidence | Status |
-|---|---|---|---|---|
 | GOV-005-S | Cross-document baseline must be reconciled before scope freeze | Package S — Final Cross-Document Audit and Scope-Freeze Readiness | Approved closure of S-01..S-12 and completed scope-freeze checklist | NOT READY |
 | INS-S-001 | Standing Bracket controlled source checklist and item mapping must be approved | Standing Bracket Instrument Specification; Package S | Controlled source/version and Product Owner/institution approval | BLOCKED |
 | DOC-S-001 | BA signatory, attendance verification, and report reconciliation authority must be approved | Reports, Documents, Printing, Attendance, and Audit Design; Package S | Approved document governance and UAT | BLOCKED |
@@ -208,7 +203,6 @@ T-01 through T-08 are partial decision closures, not blanket closure of Package 
 
 ## T-11 traceability update
 | Requirement | PO decision | Verification | Status |
-|---|---|---|---|
 | Supported browser baseline | T-11 option B: current stable Chrome Android for Inspector; current stable Chrome/Edge desktop for other operational/admin roles; explicit exclusions | TC-COMP-001..006 | PO APPROVED; execution pending |
 | Tablet compatibility | Conditional on responsive, camera, upload and PDF/print validation | TC-COMP-004 | Validation pending |
 | Concurrent load profile | 100 concurrent authenticated users; staged 10/25/50/75/100 | TC-LOAD-001..002 | Target approved; execution pending |
@@ -220,6 +214,5 @@ T-01 through T-08 are partial decision closures, not blanket closure of Package 
 
 T-13 option B is PO APPROVED. Traceable acceptance requirements AC-DOC-008 through AC-DOC-012 and test cases TC-PRINT-001 through TC-PRINT-007 cover permissioned individual/batch print, per-document outcomes, failed-only retry, atomic reprint sequence, exact document-version linkage, and the boundary that application print events do not prove physical paper output. Detailed implementation and test execution remain pending.
 
-### T-13 — Print workflow decision (PO approved 2026-11-23)
 
 T-13 option B is PO APPROVED. Traceable acceptance requirements AC-DOC-008 through AC-DOC-012 and test cases TC-DOC-009 through TC-DOC-015 cover permissioned individual/batch print, per-document outcomes, failed-only retry, atomic reprint sequence, exact document-version linkage, and the boundary that application print events do not prove physical paper output. Detailed implementation and test execution remain pending.
