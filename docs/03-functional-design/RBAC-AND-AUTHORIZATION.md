@@ -1,0 +1,128 @@
+# RBAC and Authorization Design
+
+**Status:** Draft v0.1.0 — requires Product Owner validation  
+**Package:** C — Functional and Operational Design
+
+## 1. Purpose
+
+Define identity lifecycle, role assignment, scope enforcement, separation of duties, and privileged administration for the Dit. SD inspection replacement application.
+
+## 2. Identity lifecycle
+
+1. A user authenticates with Google.
+2. First-time identity is provisioned as `PENDING_APPROVAL`.
+3. Pending users cannot access inspection data or operational actions.
+4. A Super Admin approves or rejects the request and assigns one or more roles and explicit data scopes.
+5. Account states: `PENDING_APPROVAL`, `ACTIVE`, `REJECTED`, `SUSPENDED`.
+6. Re-activation and role/scope changes require an authorized action and an audit event.
+
+Google identity proves control of an account; it does not itself grant institutional access.
+
+## 3. Role model
+
+Roles are records, not hard-coded UI labels. Multiple roles per user are supported through a many-to-many relationship. Initial role concepts:
+
+- **Super Admin:** global system configuration and administration.
+- **Admin / Korlap:** operational supervision within explicitly assigned location/session scope.
+- **Reviewer:** review, approve, or return submitted inspections within assigned scope.
+- **Inspector:** perform assigned inspections and evidence capture.
+- **Print Officer:** print approved inspection reports and record print events.
+
+A user may hold more than one role, but each action must identify the active role used. Role possession alone does not grant access to every session or location.
+
+## 4. Authorization decision
+
+Every protected backend operation evaluates all of:
+
+- authenticated user is active;
+- user has the required permission;
+- user has the required role;
+- an active assignment grants the requested session/location/instrument scope;
+- transaction state permits the operation;
+- separation-of-duties rules are satisfied.
+
+The frontend may hide unavailable actions for usability, but backend authorization is authoritative. Supabase Row Level Security (RLS) is required as a database-level defense; privileged server operations must independently validate the same policy.
+
+## 5. Scope model
+
+Scope is explicit and hierarchical: project → session → operational assignment → location + instrument + team. No implicit cross-location inheritance.
+
+- A Korlap assigned to Location A does not gain Inspector or Reviewer access at Location B.
+- A user assigned to multiple teams must have a distinct explicit assignment for each.
+- Super Admin has global administration permissions. When acting as Inspector or Reviewer, Super Admin still needs an explicit operational assignment.
+- The 50-Inspector cap is global across both locations combined. A person counts once toward the cap if they hold Inspector role, regardless of number of assignments. Assignment creation/activation must enforce the cap atomically.
+
+## 6. Separation of duties
+
+- Inspector cannot review/approve their own inspection.
+- Reviewer must be explicitly assigned to the applicable operational assignment.
+- Admin/Korlap does not approve by default. Approval is allowed only if separately assigned Reviewer and the transaction's separation-of-duties rules still pass.
+- Super Admin may act in operational roles only through explicit assignment; global administration does not bypass self-review prohibition.
+- Reopen of an approved inspection requires Super Admin or Admin with explicit reopen permission, a reason, and audit history.
+
+## 7. Initial permission catalogue
+
+The following is a proposed permission vocabulary; exact role-to-permission mapping remains configurable and must be validated before implementation.
+
+| Permission | Intended capability |
+|---|---|
+| `account.review` | Approve/reject pending users |
+| `role.assign` | Assign roles |
+| `scope.assign` | Assign project/session/location/team scope |
+| `config.manage` | Manage instrument and workflow configuration |
+| `session.manage` | Create/update/open/pause/close sessions |
+| `assignment.manage` | Manage operational assignments |
+| `inspection.claim` | Claim an available unit |
+| `inspection.edit` | Create/update own draft |
+| `inspection.submit` | Submit inspection |
+| `inspection.review` | Review submitted inspection |
+| `inspection.approve` | Approve inspection |
+| `inspection.return` | Return inspection for correction |
+| `inspection.reopen` | Reopen approved inspection |
+| `report.view` | View authorized reports |
+| `report.validate` | Validate daily report |
+| `document.print` | Print approved PDF/document |
+| `document.upload` | Upload attendance/BA evidence |
+| `audit.view` | View/export audit events |
+
+## 8. Data model baseline
+
+Proposed logical entities:
+
+- `users`
+- `roles`
+- `permissions`
+- `user_roles`
+- `role_permissions`
+- `projects`
+- `sessions`
+- `operational_assignments`
+- `assignment_members`
+- `audit_events`
+
+Avoid storing authorization as client-editable profile metadata. Use constrained identifiers and relational membership records. RLS policies should be tested for both allowed and denied access, including direct API requests.
+
+## 9. Audit requirements
+
+Record actor, active role, action, target entity, session/assignment scope, timestamp, outcome, reason where required, and correlation/request identifier. Sensitive changes include approval/rejection, role and scope changes, permission changes, configuration changes, and privileged reopen actions.
+
+Audit events are append-only. Administrative users may view/export but cannot edit or delete audit history through the application.
+
+## 10. Security acceptance
+
+- Pending/rejected/suspended users cannot read operational data.
+- User cannot self-assign or elevate role/scope.
+- Cross-location access is denied unless explicitly assigned.
+- Inspector self-approval is denied by backend and database policy.
+- Global Inspector cap cannot be exceeded under concurrent account approval/role assignment.
+- RLS negative tests cover reads and writes for every role/scope combination.
+- Role, scope, and permission changes are auditable.
+
+## 11. Open decisions
+
+- Exact initial role-to-permission matrix.
+- Whether rejected accounts can reapply and who can reinstate suspended accounts.
+- Whether Print Officer is a mandatory distinct role or a permission that may be combined.
+- Whether Admin may create sessions, or only manage sessions created by Super Admin.
+
+These remain open until explicit Product Owner approval.
