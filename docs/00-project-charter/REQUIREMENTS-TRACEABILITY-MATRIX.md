@@ -167,7 +167,7 @@ Audit outcome: documentation review completed; security posture not tested/certi
 | AUD-004 | Audit payloads exclude secrets, signed URL tokens, raw media, and unnecessary personal data | Audit Event Catalogue and Governance; Evidence Privacy and Retention | AUD-T09 | DESIGN DRAFT |
 | AUD-005 | Audit access/export, legal holds, retention disposition, and security administration are permissioned and audited | Audit Event Catalogue and Governance | AUD-T08, AUD-T10 | DESIGN DRAFT; institutional approval pending |
 
-New source evidence: the 23-November Standing Bracket form and 20-November BA are reconciled in the Standing Bracket Instrument Specification and Instrument Requirements Verification Matrix. The 19-row sample form and earlier 19-row screenshot transcription remain distinct source observations pending controlled master confirmation. The BA sample supports serial-annex/count-reconciliation requirements but does not approve signatory policy.
+New source evidence: the 23-November Standing Bracket form and 20-November BA are reconciled in the Standing Bracket Instrument Specification and Instrument Requirements Verification Matrix. The Product Owner confirmed the 23-November document as the official Standing Bracket instrument source on 2026-11-23. Its 19-row checklist (6 physical + 13 accessories) is the project baseline; the earlier screenshot transcription remains a separate observation to be mapped without silent merging. The BA sample supports serial-annex/count-reconciliation requirements but does not approve signatory policy.
 
 
 ## Package S — Final audit disposition
@@ -186,14 +186,14 @@ New source evidence: the 23-November Standing Bracket form and 20-November BA ar
 
 The detailed PO decision closure register is maintained in `docs/00-project-charter/PACKAGE-T-PO-DECISION-CLOSURE-PACK.md`. Decision IDs T-01 through T-18 cover authoritative instrument masters, BA signatories, executive-summary signature, client report delivery, actual report metrics, project closure, session authority, attendance verification, offline scope, evidence privacy/retention, device/performance baseline, provider operations, print workflow, Inspector capacity semantics, INS-016 audit policy, serial/evidence integrity, CFG-001 publication governance and privileged command boundary.
 
-These IDs are decision-tracking references, not implementation-complete requirements. T-01 through T-04 have explicit PO outcomes recorded in the Decision Register and detailed Package T update; T-01 source evidence and T-02 institutional signatory authority remain outstanding. T-05 through T-18 remain OPEN/BLOCKED. Each decision must be reconciled into the relevant requirement/specification and verification case. PO approval does not replace institutional approval or implementation verification.
+These IDs are decision-tracking references, not implementation-complete requirements. T-01 through T-04 have explicit PO outcomes recorded in the Decision Register and detailed Package T update; T-01 Standing Bracket source is confirmed; official IFP source and SB photo/evidence rules remain outstanding. T-02 institutional signatory authority remains outstanding. T-05 through T-18 remain OPEN/BLOCKED. Each decision must be reconciled into the relevant requirement/specification and verification case. PO approval does not replace institutional approval or implementation verification.
 
 
 ## Package T — accepted PO decisions and traceability (2026-11-23)
 
 | Decision | Approved direction | Traceability follow-up | Residual gate |
 |---|---|---|---|
-| T-01 | Official approved institutional source documents are authoritative master | Source provenance, version/effective date, checklist/photo-slot reconciliation and verification cases | Obtain and validate controlled source documents; BLOCKED |
+| T-01 | Official approved institutional source documents are authoritative master; SB source confirmed by PO | Trace SB's 19 official rows to source and preserve provenance; reconcile earlier screenshot; confirm IFP source and SB photo rules | PARTIALLY CLOSED: IFP source and SB photo/evidence rules remain OPEN |
 | T-02 | BA signatory blocks configurable per approved template | Verify variable party count, organization, role/title, order and required/optional behavior | Institutional signatory authority and approved template remain OPEN |
 | T-03 | Executive-summary signature configurable per template; default none unless required | Verify configured signature/no-signature variants in PDF tests | PO direction closed; institutional template governs |
 | T-04 | PDF-only client delivery for initial release; portal deferred | Verify permission-controlled PDF access/distribution and mark portal out of initial scope | PO direction closed; portal needs change request |
