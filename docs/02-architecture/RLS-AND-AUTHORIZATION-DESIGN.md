@@ -67,7 +67,7 @@ This matrix is a draft and must be reconciled with the final role/permission cat
 ## 7. Capacity and concurrency controls
 
 - Distinct active Inspector accounts across both locations are counted globally.
-- Configured Inspector capacity may be set below 50; the initial/default value is 50 and the hard maximum is 100 distinct active Inspector accounts across both locations combined. Super Admin may change the configured value within the approved range. Count each person once regardless of assignment count. Capacity changes and Inspector activation/role grant must be authorized, audited, and enforced atomically.
+- Configured Inspector capacity ranges from 1 to 100 distinct active Inspector accounts across both locations combined; default value is 50. Super Admin may change the configured value within the approved range. Count each person once regardless of assignment count. Capacity changes and Inspector activation/role grant must be authorized, audited, and enforced atomically.
 - Count and activation/role grant must be checked in one serializable/locked transaction (or equivalent single-row capacity lock) to prevent concurrent over-allocation.
 - Revoke/deactivate transitions must update the count semantics atomically.
 - Every capacity change records actor, previous value, new value, time, and reason.
