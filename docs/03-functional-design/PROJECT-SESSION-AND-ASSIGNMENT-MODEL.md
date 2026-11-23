@@ -55,7 +55,7 @@ Each operational assignment has exactly one session, location, instrument, and t
 - Admin/Korlap supervises only the assigned location/assignment.
 - Reviewer approval scope is limited to explicitly assigned assignments.
 - Inspector assignment is explicit; no self-claiming into another team.
-- Global Inspector capacity starts at 50 and may be raised by Super Admin, up to a hard ceiling of 99 across both locations combined.
+- Global Inspector capacity starts at 50 and may be raised by Super Admin, up to a hard ceiling of 100 across both locations combined.
 - This is a combined project capacity, not a per-location allowance. Allocation between locations may be uneven.
 - A person holding Inspector role counts once, even if assigned to multiple sessions/teams.
 - Capacity changes require authorization, audit history, and atomic enforcement during Inspector activation; a UI-only count is insufficient.
@@ -113,7 +113,7 @@ Changes to target, schedule, location, instrument, assignment, and team membersh
 - An assignment cannot represent more than one location or instrument.
 - User cannot work outside explicit assignment scope.
 - Conflicting overlapping assignments are rejected.
-- Concurrent Inspector activation cannot exceed 50 distinct Inspector accounts across both locations.
+- Concurrent Inspector activation cannot exceed the configured capacity (maximum 100) distinct Inspector accounts across both locations.
 - Target changes never mutate actual activity data.
 - Session cannot close while any required gate is incomplete.
 - All planning and assignment changes are auditable and historical records remain attributable to their original versions.
