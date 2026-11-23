@@ -186,7 +186,7 @@ New source evidence: the 23-November Standing Bracket form and 20-November BA ar
 
 The detailed PO decision closure register is maintained in `docs/00-project-charter/PACKAGE-T-PO-DECISION-CLOSURE-PACK.md`. Decision IDs T-01 through T-18 cover authoritative instrument masters, BA signatories, executive-summary signature, client report delivery, actual report metrics, project closure, session authority, attendance verification, offline scope, evidence privacy/retention, device/performance baseline, provider operations, print workflow, Inspector capacity semantics, INS-016 audit policy, serial/evidence integrity, CFG-001 publication governance and privileged command boundary.
 
-These IDs are decision-tracking references, not implementation-complete requirements. T-01 through T-04 have explicit PO outcomes recorded in the Decision Register and detailed Package T update; T-01 Standing Bracket source is confirmed; official IFP source and SB photo/evidence rules remain outstanding. T-02 institutional signatory authority remains outstanding. T-05 through T-18 remain OPEN/BLOCKED. Each decision must be reconciled into the relevant requirement/specification and verification case. PO approval does not replace institutional approval or implementation verification.
+These IDs are decision-tracking references, not implementation-complete requirements. T-01 through T-04 have explicit PO outcomes recorded in the Decision Register and detailed Package T update; T-01 Standing Bracket source is confirmed; official IFP source and SB photo/evidence rules remain outstanding. T-02 institutional signatory authority remains outstanding. T-05 through T-08 are PO APPROVED (2026-11-23); T-09 through T-18 remain OPEN/BLOCKED. Each decision must be reconciled into the relevant requirement/specification and verification case. PO approval does not replace institutional approval or implementation verification.
 
 
 ## Package T — accepted PO decisions and traceability (2026-11-23)
@@ -197,5 +197,9 @@ These IDs are decision-tracking references, not implementation-complete requirem
 | T-02 | BA signatory blocks configurable per approved template | Verify variable party count, organization, role/title, order and required/optional behavior | Institutional signatory authority and approved template remain OPEN |
 | T-03 | Executive-summary signature configurable per template; default none unless required | Verify configured signature/no-signature variants in PDF tests | PO direction closed; institutional template governs |
 | T-04 | PDF-only client delivery for initial release; portal deferred | Verify permission-controlled PDF access/distribution and mark portal out of initial scope | PO direction closed; portal needs change request |
+| T-05 | Distinct actual counts: Inspected, Submitted, Approved, Completed | Verify metric definitions, timestamp/filter labels and Completed formula | PO APPROVED; implementation/test pending |
+| T-06 | Super Admin final project closure after gates and actual/target reconciliation | Test all blockers, explicit reason/confirmation, audit, and no date auto-close | PO APPROVED; implementation/test pending |
+| T-07 | Super Admin creates/configures sessions; Korlap transitions within scope/permissions; CLOSED terminal normally | Test role/scope/state transitions and privileged reopening | PO APPROVED; implementation/test pending |
+| T-08 | Korlap verifies attendance within assigned scope; upload never auto-verifies | Test separated permissions, scope, audit and verification state | PO APPROVED; implementation/test pending |
 
-T-01 through T-04 are not blanket closure of Package S. Remaining decisions and evidence dependencies remain active. Do not mark scope freeze ready based on these partial closures.
+T-01 through T-08 are partial decision closures, not blanket closure of Package S. Remaining decisions and evidence dependencies remain active. Do not mark scope freeze ready based on these partial closures.
