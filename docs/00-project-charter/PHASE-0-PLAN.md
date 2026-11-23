@@ -4,6 +4,7 @@ Status: In progress
 Exit condition: Project foundation reviewed and approved; open assumptions and owners are explicit.
 
 ## Confirmed management decisions
+
 - Release target: Production.
 - Engineering priority: Cost-first.
 - Platform: Supabase + Vercel; GitHub for source control and CI.
@@ -11,42 +12,49 @@ Exit condition: Project foundation reviewed and approved; open assumptions and o
 - Product is a replacement inspection application, not SaaS.
 - Initial instruments: IFP and Standing Bracket.
 - Strategy: feature parity first, improvements after.
-- Legacy source code is unavailable; use supplied workflows/screenshots as reference.
+- Legacy source code is unavailable; supplied workflows/screenshots are reference material.
 - Repository: itswork-app/dit-sd-inspection; private; default branch main.
 
 ## Work items
+
 | ID | Work item | Exit evidence | Status |
 |---|---|---|---|
-| P0-01 | Confirm charter and product boundaries | Approved charter | Drafted |
+| P0-01 | Confirm charter and product boundaries | Approved charter | Drafted; approval pending |
 | P0-02 | Define roles and decision authority | Stakeholder/RACI matrix | Drafted; validate |
 | P0-03 | Establish Git and PR governance | Branch/PR policy | Drafted; configure |
 | P0-04 | Establish quality and cost gates | Approved governance | Drafted; validate |
-| P0-05 | Create decision and requirement traceability | Decision Register and requirement IDs | Drafted; validate |
+| P0-05 | Create decision and requirement traceability | Decision Register and RTM | Drafted; validate |
 | P0-06 | Inventory reference material and evidence gaps | Reference inventory | Drafted; source artifacts still required |
 | P0-07 | Record risks, assumptions, dependencies | RAID register | Drafted; review owners and mitigations |
-| P0-08 | Define production constraints and cost envelope | Hosting, privacy, retention, budget and operations decisions | Pending stakeholder input |
+| P0-08 | Define production constraints and cost envelope | Hosting, privacy, retention, budget, operations decisions | Pending stakeholder input |
 | P0-09 | Record Supabase/Vercel platform baseline | ADR-001 | Drafted |
 | P0-10 | Validate production plan eligibility and quotas | Cost and operational assessment | Pending |
 
 ## Capacity constraint
-- Maximum 50 Inspector users across both inspection locations combined; allocation is controlled by Super Admin. This is recorded as OPS-001 in the Decision Register.
 
-## Newly drafted governance artifacts
-- `RAID-REGISTER.md`
-- `RACI-MATRIX.md`
-- `REQUIREMENTS-TRACEABILITY-MATRIX.md`
-- `REFERENCE-EVIDENCE-INVENTORY.md`
+Maximum 50 distinct Inspector users across both inspection locations combined. Recorded as OPS-001 in Decision Register. Enforcement must be atomic.
 
-These artifacts are drafts and do not constitute stakeholder approval.
+## Package B — Product Requirements
 
-## Package B — Product Requirements progress
-- `docs/01-product-requirements/PRD.md` — drafted v0.1.0.
-- `docs/01-product-requirements/IFP-INSTRUMENT-SPECIFICATION.md` — drafted from identified reference content; official source validation remains open.
-- `docs/01-product-requirements/STANDING-BRACKET-INSTRUMENT-SPECIFICATION.md` — drafted as a controlled placeholder; detailed checklist remains blocked pending authoritative source.
-- `docs/01-product-requirements/ACCEPTANCE-CRITERIA.md` — drafted; test case mapping belongs to Quality package.
-- Package B is NOT approved. Product Owner validation and missing source documents remain required.
+- PRD v0.1.0 drafted.
+- IFP instrument specification drafted from identified reference content; official source validation remains open.
+- Standing Bracket specification now includes 19 checklist rows visible in supplied screenshots; complete official checklist and photo-slot rules remain unverified.
+- Acceptance Criteria v0.1.0 drafted.
+- Package B is NOT approved; Product Owner validation and authoritative source documents remain required.
+
+## Package C — Functional and Operational Design
+
+Drafted:
+- RBAC and Authorization.
+- Project, Session, Target, and Assignment Model.
+- Inspection Lifecycle, Unit Claims, Review, and Revision.
+- Offline, Synchronization, Conflict, and Recovery.
+- Reports, Documents, Printing, Attendance, and Audit.
+
+Package C clarifies the functional baseline while preserving unresolved decisions. It does not authorize implementation. All five documents require review, and the offline/browser/storage limits require validation against actual field devices.
 
 ## Phase 0 exit checklist
+
 - [ ] Charter approved by Product Owner.
 - [ ] Stakeholder roles and final decision authority confirmed.
 - [ ] Scope and exclusions accepted.
@@ -60,4 +68,5 @@ These artifacts are drafts and do not constitute stakeholder approval.
 - [ ] Phase 1 entry criteria accepted.
 
 ## Phase 1 entry criteria
-Do not begin feature implementation until Phase 0 is approved, PRD decisions are consolidated, official IFP and Standing Bracket checklist/photo requirements are validated against authorized references, and acceptance criteria are testable and traceable.
+
+Do not begin feature implementation until Phase 0 is approved, PRD and Package C decisions are consolidated, official IFP and Standing Bracket checklist/photo requirements are validated against authorized references, acceptance criteria are testable and traceable, and the architecture/security/quality packages are reviewed.
