@@ -121,7 +121,7 @@ Korlap confirms closure only when configured closure requirements are satisfied.
 | AUTH-001 | Google sign-in | Must | Valid identity can authenticate; unauthorized identity cannot access data |
 | AUTH-002 | Pending account approval | Must | New user cannot operate until approved and assigned |
 | RBAC-001 | Multi-role and scoped permission model | Must | Every operation enforces explicit role, permission, and assignment scope |
-| CAP-001 | Configurable Inspector capacity starts at 50 and may be increased up to 100 across both locations combined | Must | System rejects activation/assignment that would exceed the configured global cap |
+| CAP-001 | Configurable Inspector capacity may be below or above 50; default 50, hard maximum 100 across both locations combined | Must | System rejects activation/assignment that would exceed the configured global cap |
 | SES-001 | Project/session/location/instrument/team planning | Must | Super Admin can configure; parallel assignments remain independently scoped |
 | SES-002 | Assignment conflict prevention | Must | Overlapping assignment for same user is rejected atomically |
 | INS-001 | Versioned instrument configuration | Must | Session retains immutable version snapshot |
