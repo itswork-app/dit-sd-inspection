@@ -462,3 +462,15 @@ This package does not authorize:
 - claiming that RLS, audit, backup, restore, load or security controls are implemented or tested.
 
 **Current overall status remains: NOT READY FOR SCOPE FREEZE; FEATURE IMPLEMENTATION NOT AUTHORIZED.**
+
+
+## Package T — Product Owner decision outcomes (2026-11-23)
+
+| Decision | PO outcome | Requirement / traceability consequence | Residual status |
+|---|---|---|---|
+| T-01 | APPROVED: controlled official institutional source documents are authoritative masters | Instrument requirements and verification must trace to source title, revision, issuer/approver and effective date; transcriptions/screenshots remain provisional until reconciled | BLOCKED on source documents and institutional approval evidence |
+| T-02 | APPROVED: configurable BA signatory blocks per approved template | Add verification for configurable party count, organization, role/title, order and required/optional status | OPEN for actual authorized signatory identities/authority and final institutional template |
+| T-03 | APPROVED: signature behavior configurable per report template; default none unless required | Add template configuration and PDF verification; do not hardcode a universal executive-summary signature | PO decision closed; approved template requirement still controls |
+| T-04 | APPROVED: PDF-only client report delivery in initial release | Client portal excluded from initial release; controlled PDF generation/access/distribution remains in scope | PO decision closed; later portal needs change request |
+
+PO approval does not replace institutional authorization or source evidence. Remaining Package T decisions T-05..T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
