@@ -85,6 +85,13 @@ These are designed test procedures. Execution has not started. Source authority 
 - TC-DOC-013: Concurrent print/reprint requests allocate unique atomic ordinals for each document and preserve document-version linkage.
 - TC-DOC-014: Batch operation rejects unapproved, missing, wrong-scope or non-final-PDF documents without unauthorized disclosure.
 - TC-DOC-015: Recorded print event does not claim physical paper output; direct printer integration is not required.
+- TC-DOC-009: Print Officer can individually print an approved final PDF only within explicit permission and scope.
+- TC-DOC-010: Bounded batch print enforces configured maximum size and records a distinct outcome for each document.
+- TC-DOC-011: Partial batch failure is represented per document; successful items are not incorrectly retried or duplicated.
+- TC-DOC-012: Retry accepts failed documents only and does not create duplicate success events.
+- TC-DOC-013: Concurrent print/reprint requests allocate unique atomic ordinals for each document and preserve document-version linkage.
+- TC-DOC-014: Batch operation rejects unapproved, missing, wrong-scope or non-final-PDF documents without unauthorized disclosure.
+- TC-DOC-015: Recorded print event does not claim physical paper output; direct printer integration is not required.
 - TC-DOC-005: BA and attendance document lifecycle statuses are correct.
 - TC-DOC-006: BA instrument summary rows reconcile inspected sample, good, and defective counts against source inspection records, including a zero-count instrument row.
 - TC-DOC-007: BA template renders configured activity/date/location narrative and authorized signatory blocks without hardcoded sample values.
