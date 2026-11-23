@@ -60,6 +60,7 @@ Purpose: Link product intent to specifications, implementation units, and verifi
 | SEC-002 | Every application table and private Storage object class has an explicit deny-by-default policy and role/scope access matrix | Package M | Table-by-Table RLS Policy Catalogue | Staging RLS, RPC, view, and Storage positive/negative test matrix | DRAFT COMPLETE; REVIEW/EXECUTION OPEN |
 | EVD-002 | Evidence uses private storage, verified upload lifecycle, and immutable originals | ADR-001, evidence decisions | Evidence Storage and Media Lifecycle | Upload, checksum, access-control, and recovery tests | DESIGN DRAFT |
 | API-001 | Critical commands are idempotent and transactionally enforce claims, submission, approval, and capacity | Functional decisions | API and Transaction Contracts | Duplicate/retry/concurrency/transaction tests | DESIGN DRAFT |
+| API-002 | Every privileged mutation executes through a trusted Vercel route and narrowly scoped PostgreSQL command boundary; browser direct DML is denied | Package N | Privileged Command Boundary and Transaction Specification | Forged-actor, direct-DML, RPC grant, and concurrency tests | DRAFT COMPLETE; APPROVAL OPEN |
 
 ## Instrument-specific traceability (pending official source validation)
 
@@ -92,6 +93,12 @@ Purpose: Link product intent to specifications, implementation units, and verifi
 - `docs/03-functional-design/REPORTS-DOCUMENTS-AND-AUDIT.md`
 
 All are design drafts, not formal Product Owner approvals. Open decisions are explicitly retained in each document.
+
+## Package L/M/N — Database integrity, RLS, and trusted command artifacts
+
+- `docs/02-architecture/PRIVILEGED-COMMAND-BOUNDARY-AND-TRANSACTION-SPECIFICATION.md`
+
+Package N proposes the Vercel route + caller-JWT PostgreSQL command-function pattern. This is not yet approved or implemented.
 
 ## Package L/M — Database integrity and authorization policy artifacts
 
