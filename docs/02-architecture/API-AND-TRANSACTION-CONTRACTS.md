@@ -51,16 +51,11 @@ The exact payload is command-specific. Do not accept actor role, user ID, or eff
 
 ## 4. Standard response envelope
 
-```json
-{
   "command_id": "same-command-uuid",
   "status": "accepted",
-  "resource_id": "uuid",
   "resource_version": 8,
   "server_time": "UTC timestamp",
   "result": {}
-}
-```
 
 For validation or conflict errors, return a stable code, safe message, and relevant current version/state when disclosure is authorized.
 
@@ -125,15 +120,7 @@ For validation or conflict errors, return a stable code, safe message, and relev
 - A partial batch remains partial; return per-document results and aggregate counts without claiming physical printer output.
 - Browser print initiation/confirmation is an application-level event only. Direct printer integration is outside initial release.
 
-### Print and batch-print transaction (PO-approved T-13 option B)
 
-- Verify caller identity, `document.print` permission, scope, approved inspection state and final immutable PDF version for every document.
-- Enforce a configurable maximum batch size; reject an oversized request before starting any print operation.
-- Persist a batch identifier and one outcome per document: success recorded, failed, or cancelled. Do not infer success for documents without an explicit successful application result.
-- Allocate each document's print/reprint ordinal atomically under concurrency control and link it to the exact document version.
-- Retry accepts failed document identifiers only; it must reject already successful/cancelled items and must not create duplicate success events.
-- A partial batch remains partial; return per-document results and aggregate counts without claiming physical printer output.
-- Browser print initiation/confirmation is an application-level event only. Direct printer integration is outside initial release.
 
 ## 7. Error code baseline
 
