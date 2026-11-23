@@ -43,7 +43,7 @@ Recommendations in this pack are not approvals. Explicit Product Owner approvals
 | T-11 | Supported devices, performance and service objectives | PO APPROVED option B; exact matrix/SLO validation OPEN | Approve a minimum browser/device matrix and measurable test profile before implementation acceptance | High |
 | T-12 | Provider operations, region, quota, backups and ownership | BLOCKED | Verify actual Supabase/Vercel plans, region, quotas, backup/restore and named operational owners | Blocker |
 | T-13 | Print Officer and print-control workflow | PO APPROVED (B) | Permissioned queue; individual + bounded batch printing; per-document outcomes and audited print/reprint events | High |
-| T-14 | Inspector capacity semantics | OPEN | Define precisely which accounts count as active Inspector accounts under the approved 1–100 cap | High |
+| T-14 | Inspector capacity semantics | PO APPROVED (A) | Count distinct enabled accounts with active Inspector role and effective operational assignment | High |
 | T-15 | Audit event policy INS-016 | OPEN | Approve append-only event catalogue and atomic audit writes for critical state changes | Blocker |
 | T-16 | Serial-number uniqueness and evidence/revision linkage | OPEN | Enforce scoped uniqueness rules only after source/business rules are confirmed; bind evidence to immutable revision and instrument version | Blocker |
 | T-17 | Instrument configuration governance CFG-001 | APPROVED DIRECTION; detailed controls OPEN | Declarative, versioned configuration with bounded supported field and validation types; no arbitrary code | Must be completed in design |
@@ -471,7 +471,7 @@ This package does not authorize:
 | T-03 | APPROVED: signature behavior configurable per report template; default none unless required | Add template configuration and PDF verification; do not hardcode a universal executive-summary signature | PO decision closed; approved template requirement still controls |
 | T-04 | APPROVED: PDF-only client report delivery in initial release | Client portal excluded from initial release; controlled PDF generation/access/distribution remains in scope | PO decision closed; later portal needs change request |
 
-PO approval does not replace institutional authorization or source evidence. T-01 through T-09 have explicit PO outcomes; T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 option B is PO APPROVED; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; the actual alternative arrangement and institutional/provider verification remain BLOCKED. T-13 is PO APPROVED option B; T-14 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
+PO approval does not replace institutional authorization or source evidence. T-01 through T-09 have explicit PO outcomes; T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 option B is PO APPROVED; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; the actual alternative arrangement and institutional/provider verification remain BLOCKED. T-13 is PO APPROVED option B; T-14 is PO APPROVED option A; T-15 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
 
 ## 8. Product Owner decision outcomes — T-05 through T-08 (2026-11-23)
 
@@ -529,3 +529,11 @@ This is PO product direction only. Detailed batch limits, UI behavior, browser p
 
 **State after PO response (2026-11-23): PO APPROVED option B.** Initial release supports individual and batch printing. Batch size must be bounded/configurable; every document receives an independent outcome (success recorded, failed, or cancelled). Retry is limited to failed documents and must not duplicate successful print events. Reprint sequence allocation is atomic. The application records an authorized print action; it does not prove physical paper output. Direct printer integration is not included.
 
+
+
+
+### T-14 — Inspector capacity counting predicate
+
+**Decision (2026-11-24): PO APPROVED option A.** Count distinct user accounts that are enabled for login, have an active Inspector role grant, and have at least one currently effective operational Inspector assignment within the governed project/session scope. Count each account once even when it has multiple assignments or roles. Exclude pending, rejected, suspended, disabled, and expired-role accounts. Enforce the already-approved combined cap atomically across both locations (minimum 1, default 50, maximum 100); reject 0 and values above 100. A cap reduction below the current qualifying-account count must be rejected until the count is brought within the proposed cap; never silently deactivate accounts.
+
+This is a Product Owner decision defining the counting predicate. It does not authorize implementation, and does not change the cap values. Database, authorization, API, and test specifications must use the same predicate. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
