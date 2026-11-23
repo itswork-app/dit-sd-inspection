@@ -140,6 +140,7 @@ INS-016 is still a proposal until explicitly approved; this document defines a d
 - Regeneration does not overwrite prior PDF artifacts.
 - Print sequence is concurrency-safe and every print event is attributable.
 - Individual and bounded batch printing are permission-checked; batch results are recorded independently per document, and retry does not duplicate successful events.
+- Individual and bounded batch printing are permission-checked; batch results are recorded independently per document, and retry does not duplicate successful events.
 - BA signatory configuration is versioned.
 - Attendance upload preserves original and replacement history.
 - Actual reporting is derived from actual event timestamps.
@@ -164,6 +165,11 @@ INS-016 is still a proposal until explicitly approved; this document defines a d
 - **Client delivery:** Initial release is PDF-only. Client portal is deferred and requires a later approved change request.
 
 The available sample BA does not establish who is legally/administratively authorized to sign. This document therefore records configurable template behavior, not approval of any named signatory. PDF generation/access/distribution remains scoped, versioned and audited. T-05 through T-08 are PO-approved product direction; detailed implementation, evidence rules and verification tests remain pending.
+
+
+## Package T-13 — Product Owner decision (2026-11-23)
+
+The Product Owner approved option B: initial release supports individual and batch printing. Batch size is bounded/configurable, and each document has its own recorded outcome. Retry is restricted to failed documents and cannot duplicate successful print events. The permissioned queue contains approved inspections with final PDFs. Print/reprint sequence allocation is atomic and version-bound. The recorded event represents the application print action, not verified physical paper output. Direct printer integration is not included in initial release. Implementation and test execution remain pending.
 
 
 ## Package T-13 — Product Owner decision (2026-11-23)
