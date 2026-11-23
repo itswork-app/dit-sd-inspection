@@ -171,3 +171,8 @@ PO APPROVED option C: an alternative provider-ownership arrangement may be adopt
 ### Package T-13 — Product Owner decision (2026-11-23)
 
 PO approved option B: individual and bounded/configurable batch printing through the permissioned Print Officer queue. Every document has an independent outcome; retry targets failed documents only; successful print events are not duplicated; reprint ordinals are atomic and linked to the exact approved PDF version. The application event does not prove physical paper output. Direct printer integration is excluded from initial release. Related functional, PRD, acceptance, API, data-model, QA and governance documents were updated. This is a product decision only: no implementation or tests are claimed, scope freeze remains NOT READY, and feature implementation remains NOT AUTHORIZED.
+
+
+## Package T-14 — Inspector capacity semantics
+
+PO approved option A on 2026-11-24. Canonical count: distinct enabled login accounts with an active Inspector role grant and at least one currently effective operational Inspector assignment within governed project/session scope. Deduplicate accounts across roles/assignments; exclude pending, rejected, suspended, disabled and expired-role accounts. Preserve combined cap 1–100, default 50, with atomic enforcement and no silent deactivation when lowering the cap. Update and verify database, RLS, API, RBAC, PRD and QA specifications consistently. This closes the PO predicate decision only; scope freeze and implementation gates remain open.
