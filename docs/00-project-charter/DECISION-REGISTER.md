@@ -124,3 +124,8 @@ PO APPROVED option B — individual and batch printing. Initial release includes
 ### T-14 — Inspector capacity counting predicate (2026-11-24)
 
 **Status: PO APPROVED — option A.** Capacity counts distinct accounts that are enabled for login, have an active Inspector role grant, and have at least one currently effective operational Inspector assignment within the governed project/session scope. Count an account once regardless of its number of assignments or roles. Exclude pending, rejected, suspended, disabled, and expired-role accounts. Enforce atomically against the approved combined 1–100 cap (default 50); reject 0, values above 100, and cap reductions below the current qualifying count until reconciled. No silent deactivation. This is PO approval only; implementation and tests remain pending.
+
+
+### T-14 clarification — registration, roles, teams and staffing (2026-11-24)
+
+A user must register/authenticate before Super Admin can approve the account and configure roles, permissions, scope, team membership and operational assignment. Registration by itself does not grant access and is not sufficient to count toward Inspector capacity. Super Admin exclusively determines the number of teams and the personnel assigned to each team, within the approved capacity and project/session plan. Self-assignment of roles, teams or operational assignments is prohibited.
