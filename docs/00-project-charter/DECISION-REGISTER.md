@@ -85,3 +85,10 @@ Product Owner additionally confirmed on 2026-11-23 that `Pemeriksaan Barang_SB.p
 | T-08 | Korlap verifies attendance within assigned location/scope, with separate permissions for generate, print, upload, download and verify. Upload never automatically sets VERIFIED. | PO APPROVED | Super Admin assigns/grants verifier authority. Artifact integrity, verification rules and audit behavior remain to be implemented and tested. |
 
 These are Product Owner decisions recorded from the explicit response dated 2026-11-23. They settle the product direction for T-05 through T-08 but do not constitute implementation, UAT, or institutional approval where required.
+
+
+## Product Owner decision — Package T T-09 (2026-11-23)
+
+**T-09: PO APPROVED option B — limited offline draft editing.** Offline continuation is permitted only for an inspection draft whose unit was already claimed while online. Offline claim acquisition, approval, final submission, role/assignment changes, session administration and privileged actions are prohibited. Reconnection must use authenticated, idempotent synchronization, recheck server authorization and claim/state, reject stale conflicting writes, preserve local and server versions for explicit resolution, and never silently overwrite newer server data. Required evidence must be server-confirmed before final submission.
+
+This approval does not authorize production activation of offline persistence. Supported device/browser matrix, local-data protection/encryption, shared-device logout, retention/purge, local recovery and institutional records/privacy approval remain open dependencies (T-10/T-11). T-09 PO direction is approved; implementation and tests remain pending. T-10 through T-18 remain OPEN/BLOCKED as previously recorded.
