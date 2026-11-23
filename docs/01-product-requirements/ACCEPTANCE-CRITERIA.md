@@ -84,8 +84,15 @@ This document defines observable acceptance outcomes. Detailed test cases and au
 - AC-RPT-003: Changing target allocation never changes actual inspection dates/times.
 - AC-RPT-004: Daily, weekly, and final report variants exist for Actual and Target.
 - AC-RPT-005: Korlap scope and Super Admin global scope are enforced in report access.
+- AC-RPT-006: Actual report distinctly labels Inspected, Submitted, Approved and Completed counts.
+- AC-RPT-007: Completed count includes only approved inspection + final PDF generated + Print Officer print action recorded; PDF open/download is not a print event.
 - AC-SES-001: Session cannot close while configured required workflow/document/print tasks remain incomplete.
 - AC-SES-002: Session is not auto-closed merely because its calendar date passes.
+- AC-SES-003: Only Super Admin can finally close the project after all closure gates and actual-versus-target reconciliation pass; closure records actor, timestamp, reason/confirmation and audit event.
+- AC-SES-004: Session creator/configuration authority is Super Admin; Korlap state actions are limited to assigned scope and granted permissions.
+- AC-SES-005: CLOSED session is terminal in ordinary flow; reopening requires privileged permission, reason and audit.
+- AC-ATT-001: Korlap can verify attendance only within assigned location/scope and explicit verifier permission.
+- AC-ATT-002: Generate, print, upload, download and verify are separate permissions; upload never automatically sets VERIFIED.
 
 ## 9. Production quality
 
