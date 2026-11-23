@@ -1,6 +1,6 @@
 # Standing Bracket Instrument Specification
 
-Status: Draft — reconciled with supplied legacy screenshots and serial-number annex sample; controlled checklist authority/version remains open  
+Status: Draft — official instrument source confirmed by Product Owner on 2026-11-23; configuration/version publication and unresolved evidence rules remain open  
 Instrument: Standing Bracket
 
 ## 1. Configuration and versioning
@@ -88,9 +88,9 @@ The photograph visibly shows 13 Standing Bracket serial-number rows, each marked
 
 ## 5. Required validation
 
-1. Obtain the complete authorized source checklist and version.
-2. Obtain complete original screenshots for every checklist and evidence screen.
-3. Confirm whether the five known photo labels are complete.
+1. Preserve this Product-Owner-confirmed official instrument document as the Standing Bracket checklist source and record its source provenance/version when available.
+2. Confirm whether additional official annexes/specification pages exist.
+3. Confirm whether the five known photo labels are complete and which are mandatory/conditional/optional.
 4. Confirm which evidence slots are mandatory, conditional, or optional.
 5. Confirm whether checklist items require notes, measurements, or quantity entry.
 6. Confirm the exact meaning and quantity of “Ring/klem Roda (4 pcs) + 4 (4pcs)”.
@@ -143,7 +143,7 @@ The form contains 19 visible checklist statements grouped as follows:
 
 **Count clarification:** the form has 19 checklist rows total: six physical plus thirteen accessories. The numbering above is a continuous reference index. Preserve the exact spelling, spacing, and ambiguous quantity as source data. The form's visible result column is “Sesuai? Ya/Tdk”; it does not define mandatory photo slots, N/A rules, notes, or evidence requirements.
 
-This 19-row sample has the same visible row count as the earlier 19-row screenshot transcription, but wording/source context and item mapping have not been proven identical. Keep both source versions distinct pending controlled master checklist confirmation; do not delete, merge, or renumber the earlier record. The phrase “Interactive Flat Panel (IFP) Standing Bracket” also requires Product Owner confirmation of the exact instrument label and whether it refers to SB or a combined display label.
+Product Owner confirmed on 2026-11-23 that this document is the official Standing Bracket instrument document. Accordingly, the 19 visible rows in this 23-November document are the official baseline for this instrument. Preserve the earlier 19-row screenshot transcription as a separate historical source observation; do not silently merge, delete, or renumber it. The source heading phrase “Interactive Flat Panel (IFP) Standing Bracket” is preserved verbatim as document wording; the instrument's system catalog identity remains Standing Bracket based on the Product Owner's clarification.
 
 ### 7.2 BA visitasi dated 20 November 2026
 
@@ -166,10 +166,10 @@ Requirements derived from these samples:
 
 ### 7.3 Required reconciliation tests
 
-- Compare the source-specific 19-row form with the earlier 19-row screenshot transcription; preserve both source observations until an authorized master is supplied.
+- Reconcile the earlier 19-row screenshot transcription against the now-confirmed official 23-November instrument document; preserve both source observations and explicitly record mapping, wording differences and unresolved ambiguity.
 - Verify physical serial and package serial separately, including exact-match and mismatch cases.
 - Verify 460 = 456 + 4 on a sample fixture and reconcile all serial annex rows against those totals.
 - Detect duplicate serials, missing serials, invalid condition values, and summary/annex count mismatch before BA issuance.
 - Verify condition-grouped evidence references and configurable paraf/signatory blocks.
 
-No new checklist version is declared authoritative by this evidence alone. Product Owner and institutional source authority approval remain required.
+The Product Owner confirmed this document as the official Standing Bracket instrument source on 2026-11-23. The 19 visible rows form the official baseline for this project. This confirmation does not resolve photo-slot completeness/mandatory status, N/A rules, findings, or ambiguous quantity wording; do not infer those rules.
