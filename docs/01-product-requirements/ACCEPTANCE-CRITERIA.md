@@ -102,9 +102,10 @@ This document defines observable acceptance outcomes. Detailed test cases and au
 - Supported devices/browsers and measurable performance targets.
 - Offline device/browser support, encryption, retention, and recovery details.
 - Evidence size/type limits and retention/deletion policy.
-- BA signatory blocks, authority, and lifecycle.
+- Institutional approval of actual BA signatory identities/roles and final template.
 - Attendance verification role and authority.
-- Actual report headline/count basis and client report delivery mechanism.
+- Actual report headline/count basis.
+- Official IFP and Standing Bracket master source documents and photo-slot requirements.
 - Session state machine and final closure authority.
 
 
