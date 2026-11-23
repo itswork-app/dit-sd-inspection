@@ -39,7 +39,7 @@ Recommendations in this pack are not approvals. Explicit Product Owner approvals
 | T-07 | Session creation authority and state transitions | PO APPROVED | Super Admin creates/configures; Korlap operates assigned session within bounded transitions | Blocker |
 | T-08 | Attendance verification authority | PO APPROVED | Designate explicit verifier permission and independent verification; do not infer from upload role | Blocker for verified attendance |
 | T-09 | Offline scope and conflict policy | PO APPROVED (B) | Limited offline editing only for already claimed drafts; online claim and final submit/approval/admin; idempotent conflict-safe sync | Device/local-data controls remain open before activation |
-| T-10 | Evidence limits, retention, deletion and privacy | BLOCKED | Obtain institutional records/privacy approval before setting limits and retention schedule | Blocker |
+| T-10 | Evidence limits, retention, deletion and privacy | PO APPROVED option B; institutional review BLOCKED | Obtain institutional records/privacy approval before setting limits and retention schedule | Blocker |
 | T-11 | Supported devices, performance and service objectives | OPEN | Approve a minimum browser/device matrix and measurable test profile before implementation acceptance | High |
 | T-12 | Provider operations, region, quota, backups and ownership | BLOCKED | Verify actual Supabase/Vercel plans, region, quotas, backup/restore and named operational owners | Blocker |
 | T-13 | Print Officer and print-control workflow | OPEN | Dedicated permissioned print queue, immutable final PDF, audited print/reprint events | High |
@@ -239,7 +239,7 @@ Until approved, do not invent retention periods or implement irreversible deleti
 
 **Decision required:** Name the institutional records/privacy approver and provide approved classification/retention direction.
 
-**State:** BLOCKED pending institutional authority.
+**State after PO response (2026-11-23): PO APPROVED option B.** Formal institutional records/legal/privacy review is the required path before the evidence policy is defined. Institutional approval and written policy remain BLOCKED; no numeric limits or retention periods are approved.
 
 ### T-11 — Supported devices, performance and service objectives
 
@@ -500,3 +500,10 @@ The Product Owner explicitly approved **T-09 option B — limited offline draft 
 - Browser/device matrix, local-data protection, shared-device/logout behavior, retention/purge and recovery remain open dependencies under T-10/T-11.
 
 T-09 is PO-approved; implementation, device controls and verification remain pending. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
+
+
+## Package T-10 — Product Owner decision (2026-11-23)
+
+**Decision: PO APPROVED option B — formal institutional records/legal/privacy review before defining the evidence policy.** The project must obtain a documented review by the institution's authorized records, legal and privacy functions before approving data classification, permitted personal information and processing purpose, accepted evidence formats, per-file/per-inspection/per-project limits, retention periods and triggers, legal-hold authority, deletion eligibility/approval/audit, private access rules, backup/restore and post-deletion treatment, and any local/offline copy controls.
+
+**Important boundary:** this is Product Owner approval of the governance path, not institutional legal/records approval and not approval of any numeric limit, retention period, lawful basis, deletion schedule or production evidence collection. Until the authorized institutional review supplies written direction, retain all such values as OPEN/NOT SET; do not invent limits or retention durations, enable irreversible deletion, or authorize production evidence collection. T-10 remains BLOCKED for scope freeze and production activation pending that external evidence. No implementation or tests are claimed.
