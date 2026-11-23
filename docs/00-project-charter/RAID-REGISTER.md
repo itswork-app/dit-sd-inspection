@@ -100,7 +100,7 @@ Owner convention: accountable role is recorded; named individuals are not invent
 ## Package T — partial decision closure update (2026-11-23)
 
 Product Owner explicitly approved T-01=A, T-02=B, T-03=C and T-04=A.
-- T-01 is PO-approved for source authority, but remains blocked until current official IFP/Standing Bracket master documents and institutional approval evidence are obtained and reconciled.
+- T-01 Standing Bracket source is confirmed by Product Owner: `Pemeriksaan Barang_SB.pdf`, 19 rows (6 physical + 13 accessories). Official IFP source and SB photo/evidence rules remain outstanding.
 - T-02 template configurability is PO-approved; institutional authorization of actual signatory roles/identities and final BA template remains an external dependency.
 - T-03 configurable executive-summary signature behavior is PO-approved; approved template determines whether a signature is required.
 - T-04 PDF-only initial client delivery is PO-approved; client portal is deferred from initial scope.
