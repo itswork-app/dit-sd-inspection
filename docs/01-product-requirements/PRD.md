@@ -157,10 +157,12 @@ Super Admin is the final project-closure authority. Project closure is explicit 
 - No silent conflict overwrite or automatic evidence deletion.
 
 ### Offline behavior
-- Offline mode is limited to approved Inspector draft workflows.
-- Final submit, review, approval, PDF finalization, and print events require server connectivity.
-- Local data is retained until server acknowledgement; conflict resolution must preserve both sides/evidence.
-- Exact offline cache encryption, supported devices/browsers, retention and recovery policy remain open technical decisions.
+- **PO-approved T-09 option B:** limited offline draft editing is in the initial product scope, but only for an inspection unit already claimed while online.
+- Offline claim acquisition, final submission, review/approval, role or assignment changes, session administration, PDF finalization, print events and all privileged actions require connectivity.
+- Reconnection must be authenticated and idempotent; the server rechecks identity, authorization, assignment, claim ownership and current state.
+- Stale writes are rejected as explicit conflicts; preserve local pending data and server state for authorized resolution. Never silently apply last-write-wins.
+- Required evidence must be acknowledged by the server before final submission.
+- Production offline persistence remains gated on approved device/browser support, local-data protection, shared-device/logout, retention/purge and recovery controls; T-10 institutional privacy/records approval remains open.
 
 ### Performance and accessibility
 - Define measurable load, upload, and interaction budgets during architecture and test planning.
@@ -233,3 +235,8 @@ The Product Owner approved the following directions:
 - **T-08:** Korlap verifies attendance within assigned location/scope and explicit verifier permission. Generate, print, upload, download and verify are separate permissions; upload never automatically sets VERIFIED.
 
 These decisions are PO-approved product direction, not proof of institutional authorization or implementation. The official instrument masters and BA signatory authority remain external evidence dependencies. PDF delivery remains permission-controlled and auditable. Phase 0 gates remain in force; feature implementation is not authorized.
+
+
+### Package T T-09 — approved offline scope (2026-11-23)
+
+Product Owner approved option B: limited offline editing of an already claimed draft only. The online claim prerequisite and online-only privileged/finalization actions are mandatory. Idempotent synchronization, server-side authorization rechecks, explicit conflict handling and preservation of both versions are required. Offline storage activation is conditional on device and local-data safeguards; PO approval does not resolve T-10 privacy/retention or T-11 device support.
