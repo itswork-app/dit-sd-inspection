@@ -113,7 +113,7 @@ Users may hold multiple roles, but operational authority requires explicit assig
 6. Per-unit wet signature is completed on paper; the print event does not imply signature completion.
 
 ### 6.6 Session closure
-Korlap confirms closure only when configured closure requirements are satisfied. The system must block closure while required inspections, reviews, print actions, BA/attendance documents, or other configured deliverables remain incomplete. Exact transition model and final authority remain subject to Product Owner approval.
+Super Admin is the final project-closure authority. Project closure is explicit and non-automatic and is allowed only after all sessions are closed; no unresolved claims, drafts, corrections or pending reviews remain; required inspections, final PDFs, print events, BA and attendance artifacts are complete and verified; and actual-versus-target reconciliation is reviewed. The closer records confirmation/reason and the system records an audit event. No date-based auto-close. Any exception requires separately permissioned override, reason and audit. Session and project closure are distinct.
 
 ## 7. Functional requirement groups
 
@@ -174,7 +174,8 @@ Korlap confirms closure only when configured closure requirements are satisfied.
 - Daily, weekly, and final reports exist in both Actual and Target variants.
 - Actual reports are internal; Target reports are client-facing under current baseline.
 - Korlap validates/approves daily reports within assigned location; Super Admin monitors global progress.
-- Headline count basis, reconciliation, client delivery mechanism, and final project closure are still OPEN.
+- Actual reports display separate Inspected, Submitted, Approved and Completed counts; Completed = approved inspection + final PDF generated + Print Officer print action recorded.
+- Super Admin is final project-closure authority after all required gates and actual-versus-target reconciliation pass.
 
 ## 10. Configuration and history
 
