@@ -111,15 +111,17 @@ Approve append-only audit coverage for authentication/account lifecycle, role/sc
 
 ### G-14 — Inspector capacity clarification
 
-**Current approved contract**
-- Initial configured capacity: 50 distinct Inspector accounts.
-- Super Admin may raise the configured cap up to 100.
-- Hard maximum: 100 distinct Inspector accounts across both locations combined.
+**Approved contract after user clarification**
+- Default configured capacity: 50 distinct Inspector accounts.
+- The configured capacity may be lower or higher than 50.
+- Hard maximum: 100 distinct active Inspector accounts across both locations combined.
 - Count a person once regardless of assignment count.
+- Super Admin controls the configured value and allocation between locations.
 - Capacity changes and account activation are atomic and audited.
 - Separate performance target: up to 100 concurrent authenticated users.
+- The permitted minimum is not yet explicitly decided and must be set before implementation.
 
-**Status:** APPROVED in OPS-001. RAID and charter references reconciled to this rule.
+**Status:** APPROVED for default 50 and hard maximum 100 under OPS-001; minimum value remains OPEN. This replaces the earlier incorrect statement that 50 was the minimum.
 
 ## Freeze gate
 
