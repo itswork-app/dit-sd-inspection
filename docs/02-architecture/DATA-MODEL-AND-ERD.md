@@ -97,6 +97,7 @@ erDiagram
 7. Checklist response references an item in the exact instrument version snapshot used by the revision.
 8. Evidence metadata references a valid slot/item and inspection revision; object key is immutable once finalized.
 9. Print events are append-only; a reprint creates a new event. Each event references the exact immutable document version and has a concurrency-safe per-document sequence.
+10. Batch print outcomes are per-document; retry can reference failed documents only and cannot duplicate a previously successful event. Each event references the exact immutable document version and has a concurrency-safe per-document sequence.
 10. Batch print outcomes are per-document; retry can reference failed documents only and cannot duplicate a previously successful event.
 10. Target allocations are versioned and never mutate actual inspection timestamps.
 
