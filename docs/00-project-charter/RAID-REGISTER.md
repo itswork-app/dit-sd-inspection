@@ -18,6 +18,8 @@ Owner convention: accountable role is recorded; named individuals are not invent
 | R-008 | Risk | Wet-signature, BA signatory, attendance verification, or print responsibilities are ambiguous | High | Medium | Confirm authority, signatory blocks, document lifecycle, and verification responsibilities in PRD | Product Owner | OPEN |
 | R-009 | Risk | A single Inspector is assigned to overlapping work across locations | Medium | Medium | Enforce schedule-overlap validation and explicit scoped assignments; capacity is configurable from 1 to 100 (default 50), counting distinct Inspectors combined across both locations | Super Admin / Product Owner | MITIGATING |
 | R-010 | Risk | Production backup exists but restore has not been proven | Critical | Medium | Define RPO/RTO, backup schedule, restore runbook, and conduct restore drills before release | CTO / Engineering Lead | OPEN |
+| R-011 | Risk | Evidence or personal data is retained, disclosed, or deleted contrary to institutional requirements | Critical | Medium | Approve data classification, legal basis, retention schedule, legal hold, access and deletion workflow before collection | Project Sponsor / Records Owner | OPEN |
+| R-012 | Risk | Provider region, quota, billing or plan limits are unknown and may interrupt production | High | Medium | Verify actual account plan, region, quotas, overage behavior, budget owner and alert thresholds before go-live | Project Sponsor / CTO | OPEN |
 
 ## Assumptions
 
@@ -41,6 +43,8 @@ Owner convention: accountable role is recorded; named individuals are not invent
 | I-005 | Report headline/count basis and final reconciliation are unresolved | Define count states and project closure/reconciliation rules | Product Owner | OPEN |
 | I-006 | Exact session creation authority and state transitions are unresolved | Approve state machine and role permissions | Product Owner | OPEN |
 | I-007 | Evidence limits, retention, deletion, and privacy rules are unresolved | Approve retention schedule, access, legal basis, and deletion workflow | Project Sponsor / Product Owner | OPEN |
+| I-008 | Backup/PITR and Storage object recovery capability is not verified against the actual provider plan | Verify provider contract, implement object recovery strategy, approve RPO/RTO, and pass isolated restore drill | Project Sponsor / CTO | OPEN |
+| I-009 | Production region, provider quotas, billing ownership, and environment separation are not confirmed | Complete provider capability sheet, institutional region decision, budget approval, and staging/production setup | Project Sponsor | OPEN |
 
 ## Dependencies
 
@@ -51,6 +55,8 @@ Owner convention: accountable role is recorded; named individuals are not invent
 | D-003 | Named project sponsor, Product Owner, and operational approvers | Governance and sign-off | Project Sponsor | OPEN |
 | D-004 | Supabase/Vercel organization ownership, billing owner, and production plan decision | Deployment and operations design | Project Sponsor | OPEN |
 | D-005 | Institutional privacy, retention, and data-handling requirements | Security architecture and production approval | Project Sponsor | OPEN |
+| D-006 | Approved backup/PITR and Storage object recovery entitlement | Disaster recovery readiness | Project Sponsor / CTO | OPEN |
+| D-007 | Approved production region, provider plan, quotas, and billing owner | Production environment and go-live | Project Sponsor | OPEN |
 
 ## Review rules
 
