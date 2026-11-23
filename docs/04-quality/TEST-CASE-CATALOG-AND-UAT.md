@@ -85,7 +85,6 @@ These are designed test procedures. Execution has not started. Source authority 
 - TC-PRINT-005: Concurrent print/reprint requests allocate unique atomic ordinals for each document and preserve document-version linkage.
 - TC-PRINT-006: Batch operation rejects unapproved, missing, wrong-scope or non-final-PDF documents without unauthorized disclosure.
 - TC-PRINT-007: Recorded print event does not claim physical paper output; direct printer integration is not required.
-- TC-DOC-009: Print Officer can individually print an approved final PDF only within explicit permission and scope.
 - TC-DOC-010: Bounded batch print enforces configured maximum size and records a distinct outcome for each document.
 - TC-DOC-011: Partial batch failure is represented per document; successful items are not incorrectly retried or duplicated.
 - TC-DOC-012: Retry accepts failed documents only and does not create duplicate success events.
