@@ -141,9 +141,9 @@ INS-016 is still a proposal until explicitly approved; this document defines a d
 
 ## 9. Open decisions
 
-- Mandatory BA signatories and authorized verifier.
-- Executive summary signature requirement.
-- Client report portal versus PDF-only.
+- Institutional approval of authorized BA signatory identities/roles and final BA template.
+- Client portal is deferred from initial release; PDF-only delivery is approved for initial release.
+- Executive-summary signature behavior is configurable per approved report template; default is no signature unless required.
 - Actual headline count basis.
 - Project closure and final reconciliation process.
 - Attendance verification authority.
