@@ -211,3 +211,12 @@ T-01 through T-08 are partial decision closures, not blanket closure of Package 
 **Decision: PO APPROVED option B — formal institutional records/legal/privacy review before defining the evidence policy.** The project must obtain a documented review by the institution's authorized records, legal and privacy functions before approving data classification, permitted personal information and processing purpose, accepted evidence formats, per-file/per-inspection/per-project limits, retention periods and triggers, legal-hold authority, deletion eligibility/approval/audit, private access rules, backup/restore and post-deletion treatment, and any local/offline copy controls.
 
 **Important boundary:** this is Product Owner approval of the governance path, not institutional legal/records approval and not approval of any numeric limit, retention period, lawful basis, deletion schedule or production evidence collection. Until the authorized institutional review supplies written direction, retain all such values as OPEN/NOT SET; do not invent limits or retention durations, enable irreversible deletion, or authorize production evidence collection. T-10 remains BLOCKED for scope freeze and production activation pending that external evidence. No implementation or tests are claimed.
+
+
+## T-11 traceability update
+| Requirement | PO decision | Verification | Status |
+|---|---|---|---|
+| Supported browser baseline | T-11 option B: current stable Chrome Android for Inspector; current stable Chrome/Edge desktop for other operational/admin roles; explicit exclusions | TC-COMP-001..006 | PO APPROVED; execution pending |
+| Tablet compatibility | Conditional on responsive, camera, upload and PDF/print validation | TC-COMP-004 | Validation pending |
+| Concurrent load profile | 100 concurrent authenticated users; staged 10/25/50/75/100 | TC-LOAD-001..002 | Target approved; execution pending |
+| Numeric performance SLO | Set only after workload/provider verification and baseline measurement | Performance baseline and load evidence | OPEN |
