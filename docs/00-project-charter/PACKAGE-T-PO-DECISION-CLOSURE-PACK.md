@@ -463,7 +463,6 @@ This package does not authorize:
 
 **Current overall status remains: NOT READY FOR SCOPE FREEZE; FEATURE IMPLEMENTATION NOT AUTHORIZED.**
 
-
 ## Package T — Product Owner decision outcomes (2026-11-23)
 
 | Decision | PO outcome | Requirement / traceability consequence | Residual status |
@@ -475,7 +474,6 @@ This package does not authorize:
 
 PO approval does not replace institutional authorization or source evidence. T-01 through T-09 have explicit PO outcomes; T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 option B is PO APPROVED; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; the actual alternative arrangement and institutional/provider verification remain BLOCKED. T-13 is PO APPROVED option B; T-14 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
 
-
 ## 8. Product Owner decision outcomes — T-05 through T-08 (2026-11-23)
 
 | ID | Approved outcome | State / implementation qualification |
@@ -486,7 +484,6 @@ PO approval does not replace institutional authorization or source evidence. T-0
 | T-08 | A — Korlap verifies attendance within assigned location/scope. Generate, print, upload, download and verify are separate permissions; upload never automatically verifies. | PO APPROVED; Super Admin assigns/grants verifier authority; implementation and tests remain pending. |
 
 The Product Owner explicitly approved T-05=A, T-06=A, T-07=A and T-08=A on 2026-11-23; T-09 option B was subsequently approved on 2026-11-23. T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 option B is PO APPROVED; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; the actual alternative arrangement and institutional/provider verification remain BLOCKED. T-13 is PO APPROVED option B; T-14 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
-
 
 ## Package T — T-09 Product Owner decision (2026-11-23)
 
@@ -501,13 +498,11 @@ The Product Owner explicitly approved **T-09 option B — limited offline draft 
 
 T-09 is PO-approved; implementation, device controls and verification remain pending. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
 
-
 ## Package T-10 — Product Owner decision (2026-11-23)
 
 **Decision: PO APPROVED option B — formal institutional records/legal/privacy review before defining the evidence policy.** The project must obtain a documented review by the institution's authorized records, legal and privacy functions before approving data classification, permitted personal information and processing purpose, accepted evidence formats, per-file/per-inspection/per-project limits, retention periods and triggers, legal-hold authority, deletion eligibility/approval/audit, private access rules, backup/restore and post-deletion treatment, and any local/offline copy controls.
 
 **Important boundary:** this is Product Owner approval of the governance path, not institutional legal/records approval and not approval of any numeric limit, retention period, lawful basis, deletion schedule or production evidence collection. Until the authorized institutional review supplies written direction, retain all such values as OPEN/NOT SET; do not invent limits or retention durations, enable irreversible deletion, or authorize production evidence collection. T-10 remains BLOCKED for scope freeze and production activation pending that external evidence. No implementation or tests are claimed.
-
 
 ## Package T-11 — Product Owner decision (2026-11-23)
 
@@ -520,7 +515,6 @@ T-09 is PO-approved; implementation, device controls and verification remain pen
 
 Exact OS/device minimum versions and the tested browser build numbers must be recorded in the release/UAT compatibility matrix; this PO decision does not invent exact version numbers. The 100 concurrent authenticated-user load-test target remains the required acceptance load profile and must be tested at staged levels (10, 25, 50, 75, 100). This is a test target, not a demonstrated production capacity or service-level guarantee. Numeric latency/error-rate SLOs remain OPEN until workload and actual Supabase/Vercel plan/region/quotas are verified and baseline measurements are collected. No implementation, compatibility test or load test is claimed as executed.
 
-
 ## Package T-12 — Product Owner decision (2026-11-23)
 
 **Decision: PO APPROVED option C — an alternative provider-ownership arrangement, subject to formal institutional approval and written definition.** The Product Owner does not designate a specific legal entity, account holder, billing owner, custodian, or contractual arrangement in this approval. Those identities and responsibilities must not be inferred or invented.
@@ -529,13 +523,11 @@ Before any production provider account or production data is used, the instituti
 
 This PO decision approves the alternative-arrangement path only. It does not establish institutional authorization, identify the actual owner/custodians, approve a region or provider plan, approve billing, or prove backup/recovery capability. Provider plan/quotas, region, budget, RPO/RTO, Storage object recovery and restore-drill evidence remain OPEN/BLOCKED until verified against actual accounts and approved by authorized institutional parties. No production data deployment or production readiness is authorized by this decision. No implementation or restore test is claimed as executed.
 
-
 ## Package T — T-13 Product Owner decision (2026-11-23)
 
 **State after PO response (2026-11-23): PO APPROVED option B.** Initial release supports both individual and batch printing. Batch size must be bounded/configurable; every document receives an independent outcome (success recorded, failed, or cancelled). Retry is limited to failed documents and must not duplicate successful print events. Reprint sequence allocation is atomic. The application records an authorized print action; it does not prove physical paper output. Direct printer integration is not included in this decision.
 
 This is PO product direction only. Detailed batch limits, UI behavior, browser print behavior, and test evidence remain to be finalized and validated. No implementation or tests are claimed. T-14 through T-18 remain open; scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
-
 
 ## Package T — T-13 Product Owner decision (2026-11-23)
 
