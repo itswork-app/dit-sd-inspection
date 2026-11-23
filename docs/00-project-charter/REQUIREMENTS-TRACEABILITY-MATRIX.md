@@ -155,3 +155,16 @@ Audit outcome: documentation review completed; security posture not tested/certi
 | UX-003 | Consistent responsive and accessible UI components | Design System and Responsive UX | Responsive, keyboard, contrast, and screen-reader checks | DESIGN DRAFT |
 | QA-001 | Layered quality gates for functional, security, data integrity, and recovery | Test Strategy and Quality Gates | CI and release evidence | DESIGN DRAFT |
 | QA-002 | Traceable test cases for authorization, capacity, lifecycle, offline, documents, and reporting | Test Case Catalog and UAT | Executed test records and Product Owner sign-off | CATALOG DRAFT |
+
+
+## Package R — Audit event catalogue and governance
+
+| ID | Requirement | Specification | Verification | Status |
+|---|---|---|---|---|
+| AUD-001 | Material business, security, and governance actions use a canonical event envelope with actor, active role, scope, resource, outcome, and timestamp | Audit Event Catalogue and Governance | AUD-T01..T12 | DESIGN DRAFT; INS-016 approval pending |
+| AUD-002 | Critical state changes and their audit event commit atomically; audit append failure rolls back the protected mutation | Audit Event Catalogue and Governance; Privileged Command Boundary | AUD-T01..T03 | DESIGN DRAFT |
+| AUD-003 | Audit history is append-only for application roles; corrections use compensating events | Audit Event Catalogue and Governance; RLS Catalogue | AUD-T03, AUD-T11 | DESIGN DRAFT |
+| AUD-004 | Audit payloads exclude secrets, signed URL tokens, raw media, and unnecessary personal data | Audit Event Catalogue and Governance; Evidence Privacy and Retention | AUD-T09 | DESIGN DRAFT |
+| AUD-005 | Audit access/export, legal holds, retention disposition, and security administration are permissioned and audited | Audit Event Catalogue and Governance | AUD-T08, AUD-T10 | DESIGN DRAFT; institutional approval pending |
+
+New source evidence: the 23-November Standing Bracket form and 20-November BA are reconciled in the Standing Bracket Instrument Specification and Instrument Requirements Verification Matrix. The 19-row sample form and earlier 19-row screenshot transcription remain distinct source observations pending controlled master confirmation. The BA sample supports serial-annex/count-reconciliation requirements but does not approve signatory policy.
