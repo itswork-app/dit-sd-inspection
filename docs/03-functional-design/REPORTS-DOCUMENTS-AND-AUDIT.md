@@ -146,9 +146,8 @@ INS-016 is still a proposal until explicitly approved; this document defines a d
 - Institutional approval of authorized BA signatory identities/roles and final BA template.
 - Client portal is deferred from initial release; PDF-only delivery is approved for initial release.
 - Executive-summary signature behavior is configurable per approved report template; default is no signature unless required.
-- Actual headline count basis.
-- Project closure and final reconciliation process.
-- Attendance verification authority.
+- Detailed metric implementation and report acceptance evidence.
+- Detailed attendance evidence acceptance rules and audit verification cases.
 - Print Officer distinct role versus permission-based capability.
 - Retention/deletion schedule for PDFs, attendance, BA, and audit evidence.
 
@@ -159,4 +158,4 @@ INS-016 is still a proposal until explicitly approved; this document defines a d
 - **Executive summary:** Signature behavior is configurable per report template; default is no signature unless the approved template requires it.
 - **Client delivery:** Initial release is PDF-only. Client portal is deferred and requires a later approved change request.
 
-The available sample BA does not establish who is legally/administratively authorized to sign. This document therefore records configurable template behavior, not approval of any named signatory. PDF generation/access/distribution remains scoped, versioned and audited. T-05 report metric semantics, project closure and attendance verification remain open.
+The available sample BA does not establish who is legally/administratively authorized to sign. This document therefore records configurable template behavior, not approval of any named signatory. PDF generation/access/distribution remains scoped, versioned and audited. T-05 through T-08 are PO-approved product direction; detailed implementation, evidence rules and verification tests remain pending.
