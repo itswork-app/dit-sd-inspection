@@ -60,7 +60,6 @@ Proposed or illustrative decisions are not approved until explicitly accepted.
 ## Product Owner decisions — Package T (2026-11-23)
 
 | ID | Decision | State | Qualification / remaining dependency |
-|---|---|---|---|
 | T-01 | Official, institutionally approved source documents are the authoritative master for IFP and Standing Bracket checklist/specification/evidence requirements. | PO APPROVED | The actual controlled source documents, completeness reconciliation, issuing authority and formal institutional approval evidence are still outstanding. Do not treat current transcriptions/screenshots as approved master data. |
 | T-02 | BA signatory blocks are configurable per approved BA template, including number/party, organization, role/title, order and required/optional status. | PO APPROVED | Actual authorized signatory identities, authority and final template remain subject to institutional approval. Sample parties are not universal defaults. |
 | T-03 | Executive-summary signature behavior is configurable per report template. | PO APPROVED | Default may be no signature unless the approved template requires it. Any mandatory signature rule must be supported by the approved institutional template. |
@@ -75,13 +74,10 @@ Product Owner additionally confirmed on 2026-11-23 that `Pemeriksaan Barang_SB.p
 
 ## Product Owner decisions — Package T continuation (2026-11-23)
 
-| ID | Decision | State | Qualification / remaining dependency |
-|---|---|---|---|
 | T-05 | Actual reports show distinct, separately labelled Inspected, Submitted, Approved and Completed counts. Completed retains the approved inspection + final PDF generated + Print Officer print action recorded definition. | PO APPROVED | Metric definitions, timestamp/filter display and report acceptance tests must be implemented and verified; a print action does not prove physical paper output. |
 | T-06 | Super Admin is the final project-closure authority after all required closure gates and actual-versus-target reconciliation are satisfied. Closure is explicit, non-automatic, reasoned and audited. | PO APPROVED | No date-based auto-close. Exceptions require separately permissioned override, reason and audit. Operational gate completeness remains to be implemented and tested. |
 | T-07 | Super Admin exclusively creates/configures sessions, targets, locations, instruments and team assignments. Korlap may activate, pause, resume or request closure only within assigned scope and granted permissions. States: DRAFT, ACTIVE, PAUSED, CLOSED; CLOSED is terminal in ordinary flow. | PO APPROVED | Reopening a CLOSED session requires explicit privileged permission, reason and audit. Permission matrix and state-transition tests remain to be completed. |
 | T-08 | Korlap verifies attendance within assigned location/scope, with separate permissions for generate, print, upload, download and verify. Upload never automatically sets VERIFIED. | PO APPROVED | Super Admin assigns/grants verifier authority. Artifact integrity, verification rules and audit behavior remain to be implemented and tested. |
-| T-13 | Initial release supports individual and bounded batch printing from a permissioned Print Officer queue; per-document outcomes and atomic reprint sequence are recorded. | PO APPROVED (B) | Retry only failed documents; no duplicate success events. Application print action is not proof of physical paper output. Direct printer integration is not selected. |
 | T-13 | Initial release supports individual and bounded batch printing from a permissioned Print Officer queue; per-document outcomes and atomic reprint sequence are recorded. | PO APPROVED (B) | Retry only failed documents; no duplicate success events. Application print action is not proof of physical paper output. Direct printer integration is not selected. |
 
 These are Product Owner decisions recorded from the explicit response dated 2026-11-23. They settle the product direction for T-05 through T-08 but do not constitute implementation, UAT, or institutional approval where required.
@@ -121,6 +117,4 @@ This PO decision approves the alternative-arrangement path only. It does not est
 
 PO APPROVED option B — individual and batch printing. Initial release includes individual print and bounded/configurable batch print through the permissioned Print Officer queue. Each document in a batch has an independent outcome; retry targets failed documents only and must not duplicate successful print events. Print/reprint events preserve actor, timestamp, document version, atomic sequence and outcome where available. The application records the print action, not physical printer output. Direct printer integration is excluded from this decision. Implementation and tests remain pending.
 
-## Product Owner decision — Package T T-13 (2026-11-23)
 
-PO APPROVED option B — individual and batch printing. Initial release includes individual print and bounded/configurable batch print through the permissioned Print Officer queue. Each document in a batch has an independent outcome; retry targets failed documents only and must not duplicate successful print events. Print/reprint events preserve actor, timestamp, document version, atomic sequence and outcome where available. The application records the print action, not physical printer output. Direct printer integration is excluded from this decision. Implementation and tests remain pending.
