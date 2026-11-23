@@ -27,6 +27,25 @@ Requirements:
 
 BA is a session/project-level document, not a per-unit inspection signature.
 
+### Sample evidence — supplied BA photograph
+
+The supplied sample is titled `BERITA ACARA VISIT & PEMERIKSAAN IFP KE GUDANG PENYEDIA DAN PABRIK SEBELUM PENGIRIMAN`. It visibly includes:
+- narrative date and location (Purwakarta, 23 November 2026);
+- a summary table with `Jenis Barang`, `Jumlah Sampel yang Diperiksa`, `Jumlah Kondisi Baik`, and `Jumlah Kondisi Cacat`;
+- separate rows for Interactive Flat Panel (IFP) and Standing Bracket (SB);
+- two party/signature blocks: `Tim Pemeriksaan Direktorat SD` and `PT Hisense International Indonesia`;
+- printed representative names and an NIP for the Directorate block, plus a company representative name in the other block.
+
+The example records 300 IFP samples, 300 good, 0 defective, and 0 Standing Bracket samples. These are sample values only and must never be hardcoded as project totals.
+
+### BA generation requirements derived from the sample
+
+- Generate the summary by instrument from reconciled inspection outcomes.
+- Keep sample count, good count, and defective count as distinct fields; validate that good + defective does not exceed or contradict inspected sample count.
+- Support zero-count instrument rows without omitting the instrument from the BA.
+- Store the BA date, location, activity title/narrative, and signatory blocks as versioned document data.
+- Do not infer signatory authority from application role names; use authorized configured signatory data.
+
 Known reference screenshot shows two signatory blocks:
 - Tim Pemeriksaan Direktorat SD
 - PT Hisense International Indonesia
@@ -40,7 +59,21 @@ Original uploaded files must be preserved. Replacement requires a reason and aud
 
 ## 4. Attendance
 
-Attendance list is generated from official assignment membership. Proposed fields:
+Attendance list is generated from official assignment membership.
+
+### Sample evidence — supplied attendance photograph
+
+The supplied `DAFTAR HADIR` sample shows an activity title and venue/factory, then a table with columns `No`, `Nama`, `Instansi`, and separate attendance columns for Monday 23 November 2026, Tuesday 24 November 2026, and Wednesday 25 November 2026. Each participant row has space to mark attendance per date. Names and personal identifiers visible in the sample are not copied into this specification; the system should populate authorized roster data from assignments.
+
+### Attendance generation requirements derived from the sample
+
+- Support one activity roster spanning multiple calendar dates.
+- Generate one attendance column per configured activity date, preserving weekday and date labels.
+- Include participant name and institution; NIP and rank/grade may be included when present in the authorized personnel record and required by the approved template.
+- Support blank attendance cells for manual signature/marking after printing.
+- Do not mark a participant present merely because they are assigned to the activity.
+
+Proposed fields:
 - full name;
 - NIP, if available;
 - rank/grade, if available;
@@ -56,7 +89,11 @@ Workflow states:
 
 Support multi-page output and upload of PDF/JPG/PNG. Original uploaded file is retained. Replacement requires reason and audit. Verification authority remains open.
 
-## 5. Reporting
+## 5. Standing Bracket serial-number annex
+
+The supplied serial-number annex sample is a distinct output from the per-unit inspection PDF and BA. It contains condition-separated documentation links, instrument sections, serial-number rows with a `BAIK/CACAT` condition, and paraf blocks for the Directorate inspection team and PT Hisense. Generate it from inspection records, reconcile its rows and totals, and preserve each issued version. Do not hardcode the sample's 13 rows or all-good outcome.
+
+## 6. Reporting
 
 Two report perspectives remain distinct:
 
@@ -73,7 +110,7 @@ Required report families:
 
 Korlap validates/approves daily reports within assigned location. Super Admin monitors all locations. Exact headline count basis, separate templates versus one configurable template, and client portal versus PDF-only remain open.
 
-## 6. Audit trail
+## 7. Audit trail
 
 Proposed event coverage:
 - authentication/account approval/rejection/suspension;
@@ -91,7 +128,7 @@ Each event should record actor, active role, timestamp, action, entity reference
 
 INS-016 is still a proposal until explicitly approved; this document defines a design proposal, not an approved policy.
 
-## 7. Acceptance criteria
+## 8. Acceptance criteria
 
 - PDF content maps to the exact approved inspection revision.
 - Regeneration does not overwrite prior PDF artifacts.
@@ -102,7 +139,7 @@ INS-016 is still a proposal until explicitly approved; this document defines a d
 - Target reallocation does not rewrite actuals.
 - Audit coverage includes all high-impact operational and administrative actions.
 
-## 8. Open decisions
+## 9. Open decisions
 
 - Mandatory BA signatories and authorized verifier.
 - Executive summary signature requirement.
