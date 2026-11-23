@@ -130,3 +130,8 @@ This is a logical model, not a final physical schema. Resolve before migrations:
 ## T-14 — Inspector capacity counting semantics (PO-approved 2026-11-24)
 
 Capacity counts distinct enabled login accounts with an active Inspector role grant and at least one currently effective operational Inspector assignment in the governed project/session scope. Multiple roles or assignments do not multiply the count. Pending, rejected, suspended, disabled and expired-role accounts are excluded. Enforce the combined cap atomically across both locations: minimum 1, default 50, maximum 100. Reject invalid cap values and reductions below the current qualifying count; never silently deactivate accounts. This predicate is the canonical interpretation for the data model.
+
+
+## Registration-first and Super Admin-managed staffing (PO clarification, 2026-11-24)
+
+Model account registration/approval separately from role grants, team memberships and operational assignments. A registered identity begins pending; registration alone grants no role, scope, team membership or Inspector capacity eligibility. Super Admin approves the account and controls role grants, permissions, scope, team count, team membership and operational assignments. Every team member and assignment must reference an existing approved/enabled account. Users cannot self-assign. T-14 capacity counts only distinct enabled accounts with an active Inspector grant and an effective operational assignment.
