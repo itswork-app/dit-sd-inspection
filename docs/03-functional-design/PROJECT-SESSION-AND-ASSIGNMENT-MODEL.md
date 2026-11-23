@@ -124,7 +124,6 @@ Changes to target, schedule, location, instrument, assignment, and team membersh
 
 ## 10. Open decisions
 
-- Session creation authority.
 - Exact pause behavior for already-open drafts and offline submissions.
-- Whether session close can be reversed, and who may reopen a closed session.
+- Detailed operational closure checklist and privileged reopening command contract.
 - Final source-of-truth rule for target quantity when project, instrument, and session targets do not reconcile.
