@@ -180,3 +180,10 @@ New source evidence: the 23-November Standing Bracket form and 20-November BA ar
 | OFF-S-001 | Offline/device/local data protection contract must be approved | Offline Sync and Recovery; Package S | Approved device matrix, retention, encryption, conflict and recovery acceptance | BLOCKED |
 | AUD-S-001 | INS-016 audit policy and institutional governance must be approved or explicitly deferred | Audit Event Catalogue and Governance; Package S | Formal approval/deferment with compensating controls | BLOCKED |
 | OPS-S-001 | Provider, region, quota, billing, backup and restore capability must be verified | Packages O/P/Q; Package S | Provider capability sheet, approved budget/region, successful restore drill | BLOCKED |
+
+
+## Package T decision traceability
+
+The detailed PO decision closure register is maintained in `docs/00-project-charter/PACKAGE-T-PO-DECISION-CLOSURE-PACK.md`. Decision IDs T-01 through T-18 cover authoritative instrument masters, BA signatories, executive-summary signature, client report delivery, actual report metrics, project closure, session authority, attendance verification, offline scope, evidence privacy/retention, device/performance baseline, provider operations, print workflow, Inspector capacity semantics, INS-016 audit policy, serial/evidence integrity, CFG-001 publication governance and privileged command boundary.
+
+These IDs are decision-tracking references, not implementation-complete requirements. Each must be reconciled into the relevant requirement/specification and verification case only after explicit approval. No recommendation in Package T is treated as approved by this matrix.
