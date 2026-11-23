@@ -72,7 +72,7 @@ Product Owner additionally confirmed on 2026-11-23 that `Pemeriksaan Barang_SB.p
 ## Remaining open decisions
 - T-01: Standing Bracket official instrument document confirmed by Product Owner on 2026-11-23. Reconcile the 19-row checklist verbatim and preserve ambiguous wording. Remaining: confirm photo-slot requirements, any additional annex/specification, and authoritative IFP source document.
 - T-02: obtain institutional approval for authorized BA signatory roles/identities and final template.
-- T-09 through T-18: see Package T decision closure pack; no approval is inferred.
+- T-09: PO APPROVED option B (limited offline draft editing with controls still gated). T-10: PO APPROVED option B (formal institutional records/legal/privacy review path); resulting institutional policy remains BLOCKED pending written authority. T-11 through T-18: see Package T decision closure pack; no approval is inferred.
 
 
 ## Product Owner decisions — Package T continuation (2026-11-23)
