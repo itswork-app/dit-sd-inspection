@@ -39,6 +39,13 @@ Exit condition: Project foundation reviewed and approved; open assumptions and o
 
 These artifacts are drafts and do not constitute stakeholder approval.
 
+## Package B — Product Requirements progress
+- `docs/01-product-requirements/PRD.md` — drafted v0.1.0.
+- `docs/01-product-requirements/IFP-INSTRUMENT-SPECIFICATION.md` — drafted from identified reference content; official source validation remains open.
+- `docs/01-product-requirements/STANDING-BRACKET-INSTRUMENT-SPECIFICATION.md` — drafted as a controlled placeholder; detailed checklist remains blocked pending authoritative source.
+- `docs/01-product-requirements/ACCEPTANCE-CRITERIA.md` — drafted; test case mapping belongs to Quality package.
+- Package B is NOT approved. Product Owner validation and missing source documents remain required.
+
 ## Phase 0 exit checklist
 - [ ] Charter approved by Product Owner.
 - [ ] Stakeholder roles and final decision authority confirmed.
