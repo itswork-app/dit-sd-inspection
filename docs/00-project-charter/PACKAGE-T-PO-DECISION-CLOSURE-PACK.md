@@ -24,7 +24,7 @@ Package T does not change that status by itself. It organizes decisions, identif
 | OPEN | No explicit decision yet |
 | BLOCKED | Cannot be decided responsibly until required source evidence or institutional authority is available |
 
-No item in this pack is marked APPROVED.
+Recommendations in this pack are not approvals. Explicit Product Owner approvals are recorded in Section 7 and Section 8 and in the Decision Register.
 
 ## 2. Decision summary
 
@@ -34,10 +34,10 @@ No item in this pack is marked APPROVED.
 | T-02 | BA signatories and signing authority | PO APPROVED; institutional authority OPEN | Configurable signatory blocks, ordered by document template; require explicit authorized signatory records | Blocker for final BA |
 | T-03 | Executive-summary signature | PO APPROVED | No signature by default; enable only through approved template configuration | High |
 | T-04 | Client report delivery | PO APPROVED | PDF-only for initial release; defer client portal | High |
-| T-05 | Actual report headline/count basis | OPEN | Show separate counts for inspected, submitted, approved, and completed; never collapse into one ambiguous total | Blocker for report acceptance |
-| T-06 | Project closure and reconciliation | OPEN | Explicit closure gate after all sessions, inspections, reviews, documents, attendance and reconciliation are complete | Blocker |
-| T-07 | Session creation authority and state transitions | OPEN | Super Admin creates/configures; Korlap operates assigned session within bounded transitions | Blocker |
-| T-08 | Attendance verification authority | OPEN | Designate explicit verifier permission and independent verification; do not infer from upload role | Blocker for verified attendance |
+| T-05 | Actual report headline/count basis | PO APPROVED | Show separate counts for inspected, submitted, approved, and completed; never collapse into one ambiguous total | Blocker for report acceptance |
+| T-06 | Project closure and reconciliation | PO APPROVED | Explicit closure gate after all sessions, inspections, reviews, documents, attendance and reconciliation are complete | Blocker |
+| T-07 | Session creation authority and state transitions | PO APPROVED | Super Admin creates/configures; Korlap operates assigned session within bounded transitions | Blocker |
+| T-08 | Attendance verification authority | PO APPROVED | Designate explicit verifier permission and independent verification; do not infer from upload role | Blocker for verified attendance |
 | T-09 | Offline scope and conflict policy | OPEN | Online-first; limited offline editing only for already claimed drafts; no offline claim, approval, final submit or administration | Blocker if offline is required |
 | T-10 | Evidence limits, retention, deletion and privacy | BLOCKED | Obtain institutional records/privacy approval before setting limits and retention schedule | Blocker |
 | T-11 | Supported devices, performance and service objectives | OPEN | Approve a minimum browser/device matrix and measurable test profile before implementation acceptance | High |
@@ -473,7 +473,7 @@ This package does not authorize:
 | T-03 | APPROVED: signature behavior configurable per report template; default none unless required | Add template configuration and PDF verification; do not hardcode a universal executive-summary signature | PO decision closed; approved template requirement still controls |
 | T-04 | APPROVED: PDF-only client report delivery in initial release | Client portal excluded from initial release; controlled PDF generation/access/distribution remains in scope | PO decision closed; later portal needs change request |
 
-PO approval does not replace institutional authorization or source evidence. Remaining Package T decisions T-05..T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
+PO approval does not replace institutional authorization or source evidence. T-01 through T-08 have explicit PO outcomes; T-09 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
 
 
 ## 8. Product Owner decision outcomes — T-05 through T-08 (2026-11-23)
