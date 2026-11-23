@@ -56,3 +56,20 @@ Only explicitly approved decisions are marked APPROVED.
 - CI provider quotas and required branch protection checks.
 
 Proposed or illustrative decisions are not approved until explicitly accepted.
+
+
+## Product Owner decisions — Package T (2026-11-23)
+
+| ID | Decision | State | Qualification / remaining dependency |
+|---|---|---|---|
+| T-01 | Official, institutionally approved source documents are the authoritative master for IFP and Standing Bracket checklist/specification/evidence requirements. | PO APPROVED | The actual controlled source documents, completeness reconciliation, issuing authority and formal institutional approval evidence are still outstanding. Do not treat current transcriptions/screenshots as approved master data. |
+| T-02 | BA signatory blocks are configurable per approved BA template, including number/party, organization, role/title, order and required/optional status. | PO APPROVED | Actual authorized signatory identities, authority and final template remain subject to institutional approval. Sample parties are not universal defaults. |
+| T-03 | Executive-summary signature behavior is configurable per report template. | PO APPROVED | Default may be no signature unless the approved template requires it. Any mandatory signature rule must be supported by the approved institutional template. |
+| T-04 | Initial release uses PDF-only client report delivery; a client portal is deferred from initial scope. | PO APPROVED | PDF access/distribution remains permission-controlled and audited. Portal requires a later change request and approval. |
+
+These are Product Owner decisions recorded from the explicit response dated 2026-11-23. They do not substitute for institutional approval where stated. Other Package T decisions remain OPEN/BLOCKED.
+
+## Remaining open decisions
+- T-01: obtain authoritative, current, institutionally approved IFP and Standing Bracket master documents; confirm photo-slot requirements and model applicability.
+- T-02: obtain institutional approval for authorized BA signatory roles/identities and final template.
+- T-05 through T-18: see Package T decision closure pack; no approval is inferred.
