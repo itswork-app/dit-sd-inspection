@@ -149,3 +149,13 @@ Add/retain test coverage for: enabled account + active Inspector grant + effecti
 ## T-14 — Inspector capacity test requirements (PO-approved 2026-11-24)
 
 Add/retain test coverage for: enabled account + active Inspector grant + effective assignment counts once; duplicate assignments/other roles still count once; missing/ineffective assignment does not count; pending/rejected/suspended/disabled/expired-role accounts are excluded; cross-location combined cap is enforced atomically under concurrent role/assignment changes; values 0 and above 100 are rejected; reducing cap below current qualifying count is rejected without deactivation. Test execution is not claimed by this documentation update.
+
+
+## Registration-first and Super Admin staffing test requirements
+
+- Verify registration creates a pending account without operational access or Inspector capacity count.
+- Verify Super Admin approval is required before role, scope, team membership or assignment can be granted.
+- Verify only Super Admin can set team count and assign personnel to teams.
+- Verify pending/rejected/suspended/disabled/unregistered identities cannot be assigned.
+- Verify users cannot self-assign roles, teams, scope or operational work through UI or direct API.
+- Verify team staffing changes enforce the T-14 combined capacity predicate atomically and generate audit events.
