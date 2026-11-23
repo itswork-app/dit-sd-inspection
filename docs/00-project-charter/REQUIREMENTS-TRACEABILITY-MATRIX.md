@@ -79,3 +79,14 @@ All are design drafts, not formal Product Owner approvals. Open decisions are ex
 - Every implemented requirement links to code paths/PRs; verified requirements link to test results or UAT evidence.
 - Changes to approved requirements require impact analysis across UX, data, authorization, audit, migration, reporting, tests, and operations.
 - Unknown source details remain OPEN; do not fill gaps with assumptions.
+
+
+## Package E — UX and Quality traceability
+
+| ID | Requirement | Design / Test Artifact | Verification | Status |
+|---|---|---|---|---|
+| UX-001 | Role-based information architecture and scoped navigation | Information Architecture and Navigation | Role-based navigation and scope tests | DESIGN DRAFT |
+| UX-002 | Mobile-first inspection flows with explicit save/sync states | Screen Flows and Wireframe Specification | Mobile E2E and usability UAT | DESIGN DRAFT |
+| UX-003 | Consistent responsive and accessible UI components | Design System and Responsive UX | Responsive, keyboard, contrast, and screen-reader checks | DESIGN DRAFT |
+| QA-001 | Layered quality gates for functional, security, data integrity, and recovery | Test Strategy and Quality Gates | CI and release evidence | DESIGN DRAFT |
+| QA-002 | Traceable test cases for authorization, capacity, lifecycle, offline, documents, and reporting | Test Case Catalog and UAT | Executed test records and Product Owner sign-off | CATALOG DRAFT |
