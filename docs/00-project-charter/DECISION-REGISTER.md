@@ -66,9 +66,21 @@ Proposed or illustrative decisions are not approved until explicitly accepted.
 | T-03 | Executive-summary signature behavior is configurable per report template. | PO APPROVED | Default may be no signature unless the approved template requires it. Any mandatory signature rule must be supported by the approved institutional template. |
 | T-04 | Initial release uses PDF-only client report delivery; a client portal is deferred from initial scope. | PO APPROVED | PDF access/distribution remains permission-controlled and audited. Portal requires a later change request and approval. |
 
-Product Owner additionally confirmed on 2026-11-23 that `Pemeriksaan Barang_SB.pdf` is the official Standing Bracket instrument document. The 19 visible rows (6 physical + 13 accessories) are the official baseline from that document. This PO confirmation establishes the document's status for this project; it does not authorize changing ambiguous source wording or infer photo rules absent from the document. Institutional approvals beyond the PO's authority, if required by the institution's governance, remain external. Other Package T decisions remain OPEN/BLOCKED.
+Product Owner additionally confirmed on 2026-11-23 that `Pemeriksaan Barang_SB.pdf` is the official Standing Bracket instrument document. The 19 visible rows (6 physical + 13 accessories) are the official baseline from that document. This PO confirmation establishes the document's status for this project; it does not authorize changing ambiguous source wording or infer photo rules absent from the document. Institutional approvals beyond the PO's authority, if required by the institution's governance, remain external. T-05 through T-08 were explicitly approved by the Product Owner on 2026-11-23 (A/A/A/A); T-09 through T-18 remain OPEN/BLOCKED.
 
 ## Remaining open decisions
 - T-01: Standing Bracket official instrument document confirmed by Product Owner on 2026-11-23. Reconcile the 19-row checklist verbatim and preserve ambiguous wording. Remaining: confirm photo-slot requirements, any additional annex/specification, and authoritative IFP source document.
 - T-02: obtain institutional approval for authorized BA signatory roles/identities and final template.
-- T-05 through T-18: see Package T decision closure pack; no approval is inferred.
+- T-09 through T-18: see Package T decision closure pack; no approval is inferred.
+
+
+## Product Owner decisions — Package T continuation (2026-11-23)
+
+| ID | Decision | State | Qualification / remaining dependency |
+|---|---|---|---|
+| T-05 | Actual reports show distinct, separately labelled Inspected, Submitted, Approved and Completed counts. Completed retains the approved inspection + final PDF generated + Print Officer print action recorded definition. | PO APPROVED | Metric definitions, timestamp/filter display and report acceptance tests must be implemented and verified; a print action does not prove physical paper output. |
+| T-06 | Super Admin is the final project-closure authority after all required closure gates and actual-versus-target reconciliation are satisfied. Closure is explicit, non-automatic, reasoned and audited. | PO APPROVED | No date-based auto-close. Exceptions require separately permissioned override, reason and audit. Operational gate completeness remains to be implemented and tested. |
+| T-07 | Super Admin exclusively creates/configures sessions, targets, locations, instruments and team assignments. Korlap may activate, pause, resume or request closure only within assigned scope and granted permissions. States: DRAFT, ACTIVE, PAUSED, CLOSED; CLOSED is terminal in ordinary flow. | PO APPROVED | Reopening a CLOSED session requires explicit privileged permission, reason and audit. Permission matrix and state-transition tests remain to be completed. |
+| T-08 | Korlap verifies attendance within assigned location/scope, with separate permissions for generate, print, upload, download and verify. Upload never automatically sets VERIFIED. | PO APPROVED | Super Admin assigns/grants verifier authority. Artifact integrity, verification rules and audit behavior remain to be implemented and tested. |
+
+These are Product Owner decisions recorded from the explicit response dated 2026-11-23. They settle the product direction for T-05 through T-08 but do not constitute implementation, UAT, or institutional approval where required.
