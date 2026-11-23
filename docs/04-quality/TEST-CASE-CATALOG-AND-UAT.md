@@ -105,3 +105,13 @@ Record build SHA, test environment, participants/roles, test cases passed/failed
 
 
 **T-09 scope status:** PO-approved option B. These are designed test procedures only; none are reported as executed. Device/local-data controls and institutional retention approval remain prerequisites to production activation.
+
+
+## T-10 decision verification coverage
+- TC-EVD-006: Evidence upload is blocked when the file type or configured limit has not been institutionally approved; no default numeric limit may be treated as policy.
+- TC-EVD-007: Retention expiry does not delete a record under legal/institutional hold.
+- TC-EVD-008: Deletion requires the approved authority, eligibility checks, reason, dependency checks and immutable audit evidence.
+- TC-EVD-009: Backup/restore and post-deletion behavior follow the institutionally approved records policy.
+- TC-EVD-010: Production evidence collection remains blocked until written institutional records/legal/privacy approval and accepted evidence limits are recorded.
+
+These are planned verification cases only; not executed. T-10 option B is PO-approved as a review path, not as institutional policy approval.
