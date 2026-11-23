@@ -271,3 +271,8 @@ Initial release supports individual and bounded/configurable batch printing. Eve
 ### T-14 — Inspector capacity eligibility (PO-approved 2026-11-24)
 
 The configurable combined Inspector capacity counts distinct accounts that are enabled for login, have an active Inspector role grant, and have at least one currently effective operational Inspector assignment within the governed project/session scope. Each account counts once regardless of multiple assignments/roles. Pending, rejected, suspended, disabled and expired-role accounts do not count. The approved capacity remains minimum 1, default 50, maximum 100 across both locations combined. Enforcement is atomic; invalid values and reductions below the current qualifying count are rejected without silent deactivation.
+
+
+## Registration, role assignment and team staffing (PO clarification, 2026-11-24)
+
+All personnel must first register/authenticate to create an application account. Registration alone does not authorize access or count toward Inspector capacity. Super Admin approves each account and controls role(s), permissions, data scope, team membership and operational assignment. Super Admin also determines the number of teams and the number/identity of personnel in each team. Users cannot self-select roles, teams or assignments. The Inspector capacity predicate remains T-14: enabled account + active Inspector role + at least one currently effective operational Inspector assignment; count each account once.
