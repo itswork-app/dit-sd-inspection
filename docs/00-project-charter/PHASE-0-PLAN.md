@@ -32,7 +32,7 @@ Exit condition: Project foundation reviewed and approved; open assumptions and o
 
 ## Capacity constraint
 
-Maximum 50 distinct Inspector users across both inspection locations combined. Recorded as OPS-001 in Decision Register. Enforcement must be atomic.
+Inspector capacity starts at 50 and may be increased by Super Admin to a hard maximum of 100 distinct users across both locations combined. Recorded as OPS-001. Enforcement must be atomic.
 
 ## Package B — Product Requirements
 
