@@ -20,21 +20,27 @@ Purpose: Track all source material used to reconstruct the legacy workflow and i
 | REF-003 | Serial number entry | Serial number capture/entry and unit identity | Described | Confirm official serial format, normalization, barcode/QR support |
 | REF-004 | IFP documentation tab | Ten photo labels: box serial, rear display serial, RAM in developer mode, cable completeness with serial/warranty, front external ports, rear external ports, settings serial/storage, red-white logo, camera/webcam, state-asset sticker | Labels described; official rules unverified | Obtain complete original screen and confirm required/conditional status |
 | REF-005 | Standing Bracket documentation tab | Five photo labels: box serial, top layer when opened, second layer with bolts, bolts only, bracket serial | Labels described; completeness unverified | Obtain full original screen and confirm all photo slots |
-| REF-006 | IFP checklist | Five categories: physical condition; documents/accessories; specification conformity; operational inspection; usage testing | Partial detailed items described | Obtain official controlled checklist, exact item wording/order and expected values |
+| REF-006 | IFP checklist and sample inspection report | Five categories; 49 checklist statements; 14 model specification entries; inspection identity fields; Ya/Tdk response column | Reconciled against user-uploaded `Pemeriksaan Barang.pdf` (2 pages; sample inspection no. 189, 24/11/2026) | Confirm issuing authority, controlled version/date, and whether sample remains current |
 | REF-007 | Standing Bracket checklist | Detailed authoritative checklist not available in current baseline | Missing / incomplete | Obtain official controlled checklist |
 | REF-008 | Validation and submit | Pre-submit validation and submission action | Described | Obtain validation/error states and confirmation behavior |
 | REF-009 | Recap screen | IFP/Bracket tabs, search/filter, counts/cap, Inspector, date/time, BA number, status, print/delete actions | Described | Obtain complete screen states and define delete/archive permissions |
-| REF-010 | Inspection PDF | Organization/title, Inspector and unit identity, checklist, signature block; example is three pages | Described; original template not controlled | Obtain approved blank/sample PDF and verify page layout/content |
+| REF-010 | Inspection PDF | Sample report with inspection identity, item/serial identity, checklist and Inspector sign area | Two-page user-uploaded PDF sample inspected; separate legacy screenshot showed a three-page print preview, so pagination/template variant remains to reconcile | Confirm canonical approved template and whether page count varies by instrument/content |
 | REF-011 | Berita Acara (BA) | Two party blocks described: Tim Pemeriksaan Direktorat SD and PT Hisense International Indonesia | Partial | Obtain approved BA template, signatory names/titles and authority |
 | REF-012 | Attendance document | Generated attendance list and signed/uploaded evidence workflow | Workflow described | Obtain approved template and sample signed document |
 | REF-013 | Target and actual reporting | Planned targets versus actual inspection facts; daily/weekly/final reporting | Business rules described | Obtain legacy report samples and stakeholder-approved definitions |
 | REF-014 | Notifications and operational dashboards | Role-specific dashboards and configurable notifications described | Requirements-level only | Confirm exact legacy screens and operational expectations |
 
+## Additional supplied evidence
+
+| Ref ID | Artifact | Observed content | Evidence status | Remaining limitation |
+|---|---|---|---|---|
+| REF-015 | `Pemeriksaan Barang.pdf` (user-uploaded, 2 pages) | Filled IFP inspection report no. 189; PT Hisense International Indonesia; 24/11/2026; Purwakarta; IFP 75WM61FE; physical/packaging serial numbers; five checklist sections; Ya/Tdk responses; Inspector signature area | Available and parsed; suitable as a sample-output and checklist-transcription baseline | Authority, controlled revision, and whether this is the canonical PDF template are not established |
+
 ## Controlled source documents required
 
 | Source ID | Required source | Why required | Acceptance evidence | Status |
 |---|---|---|---|---|
-| SRC-001 | Official IFP inspection checklist/specification | Establish exact official criteria and values | Product Owner confirms source authority and version | BLOCKED |
+| SRC-001 | Controlled IFP inspection checklist/specification | Establish authorized criteria and values | Supplied filled sample report reconciled; Product Owner confirms issuing authority and controlled version | PARTIAL — sample evidence available; authority/version OPEN |
 | SRC-002 | Official Standing Bracket inspection checklist/specification | Establish complete criteria | Product Owner confirms source authority and version | BLOCKED |
 | SRC-003 | Official IFP and Bracket photo/evidence requirements | Establish mandatory evidence | Approved slot matrix | OPEN |
 | SRC-004 | Approved inspection PDF template/sample | Establish output parity | Approved template comparison | OPEN |
