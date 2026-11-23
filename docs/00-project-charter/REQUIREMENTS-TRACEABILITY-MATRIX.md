@@ -53,10 +53,13 @@ Purpose: Link approved product intent to specifications, implementation units, a
 
 | Requirement ID | Instrument | Requirement area | Known source coverage | Verification plan | Status |
 |---|---|---|---|---|---|
-| IFP-001 | IFP | Checklist categories and checklist items | Partial content described from supplied reference screens | Reconcile exact text/order against authorized checklist; test every item and status | OPEN |
-| IFP-002 | IFP | Required photo slots | Ten photo labels described in project discovery | Verify labels, required/conditional rules, exception handling and PDF placement | OPEN |
-| BRK-001 | Standing Bracket | Checklist categories and checklist items | Incomplete reference coverage | Obtain complete authoritative checklist; create item-level IDs | OPEN |
-| BRK-002 | Standing Bracket | Required photo slots | Five photo labels described in project discovery; completeness unverified | Verify complete list and required/conditional rules | OPEN |
+| IFP-001 | IFP | Checklist categories and 49 identified checklist statements across five categories | Transcribed from legacy reference descriptions; official source not yet validated | Reconcile exact text/order against authorized checklist; test every item and status | DRAFTED / SOURCE VALIDATION OPEN |
+| IFP-002 | IFP | Ten identified photo-slot labels | Transcribed from legacy reference descriptions; completeness/mandatory status unverified | Verify labels, required/conditional rules, exception handling and PDF placement | DRAFTED / SOURCE VALIDATION OPEN |
+| BRK-001 | Standing Bracket | Checklist categories and checklist items | No complete authoritative checklist available in current baseline | Obtain complete authoritative checklist; create item-level IDs | BLOCKED ON SOURCE |
+| BRK-002 | Standing Bracket | Five identified photo-slot labels | Transcribed from legacy reference descriptions; completeness/mandatory status unverified | Verify complete list and required/conditional rules | DRAFTED / SOURCE VALIDATION OPEN |
+
+| PRD-001 | Product | Product scope, user journeys, functional/non-functional requirements | Product Requirements Document v0.1.0 | Product Owner review and requirement-by-requirement acceptance | DRAFTED / REVIEW REQUIRED |
+| AC-001 | Product | Observable acceptance criteria for core journeys | Acceptance Criteria v0.1.0 | Map each criterion to test case and UAT evidence | DRAFTED / REVIEW REQUIRED |
 
 ## Change-control rules
 
