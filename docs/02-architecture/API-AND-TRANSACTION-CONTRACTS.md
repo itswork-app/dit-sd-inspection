@@ -20,7 +20,7 @@ Version: 0.1.0
 | Account | `request-account-access` | Create/update pending application profile |
 | Admin | `approve-account` / `reject-account` | Approve and assign authorized role/scope |
 | Planning | `create-session`, `publish-assignment` | Create operational plan and explicit assignments |
-| Planning | `change-inspector-capacity` | Change global Inspector cap within 50..100 |
+| Planning | `change-inspector-capacity` | Change global Inspector cap within 1..100 |
 | Unit | `claim-unit` | Atomically claim normalized serial identity |
 | Unit | `release-unit-claim` | Voluntary release with safe draft preservation |
 | Inspection | `save-draft` | Persist draft and checklist response changes |
@@ -101,7 +101,7 @@ For validation or conflict errors, return a stable code, safe message, and relev
 
 ### Change Inspector capacity
 - Lock the global capacity settings row.
-- Validate new capacity in [50, 100].
+- Validate new capacity as an integer in [1, 100]; default is 50.
 - Count distinct active Inspector accounts across both locations.
 - Reject a reduction below current active count.
 - Update capacity and append audit event in the same transaction.
