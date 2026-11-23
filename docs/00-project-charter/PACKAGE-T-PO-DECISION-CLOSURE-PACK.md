@@ -338,7 +338,6 @@ The enforcement must be atomic. Reject 0 and values above 100. If reducing the c
 
 **Problem:** Serial-number uniqueness scope and exceptions are not final. Evidence must be tied to the exact inspection revision and instrument version to preserve historical integrity.
 
-**Recommendation:**
 1. Bind each evidence record to an immutable inspection revision and instrument version.
 2. Preserve original evidence metadata, checksum, uploader, capture/upload time and storage object identity.
 3. Do not overwrite evidence in place; replacement creates a new evidence record and audit event.
@@ -477,7 +476,6 @@ PO approval does not replace institutional authorization or source evidence. T-0
 ## 8. Product Owner decision outcomes — T-05 through T-08 (2026-11-23)
 
 | ID | Approved outcome | State / implementation qualification |
-|---|---|---|
 | T-05 | A — Distinct labelled counts for Inspected, Submitted, Approved and Completed. Completed = approved inspection + final PDF generated + Print Officer print action recorded. | PO APPROVED; metric implementation and report tests remain pending. |
 | T-06 | A — Super Admin closes project only after all closure gates and actual-versus-target reconciliation pass. Explicit, non-automatic, reasoned and audited. | PO APPROVED; gate enforcement and tests remain pending. |
 | T-07 | A — Super Admin creates/configures sessions; Korlap operates assigned sessions within granted permissions. DRAFT, ACTIVE, PAUSED, CLOSED; CLOSED terminal in ordinary flow. | PO APPROVED; reopening requires privileged permission, reason and audit. State/permission tests remain pending. |
@@ -525,12 +523,9 @@ This PO decision approves the alternative-arrangement path only. It does not est
 
 ## Package T — T-13 Product Owner decision (2026-11-23)
 
-**State after PO response (2026-11-23): PO APPROVED option B.** Initial release supports both individual and batch printing. Batch size must be bounded/configurable; every document receives an independent outcome (success recorded, failed, or cancelled). Retry is limited to failed documents and must not duplicate successful print events. Reprint sequence allocation is atomic. The application records an authorized print action; it does not prove physical paper output. Direct printer integration is not included in this decision.
 
 This is PO product direction only. Detailed batch limits, UI behavior, browser print behavior, and test evidence remain to be finalized and validated. No implementation or tests are claimed. T-14 through T-18 remain open; scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
 
-## Package T — T-13 Product Owner decision (2026-11-23)
 
 **State after PO response (2026-11-23): PO APPROVED option B.** Initial release supports individual and batch printing. Batch size must be bounded/configurable; every document receives an independent outcome (success recorded, failed, or cancelled). Retry is limited to failed documents and must not duplicate successful print events. Reprint sequence allocation is atomic. The application records an authorized print action; it does not prove physical paper output. Direct printer integration is not included.
 
-This is PO product direction only. Detailed batch limits, UI behavior, browser print behavior, and test evidence remain to be finalized and validated. No implementation or tests are claimed. T-14 through T-18 remain open; scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
