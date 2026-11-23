@@ -109,7 +109,7 @@ Product Owner explicitly approved T-01=A, T-02=B, T-03=C and T-04=A, then T-05=A
 - T-07 Super Admin session creation/configuration and scoped Korlap operation are PO-approved; state/permission implementation and tests remain open.
 - T-08 Korlap attendance verification within assigned scope is PO-approved; separate permissions and verification tests remain open.
 
-The Decision Register and affected specifications have been updated and fetched back for verification. T-05 through T-09 are PO-approved; T-10 option B is PO APPROVED as the required formal institutional records/legal/privacy review path; written institutional policy remains BLOCKED. T-11 through T-18 remain OPEN/BLOCKED. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
+The Decision Register and affected specifications have been updated and fetched back for verification. T-05 through T-09 are PO-approved; T-10 option B is PO APPROVED as the required formal institutional records/legal/privacy review path; written institutional policy remains BLOCKED. T-11 option B is PO APPROVED for current mainstream stable browsers with explicit exclusions; exact device/OS/browser build matrix and numeric SLOs remain open pending validation. T-12 through T-18 remain OPEN/BLOCKED. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
 
 
 ## Package T T-09 decision update (2026-11-23)
@@ -124,3 +124,10 @@ Residual risks/dependencies remain OPEN/BLOCKED: browser/device support, local-d
 **Decision: PO APPROVED option B — formal institutional records/legal/privacy review before defining the evidence policy.** The project must obtain a documented review by the institution's authorized records, legal and privacy functions before approving data classification, permitted personal information and processing purpose, accepted evidence formats, per-file/per-inspection/per-project limits, retention periods and triggers, legal-hold authority, deletion eligibility/approval/audit, private access rules, backup/restore and post-deletion treatment, and any local/offline copy controls.
 
 **Important boundary:** this is Product Owner approval of the governance path, not institutional legal/records approval and not approval of any numeric limit, retention period, lawful basis, deletion schedule or production evidence collection. Until the authorized institutional review supplies written direction, retain all such values as OPEN/NOT SET; do not invent limits or retention durations, enable irreversible deletion, or authorize production evidence collection. T-10 remains BLOCKED for scope freeze and production activation pending that external evidence. No implementation or tests are claimed.
+
+
+## Package T-11 — Product Owner decision (2026-11-23)
+
+**Decision: PO APPROVED option B — support current mainstream browser versions with explicit exclusions.** Inspector field workflow uses current stable Chrome on Android; Korlap, Reviewer, Super Admin and Print Officer use current stable Chrome or Edge on desktop. Tablet support is conditional on responsive, camera, upload and PDF/print validation. Obsolete/unsupported browser releases, embedded in-app browsers and modified browsers are excluded. Exact OS/device minimums and browser build numbers must be recorded from actual UAT devices; this decision does not invent exact version numbers.
+
+The 100 concurrent authenticated-user load-test target remains the required acceptance profile, tested at 10/25/50/75/100 concurrent users. This is a test target, not a demonstrated production capacity or SLA. Numeric latency/error-rate SLOs remain OPEN pending workload definition, provider plan/region/quota verification and baseline measurement. No implementation, compatibility test or load test is claimed as executed.
