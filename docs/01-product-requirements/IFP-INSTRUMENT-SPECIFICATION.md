@@ -1,8 +1,8 @@
 # IFP Instrument Specification
 
-Status: Draft — official source validation required  
+Status: Draft — reconciled against supplied sample inspection report; controlled-source authority/version still requires confirmation  
 Instrument: Interactive Flat Panel (IFP)  
-Source basis: Requirements and labels transcribed from legacy reference-screen descriptions. This is not yet an authoritative controlled checklist.
+Source basis: User-uploaded `Pemeriksaan Barang.pdf` (2-page filled sample report, inspection no. 189, dated 24/11/2026) plus legacy application screenshots. The PDF confirms the wording and grouping transcribed below. It is a sample completed report, not proof of a formally controlled checklist revision.
 
 ## 1. Configuration and versioning
 
@@ -63,7 +63,7 @@ The following ten labels have been described from the reference application. Com
 
 ### 3.3 Kesesuaian Spesifikasi
 
-The following is an example specification for a model described in the reference material. It is not a universal IFP specification and must be configurable/versioned per applicable model.
+The following is the example specification shown in the supplied sample report for IFP model 75WM61FE. It is not a universal IFP specification and must be configurable/versioned per applicable model.
 
 | Item ID | Specification field | Example expected value |
 |---|---|---|
@@ -136,9 +136,19 @@ The following is an example specification for a model described in the reference
 - Final submission is blocked while required checklist statuses, finding notes/evidence, required photo slots, or synchronization conflicts remain incomplete.
 - PDF highlights findings and preserves the approved checklist version and results.
 
-## 5. Open validation items
+## 5. Source reconciliation — supplied sample report
 
-1. Confirm official checklist source, version, wording, order, and completeness.
+The two-page PDF sample report confirms:
+- Inspection identity fields: inspection number, company, inspection date/place, Inspector name, item name, brand/type, physical serial number, and packaging serial number.
+- Checklist response heading `Sesuai?` with `Ya/Tdk` choices.
+- The five sections and all 49 checklist statements represented in this specification.
+- The sample report is populated for an IFP model 75WM61FE and shows a printed report footer area for `Petugas Pemeriksa` on page 2.
+
+This sample supports transcription and report-layout requirements. It does not establish the issuing authority, controlled checklist version, whether wording has changed since the sample, or the mandatory status of the ten photo slots.
+
+## 6. Open validation items
+
+1. Confirm whether the supplied sample report is the currently authorized/controlled checklist and identify its owner/version/date.
 2. Confirm whether each item is binary or requires expected/actual values.
 3. Confirm meaning and expected value for Processor "-".
 4. Confirm "Baterai A3" exact wording/specification.
