@@ -66,6 +66,30 @@ Drafted seven technical design documents:
 
 Package D is not approved and does not authorize feature implementation. Exact physical schema, transport choices, offline storage, media limits/retention, provider plan, numerical performance thresholds, backup objectives, and operational ownership remain open.
 
+## Package L — Physical Database Schema and Integrity
+
+Drafted physical PostgreSQL table catalogue, constraints, indexes, transaction invariants, serial identity proposal, immutable inspection/evidence linkage, and configurable instrument schema/versioning. PO confirmation remains open for serial uniqueness and Inspector capacity counting predicate. No migrations were created or executed.
+
+## Package M — Table-by-Table RLS Policy Catalogue
+
+Drafted deny-by-default access matrix for every Package L table and private Storage object class, including role/scope and privileged-function rules. No executable policies were deployed and no security tests were run.
+
+## Package N — Privileged Command Boundary
+
+Drafted Vercel route + caller-JWT PostgreSQL command-function pattern, transactional command catalogue, idempotency and security requirements. Approval remains open; no RPC or route was implemented.
+
+## Package O — Evidence Privacy, Retention, Deletion and Recovery
+
+Drafted data classification, minimization, private access, retention schedule template, legal hold, controlled deletion, integrity and recovery requirements. Institutional legal/records approval and exact retention durations remain blockers.
+
+## Package P — Backup, Restore and Disaster Recovery
+
+Drafted database and Storage backup strategy, restore runbook, incident scenarios, RPO/RTO proposals, provider verification checklist, and restore-drill requirements. Provider capability and recovery objectives remain unverified/unapproved; no restore drill has been executed.
+
+## Package Q — Production Environment, Secrets and Provider Governance
+
+Drafted environment separation, provider responsibilities, region and quota verification, cost governance, secret handling, CI/CD, monitoring, and incident response. Provider plan, region, quota sheet, billing ownership and named operators remain open.
+
 ## Phase 0 exit checklist
 
 - [ ] Charter approved by Product Owner.
@@ -78,6 +102,9 @@ Package D is not approved and does not authorize feature implementation. Exact p
 - [ ] RAID register reviewed with owners.
 - [ ] Production constraints, budget owner, and compliance owners identified.
 - [ ] Supabase/Vercel plan eligibility and production constraints reviewed.
+- [ ] Institutional privacy, retention, deletion, and legal-hold policy approved.
+- [ ] PostgreSQL and Storage backup/recovery capabilities verified and restore drill passed.
+- [ ] Production region, provider plans/quotas, billing owner, secrets, and environment separation approved.
 - [ ] Phase 1 entry criteria accepted.
 
 ## Phase 1 entry criteria
