@@ -14,7 +14,7 @@ This is a replacement project, not a SaaS offering. The legacy application is a 
 ## 2. Product principles and constraints
 
 1. Feature parity with the known legacy workflow and outputs comes first; controlled improvements follow.
-2. Initial instruments are only Interactive Flat Panel (IFP) and Standing Bracket.
+2. Initial rollout contains Interactive Flat Panel (IFP) and Standing Bracket. The product is instrument-extensible: all instrument types are managed through Super Admin configuration, not hardcoded as a permanent two-instrument limit.
 3. There are two inspection locations in the initial project.
 4. Inspector capacity is configurable from minimum 1 to maximum 100 distinct active Inspector accounts across both locations combined; default value is 50. Allocation between locations is controlled by Super Admin; the capacity is not per location. Values outside 1–100 are rejected.
 5. Supabase PostgreSQL is the single source of truth; Supabase Auth and private Storage are used. Vercel hosts/deploys the web/PWA. GitHub is source control and CI.
@@ -42,7 +42,7 @@ Users may hold multiple roles, but operational authority requires explicit assig
 ### 4.1 In scope
 - Google sign-in, account approval, role and permission assignment.
 - Project, session, location, instrument, team, target, and operational assignment management.
-- Instrument and checklist configuration with versioning and historical snapshots.
+- Super Admin-managed instrument catalog: create, configure, activate/deactivate, and version instrument types without application code changes when using supported configuration primitives.\n- Instrument and checklist configuration with versioning and historical snapshots.
 - Serial number entry/capture, unit claim, duplicate prevention, and recovery.
 - IFP and Standing Bracket checklists and photo/evidence capture.
 - Limited offline draft inspection and safe synchronization.
@@ -52,7 +52,7 @@ Users may hold multiple roles, but operational authority requires explicit assig
 - Production operations, security, backup/restore, monitoring, and recovery.
 
 ### 4.2 Out of scope unless separately approved
-- Instruments other than IFP and Standing Bracket.
+- Additional instrument types are not included in the initial rollout until configured and separately approved for project use; the platform must support adding them through Super Admin configuration without code changes where supported by the configuration model.
 - SaaS/multi-customer commercial packaging.
 - Digital signatures replacing wet signatures in Phase 1.
 - Parent/customer portals, payments, sales, inventory, or unrelated modules.
@@ -177,7 +177,7 @@ Korlap confirms closure only when configured closure requirements are satisfied.
 
 ## 10. Configuration and history
 
-Super Admin may configure approved operational settings, including roles/permissions, checklist items, photo slots, validation rules, reviewer assignment, templates, notifications, and targets. Configuration changes must be versioned and audited. Active sessions freeze instrument/configuration versions. Historical records retain their original snapshots and must not be retroactively rewritten.
+Super Admin may configure approved operational settings, including the instrument catalog (create/edit/activate/deactivate), instrument metadata, checklist sections/items/order, specification fields and expected values, evidence/photo slots, mandatory/conditional applicability, supported validation rules, reviewer assignment, document templates, notifications, and targets. Instrument configuration is declarative and limited to supported field types and validation primitives; it does not execute arbitrary code. Each published configuration is versioned and audited. Active sessions freeze the selected instrument version; historical records retain their original snapshots. Configuration changes must be versioned and audited. Active sessions freeze instrument/configuration versions. Historical records retain their original snapshots and must not be retroactively rewritten.
 
 ## 11. Release acceptance
 
