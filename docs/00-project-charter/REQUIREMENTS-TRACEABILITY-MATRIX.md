@@ -186,7 +186,7 @@ New source evidence: the 23-November Standing Bracket form and 20-November BA ar
 
 The detailed PO decision closure register is maintained in `docs/00-project-charter/PACKAGE-T-PO-DECISION-CLOSURE-PACK.md`. Decision IDs T-01 through T-18 cover authoritative instrument masters, BA signatories, executive-summary signature, client report delivery, actual report metrics, project closure, session authority, attendance verification, offline scope, evidence privacy/retention, device/performance baseline, provider operations, print workflow, Inspector capacity semantics, INS-016 audit policy, serial/evidence integrity, CFG-001 publication governance and privileged command boundary.
 
-These IDs are decision-tracking references, not implementation-complete requirements. Each must be reconciled into the relevant requirement/specification and verification case only after explicit approval. No recommendation in Package T is treated as approved by this matrix.
+These IDs are decision-tracking references, not implementation-complete requirements. T-01 through T-04 have explicit PO outcomes recorded in the Decision Register and detailed Package T update; T-01 source evidence and T-02 institutional signatory authority remain outstanding. T-05 through T-18 remain OPEN/BLOCKED. Each decision must be reconciled into the relevant requirement/specification and verification case. PO approval does not replace institutional approval or implementation verification.
 
 
 ## Package T — accepted PO decisions and traceability (2026-11-23)
