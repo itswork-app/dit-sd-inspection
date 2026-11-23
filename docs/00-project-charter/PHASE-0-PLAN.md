@@ -140,6 +140,11 @@ Created `docs/00-project-charter/PACKAGE-S-FINAL-CROSS-DOCUMENT-AUDIT-AND-SCOPE-
 
 - Decision closure pack: `docs/00-project-charter/PACKAGE-T-PO-DECISION-CLOSURE-PACK.md`.
 - Package T converts Package S findings into 18 explicit PO decision records, with recommendations, options, cost/effort, risks and consequences of deferral.
-- Package T decisions T-01 through T-08 have explicit PO outcomes recorded in the Decision Register. T-01 Standing Bracket source is confirmed; official IFP source and SB photo/evidence rules remain outstanding. T-02 institutional signatory authority remains outstanding. T-09 through T-18 remain OPEN/BLOCKED. Recommendations are not approvals.
+- Package T decisions T-01 through T-08 have explicit PO outcomes recorded in the Decision Register. T-01 Standing Bracket source is confirmed; official IFP source and SB photo/evidence rules remain outstanding. T-02 institutional signatory authority remains outstanding. T-09 option B is now PO APPROVED: limited offline draft editing only for already claimed units, with online-only claim/finalization/approval/admin actions and idempotent conflict-safe synchronization. Device/browser support, local-data protection, retention/purge and recovery remain open; T-10 through T-18 remain OPEN/BLOCKED. Recommendations are not approvals.
 - Scope freeze remains NOT READY; feature implementation remains NOT AUTHORIZED.
 - PR #2 remains draft and must not be merged until mandatory gates are closed and verified.
+
+
+### Package T T-09 — offline scope decision (2026-11-23)
+
+Product Owner approved option B. The initial release may support offline editing only for an inspection draft whose unit was claimed online. Offline claim, approval, final submit, role/assignment changes, session administration and privileged actions remain online-only. Reconnect sync must be idempotent, recheck authorization and claim/state, preserve both sides of conflicts and never silently overwrite. Required media must be server-confirmed before final submit. Production activation remains gated on approved device/browser matrix, local-data protection, shared-device/logout, retention/purge and recovery controls (T-10/T-11). No implementation or tests are claimed; scope freeze remains NOT READY.
