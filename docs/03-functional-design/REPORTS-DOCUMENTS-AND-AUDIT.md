@@ -17,11 +17,15 @@ Requirements:
 
 ## 2. Printing
 
-- Print Officer or another user with explicit `document.print` permission prints approved PDFs.
+- Print Officer or another user with explicit `document.print` permission prints approved PDFs from a dedicated permissioned queue.
+- Initial release supports individual printing and bounded/configurable batch printing; direct printer integration is not selected.
+- A batch is orchestrated as independent per-document print operations, not one aggregate success. Record each document outcome as success recorded, failed, or cancelled.
 - Each print event records document version, operator, timestamp, sequence number, and result where available.
 - Reprint footer uses a sequential label such as “Cetak ke-2”; sequence must be generated atomically.
+- Retry may target failed documents only; it must not create duplicate success events for documents already recorded as successfully printed.
+- Reprints retain the same approved document version unless controlled regeneration creates a new version.
 - A failed/aborted print attempt must not be represented as a successful print without an explicit result.
-- Print action is not equivalent to wet signature.
+- A print event records the application action only; it is not proof that paper physically emerged from a printer and is not equivalent to wet signature.
 
 ## 3. Berita Acara (BA)
 
@@ -135,6 +139,7 @@ INS-016 is still a proposal until explicitly approved; this document defines a d
 - PDF content maps to the exact approved inspection revision.
 - Regeneration does not overwrite prior PDF artifacts.
 - Print sequence is concurrency-safe and every print event is attributable.
+- Individual and bounded batch printing are permission-checked; batch results are recorded independently per document, and retry does not duplicate successful events.
 - BA signatory configuration is versioned.
 - Attendance upload preserves original and replacement history.
 - Actual reporting is derived from actual event timestamps.
@@ -159,3 +164,8 @@ INS-016 is still a proposal until explicitly approved; this document defines a d
 - **Client delivery:** Initial release is PDF-only. Client portal is deferred and requires a later approved change request.
 
 The available sample BA does not establish who is legally/administratively authorized to sign. This document therefore records configurable template behavior, not approval of any named signatory. PDF generation/access/distribution remains scoped, versioned and audited. T-05 through T-08 are PO-approved product direction; detailed implementation, evidence rules and verification tests remain pending.
+
+
+## Package T-13 — Product Owner decision (2026-11-23)
+
+The Product Owner approved option B: initial release supports individual and batch printing. Batch size is bounded/configurable, and each document has its own recorded outcome. Retry is restricted to failed documents and cannot duplicate successful print events. The permissioned queue contains approved inspections with final PDFs. Print/reprint sequence allocation is atomic and version-bound. The recorded event represents the application print action, not verified physical paper output. Direct printer integration is not included in initial release. Implementation and test execution remain pending.
