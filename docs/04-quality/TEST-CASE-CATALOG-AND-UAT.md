@@ -78,6 +78,13 @@ These are designed test procedures. Execution has not started. Source authority 
 - TC-DOC-002: PDF inspector identity is sourced from approved configuration/inspection record.
 - TC-DOC-003: Print event is recorded only after explicit print confirmation.
 - TC-DOC-004: Reprint ordinal increments and prior print events remain.
+- TC-DOC-009: Print Officer can individually print an approved final PDF only within explicit permission and scope.
+- TC-DOC-010: Bounded batch print enforces configured maximum size and records a distinct outcome for each document.
+- TC-DOC-011: Partial batch failure is represented per document; successful items are not incorrectly retried or duplicated.
+- TC-DOC-012: Retry accepts failed documents only and does not create duplicate success events.
+- TC-DOC-013: Concurrent print/reprint requests allocate unique atomic ordinals for each document and preserve document-version linkage.
+- TC-DOC-014: Batch operation rejects unapproved, missing, wrong-scope or non-final-PDF documents without unauthorized disclosure.
+- TC-DOC-015: Recorded print event does not claim physical paper output; direct printer integration is not required.
 - TC-DOC-005: BA and attendance document lifecycle statuses are correct.
 - TC-DOC-006: BA instrument summary rows reconcile inspected sample, good, and defective counts against source inspection records, including a zero-count instrument row.
 - TC-DOC-007: BA template renders configured activity/date/location narrative and authorized signatory blocks without hardcoded sample values.
@@ -96,7 +103,7 @@ These are designed test procedures. Execution has not started. Source authority 
 3. Inspector UAT: sign-in, assignment, claim, evidence, checklist, offline/reconnect, submit.
 4. Reviewer UAT: queue, inspect, return, approve, separation of duties.
 5. Korlap UAT: team supervision, actual/target reporting, session close.
-6. Print/document UAT: PDF accuracy, physical print, reprint, BA, attendance.
+6. Print/document UAT: PDF accuracy, individual print, bounded batch, partial failure, failed-only retry, reprint sequence, BA and attendance. Physical printer output is checked operationally where available but is not asserted by the application event.
 7. Cross-role end-to-end UAT: complete representative inspection from assignment to recorded print and reporting.
 8. Defect triage and retest; Product Owner signs acceptance only after critical/high issues resolved.
 
