@@ -149,3 +149,12 @@ INS-016 is still a proposal until explicitly approved; this document defines a d
 - Attendance verification authority.
 - Print Officer distinct role versus permission-based capability.
 - Retention/deletion schedule for PDFs, attendance, BA, and audit evidence.
+
+
+## Package T — approved Product Owner direction (2026-11-23)
+
+- **BA template:** Signatory blocks are configurable per approved BA template, including number of parties, organization, role/title, order and required/optional status. Actual authorized signatory identities and authority remain subject to institutional approval.
+- **Executive summary:** Signature behavior is configurable per report template; default is no signature unless the approved template requires it.
+- **Client delivery:** Initial release is PDF-only. Client portal is deferred and requires a later approved change request.
+
+The available sample BA does not establish who is legally/administratively authorized to sign. This document therefore records configurable template behavior, not approval of any named signatory. PDF generation/access/distribution remains scoped, versioned and audited. T-05 report metric semantics, project closure and attendance verification remain open.
