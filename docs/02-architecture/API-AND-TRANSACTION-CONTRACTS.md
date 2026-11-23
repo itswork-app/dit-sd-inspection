@@ -145,3 +145,8 @@ For validation or conflict errors, return a stable code, safe message, and relev
 ## T-14 — Atomic Inspector capacity command contract (PO-approved 2026-11-24)
 
 All commands that create/enable an Inspector role grant, establish an effective operational Inspector assignment, or change the configured cap must apply the same canonical count: distinct enabled login accounts with an active Inspector role grant and at least one currently effective operational Inspector assignment within the governed project/session scope. Count each account once; exclude pending, rejected, suspended, disabled and expired-role accounts. Enforce the combined cap atomically across both locations (1–100, default 50). Reject cap 0, cap above 100, and reductions below the current qualifying count until reconciled. Never silently deactivate accounts. Client pre-checks are advisory only; server transaction is authoritative.
+
+
+## Registration-first and Super Admin staffing command rules (PO clarification, 2026-11-24)
+
+`request-account-access` creates/provisions a pending account only; it must not create Inspector eligibility. Super Admin-only commands approve/reject accounts, grant/revoke roles, set scopes, create/configure teams, add/remove team members, and publish/change operational assignments. These commands must reject unregistered, pending, rejected, suspended or disabled accounts as assignees; reject caller self-elevation/self-assignment; validate staffing against the session plan and combined Inspector cap in one transaction. Team count and personnel composition are Super Admin-controlled configuration, not user self-service.
