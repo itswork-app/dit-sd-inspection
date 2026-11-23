@@ -78,13 +78,13 @@ These are designed test procedures. Execution has not started. Source authority 
 - TC-DOC-002: PDF inspector identity is sourced from approved configuration/inspection record.
 - TC-DOC-003: Print event is recorded only after explicit print confirmation.
 - TC-DOC-004: Reprint ordinal increments and prior print events remain.
-- TC-DOC-009: Print Officer can individually print an approved final PDF only within explicit permission and scope.
-- TC-DOC-010: Bounded batch print enforces configured maximum size and records a distinct outcome for each document.
-- TC-DOC-011: Partial batch failure is represented per document; successful items are not incorrectly retried or duplicated.
-- TC-DOC-012: Retry accepts failed documents only and does not create duplicate success events.
-- TC-DOC-013: Concurrent print/reprint requests allocate unique atomic ordinals for each document and preserve document-version linkage.
-- TC-DOC-014: Batch operation rejects unapproved, missing, wrong-scope or non-final-PDF documents without unauthorized disclosure.
-- TC-DOC-015: Recorded print event does not claim physical paper output; direct printer integration is not required.
+- TC-PRINT-001: Print Officer can individually print an approved final PDF only within explicit permission and scope.
+- TC-PRINT-002: Bounded batch print enforces configured maximum size and records a distinct outcome for each document.
+- TC-PRINT-003: Partial batch failure is represented per document; successful items are not incorrectly retried or duplicated.
+- TC-PRINT-004: Retry accepts failed documents only and does not create duplicate success events.
+- TC-PRINT-005: Concurrent print/reprint requests allocate unique atomic ordinals for each document and preserve document-version linkage.
+- TC-PRINT-006: Batch operation rejects unapproved, missing, wrong-scope or non-final-PDF documents without unauthorized disclosure.
+- TC-PRINT-007: Recorded print event does not claim physical paper output; direct printer integration is not required.
 - TC-DOC-009: Print Officer can individually print an approved final PDF only within explicit permission and scope.
 - TC-DOC-010: Bounded batch print enforces configured maximum size and records a distinct outcome for each document.
 - TC-DOC-011: Partial batch failure is represented per document; successful items are not incorrectly retried or duplicated.
@@ -117,9 +117,7 @@ These are designed test procedures. Execution has not started. Source authority 
 ## 8. UAT sign-off record
 Record build SHA, test environment, participants/roles, test cases passed/failed/blocked, defects, known limitations, Product Owner decision, date, and explicit release recommendation. No implied approval from silence.
 
-
 **T-09 scope status:** PO-approved option B. These are designed test procedures only; none are reported as executed. Device/local-data controls and institutional retention approval remain prerequisites to production activation.
-
 
 ## T-10 decision verification coverage
 - TC-EVD-006: Evidence upload is blocked when the file type or configured limit has not been institutionally approved; no default numeric limit may be treated as policy.
@@ -129,7 +127,6 @@ Record build SHA, test environment, participants/roles, test cases passed/failed
 - TC-EVD-010: Production evidence collection remains blocked until written institutional records/legal/privacy approval and accepted evidence limits are recorded.
 
 These are planned verification cases only; not executed. T-10 option B is PO-approved as a review path, not as institutional policy approval.
-
 
 ## T-11 compatibility and performance verification coverage
 - TC-COMP-001: Inspector core workflow on current stable Chrome for Android, including camera permission, evidence upload, authentication and supported offline-draft behavior.
