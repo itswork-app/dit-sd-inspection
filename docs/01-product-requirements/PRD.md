@@ -16,7 +16,7 @@ This is a replacement project, not a SaaS offering. The legacy application is a 
 1. Feature parity with the known legacy workflow and outputs comes first; controlled improvements follow.
 2. Initial instruments are only Interactive Flat Panel (IFP) and Standing Bracket.
 3. There are two inspection locations in the initial project.
-4. Inspector capacity starts at 50 users and may be increased by Super Admin, but must remain below 100 (hard maximum 99) across both locations combined. Allocation between locations is controlled by Super Admin; the capacity is not per location.
+4. Inspector capacity starts at 50 users and may be increased by Super Admin, but must remain up to 100 (hard maximum 100) across both locations combined. Allocation between locations is controlled by Super Admin; the capacity is not per location.
 5. Supabase PostgreSQL is the single source of truth; Supabase Auth and private Storage are used. Vercel hosts/deploys the web/PWA. GitHub is source control and CI.
 6. Cost-first engineering must not weaken security, privacy, evidence integrity, backup/recovery, or production reliability.
 7. Official inspection criteria and report meanings must not be changed by UX or engineering convenience.
@@ -210,3 +210,8 @@ See Decision Register and Reference & Evidence Inventory. At minimum:
 ## 13. Change control
 
 Every change to approved scope requires a change request, rationale, impact analysis, Product Owner approval, updated Decision Register/RTM/PRD, and regression-test impact. No unapproved feature may enter implementation.
+
+
+## 14. Concurrent usage and performance baseline
+
+The system must be designed and tested for up to **100 concurrent authenticated users** using the application at the same time. This is a capacity and performance acceptance target, not an unconditional guarantee independent of hosting plan, network, device, or workload. Before production approval, run a representative load test covering concurrent login/session reads, inspection draft saves, checklist updates, evidence metadata operations, dashboard/report reads, and claim/submit transactions. Record the tested environment, workload mix, throughput, p50/p95/p99 latency, error rate, database resource usage, and storage/network bottlenecks. No silent data loss, duplicate claim, authorization bypass, or transaction corruption is acceptable under the test load. Upload duration for photos must be measured separately from application API latency.
