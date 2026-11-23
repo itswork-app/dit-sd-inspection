@@ -39,13 +39,15 @@ Proposed states:
 - `PAUSED`: no new claims or submissions unless an explicit recovery/admin policy allows them; existing drafts are preserved.
 - `CLOSED`: terminal operational state after closure gates pass.
 
-Transitions:
-- DRAFT → ACTIVE: authorized session activation.
-- ACTIVE → PAUSED: authorized Korlap/Admin or Super Admin.
-- PAUSED → ACTIVE: authorized resume.
-- ACTIVE/PAUSED → CLOSED: authorized closure after all gates pass.
+Transitions and authority (PO approved T-07, 2026-11-23):
+- Super Admin exclusively creates/configures sessions, targets, locations, instruments and team assignments.
+- DRAFT → ACTIVE: Korlap may activate only within assigned scope and explicit permission.
+- ACTIVE → PAUSED: Korlap may pause only within assigned scope and explicit permission.
+- PAUSED → ACTIVE: Korlap may resume only within assigned scope and explicit permission.
+- ACTIVE/PAUSED → CLOSED: Korlap may request closure within assigned scope; final project closure is separately reserved to Super Admin under T-06.
+- CLOSED is terminal in ordinary flow. Reopening requires explicit privileged permission, reason and audit.
 
-No automatic closure based only on calendar date. The state model is proposed for validation; no undocumented transition should be implemented.
+No automatic closure based only on calendar date. Backend authorization must enforce every transition; UI visibility alone is insufficient.
 
 ## 4. Assignment invariants
 
@@ -79,7 +81,7 @@ A unit is considered **COMPLETED** only when:
 2. final PDF has been generated;
 3. a Print Officer print action has been recorded.
 
-Session closure is a separate lifecycle decision. The close action must be disabled until all configured requirements are met, including:
+Session closure is separate from project closure. Korlap may request session closure within assigned scope; Super Admin is final project-closure authority. A session close action must be disabled until all configured requirements are met, including:
 - no open drafts or active claims;
 - no submitted inspections awaiting review;
 - no returned inspections awaiting correction;
@@ -88,7 +90,9 @@ Session closure is a separate lifecycle decision. The close action must be disab
 - required print events recorded;
 - required BA and recap documents completed;
 - attendance generated, printed, uploaded, and verified where required;
-- Korlap confirms closure.
+- Korlap submits the session closure request; authorized session closure follows the approved scope/permission workflow.
+
+Project closure is performed only by Super Admin after every session is closed, no unresolved claims/drafts/corrections/reviews remain, required inspections and PDFs/print events/BA/attendance artifacts are complete and verified, and actual-versus-target reconciliation is reviewed. The action records reason/confirmation and audit; no date-based auto-close.
 
 Printing may occur days after field inspection; the session remains open until required closure tasks are complete. No auto-close by date.
 
