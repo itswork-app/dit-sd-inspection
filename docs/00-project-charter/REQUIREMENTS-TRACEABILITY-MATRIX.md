@@ -216,3 +216,8 @@ T-13 option B is PO APPROVED. Traceable acceptance requirements AC-DOC-008 throu
 
 
 T-13 option B is PO APPROVED. Traceable acceptance requirements AC-DOC-008 through AC-DOC-012 and test cases TC-DOC-009 through TC-DOC-015 cover permissioned individual/batch print, per-document outcomes, failed-only retry, atomic reprint sequence, exact document-version linkage, and the boundary that application print events do not prove physical paper output. Detailed implementation and test execution remain pending.
+
+
+## T-14 traceability — Inspector capacity predicate (PO-approved 2026-11-24)
+
+Trace the canonical predicate across UI, server commands, PostgreSQL transactions, authorization and QA: distinct enabled login account + active Inspector role grant + at least one currently effective operational Inspector assignment in governed project/session scope. Exclude pending, rejected, suspended, disabled and expired-role accounts; deduplicate across assignments/roles. Preserve combined cap 1–100, default 50, atomic enforcement, invalid-value rejection and no silent deactivation on cap reduction. Test execution remains pending.
