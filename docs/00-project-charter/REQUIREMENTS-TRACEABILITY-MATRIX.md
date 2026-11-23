@@ -48,7 +48,7 @@ Purpose: Link product intent to specifications, implementation units, and verifi
 | DOC-003 | BA and attendance have distinct lifecycle and authority | Document decisions | Reports, Documents, Printing, Attendance, and Audit | Document UAT and role tests | DETAIL OPEN |
 | RPT-001 | Actual and Target reports are distinct; actual dates are never rewritten | RPT decisions | Reports, Documents, Printing, Attendance, and Audit | Reconciliation/date-integrity tests | BASELINED |
 | AUD-001 | Audit coverage and controls require explicit approval before implementation | INS-016 proposal | Reports, Documents, Printing, Attendance, and Audit | Audit coverage/tamper tests | PROPOSED |
-| OPS-002 | Production includes tested backup/restore, monitoring, deployment, and rollback | Engineering Governance | Operations package pending | Restore drill and rollback evidence | REQUIRED; detail pending |
+| OPS-002 | Production includes tested backup/restore, monitoring, deployment, and rollback | Engineering Governance | Performance and Operations Baseline | Restore drill and rollback evidence | REQUIRED; detail pending |\n| PERF-001 | System is designed and load-tested for 100 concurrent authenticated users | PRD §14 | Performance and Operations Baseline | Load test at 10/25/50/75/100 users; latency, error, resource, and integrity report | BASELINED; thresholds pending |\n| DATA-001 | PostgreSQL model preserves scoped relational integrity and immutable inspection revisions | PRD, functional decisions | Data Model and ERD | Migration, constraint, and immutability tests | DESIGN DRAFT |\n| SEC-001 | All exposed application data and evidence access are protected by server authorization and RLS | ADR-001, security decisions | RLS and Authorization Design; Security Threat Model | RLS matrix and negative authorization tests | DESIGN DRAFT |\n| EVD-002 | Evidence uses private storage, verified upload lifecycle, and immutable originals | ADR-001, evidence decisions | Evidence Storage and Media Lifecycle | Upload, checksum, access-control, and recovery tests | DESIGN DRAFT |\n| API-001 | Critical commands are idempotent and transactionally enforce claims, submission, approval, and capacity | Functional decisions | API and Transaction Contracts | Duplicate/retry/concurrency/transaction tests | DESIGN DRAFT |
 
 ## Instrument-specific traceability (pending official source validation)
 
@@ -71,7 +71,7 @@ Purpose: Link product intent to specifications, implementation units, and verifi
 
 All are design drafts, not formal Product Owner approvals. Open decisions are explicitly retained in each document.
 
-## Change-control rules
+## Package D technical architecture artifacts\n\n- `docs/02-architecture/SYSTEM-ARCHITECTURE.md`\n- `docs/02-architecture/DATA-MODEL-AND-ERD.md`\n- `docs/02-architecture/RLS-AND-AUTHORIZATION-DESIGN.md`\n- `docs/02-architecture/EVIDENCE-STORAGE-AND-MEDIA-LIFECYCLE.md`\n- `docs/02-architecture/API-AND-TRANSACTION-CONTRACTS.md`\n- `docs/02-architecture/SECURITY-THREAT-MODEL.md`\n- `docs/02-architecture/PERFORMANCE-AND-OPERATIONS-BASELINE.md`\n\nPackage D is a technical design draft, not an implementation authorization. Physical schema, provider plans, offline storage, media limits, numeric SLOs, and operations ownership remain subject to review and approval.\n\n## Change-control rules
 
 - Every new requirement receives a stable ID; IDs are never reused.
 - Every approved requirement must link to an authorized source or decision.
