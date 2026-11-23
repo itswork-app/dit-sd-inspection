@@ -32,7 +32,7 @@ Version: 0.1.0
 | Documents | `generate-approved-pdf`, `record-print`, `record-print-batch` | Generate snapshot PDF; record individual or bounded batch print actions with per-document outcomes |
 | Reporting | `get-actual-report`, `get-target-report` | Read distinct actual/target dimensions |
 
-These are logical command names, not a finalized REST URL contract. Batch print is an orchestration of independently authorized per-document print commands; it is not a single all-or-nothing print-success transaction.
+These are logical command names, not a finalized REST URL contract. Batch print is an orchestration of independently authorized per-document print commands; it is not a single all-or-nothing print-success transaction. Batch print is an orchestration of independently authorized per-document print commands; it is not a single all-or-nothing print-success transaction.
 
 ## 3. Standard request envelope
 
@@ -114,6 +114,16 @@ For validation or conflict errors, return a stable code, safe message, and relev
 - Count distinct active Inspector accounts across both locations.
 - Reject a reduction below current active count.
 - Update capacity and append audit event in the same transaction.
+
+### Print and batch-print transaction (PO-approved T-13 option B)
+
+- Verify caller identity, `document.print` permission, scope, approved inspection state and final immutable PDF version for every document.
+- Enforce a configurable maximum batch size; reject an oversized request before starting any print operation.
+- Persist a batch identifier and one outcome per document: success recorded, failed, or cancelled. Do not infer success for documents without an explicit successful application result.
+- Allocate each document's print/reprint ordinal atomically under concurrency control and link it to the exact document version.
+- Retry accepts failed document identifiers only; it must reject already successful/cancelled items and must not create duplicate success events.
+- A partial batch remains partial; return per-document results and aggregate counts without claiming physical printer output.
+- Browser print initiation/confirmation is an application-level event only. Direct printer integration is outside initial release.
 
 ### Print and batch-print transaction (PO-approved T-13 option B)
 
