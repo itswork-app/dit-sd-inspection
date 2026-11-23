@@ -13,7 +13,7 @@ This document defines observable acceptance outcomes. Detailed test cases and au
 
 ## 2. Inspector capacity and assignments
 
-- AC-CAP-001: The system supports a configurable global Inspector capacity with a baseline/default of 50 and an absolute maximum of 99 users across both locations combined.
+- AC-CAP-001: The system supports a configurable global Inspector capacity with a baseline/default of 50 and an absolute maximum of 100 users across both locations combined.
 - AC-CAP-002: Super Admin may increase the configured capacity above 50, but cannot set it below 50 or above 99; the capacity is shared across both locations and allocation may be uneven.
 - AC-CAP-003: Korlap, Reviewer, Print Officer, and Super Admin are counted only when they also hold the Inspector role; each distinct person counts once.
 - AC-CAP-004: Concurrent attempts to activate/assign Inspectors cannot exceed the currently configured global capacity; capacity changes and activation are transaction-safe and audited.
@@ -106,3 +106,11 @@ This document defines observable acceptance outcomes. Detailed test cases and au
 - Attendance verification role and authority.
 - Actual report headline/count basis and client report delivery mechanism.
 - Session state machine and final closure authority.
+
+
+## 11. Concurrent usage and performance acceptance
+
+- AC-PERF-001: The production candidate is load-tested with up to 100 concurrent authenticated users using representative mixed workflows.
+- AC-PERF-002: The load test records environment/plan, workload mix, throughput, p50/p95/p99 latency, error rate, database utilization, and media upload performance.
+- AC-PERF-003: Under the approved 100-user test profile, there is no data loss, duplicate active claim, duplicate submission, authorization bypass, or corrupted transaction.
+- AC-PERF-004: Performance thresholds for interactive reads/writes, dashboards, and media uploads are explicitly approved after a baseline test on the selected production plan; passing the concurrency count alone is not sufficient for release.
