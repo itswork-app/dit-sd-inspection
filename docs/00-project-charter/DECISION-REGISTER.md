@@ -38,6 +38,7 @@ Only explicitly approved decisions are marked APPROVED.
 | INS-014 | Role-based operational dashboards | APPROVED | Data scope follows assignments |
 | INS-015 | Scoped notification and escalation management | APPROVED | SLA values configurable; examples are not fixed |
 | INS-016 | Audit trail and activity monitoring | PROPOSED | Not yet approved |
+| OPS-001 | Maximum 50 Inspectors across both inspection locations combined | APPROVED | User clarification, 2026-11-23; allocation between locations is controlled by Super Admin |
 
 ## Open decisions
 - Complete official IFP and Standing Bracket checklists and required photo slots.
