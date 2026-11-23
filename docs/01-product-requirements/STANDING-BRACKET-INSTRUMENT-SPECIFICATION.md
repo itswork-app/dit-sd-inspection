@@ -143,7 +143,7 @@ The form contains 19 visible checklist statements grouped as follows:
 
 **Count clarification:** the form has 19 checklist rows total: six physical plus thirteen accessories. The numbering above is a continuous reference index. Preserve the exact spelling, spacing, and ambiguous quantity as source data. The form's visible result column is “Sesuai? Ya/Tdk”; it does not define mandatory photo slots, N/A rules, notes, or evidence requirements.
 
-This 18-row sample differs from the earlier 19-row screenshot transcription. Keep both source versions distinct pending controlled master checklist confirmation; do not delete, merge, or renumber the earlier record. The phrase “Interactive Flat Panel (IFP) Standing Bracket” also requires Product Owner confirmation of the exact instrument label and whether it refers to SB or a combined display label.
+This 19-row sample has the same visible row count as the earlier 19-row screenshot transcription, but wording/source context and item mapping have not been proven identical. Keep both source versions distinct pending controlled master checklist confirmation; do not delete, merge, or renumber the earlier record. The phrase “Interactive Flat Panel (IFP) Standing Bracket” also requires Product Owner confirmation of the exact instrument label and whether it refers to SB or a combined display label.
 
 ### 7.2 BA visitasi dated 20 November 2026
 
@@ -166,7 +166,7 @@ Requirements derived from these samples:
 
 ### 7.3 Required reconciliation tests
 
-- Compare the source-specific 18-row form with the earlier 19-row screenshot transcription; preserve both until an authorized master is supplied.
+- Compare the source-specific 19-row form with the earlier 19-row screenshot transcription; preserve both source observations until an authorized master is supplied.
 - Verify physical serial and package serial separately, including exact-match and mismatch cases.
 - Verify 460 = 456 + 4 on a sample fixture and reconcile all serial annex rows against those totals.
 - Detect duplicate serials, missing serials, invalid condition values, and summary/annex count mismatch before BA issuance.
