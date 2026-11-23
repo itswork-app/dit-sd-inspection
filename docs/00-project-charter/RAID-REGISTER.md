@@ -95,3 +95,14 @@ Owner convention: accountable role is recorded; named individuals are not invent
 | D-019 | Dependency | Package T decisions T-01..T-18 require explicit PO and, where applicable, institutional authority/evidence before the corresponding scope-freeze gates can close | High | High | Track each decision in `PACKAGE-T-PO-DECISION-CLOSURE-PACK.md`; record approve/reject/defer/need-evidence outcome; update Decision Register and affected specifications; do not infer approval | Product Owner / Institutional Authority | Open |
 | R-020 | Risk | Recommendations in Package T could be mistaken for approved policy | High | Medium | Preserve explicit state labels; only Decision Register entries with explicit approval count as approved; keep PR #2 draft and implementation unauthorized | Product Owner / Engineering Lead | Open |
 | D-021 | Dependency | Institutional source evidence, records/privacy direction and provider operational evidence are outside the documentation baseline and remain unverified | High | High | Obtain source documents and written approvals; verify actual provider settings, backup/restore and recovery ownership before production gate | Institutional Authority / Operations Owner | Blocked |
+
+
+## Package T — partial decision closure update (2026-11-23)
+
+Product Owner explicitly approved T-01=A, T-02=B, T-03=C and T-04=A.
+- T-01 is PO-approved for source authority, but remains blocked until current official IFP/Standing Bracket master documents and institutional approval evidence are obtained and reconciled.
+- T-02 template configurability is PO-approved; institutional authorization of actual signatory roles/identities and final BA template remains an external dependency.
+- T-03 configurable executive-summary signature behavior is PO-approved; approved template determines whether a signature is required.
+- T-04 PDF-only initial client delivery is PO-approved; client portal is deferred from initial scope.
+
+Update the decision tracker accordingly. Do not infer approval for T-05..T-18. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
