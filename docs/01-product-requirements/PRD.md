@@ -42,7 +42,8 @@ Users may hold multiple roles, but operational authority requires explicit assig
 ### 4.1 In scope
 - Google sign-in, account approval, role and permission assignment.
 - Project, session, location, instrument, team, target, and operational assignment management.
-- Super Admin-managed instrument catalog: create, configure, activate/deactivate, and version instrument types without application code changes when using supported configuration primitives.\n- Instrument and checklist configuration with versioning and historical snapshots.
+- Super Admin-managed instrument catalog: create, configure, activate/deactivate, and version instrument types without application code changes when using supported configuration primitives.
+- Instrument and checklist configuration with versioning and historical snapshots.
 - Serial number entry/capture, unit claim, duplicate prevention, and recovery.
 - IFP and Standing Bracket checklists and photo/evidence capture.
 - Limited offline draft inspection and safe synchronization.
