@@ -16,7 +16,7 @@ Owner convention: accountable role is recorded; named individuals are not invent
 | R-006 | Risk | Free-tier quotas or plan restrictions interrupt production operations | High | Medium | Verify current provider terms/quotas and upgrade triggers; production plan approval must precede go-live | CTO / Engineering Lead + Project Sponsor | OPEN |
 | R-007 | Risk | Report target allocation is mistaken for actual inspection activity | High | Medium | Separate actual-event facts from versioned target allocations in schema, APIs, UI, and report tests | CTO / Engineering Lead | MITIGATING |
 | R-008 | Risk | Wet-signature, BA signatory, attendance verification, or print responsibilities are ambiguous | High | Medium | Confirm authority, signatory blocks, document lifecycle, and verification responsibilities in PRD | Product Owner | OPEN |
-| R-009 | Risk | A single Inspector is assigned to overlapping work across locations | Medium | Medium | Enforce schedule-overlap validation and explicit scoped assignments; capacity starts at 50 and has a hard cap of 100 distinct Inspectors combined across both locations | Super Admin / Product Owner | MITIGATING |
+| R-009 | Risk | A single Inspector is assigned to overlapping work across locations | Medium | Medium | Enforce schedule-overlap validation and explicit scoped assignments; capacity is configurable below or above 50 (default 50), with a hard cap of 100 distinct Inspectors combined across both locations | Super Admin / Product Owner | MITIGATING |
 | R-010 | Risk | Production backup exists but restore has not been proven | Critical | Medium | Define RPO/RTO, backup schedule, restore runbook, and conduct restore drills before release | CTO / Engineering Lead | OPEN |
 
 ## Assumptions
@@ -25,7 +25,7 @@ Owner convention: accountable role is recorded; named individuals are not invent
 |---|---|---|---|---|
 | A-001 | The two initial instruments remain IFP and Standing Bracket | Confirmed by current project baseline; changes require scope approval | Product Owner | BASELINED |
 | A-002 | There are two inspection locations | Confirm exact official location names and whether fixed for the full project | Product Owner | OPEN |
-| A-003 | Inspector capacity starts at 50 and may increase to at most 100 people total across both locations | Confirmed by user on 2026-11-23; initial configured value 50, global hard maximum 100 | Product Owner | CONFIRMED |
+| A-003 | Inspector capacity may be configured below or above 50 (default 50), up to 100 people total across both locations | Confirmed by user on 2026-11-23; initial configured value 50, global hard maximum 100 | Product Owner | CONFIRMED |
 | A-004 | Google sign-in is the identity entry point | Confirm institutional account policy and account recovery requirements | Product Owner / Super Admin | OPEN |
 | A-005 | Supabase and Vercel are the approved platform baseline | Confirm plan eligibility, institutional procurement, quotas, and data/privacy requirements | Project Sponsor / CTO | OPEN |
 | A-006 | The supplied screenshots/workflow descriptions are reference material, not complete formal specifications | Validate against authorized source documents and sample outputs | Product Owner | OPEN |
