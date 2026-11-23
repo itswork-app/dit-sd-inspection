@@ -7,7 +7,7 @@ Version: 0.1.0
 
 These are separate requirements:
 
-- **Inspector account capacity:** configurable starting value 50; hard maximum 100 distinct Inspector users across both locations combined.
+- **Inspector account capacity:** configurable below or above default value 50; hard maximum 100 distinct Inspector users across both locations combined. The permitted minimum remains an explicit policy parameter to approve before implementation.
 - **Concurrent application usage:** design and load-test target up to 100 authenticated users actively using the application at the same time.
 - **Evidence workload:** concurrent photo uploads are a separate workload dimension and must be included in a representative test profile.
 
