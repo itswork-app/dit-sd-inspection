@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 Status: Baseline draft — requirements require source validation  
-Purpose: Link approved product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for the detailed PRD or test cases.
+Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
 ## Requirement ID convention
 
@@ -20,52 +20,62 @@ Purpose: Link approved product intent to specifications, implementation units, a
 
 ## Traceability baseline
 
-| Requirement ID | Requirement statement | Source / decision | Specification owner | Verification evidence | Status |
+| Requirement ID | Requirement statement | Source / decision | Specification | Verification evidence | Status |
 |---|---|---|---|---|---|
-| GOV-001 | Release target is production | MGT-001 | CTO / Engineering Lead | Production readiness checklist and release evidence | APPROVED |
-| GOV-002 | Optimize lifecycle cost without waiving security, privacy, integrity, backup, or reliability | MGT-002 | CTO / Engineering Lead | Cost review plus security/operations gates | APPROVED |
-| GOV-003 | Use Supabase + Vercel; GitHub for source control/CI | TECH-001, TECH-003 | CTO / Engineering Lead | ADR and deployment pipeline | APPROVED |
-| GOV-004 | Supabase PostgreSQL is the sole primary source of truth | TECH-002 | CTO / Engineering Lead | Architecture review and data-flow tests | APPROVED |
-| GOV-005 | Initial product scope is not SaaS and includes only IFP and Standing Bracket | PRD-001..003 | Product Owner | Scope audit and PRD sign-off | APPROVED |
-| CAP-001 | Maximum 50 Inspector users across both locations combined | Decision Register OPS-001 | Product Owner / Super Admin | Database constraint/service validation and assignment tests | APPROVED |
-| AUTH-001 | Users sign in with Google; new accounts await approval and role assignment | RBAC-001 | Product Owner / CTO | Auth and account lifecycle integration tests | APPROVED |
-| RBAC-001 | Users may hold multiple roles only with explicit scoped assignments | RBAC-002 | Product Owner / CTO | Positive and negative authorization tests | APPROVED |
-| RBAC-002 | Operational authority is scoped by session, location, instrument, and assignment | RBAC-002 | CTO / Engineering Lead | RLS and API authorization tests | APPROVED |
-| RBAC-003 | Self-review and self-approval are prohibited | WF-001 | Product Owner / CTO | Negative workflow tests | APPROVED |
-| SES-001 | Super Admin controls official project/session targets and assignments | Planning decisions | Product Owner | Role/permission tests and audit assertions | BASELINED; detail pending |
-| SES-002 | An Inspector cannot be scheduled in overlapping locations/times | Assignment decisions | Product Owner / CTO | Conflict and concurrency tests | BASELINED |
-| INS-001 | Active sessions freeze the version of instrument configuration | INS-001 | Product Owner / CTO | Snapshot and version immutability tests | APPROVED |
-| INS-002 | Checklist uses exception-based UX; default OK presentation is not automatic verification | INS-002 | Product Owner | UI and validation tests | APPROVED |
-| INS-003 | Serial number claims a unit; duplicate active claims are prevented | INS-005, INS-008 | Product Owner / CTO | Concurrency, normalization, and uniqueness tests | APPROVED |
-| INS-004 | Required checklist/photo/evidence validation blocks incomplete submission | INS-009 | Product Owner | Positive/negative submission tests | APPROVED |
-| EVD-001 | Original evidence is preserved; server receipt and device capture time are distinct | INS-007 | CTO / Engineering Lead | Metadata/hash/storage integrity tests | APPROVED |
-| OFF-001 | Limited offline inspection is supported with safe, idempotent synchronization | INS-003, INS-006 | CTO / Engineering Lead | Offline, retry, conflict, device-loss and recovery tests | APPROVED |
-| REV-001 | Reviewer may return work with reason; Inspector corrects and resubmits | WF-001, INS-010 | Product Owner | Revision lifecycle tests | APPROVED |
-| REV-002 | Submitted revisions are immutable; approved work reopens only with authority and reason | WF-002, INS-010 | Product Owner / CTO | Immutability and reopen authorization tests | APPROVED |
-| DOC-001 | Final PDF follows approval; print action is recorded and reprints counted | DOC-001, DOC-002, INS-011 | Product Owner | PDF snapshot and print-event tests | APPROVED |
-| DOC-002 | Wet signatures remain in Phase 1; digital signatures do not replace them | DOC-001 | Product Owner | Document template review and UAT | APPROVED |
-| DOC-003 | BA and attendance documents follow separately defined lifecycle and authority | Existing workflow decisions | Product Owner | Document UAT and role tests | DETAIL OPEN |
-| RPT-001 | Actual and Target reporting are distinct and actual activity dates are never rewritten | RPT-001, RPT-002 | Product Owner / CTO | Report reconciliation and date-integrity tests | APPROVED |
-| AUD-001 | Audit trail and activity monitoring requirements must be finalized before implementation | INS-016 | Product Owner / CTO | Audit coverage matrix and tamper-resistance tests | PROPOSED |
-| OPS-002 | Production includes tested backup/restore, monitoring, deployment and rollback procedures | Engineering Governance | CTO / Engineering Lead | Restore drill, deployment rehearsal, rollback evidence | REQUIRED; detail pending |
+| GOV-001 | Release target is production | MGT-001 | Project Charter | Production readiness checklist | APPROVED |
+| GOV-002 | Optimize lifecycle cost without waiving security, privacy, integrity, backup, or reliability | MGT-002 | ADR-001, Engineering Governance | Cost and security review | APPROVED |
+| GOV-003 | Use Supabase + Vercel; GitHub for source control/CI | TECH-001, TECH-003 | ADR-001 | Architecture/deployment review | APPROVED |
+| GOV-004 | Supabase PostgreSQL is sole primary source of truth | TECH-002 | ADR-001 | Data-flow and architecture tests | APPROVED |
+| GOV-005 | Initial scope is non-SaaS and includes IFP and Standing Bracket only | PRD-001..003 | PRD | Scope audit and sign-off | BASELINED; sign-off pending |
+| CAP-001 | Maximum 50 distinct Inspector users across both locations combined | Decision Register OPS-001 | RBAC and Authorization | Atomic cap/concurrency tests | BASELINED |
+| AUTH-001 | Google sign-in; new accounts await approval and role assignment | Authentication decisions | RBAC and Authorization | Auth lifecycle tests | BASELINED |
+| RBAC-001 | Users may hold multiple roles only with explicit scoped assignments | RBAC decisions | RBAC and Authorization | Positive/negative authorization tests | BASELINED |
+| RBAC-002 | Operational authority is scoped by session, location, instrument, and assignment | RBAC decisions | RBAC and Authorization | RLS/API authorization tests | BASELINED |
+| RBAC-003 | Self-review and self-approval are prohibited | WF decisions | RBAC and Authorization; Inspection Lifecycle | Negative workflow tests | BASELINED |
+| SES-001 | Project targets and official assignments are centrally governed | Planning decisions | Project, Session, Target, and Assignment Model | Role, target, and audit tests | BASELINED |
+| SES-002 | Overlapping assignments across different locations are prevented | Assignment decisions | Project, Session, Target, and Assignment Model | Conflict/concurrency tests | BASELINED |
+| SES-003 | Session cannot close while configured operational/document gates remain incomplete | Session closure decisions | Project, Session, Target, and Assignment Model | Closure-gate tests | BASELINED |
+| INS-001 | Active inspections bind to frozen instrument/checklist versions | Configuration decisions | Inspection Lifecycle; instrument specs | Snapshot/version immutability tests | BASELINED |
+| INS-002 | Default OK presentation is not automatic verification | Inspection decisions | PRD; instrument specs | UI and validation tests | BASELINED |
+| INS-003 | Serial number identifies unit; duplicate active claims are prevented | Claim decisions | Inspection Lifecycle and Claims | Concurrency and uniqueness tests | BASELINED |
+| INS-004 | Required checklist/evidence validation blocks incomplete submission | Inspection decisions | Inspection Lifecycle and Claims | Positive/negative submission tests | BASELINED |
+| EVD-001 | Evidence and media state are preserved and linked to inspection revision | Evidence decisions | Offline Sync and Recovery; Inspection Lifecycle | Storage integrity and sync tests | BASELINED |
+| OFF-001 | Offline drafts synchronize idempotently with conflict detection | Offline decisions | Offline, Sync, and Recovery | Offline/retry/conflict/recovery tests | DESIGN DRAFT |
+| REV-001 | Reviewer returns work with reason; Inspector corrects and resubmits | WF-001..003 | Inspection Lifecycle and Claims | Revision lifecycle tests | BASELINED |
+| REV-002 | Submitted revisions are immutable; approved work reopens only with authority and reason | WF-004..006 | Inspection Lifecycle and Claims | Immutability/reopen tests | BASELINED |
+| DOC-001 | PDF is generated from approved revision; print events and reprints are recorded | Document decisions | Reports, Documents, Printing, Attendance, and Audit | PDF snapshot and print-event tests | BASELINED |
+| DOC-002 | Wet signatures remain in scope; digital signature is not assumed | Document decisions | Reports and Documents | Template review and UAT | BASELINED |
+| DOC-003 | BA and attendance have distinct lifecycle and authority | Document decisions | Reports, Documents, Printing, Attendance, and Audit | Document UAT and role tests | DETAIL OPEN |
+| RPT-001 | Actual and Target reports are distinct; actual dates are never rewritten | RPT decisions | Reports, Documents, Printing, Attendance, and Audit | Reconciliation/date-integrity tests | BASELINED |
+| AUD-001 | Audit coverage and controls require explicit approval before implementation | INS-016 proposal | Reports, Documents, Printing, Attendance, and Audit | Audit coverage/tamper tests | PROPOSED |
+| OPS-002 | Production includes tested backup/restore, monitoring, deployment, and rollback | Engineering Governance | Operations package pending | Restore drill and rollback evidence | REQUIRED; detail pending |
 
 ## Instrument-specific traceability (pending official source validation)
 
 | Requirement ID | Instrument | Requirement area | Known source coverage | Verification plan | Status |
 |---|---|---|---|---|---|
-| IFP-001 | IFP | Checklist categories and 49 identified checklist statements across five categories | Transcribed from legacy reference descriptions; official source not yet validated | Reconcile exact text/order against authorized checklist; test every item and status | DRAFTED / SOURCE VALIDATION OPEN |
-| IFP-002 | IFP | Ten identified photo-slot labels | Transcribed from legacy reference descriptions; completeness/mandatory status unverified | Verify labels, required/conditional rules, exception handling and PDF placement | DRAFTED / SOURCE VALIDATION OPEN |
-| BRK-001 | Standing Bracket | Checklist categories and checklist items | No complete authoritative checklist available in current baseline | Obtain complete authoritative checklist; create item-level IDs | BLOCKED ON SOURCE |
-| BRK-002 | Standing Bracket | Five identified photo-slot labels | Transcribed from legacy reference descriptions; completeness/mandatory status unverified | Verify complete list and required/conditional rules | DRAFTED / SOURCE VALIDATION OPEN |
+| IFP-001 | IFP | Checklist categories and 49 identified checklist statements across five categories | Transcribed from legacy reference descriptions; official source not validated | Reconcile exact text/order against authorized checklist | DRAFTED / SOURCE VALIDATION OPEN |
+| IFP-002 | IFP | Ten identified photo-slot labels | Legacy reference descriptions; completeness/mandatory status unverified | Verify labels, required rules, exceptions, PDF placement | DRAFTED / SOURCE VALIDATION OPEN |
+| BRK-001 | Standing Bracket | Checklist categories and item list | 19 visible checklist rows transcribed from supplied screenshots; complete authoritative list not established | Confirm full checklist, grouping, text, and response rules | PARTIAL / SOURCE VALIDATION OPEN |
+| BRK-002 | Standing Bracket | Five identified photo-slot labels | Legacy reference descriptions; completeness/mandatory status unverified | Verify complete list and required rules | DRAFTED / SOURCE VALIDATION OPEN |
+| PRD-001 | Product | Product scope, journeys, functional/non-functional requirements | PRD v0.1.0 | Product Owner review | DRAFTED / REVIEW REQUIRED |
+| AC-001 | Product | Observable acceptance criteria | Acceptance Criteria v0.1.0 | Map to test cases and UAT evidence | DRAFTED / REVIEW REQUIRED |
 
-| PRD-001 | Product | Product scope, user journeys, functional/non-functional requirements | Product Requirements Document v0.1.0 | Product Owner review and requirement-by-requirement acceptance | DRAFTED / REVIEW REQUIRED |
-| AC-001 | Product | Observable acceptance criteria for core journeys | Acceptance Criteria v0.1.0 | Map each criterion to test case and UAT evidence | DRAFTED / REVIEW REQUIRED |
+## Package C design artifacts
+
+- `docs/03-functional-design/RBAC-AND-AUTHORIZATION.md`
+- `docs/03-functional-design/PROJECT-SESSION-AND-ASSIGNMENT-MODEL.md`
+- `docs/03-functional-design/INSPECTION-LIFECYCLE-AND-CLAIMS.md`
+- `docs/03-functional-design/OFFLINE-SYNC-AND-RECOVERY.md`
+- `docs/03-functional-design/REPORTS-DOCUMENTS-AND-AUDIT.md`
+
+All are design drafts, not formal Product Owner approvals. Open decisions are explicitly retained in each document.
 
 ## Change-control rules
 
 - Every new requirement receives a stable ID; IDs are never reused.
-- Every approved requirement must link to a decision or authorized source.
+- Every approved requirement must link to an authorized source or decision.
 - Every implementation PR references requirement IDs.
-- Every requirement marked implemented must link to code paths/PRs; verified requirements must link to test results or UAT evidence.
-- Changes to approved requirements require impact analysis across UX, data model, authorization, audit, migration, reporting, tests, and operations.
+- Every implemented requirement links to code paths/PRs; verified requirements link to test results or UAT evidence.
+- Changes to approved requirements require impact analysis across UX, data, authorization, audit, migration, reporting, tests, and operations.
 - Unknown source details remain OPEN; do not fill gaps with assumptions.
