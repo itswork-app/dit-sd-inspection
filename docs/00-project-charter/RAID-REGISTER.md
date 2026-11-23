@@ -65,3 +65,14 @@ Owner convention: accountable role is recorded; named individuals are not invent
 - Assumptions must be validated or explicitly accepted as residual assumptions before they become implementation contracts.
 - Any new risk, issue, or dependency receives a stable ID and an accountable role.
 - No person or organization is assigned as an owner without explicit confirmation.
+
+
+## Package R — Audit governance additions
+
+| ID | Type | Description | Impact | Response | Accountable role | Status |
+|---|---|---|---|---|---|---|
+| R-013 | Risk | Audit history may be incomplete or exposed if event writes, access controls, retention, or export governance are not approved and enforced | Critical | Approve INS-016, transactional append semantics, least-privilege access, privacy-safe payloads, retention/legal hold, and verification before implementation | Project Sponsor / CTO / Records Owner | OPEN |
+
+| I-010 | Issue | Audit retention duration, legal-hold authority, audit-reader roles, export permission, and network metadata policy remain unresolved | High | Obtain institutional security, privacy, records, and legal decisions | Project Sponsor / Records Owner | OPEN |
+
+| D-008 | Dependency | Approved audit event policy and trusted transactional command boundary | Audit implementation and security release gate | Product Owner / CTO | BLOCKED |
