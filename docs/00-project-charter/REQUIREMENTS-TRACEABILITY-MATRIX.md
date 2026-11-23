@@ -221,3 +221,8 @@ T-13 option B is PO APPROVED. Traceable acceptance requirements AC-DOC-008 throu
 ## T-14 traceability — Inspector capacity predicate (PO-approved 2026-11-24)
 
 Trace the canonical predicate across UI, server commands, PostgreSQL transactions, authorization and QA: distinct enabled login account + active Inspector role grant + at least one currently effective operational Inspector assignment in governed project/session scope. Exclude pending, rejected, suspended, disabled and expired-role accounts; deduplicate across assignments/roles. Preserve combined cap 1–100, default 50, atomic enforcement, invalid-value rejection and no silent deactivation on cap reduction. Test execution remains pending.
+
+
+## Registration and Super Admin staffing traceability
+
+Trace registration → pending account → Super Admin approval → role/permission/scope grant → Super Admin team membership and operational assignment. Registration alone grants no access and no capacity eligibility. Super Admin controls team count and team staffing; self-assignment is prohibited. Verification must cover UI, API, database constraints, RLS/privileged commands and audit events. Inspector cap eligibility remains the T-14 distinct enabled account + active Inspector role + effective operational assignment predicate.
