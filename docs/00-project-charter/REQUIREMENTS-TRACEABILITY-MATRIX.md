@@ -27,7 +27,7 @@ Purpose: Link approved product intent to specifications, implementation units, a
 | GOV-003 | Use Supabase + Vercel; GitHub for source control/CI | TECH-001, TECH-003 | CTO / Engineering Lead | ADR and deployment pipeline | APPROVED |
 | GOV-004 | Supabase PostgreSQL is the sole primary source of truth | TECH-002 | CTO / Engineering Lead | Architecture review and data-flow tests | APPROVED |
 | GOV-005 | Initial product scope is not SaaS and includes only IFP and Standing Bracket | PRD-001..003 | Product Owner | Scope audit and PRD sign-off | APPROVED |
-| OPS-001 | Maximum 50 Inspector users across both locations combined | OPS-001 decision | Product Owner / Super Admin | Database constraint/service validation and assignment tests | APPROVED |
+| CAP-001 | Maximum 50 Inspector users across both locations combined | Decision Register OPS-001 | Product Owner / Super Admin | Database constraint/service validation and assignment tests | APPROVED |
 | AUTH-001 | Users sign in with Google; new accounts await approval and role assignment | RBAC-001 | Product Owner / CTO | Auth and account lifecycle integration tests | APPROVED |
 | RBAC-001 | Users may hold multiple roles only with explicit scoped assignments | RBAC-002 | Product Owner / CTO | Positive and negative authorization tests | APPROVED |
 | RBAC-002 | Operational authority is scoped by session, location, instrument, and assignment | RBAC-002 | CTO / Engineering Lead | RLS and API authorization tests | APPROVED |
