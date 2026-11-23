@@ -143,7 +143,7 @@ New evidence reviewed:
 - `Pemeriksaan Barang_SB.pdf`, one-page inspection report dated 23 November 2026, inspection no. 469, supplier PT Hisense International Indonesia, location Karawang, model WH3309-LK.
 - `BA_INSPEKSI_SB_KRW_20-11-2026.pdf`, 20-page visitasi BA dated 20 November 2026 for Standing Bracket at PT DUNEX, Karawang.
 
-The 23 November report visibly contains 19 checklist statements: six under “01 Kondisi Fisik” and thirteen under “02 Kelengkapan Dokumen dan Aksesories”. This differs from the 19 visible rows transcribed from earlier screenshots. The document is a sample report and does not, by itself, establish that it is the controlled master checklist or that the nineteenth earlier row is invalid. Therefore:
+The 23 November report visibly contains 19 checklist statements: six under “01 Kondisi Fisik” and thirteen under “02 Kelengkapan Dokumen dan Aksesories”. It has the same visible row count as the earlier screenshot transcription, but source wording, context, and item mapping have not been proven identical. The document is a sample report and does not, by itself, establish that it is the controlled master checklist or that the nineteenth earlier row is invalid. Therefore:
 - Keep the earlier 19-row transcription as a separate source-observation set; do not silently delete or renumber it.
 - Add a source-specific 19-row set for the 23 November form, preserving its exact wording and grouping.
 - Treat the overlap (first six physical checks and many accessories) as candidate equivalence, not confirmed identity, until a controlled source is supplied.
@@ -154,7 +154,7 @@ The 20 November BA provides a real output example: 460 Standing Bracket samples 
 
 ### Additional source-specific verification requirements
 - TC-BRK-SRC-001: render and preserve the exact 19-row 23-November sample form independently of the earlier 19-row screenshot set.
-- TC-BRK-SRC-002: verify source mapping between the 18-row and 19-row sets; unresolved/ambiguous mappings remain visible and cannot be auto-merged.
+- TC-BRK-SRC-002: verify source mapping between the two 19-row source sets; unresolved/ambiguous mappings remain visible and cannot be auto-merged.
 - TC-BRK-BA-001: generate a BA summary whose sample, good, and defective counts reconcile to the serial annex; test 460 = 456 + 4 using a fixture only.
 - TC-BRK-BA-002: ensure every annex serial has exactly one allowed condition value and totals match the summary; flag duplicates, missing serials, and count mismatch before issuance.
 - TC-BRK-BA-003: generate condition-grouped evidence references and configurable paraf blocks without exposing public or signed URLs.
