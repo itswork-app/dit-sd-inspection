@@ -1,0 +1,464 @@
+# Package T — Product Owner Decision Closure Pack
+
+**Document status:** Draft for Product Owner review  
+**Version:** 0.1.0  
+**Date:** 2026-11-23  
+**Repository branch:** `docs/phase-0-foundation`  
+**Purpose:** Convert the remaining Package S scope-freeze blockers and high-risk items into explicit, reviewable Product Owner decisions.
+
+> This pack is a decision instrument, not an approval record. Recommendations below are proposals only. A recommendation becomes an approved product decision only after the Product Owner explicitly accepts it and the Decision Register is updated.
+
+## 1. Executive status
+
+Package S concluded that the documentation baseline is substantial, cross-document consistency is partial, scope freeze is not ready, and feature implementation is not authorized.
+
+Package T does not change that status by itself. It organizes decisions, identifies the lowest-risk recommended path, and defines what evidence is needed to close each gate.
+
+### Decision states
+
+| State | Meaning |
+|---|---|
+| APPROVED | Explicitly accepted by Product Owner and recorded in the Decision Register |
+| REJECTED | Explicitly declined; replacement direction recorded |
+| DEFERRED | Deliberately postponed with owner, due date/event, and scope consequence |
+| OPEN | No explicit decision yet |
+| BLOCKED | Cannot be decided responsibly until required source evidence or institutional authority is available |
+
+No item in this pack is marked APPROVED.
+
+## 2. Decision summary
+
+| ID | Topic | Current state | Recommended direction | Scope-freeze impact |
+|---|---|---|---|---|
+| T-01 | Official IFP and Standing Bracket master requirements | BLOCKED | Approve controlled master checklists and evidence-slot matrix from authoritative signed/issued source | Blocker |
+| T-02 | BA signatories and signing authority | OPEN | Configurable signatory blocks, ordered by document template; require explicit authorized signatory records | Blocker for final BA |
+| T-03 | Executive-summary signature | OPEN | No signature by default; enable only through approved template configuration | High |
+| T-04 | Client report delivery | OPEN | PDF-only for initial release; defer client portal | High |
+| T-05 | Actual report headline/count basis | OPEN | Show separate counts for inspected, submitted, approved, and completed; never collapse into one ambiguous total | Blocker for report acceptance |
+| T-06 | Project closure and reconciliation | OPEN | Explicit closure gate after all sessions, inspections, reviews, documents, attendance and reconciliation are complete | Blocker |
+| T-07 | Session creation authority and state transitions | OPEN | Super Admin creates/configures; Korlap operates assigned session within bounded transitions | Blocker |
+| T-08 | Attendance verification authority | OPEN | Designate explicit verifier permission and independent verification; do not infer from upload role | Blocker for verified attendance |
+| T-09 | Offline scope and conflict policy | OPEN | Online-first; limited offline editing only for already claimed drafts; no offline claim, approval, final submit or administration | Blocker if offline is required |
+| T-10 | Evidence limits, retention, deletion and privacy | BLOCKED | Obtain institutional records/privacy approval before setting limits and retention schedule | Blocker |
+| T-11 | Supported devices, performance and service objectives | OPEN | Approve a minimum browser/device matrix and measurable test profile before implementation acceptance | High |
+| T-12 | Provider operations, region, quota, backups and ownership | BLOCKED | Verify actual Supabase/Vercel plans, region, quotas, backup/restore and named operational owners | Blocker |
+| T-13 | Print Officer and print-control workflow | OPEN | Dedicated permissioned print queue, immutable final PDF, audited print/reprint events | High |
+| T-14 | Inspector capacity semantics | OPEN | Define precisely which accounts count as active Inspector accounts under the approved 1–100 cap | High |
+| T-15 | Audit event policy INS-016 | OPEN | Approve append-only event catalogue and atomic audit writes for critical state changes | Blocker |
+| T-16 | Serial-number uniqueness and evidence/revision linkage | OPEN | Enforce scoped uniqueness rules only after source/business rules are confirmed; bind evidence to immutable revision and instrument version | Blocker |
+| T-17 | Instrument configuration governance CFG-001 | APPROVED DIRECTION; detailed controls OPEN | Declarative, versioned configuration with bounded supported field and validation types; no arbitrary code | Must be completed in design |
+| T-18 | Privileged command boundary | OPEN | All privileged mutations through narrowly scoped server-side commands with caller identity, authorization and atomic transactions | Blocker |
+
+## 3. Detailed decision records
+
+### T-01 — Authoritative instrument requirements
+
+**Problem:** Current IFP and Standing Bracket transcriptions are useful working evidence, but they are not yet proven to be the authoritative, complete, approved master requirements. Standing Bracket source observations must remain separate where wording or item mapping differs. Photo-slot mandatory status is also unconfirmed.
+
+**Recommendation:**
+1. Obtain the current officially issued/approved checklist and supporting instrument specification for each instrument.
+2. Have the responsible institutional owner confirm checklist wording, item order, applicability, expected values, evidence/photo slots and mandatory status.
+3. Record source title, revision/date, issuing authority, approval evidence and effective date.
+4. Publish the confirmed definitions as immutable instrument versions under CFG-001.
+5. Keep historical sessions attached to the version they started with.
+
+**Options:** (A) Approve controlled source-backed masters; (B) authorize a clearly labelled provisional pilot configuration; (C) defer instrument until evidence is supplied.
+
+**Cost/effort:** Low to moderate documentation and validation effort; avoids expensive rework in data, UX, reports and acceptance tests.
+
+**Risk if deferred:** The system may encode an incomplete or unofficial checklist, causing inspection disputes and invalid reports.
+
+**Decision required:** Identify who has authority to approve each master instrument definition and whether a provisional pilot is permitted.
+
+**State:** BLOCKED pending authoritative source and approval authority.
+
+### T-02 — BA signatories and signing authority
+
+**Problem:** The available sample BA shows blocks for Tim Pemeriksaan Direktorat SD and PT Hisense International Indonesia. It does not establish a permanent signatory policy, required number/order of signatories, or authority to sign.
+
+**Recommendation:** Make signatory blocks configurable per approved BA template, including organization, role/title, display order and required/optional status. The actual person signing must be selected from an authorized record or entered by an authorized administrator with an audit trail. Do not hardcode the sample parties as universal policy.
+
+**Options:** (A) Two configurable parties as in sample; (B) configurable number of parties per BA template; (C) another institutionally approved signatory structure.
+
+**Cost/effort:** Low if settled before PDF template implementation; moderate rework if changed later.
+
+**Risk if deferred:** BA output may have incorrect legal/administrative signatory blocks.
+
+**Decision required:** Confirm template-level flexibility and identify the authority that approves signatory names/titles.
+
+**State:** OPEN; final BA release blocked.
+
+### T-03 — Executive-summary signature
+
+**Problem:** Available evidence does not establish that the executive summary requires a signature.
+
+**Recommendation:** No signature block by default. Permit an explicitly configured signature block only when an approved document template requires it.
+
+**Options:** (A) No signature; (B) signature required; (C) configurable per report template.
+
+**Cost/effort:** Low.
+
+**Risk if deferred:** Minor template rework; avoid presenting an unapproved signature as official.
+
+**Decision required:** Choose A, B or C.
+
+**State:** OPEN.
+
+### T-04 — Client report delivery
+
+**Problem:** PDF-only delivery versus a client-facing portal has not been approved.
+
+**Recommendation:** PDF-only for the initial release. Keep reports generated, versioned and distributed through an authorized workflow. Defer a client portal to a later approved phase.
+
+**Options:** (A) PDF-only; (B) portal; (C) both.
+
+**Cost/effort:** PDF-only has the lowest implementation, security and operational cost. A portal adds identity, access, support and data-exposure requirements.
+
+**Risk if deferred:** Scope uncertainty can expand authentication, authorization and support requirements.
+
+**Decision required:** Approve initial delivery channel and whether portal is explicitly out of initial scope.
+
+**State:** OPEN.
+
+### T-05 — Actual report headline/count basis
+
+**Problem:** A single “actual” total can mean inspected, submitted, approved or administratively completed. These states are not equivalent.
+
+**Recommendation:** Display distinct, labelled metrics:
+- Inspected: an inspection record has been started/recorded according to the approved metric definition.
+- Submitted: a revision has been submitted for review.
+- Approved: a reviewer has approved the relevant revision.
+- Completed: approved inspection + final PDF generated + Print Officer print action recorded.
+
+Use the existing completion definition for Completed. The report must state its measurement timestamp and filters. Do not infer physical printing from PDF opening or downloading.
+
+**Options:** (A) Distinct state counts (recommended); (B) one approved-count headline with supporting breakdown; (C) another explicitly defined metric.
+
+**Cost/effort:** Low to moderate; requires metric definitions and report labels.
+
+**Risk if deferred:** Reports may overstate progress or mislead institutional stakeholders.
+
+**Decision required:** Approve the primary headline metric while retaining state breakdowns.
+
+**State:** OPEN; report acceptance blocked.
+
+### T-06 — Project closure and reconciliation
+
+**Problem:** Exact final project close conditions and reconciliation authority need explicit approval.
+
+**Recommendation:** Use explicit, non-automatic project closure. A project may be closed only after:
+1. All sessions are closed.
+2. No unresolved claims, drafts, corrections or pending reviews remain.
+3. Required inspections have reached the required final state.
+4. Required PDFs and print events are recorded.
+5. Required BA and attendance artifacts are complete and verified according to policy.
+6. Actual-versus-target reconciliation is reviewed.
+7. Authorized closer records a reason/confirmation and the system writes an audit event.
+
+Do not auto-close by date. Any exception should use a separately permissioned, reasoned override with audit.
+
+**Options:** (A) Super Admin closes after all gates; (B) Korlap requests and Super Admin confirms; (C) another approved authority model.
+
+**Cost/effort:** Moderate workflow and reporting design.
+
+**Risk if deferred:** Projects can appear complete while operational or documentary obligations remain unresolved.
+
+**Decision required:** Confirm who requests, validates and finally authorizes project closure, and whether exceptions are allowed.
+
+**State:** OPEN; closure implementation blocked.
+
+### T-07 — Session creation authority and state transitions
+
+**Problem:** Session creation authority and complete transition rules are not fully locked.
+
+**Recommendation:** Super Admin exclusively creates and configures sessions, target, location, instrument and team assignments. Korlap operates only assigned sessions and may activate, pause, resume or request closure only if the approved permission matrix grants those actions. Proposed states: DRAFT, ACTIVE, PAUSED, CLOSED. CLOSED is terminal for ordinary operation; reopening requires explicit privileged permission, reason and audit.
+
+**Options:** (A) Recommended authority/state model; (B) Super Admin performs all state transitions; (C) institution-defined alternative.
+
+**Cost/effort:** Low if approved before command/API design.
+
+**Risk if deferred:** Conflicting authority and inconsistent session lifecycle behavior.
+
+**Decision required:** Approve creator, transition authority, terminal-state behavior and reopening rule.
+
+**State:** OPEN; session command design blocked.
+
+### T-08 — Attendance verification authority
+
+**Problem:** Attendance upload and verification are distinct actions, but verifier authority is unresolved.
+
+**Recommendation:** Separate permissions for generate, print, upload, download and verify. The verifier must be explicitly assigned by Super Admin or granted through an approved role/scope rule. Uploading a file must never automatically mark attendance VERIFIED.
+
+**Options:** (A) Korlap verifies within assigned location; (B) designated Reviewer verifies; (C) dedicated attendance verifier; (D) another approved model.
+
+**Cost/effort:** Low to moderate.
+
+**Risk if deferred:** Uploaded attendance could be mistaken for verified evidence.
+
+**Decision required:** Choose verifier role and scope, including whether the uploader may verify the same artifact.
+
+**State:** OPEN; verified attendance workflow blocked.
+
+### T-09 — Offline scope and conflict policy
+
+**Problem:** Offline behavior and supported device/browser requirements remain unresolved. Full offline operation would significantly increase security, synchronization and recovery complexity.
+
+**Recommendation:** Online-first initial release. If limited offline support is required, permit editing only on an already claimed draft with locally persisted work. Do not allow offline claim, approval, final submit, role/scope changes, session administration or other privileged actions. On reconnect, use idempotent synchronization, explicit conflict detection and user-visible resolution; never silently overwrite a newer revision. Local data protection and purge rules must be approved before enabling offline persistence.
+
+**Options:** (A) Online-only; (B) limited offline draft editing; (C) full offline workflow (not recommended for initial release).
+
+**Cost/effort:** Online-only lowest cost; limited offline moderate/high; full offline high.
+
+**Risk if deferred:** Unbounded offline scope creates substantial schedule, security and data-loss risk.
+
+**Decision required:** Is offline operation required for initial rollout? If yes, choose B and approve device/local-data controls.
+
+**State:** OPEN; offline feature scope blocked.
+
+### T-10 — Evidence limits, retention, deletion and privacy
+
+**Problem:** Institutional data classification, lawful basis, retention periods, deletion authority, legal hold and evidence size/type limits are not approved.
+
+**Recommendation:** Obtain written institutional privacy/records approval before production evidence collection. Then define:
+- data classification and permitted personal information;
+- allowed file types, per-file and per-inspection size limits;
+- retention schedule by record class;
+- legal hold and investigation freeze;
+- deletion eligibility, approval and audit;
+- private object access and time-limited authorized retrieval;
+- backup/restore and post-deletion treatment;
+- local/offline copy protection if applicable.
+
+Until approved, do not invent retention periods or implement irreversible deletion.
+
+**Options:** (A) institution supplies approved schedule; (B) formal records/legal review before schedule; (C) pilot with restricted evidence and explicit temporary handling policy approved by institution.
+
+**Cost/effort:** Moderate governance effort; prevents legal/privacy remediation later.
+
+**Risk if deferred:** Unlawful or unsafe retention/deletion, uncontrolled sensitive evidence, or inability to meet records obligations.
+
+**Decision required:** Name the institutional records/privacy approver and provide approved classification/retention direction.
+
+**State:** BLOCKED pending institutional authority.
+
+### T-11 — Supported devices, performance and service objectives
+
+**Problem:** The 100 concurrent-user figure is a test target, not a demonstrated capacity or service-level commitment. Browser/device matrix and numeric performance objectives are not final.
+
+**Recommendation:** Approve a minimum support matrix before implementation: supported desktop/mobile operating systems, browsers and minimum versions, camera permissions, upload behavior, print/PDF behavior and network assumptions. Establish measurable test scenarios for 100 concurrent authenticated users, evidence upload, review queue, report generation and synchronization. Set numeric SLOs only after workload definition and provider verification.
+
+**Options:** (A) Institution-owned managed device/browser matrix; (B) current mainstream browser versions with explicit exclusions; (C) broader support after cost review.
+
+**Cost/effort:** Moderate testing; broad compatibility increases QA cost.
+
+**Risk if deferred:** Unclear acceptance criteria and unbounded device support.
+
+**Decision required:** Approve device/browser baseline and whether 100 concurrent users is the required acceptance load profile.
+
+**State:** OPEN.
+
+### T-12 — Provider operations, region, quota, backup and ownership
+
+**Problem:** Supabase/Vercel plan, region/data residency, quotas, billing owner, backup and point-in-time recovery capabilities, Storage recovery, operational contacts and restore evidence have not been verified.
+
+**Recommendation:** Keep the approved cost-first Supabase + Vercel architecture, but require a pre-production verification sheet containing:
+- actual account/project ownership and billing owner;
+- selected region and institutional approval;
+- plan/quotas and expected usage envelope;
+- PostgreSQL backup/PITR capability and retention;
+- Storage object backup/recovery approach;
+- environment separation and secret ownership;
+- two operational recovery contacts;
+- restore drill evidence and measured recovery results;
+- monitoring, incident response and escalation responsibility.
+
+Do not assume a provider feature or plan capability without checking the actual subscribed plan and project settings.
+
+**Options:** (A) institution owns provider accounts; (B) organization-owned accounts with named custodians; (C) another formally approved ownership arrangement.
+
+**Cost/effort:** Verification effort low/moderate; production costs depend on verified plan and usage.
+
+**Risk if deferred:** Data residency, billing, access continuity and recoverability remain unproven.
+
+**Decision required:** Confirm account owner, billing owner, region approver and operational recovery contacts.
+
+**State:** BLOCKED pending provider and institutional verification.
+
+### T-13 — Print Officer and print-control workflow
+
+**Problem:** Print Officer screens, batch operations, printer assumptions and failure/reprint handling need more detail.
+
+**Recommendation:** Dedicated permissioned queue for approved inspections with final PDFs. Print Officer records each print action, actor, timestamp, document version and print sequence. Reprints retain the same approved document version unless a controlled regeneration creates a new version. Display “Cetak ke-2” or equivalent from the recorded sequence. Support individual and carefully bounded batch printing, with per-document outcomes and retry handling. A print event records the application action, not proof that paper physically emerged from a printer.
+
+**Options:** (A) Individual print only for initial release; (B) individual + batch print; (C) direct printer integration.
+
+**Cost/effort:** A is lowest cost; B moderate; C higher and device-specific.
+
+**Risk if deferred:** Inconsistent print records and manual operational workarounds.
+
+**Decision required:** Approve initial print mode and the meaning/limits of a recorded print event.
+
+**State:** OPEN.
+
+### T-14 — Inspector capacity semantics
+
+**Problem:** Approved cap contract is minimum 1, default 50, maximum 100 distinct active Inspector accounts combined across both locations. The precise definition of an account counted as active Inspector remains open.
+
+**Recommendation:** Count distinct user accounts that are enabled for login, have an active Inspector role grant, and have at least one currently effective operational Inspector assignment within the governed project/session scope. Count each account once even if it has multiple assignments or roles. Exclude pending, rejected, suspended, disabled and expired-role accounts. If the institution intends a different meaning (for example, all users with an Inspector role regardless of current assignment), explicitly choose it.
+
+The enforcement must be atomic. Reject 0 and values above 100. If reducing the cap below the current count, reject the change until the count is within the new cap; do not silently deactivate accounts.
+
+**Options:** (A) Count enabled users with active Inspector role and effective assignment (recommended); (B) count all enabled users with active Inspector role regardless of assignment; (C) institution-defined predicate.
+
+**Cost/effort:** Low; important for deterministic enforcement.
+
+**Risk if deferred:** Capacity enforcement can differ across UI, API and database.
+
+**Decision required:** Approve the canonical active-account predicate.
+
+**State:** OPEN.
+
+### T-15 — Audit event policy INS-016
+
+**Problem:** Append-only audit catalogue and atomic write requirements are proposed but not approved.
+
+**Recommendation:** Approve INS-016 as a mandatory control for critical business/security/governance actions. Critical state mutation and its audit event must commit atomically; if the audit write fails, the critical mutation fails closed. Restrict update/delete privileges on audit records, record actor, active role, scope, action, timestamp, correlation/idempotency reference and privacy-safe change context. Access/export of sensitive evidence should itself be auditable. Retention and legal-hold policy remains subject to T-10.
+
+**Options:** (A) Approve the proposed INS-016 controls; (B) approve with documented exceptions; (C) replace with an institution-approved audit standard.
+
+**Cost/effort:** Moderate database and command design effort; lower than retrofitting audit after launch.
+
+**Risk if deferred:** Critical actions may not be reconstructable or attributable.
+
+**Decision required:** Approve the catalogue and fail-closed atomicity rule, or provide the governing alternative.
+
+**State:** OPEN; critical mutation design blocked.
+
+### T-16 — Serial uniqueness and evidence/revision linkage
+
+**Problem:** Serial-number uniqueness scope and exceptions are not final. Evidence must be tied to the exact inspection revision and instrument version to preserve historical integrity.
+
+**Recommendation:**
+1. Bind each evidence record to an immutable inspection revision and instrument version.
+2. Preserve original evidence metadata, checksum, uploader, capture/upload time and storage object identity.
+3. Do not overwrite evidence in place; replacement creates a new evidence record and audit event.
+4. Do not assume serial numbers are globally unique across instrument types, suppliers or projects.
+5. Approve a uniqueness rule only after confirming whether duplicate serials can legitimately occur across instrument categories, projects, locations or supplier batches.
+6. Provide a controlled duplicate-resolution workflow with reason and audit rather than silently rejecting or merging historical records.
+
+**Options:** (A) Unique within instrument type + project; (B) unique within instrument type across all projects; (C) no hard uniqueness constraint, duplicate warning and controlled review; (D) institution-provided rule.
+
+**Cost/effort:** Moderate; impacts database constraints and claim/inspection transaction logic.
+
+**Risk if deferred:** False duplicate rejection or duplicate physical-unit records.
+
+**Decision required:** Approve serial uniqueness scope and duplicate handling.
+
+**State:** OPEN; schema invariant blocked.
+
+### T-17 — Instrument configuration governance CFG-001
+
+**Approved direction:** Super Admin manages configurable instrument definitions; IFP and Standing Bracket are initial configurations, not hardcoded permanent limits.
+
+**Required design completion:**
+- supported declarative field types and validation primitives;
+- checklist section/item ordering and applicability;
+- expected values/specification fields;
+- evidence-slot definitions and mandatory/conditional rules;
+- draft/publish/deactivate/version lifecycle;
+- permissions and approval/audit rules for configuration changes;
+- immutable published versions and active-session version pinning;
+- historical inspection snapshot behavior;
+- compatibility/migration policy when a new version is published.
+
+**Recommendation:** Keep configuration declarative and bounded. Do not allow arbitrary scripts, SQL, executable expressions or unrestricted user-supplied code. Super Admin should be able to draft and publish a version only through validated supported primitives.
+
+**Risk if deferred:** “Configurable” may become unsafe or ambiguous, and historical results may change meaning.
+
+**Decision required:** Confirm whether Super Admin may publish instrument versions directly or whether a second approval is required.
+
+**State:** APPROVED DIRECTION; detailed publication governance OPEN.
+
+### T-18 — Privileged command boundary
+
+**Problem:** The API/database boundary for privileged mutations is drafted but not approved.
+
+**Recommendation:** Use server-side command endpoints/functions for state-changing operations. Each command must:
+- validate caller identity from a trusted authenticated context;
+- derive actor identity server-side, never trust a client-supplied actor ID;
+- check permission, role, scope, assignment and separation-of-duties rules;
+- validate state transition and input;
+- enforce idempotency for retryable operations;
+- execute business mutation and required audit write in one transaction;
+- use least privilege and narrowly scoped database function grants;
+- prevent clients from directly mutating protected tables;
+- return stable, typed outcomes and safe error codes.
+
+Security-definer functions, if required, must pin search_path, validate inputs and have minimal ownership/grants. No broad service-role credential may be exposed to the browser.
+
+**Options:** (A) Approve the proposed Vercel server route + caller-JWT PostgreSQL command-function pattern; (B) alternative reviewed command architecture; (C) defer privileged mutations (not compatible with feature implementation).
+
+**Cost/effort:** Moderate; foundational architecture work.
+
+**Risk if deferred:** Authorization rules may be bypassed or inconsistently enforced.
+
+**Decision required:** Approve command boundary and direct-DML denial policy.
+
+**State:** OPEN; implementation blocked.
+
+## 4. Recommended decision order
+
+Resolve decisions in this order to minimize rework:
+
+1. **Institutional authority and source evidence:** T-01, T-02, T-10, T-12.
+2. **Core operational governance:** T-06, T-07, T-08, T-14, T-15.
+3. **Data integrity and security architecture:** T-16, T-18, and detailed CFG-001 controls in T-17.
+4. **Operational product behavior:** T-04, T-05, T-09, T-13.
+5. **Acceptance and quality baseline:** T-03, T-11.
+
+A deferred decision must identify the affected feature as excluded or blocked. Deferral must not be interpreted as implied approval.
+
+## 5. Scope-freeze gate mapping
+
+| Gate | Required evidence | Related decisions |
+|---|---|---|
+| Authoritative instrument masters | Approved IFP/SB source, reconciled checklist and evidence matrix | T-01, T-17 |
+| BA and report templates | Approved signatory policy and report delivery/count rules | T-02, T-03, T-04, T-05 |
+| Session/project lifecycle | Approved authority, transitions and close/reconciliation rules | T-06, T-07 |
+| Attendance | Named verifier role and workflow | T-08 |
+| Offline and devices | Approved online/offline scope, local-data policy, support matrix | T-09, T-11 |
+| Privacy and evidence | Institutional classification, retention, deletion and legal-hold approval | T-10 |
+| Provider operations | Region, ownership, plan/quotas, backup/restore and recovery evidence | T-12 |
+| Printing | Print queue, print event and reprint rules | T-13 |
+| Inspector capacity | Canonical count predicate and atomic enforcement | T-14 |
+| Audit | Approved INS-016 controls and event requirements | T-15 |
+| Database integrity | Serial uniqueness, evidence/revision/version constraints | T-16 |
+| Instrument configuration | Complete declarative schema and publish/version governance | T-17 |
+| Privileged commands | Approved command boundary and grants/RLS interaction | T-18 |
+
+## 6. Approval recording protocol
+
+For each decision, the Product Owner response must identify one of:
+- **Approve** — accept the recommended direction.
+- **Reject** — reject it and state the replacement direction.
+- **Defer** — postpone with a reason and a trigger/date for reconsideration.
+- **Need evidence** — specify the source, authority or evidence needed.
+
+After explicit decisions:
+1. Update `DECISION-REGISTER.md` with stable decision IDs, decision text, date, approver/authority and rationale.
+2. Update affected PRD, functional design, architecture, security, QA, RTM and RAID documents.
+3. Fetch the changed files back from GitHub and verify the exact committed content.
+4. Re-run cross-document consistency review.
+5. Update the scope-freeze gate status only when evidence is present.
+6. Keep PR #2 draft and do not merge until every mandatory gate is closed and explicitly accepted.
+
+## 7. Non-authorization statement
+
+This package does not authorize:
+- application feature implementation;
+- database migration creation or execution;
+- production Supabase/Vercel configuration;
+- deployment or production data collection;
+- claiming that RLS, audit, backup, restore, load or security controls are implemented or tested.
+
+**Current overall status remains: NOT READY FOR SCOPE FREEZE; FEATURE IMPLEMENTATION NOT AUTHORIZED.**
