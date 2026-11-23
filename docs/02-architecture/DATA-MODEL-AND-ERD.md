@@ -76,7 +76,8 @@ erDiagram
 ### Evidence and documents
 - `evidence_assets`: private object key, checksum, size, MIME type, slot/item, uploader, upload state, capture metadata.
 - `documents`: generated PDF/BA/attendance document metadata, template version, source revision, checksum.
-- `print_events`: actor, time, document version, reprint ordinal, client confirmation.
+- `print_batches`: batch identity, initiating actor, timestamp, requested document count, and lifecycle/status metadata; batch is an orchestration record, not proof of all-document success.
+- `print_events`: one append-only per-document event with actor, time, exact document version, atomic reprint ordinal, outcome (`SUCCESS_RECORDED`, `FAILED`, `CANCELLED`), batch reference when applicable, and safe client/application result metadata.
 - `attendance_records`, `attendance_documents`: generated roster and uploaded signed evidence lifecycle.
 
 ### Audit and operations
@@ -95,7 +96,8 @@ erDiagram
 6. Revision numbers are unique per inspection; submitted revisions cannot be updated or deleted by application roles.
 7. Checklist response references an item in the exact instrument version snapshot used by the revision.
 8. Evidence metadata references a valid slot/item and inspection revision; object key is immutable once finalized.
-9. Print events are append-only; a reprint creates a new event.
+9. Print events are append-only; a reprint creates a new event. Each event references the exact immutable document version and has a concurrency-safe per-document sequence.
+10. Batch print outcomes are per-document; retry can reference failed documents only and cannot duplicate a previously successful event.
 10. Target allocations are versioned and never mutate actual inspection timestamps.
 
 ## 5. State versus event
