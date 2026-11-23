@@ -58,3 +58,14 @@ Each release candidate must retain commit SHA, environment, test suite/version, 
 - Test/staging environment cost and provider quotas.
 - Independent penetration test requirement.
 - UAT participant list and sign-off authority.
+
+
+## T-11 approved compatibility and load-test gates
+- Compatibility suite must cover current stable Chrome on Android for Inspector and current stable Chrome/Edge on desktop for Korlap, Reviewer, Super Admin and Print Officer.
+- Tablet coverage is conditional on explicit responsive, camera, upload and PDF/print validation.
+- Unsupported/obsolete browser releases, embedded in-app browsers and modified browsers are excluded.
+- Record exact OS/device/browser build matrix from actual test devices; a generic browser-family statement is not test evidence.
+- Execute load tests at 10, 25, 50, 75 and 100 concurrent authenticated users using representative workflows. 100 is an acceptance test target, not a demonstrated capacity or SLO.
+- Numeric latency/error-rate thresholds require Product Owner/engineering approval after workload and provider-plan verification and baseline measurement.
+
+T-11 option B is PO-approved. These are required gates, not executed test results.
