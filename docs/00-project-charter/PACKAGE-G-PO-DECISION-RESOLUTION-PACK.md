@@ -13,11 +13,13 @@ Consolidate unresolved decisions that block the requirements and architecture fr
 ### G-01 — Authoritative instrument source (BLOCKER)
 
 **Current evidence**
-- IFP specification: 49 checklist statements, 14 model specification fields, and 10 photo labels identified from reference descriptions; official source and mandatory status remain unverified.
-- Standing Bracket: 19 visible checklist rows and 5 photo labels identified; the screenshots show partial checklist content, and photo labels are not validated by the supplied checklist screenshots.
+- User-provided photo evidence is available in this conversation: IFP checklist screens from periksa.web.app, paper BA example, attendance sheet, and Standing Bracket serial-number attachment.
+- IFP specification currently transcribes 49 checklist statements, 14 model specification fields, and 10 photo labels from the supplied screenshots.
+- Standing Bracket evidence includes the serial-number attachment and legacy app screenshots; its full checklist/photo-slot requirements still need a completeness pass against all supplied images.
+- The photographs are valid project reference evidence. They are not to be discarded or treated as missing. Only cropped/illegible sections or absent requirements remain open.
 
 **Recommendation**
-Obtain the controlled/current official checklist, technical specification, and documentation/photo requirements for both instruments. Record document title, issuer, version/date, page/section, and approval owner. Reconcile each row and photo slot line-by-line. Do not implement instrument content until this is complete.
+Use the user-supplied photographs and legacy application screenshots as the baseline source evidence. These include IFP checklist screens, Standing Bracket serial-number attachment, BA example, and attendance sheet. Reconcile each visible item and photo slot against the existing instrument specifications. Only portions that are cropped, illegible, or not represented in the photographs remain open for confirmation by the authorized instrument owner. Do not ask the user to re-upload materials already supplied.
 
 **Decision owner:** Product Owner / authorized instrument owner.
 
