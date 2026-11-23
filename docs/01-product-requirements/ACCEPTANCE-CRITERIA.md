@@ -142,4 +142,4 @@ This document defines observable acceptance outcomes. Detailed test cases and au
 The open-decision list reflects remaining external evidence and detailed acceptance items, not reversal of these PO approvals.
 
 
-**T-09 PO decision:** Option B (limited offline draft editing) approved on 2026-11-23. Production acceptance remains conditional on approved device/browser, local-data protection, retention/purge, shared-device logout and recovery controls; these are not deemed complete by this PO decision.
+**T-09 PO decision:** Option B (limited offline draft editing) APPROVED on 2026-11-23. Production acceptance remains conditional on approved device/browser, local-data protection, retention/purge, shared-device logout and recovery controls; these are not deemed complete by this PO decision.
