@@ -214,3 +214,9 @@ Before production:
 **Authorization tests:** NOT EXECUTED.  
 **Security certification:** NOT CLAIMED.  
 **Implementation authorization:** NOT GRANTED.
+
+
+
+## T-14 — Capacity predicate and authorization consistency (PO-approved 2026-11-24)
+
+RLS and privileged capacity commands must consistently recognize a qualifying Inspector account as a distinct enabled login account with an active Inspector role grant and at least one currently effective operational Inspector assignment within the governed project/session scope. Do not count pending, rejected, suspended, disabled or expired-role accounts; do not count one account more than once for multiple roles/assignments. The global combined cap remains 1–100 (default 50) and must be enforced atomically by the privileged transaction, not by client-side/RLS count-then-write logic. No executable policy is implied by this design note.
