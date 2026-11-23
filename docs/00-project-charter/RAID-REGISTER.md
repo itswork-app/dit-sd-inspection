@@ -110,3 +110,10 @@ Product Owner explicitly approved T-01=A, T-02=B, T-03=C and T-04=A, then T-05=A
 - T-08 Korlap attendance verification within assigned scope is PO-approved; separate permissions and verification tests remain open.
 
 The Decision Register and affected specifications have been updated and fetched back for verification. T-05 through T-08 are PO-approved; T-09 through T-18 remain OPEN/BLOCKED. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
+
+
+## Package T T-09 decision update (2026-11-23)
+
+T-09 is **PO APPROVED option B**: limited offline draft editing only after an online claim. Offline claim, approval, final submit, role/assignment changes, session administration and privileged actions are prohibited. Sync must be authenticated, idempotent, reauthorize on the server, reject stale conflicts, preserve both sides and require server-confirmed required media before final submit.
+
+Residual risks/dependencies remain OPEN/BLOCKED: browser/device support, local-data encryption/protection, shared-device logout, local retention/purge and recovery controls; institutional privacy/records approval under T-10. PO approval does not mean offline persistence is safe to activate in production. Scope freeze remains NOT READY and implementation remains NOT AUTHORIZED.
