@@ -66,6 +66,12 @@ These are designed test procedures. Execution has not started. Source authority 
 - TC-OFF-003: Conflicting edits are surfaced; no silent last-write-wins.
 - TC-OFF-004: Account revocation blocks future server operations and sync.
 - TC-OFF-005: Device loss scenario and local-data minimization are tested.
+- TC-OFF-006: Offline claim acquisition, approval, final submission, role/assignment change, session administration and privileged actions are denied.
+- TC-OFF-007: Sync rechecks current authorization, assignment and claim ownership; revoked/expired access is not accepted.
+- TC-OFF-008: Stale server version produces a visible conflict and preserves both local and server versions without last-write-wins.
+- TC-OFF-009: Required media remains pending until server object verification; final submit is blocked until all required media is acknowledged.
+- TC-OFF-010: Duplicate/replayed sync operations are idempotent across retry and reconnect.
+- TC-OFF-011: Shared-device logout, local cache protection, purge and recovery follow the approved device/privacy policy before production activation.
 
 ## 6. Reports and documents
 - TC-DOC-001: Approved PDF matches immutable inspection revision.
@@ -96,3 +102,6 @@ These are designed test procedures. Execution has not started. Source authority 
 
 ## 8. UAT sign-off record
 Record build SHA, test environment, participants/roles, test cases passed/failed/blocked, defects, known limitations, Product Owner decision, date, and explicit release recommendation. No implied approval from silence.
+
+
+**T-09 scope status:** PO-approved option B. These are designed test procedures only; none are reported as executed. Device/local-data controls and institutional retention approval remain prerequisites to production activation.
