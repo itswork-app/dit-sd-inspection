@@ -53,7 +53,7 @@ Roles are functional roles, not named people. One user may hold multiple roles o
 | Return inspection with correction reason | I | I | C | A/R | I |
 | Correct and resubmit inspection | I | I | A/R | C | I |
 | Approve inspection | I | I | I | A/R | I |
-| Generate final PDF after approval | I | I | I | A (workflow owner) | R (if assigned) |
+| Generate final PDF after approval (automated system action) | I | I | A/R (system implementation and operation) | I | I |
 | Print/reprint approved document | I | I | I | I | A/R |
 | Confirm operational session closure | I | A/R | C | C | C |
 | Reopen approved inspection | A/R only with explicit permission | R only with explicit permission | I | C | I |
