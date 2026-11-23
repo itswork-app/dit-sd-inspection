@@ -63,7 +63,7 @@ erDiagram
 - `target_plans`, `target_allocations`: immutable/versioned target schedules and assignment of reporting quantities to dates.
 
 ### Instruments and inspection
-- `instruments`, `instrument_versions`, `checklist_sections`, `checklist_items`, `specification_fields`, `evidence_slot_definitions`.
+- `instruments`: extensible instrument catalog; instrument definitions are not hardcoded to IFP/Standing Bracket. Super Admin manages catalog lifecycle through authorized commands.\n- `instrument_versions`, `checklist_sections`, `checklist_items`, `specification_fields`, `evidence_slot_definitions`: declarative, versioned configuration primitives for supported checklist, specification, and evidence requirements.\n- Published versions are immutable; active sessions bind to one explicit version, and inspection revisions retain that exact snapshot. Adding a new instrument within supported primitives must not require an application code change. Arbitrary executable configuration is prohibited.
 - `units`: project/instrument scoped unit identity and normalized serial key.
 - `inspections`: stable aggregate identity and current lifecycle state.
 - `inspection_revisions`: immutable submitted snapshots, revision number, author, submitted timestamp, instrument version.
