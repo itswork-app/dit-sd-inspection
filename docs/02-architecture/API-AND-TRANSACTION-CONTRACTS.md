@@ -84,6 +84,15 @@ For validation or conflict errors, return a stable code, safe message, and relev
 - Return existing authorized draft for resume where policy permits; otherwise return conflict.
 - Never create two active claims for one unit.
 
+### Offline synchronization (`sync-batch`)
+- Accept only operations for an inspection draft whose unit was claimed while online.
+- Authenticate the caller and re-evaluate current role, assignment scope, claim ownership, claim validity and inspection state for every batch.
+- Require stable operation IDs/idempotency keys; same key and same request returns the original result, while key reuse with a different payload is rejected.
+- Enforce dependency ordering between draft metadata and evidence; acknowledge media only after server-side object verification.
+- Reject stale expected versions with a structured `SYNC_CONFLICT` response containing only authorized current-state/version details.
+- Preserve queued client data and server state; resolution must be explicit and authorized. No last-write-wins.
+- Never permit this command to claim a unit, approve, final-submit, change roles/assignments, administer sessions or execute privileged actions.
+
 ### Submit inspection
 - Lock inspection aggregate and verify expected draft version.
 - Verify active claim/assignment, instrument snapshot, required checklist answers, exception reasons, and verified evidence.
@@ -120,5 +129,6 @@ For validation or conflict errors, return a stable code, safe message, and relev
 - REST path naming and API versioning.
 - Authentication/session refresh strategy.
 - Idempotency retention and conflict resolution UX.
+- T-09 option B is PO-approved; offline storage activation remains gated on approved device/browser and local-data safeguards (T-10/T-11).
 - Whether bulk operations are needed for field throughput.
 - Rate limits and abuse protection.
