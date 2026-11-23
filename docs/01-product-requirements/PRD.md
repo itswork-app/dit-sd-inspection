@@ -202,9 +202,9 @@ See Decision Register and Reference & Evidence Inventory. At minimum:
 - Standing Bracket checklist detail;
 - BA signatories and authority;
 - executive-summary signature requirement;
-- report headline/count basis and client delivery channel;
-- session creation authority and state transitions;
-- attendance verification authority;
+- detailed report metric implementation and acceptance-test evidence;
+- session pause behavior for already-open drafts and offline submissions;
+- detailed attendance verification and evidence acceptance rules;
 - offline package and conflict-resolution details;
 - evidence limits, retention, privacy and deletion;
 - supported devices/browsers and performance targets.
@@ -227,4 +227,9 @@ The Product Owner approved the following directions:
 - **T-03:** Executive-summary signature is configurable per report template. No signature is the default unless the approved template requires one.
 - **T-04:** Initial release is PDF-only for client report delivery. A client portal is deferred and requires a later approved change request.
 
-These decisions are PO-approved product direction, not proof of institutional authorization. The official instrument masters and BA signatory authority remain external evidence dependencies. PDF delivery must remain permission-controlled and auditable. This does not authorize feature implementation; Phase 0 gates remain in force.
+- **T-05:** Actual reports show distinct labelled Inspected, Submitted, Approved and Completed counts. Completed = approved inspection + final PDF generated + Print Officer print action recorded. Measurement timestamp and filters are displayed; PDF open/download is not a print event.
+- **T-06:** Super Admin is final project-closure authority after all gates and actual-versus-target reconciliation pass. Closure is explicit, non-automatic, reasoned and audited; no date-based auto-close.
+- **T-07:** Super Admin exclusively creates/configures sessions, targets, locations, instruments and team assignments. Korlap operates assigned sessions within explicit permissions; DRAFT, ACTIVE, PAUSED and CLOSED states apply. CLOSED is terminal in ordinary flow; reopening requires privileged permission, reason and audit.
+- **T-08:** Korlap verifies attendance within assigned location/scope and explicit verifier permission. Generate, print, upload, download and verify are separate permissions; upload never automatically sets VERIFIED.
+
+These decisions are PO-approved product direction, not proof of institutional authorization or implementation. The official instrument masters and BA signatory authority remain external evidence dependencies. PDF delivery remains permission-controlled and auditable. Phase 0 gates remain in force; feature implementation is not authorized.
