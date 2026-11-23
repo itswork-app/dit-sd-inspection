@@ -30,7 +30,7 @@ No item in this pack is marked APPROVED.
 
 | ID | Topic | Current state | Recommended direction | Scope-freeze impact |
 |---|---|---|---|---|
-| T-01 | Official IFP and Standing Bracket master requirements | PO APPROVED; evidence BLOCKED | Approve controlled master checklists and evidence-slot matrix from authoritative signed/issued source | Blocker |
+| T-01 | Official IFP and Standing Bracket master requirements | PARTIALLY CLOSED: SB official source confirmed; IFP source OPEN | Approve controlled master checklists and evidence-slot matrix from authoritative signed/issued source | Blocker |
 | T-02 | BA signatories and signing authority | PO APPROVED; institutional authority OPEN | Configurable signatory blocks, ordered by document template; require explicit authorized signatory records | Blocker for final BA |
 | T-03 | Executive-summary signature | PO APPROVED | No signature by default; enable only through approved template configuration | High |
 | T-04 | Client report delivery | PO APPROVED | PDF-only for initial release; defer client portal | High |
@@ -70,7 +70,7 @@ No item in this pack is marked APPROVED.
 
 **Decision required:** Identify who has authority to approve each master instrument definition and whether a provisional pilot is permitted.
 
-**State after PO response (2026-11-23): PO APPROVED option A.** Institutional source documents and formal approval evidence are still required; this evidence dependency remains BLOCKED.
+**State after PO response (2026-11-23): PO APPROVED option A.** Product Owner confirmed `Pemeriksaan Barang_SB.pdf` as the official Standing Bracket instrument document. Its 19 visible rows (6 physical + 13 accessories) are the official project baseline. Remaining: confirm official IFP source, any additional SB annex/specification, and photo-slot rules/mandatory status. Preserve ambiguous source wording verbatim.
 
 ### T-02 — BA signatories and signing authority
 
@@ -468,7 +468,7 @@ This package does not authorize:
 
 | Decision | PO outcome | Requirement / traceability consequence | Residual status |
 |---|---|---|---|
-| T-01 | APPROVED: controlled official institutional source documents are authoritative masters | Instrument requirements and verification must trace to source title, revision, issuer/approver and effective date; transcriptions/screenshots remain provisional until reconciled | BLOCKED on source documents and institutional approval evidence |
+| T-01 | PO APPROVED: official source documents are authoritative masters; SB document confirmed | SB 19-row source baseline is confirmed; retain provenance and reconcile prior screenshot transcription separately | PARTIALLY CLOSED: IFP source and SB photo/evidence rules remain open |
 | T-02 | APPROVED: configurable BA signatory blocks per approved template | Add verification for configurable party count, organization, role/title, order and required/optional status | OPEN for actual authorized signatory identities/authority and final institutional template |
 | T-03 | APPROVED: signature behavior configurable per report template; default none unless required | Add template configuration and PDF verification; do not hardcode a universal executive-summary signature | PO decision closed; approved template requirement still controls |
 | T-04 | APPROVED: PDF-only client report delivery in initial release | Client portal excluded from initial release; controlled PDF generation/access/distribution remains in scope | PO decision closed; later portal needs change request |
