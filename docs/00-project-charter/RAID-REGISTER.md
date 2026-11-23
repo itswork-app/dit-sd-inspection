@@ -39,9 +39,9 @@ Owner convention: accountable role is recorded; named individuals are not invent
 | I-001 | Complete official IFP checklist and photo slots are not yet validated against controlled source documents | Obtain authoritative checklist and approve exact wording, order, required/conditional status | Product Owner | OPEN |
 | I-002 | Standing Bracket checklist and photo-slot inventory may be incomplete | Obtain full source and approve exact items | Product Owner | OPEN |
 | I-003 | BA signatory blocks and signing authority are not fully specified | Confirm parties, number/order of signatories, titles, and configuration authority | Product Owner | OPEN |
-| I-004 | Attendance upload verification authority is unresolved | Assign verifier role and acceptance rules | Product Owner | OPEN |
-| I-005 | Report headline/count basis and final reconciliation are unresolved | Define count states and project closure/reconciliation rules | Product Owner | OPEN |
-| I-006 | Exact session creation authority and state transitions are unresolved | Approve state machine and role permissions | Product Owner | OPEN |
+| I-004 | Attendance verification workflow still requires implementation/test evidence | Implement Korlap verifier permission scoped to assigned location; separate upload and verify actions | Engineering Lead | OPEN |
+| I-005 | Report metric contract and project closure require implementation/test evidence | Implement distinct actual counts and Super Admin final closure gates with audited reconciliation | Engineering Lead | OPEN |
+| I-006 | Approved session authority/state machine requires implementation/test evidence | Enforce Super Admin creation/configuration; scoped Korlap transitions; privileged reopen path | Engineering Lead | OPEN |
 | I-007 | Evidence limits, retention, deletion, and privacy rules are unresolved | Approve retention schedule, access, legal basis, and deletion workflow | Project Sponsor / Product Owner | OPEN |
 | I-008 | Backup/PITR and Storage object recovery capability is not verified against the actual provider plan | Verify provider contract, implement object recovery strategy, approve RPO/RTO, and pass isolated restore drill | Project Sponsor / CTO | OPEN |
 | I-009 | Production region, provider quotas, billing ownership, and environment separation are not confirmed | Complete provider capability sheet, institutional region decision, budget approval, and staging/production setup | Project Sponsor | OPEN |
@@ -99,10 +99,14 @@ Owner convention: accountable role is recorded; named individuals are not invent
 
 ## Package T — partial decision closure update (2026-11-23)
 
-Product Owner explicitly approved T-01=A, T-02=B, T-03=C and T-04=A.
+Product Owner explicitly approved T-01=A, T-02=B, T-03=C and T-04=A, then T-05=A, T-06=A, T-07=A and T-08=A on 2026-11-23.
 - T-01 Standing Bracket source is confirmed by Product Owner: `Pemeriksaan Barang_SB.pdf`, 19 rows (6 physical + 13 accessories). Official IFP source and SB photo/evidence rules remain outstanding.
 - T-02 template configurability is PO-approved; institutional authorization of actual signatory roles/identities and final BA template remains an external dependency.
 - T-03 configurable executive-summary signature behavior is PO-approved; approved template determines whether a signature is required.
 - T-04 PDF-only initial client delivery is PO-approved; client portal is deferred from initial scope.
+- T-05 distinct actual report counts are PO-approved; report metric implementation and tests remain open.
+- T-06 Super Admin final project closure after gates/reconciliation is PO-approved; implementation and tests remain open.
+- T-07 Super Admin session creation/configuration and scoped Korlap operation are PO-approved; state/permission implementation and tests remain open.
+- T-08 Korlap attendance verification within assigned scope is PO-approved; separate permissions and verification tests remain open.
 
 The Decision Register and affected specifications have been updated and fetched back for verification. Do not infer approval for T-05..T-18. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
