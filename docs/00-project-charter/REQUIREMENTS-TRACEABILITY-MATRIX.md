@@ -59,6 +59,9 @@ Purpose: Link product intent to specifications, implementation units, and verifi
 | SEC-001 | All exposed application data and evidence access are protected by server authorization and RLS | ADR-001, security decisions | RLS and Authorization Design; Security Threat Model | RLS matrix and negative authorization tests | DESIGN DRAFT |
 | SEC-002 | Every application table and private Storage object class has an explicit deny-by-default policy and role/scope access matrix | Package M | Table-by-Table RLS Policy Catalogue | Staging RLS, RPC, view, and Storage positive/negative test matrix | DRAFT COMPLETE; REVIEW/EXECUTION OPEN |
 | EVD-002 | Evidence uses private storage, verified upload lifecycle, and immutable originals | ADR-001, evidence decisions | Evidence Storage and Media Lifecycle | Upload, checksum, access-control, and recovery tests | DESIGN DRAFT |
+| EVD-003 | Evidence privacy, classification, retention, legal hold, deletion and recovery are controlled and institutionally approved | Package O | Evidence Privacy, Retention, Deletion and Recovery Specification | Access, hold, expiry, deletion, object recovery and audit tests | DRAFT; INSTITUTIONAL APPROVAL BLOCKED |
+| OPS-003 | Database and object backups have approved RPO/RTO and proven restore procedures | Package P | Backup, Restore and Disaster Recovery Plan | Isolated PostgreSQL + Storage restore drill and checksum reconciliation | DRAFT; PROVIDER VERIFICATION BLOCKED |
+| OPS-004 | Production region, environments, secrets, quotas, billing and provider ownership are governed | Package Q | Production Environment, Secrets and Provider Governance | Environment isolation, secret scan, quota sheet, deployment/rollback and account review | DRAFT; SPONSOR APPROVAL BLOCKED |
 | API-001 | Critical commands are idempotent and transactionally enforce claims, submission, approval, and capacity | Functional decisions | API and Transaction Contracts | Duplicate/retry/concurrency/transaction tests | DESIGN DRAFT |
 | API-002 | Every privileged mutation executes through a trusted Vercel route and narrowly scoped PostgreSQL command boundary; browser direct DML is denied | Package N | Privileged Command Boundary and Transaction Specification | Forged-actor, direct-DML, RPC grant, and concurrency tests | DRAFT COMPLETE; APPROVAL OPEN |
 
@@ -93,6 +96,14 @@ Purpose: Link product intent to specifications, implementation units, and verifi
 - `docs/03-functional-design/REPORTS-DOCUMENTS-AND-AUDIT.md`
 
 All are design drafts, not formal Product Owner approvals. Open decisions are explicitly retained in each document.
+
+## Package O/P/Q — Privacy, recovery, and production operations
+
+- `docs/02-architecture/EVIDENCE-PRIVACY-RETENTION-DELETION-AND-RECOVERY.md`
+- `docs/02-architecture/BACKUP-RESTORE-AND-DISASTER-RECOVERY-PLAN.md`
+- `docs/02-architecture/PRODUCTION-ENVIRONMENT-SECRETS-AND-PROVIDER-GOVERNANCE.md`
+
+These documents define proposed controls and release gates. Retention periods, RPO/RTO, provider plans/quotas, region, and named operational owners remain unapproved or unverified.
 
 ## Package L/M/N — Database integrity, RLS, and trusted command artifacts
 
