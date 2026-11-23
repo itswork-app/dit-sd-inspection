@@ -42,6 +42,19 @@ Each executed case records ID, build SHA, environment, preconditions, steps, exp
 - TC-INSP-012: Inspector correction creates next revision.
 - TC-INSP-013: Reopen approved inspection requires authority and reason.
 
+## 4. Instrument requirement verification
+
+Detailed data-driven coverage is defined in docs/04-quality/INSTRUMENT-REQUIREMENTS-VERIFICATION-MATRIX.md.
+
+- TC-IFP-CHK-001..004: Verify all 49 identified IFP checklist rows by category, including unanswered initial state, explicit result, finding handling, immutable revision, and PDF parity.
+- TC-IFP-SP-001: Verify all 14 model-specific IFP specification fields against the frozen model configuration.
+- TC-IFP-PH-001: Verify all 10 identified IFP photo-slot labels, evidence linkage, privacy, retry, version snapshot, and only approved gating rules.
+- TC-BRK-CHK-001..002: Verify all 19 provisionally identified Standing Bracket rows, preserving exact visible transcription and unresolved quantity ambiguity.
+- TC-BRK-PH-001: Verify all 5 identified Standing Bracket photo labels without assuming completeness or mandatory status.
+- TC-INSTR-001..008: Verify cross-instrument serial policy, configuration version freezing, historical snapshots, stale input rejection, concurrency conflicts, PDF parity, and non-retroactive evidence rules.
+
+These are designed test procedures. Execution has not started. Source authority and completeness remain open as stated in each instrument specification.
+
 ## 5. Evidence and offline
 - TC-EVD-001: Upload intent rejects unauthorized slot/scope.
 - TC-EVD-002: Invalid MIME/signature/oversize file rejected.
