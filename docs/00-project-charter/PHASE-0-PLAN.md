@@ -53,7 +53,7 @@ Drafted:
 
 Package C clarifies the functional baseline while preserving unresolved decisions. It does not authorize implementation. All five documents require review, and the offline/browser/storage limits require validation against actual field devices.
 
-## Phase 0 exit checklist
+## Package D — Technical Architecture\n\nDrafted seven technical design documents:\n- System architecture and trust boundaries.\n- Logical data model and ERD.\n- RLS and authorization design.\n- Evidence storage and media lifecycle.\n- API and critical transaction contracts.\n- Security threat model.\n- Performance and operations baseline, including 100-user concurrent load-test approach.\n\nPackage D is not approved and does not authorize feature implementation. Exact physical schema, transport choices, offline storage, media limits/retention, provider plan, numerical performance thresholds, backup objectives, and operational ownership remain open.\n\n## Phase 0 exit checklist
 
 - [ ] Charter approved by Product Owner.
 - [ ] Stakeholder roles and final decision authority confirmed.
