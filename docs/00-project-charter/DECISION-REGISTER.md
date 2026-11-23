@@ -84,6 +84,7 @@ Product Owner additionally confirmed on 2026-11-23 that `Pemeriksaan Barang_SB.p
 | T-07 | Super Admin exclusively creates/configures sessions, targets, locations, instruments and team assignments. Korlap may activate, pause, resume or request closure only within assigned scope and granted permissions. States: DRAFT, ACTIVE, PAUSED, CLOSED; CLOSED is terminal in ordinary flow. | PO APPROVED | Reopening a CLOSED session requires explicit privileged permission, reason and audit. Permission matrix and state-transition tests remain to be completed. |
 | T-08 | Korlap verifies attendance within assigned location/scope, with separate permissions for generate, print, upload, download and verify. Upload never automatically sets VERIFIED. | PO APPROVED | Super Admin assigns/grants verifier authority. Artifact integrity, verification rules and audit behavior remain to be implemented and tested. |
 | T-13 | Initial release supports individual and bounded batch printing from a permissioned Print Officer queue; per-document outcomes and atomic reprint sequence are recorded. | PO APPROVED (B) | Retry only failed documents; no duplicate success events. Application print action is not proof of physical paper output. Direct printer integration is not selected. |
+| T-13 | Initial release supports individual and bounded batch printing from a permissioned Print Officer queue; per-document outcomes and atomic reprint sequence are recorded. | PO APPROVED (B) | Retry only failed documents; no duplicate success events. Application print action is not proof of physical paper output. Direct printer integration is not selected. |
 
 These are Product Owner decisions recorded from the explicit response dated 2026-11-23. They settle the product direction for T-05 through T-08 but do not constitute implementation, UAT, or institutional approval where required.
 
@@ -121,6 +122,11 @@ Exact OS/device minimum versions and the tested browser build numbers must be re
 Before any production provider account or production data is used, the institution must document and authorize the selected arrangement, including: (1) legal/account owner for Supabase and Vercel; (2) billing owner, payment method and budget authority; (3) named primary and secondary provider custodians/recovery contacts; (4) access grant, MFA, least-privilege and offboarding controls; (5) project/data ownership and transfer/exit rights; (6) region and data-residency approver; and (7) incident, backup, restore and escalation responsibility. The arrangement must ensure continuity if a developer or individual custodian leaves.
 
 This PO decision approves the alternative-arrangement path only. It does not establish institutional authorization, identify the actual owner/custodians, approve a region or provider plan, approve billing, or prove backup/recovery capability. Provider plan/quotas, region, budget, RPO/RTO, Storage object recovery and restore-drill evidence remain OPEN/BLOCKED until verified against actual accounts and approved by authorized institutional parties. No production data deployment or production readiness is authorized by this decision. No implementation or restore test is claimed as executed.
+
+
+## Product Owner decision — Package T T-13 (2026-11-23)
+
+PO APPROVED option B — individual and batch printing. Initial release includes individual print and bounded/configurable batch print through the permissioned Print Officer queue. Each document in a batch has an independent outcome; retry targets failed documents only and must not duplicate successful print events. Print/reprint events preserve actor, timestamp, document version, atomic sequence and outcome where available. The application records the print action, not physical printer output. Direct printer integration is excluded from this decision. Implementation and tests remain pending.
 
 
 ## Product Owner decision — Package T T-13 (2026-11-23)
