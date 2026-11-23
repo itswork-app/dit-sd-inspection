@@ -43,9 +43,8 @@ Only explicitly approved decisions are marked APPROVED.
 
 ## Open decisions
 - Complete official IFP and Standing Bracket checklists and required photo slots.
-- BA signatory blocks and authority.
-- Whether executive summaries require signatures.
-- Client report delivery: PDF only or portal.
+- Institutional approval of actual BA signatory roles/identities and the final BA template (template configurability is PO-approved under T-02).
+- Official IFP and Standing Bracket source documents and photo-slot requirements remain to be obtained and reconciled (T-01).
 - Report headline/count basis and project reconciliation/closure.
 - Session creation authority and exact session state transitions.
 - Attendance upload verification authority.
