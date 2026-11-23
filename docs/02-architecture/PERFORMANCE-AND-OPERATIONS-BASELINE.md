@@ -84,3 +84,14 @@ At 100 concurrent users, integrity requirements are absolute: no lost acknowledg
 - Monitoring/alerting tool and owner.
 - Backup retention, RPO/RTO, restore cadence, and object storage recovery.
 - Support hours and incident response responsibility.
+
+
+## T-11 compatibility and load-test decision
+- PO-approved browser baseline: current stable Chrome on Android for Inspector; current stable Chrome or Edge on desktop for Korlap, Reviewer, Super Admin and Print Officer.
+- Tablet use requires explicit responsive, camera, upload and PDF/print validation.
+- Exclude obsolete/unsupported releases, embedded in-app browsers, modified browsers, and devices failing required capabilities.
+- Record exact OS/device minimums and tested browser build numbers in the release/UAT compatibility matrix; do not infer exact version numbers from this decision.
+- Required load-test profile remains 100 concurrent authenticated users, staged at 10/25/50/75/100. This is a test target, not a capacity/SLA claim.
+- Numeric latency/error-rate SLOs remain OPEN until provider plan/region/quotas and representative workload are verified and measured.
+
+T-11 option B is PO-approved; compatibility and load tests have not been executed.
