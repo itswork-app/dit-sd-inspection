@@ -109,7 +109,7 @@ Product Owner explicitly approved T-01=A, T-02=B, T-03=C and T-04=A, then T-05=A
 - T-07 Super Admin session creation/configuration and scoped Korlap operation are PO-approved; state/permission implementation and tests remain open.
 - T-08 Korlap attendance verification within assigned scope is PO-approved; separate permissions and verification tests remain open.
 
-The Decision Register and affected specifications have been updated and fetched back for verification. T-05 through T-08 are PO-approved; T-09 through T-18 remain OPEN/BLOCKED. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
+The Decision Register and affected specifications have been updated and fetched back for verification. T-05 through T-09 are PO-approved; T-10 through T-18 remain OPEN/BLOCKED. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
 
 
 ## Package T T-09 decision update (2026-11-23)
