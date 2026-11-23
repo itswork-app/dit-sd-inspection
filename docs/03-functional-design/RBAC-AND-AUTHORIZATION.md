@@ -132,3 +132,13 @@ These remain open until explicit Product Owner approval.
 ## T-14 — Inspector capacity eligibility (PO-approved 2026-11-24)
 
 An account contributes once to the combined Inspector cap only when its login is enabled, it has an active Inspector role grant, and it has at least one currently effective operational Inspector assignment within the governed project/session scope. Pending, rejected, suspended, disabled and expired-role accounts are excluded. Multiple roles/assignments do not multiply the count. Assignment and role grant status must be evaluated server-side; client UI is not authoritative.
+
+
+## Super Admin-controlled account and staffing lifecycle (PO clarification, 2026-11-24)
+
+1. Person registers/authenticates and an application account is provisioned in `PENDING_APPROVAL`.
+2. Registration alone grants no inspection access, role, team membership or operational assignment and does not count toward Inspector capacity.
+3. Super Admin approves/activates the account, then assigns role(s), permissions, project/session/location scope, team membership and operational assignment.
+4. Super Admin determines team count and the personnel assigned to each team. A user cannot create or select their own team membership, role or operational assignment.
+5. An account counts toward the Inspector cap only when it is enabled, has an active Inspector role grant, and has at least one currently effective operational Inspector assignment in governed project/session scope. Count once per account.
+6. Role, team and assignment changes are authorized, effective-dated where applicable, and audited. Revocation/suspension removes eligibility according to the canonical capacity predicate.
