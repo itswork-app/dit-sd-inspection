@@ -116,7 +116,7 @@ The supplied one-page `Pemeriksaan Barang_SB.pdf` is headed “Laporan Hasil Pem
 - Merk, Tipe: WH3309-LK.
 - Nomor Seri Fisik and Nomor Seri Kemasan: G5SID00000020174WSF4383 in both fields.
 
-The form contains 18 visible checklist statements grouped as follows:
+The form contains 19 visible checklist statements grouped as follows:
 
 **01 Kondisi Fisik (6 rows)**
 1. Kemasan tanpa kerusakan atau cacat fisik
@@ -126,7 +126,7 @@ The form contains 18 visible checklist statements grouped as follows:
 5. Alat tanpa kerusakan atau cacat fisik
 6. Alat memiliki identitas permanen (lambang/merk) dari produsen
 
-**02 Kelengkapan Dokumen dan Aksesories (12 rows)**
+**02 Kelengkapan Dokumen dan Aksesories (13 rows)**
 7. Petunjuk Instalasi atau Petunjuk Operasi
 8. Rangka R-L (2pcs)
 9. Tiang Sambung atas R-L (2pcs)
@@ -141,7 +141,7 @@ The form contains 18 visible checklist statements grouped as follows:
 18. Baut Bracket (18 pcs)
 19. Kunci pas (1 pcs)
 
-**Important count clarification:** the form has 18 checklist rows total: six physical plus twelve accessories. The numbering above is a continuous reference index, not a claim that there are 19 rows. Preserve the exact spelling, spacing, and ambiguous quantity as source data. The form's visible result column is “Sesuai? Ya/Tdk”; it does not define mandatory photo slots, N/A rules, notes, or evidence requirements.
+**Count clarification:** the form has 19 checklist rows total: six physical plus thirteen accessories. The numbering above is a continuous reference index. Preserve the exact spelling, spacing, and ambiguous quantity as source data. The form's visible result column is “Sesuai? Ya/Tdk”; it does not define mandatory photo slots, N/A rules, notes, or evidence requirements.
 
 This 18-row sample differs from the earlier 19-row screenshot transcription. Keep both source versions distinct pending controlled master checklist confirmation; do not delete, merge, or renumber the earlier record. The phrase “Interactive Flat Panel (IFP) Standing Bracket” also requires Product Owner confirmation of the exact instrument label and whether it refers to SB or a combined display label.
 
