@@ -135,3 +135,29 @@ For BRK-PH-001..005: verify configured label display, correct evidence associati
 - Standing Bracket photo labels: 5/5 identified from legacy reference; completeness and mandatory status open.
 - Test execution: NOT STARTED.
 - Scope freeze: NOT READY.
+
+
+## 9. Reconciliation against newly supplied operational documents (2026-11-23)
+
+New evidence reviewed:
+- `Pemeriksaan Barang_SB.pdf`, one-page inspection report dated 23 November 2026, inspection no. 469, supplier PT Hisense International Indonesia, location Karawang, model WH3309-LK.
+- `BA_INSPEKSI_SB_KRW_20-11-2026.pdf`, 20-page visitasi BA dated 20 November 2026 for Standing Bracket at PT DUNEX, Karawang.
+
+The 23 November report visibly contains 18 checklist statements: six under “01 Kondisi Fisik” and twelve under “02 Kelengkapan Dokumen dan Aksesories”. This differs from the 19 visible rows transcribed from earlier screenshots. The document is a sample report and does not, by itself, establish that it is the controlled master checklist or that the nineteenth earlier row is invalid. Therefore:
+- Keep the earlier 19-row transcription as a separate source-observation set; do not silently delete or renumber it.
+- Add a source-specific 18-row set for the 23 November form, preserving its exact wording and grouping.
+- Treat the overlap (first six physical checks and many accessories) as candidate equivalence, not confirmed identity, until a controlled source is supplied.
+- Preserve the ambiguous line “Ring/klem Roda (4 pcs) + 4 (4pcs)” exactly as printed.
+- The form displays a yes/no conformity column; the sample marks visible rows as conforming. It does not define finding notes, evidence requirements, N/A behavior, or mandatory photo slots.
+
+The 20 November BA provides a real output example: 460 Standing Bracket samples checked, 456 good and 4 defective; it includes a serial-number annex with condition values, documentation links separated by good/defective headings, and two paraf columns (Tim Pemeriksa Dit.SD and PT Hisense). This is evidence for report/annex parity tests, not a new fixed product limit or approved signatory policy.
+
+### Additional source-specific verification requirements
+- TC-BRK-SRC-001: render and preserve the exact 18-row 23-November sample form independently of the earlier 19-row screenshot set.
+- TC-BRK-SRC-002: verify source mapping between the 18-row and 19-row sets; unresolved/ambiguous mappings remain visible and cannot be auto-merged.
+- TC-BRK-BA-001: generate a BA summary whose sample, good, and defective counts reconcile to the serial annex; test 460 = 456 + 4 using a fixture only.
+- TC-BRK-BA-002: ensure every annex serial has exactly one allowed condition value and totals match the summary; flag duplicates, missing serials, and count mismatch before issuance.
+- TC-BRK-BA-003: generate condition-grouped evidence references and configurable paraf blocks without exposing public or signed URLs.
+- TC-BRK-BA-004: preserve BA date, inspection location, supplier, instrument, and signatory labels from the approved BA configuration; do not hardcode the sample names or date.
+
+These are designed tests, not executed tests. The two PDFs are reference evidence, not proof of full checklist authority or approval.
