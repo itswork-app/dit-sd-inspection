@@ -187,3 +187,15 @@ New source evidence: the 23-November Standing Bracket form and 20-November BA ar
 The detailed PO decision closure register is maintained in `docs/00-project-charter/PACKAGE-T-PO-DECISION-CLOSURE-PACK.md`. Decision IDs T-01 through T-18 cover authoritative instrument masters, BA signatories, executive-summary signature, client report delivery, actual report metrics, project closure, session authority, attendance verification, offline scope, evidence privacy/retention, device/performance baseline, provider operations, print workflow, Inspector capacity semantics, INS-016 audit policy, serial/evidence integrity, CFG-001 publication governance and privileged command boundary.
 
 These IDs are decision-tracking references, not implementation-complete requirements. Each must be reconciled into the relevant requirement/specification and verification case only after explicit approval. No recommendation in Package T is treated as approved by this matrix.
+
+
+## Package T — accepted PO decisions and traceability (2026-11-23)
+
+| Decision | Approved direction | Traceability follow-up | Residual gate |
+|---|---|---|---|
+| T-01 | Official approved institutional source documents are authoritative master | Source provenance, version/effective date, checklist/photo-slot reconciliation and verification cases | Obtain and validate controlled source documents; BLOCKED |
+| T-02 | BA signatory blocks configurable per approved template | Verify variable party count, organization, role/title, order and required/optional behavior | Institutional signatory authority and approved template remain OPEN |
+| T-03 | Executive-summary signature configurable per template; default none unless required | Verify configured signature/no-signature variants in PDF tests | PO direction closed; institutional template governs |
+| T-04 | PDF-only client delivery for initial release; portal deferred | Verify permission-controlled PDF access/distribution and mark portal out of initial scope | PO direction closed; portal needs change request |
+
+T-01 through T-04 are not blanket closure of Package S. Remaining decisions and evidence dependencies remain active. Do not mark scope freeze ready based on these partial closures.
