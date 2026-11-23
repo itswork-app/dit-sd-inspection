@@ -13,7 +13,7 @@ This matrix links stable instrument requirement IDs to repeatable, data-driven v
 | Instrument | Identified checklist rows | Model/specification fields | Photo slots | Source status |
 |---|---:|---:|---:|---|
 | IFP | 49 | 14 | 10 | Checklist text reconciled to supplied two-page sample report; controlled authority/version and photo-slot completeness remain open |
-| Standing Bracket | 19 visible rows | Not established | 5 described | Partial screenshot transcription; complete authoritative checklist and photo-slot completeness remain open |
+| Standing Bracket | 19 official visible rows | Not established | 5 described | Official instrument document confirmed by Product Owner on 2026-11-23; photo-slot completeness and required status remain open |
 
 ## 3. IFP verification coverage
 
@@ -46,7 +46,7 @@ All ten labels are currently identified. Required/conditional/optional status re
 
 ## 4. Standing Bracket verification coverage
 
-The source specification records 19 visible rows as a numbered transcription, not stable IDs. The following provisional engineering IDs are assigned for traceability only; they do not imply official category grouping or completeness.
+The official 23-November instrument document contains 19 visible checklist rows: six physical and thirteen accessories. The following engineering IDs are traceability identifiers only; they do not alter source wording or order.
 
 | Provisional requirement ID | Visible source row | Verification |
 |---|---:|---|
@@ -120,7 +120,7 @@ For BRK-PH-001..005: verify configured label display, correct evidence associati
 
 - Every identified source item must have a stable requirement ID and linked verification procedure.
 - Every test execution records build SHA, environment, data fixture, tester, timestamp, actual result, and evidence.
-- The 19 Standing Bracket provisional IDs must be reconciled against the complete authorized checklist before final instrument scope freeze.
+- The 19 Standing Bracket traceability IDs must remain mapped verbatim to the Product-Owner-confirmed official 23-November instrument document; reconcile the earlier screenshot transcription separately and record any non-equivalence.
 - Photo-slot required/conditional/optional status must be approved before mandatory submission gates are enabled.
 - A test cannot pass solely because a UI default displays an OK/compliant state.
 - No item is officially approved solely because it appears in a sample or screenshot.
@@ -131,7 +131,7 @@ For BRK-PH-001..005: verify configured label display, correct evidence associati
 - IFP checklist ID coverage: 49/49 identified; source authority open.
 - IFP model fields: 14/14 identified; model applicability requires confirmation.
 - IFP photo labels: 10/10 identified; completeness and mandatory status open.
-- Standing Bracket visible rows: 19/19 provisionally identified; full authoritative checklist open.
+- Standing Bracket official document: 19/19 visible checklist rows identified (6 physical + 13 accessories); source confirmed by Product Owner. Photo-slot completeness and mandatory status remain open.
 - Standing Bracket photo labels: 5/5 identified from legacy reference; completeness and mandatory status open.
 - Test execution: NOT STARTED.
 - Scope freeze: NOT READY.
@@ -143,7 +143,7 @@ New evidence reviewed:
 - `Pemeriksaan Barang_SB.pdf`, one-page inspection report dated 23 November 2026, inspection no. 469, supplier PT Hisense International Indonesia, location Karawang, model WH3309-LK.
 - `BA_INSPEKSI_SB_KRW_20-11-2026.pdf`, 20-page visitasi BA dated 20 November 2026 for Standing Bracket at PT DUNEX, Karawang.
 
-The 23 November report visibly contains 19 checklist statements: six under “01 Kondisi Fisik” and thirteen under “02 Kelengkapan Dokumen dan Aksesories”. It has the same visible row count as the earlier screenshot transcription, but source wording, context, and item mapping have not been proven identical. The document is a sample report and does not, by itself, establish that it is the controlled master checklist or that the nineteenth earlier row is invalid. Therefore:
+The Product Owner confirmed on 2026-11-23 that `Pemeriksaan Barang_SB.pdf` is the official Standing Bracket instrument document. It visibly contains 19 checklist statements: six under “01 Kondisi Fisik” and thirteen under “02 Kelengkapan Dokumen dan Aksesories”. The earlier screenshot transcription remains a separate source observation; its mapping to this official source must be reconciled, not silently merged or discarded. Therefore:
 - Keep the earlier 19-row transcription as a separate source-observation set; do not silently delete or renumber it.
 - Add a source-specific 19-row set for the 23 November form, preserving its exact wording and grouping.
 - Treat the overlap (first six physical checks and many accessories) as candidate equivalence, not confirmed identity, until a controlled source is supplied.
@@ -160,4 +160,4 @@ The 20 November BA provides a real output example: 460 Standing Bracket samples 
 - TC-BRK-BA-003: generate condition-grouped evidence references and configurable paraf blocks without exposing public or signed URLs.
 - TC-BRK-BA-004: preserve BA date, inspection location, supplier, instrument, and signatory labels from the approved BA configuration; do not hardcode the sample names or date.
 
-These are designed tests, not executed tests. The two PDFs are reference evidence, not proof of full checklist authority or approval.
+These are designed tests, not executed tests. The Product Owner has confirmed the 23-November document as the official Standing Bracket instrument source; this does not establish missing photo rules or prove the test cases have been executed.
