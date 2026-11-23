@@ -140,6 +140,6 @@ Created `docs/00-project-charter/PACKAGE-S-FINAL-CROSS-DOCUMENT-AUDIT-AND-SCOPE-
 
 - Decision closure pack: `docs/00-project-charter/PACKAGE-T-PO-DECISION-CLOSURE-PACK.md`.
 - Package T converts Package S findings into 18 explicit PO decision records, with recommendations, options, cost/effort, risks and consequences of deferral.
-- Package T decisions T-01 through T-04 have explicit PO outcomes recorded in the Decision Register; T-01 source evidence and T-02 institutional signatory authority remain outstanding. T-05 through T-18 remain OPEN/BLOCKED unless explicitly decided. Recommendations are not approvals.
+- Package T decisions T-01 through T-04 have explicit PO outcomes recorded in the Decision Register; T-01 Standing Bracket source is confirmed; official IFP source and SB photo/evidence rules remain outstanding. T-02 institutional signatory authority remains outstanding. T-05 through T-18 remain OPEN/BLOCKED unless explicitly decided. Recommendations are not approvals.
 - Scope freeze remains NOT READY; feature implementation remains NOT AUTHORIZED.
 - PR #2 remains draft and must not be merged until mandatory gates are closed and verified.
