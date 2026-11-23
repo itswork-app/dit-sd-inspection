@@ -110,10 +110,9 @@ This document defines observable acceptance outcomes. Detailed test cases and au
 - Offline device/browser support, encryption, retention, and recovery details.
 - Evidence size/type limits and retention/deletion policy.
 - Institutional approval of actual BA signatory identities/roles and final template.
-- Attendance verification role and authority.
-- Actual report headline/count basis.
-- Official IFP and Standing Bracket master source documents and photo-slot requirements.
-- Session state machine and final closure authority.
+- Detailed attendance evidence acceptance rules and verifier audit evidence.
+- Official IFP master source and Standing Bracket photo-slot requirements.
+- Institutional BA signatory authority and final approved template.
 
 
 ## 11. Concurrent usage and performance acceptance
@@ -131,4 +130,9 @@ This document defines observable acceptance outcomes. Detailed test cases and au
 - T-03 executive summary: acceptance must verify that signature behavior is configurable per report template and defaults to no signature unless the approved template requires it.
 - T-04 client report delivery: initial-release acceptance is PDF-only; a client portal is outside initial scope and requires a later approved change request. PDF access and distribution remain permission-controlled and auditable.
 
-The open-decision list below should be read with these dispositions: template behavior and initial delivery channel are decided; authoritative source evidence and institutional signatory authority are still external prerequisites.
+- T-05 acceptance: Actual reports show separate Inspected, Submitted, Approved and Completed counts; Completed is approved inspection + final PDF generated + Print Officer print action recorded; timestamp and filters are shown.
+- T-06 acceptance: only Super Admin closes a project after all gates and actual-versus-target reconciliation pass; closure is explicit, reasoned, audited and never date-triggered.
+- T-07 acceptance: Super Admin creates/configures sessions; Korlap transitions only within assigned scope and permission; CLOSED is terminal in ordinary flow; reopening is privileged, reasoned and audited.
+- T-08 acceptance: Korlap verifies attendance only within assigned scope and explicit verifier permission; upload never automatically marks VERIFIED; all attendance actions have separate permissions.
+
+The open-decision list reflects remaining external evidence and detailed acceptance items, not reversal of these PO approvals.
