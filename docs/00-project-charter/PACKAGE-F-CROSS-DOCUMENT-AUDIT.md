@@ -13,7 +13,7 @@ Reviewed the current PR #2 document inventory across project governance, product
 
 | ID | Severity | Finding | Action / disposition |
 |---|---|---|---|
-| AUD-F-001 | High | Capacity was inconsistent: approved OPS-001/PRD/RBAC model permits 50–100 combined, while Project Charter and Phase 0 Plan still stated a hard maximum of 50. | Corrected Project Charter and Phase 0 Plan to 50 initial configurable capacity, 100 global hard maximum. |
+| AUD-F-001 | High | Capacity was inconsistent: approved OPS-001 permits a configurable capacity below or above 50 (default 50), up to 100 combined, while Project Charter and Phase 0 Plan still stated a hard maximum of 50. | Corrected Project Charter and Phase 0 Plan: default 50, configurable below or above 50, global hard maximum 100. |
 | AUD-F-002 | Medium | Literal escaped newline sequences were inserted into Phase 0 Plan and RTM, damaging Markdown section/table formatting. | Repaired escaped newline sequences in both documents. |
 | AUD-F-003 | High | Official IFP and Standing Bracket checklists/photo-slot rules remain incomplete or not validated against controlled authoritative source documents. | OPEN/BLOCKER for requirements freeze; no official wording inferred. |
 | AUD-F-004 | High | Offline behavior depends on browser storage, device capability, claim expiry, shared-device security, and recovery policies not yet validated. | OPEN/BLOCKER for final offline contract and production approval. |
@@ -28,7 +28,7 @@ Reviewed the current PR #2 document inventory across project governance, product
 
 ## 3. Capacity contract after correction
 
-- Configured Inspector capacity starts at 50.
+- Configured Inspector capacity may be below or above 50; initial/default is 50 and hard maximum is 100.
 - Super Admin may increase it up to 100.
 - 100 is the hard maximum across both locations combined, not per location.
 - Count distinct active users holding Inspector role once, regardless of assignment count.
