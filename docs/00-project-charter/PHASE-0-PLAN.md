@@ -32,7 +32,7 @@ Exit condition: Project foundation reviewed and approved; open assumptions and o
 
 ## Capacity constraint
 
-Inspector capacity may be configured below or above 50; initial/default value is 50 and hard maximum is 100 distinct active Inspector accounts across both locations combined. Recorded as OPS-001. Enforcement must be atomic and audited.
+Inspector capacity is configurable from minimum 1 to maximum 100 distinct active Inspector accounts across both locations combined; default value is 50. Recorded as OPS-001. Enforcement must be atomic and audited.
 
 ## Package B — Product Requirements
 
