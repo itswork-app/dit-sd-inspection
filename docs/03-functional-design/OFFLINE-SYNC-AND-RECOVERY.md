@@ -1,19 +1,19 @@
 # Offline, Synchronization, Conflict, and Recovery Design
 
-**Status:** Draft v0.1.0 — requires Product Owner validation  
+**Status:** Draft v0.1.1 — T-09 scope approved by Product Owner; device/local-data controls remain pending  
 **Package:** C — Functional and Operational Design
 
 ## 1. Design objective
 
 Support field inspection in unreliable connectivity without losing draft data or creating silent overwrites, duplicate submissions, or ambiguous evidence ownership. Offline behavior is not permission to bypass authorization or server-side validation.
 
-## 2. Proposed offline boundary
+## 2. Approved T-09 offline boundary
 
 The initial offline-capable workflow should be limited to an already authenticated and explicitly assigned Inspector working on a unit that has been claimed while online. The client may retain the minimum required session/assignment metadata, instrument configuration version, checklist definition, draft answers, and pending media needed to continue that inspection.
 
 New claims, role changes, assignment changes, approvals, session administration, and other privileged actions require connectivity unless a separately approved design explicitly permits them.
 
-This boundary is a proposal and requires validation against field conditions and device constraints.
+**PO decision:** T-09 option B was explicitly approved on 2026-11-23. This is the approved product boundary for the initial release. It does not authorize production activation until device/browser support, local-data protection, retention/purge, shared-device logout and recovery controls are approved.
 
 ## 3. Local persistence
 
@@ -79,10 +79,13 @@ Record sync attempts, operation IDs, result status, retry count, conflict type, 
 - No user can submit an inspection with required media still unsynchronized.
 - Offline state is visibly distinguishable from server-confirmed saved state.
 
-## 10. Open decisions
+## 10. Remaining implementation and governance decisions
 
 - Supported browsers/devices and minimum storage capability.
 - Maximum photo size, image count, compression, and total local queue size.
 - Whether offline continuation after claim expiry is allowed and under what recovery process.
 - Cache encryption and shared-device logout policy.
+- Exact local cache encryption/protection and supported browser/device controls.
+- Institutional approval of retention, purge and legal-hold rules (T-10).
+- Whether offline continuation after claim expiry is allowed; until decided, require controlled online reconciliation before submit.
 - Whether the pilot can require online claim acquisition and online submission.
