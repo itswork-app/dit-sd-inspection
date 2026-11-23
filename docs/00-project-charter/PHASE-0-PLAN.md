@@ -176,3 +176,8 @@ PO approved option B: individual and bounded/configurable batch printing through
 ## Package T-14 — Inspector capacity semantics
 
 PO approved option A on 2026-11-24. Canonical count: distinct enabled login accounts with an active Inspector role grant and at least one currently effective operational Inspector assignment within governed project/session scope. Deduplicate accounts across roles/assignments; exclude pending, rejected, suspended, disabled and expired-role accounts. Preserve combined cap 1–100, default 50, with atomic enforcement and no silent deactivation when lowering the cap. Update and verify database, RLS, API, RBAC, PRD and QA specifications consistently. This closes the PO predicate decision only; scope freeze and implementation gates remain open.
+
+
+## PO clarification — registration-first and Super Admin-controlled staffing (2026-11-24)
+
+Record the lifecycle as registration first, then Super Admin approval and explicit role/scope/team/assignment configuration. Registration alone grants no access or Inspector capacity eligibility. Super Admin determines team count and assigns personnel to each team; users cannot self-assign. Carry this rule through identity/RBAC, session/team model, database invariants, API commands, acceptance criteria and tests. This clarification does not authorize implementation or close remaining institutional/scope-freeze blockers.
