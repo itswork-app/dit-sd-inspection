@@ -115,3 +115,16 @@ Record build SHA, test environment, participants/roles, test cases passed/failed
 - TC-EVD-010: Production evidence collection remains blocked until written institutional records/legal/privacy approval and accepted evidence limits are recorded.
 
 These are planned verification cases only; not executed. T-10 option B is PO-approved as a review path, not as institutional policy approval.
+
+
+## T-11 compatibility and performance verification coverage
+- TC-COMP-001: Inspector core workflow on current stable Chrome for Android, including camera permission, evidence upload, authentication and supported offline-draft behavior.
+- TC-COMP-002: Korlap and Reviewer workflows on current stable Chrome and Edge desktop.
+- TC-COMP-003: Super Admin and Print Officer workflows on current stable Chrome and Edge desktop, including PDF preview and print action.
+- TC-COMP-004: Tablet is accepted only after responsive layout, camera, upload and PDF/print checks pass.
+- TC-COMP-005: Unsupported/obsolete, embedded in-app and modified browsers are rejected or shown a clear unsupported-browser notice.
+- TC-COMP-006: Record exact OS/device models and browser build numbers for every compatibility run.
+- TC-LOAD-001: Execute representative mixed workload at 10, 25, 50, 75 and 100 concurrent authenticated users; capture p50/p95/p99 latency, throughput, error rate, database and storage metrics.
+- TC-LOAD-002: At target load, verify no acknowledged write loss, duplicate active claim/revision, unauthorized transition, cross-scope access or silent conflict overwrite.
+
+These are planned cases only; not executed. 100 concurrent users is a load-test target, not a production capacity or SLA claim. Numeric SLO thresholds remain open pending measured baseline and provider verification.
