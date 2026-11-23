@@ -282,7 +282,7 @@ Do not assume a provider feature or plan capability without checking the actual 
 
 **Decision required:** Confirm account owner, billing owner, region approver and operational recovery contacts.
 
-**State:** BLOCKED pending provider and institutional verification.
+**State:** PO APPROVED option C (2026-11-23); actual ownership arrangement, provider verification and institutional authorization remain BLOCKED.
 
 ### T-13 — Print Officer and print-control workflow
 
@@ -473,7 +473,7 @@ This package does not authorize:
 | T-03 | APPROVED: signature behavior configurable per report template; default none unless required | Add template configuration and PDF verification; do not hardcode a universal executive-summary signature | PO decision closed; approved template requirement still controls |
 | T-04 | APPROVED: PDF-only client report delivery in initial release | Client portal excluded from initial release; controlled PDF generation/access/distribution remains in scope | PO decision closed; later portal needs change request |
 
-PO approval does not replace institutional authorization or source evidence. T-01 through T-09 have explicit PO outcomes; T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 option B is PO APPROVED; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
+PO approval does not replace institutional authorization or source evidence. T-01 through T-09 have explicit PO outcomes; T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 option B is PO APPROVED; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; the actual alternative arrangement and institutional/provider verification remain BLOCKED. T-13 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
 
 
 ## 8. Product Owner decision outcomes — T-05 through T-08 (2026-11-23)
@@ -485,7 +485,7 @@ PO approval does not replace institutional authorization or source evidence. T-0
 | T-07 | A — Super Admin creates/configures sessions; Korlap operates assigned sessions within granted permissions. DRAFT, ACTIVE, PAUSED, CLOSED; CLOSED terminal in ordinary flow. | PO APPROVED; reopening requires privileged permission, reason and audit. State/permission tests remain pending. |
 | T-08 | A — Korlap verifies attendance within assigned location/scope. Generate, print, upload, download and verify are separate permissions; upload never automatically verifies. | PO APPROVED; Super Admin assigns/grants verifier authority; implementation and tests remain pending. |
 
-The Product Owner explicitly approved T-05=A, T-06=A, T-07=A and T-08=A on 2026-11-23; T-09 option B was subsequently approved on 2026-11-23. T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 option B is PO APPROVED; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
+The Product Owner explicitly approved T-05=A, T-06=A, T-07=A and T-08=A on 2026-11-23; T-09 option B was subsequently approved on 2026-11-23. T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 option B is PO APPROVED; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; the actual alternative arrangement and institutional/provider verification remain BLOCKED. T-13 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
 
 
 ## Package T — T-09 Product Owner decision (2026-11-23)
@@ -519,3 +519,12 @@ T-09 is PO-approved; implementation, device controls and verification remain pen
 - Explicit exclusions: obsolete/unsupported browser releases, embedded in-app browsers, modified browsers, and devices that fail required camera, upload, authentication, offline-safety or PDF/print tests.
 
 Exact OS/device minimum versions and the tested browser build numbers must be recorded in the release/UAT compatibility matrix; this PO decision does not invent exact version numbers. The 100 concurrent authenticated-user load-test target remains the required acceptance load profile and must be tested at staged levels (10, 25, 50, 75, 100). This is a test target, not a demonstrated production capacity or service-level guarantee. Numeric latency/error-rate SLOs remain OPEN until workload and actual Supabase/Vercel plan/region/quotas are verified and baseline measurements are collected. No implementation, compatibility test or load test is claimed as executed.
+
+
+## Package T-12 — Product Owner decision (2026-11-23)
+
+**Decision: PO APPROVED option C — an alternative provider-ownership arrangement, subject to formal institutional approval and written definition.** The Product Owner does not designate a specific legal entity, account holder, billing owner, custodian, or contractual arrangement in this approval. Those identities and responsibilities must not be inferred or invented.
+
+Before any production provider account or production data is used, the institution must document and authorize the selected arrangement, including: (1) legal/account owner for Supabase and Vercel; (2) billing owner, payment method and budget authority; (3) named primary and secondary provider custodians/recovery contacts; (4) access grant, MFA, least-privilege and offboarding controls; (5) project/data ownership and transfer/exit rights; (6) region and data-residency approver; and (7) incident, backup, restore and escalation responsibility. The arrangement must ensure continuity if a developer or individual custodian leaves.
+
+This PO decision approves the alternative-arrangement path only. It does not establish institutional authorization, identify the actual owner/custodians, approve a region or provider plan, approve billing, or prove backup/recovery capability. Provider plan/quotas, region, budget, RPO/RTO, Storage object recovery and restore-drill evidence remain OPEN/BLOCKED until verified against actual accounts and approved by authorized institutional parties. No production data deployment or production readiness is authorized by this decision. No implementation or restore test is claimed as executed.
