@@ -139,3 +139,8 @@ The 100 concurrent authenticated-user load-test target remains the required acce
 ### T-13 mitigation — print batch integrity
 
 PO approved individual and bounded batch printing. Risk R-015 remains OPEN until per-document outcome persistence, failed-only retry, immutable document-version linkage and atomic sequence allocation are implemented and verified. The PO decision does not authorize implementation before the overall scope-freeze gate.
+
+
+### R-016 — Inspector capacity predicate drift
+
+**Risk:** UI, API and database may calculate qualifying Inspector accounts differently, allowing over-capacity or incorrect rejection. **Control:** T-14 PO-approved canonical predicate: distinct enabled login accounts with an active Inspector role grant and at least one currently effective operational Inspector assignment within governed project/session scope; deduplicate assignments/roles and exclude pending, rejected, suspended, disabled and expired-role accounts. Enforce atomically against combined cap 1–100 (default 50). **Status:** Open until design consistency, implementation and concurrency tests are verified.
