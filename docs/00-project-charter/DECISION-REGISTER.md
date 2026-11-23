@@ -66,9 +66,9 @@ Proposed or illustrative decisions are not approved until explicitly accepted.
 | T-03 | Executive-summary signature behavior is configurable per report template. | PO APPROVED | Default may be no signature unless the approved template requires it. Any mandatory signature rule must be supported by the approved institutional template. |
 | T-04 | Initial release uses PDF-only client report delivery; a client portal is deferred from initial scope. | PO APPROVED | PDF access/distribution remains permission-controlled and audited. Portal requires a later change request and approval. |
 
-These are Product Owner decisions recorded from the explicit response dated 2026-11-23. They do not substitute for institutional approval where stated. Other Package T decisions remain OPEN/BLOCKED.
+Product Owner additionally confirmed on 2026-11-23 that `Pemeriksaan Barang_SB.pdf` is the official Standing Bracket instrument document. The 19 visible rows (6 physical + 13 accessories) are the official baseline from that document. This PO confirmation establishes the document's status for this project; it does not authorize changing ambiguous source wording or infer photo rules absent from the document. Institutional approvals beyond the PO's authority, if required by the institution's governance, remain external. Other Package T decisions remain OPEN/BLOCKED.
 
 ## Remaining open decisions
-- T-01: obtain authoritative, current, institutionally approved IFP and Standing Bracket master documents; confirm photo-slot requirements and model applicability.
+- T-01: Standing Bracket official instrument document confirmed by Product Owner on 2026-11-23. Reconcile the 19-row checklist verbatim and preserve ambiguous wording. Remaining: confirm photo-slot requirements, any additional annex/specification, and authoritative IFP source document.
 - T-02: obtain institutional approval for authorized BA signatory roles/identities and final template.
 - T-05 through T-18: see Package T decision closure pack; no approval is inferred.
