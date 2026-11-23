@@ -217,3 +217,9 @@ Before production:
 **Still blocked:** Product Owner confirmation items in Section 7; RLS catalogue; privileged command boundary; evidence/privacy policy; backup/restore plan.  
 **Implementation authorization:** NOT GRANTED.  
 **Migrations/tests executed:** NONE.
+
+
+
+## T-14 — Canonical Inspector capacity predicate (PO-approved 2026-11-24)
+
+The capacity count is the number of **distinct user accounts** satisfying all three conditions at the enforcement transaction's serialization point: (1) login account is enabled; (2) an active Inspector role grant exists; and (3) at least one currently effective operational Inspector assignment exists within the governed project/session scope. Count each account once across assignments and roles. Exclude pending, rejected, suspended, disabled and expired-role accounts. The count and cap check must be enforced atomically across both locations. Preserve the approved cap range 1–100, default 50; reject 0 and values above 100. Reject a proposed cap reduction below the current qualifying count until the count is reconciled; do not deactivate accounts implicitly. This section specifies the predicate; it is not an executed migration or implementation.
