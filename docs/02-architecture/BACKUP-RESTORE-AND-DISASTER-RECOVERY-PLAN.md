@@ -206,3 +206,11 @@ Production is blocked until:
 **RPO/RTO:** PROPOSED ONLY.  
 **Disaster recovery readiness:** NOT ESTABLISHED.  
 **Production authorization:** NOT GRANTED.
+
+
+## T-12 ownership and recovery governance dependency
+The Product Owner approved Package T-12 option C on 2026-11-23: an alternative provider-ownership arrangement, subject to formal institutional approval and written definition. No legal owner, account holder, billing owner, custodian or operational contact is named by this decision.
+
+Before production use, the institution must approve the provider ownership and billing arrangement, primary and secondary recovery contacts, access/MFA/offboarding controls, data/project transfer and exit rights, region authority, incident commander, backup operator and restore authorization. Restore drills must use the actually selected plans/accounts and include PostgreSQL plus Storage object restoration with checksum verification. Proposed RPO/RTO, backup cadence and retention remain proposals until approved against provider capabilities and institutional records policy.
+
+**Status:** T-12 option C is PO APPROVED; institutional ownership authorization, provider capability verification and restore evidence remain BLOCKED. No restore drill or production recovery capability is claimed as tested.
