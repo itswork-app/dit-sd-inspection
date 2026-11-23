@@ -172,3 +172,13 @@ Numeric latency/error-rate SLOs remain OPEN until workload, provider plan/region
 - Exact OS/device minimums and browser build numbers are recorded in UAT evidence.
 - The 100 concurrent authenticated-user profile is load-tested in staged levels 10/25/50/75/100; no claim of capacity is accepted without measured evidence.
 - Numeric SLOs are not treated as approved until workload, provider plan/region/quotas and baseline measurements are reviewed and approved.
+
+
+
+## T-14 — Inspector capacity acceptance criteria (PO-approved 2026-11-24)
+
+- Count each distinct enabled login account once only when it has an active Inspector role grant and at least one currently effective operational Inspector assignment within governed project/session scope.
+- Exclude pending, rejected, suspended, disabled and expired-role accounts; multiple assignments or roles must not inflate the count.
+- Enforce the configured combined cap atomically across both locations; valid range 1–100, default 50.
+- Reject 0, values above 100, and cap reductions below the current qualifying count until reconciled; never silently deactivate accounts.
+- Verify concurrent changes cannot exceed the cap. These are acceptance requirements; execution remains pending.
