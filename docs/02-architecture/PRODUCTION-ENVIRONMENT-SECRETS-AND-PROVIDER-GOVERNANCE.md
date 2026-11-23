@@ -193,3 +193,11 @@ Minimum process:
 **Provider organization ownership:** NOT CONFIRMED.  
 **Production environment:** NOT CONFIGURED.  
 **Go-live authorization:** NOT GRANTED.
+
+
+## T-12 — Alternative provider ownership arrangement (PO option C)
+The Product Owner approved option C on 2026-11-23: an alternative provider-ownership arrangement may be used only when formally defined and approved by the institution. This approval does not name or imply a specific legal owner, account holder, billing owner, custodian or contractual structure.
+
+Before production account creation/use or production data deployment, record institutional written approval for: legal/account owner for Supabase and Vercel; billing owner/payment method/budget authority; named primary and secondary custodians and recovery contacts; MFA and least-privilege access; offboarding and break-glass; ownership and transfer/exit rights for projects/data; region/data-residency approver; and incident/backup/restore/escalation responsibility. Ensure service continuity if an individual developer or custodian leaves.
+
+**Status:** PO option C APPROVED; actual ownership arrangement and institutional authorization remain BLOCKED. Provider plan, quotas, region, billing, backup/PITR, Storage object recovery and restore-drill evidence remain unverified. No production deployment or production-data use is authorized by this PO decision.
