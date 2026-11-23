@@ -126,3 +126,9 @@ Audit events are append-only. Administrative users may view/export but cannot ed
 - Whether Admin may create sessions, or only manage sessions created by Super Admin.
 
 These remain open until explicit Product Owner approval.
+
+
+
+## T-14 — Inspector capacity eligibility (PO-approved 2026-11-24)
+
+An account contributes once to the combined Inspector cap only when its login is enabled, it has an active Inspector role grant, and it has at least one currently effective operational Inspector assignment within the governed project/session scope. Pending, rejected, suspended, disabled and expired-role accounts are excluded. Multiple roles/assignments do not multiply the count. Assignment and role grant status must be evaluated server-side; client UI is not authoritative.
