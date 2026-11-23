@@ -38,7 +38,7 @@ Recommendations in this pack are not approvals. Explicit Product Owner approvals
 | T-06 | Project closure and reconciliation | PO APPROVED | Explicit closure gate after all sessions, inspections, reviews, documents, attendance and reconciliation are complete | Blocker |
 | T-07 | Session creation authority and state transitions | PO APPROVED | Super Admin creates/configures; Korlap operates assigned session within bounded transitions | Blocker |
 | T-08 | Attendance verification authority | PO APPROVED | Designate explicit verifier permission and independent verification; do not infer from upload role | Blocker for verified attendance |
-| T-09 | Offline scope and conflict policy | OPEN | Online-first; limited offline editing only for already claimed drafts; no offline claim, approval, final submit or administration | Blocker if offline is required |
+| T-09 | Offline scope and conflict policy | PO APPROVED (B) | Limited offline editing only for already claimed drafts; online claim and final submit/approval/admin; idempotent conflict-safe sync | Device/local-data controls remain open before activation |
 | T-10 | Evidence limits, retention, deletion and privacy | BLOCKED | Obtain institutional records/privacy approval before setting limits and retention schedule | Blocker |
 | T-11 | Supported devices, performance and service objectives | OPEN | Approve a minimum browser/device matrix and measurable test profile before implementation acceptance | High |
 | T-12 | Provider operations, region, quota, backups and ownership | BLOCKED | Verify actual Supabase/Vercel plans, region, quotas, backup/restore and named operational owners | Blocker |
@@ -213,7 +213,7 @@ Do not auto-close by date. Any exception should use a separately permissioned, r
 
 **Decision required:** Is offline operation required for initial rollout? If yes, choose B and approve device/local-data controls.
 
-**State:** OPEN; offline feature scope blocked.
+**State after PO response (2026-11-23): PO APPROVED option B.** Initial release supports limited offline draft editing only for an already claimed inspection unit, where the claim was acquired online. Offline claim acquisition, approval, final submission, role/assignment changes, session administration and privileged actions are prohibited. Reconnection uses authenticated, idempotent synchronization with server-side authorization rechecks, explicit conflict detection, preservation of both local and server versions, and no silent last-write-wins. Offline persistence must not be enabled in production until device/browser support, local-data protection, retention/purge, shared-device logout and recovery controls are approved. T-10 privacy/records retention remains a separate BLOCKED decision.
 
 ### T-10 — Evidence limits, retention, deletion and privacy
 
@@ -486,3 +486,17 @@ PO approval does not replace institutional authorization or source evidence. T-0
 | T-08 | A — Korlap verifies attendance within assigned location/scope. Generate, print, upload, download and verify are separate permissions; upload never automatically verifies. | PO APPROVED; Super Admin assigns/grants verifier authority; implementation and tests remain pending. |
 
 The Product Owner explicitly approved T-05=A, T-06=A, T-07=A and T-08=A on 2026-11-23. T-09 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
+
+
+## Package T — T-09 Product Owner decision (2026-11-23)
+
+The Product Owner explicitly approved **T-09 option B — limited offline draft editing**. This is a product-scope decision, not authorization to enable offline persistence before local-data security and institutional retention controls are approved.
+
+- Offline work is permitted only for an already claimed draft whose claim was acquired online.
+- Claim acquisition, approval, final submission, role/assignment changes, session administration and privileged actions require connectivity.
+- Reconnection is authenticated and idempotent; server authorization and current claim/state are rechecked.
+- Stale/conflicting writes are rejected and surfaced; preserve both sides for authorized resolution; never use silent last-write-wins.
+- Required evidence must be server-confirmed before final submission.
+- Browser/device matrix, local-data protection, shared-device/logout behavior, retention/purge and recovery remain open dependencies under T-10/T-11.
+
+T-09 is PO-approved; implementation, device controls and verification remain pending. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
