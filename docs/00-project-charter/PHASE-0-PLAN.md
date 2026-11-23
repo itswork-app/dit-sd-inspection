@@ -122,3 +122,10 @@ Drafted five documents:
 - Test case catalog and UAT plan.
 
 Package E is a design/test-planning package only. No UI implementation or test execution is claimed. Visual tokens, device/browser support, accessibility verification, numeric performance SLOs, official instrument source validation, and UAT sign-off remain open.
+
+
+## Package R — Audit Event Catalogue and Governance
+
+Created `docs/02-architecture/AUDIT-EVENT-CATALOGUE-AND-GOVERNANCE.md`, defining canonical audit event fields, business/security/governance event families, critical transaction fail-closed behavior, append-only controls, privacy-safe payloads, retention/legal hold, access/export auditing, and verification requirements. INS-016 remains an unapproved draft proposal. No schema, trigger, policy, or application code has been implemented; no tests have been executed.
+
+New Standing Bracket evidence was also reconciled into the instrument specification and verification matrix. The 23-November sample form contains 19 visible checklist rows (6 physical + 13 accessories); earlier screenshot transcription also contains 19 visible rows. Exact source mapping, controlled checklist authority, signatory policy, and photo-slot requirements remain open.
