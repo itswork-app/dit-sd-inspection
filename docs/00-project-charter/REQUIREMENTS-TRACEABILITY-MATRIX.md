@@ -69,6 +69,17 @@ Purpose: Link product intent to specifications, implementation units, and verifi
 | PRD-001 | Product | Product scope, journeys, functional/non-functional requirements | PRD v0.1.0 | Product Owner review | DRAFTED / REVIEW REQUIRED |
 | AC-001 | Product | Observable acceptance criteria | Acceptance Criteria v0.1.0 | Map to test cases and UAT evidence | DRAFTED / REVIEW REQUIRED |
 
+## Instrument verification matrix
+
+| ID | Requirement | Specification | Verification | Status |
+|---|---|---|---|---|
+| QA-INS-001 | Every identified IFP checklist item has stable ID and category-based verification | IFP Instrument Specification | TC-IFP-CHK-001..004; Instrument Requirements Verification Matrix | DESIGN DRAFT |
+| QA-INS-002 | IFP model-specific specification fields are verified against frozen configuration | IFP Instrument Specification | TC-IFP-SP-001 | DESIGN DRAFT |
+| QA-INS-003 | IFP evidence slots are verified without assuming unapproved mandatory status | IFP Instrument Specification | TC-IFP-PH-001 | DESIGN DRAFT |
+| QA-INS-004 | All 19 visible Standing Bracket rows have provisional trace IDs and test coverage | Standing Bracket Instrument Specification | TC-BRK-CHK-001..002 | PARTIAL / SOURCE VALIDATION OPEN |
+| QA-INS-005 | Standing Bracket evidence labels have test coverage without assuming completeness | Standing Bracket Instrument Specification | TC-BRK-PH-001 | PARTIAL / SOURCE VALIDATION OPEN |
+| QA-INS-006 | Instrument versioning, historical snapshots, serial handling, concurrency, and PDF parity are verified | Instrument specifications; architecture | TC-INSTR-001..008 | DESIGN DRAFT |
+
 ## Package C design artifacts
 
 - `docs/03-functional-design/RBAC-AND-AUTHORIZATION.md`
