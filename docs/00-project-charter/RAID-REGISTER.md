@@ -86,3 +86,12 @@ Owner convention: accountable role is recorded; named individuals are not invent
 | I-011 | Issue | Session creation/state transitions, offline device contract, report semantics, and UAT/pilot/rollback ownership remain unresolved | High | Resolve through explicit PO decisions and update all affected docs and tests | Product Owner | OPEN |
 | I-012 | Issue | CI execution, branch protection, and provider quota state were not verified in Package S | High | Inspect live repository settings and workflow runs before merge | CTO / Repository Administrator | OPEN |
 | D-009 | Dependency | Controlled instrument documents and institutional records/privacy/security approvals | Scope freeze and implementation authorization | Product Owner / Project Sponsor | BLOCKED |
+
+
+## Package T decision-closure dependencies
+
+| ID | Type | Description | Impact | Likelihood | Mitigation / response | Accountable role | Status |
+|---|---|---|---|---|---|---|---|
+| D-019 | Dependency | Package T decisions T-01..T-18 require explicit PO and, where applicable, institutional authority/evidence before the corresponding scope-freeze gates can close | High | High | Track each decision in `PACKAGE-T-PO-DECISION-CLOSURE-PACK.md`; record approve/reject/defer/need-evidence outcome; update Decision Register and affected specifications; do not infer approval | Product Owner / Institutional Authority | Open |
+| R-020 | Risk | Recommendations in Package T could be mistaken for approved policy | High | Medium | Preserve explicit state labels; only Decision Register entries with explicit approval count as approved; keep PR #2 draft and implementation unauthorized | Product Owner / Engineering Lead | Open |
+| D-021 | Dependency | Institutional source evidence, records/privacy direction and provider operational evidence are outside the documentation baseline and remain unverified | High | High | Obtain source documents and written approvals; verify actual provider settings, backup/restore and recovery ownership before production gate | Institutional Authority / Operations Owner | Blocked |
