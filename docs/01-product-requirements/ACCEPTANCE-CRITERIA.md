@@ -150,3 +150,12 @@ The open-decision list reflects remaining external evidence and detailed accepta
 **Decision: PO APPROVED option B — formal institutional records/legal/privacy review before defining the evidence policy.** The project must obtain a documented review by the institution's authorized records, legal and privacy functions before approving data classification, permitted personal information and processing purpose, accepted evidence formats, per-file/per-inspection/per-project limits, retention periods and triggers, legal-hold authority, deletion eligibility/approval/audit, private access rules, backup/restore and post-deletion treatment, and any local/offline copy controls.
 
 **Important boundary:** this is Product Owner approval of the governance path, not institutional legal/records approval and not approval of any numeric limit, retention period, lawful basis, deletion schedule or production evidence collection. Until the authorized institutional review supplies written direction, retain all such values as OPEN/NOT SET; do not invent limits or retention durations, enable irreversible deletion, or authorize production evidence collection. T-10 remains BLOCKED for scope freeze and production activation pending that external evidence. No implementation or tests are claimed.
+
+
+## T-11 acceptance criteria
+- Supported baseline is current stable Chrome on Android for Inspector; current stable Chrome or Edge desktop for Korlap, Reviewer, Super Admin and Print Officer.
+- Tablet is supported only after responsive, camera, upload and PDF/print validation.
+- Unsupported/obsolete releases, embedded in-app browsers and modified browsers are excluded.
+- Exact OS/device minimums and browser build numbers are recorded in UAT evidence.
+- The 100 concurrent authenticated-user profile is load-tested in staged levels 10/25/50/75/100; no claim of capacity is accepted without measured evidence.
+- Numeric SLOs are not treated as approved until workload, provider plan/region/quotas and baseline measurements are reviewed and approved.
