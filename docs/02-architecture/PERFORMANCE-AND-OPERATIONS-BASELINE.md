@@ -95,3 +95,8 @@ At 100 concurrent users, integrity requirements are absolute: no lost acknowledg
 - Numeric latency/error-rate SLOs remain OPEN until provider plan/region/quotas and representative workload are verified and measured.
 
 T-11 option B is PO-approved; compatibility and load tests have not been executed.
+
+
+## T-14 — Inspector account capacity definition (PO-approved 2026-11-24)
+
+The account-capacity metric counts distinct enabled login accounts with an active Inspector role grant and at least one currently effective operational Inspector assignment within governed project/session scope. Count once across roles/assignments; exclude pending, rejected, suspended, disabled and expired-role accounts. The cap is combined across both locations, configurable 1–100 with default 50, and must be atomically enforced. This metric is separate from the 100-concurrent-authenticated-user load-test target.
