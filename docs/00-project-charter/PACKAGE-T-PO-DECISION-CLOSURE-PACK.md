@@ -302,7 +302,7 @@ Do not assume a provider feature or plan capability without checking the actual 
 
 ### T-14 — Inspector capacity semantics
 
-**Problem:** Approved cap contract is minimum 1, default 50, maximum 100 distinct active Inspector accounts combined across both locations. The precise definition of an account counted as active Inspector remains open.
+**Problem:** Approved cap contract is minimum 1, default 50, maximum 100 distinct active Inspector accounts combined across both locations. The precise definition of an account counted as active Inspector is resolved by PO approval of T-14 option A.
 
 **Recommendation:** Count distinct user accounts that are enabled for login, have an active Inspector role grant, and have at least one currently effective operational Inspector assignment within the governed project/session scope. Count each account once even if it has multiple assignments or roles. Exclude pending, rejected, suspended, disabled and expired-role accounts. If the institution intends a different meaning (for example, all users with an Inspector role regardless of current assignment), explicitly choose it.
 
@@ -481,7 +481,7 @@ PO approval does not replace institutional authorization or source evidence. T-0
 | T-07 | A — Super Admin creates/configures sessions; Korlap operates assigned sessions within granted permissions. DRAFT, ACTIVE, PAUSED, CLOSED; CLOSED terminal in ordinary flow. | PO APPROVED; reopening requires privileged permission, reason and audit. State/permission tests remain pending. |
 | T-08 | A — Korlap verifies attendance within assigned location/scope. Generate, print, upload, download and verify are separate permissions; upload never automatically verifies. | PO APPROVED; Super Admin assigns/grants verifier authority; implementation and tests remain pending. |
 
-The Product Owner explicitly approved T-05=A, T-06=A, T-07=A and T-08=A on 2026-11-23; T-09 option B was subsequently approved on 2026-11-23. T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 option B is PO APPROVED; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; the actual alternative arrangement and institutional/provider verification remain BLOCKED. T-13 is PO APPROVED option B; T-14 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
+The Product Owner explicitly approved T-05=A, T-06=A, T-07=A and T-08=A on 2026-11-23; T-09 option B was subsequently approved on 2026-11-23. T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 option B is PO APPROVED; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; the actual alternative arrangement and institutional/provider verification remain BLOCKED. T-13 is PO APPROVED option B; T-14 is PO APPROVED option A; T-15 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
 
 ## Package T — T-09 Product Owner decision (2026-11-23)
 
