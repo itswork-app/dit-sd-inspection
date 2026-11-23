@@ -87,7 +87,7 @@ Workflow states:
 - `UPLOADED`
 - `VERIFIED`
 
-Support multi-page output and upload of PDF/JPG/PNG. Original uploaded file is retained. Replacement requires reason and audit. Verification authority remains open.
+Support multi-page output and upload of PDF/JPG/PNG. Original uploaded file is retained. Replacement requires reason and audit. Under PO-approved T-08 (2026-11-23), Korlap verifies attendance within assigned location/scope when explicitly granted verifier permission by Super Admin. Generate, print, upload, download and verify are separate permissions. Upload does not automatically set VERIFIED. Record verifier, timestamp, scope and outcome; preserve the original and any replacement history.
 
 ## 5. Standing Bracket serial-number annex
 
@@ -107,6 +107,8 @@ Required report families:
 - daily Actual and Target;
 - weekly Actual and Target;
 - final Actual and Target.
+
+Actual report metric contract (PO-approved T-05, 2026-11-23): show separate labelled counts for Inspected, Submitted, Approved and Completed. Completed is exactly approved inspection + final PDF generated + Print Officer print action recorded. Display report measurement timestamp and active filters. PDF open/download is not a print event.
 
 Korlap validates/approves daily reports within assigned location. Super Admin monitors all locations. Exact headline count basis, separate templates versus one configurable template, and client portal versus PDF-only remain open.
 
