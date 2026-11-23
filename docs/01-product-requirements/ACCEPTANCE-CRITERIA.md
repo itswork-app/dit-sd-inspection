@@ -79,6 +79,11 @@ This document defines observable acceptance outcomes. Detailed test cases and au
 - AC-DOC-005: Print action records actor, timestamp, document, and print count.
 - AC-DOC-006: Reprints increment the count and show the correct reprint label.
 - AC-DOC-007: A print action does not imply that paper was physically printed or signed.
+- AC-DOC-008: Print Officer can print an approved final PDF individually or through a bounded/configurable batch operation, subject to explicit permission and scope.
+- AC-DOC-009: Every document in a batch has an independent recorded outcome; partial success is represented accurately and is never reported as whole-batch success.
+- AC-DOC-010: Retry is restricted to failed documents and does not duplicate successful print events.
+- AC-DOC-011: Reprint sequence is allocated atomically and remains linked to the same approved document version unless controlled regeneration creates a new version.
+- AC-DOC-012: Direct printer integration is not required for initial release; print event records the application action, not verified physical paper output.
 - AC-DOC-008: BA and attendance workflows follow approved templates and authorized verification rules; implementation is blocked until those rules are approved.
 
 ## 8. Reporting and session closure
@@ -138,6 +143,7 @@ This document defines observable acceptance outcomes. Detailed test cases and au
 - T-06 acceptance: only Super Admin closes a project after all gates and actual-versus-target reconciliation pass; closure is explicit, reasoned, audited and never date-triggered.
 - T-07 acceptance: Super Admin creates/configures sessions; Korlap transitions only within assigned scope and permission; CLOSED is terminal in ordinary flow; reopening is privileged, reasoned and audited.
 - T-08 acceptance: Korlap verifies attendance only within assigned scope and explicit verifier permission; upload never automatically marks VERIFIED; all attendance actions have separate permissions.
+- T-13 acceptance: individual and bounded batch printing are supported; each document has an independent outcome; failed-only retry does not duplicate success; reprint sequence is atomic and version-bound; no physical-output claim or direct printer integration is assumed.
 
 The open-decision list reflects remaining external evidence and detailed acceptance items, not reversal of these PO approvals.
 
