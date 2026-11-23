@@ -265,3 +265,9 @@ Initial release supports individual and bounded/configurable batch printing. Eve
 
 
 Initial release supports individual and bounded/configurable batch printing. Every document in a batch is independently permission-checked and receives its own success-recorded, failed or cancelled outcome. Retry may include failed documents only and must not duplicate a previously successful print event. Reprints retain the approved document version unless a controlled regeneration creates a new version; sequence allocation is atomic. A recorded print event means the authorized application print action was recorded, not that physical paper output was verified. Direct printer integration is excluded from initial release.
+
+
+
+### T-14 — Inspector capacity eligibility (PO-approved 2026-11-24)
+
+The configurable combined Inspector capacity counts distinct accounts that are enabled for login, have an active Inspector role grant, and have at least one currently effective operational Inspector assignment within the governed project/session scope. Each account counts once regardless of multiple assignments/roles. Pending, rejected, suspended, disabled and expired-role accounts do not count. The approved capacity remains minimum 1, default 50, maximum 100 across both locations combined. Enforcement is atomic; invalid values and reductions below the current qualifying count are rejected without silent deactivation.
