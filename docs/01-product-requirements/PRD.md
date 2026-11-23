@@ -218,11 +218,9 @@ See Decision Register and Reference & Evidence Inventory. At minimum:
 
 Every change to approved scope requires a change request, rationale, impact analysis, Product Owner approval, updated Decision Register/RTM/PRD, and regression-test impact. No unapproved feature may enter implementation.
 
-
 ## 14. Concurrent usage and performance baseline
 
 The system must be designed and tested for up to **100 concurrent authenticated users** using the application at the same time. This is a capacity and performance acceptance target, not an unconditional guarantee independent of hosting plan, network, device, or workload. Before production approval, run a representative load test covering concurrent login/session reads, inspection draft saves, checklist updates, evidence metadata operations, dashboard/report reads, and claim/submit transactions. Record the tested environment, workload mix, throughput, p50/p95/p99 latency, error rate, database resource usage, and storage/network bottlenecks. No silent data loss, duplicate claim, authorization bypass, or transaction corruption is acceptable under the test load. Upload duration for photos must be measured separately from application API latency.
-
 
 ## Package T — Product Owner-approved decisions (2026-11-23)
 
@@ -241,18 +239,15 @@ The Product Owner approved the following directions:
 
 These decisions are PO-approved product direction, not proof of institutional authorization or implementation. The official instrument masters and BA signatory authority remain external evidence dependencies. PDF delivery remains permission-controlled and auditable. Phase 0 gates remain in force; feature implementation is not authorized.
 
-
 ### Package T T-09 — approved offline scope (2026-11-23)
 
 Product Owner approved option B: limited offline editing of an already claimed draft only. The online claim prerequisite and online-only privileged/finalization actions are mandatory. Idempotent synchronization, server-side authorization rechecks, explicit conflict handling and preservation of both versions are required. Offline storage activation is conditional on device and local-data safeguards; PO approval does not resolve T-10 privacy/retention or T-11 device support.
-
 
 ## Package T-10 — Product Owner decision (2026-11-23)
 
 **Decision: PO APPROVED option B — formal institutional records/legal/privacy review before defining the evidence policy.** The project must obtain a documented review by the institution's authorized records, legal and privacy functions before approving data classification, permitted personal information and processing purpose, accepted evidence formats, per-file/per-inspection/per-project limits, retention periods and triggers, legal-hold authority, deletion eligibility/approval/audit, private access rules, backup/restore and post-deletion treatment, and any local/offline copy controls.
 
 **Important boundary:** this is Product Owner approval of the governance path, not institutional legal/records approval and not approval of any numeric limit, retention period, lawful basis, deletion schedule or production evidence collection. Until the authorized institutional review supplies written direction, retain all such values as OPEN/NOT SET; do not invent limits or retention durations, enable irreversible deletion, or authorize production evidence collection. T-10 remains BLOCKED for scope freeze and production activation pending that external evidence. No implementation or tests are claimed.
-
 
 ## Package T-11 — Product Owner decision (2026-11-23)
 
@@ -265,11 +260,9 @@ Product Owner approved option B: limited offline editing of an already claimed d
 
 Exact OS/device minimum versions and the tested browser build numbers must be recorded in the release/UAT compatibility matrix; this PO decision does not invent exact version numbers. The 100 concurrent authenticated-user load-test target remains the required acceptance load profile and must be tested at staged levels (10, 25, 50, 75, 100). This is a test target, not a demonstrated production capacity or service-level guarantee. Numeric latency/error-rate SLOs remain OPEN until workload and actual Supabase/Vercel plan/region/quotas are verified and baseline measurements are collected. No implementation, compatibility test or load test is claimed as executed.
 
-
 ### T-13 — Print workflow decision (PO approved 2026-11-23)
 
 Initial release supports individual and bounded/configurable batch printing. Every document in a batch is independently permission-checked and receives its own success-recorded, failed or cancelled outcome. Retry may include failed documents only and must not duplicate a previously successful print event. Reprints retain the approved document version unless a controlled regeneration creates a new version; sequence allocation is atomic. A recorded print event means the authorized application action was recorded, not that physical paper output was verified. Direct printer integration is excluded from initial release.
-
 
 ### T-13 — Print workflow decision (PO approved 2026-11-23)
 
