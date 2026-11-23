@@ -107,10 +107,13 @@ Users may hold multiple roles, but operational authority requires explicit assig
 ### 6.5 PDF and print
 1. Approved inspection becomes eligible for final PDF generation.
 2. PDF reflects the approved immutable inspection snapshot and configured template version.
-3. Print Officer prints the approved PDF; system records actor, time, document, and print count.
-4. Reprint is allowed and visibly numbered (e.g. "Cetak ke-2").
-5. Print action is a recorded user action; the system cannot prove paper physically emerged from a printer.
-6. Per-unit wet signature is completed on paper; the print event does not imply signature completion.
+3. Print Officer uses a dedicated permissioned queue and may print approved final PDFs individually or in bounded/configurable batches.
+4. Batch printing records an independent outcome for every document; a partial batch is never represented as wholly successful.
+5. Retry targets failed documents only and must not duplicate successful print events.
+6. Reprint is allowed and visibly numbered (e.g. "Cetak ke-2"); sequence allocation is atomic and the same approved document version is retained unless controlled regeneration creates a new version.
+7. Print action is a recorded application action; the system cannot prove paper physically emerged from a printer.
+8. Per-unit wet signature is completed on paper; the print event does not imply signature completion.
+9. Direct printer integration is not included in the initial release.
 
 ### 6.6 Session closure
 Super Admin is the final project-closure authority. Project closure is explicit and non-automatic and is allowed only after all sessions are closed; no unresolved claims, drafts, corrections or pending reviews remain; required inspections, final PDFs, print events, BA and attendance artifacts are complete and verified; and actual-versus-target reconciliation is reviewed. The closer records confirmation/reason and the system records an audit event. No date-based auto-close. Any exception requires separately permissioned override, reason and audit. Session and project closure are distinct.
@@ -233,6 +236,7 @@ The Product Owner approved the following directions:
 - **T-06:** Super Admin is final project-closure authority after all gates and actual-versus-target reconciliation pass. Closure is explicit, non-automatic, reasoned and audited; no date-based auto-close.
 - **T-07:** Super Admin exclusively creates/configures sessions, targets, locations, instruments and team assignments. Korlap operates assigned sessions within explicit permissions; DRAFT, ACTIVE, PAUSED and CLOSED states apply. CLOSED is terminal in ordinary flow; reopening requires privileged permission, reason and audit.
 - **T-08:** Korlap verifies attendance within assigned location/scope and explicit verifier permission. Generate, print, upload, download and verify are separate permissions; upload never automatically sets VERIFIED.
+- **T-13:** Initial release supports individual and bounded batch printing from a permissioned Print Officer queue, with independent per-document outcomes, failed-only retry and atomic reprint sequence. Direct printer integration is excluded; print action does not prove physical paper output.
 
 These decisions are PO-approved product direction, not proof of institutional authorization or implementation. The official instrument masters and BA signatory authority remain external evidence dependencies. PDF delivery remains permission-controlled and auditable. Phase 0 gates remain in force; feature implementation is not authorized.
 
@@ -259,3 +263,8 @@ Product Owner approved option B: limited offline editing of an already claimed d
 - Explicit exclusions: obsolete/unsupported browser releases, embedded in-app browsers, modified browsers, and devices that fail required camera, upload, authentication, offline-safety or PDF/print tests.
 
 Exact OS/device minimum versions and the tested browser build numbers must be recorded in the release/UAT compatibility matrix; this PO decision does not invent exact version numbers. The 100 concurrent authenticated-user load-test target remains the required acceptance load profile and must be tested at staged levels (10, 25, 50, 75, 100). This is a test target, not a demonstrated production capacity or service-level guarantee. Numeric latency/error-rate SLOs remain OPEN until workload and actual Supabase/Vercel plan/region/quotas are verified and baseline measurements are collected. No implementation, compatibility test or load test is claimed as executed.
+
+
+### T-13 — Print workflow decision (PO approved 2026-11-23)
+
+Initial release supports individual and bounded/configurable batch printing. Every document in a batch is independently permission-checked and receives its own success-recorded, failed or cancelled outcome. Retry may include failed documents only and must not duplicate a previously successful print event. Reprints retain the approved document version unless a controlled regeneration creates a new version; sequence allocation is atomic. A recorded print event means the authorized application action was recorded, not that physical paper output was verified. Direct printer integration is excluded from initial release.
