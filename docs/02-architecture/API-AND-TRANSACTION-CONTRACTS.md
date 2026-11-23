@@ -139,3 +139,9 @@ For validation or conflict errors, return a stable code, safe message, and relev
 - **T-09 option B is PO-approved (2026-11-23):** limited offline draft editing only for already claimed units. Offline storage activation remains gated on approved device/browser and local-data safeguards (T-10/T-11).
 - Whether bulk operations are needed for field throughput.
 - Rate limits and abuse protection.
+
+
+
+## T-14 — Atomic Inspector capacity command contract (PO-approved 2026-11-24)
+
+All commands that create/enable an Inspector role grant, establish an effective operational Inspector assignment, or change the configured cap must apply the same canonical count: distinct enabled login accounts with an active Inspector role grant and at least one currently effective operational Inspector assignment within the governed project/session scope. Count each account once; exclude pending, rejected, suspended, disabled and expired-role accounts. Enforce the combined cap atomically across both locations (1–100, default 50). Reject cap 0, cap above 100, and reductions below the current qualifying count until reconciled. Never silently deactivate accounts. Client pre-checks are advisory only; server transaction is authoritative.
