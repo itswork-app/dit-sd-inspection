@@ -1,15 +1,18 @@
-# Decision Register — Management and Product Baseline
+# Decision Register — Dit. SD Inspection
 
-Status: Living document. Only explicitly approved decisions are marked APPROVED.
+Only explicitly approved decisions are marked APPROVED.
 
 | ID | Decision | Status | Notes |
 |---|---|---|---|
 | MGT-001 | Production is the release target | APPROVED | User decision, 2026-11-23 |
-| MGT-002 | Cost-first engineering priority | APPROVED | Optimize total lifecycle cost; retain non-negotiable security and reliability controls |
+| MGT-002 | Cost-first engineering priority | APPROVED | Optimize lifecycle cost; retain security and reliability controls |
+| TECH-001 | Use Supabase and Vercel | APPROVED | User decision, 2026-11-23 |
+| TECH-002 | Supabase PostgreSQL is the single source of truth | APPROVED | No second primary database |
+| TECH-003 | GitHub for source control and CI | APPROVED | Existing private repository |
 | PRD-001 | Replace existing Dit. SD inspection application | APPROVED | Not SaaS |
 | PRD-002 | Initial scope is IFP and Standing Bracket only | APPROVED | No other instruments in initial scope |
 | PRD-003 | Feature parity first; improvements second | APPROVED | Legacy app is reference, not code dependency |
-| PRD-004 | No access to legacy source code is assumed | CONFIRMED | Reconstruct from supplied workflow and reference material |
+| PRD-004 | No access to legacy source code is assumed | CONFIRMED | Reconstruct from supplied references |
 | RBAC-001 | Google sign-in; new users require approval and role assignment | APPROVED | No self-role elevation |
 | RBAC-002 | Multi-role accounts allowed with explicit operational assignment | APPROVED | Scope by session/location/instrument; no self-review |
 | WF-001 | Reviewer returns corrections to Inspector; Inspector resubmits | APPROVED | Immutable version history |
@@ -46,8 +49,8 @@ Status: Living document. Only explicitly approved decisions are marked APPROVED.
 - Attendance upload verification authority.
 - Offline package, conflict resolution, and device recovery details.
 - Evidence file limits, retention, deletion, privacy, and access policy.
-- Technology stack, hosting, environments, and production operations owner.
-- Cost ceiling, budget owner, expected usage, and provider quota policy.
-- CI provider, quotas, and required branch protection checks.
+- Supabase/Vercel project organization, environments, backup and retention configuration.
+- Production usage estimates and plan upgrade criteria.
+- CI provider quotas and required branch protection checks.
 
 Proposed or illustrative decisions are not approved until explicitly accepted.

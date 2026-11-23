@@ -2,18 +2,22 @@
 
 Replacement application for the existing inspection workflow used by Direktorat Sekolah Dasar (Dit. SD).
 
-## Initial product scope
+## Initial scope
 - Interactive Flat Panel (IFP)
 - Standing Bracket
 
-Delivery strategy: feature parity first, controlled improvements second. The legacy application is a workflow and output reference only; this is a greenfield implementation and does not assume access to legacy source code or database.
+Feature parity first; controlled improvements second. The legacy application is a workflow/output reference only. This is a greenfield project; no legacy source-code or database access is assumed.
 
-## Management baseline
+## Approved management and technology baseline
 - Release target: Production
 - Engineering priority: Cost-first
-- Cost-first means minimize total lifecycle cost and avoid unnecessary infrastructure, tooling, and CI spend. It does not waive security, data integrity, legal, or production reliability requirements.
+- Web application/PWA hosting and deployment: Vercel
+- Backend platform: Supabase (PostgreSQL, Auth, Row Level Security, Storage)
+- Source control and CI: GitHub
 
-## Current status
+Cost-first means optimizing total lifecycle cost without waiving security, privacy, data integrity, backup/recovery, or production reliability.
+
+## Status
 Phase 0 — Project Foundation. Product specification, architecture, implementation, and production readiness are not yet declared complete.
 
-See docs/00-project-charter/ for the project charter and governance baseline.
+See docs/00-project-charter/ and docs/02-architecture/ for project decisions.

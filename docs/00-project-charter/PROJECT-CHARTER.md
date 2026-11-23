@@ -1,16 +1,15 @@
 # Project Charter — Dit. SD Inspection
 
-Status: Draft for stakeholder validation
-Release target: Production
-Engineering priority: Cost-first
-Repository: https://github.com/itswork-app/dit-sd-inspection
+Status: Draft for stakeholder validation  
+Release target: Production  
+Engineering priority: Cost-first  
+Technology baseline: Supabase + Vercel + GitHub
 
 ## Purpose
 Build a reliable replacement application for the existing Dit. SD inspection workflow, covering field inspection, review, approval, document generation, printing, reporting, and operational oversight.
 
 ## Initial scope
-- IFP inspection instrument.
-- Standing Bracket inspection instrument.
+- IFP and Standing Bracket inspection instruments.
 - Google sign-in with controlled account approval and role assignment.
 - Scoped roles and operational assignments.
 - Project, session, location, instrument, team, and target management.
@@ -20,6 +19,13 @@ Build a reliable replacement application for the existing Dit. SD inspection wor
 - PDF generation, print/reprint tracking, Berita Acara (BA), and attendance documents.
 - Actual and Target reporting, dashboards, audit trail, and notifications.
 - Versioned configuration and historical snapshots.
+
+## Platform baseline
+- **Supabase:** PostgreSQL, Authentication, Row Level Security, and private Storage.
+- **Vercel:** web/PWA hosting, deployment, and preview environments.
+- **GitHub:** source control, pull requests, and economical CI.
+- Supabase PostgreSQL is the single source of truth. Do not introduce a second primary database.
+- No separate microservices or additional paid infrastructure without a documented requirement and cost/benefit review.
 
 ## Out of scope unless separately approved
 - SaaS or multi-customer commercial offering.
@@ -32,7 +38,7 @@ Build a reliable replacement application for the existing Dit. SD inspection wor
 2. Improve reliability, security, usability, and operational control without changing official inspection meaning.
 3. Preserve actual inspection facts; target allocation must never be represented as actual activity.
 4. Treat the legacy app as reference only; no source-code/database access is assumed.
-5. Validate official instrument content against authorized source documents. Current screenshots and descriptions provide partial evidence; gaps remain open until confirmed.
+5. Validate official instrument content against authorized source documents.
 
 ## Authority
 - Product Owner/project sponsor approves business rules, scope, official instrument content, and acceptance.
@@ -49,13 +55,7 @@ Multi-role accounts require explicit assignment. Operational authority is scoped
 Production release requires agreed scope implemented and verified, critical journeys working end-to-end, security and data-integrity controls passing, operational and recovery procedures documented, UAT accepted, and no unresolved release-blocking defects. Production readiness is not a claim of zero future defects.
 
 ## Cost-first interpretation
-Optimize total lifecycle cost, not only initial hosting price. Prefer simple architecture, managed services with transparent limits, minimal paid dependencies, and selective CI. Retain non-negotiable controls for security, privacy, evidence integrity, backups, recovery, and availability appropriate to the approved operational risk.
+Optimize total lifecycle cost, not only initial hosting price. Start with the smallest suitable plans, measure actual consumption, and scale only when usage or production risk requires it. Retain non-negotiable security, privacy, evidence integrity, backup, and recovery controls.
 
-## Constraints and assumptions
-- Legacy source code is unavailable.
-- Reference material is based on user-provided screenshots and workflow descriptions; some checklist details are incomplete.
-- Technology stack and hosting are not yet approved.
-- Data residency, privacy, retention, procurement, official logos, signatories, and institutional content require authorized stakeholder confirmation.
-
-## Change control
-Changes to scope, official criteria, approval authority, retention, completion rules, or reporting semantics require a Decision Register entry or ADR with approver, rationale, impact, and effective version.
+## Constraints
+Legacy source code is unavailable. Reference material is based on screenshots and workflow descriptions; some checklist details remain incomplete. Data residency, privacy, retention, procurement, official logos, signatories, and institutional content require authorized stakeholder confirmation.

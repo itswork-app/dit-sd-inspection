@@ -1,12 +1,13 @@
 # Phase 0 — Project Foundation
 
-Status: In progress
+Status: In progress  
 Exit condition: Project foundation reviewed and approved; open assumptions and owners are explicit.
 
 ## Confirmed management decisions
 - Release target: Production.
 - Engineering priority: Cost-first.
-- Cost optimization must not waive security, privacy, data integrity, backup/recovery, or agreed production reliability.
+- Platform: Supabase + Vercel; GitHub for source control and CI.
+- Supabase PostgreSQL is the single source of truth.
 - Product is a replacement inspection application, not SaaS.
 - Initial instruments: IFP and Standing Bracket.
 - Strategy: feature parity first, improvements after.
@@ -24,6 +25,8 @@ Exit condition: Project foundation reviewed and approved; open assumptions and o
 | P0-06 | Inventory reference material and evidence gaps | Reference inventory | Pending review |
 | P0-07 | Record risks, assumptions, dependencies | RAID register | Pending |
 | P0-08 | Define production constraints and cost envelope | Hosting, privacy, retention, budget and operations decisions | Pending stakeholder input |
+| P0-09 | Record Supabase/Vercel platform baseline | ADR-001 | Drafted |
+| P0-10 | Validate production plan eligibility and quotas | Cost and operational assessment | Pending |
 
 ## Phase 0 exit checklist
 - [ ] Charter approved by Product Owner.
@@ -35,6 +38,7 @@ Exit condition: Project foundation reviewed and approved; open assumptions and o
 - [ ] Reference inventory and checklist gaps documented.
 - [ ] RAID register reviewed with owners.
 - [ ] Production constraints, budget owner, and compliance owners identified.
+- [ ] Supabase/Vercel plan eligibility and production constraints reviewed.
 - [ ] Phase 1 entry criteria accepted.
 
 ## Phase 1 entry criteria

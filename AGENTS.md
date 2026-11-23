@@ -8,27 +8,28 @@
 
 ## Delivery
 - Production is the release target; cost-first engineering priority applies.
-- Prefer the lowest total-cost solution that meets security, data integrity, reliability, and maintainability requirements.
+- Approved platform baseline: Supabase + Vercel + GitHub.
+- Prefer the lowest total-cost implementation that meets security, integrity, reliability, and maintainability requirements.
 - Do not begin feature implementation before product and architecture gates pass.
-- Every work item needs testable acceptance criteria and traceable evidence.
 - Keep main stable; use short-lived branches and pull requests.
 
 ## Engineering
 - Prefer a modular monolith unless measured requirements justify otherwise.
+- Supabase PostgreSQL is the single source of truth for application data.
+- Enforce authorization with server-side checks and Supabase RLS; UI hiding is not authorization.
 - Use versioned database migrations.
-- Enforce authorization on server and data layers; UI hiding is not authorization.
 - Preserve audit history and historical configuration snapshots.
 - Submitted inspection versions and original evidence are immutable; corrections create new versions.
 - Offline sync must be idempotent and conflict-aware; never silently overwrite competing work.
+- Keep evidence storage private and issue time-limited access only after authorization.
 - Never commit secrets or log tokens/sensitive evidence.
 
 ## Cost controls
-- Avoid paid services until a requirement demonstrates their necessity.
-- Prefer managed/free-tier services only after checking quotas, backup, security, data residency, and production limits.
+- Start with the lowest suitable plan and monitor actual usage.
+- Review database size, storage, egress, compute, backups, email, Vercel usage, and GitHub Actions minutes.
 - Use tiered CI: fast relevant checks on pull requests; broader suites on integration/release events.
 - Avoid duplicate jobs and unnecessary workflow triggers.
-- Track recurring infrastructure, storage, bandwidth, email, monitoring, and CI costs before production approval.
-- Do not reduce backup, access control, evidence integrity, or recovery controls merely to save cost.
+- Do not reduce security, backup, evidence integrity, or recovery controls merely to save cost.
 
 ## Quality and honesty
 - Add appropriate unit, integration, end-to-end, authorization, and scope-isolation tests.
