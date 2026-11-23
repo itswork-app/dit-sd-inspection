@@ -216,3 +216,14 @@ Every change to approved scope requires a change request, rationale, impact anal
 ## 14. Concurrent usage and performance baseline
 
 The system must be designed and tested for up to **100 concurrent authenticated users** using the application at the same time. This is a capacity and performance acceptance target, not an unconditional guarantee independent of hosting plan, network, device, or workload. Before production approval, run a representative load test covering concurrent login/session reads, inspection draft saves, checklist updates, evidence metadata operations, dashboard/report reads, and claim/submit transactions. Record the tested environment, workload mix, throughput, p50/p95/p99 latency, error rate, database resource usage, and storage/network bottlenecks. No silent data loss, duplicate claim, authorization bypass, or transaction corruption is acceptable under the test load. Upload duration for photos must be measured separately from application API latency.
+
+
+## Package T — Product Owner-approved decisions (2026-11-23)
+
+The Product Owner approved the following directions:
+- **T-01:** The officially issued/approved institutional source documents are the authoritative master for IFP and Standing Bracket requirements. Current transcriptions and screenshots remain reference evidence only until reconciled against those controlled sources. Instrument definitions must retain source provenance and immutable version history.
+- **T-02:** BA signatory blocks are configurable per approved BA template. The template may configure number of parties, organization, role/title, order and required/optional status. Actual signatory authority and identities must still follow institutional approval; sample parties are not hardcoded as universal policy.
+- **T-03:** Executive-summary signature is configurable per report template. No signature is the default unless the approved template requires one.
+- **T-04:** Initial release is PDF-only for client report delivery. A client portal is deferred and requires a later approved change request.
+
+These decisions are PO-approved product direction, not proof of institutional authorization. The official instrument masters and BA signatory authority remain external evidence dependencies. PDF delivery must remain permission-controlled and auditable. This does not authorize feature implementation; Phase 0 gates remain in force.
