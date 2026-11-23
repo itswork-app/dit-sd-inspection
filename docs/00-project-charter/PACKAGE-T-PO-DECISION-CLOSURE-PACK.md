@@ -140,7 +140,7 @@ Use the existing completion definition for Completed. The report must state its 
 
 **Decision required:** Approve the primary headline metric while retaining state breakdowns.
 
-**State:** OPEN; report acceptance blocked.
+**State after PO response (2026-11-23): PO APPROVED option A.** Actual reports must display distinct labelled counts for Inspected, Submitted, Approved and Completed. Completed remains approved inspection + final PDF generated + Print Officer print action recorded. Report measurement timestamp and filters must be visible; opening/downloading a PDF is not a print event.
 
 ### T-06 — Project closure and reconciliation
 
@@ -165,7 +165,7 @@ Do not auto-close by date. Any exception should use a separately permissioned, r
 
 **Decision required:** Confirm who requests, validates and finally authorizes project closure, and whether exceptions are allowed.
 
-**State:** OPEN; closure implementation blocked.
+**State after PO response (2026-11-23): PO APPROVED option A.** Super Admin is the final project-closure authority after all gates and actual-versus-target reconciliation pass. Closure is explicit, non-automatic, reasoned and audited. No date-based auto-close; any exception requires separately permissioned override, reason and audit.
 
 ### T-07 — Session creation authority and state transitions
 
@@ -181,7 +181,7 @@ Do not auto-close by date. Any exception should use a separately permissioned, r
 
 **Decision required:** Approve creator, transition authority, terminal-state behavior and reopening rule.
 
-**State:** OPEN; session command design blocked.
+**State after PO response (2026-11-23): PO APPROVED option A.** Super Admin exclusively creates/configures sessions, targets, locations, instruments and team assignments. Korlap may activate, pause, resume or request closure only within assigned scope and granted permissions. States are DRAFT, ACTIVE, PAUSED, CLOSED. CLOSED is terminal in ordinary flow; reopening requires explicit privileged permission, reason and audit.
 
 ### T-08 — Attendance verification authority
 
@@ -197,7 +197,7 @@ Do not auto-close by date. Any exception should use a separately permissioned, r
 
 **Decision required:** Choose verifier role and scope, including whether the uploader may verify the same artifact.
 
-**State:** OPEN; verified attendance workflow blocked.
+**State after PO response (2026-11-23): PO APPROVED option A.** Korlap verifies attendance within assigned location/scope. Generate, print, upload, download and verify are separate permissions; upload never automatically marks an artifact VERIFIED. Super Admin assigns/grants verifier authority.
 
 ### T-09 — Offline scope and conflict policy
 
@@ -474,3 +474,15 @@ This package does not authorize:
 | T-04 | APPROVED: PDF-only client report delivery in initial release | Client portal excluded from initial release; controlled PDF generation/access/distribution remains in scope | PO decision closed; later portal needs change request |
 
 PO approval does not replace institutional authorization or source evidence. Remaining Package T decisions T-05..T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
+
+
+## 8. Product Owner decision outcomes — T-05 through T-08 (2026-11-23)
+
+| ID | Approved outcome | State / implementation qualification |
+|---|---|---|
+| T-05 | A — Distinct labelled counts for Inspected, Submitted, Approved and Completed. Completed = approved inspection + final PDF generated + Print Officer print action recorded. | PO APPROVED; metric implementation and report tests remain pending. |
+| T-06 | A — Super Admin closes project only after all closure gates and actual-versus-target reconciliation pass. Explicit, non-automatic, reasoned and audited. | PO APPROVED; gate enforcement and tests remain pending. |
+| T-07 | A — Super Admin creates/configures sessions; Korlap operates assigned sessions within granted permissions. DRAFT, ACTIVE, PAUSED, CLOSED; CLOSED terminal in ordinary flow. | PO APPROVED; reopening requires privileged permission, reason and audit. State/permission tests remain pending. |
+| T-08 | A — Korlap verifies attendance within assigned location/scope. Generate, print, upload, download and verify are separate permissions; upload never automatically verifies. | PO APPROVED; Super Admin assigns/grants verifier authority; implementation and tests remain pending. |
+
+The Product Owner explicitly approved T-05=A, T-06=A, T-07=A and T-08=A on 2026-11-23. T-09 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
