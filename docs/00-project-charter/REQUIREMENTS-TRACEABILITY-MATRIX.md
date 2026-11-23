@@ -27,7 +27,7 @@ Purpose: Link product intent to specifications, implementation units, and verifi
 | GOV-003 | Use Supabase + Vercel; GitHub for source control/CI | TECH-001, TECH-003 | ADR-001 | Architecture/deployment review | APPROVED |
 | GOV-004 | Supabase PostgreSQL is sole primary source of truth | TECH-002 | ADR-001 | Data-flow and architecture tests | APPROVED |
 | GOV-005 | Initial scope is non-SaaS and includes IFP and Standing Bracket only | PRD-001..003 | PRD | Scope audit and sign-off | BASELINED; sign-off pending |
-| CAP-001 | Configurable Inspector capacity may be below or above 50; initial/default is 50 and hard maximum is 100 total across both locations combined | Decision Register OPS-001 | RBAC and Authorization; Project, Session, Target, and Assignment Model | Capacity range, audit, and atomic concurrency tests | BASELINED |
+| CAP-001 | Configurable Inspector capacity ranges from 1 to 100; default 50, total across both locations combined | Decision Register OPS-001 | RBAC and Authorization; Project, Session, Target, and Assignment Model | Capacity range, audit, and atomic concurrency tests | BASELINED |
 | AUTH-001 | Google sign-in; new accounts await approval and role assignment | Authentication decisions | RBAC and Authorization | Auth lifecycle tests | BASELINED |
 | RBAC-001 | Users may hold multiple roles only with explicit scoped assignments | RBAC decisions | RBAC and Authorization | Positive/negative authorization tests | BASELINED |
 | RBAC-002 | Operational authority is scoped by session, location, instrument, and assignment | RBAC decisions | RBAC and Authorization | RLS/API authorization tests | BASELINED |
