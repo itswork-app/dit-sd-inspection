@@ -105,4 +105,4 @@ Product Owner explicitly approved T-01=A, T-02=B, T-03=C and T-04=A.
 - T-03 configurable executive-summary signature behavior is PO-approved; approved template determines whether a signature is required.
 - T-04 PDF-only initial client delivery is PO-approved; client portal is deferred from initial scope.
 
-Update the decision tracker accordingly. Do not infer approval for T-05..T-18. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
+The Decision Register and affected specifications have been updated and fetched back for verification. Do not infer approval for T-05..T-18. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
