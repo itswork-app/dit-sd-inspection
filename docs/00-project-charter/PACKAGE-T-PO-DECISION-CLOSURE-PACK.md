@@ -40,7 +40,7 @@ Recommendations in this pack are not approvals. Explicit Product Owner approvals
 | T-08 | Attendance verification authority | PO APPROVED | Designate explicit verifier permission and independent verification; do not infer from upload role | Blocker for verified attendance |
 | T-09 | Offline scope and conflict policy | PO APPROVED (B) | Limited offline editing only for already claimed drafts; online claim and final submit/approval/admin; idempotent conflict-safe sync | Device/local-data controls remain open before activation |
 | T-10 | Evidence limits, retention, deletion and privacy | PO APPROVED option B; institutional review BLOCKED | Obtain institutional records/privacy approval before setting limits and retention schedule | Blocker |
-| T-11 | Supported devices, performance and service objectives | OPEN | Approve a minimum browser/device matrix and measurable test profile before implementation acceptance | High |
+| T-11 | Supported devices, performance and service objectives | PO APPROVED option B; exact matrix/SLO validation OPEN | Approve a minimum browser/device matrix and measurable test profile before implementation acceptance | High |
 | T-12 | Provider operations, region, quota, backups and ownership | BLOCKED | Verify actual Supabase/Vercel plans, region, quotas, backup/restore and named operational owners | Blocker |
 | T-13 | Print Officer and print-control workflow | OPEN | Dedicated permissioned print queue, immutable final PDF, audited print/reprint events | High |
 | T-14 | Inspector capacity semantics | OPEN | Define precisely which accounts count as active Inspector accounts under the approved 1–100 cap | High |
@@ -473,7 +473,7 @@ This package does not authorize:
 | T-03 | APPROVED: signature behavior configurable per report template; default none unless required | Add template configuration and PDF verification; do not hardcode a universal executive-summary signature | PO decision closed; approved template requirement still controls |
 | T-04 | APPROVED: PDF-only client report delivery in initial release | Client portal excluded from initial release; controlled PDF generation/access/distribution remains in scope | PO decision closed; later portal needs change request |
 
-PO approval does not replace institutional authorization or source evidence. T-01 through T-09 have explicit PO outcomes; T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
+PO approval does not replace institutional authorization or source evidence. T-01 through T-09 have explicit PO outcomes; T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 option B is PO APPROVED; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
 
 
 ## 8. Product Owner decision outcomes — T-05 through T-08 (2026-11-23)
@@ -485,7 +485,7 @@ PO approval does not replace institutional authorization or source evidence. T-0
 | T-07 | A — Super Admin creates/configures sessions; Korlap operates assigned sessions within granted permissions. DRAFT, ACTIVE, PAUSED, CLOSED; CLOSED terminal in ordinary flow. | PO APPROVED; reopening requires privileged permission, reason and audit. State/permission tests remain pending. |
 | T-08 | A — Korlap verifies attendance within assigned location/scope. Generate, print, upload, download and verify are separate permissions; upload never automatically verifies. | PO APPROVED; Super Admin assigns/grants verifier authority; implementation and tests remain pending. |
 
-The Product Owner explicitly approved T-05=A, T-06=A, T-07=A and T-08=A on 2026-11-23; T-09 option B was subsequently approved on 2026-11-23. T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
+The Product Owner explicitly approved T-05=A, T-06=A, T-07=A and T-08=A on 2026-11-23; T-09 option B was subsequently approved on 2026-11-23. T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 option B is PO APPROVED; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
 
 
 ## Package T — T-09 Product Owner decision (2026-11-23)
