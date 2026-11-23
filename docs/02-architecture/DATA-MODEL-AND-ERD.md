@@ -59,7 +59,7 @@ erDiagram
 - `projects`, `locations`, `sessions`, `teams`.
 - `operational_assignments`: exactly one project, session, location, instrument, and team per assignment.
 - `assignment_members`: user, assignment, operational role, effective interval, status.
-- `project_capacity_settings`: configured Inspector cap; enforce range 50..100 and global combined count transactionally.
+- `project_capacity_settings`: configured Inspector cap; enforce range 1..100 with default 50 and global combined count transactionally.
 - `target_plans`, `target_allocations`: immutable/versioned target schedules and assignment of reporting quantities to dates.
 
 ### Instruments and inspection
@@ -87,7 +87,7 @@ erDiagram
 
 1. One active normalized serial claim per project + instrument (exact uniqueness scope to validate against official operational rules).
 2. One active claim per unit; claim acquisition and expiry takeover are atomic.
-3. Inspector capacity counts distinct active users globally across both locations, not assignment rows. Range is 50..100.
+3. Inspector capacity counts distinct active users globally across both locations, not assignment rows. Range is 1..100, default 50.
 4. A user cannot hold overlapping operational assignments at different locations; enforce by transaction/constraint strategy after schedule semantics are approved.
 5. One operational assignment has one location, one instrument, and one team.
 6. Revision numbers are unique per inspection; submitted revisions cannot be updated or deleted by application roles.
