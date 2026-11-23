@@ -27,7 +27,7 @@ Purpose: Link product intent to specifications, implementation units, and verifi
 | GOV-003 | Use Supabase + Vercel; GitHub for source control/CI | TECH-001, TECH-003 | ADR-001 | Architecture/deployment review | APPROVED |
 | GOV-004 | Supabase PostgreSQL is sole primary source of truth | TECH-002 | ADR-001 | Data-flow and architecture tests | APPROVED |
 | GOV-005 | Initial scope is non-SaaS and includes IFP and Standing Bracket only | PRD-001..003 | PRD | Scope audit and sign-off | BASELINED; sign-off pending |
-| CAP-001 | Configurable Inspector capacity starts at 50 and can increase up to 100 total across both locations combined | Decision Register OPS-001 | RBAC and Authorization; Project, Session, Target, and Assignment Model | Capacity range, audit, and atomic concurrency tests | BASELINED |
+| CAP-001 | Configurable Inspector capacity may be below or above 50; initial/default is 50 and hard maximum is 100 total across both locations combined | Decision Register OPS-001 | RBAC and Authorization; Project, Session, Target, and Assignment Model | Capacity range, audit, and atomic concurrency tests | BASELINED |
 | AUTH-001 | Google sign-in; new accounts await approval and role assignment | Authentication decisions | RBAC and Authorization | Auth lifecycle tests | BASELINED |
 | RBAC-001 | Users may hold multiple roles only with explicit scoped assignments | RBAC decisions | RBAC and Authorization | Positive/negative authorization tests | BASELINED |
 | RBAC-002 | Operational authority is scoped by session, location, instrument, and assignment | RBAC decisions | RBAC and Authorization | RLS/API authorization tests | BASELINED |
@@ -59,9 +59,9 @@ Purpose: Link product intent to specifications, implementation units, and verifi
 
 | Requirement ID | Instrument | Requirement area | Known source coverage | Verification plan | Status |
 |---|---|---|---|---|---|
-| IFP-001 | IFP | Checklist categories and 49 identified checklist statements across five categories | Transcribed from legacy reference descriptions; official source not validated | Reconcile exact text/order against authorized checklist | DRAFTED / SOURCE VALIDATION OPEN |
-| IFP-002 | IFP | Ten identified photo-slot labels | Legacy reference descriptions; completeness/mandatory status unverified | Verify labels, required rules, exceptions, PDF placement | DRAFTED / SOURCE VALIDATION OPEN |
-| BRK-001 | Standing Bracket | Checklist categories and item list | 19 visible checklist rows transcribed from supplied screenshots; complete authoritative list not established | Confirm full checklist, grouping, text, and response rules | PARTIAL / SOURCE VALIDATION OPEN |
+| IFP-001 | IFP | Checklist categories and 49 checklist statements across five categories | Reconciled against supplied two-page `Pemeriksaan Barang.pdf` sample report and legacy screenshots | Confirm controlled authority/version and current validity; retain exact text/order from sample | RECONCILED TO SAMPLE / AUTHORITY OPEN |
+| IFP-002 | IFP | Ten identified photo-slot labels | Legacy reference screenshots; sample PDF does not establish photo-slot completeness or mandatory status | Confirm full slot list, required rules, exceptions, and PDF placement | PARTIAL / COMPLETENESS OPEN |
+| BRK-001 | Standing Bracket | Checklist categories and item list | 19 visible checklist rows from supplied screenshots; serial-number annex sample separately reconciled; complete authoritative list not established | Confirm full checklist, grouping, text, and response rules | PARTIAL / SOURCE VALIDATION OPEN |
 | BRK-002 | Standing Bracket | Five identified photo-slot labels | Legacy reference descriptions; completeness/mandatory status unverified | Verify complete list and required rules | DRAFTED / SOURCE VALIDATION OPEN |
 | PRD-001 | Product | Product scope, journeys, functional/non-functional requirements | PRD v0.1.0 | Product Owner review | DRAFTED / REVIEW REQUIRED |
 | AC-001 | Product | Observable acceptance criteria | Acceptance Criteria v0.1.0 | Map to test cases and UAT evidence | DRAFTED / REVIEW REQUIRED |
