@@ -60,6 +60,12 @@ Each executed case records ID, build SHA, environment, preconditions, steps, exp
 - TC-DOC-003: Print event is recorded only after explicit print confirmation.
 - TC-DOC-004: Reprint ordinal increments and prior print events remain.
 - TC-DOC-005: BA and attendance document lifecycle statuses are correct.
+- TC-DOC-006: BA instrument summary rows reconcile inspected sample, good, and defective counts against source inspection records, including a zero-count instrument row.
+- TC-DOC-007: BA template renders configured activity/date/location narrative and authorized signatory blocks without hardcoded sample values.
+- TC-DOC-008: Multi-day attendance output creates one date-labelled attendance column per configured activity date; assignment alone does not mark a participant present.
+- TC-DOC-009: Standing Bracket serial-number annex rows reconcile to inspection records and preserve instrument, serial, condition, evidence reference, and configured paraf blocks.
+- TC-DOC-010: Annex generation does not impose the sample's 13-row count or all-good condition as a fixed rule.
+- TC-DOC-011: IFP PDF reproduces the approved checklist version, serial identities, Ya/Tdk answers, and configured signature area.
 - TC-RPT-001: Actual report uses actual event timestamps/counts.
 - TC-RPT-002: Target report uses versioned target allocations and never rewrites actual activity.
 - TC-RPT-003: Dashboard counts reconcile with source inspection states.
