@@ -76,3 +76,13 @@ Owner convention: accountable role is recorded; named individuals are not invent
 | I-010 | Issue | Audit retention duration, legal-hold authority, audit-reader roles, export permission, and network metadata policy remain unresolved | High | Obtain institutional security, privacy, records, and legal decisions | Project Sponsor / Records Owner | OPEN |
 
 | D-008 | Dependency | Approved audit event policy and trusted transactional command boundary | Audit implementation and security release gate | Product Owner / CTO | BLOCKED |
+
+
+## Package S — Cross-document audit findings
+
+| ID | Type | Description | Impact | Mitigation / response | Accountable role | Status |
+|---|---|---|---|---|---|---|
+| R-014 | Risk | Scope freeze or implementation begins while authoritative instrument, privacy, operations, security, and workflow decisions remain open | Critical | Enforce Package S freeze checklist; no implementation until blockers are approved or explicitly deferred with compensating controls | Product Owner / Project Sponsor / CTO | OPEN |
+| I-011 | Issue | Session creation/state transitions, offline device contract, report semantics, and UAT/pilot/rollback ownership remain unresolved | High | Resolve through explicit PO decisions and update all affected docs and tests | Product Owner | OPEN |
+| I-012 | Issue | CI execution, branch protection, and provider quota state were not verified in Package S | High | Inspect live repository settings and workflow runs before merge | CTO / Repository Administrator | OPEN |
+| D-009 | Dependency | Controlled instrument documents and institutional records/privacy/security approvals | Scope freeze and implementation authorization | Product Owner / Project Sponsor | BLOCKED |
