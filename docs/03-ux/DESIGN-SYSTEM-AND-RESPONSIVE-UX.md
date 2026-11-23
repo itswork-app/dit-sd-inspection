@@ -58,3 +58,7 @@ Professional, restrained, government-institution appropriate, high legibility in
 
 ## 7. Visual QA
 Test at narrow mobile, common Android viewport sizes, tablet, and desktop; exact device/browser matrix remains open. Verify portrait/landscape, zoom, long labels, large text, slow network, and high-contrast/accessibility settings.
+
+
+## T-11 supported browser baseline
+The Product Owner approved Package T-11 option B on 2026-11-23: current stable Chrome on Android for Inspector field workflows; current stable Chrome or Edge on desktop for Korlap, Reviewer, Super Admin and Print Officer. Tablet support requires validation of responsive layout, camera, upload and PDF/print. Obsolete/unsupported releases, embedded in-app browsers, modified browsers, and devices failing required capabilities are excluded. Exact OS/device minimums and browser build numbers must be recorded from actual UAT devices. This decision does not claim compatibility testing has been completed.
