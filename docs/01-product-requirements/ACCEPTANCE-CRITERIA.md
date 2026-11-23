@@ -114,3 +114,13 @@ This document defines observable acceptance outcomes. Detailed test cases and au
 - AC-PERF-002: The load test records environment/plan, workload mix, throughput, p50/p95/p99 latency, error rate, database utilization, and media upload performance.
 - AC-PERF-003: Under the approved 100-user test profile, there is no data loss, duplicate active claim, duplicate submission, authorization bypass, or corrupted transaction.
 - AC-PERF-004: Performance thresholds for interactive reads/writes, dashboards, and media uploads are explicitly approved after a baseline test on the selected production plan; passing the concurrency count alone is not sufficient for release.
+
+
+## Package T decisions accepted by Product Owner (2026-11-23)
+
+- T-01 source authority: acceptance criteria must verify that the IFP and Standing Bracket master definitions are reconciled against current institutionally approved source documents, with provenance and effective revision recorded. The source documents and formal approval evidence are still required before this criterion can pass.
+- T-02 BA: acceptance must verify configurable signatory blocks per approved template (party count, organization, role/title, order, required/optional). Acceptance of the configuration capability does not establish actual signatory authority or identity.
+- T-03 executive summary: acceptance must verify that signature behavior is configurable per report template and defaults to no signature unless the approved template requires it.
+- T-04 client report delivery: initial-release acceptance is PDF-only; a client portal is outside initial scope and requires a later approved change request. PDF access and distribution remain permission-controlled and auditable.
+
+The open-decision list below should be read with these dispositions: template behavior and initial delivery channel are decided; authoritative source evidence and institutional signatory authority are still external prerequisites.
