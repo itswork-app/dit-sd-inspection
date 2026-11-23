@@ -124,3 +124,9 @@ This is a logical model, not a final physical schema. Resolve before migrations:
 - Migrations are forward-only in production unless a tested rollback is safe; destructive changes require expand/migrate/contract.
 - Add constraints only after existing data validation in the target environment.
 - Test migration on a disposable database and verify restore/rollback path.
+
+
+
+## T-14 — Inspector capacity counting semantics (PO-approved 2026-11-24)
+
+Capacity counts distinct enabled login accounts with an active Inspector role grant and at least one currently effective operational Inspector assignment in the governed project/session scope. Multiple roles or assignments do not multiply the count. Pending, rejected, suspended, disabled and expired-role accounts are excluded. Enforce the combined cap atomically across both locations: minimum 1, default 50, maximum 100. Reject invalid cap values and reductions below the current qualifying count; never silently deactivate accounts. This predicate is the canonical interpretation for the data model.
