@@ -235,7 +235,6 @@ The Product Owner approved the following directions:
 - **T-07:** Super Admin exclusively creates/configures sessions, targets, locations, instruments and team assignments. Korlap operates assigned sessions within explicit permissions; DRAFT, ACTIVE, PAUSED and CLOSED states apply. CLOSED is terminal in ordinary flow; reopening requires privileged permission, reason and audit.
 - **T-08:** Korlap verifies attendance within assigned location/scope and explicit verifier permission. Generate, print, upload, download and verify are separate permissions; upload never automatically sets VERIFIED.
 - **T-13:** Initial release supports individual and bounded batch printing from a permissioned Print Officer queue, with independent per-document outcomes, failed-only retry and atomic reprint sequence. Direct printer integration is excluded; print action does not prove physical paper output.
-- **T-13:** Initial release supports individual and bounded batch printing from a permissioned Print Officer queue, with independent per-document outcomes, failed-only retry and atomic reprint sequence. Direct printer integration is excluded; print action does not prove physical paper output.
 
 These decisions are PO-approved product direction, not proof of institutional authorization or implementation. The official instrument masters and BA signatory authority remain external evidence dependencies. PDF delivery remains permission-controlled and auditable. Phase 0 gates remain in force; feature implementation is not authorized.
 
@@ -264,6 +263,5 @@ Exact OS/device minimum versions and the tested browser build numbers must be re
 
 Initial release supports individual and bounded/configurable batch printing. Every document in a batch is independently permission-checked and receives its own success-recorded, failed or cancelled outcome. Retry may include failed documents only and must not duplicate a previously successful print event. Reprints retain the approved document version unless a controlled regeneration creates a new version; sequence allocation is atomic. A recorded print event means the authorized application action was recorded, not that physical paper output was verified. Direct printer integration is excluded from initial release.
 
-### T-13 — Print workflow decision (PO approved 2026-11-23)
 
 Initial release supports individual and bounded/configurable batch printing. Every document in a batch is independently permission-checked and receives its own success-recorded, failed or cancelled outcome. Retry may include failed documents only and must not duplicate a previously successful print event. Reprints retain the approved document version unless a controlled regeneration creates a new version; sequence allocation is atomic. A recorded print event means the authorized application print action was recorded, not that physical paper output was verified. Direct printer integration is excluded from initial release.
