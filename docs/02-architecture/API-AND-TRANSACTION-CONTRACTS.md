@@ -129,6 +129,6 @@ For validation or conflict errors, return a stable code, safe message, and relev
 - REST path naming and API versioning.
 - Authentication/session refresh strategy.
 - Idempotency retention and conflict resolution UX.
-- T-09 option B is PO-approved; offline storage activation remains gated on approved device/browser and local-data safeguards (T-10/T-11).
+- **T-09 option B is PO-approved (2026-11-23):** limited offline draft editing only for already claimed units. Offline storage activation remains gated on approved device/browser and local-data safeguards (T-10/T-11).
 - Whether bulk operations are needed for field throughput.
 - Rate limits and abuse protection.
