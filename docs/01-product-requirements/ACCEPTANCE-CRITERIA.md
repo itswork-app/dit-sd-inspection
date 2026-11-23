@@ -13,8 +13,8 @@ This document defines observable acceptance outcomes. Detailed test cases and au
 
 ## 2. Inspector capacity and assignments
 
-- AC-CAP-001: The system supports a configurable global Inspector capacity with a baseline/default of 50 and an absolute maximum of 100 users across both locations combined.
-- AC-CAP-002: Super Admin may configure capacity below or above 50, with an initial/default value of 50 and hard maximum of 100; the capacity is shared across both locations and allocation may be uneven. The permitted minimum must be explicitly specified before implementation.
+- AC-CAP-001: The system supports a configurable global Inspector capacity from 1 to 100 distinct active Inspector accounts across both locations combined, with default 50.
+- AC-CAP-002: Super Admin may configure capacity to any integer from 1 through 100; default is 50. The capacity is shared across both locations and allocation may be uneven. Values outside this range are rejected.
 - AC-CAP-003: Korlap, Reviewer, Print Officer, and Super Admin are counted only when they also hold the Inspector role; each distinct person counts once.
 - AC-CAP-004: Concurrent attempts to activate/assign Inspectors cannot exceed the currently configured global capacity; capacity changes and activation are transaction-safe and audited.
 - AC-ASG-001: An assignment is scoped to one location, one instrument, and one team.
