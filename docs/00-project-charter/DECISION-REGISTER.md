@@ -45,9 +45,10 @@ Only explicitly approved decisions are marked APPROVED.
 - Complete official IFP and Standing Bracket checklists and required photo slots.
 - Institutional approval of actual BA signatory roles/identities and the final BA template (template configurability is PO-approved under T-02).
 - Official IFP and Standing Bracket source documents and photo-slot requirements remain to be obtained and reconciled (T-01).
-- Report headline/count basis and project reconciliation/closure.
-- Session creation authority and exact session state transitions.
-- Attendance upload verification authority.
+- Detailed report metric implementation and acceptance-test evidence (T-05 direction approved).
+- Detailed project closure gate enforcement and reconciliation evidence (T-06 direction approved).
+- Detailed session pause/reopen command and permission tests (T-07 direction approved).
+- Detailed attendance evidence acceptance and verification tests (T-08 direction approved).
 - Offline package, conflict resolution, and device recovery details.
 - Evidence file limits, retention, deletion, privacy, and access policy.
 - Supabase/Vercel project organization, environments, backup and retention configuration.
