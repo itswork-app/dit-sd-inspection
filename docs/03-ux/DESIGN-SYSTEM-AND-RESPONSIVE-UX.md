@@ -57,7 +57,7 @@ Professional, restrained, government-institution appropriate, high legibility in
 - Do not show an action button if the role lacks permission, but still enforce permission on server.
 
 ## 7. Visual QA
-Test at narrow mobile, common Android viewport sizes, tablet, and desktop; exact device/browser matrix remains open. Verify portrait/landscape, zoom, long labels, large text, slow network, and high-contrast/accessibility settings.
+Test at narrow mobile, common Android viewport sizes, tablet, and desktop; exact OS/device minimums and browser build numbers must be recorded from actual UAT devices under the T-11 option B baseline. Verify portrait/landscape, zoom, long labels, large text, slow network, and high-contrast/accessibility settings.
 
 
 ## T-11 supported browser baseline
