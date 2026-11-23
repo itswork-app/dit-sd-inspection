@@ -109,7 +109,7 @@ Product Owner explicitly approved T-01=A, T-02=B, T-03=C and T-04=A, then T-05=A
 - T-07 Super Admin session creation/configuration and scoped Korlap operation are PO-approved; state/permission implementation and tests remain open.
 - T-08 Korlap attendance verification within assigned scope is PO-approved; separate permissions and verification tests remain open.
 
-The Decision Register and affected specifications have been updated and fetched back for verification. T-05 through T-09 are PO-approved; T-10 through T-18 remain OPEN/BLOCKED. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
+The Decision Register and affected specifications have been updated and fetched back for verification. T-05 through T-09 are PO-approved; T-10 option B is PO APPROVED as the required formal institutional records/legal/privacy review path; written institutional policy remains BLOCKED. T-11 through T-18 remain OPEN/BLOCKED. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
 
 
 ## Package T T-09 decision update (2026-11-23)
@@ -117,3 +117,10 @@ The Decision Register and affected specifications have been updated and fetched 
 T-09 is **PO APPROVED option B**: limited offline draft editing only after an online claim. Offline claim, approval, final submit, role/assignment changes, session administration and privileged actions are prohibited. Sync must be authenticated, idempotent, reauthorize on the server, reject stale conflicts, preserve both sides and require server-confirmed required media before final submit.
 
 Residual risks/dependencies remain OPEN/BLOCKED: browser/device support, local-data encryption/protection, shared-device logout, local retention/purge and recovery controls; institutional privacy/records approval under T-10. PO approval does not mean offline persistence is safe to activate in production. Scope freeze remains NOT READY and implementation remains NOT AUTHORIZED.
+
+
+## Package T-10 — Product Owner decision (2026-11-23)
+
+**Decision: PO APPROVED option B — formal institutional records/legal/privacy review before defining the evidence policy.** The project must obtain a documented review by the institution's authorized records, legal and privacy functions before approving data classification, permitted personal information and processing purpose, accepted evidence formats, per-file/per-inspection/per-project limits, retention periods and triggers, legal-hold authority, deletion eligibility/approval/audit, private access rules, backup/restore and post-deletion treatment, and any local/offline copy controls.
+
+**Important boundary:** this is Product Owner approval of the governance path, not institutional legal/records approval and not approval of any numeric limit, retention period, lawful basis, deletion schedule or production evidence collection. Until the authorized institutional review supplies written direction, retain all such values as OPEN/NOT SET; do not invent limits or retention durations, enable irreversible deletion, or authorize production evidence collection. T-10 remains BLOCKED for scope freeze and production activation pending that external evidence. No implementation or tests are claimed.
