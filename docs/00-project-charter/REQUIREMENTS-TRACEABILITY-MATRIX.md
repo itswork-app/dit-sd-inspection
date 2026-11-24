@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.21  
+**Version:** 0.1.22  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -556,3 +556,14 @@ TC-NOTIF-090..094 remain PLANNED / NOT EXECUTED. NOTIF-039..043 do not approve e
 The physical schema v0.4.4 declares `review_events(id, inspection_revision_id, reviewer_id, decision, reason, created_at)`, append-only behavior, reviewer/author separation for approval and the invariant of one terminal decision per revision. It does **not** name a review-round/decision-sequence field or a concrete unique index/constraint that enforces the invariant. This is a documented invariant, not proof of an admitted database arbiter.
 
 The source-event path map v0.1.0 and command lock manifest v0.4.30 still express inspection-aggregate-first candidate paths for CMD-030/031/032, while the candidate global graph §30 proposes reviewer/authorization and project/session/assignment/optional-claim context before the inspection aggregate. This ordering conflict remains explicit and unresolved; no proposed sequence is certified. LPR-01/LPR-07/LPR-09/LPR-11 remain OPEN; LPR-10 NOT EXECUTED; 0/50 lock certified.
+
+## Inspection draft-context candidate traceability — 2026-11-24
+
+| Requirement ID | Requirement / invariant | Authority | Design reference | Verification | Status |
+|---|---|---|---|---|---|
+| INS-021 | Mutable in-progress inspection work is held in a distinct draft context; submitted revisions remain immutable; one active context per inspection | PRD §6.3–6.4; WF-001/WF-002; INS-010; T-09; candidate design only | INSPECTION-DRAFT-001 v0.1.0; CMD-021–030 review §CMD-028/029; Physical Schema candidate annex | IDC-01..08, IDC-16, IDC-18..20; active-context uniqueness, stale write, submit atomicity, ACL and rollback | CANDIDATE PROPOSED — PO / ENGINEERING / DATABASE / SECURITY APPROVAL OPEN |
+| REV-003 | Reviewer return preserves the submitted revision and creates a new correction draft context; resubmission creates the next immutable revision | WF-001 APPROVED; INS-010 APPROVED | PRD §6.4; INSPECTION-DRAFT-001 §5; CMD-030 | IDC-09..12, exact return reason, revision immutability, new revision and concurrent decision | PRODUCT DIRECTION BASELINED; PHYSICAL LIFECYCLE NOT APPROVED |
+| REV-004 | Authorized reopen of the exact approved revision creates a new draft context and preserves approved history and downstream artifacts | WF-002 APPROVED; CMD-032 contract | INSPECTION-DRAFT-001 §6; CMD-031–040 review | IDC-13..15, exact approved revision, mandatory reason, active-work/finalizer race and history preservation | PRODUCT DIRECTION BASELINED; OWNER / CLAIM / PHYSICAL LIFECYCLE OPEN |
+| EVD-004 | Evidence is captured against an active draft context and bound to the exact immutable revision at submit; evidence carry-forward is not inferred | T-16 PO APPROVED; CMD-033/034 | INSPECTION-DRAFT-001 §4; Physical Schema candidate annex | IDC-07, IDC-08, IDC-17, evidence checksum/version/context binding and carry-forward decision | CANDIDATE PROPOSED — INSTITUTIONAL EVIDENCE / PO / DATABASE APPROVAL OPEN |
+
+These rows are candidate traceability entries only. They do not amend the approved PRD, change WF-001/WF-002/INS-010, approve a physical entity, or authorize implementation. IDC-01..20 are design acceptance IDs, not executed QA evidence. The formal QA catalogue/test IDs and requirement disposition must be reconciled after the candidate is reviewed.
