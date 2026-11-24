@@ -1,7 +1,7 @@
 # Concurrency and Version Token Reconciliation
 
 **Document ID:** CONCURRENCY-001  
-**Version:** 0.1.3  
+**Version:** 0.1.4  
 **Status:** Engineering proposal — PO/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054, physical schema, command catalogue, transaction/lock contracts, audit and QA traceability  
@@ -307,3 +307,12 @@ Do not edit all canonical sources to the proposed values before PO/Security appr
 The Product Owner has approved CMD-011–020 product semantics, including CMD-017's session-scoped-by-default target plans, explicit CREATE_DRAFT / REPLACE_DRAFT_ALLOCATIONS / PUBLISH actions, immutable published versions and allocation uniqueness key. This closes the product decision about normal plan scope and allocation identity.
 
 It does **not** approve the physical session_id column/FK design, target quantity type/unit/range, draft row-version/hash CAS, session/project parent-fence protocol, or any lock order. CMD-012/013/016 row-version requirements and CMD-019/020 canonical instrument hash/snapshot requirements also remain technical decisions. No proposed token field in this document is approved for DDL or implementation by the PO semantic approval.
+
+
+## Notification concurrency-token reconciliation — 2026-11-24
+
+- CMD-050 has no expected_version. The recipient-owned read_at IS NULL predicate is the monotonic state guard; repeated acknowledgement is idempotent and does not require a high-volume row-version column.
+- CMD-052/053 worker leases are not business row-version tokens. The proposed fencing tuple is lease_owner, lease_token_hash, monotonic lease_generation and lease_expires_at. Every finalizer validates the current tuple; a reclaimed generation rejects stale completion.
+- CMD-051 uses expected_current_version_id as a compare-and-publish guard for the current published policy version. The server computes policy_hash and version_no; exact lock/exclusion implementation remains open.
+- CMD-054 does not accept evaluation_time. The database captures one UTC instant per scheduler evaluation transaction.
+- These are documentation proposals only; no physical columns, indexes, functions, locks or concurrency tests have been implemented or verified.
