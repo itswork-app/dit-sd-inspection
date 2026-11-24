@@ -108,7 +108,17 @@ Not performed:
 
 PR #3 remains Draft/Open. No CI success is claimed. G9 remains NOT READY. G10 remains NOT AUTHORIZED.
 
-## 8. Final disposition
+## 8. Related source documents
+
+- [DGA-001 — Documentation Gap Audit](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) v1.11.19
+- [RTM-001 — Requirements Traceability Matrix](REQUIREMENTS-TRACEABILITY-MATRIX.md) v0.1.0
+- [RAID-001 — Risks, Assumptions, Issues and Dependencies](RAID-REGISTER.md) v0.1.0
+- [PostgreSQL Command Contract Catalogue](../02-architecture/POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) v0.4.4
+- [Command-Level Lock Manifest](../02-architecture/COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.4.15
+- [Global Lock-Order and Concurrency Graph](../02-architecture/GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md) v0.4.10
+- [CMD-001–054 Cross-Command Reconciliation](../02-architecture/CMD-001-054-CROSS-COMMAND-RECONCILIATION.md) v0.8.11
+
+## 9. Final disposition
 
 The six static documentation findings listed in §4 are corrected and the reviewed cross-document inventory checks pass. This is **not** a declaration that all project gaps are closed, all 54 commands are approved, the schema is production-ready, or implementation may begin.
 
