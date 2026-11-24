@@ -344,6 +344,18 @@ The following candidate objects are introduced by DURABLE-OPERATION-LEDGER-AND-A
 | print_batch_item_results | CMD-038 | Durable per-item outcome and retry history | NOT ADMITTED; authoritative attempt identity vs print_events open |
 | attendance_verification_events | CMD-040 | Append-only decision bound to exact attendance document version/checksum | NOT ADMITTED; institutional authority, SoD and retention open |
 
+### CMD-044 audit-export candidate objects — NOT ADMITTED (2026-11-24)
+
+**T-10 BLOCKED.** The following are future-review candidates only; they are not approved tables, not part of the canonical 48-table inventory, and must not be created while T-10 remains unresolved.
+
+| Candidate object | Purpose | Minimum candidate integrity controls | Admission blockers |
+|---|---|---|---|
+| `audit_export_jobs` | Durable request/job state, actor, approved purpose/policy reference, normalized filter hash, request idempotency, snapshot watermark, status and worker lease fencing | Unique actor/idempotency key; same key/hash replays same job; same key/different hash rejected; legal state transitions; lease owner/token-hash/generation/expiry; no client-controlled actor/scope | T-10 authority/purpose, dual control, job lifecycle, worker identity and retention |
+| `audit_export_manifests` | Immutable export manifest for exact ordered event selection, schema/policy version, scope/filter hash, snapshot/watermark, record count and canonical manifest hash | One immutable manifest per finalized job; canonical serialization version; ordered event identity/range or immutable manifest reference; checksum and count reconciliation | Event projection/classification, canonical hash format, snapshot semantics |
+| `audit_export_artifacts` | Private object metadata: opaque storage reference, format, byte count, content checksum, encryption/key reference, generated timestamp and integrity state | Unique artifact identity; private bucket only; object-key not user-controlled; checksum verified after upload; no public URL; artifact metadata append/finalize path | Approved storage region/provider, encryption/key custody, download authorization, expiry, retention/legal hold and deletion proof |
+
+Do not create a generic `export_requests` framework, polymorphic artifact table, or worker principal by assumption. Approval/download decision records, if dual control is required, need a separately approved model and must not be silently folded into the three candidates. A download permission is not inferred from `audit.export`; exact authority and permission vocabulary remain T-10 decisions.
+
 The candidate object count above is not a revised table count. Package L's canonical inventory remains 48 proposed tables until Product, Engineering, Database, Security and institutional approvals admit a concrete model and the physical schema, RLS, permission registry, ERD, command contracts, indexes/FKs and QA catalogue are updated together.
 
 Do not add a generic polymorphic source FK, generic worker table or generic device credential store without explicit review. Do not reuse notification_outbox for document generation. Do not claim candidate names exist in a deployed database. T-10 retention/legal hold remains externally blocked.
