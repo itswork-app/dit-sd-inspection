@@ -1,7 +1,7 @@
 # CMD-011–020 Detailed Contract Review
 
 **Status:** PO product semantics APPROVED (2026-11-24); Engineering/Security contract review OPEN; NOT approved for implementation  
-**Version:** 0.3.2  
+**Version:** 0.3.3  
 **Date:** 2026-11-24  
 **Scope:** CMD-011 through CMD-020  
 **Controls:** T-14 Inspector capacity; T-15 append-only audit direction; T-17 instrument governance; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
@@ -127,7 +127,7 @@ Names are provisional and must be checked against actual deployed inventory befo
 }
 \`\`\`
 
-No initial status, actor, project scope, location, team, assignment or approval field is accepted. The server chooses the initial session state according to the approved lifecycle; that initial state is not yet specified by the canonical catalogue and must be confirmed.
+No initial status, actor, project scope, location, team, assignment or approval field is accepted. The server selects the T-07 initial state `DRAFT`; `PLANNED` is not a valid session state.
 
 ### Response
 
@@ -209,9 +209,8 @@ No initial status, actor, project scope, location, team, assignment or approval 
   "schema_version": 1,
   "payload": {
     "session_id": "uuid",
-    "expected_version": 7,
+    "expected_row_version": "7",
     "patch": {
-      "code": "SESSION-2027-01-REV",
       "starts_at": "2027-01-02T00:00:00Z",
       "ends_at": "2027-02-01T23:59:59Z"
     },
@@ -220,7 +219,7 @@ No initial status, actor, project scope, location, team, assignment or approval 
 }
 \`\`\`
 
-Patch keys must be an explicit allowlist. Status, project_id, actor, permission, scope, transition target and assignment membership are excluded. The exact mutable metadata allowlist and whether code is immutable after creation require PO confirmation.
+Patch keys must be an explicit allowlist. Session code is immutable. Status, project_id, code, actor, permission, scope, transition target and assignment membership are excluded. The exact non-identity metadata allowlist remains an Engineering/API contract detail.
 
 ### Response
 
@@ -242,10 +241,10 @@ Patch keys must be an explicit allowlist. Status, project_id, actor, permission,
 ### Authorization, validation and SoD
 
 - Approved/enabled Super Admin with \`session.manage\` and effective project scope for the session's immutable project binding.
-- Load session and project through a scoped lookup; do not trust client project_id.
+- Resolve the immutable project binding through a non-locking locator read, then acquire project `FOR SHARE` followed by session `FOR NO KEY UPDATE`; revalidate the session-to-project binding and caller scope after the locks. Do not trust client project_id.
 - Reject status/lifecycle mutation; CMD-013 owns state transitions.
 - Validate all timestamps and code constraints after merging patch with stored values.
-- If session has assignments or inspection activity, define and enforce a change policy for dates/code. Existing assignments must not silently move or become invalid.
+- If any assignment, claim, inspection, attendance or report references the session, reject schedule changes that would reinterpret existing work. Session code is immutable; accepted metadata changes require a non-empty reason.
 - No self-assignment concept applies, but session metadata changes must not implicitly alter assignment membership or scope.
 
 ### Physical read/write set
@@ -256,8 +255,8 @@ Patch keys must be an explicit allowlist. Status, project_id, actor, permission,
 
 ### Transaction, lock and idempotency
 
-- Claim idempotency key, lock session row, resolve parent project, validate current state and expected version.
-- Validate dependent assignment/session time constraints under deterministic row locks or an approved exclusion/constraint mechanism.
+- Claim idempotency key at L00. Acquire project `FOR SHARE` before session `FOR NO KEY UPDATE` (project-before-session). Revalidate parent/session lifecycle and expected_row_version under lock.
+- Validate dependent assignment/session time constraints under deterministic row locks or an approved exclusion/constraint mechanism, without acquiring a lower-ranked resource late.
 - Update only allowlisted metadata; increment approved row version atomically.
 - Append \`session.updated\` and idempotency result in the same transaction.
 - Until the version field is defined, any \`expected_version\` contract is provisional and must fail design review rather than silently use timestamps or client values as a substitute.
@@ -297,8 +296,8 @@ Patch keys must be an explicit allowlist. Status, project_id, actor, permission,
   "schema_version": 1,
   "payload": {
     "session_id": "uuid",
-    "target_state": "ACTIVE",
-    "expected_version": 3,
+    "action": "ACTIVATE",
+    "expected_row_version": "3",
     "reason": "string"
   }
 }
@@ -316,7 +315,7 @@ Allowed target states are not free-form. The exact transition graph must be an a
   "resource_version": 4,
   "server_time": "UTC timestamp",
   "result": {
-    "from_state": "PLANNED",
+    "from_state": "DRAFT",
     "to_state": "ACTIVE",
     "transition_event": "session.activated"
   },
@@ -327,12 +326,13 @@ Allowed target states are not free-form. The exact transition graph must be an a
 
 ### Authorization, state machine and SoD
 
-- Super Admin may perform explicitly authorized project-scoped transitions.
+- Preserve T-07 states exactly: `DRAFT`, `ACTIVE`, `PAUSED`, `CLOSED`; `CLOSE_REQUESTED` is not a state. The request payload carries an allowlisted action, never a client-selected target state.
+- Korlap may ACTIVATE, PAUSE, RESUME or REQUEST_CLOSURE only within assigned scope and explicit permission. Super Admin performs FINAL_CLOSE only after closure gates; exceptional REOPEN is separately privileged, reasoned and audited. Exact action-to-permission mapping remains a Security/Engineering decision.
 - Korlap may perform only the exact transition(s) approved for their assigned project/session scope. Korlap must not receive general \`session.transition\` authority that implicitly permits all transitions.
 - Verify active account, permission, project/session scope and assignment membership for Korlap in the same transaction.
 - Enforce a finite legal transition graph. Audit catalogue names: \`session.activated\`, \`session.paused\`, \`session.resumed\`, \`session.close_requested\`, \`session.closed\`.
-- The command catalogue states CLOSED is terminal unless an approved reopen path exists. No reopen path is currently approved; reject CLOSED → any state.
-- A close request and final close are distinct event semantics in the audit catalogue; exact authority and closure gates need a formal decision.
+- `CLOSED` is terminal in ordinary flow. Reopen is an exceptional privileged, reasoned and audited workflow; it is not a Korlap transition.
+- A closure request is an action/event (`session.close_requested`), not an intermediate persisted state. Final closure is the transition to `CLOSED` by Super Admin after the approved closure gates. Operational checklist evidence remains subject to institutional authority where required.
 - Transition must not alter assignment membership, target plans or inspection data.
 
 ### Physical read/write set
@@ -344,7 +344,7 @@ Allowed target states are not free-form. The exact transition graph must be an a
 
 ### Transaction, lock and idempotency
 
-- Claim idempotency key; lock session row; re-evaluate actor authorization and current state.
+- Claim idempotency key at L00; acquire project `FOR SHARE` then session `FOR NO KEY UPDATE`; re-evaluate actor authorization, T-07 state and action under lock.
 - Compare approved version token; validate exact transition edge.
 - For close/final close, lock or consistently snapshot all dependency aggregates in deterministic order. Do not infer that absence of a dependency means closure is safe if the dependency inventory is incomplete.
 - Update state/version and append the corresponding event atomically. Audit failure rolls back transition.
@@ -552,8 +552,8 @@ The canonical catalogue lists \`effective_at\` at command level; this review pro
 ### Transaction, lock and idempotency
 
 - Claim idempotency key.
-- Lock capacity row first if Inspector membership is added/ended.
-- Lock assignment row, then all affected assignment_members and user rows in deterministic UUID order.
+- If Inspector eligibility may change, acquire L10 capacity first.
+- Acquire affected principal/role/scope rows L15–L18 before project/session parents L30; acquire project then session parent fences (`FOR SHARE`), assignment L50, then assignment_members L55 in stable order. Revalidate assignment-to-parent binding after the locks.
 - Validate all add/end operations before writing any; reject duplicate IDs, duplicate semantic operations, invalid intervals and conflicting add/end of same membership.
 - Check current effective Inspector count and post-change count under the capacity lock; reject if cap exceeded.
 - Update membership lifecycle with effective times; preserve historical rows. Do not hard delete.
@@ -598,7 +598,7 @@ The canonical catalogue lists \`effective_at\` at command level; this review pro
   "payload": {
     "project_id": "uuid",
     "inspector_cap": 50,
-    "expected_version": 4,
+    "expected_row_version": "4",
     "reason": "string"
   }
 }
