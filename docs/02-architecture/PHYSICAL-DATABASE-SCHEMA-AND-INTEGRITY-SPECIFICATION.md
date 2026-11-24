@@ -83,12 +83,14 @@ Every assignment/session binds to one published instrument version. Every inspec
 
 | Table | Key columns | Required constraints / indexes |
 |---|---|---|
-| `units` | `id`, `project_id`, `instrument_id`, `serial_raw`, `serial_normalized`, `normalization_version`, `status` | Unique `(instrument_id, serial_normalized)` when serial is present, enforced across all projects; retain raw input; normalization version required |
-| `inspections` | `id`, `unit_id`, `assignment_id`, `status`, `current_revision_no`, `row_version` | Unit/assignment project+instrument consistency; one active inspection lifecycle per unit subject to authorized reopen/reinspection rules |
+| `units` | `id`, `instrument_id`, `serial_raw`, `serial_normalized`, `normalization_version`, `status` | Canonical physical identity; no `project_id`; unique `(instrument_id, serial_normalized)` for non-null serial; retain raw input and normalization version |
+| `unit_project_associations` | `id`, `unit_id`, `project_id`, `status`, `associated_at`, `associated_by`, `association_reason`, `ended_at`, `ended_by`, `end_reason` | Durable association episodes; FK to canonical unit and project; partial unique ACTIVE `(unit_id, project_id)`; unique `(id, unit_id, project_id)` for composite references; no hard delete |
+| `unit_identity_conflicts` | `id`, `instrument_id`, `serial_normalized`, `serial_raw_submitted`, `proposed_project_id`, `candidate_unit_id`, `reported_by`, `status`, `resolution`, `resolved_by`, `resolution_reason`, `created_at`, `resolved_at` | Durable controlled duplicate workflow; candidate FK; reasoned/audited resolution; never creates a second canonical unit by itself |
+| `inspections` | `id`, `unit_id`, `unit_project_association_id`, `project_id`, `assignment_id`, `status`, `current_revision_no`, `row_version` | Composite FK proves association matches unit+project and assignment belongs to same project; command proves instrument match and active association; one active inspection lifecycle per canonical unit subject to authorized reopen/reinspection rules |
 | `inspection_revisions` | `id`, `inspection_id`, `revision_no`, `instrument_version_id`, `snapshot_hash`, `author_id`, `submitted_at`, `payload_snapshot` | Unique `(inspection_id, revision_no)`; immutable after submission; instrument version must match assignment snapshot |
 | `checklist_responses` | `id`, `inspection_revision_id`, `checklist_item_id`, `answer`, `note`, `answered_by`, `answered_at` | Unique `(inspection_revision_id, checklist_item_id)`; item belongs to revision's instrument version; answer conforms to item schema |
 | `specification_responses` | `id`, `inspection_revision_id`, `specification_field_id`, `observed_value`, `note` | Unique per revision/field; field belongs to exact version |
-| `unit_claims` | `id`, `unit_id`, `assignment_id`, `inspector_id`, `status`, `claimed_at`, `expires_at`, `released_at`, `row_version` | Partial unique index on `unit_id` for ACTIVE claim; valid expiry; transaction lock for acquisition/expiry takeover |
+| `unit_claims` | `id`, `unit_id`, `unit_project_association_id`, `project_id`, `assignment_id`, `inspector_id`, `status`, `claimed_at`, `expires_at`, `released_at`, `row_version` | Composite FKs prove association and assignment share project+unit; partial unique index on canonical `unit_id` for ACTIVE claim across projects; valid expiry; unit-row lock for acquisition/expiry takeover |
 | `review_events` | `id`, `inspection_revision_id`, `reviewer_id`, `decision`, `reason`, `created_at` | Append-only; decision constrained; author != reviewer for approve; one terminal decision per revision unless explicit workflow permits |
 | `inspection_events` | `id`, `inspection_id`, `event_type`, `actor_id`, `from_state`, `to_state`, `reason`, `created_at` | Append-only; state update and event insert in same transaction |
 
@@ -102,7 +104,7 @@ Every assignment/session binds to one published instrument version. Every inspec
 - Empty/unknown serials do not receive a shared normalized key; they require a separate authorized identification workflow.
 - If an official instrument-specific rule differs, it must be configured/versioned and tested before use.
 
-PO-approved T-16 option B: one normalized serial per instrument type across all projects. Enforce the unique key `(instrument_id, serial_normalized)` for non-null normalized serials; project ID must not be part of this uniqueness key. The data model must support an existing physical unit being referenced by project-scoped inspection activity without creating a second same-type unit identity. A same-type cross-project collision must enter controlled review with reason and audit; never silently merge or discard history. Reinspection must link to the canonical unit identity and follow an authorized new inspection/reopen path. This is a design invariant, not an executed migration.
+PO-approved T-16 option B: one normalized serial per instrument type across all projects. Enforce unique `(instrument_id, serial_normalized)` for non-null serials; project ID is not part of the key. `units` therefore has no `project_id`. `unit_project_associations` records durable project membership episodes; inspections and claims reference the exact association and same-project assignment through composite foreign keys. An association may be ended without rewriting historical inspections. A same-type cross-project collision opens a controlled conflict record; only an authorized, reasoned and audited resolution may associate the candidate canonical unit with the project. Never create a second same-type canonical unit, silently merge records or rewrite historical inspection rows. Reinspection follows the authorized lifecycle and preserves revision/evidence history. This is a design invariant, not an executed migration.
 
 #### Active claim and assignment overlap
 
@@ -134,16 +136,18 @@ Required before production migration:
 2. Unique project-scoped codes for locations, sessions, teams.
 3. Unique `instruments(code)`.
 4. Unique `instrument_versions(instrument_id, version_number)`.
-5. Unique `units(project_id, instrument_id, serial_normalized)` for non-null serial keys.
-6. Partial unique `unit_claims(unit_id)` where status = ACTIVE.
-7. Unique `inspection_revisions(inspection_id, revision_no)`.
-8. Unique `checklist_responses(inspection_revision_id, checklist_item_id)`.
-9. Unique `specification_responses(inspection_revision_id, specification_field_id)`.
-10. Unique `print_events(document_id, sequence_no)`.
-11. Unique idempotency scope key.
-12. Index all foreign keys used for RLS scope predicates, review queues, project/session dashboards, and evidence lookup.
-13. CHECK constraints for positive revision numbers, valid intervals, enumerated statuses, capacity 1..100, and nonnegative quantities/sizes.
-14. Composite FKs or trusted transaction assertions for project/instrument/version/revision consistency.
+5. Partial unique `units(instrument_id, serial_normalized)` for non-null serial keys; project ID is excluded.
+6. Partial unique `unit_project_associations(unit_id, project_id)` where status = ACTIVE; retain ended association episodes.
+7. Unique `unit_project_associations(id, unit_id, project_id)` to support composite inspection/claim FKs.
+8. Partial unique `unit_claims(unit_id)` where status = ACTIVE, enforcing one physical-unit claim across projects.
+9. Unique `inspection_revisions(inspection_id, revision_no)`.
+10. Unique `checklist_responses(inspection_revision_id, checklist_item_id)`.
+11. Unique `specification_responses(inspection_revision_id, specification_field_id)`.
+12. Unique `print_events(document_id, sequence_no)`.
+13. Unique idempotency scope key.
+14. Index all foreign keys used for RLS scope predicates, review queues, project/session dashboards, and evidence lookup.
+15. CHECK constraints for positive revision numbers, valid intervals, enumerated statuses, capacity 1..100, and nonnegative quantities/sizes.
+16. Composite FKs or trusted transaction assertions for project/instrument/version/revision/association consistency.
 
 ## 5. Transactional invariants
 
@@ -153,7 +157,8 @@ Required before production migration:
 | Change capacity | Lock capacity row | New integer 1..100; reject below current count; never silently deactivate |
 | Publish instrument version | Lock instrument catalog row | Version number unique; immutable published version |
 | Bind assignment to instrument | Validate published version | Assignment cannot bind draft/retired version |
-| Claim unit | Lock unit/claim key | At most one active claim |
+| Register/associate/resolve unit | Lock canonical serial key and unit row | One canonical unit per instrument+normalized serial; association/conflict outcome audited |
+| Claim unit | Lock canonical unit row, then association and assignment | At most one active claim for a physical unit across projects; association and assignment must share project |
 | Save draft | Compare row_version | Stale writes rejected; no silent overwrite |
 | Submit inspection | Lock inspection aggregate | Validation + revision insert + state transition + event + idempotency result atomic |
 | Review | Lock inspection aggregate | Correct state/version; no self-review; event and transition atomic |
@@ -185,7 +190,7 @@ Corrections create a new version or append-only event. Do not update historical 
 ## 7. Unresolved Product Owner / institutional decisions
 
 These are not silently resolved by engineering:
-1. Reconcile PO-approved T-16 option B (instrument type + normalized serial across all projects) into the final unit/project association model; confirm any institution-approved exception and instrument-specific normalization/case-sensitivity policy before migration.
+1. Validate the T-16 canonical unit + `unit_project_associations` + conflict workflow against source/institutional serial-normalization and exception policy; confirm composite FK implementation and project-scoped RLS before migration.
 2. Confirm exact Inspector capacity counting predicate (active Inspector role grant versus additionally assigned active project).
 3. Approve INS-016 audit event scope, access, retention, export, and legal hold.
 4. Approve privacy classification, evidence retention/deletion, and institutional legal basis.
@@ -251,3 +256,14 @@ Every evidence record must reference the exact immutable inspection revision and
 ## T-18 database privilege alignment (PO APPROVED option A, 2026-11-24)
 
 The selected command architecture requires the database privilege model to deny browser-facing anon/authenticated roles direct INSERT/UPDATE/DELETE on protected business and governance tables. Expose only narrowly scoped command functions with explicit EXECUTE grants; keep ordinary reads under RLS. Derive actor from the caller JWT at the PostgreSQL boundary and validate permission, role, project association, session, assignment, state and separation-of-duties within the command transaction. Prefer SECURITY INVOKER; any SECURITY DEFINER exception requires pinned search_path, schema-qualified references, strict validation, least-privileged ownership and minimal grants. The architecture decision is approved, but exact grants/policies and executable verification remain pending. No migration or test execution is claimed.
+
+
+## T-16 — Reconciled canonical unit / project association contract
+
+The canonical `units` table is project-independent. Its candidate key is `(instrument_id, serial_normalized)` for known serials. Project-specific visibility and work are represented only by `unit_project_associations`; no RLS policy or command may infer association from `unit_id` alone. Each association episode is durable and auditable. The model allows one unit to be associated with multiple projects, but the partial unique active claim index on `unit_id` prevents concurrent claims of that physical item across any projects.
+
+`inspections` and `unit_claims` carry `unit_id`, `unit_project_association_id`, and `project_id`; composite foreign keys prove the association belongs to that unit and project and the assignment belongs to that same project. A trusted command additionally proves assignment instrument equals the unit instrument and the association is ACTIVE at claim/start. Historical inspection rows retain their association ID when an association ends. The physical unit record is never cloned to create a project-local copy.
+
+`unit_identity_conflicts` captures same-instrument normalized-serial collisions. Conflict resolution either creates an association to the verified existing canonical unit or closes/rejects the report with reason; it cannot create a second canonical unit or silently merge/retarget historical records. No institution-specific duplicate exception is permitted until the external exception policy is approved.
+
+**Constraint correction:** the previous project-scoped unique index `units(project_id, instrument_id, serial_normalized)` is withdrawn. It contradicted T-16 option B and is replaced by the canonical instrument+serial unique key plus association constraints above. The schema remains design-only; no migration has been created or executed.
