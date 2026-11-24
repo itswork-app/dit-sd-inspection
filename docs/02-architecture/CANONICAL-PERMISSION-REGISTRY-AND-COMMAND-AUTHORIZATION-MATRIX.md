@@ -1,7 +1,7 @@
 # Canonical Permission Registry and Command Authorization Matrix
 
 **Status:** Draft for Product Owner and security review — NOT approved for implementation  
-**Version:** 0.2.3 | **Package:** M/N | **Date:** 2026-11-24  
+**Version:** 0.2.4 | **Package:** M/N | **Date:** 2026-11-24  
 **Authority:** T-15, T-17, T-18; legacy RBAC catalogue and privileged command inventory
 
 ## 1. Purpose and mandatory rules
@@ -229,3 +229,14 @@ The durable-object proposal is reconciled to the existing permission vocabulary 
 - Internal renderer and notification workers remain distinct workload trust principals; exact owner, non-login role, caller identity, secret source and EXECUTE ACL require T-18 approval.
 - Candidate objects must be added to the canonical schema, RLS, ERD, function security, audit catalogue and QA inventory together only after design approval.
 - The current registry remains DRAFT / NOT APPROVED; no permission seed, GRANT/REVOKE or live authorization behavior is claimed.
+
+
+## CMD-041–044 permission boundary reconciliation — 2026-11-24
+
+- CMD-041/042 retain proposed report.read for bounded, row-scoped actual/target reads. The permission does not authorize report approval, target-plan mutation, cross-scope aggregates, report export or actual-progress overlay unless separately approved by Product and represented in the report contract.
+- CMD-043 retains proposed audit.read only for an institutionally approved purpose, event class, field projection and explicit audit scope. This permission remains unusable until T-10 identifies reader authority and policy.
+- CMD-044 retains proposed audit.export as distinct from audit.read. It remains BLOCKED by T-10 and does not authorize download, onward disclosure, public artifact access or retention override.
+- No audit.export.download permission is created or implied. If a separate download authority is required, the institution must define the named actor class, purpose, recipient, time limit, SoD and permission through T-10 before registry admission.
+- Candidate audit_export_jobs, audit_export_manifests and audit_export_artifacts do not receive browser permissions or role grants. Their future internal workload principal and exact ACL are separate T-18 security decisions.
+- audit.exported already exists in the audit event catalogue. Proposed audit.export_requested, audit.export_approved/rejected, audit.export_downloaded and audit.export_failed remain candidate event names until the event catalogue and institutional records policy approve their exact use and payload.
+- Access-event anti-recursion is a command/query behavior, not a permission expansion. A caller must not be able to suppress access auditing by request parameter.
