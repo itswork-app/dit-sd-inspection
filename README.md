@@ -36,6 +36,8 @@ The current [Documentation Gap Audit — Gate Implementation Readiness](docs/00-
 
 The [Decision Register](docs/00-project-charter/DECISION-REGISTER.md) is the index of approved and open Product Owner decisions. The [T-19 Repository Runtime Architecture Audit](docs/02-architecture/T19-REPOSITORY-RUNTIME-ARCHITECTURE-AUDIT.md) records why the current absence of application source is intentional during this phase.
 
+Notification lifecycle design: [NLA-001 — Notification Lifecycle and Delivery Architecture](docs/02-architecture/NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md) documents INS-015 persistence, recipient scope, channels, retries, audit and escalation. It is a proposal pending PO/security/institutional review, not implementation authorization.
+
 See docs/00-project-charter/, docs/01-product-requirements/, docs/02-architecture/, docs/03-functional-design/, docs/03-ux/, and docs/04-quality/ for detailed specifications.
 
 **Governance:** No application code, migrations, SQL execution, grants/revokes, live database changes, deployment, or production activation before scope freeze and separate explicit implementation authorization.
