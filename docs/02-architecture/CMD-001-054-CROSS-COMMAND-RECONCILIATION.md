@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.34
+**Version:** 0.8.35
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -575,3 +575,8 @@ POQ-04 remains PO APPROVED. The technical review now tracks F05-T1..T5 in NLA-L0
 ## F-05 requirement/risk traceability synchronization — 2026-11-24
 
 RTM-001 v0.1.11 adds NOTIF-016..020 for selector grammar/dependency mapping, event-specific dispatch authorization, suppression/retry state, append-only audit and atomic snapshot binding. RAID-001 v0.1.10 updates D-026/R-037 with these technical risks and the F-04 writer-inventory dependency. TC-NOTIF-060..064 are linked to the new requirements and remain PLANNED / NOT EXECUTED. F-05 remains OPEN; no implementation or runtime evidence is implied.
+
+
+## Selector grammar and event-specific dispatch reconciliation — 2026-11-24
+
+TDR v0.1.8 defines a review-candidate selector grammar and dispatch matrix; NLA-001 v0.1.14 records the event registry/profile contract. Writer matrix v0.1.4 requires each exact event registry entry to enumerate dependencies before writer certification. RTM-001 v0.1.12 traces NOTIF-021/022; RAID-001 v0.1.11 records D-026/R-037. QA v0.5.0 adds TC-NOTIF-065..070. L05 review v0.1.7 remains REQUEST CHANGES. All TC-NOTIF-055..070 remain PLANNED / NOT EXECUTED. F-05 and F-04 remain OPEN; G9 NOT READY; G10 NOT ACTIVE.
