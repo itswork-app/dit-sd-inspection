@@ -4,7 +4,7 @@
 **Version:** 0.1.1  
 **Status:** STATIC INVENTORY — INCOMPLETE; NOT CERTIFIED  
 **Date:** 2026-11-24  
-**Inputs:** NLA-L05-TDR-001 v0.1.2; LOCK-MANIFEST-001 v0.4.30; PostgreSQL Command Contract Catalogue v0.4.8; Function Security & EXECUTE Grant Design v0.3.3; physical schema proposal v0.4.4
+**Inputs:** NLA-L05-TDR-001 v0.1.3; LOCK-MANIFEST-001 v0.4.30; PostgreSQL Command Contract Catalogue v0.4.8; Function Security & EXECUTE Grant Design v0.3.3; physical schema proposal v0.4.4
 
 ## 1. Purpose and decision boundary
 
