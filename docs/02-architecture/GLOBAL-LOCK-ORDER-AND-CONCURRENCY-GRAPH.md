@@ -472,7 +472,7 @@ The graph covers 54 stable traceability IDs, but CMD-045–048 are external cont
 
 ## 27. POQ-01 notification audience snapshot lock-graph review — 2026-11-24
 
-POQ-01 approves the product rule: resolve and durably persist event-time candidate recipients and their authorized source scope; retries reuse the same set; dispatch-time revalidation may suppress only. NLA-001 v0.1.4 proposes candidate relation `notification_outbox_recipients` plus candidate snapshot version/hash/count/completion fields on the outbox header. These are NOT ADMITTED and have no approved lock rank.
+POQ-01 approves the product rule: resolve and durably persist event-time candidate recipients and their authorized source scope; retries reuse the same set; dispatch-time revalidation may suppress only. NLA-001 v0.1.5 proposes candidate relation `notification_outbox_recipients` plus candidate snapshot version/hash/count/completion fields on the outbox header. These are NOT ADMITTED and have no approved lock rank.
 
 ### 27.1 New potential lock edges
 
