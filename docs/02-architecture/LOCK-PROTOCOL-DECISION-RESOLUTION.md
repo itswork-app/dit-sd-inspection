@@ -1,8 +1,8 @@
 # Lock Protocol Decision Resolution — LM-01–LM-09
 
 **Document ID:** LOCK-PROTOCOL-DECISION-RESOLUTION-001  
-**Version:** 0.1.0  
-**Status:** Engineering recommendation — PO / Engineering / Security review required; NOT approved for implementation  
+**Version:** 0.2.0  
+**Status:** PO product decisions LPR-02–LPR-06 APPROVED; technical lock protocol remains OPEN / NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** Candidate global lock protocol for CMD-001–054 and asynchronous finalizers  
 **Parent:** LOCK-GRAPH-001; LOCK-MANIFEST-001  
@@ -24,7 +24,7 @@ No live PostgreSQL/Supabase catalog, trigger/function call graph, deployed ACL, 
 
 Authority precedence remains unchanged: PO decisions govern product behavior; institutional authorities govern reserved legal/records/privacy/security/operations matters; Engineering and Security approve technical lock and privilege design within their authority. A PO decision cannot substitute for security or institutional approval.
 
-## 3. Candidate canonical resource order — decision required
+## 3. Candidate canonical resource order — technical approval required
 
 Use the following total order. A command acquires only the classes it needs, in ascending order. The rank is a logical ordering contract, not a prescription to lock every listed row.
 
@@ -68,7 +68,7 @@ The L00 arbitration must be short and transactionally safe. The same semantic re
 - CMD-027 release uses the same L20–L80 chain when it must prove identity/association context; if it only mutates an already identified claim, the manifest may justify a narrower L00 → L30 → L50 → L60 → L70 → L80 path, but it must not acquire omitted lower ranks later.
 - Unique constraints for one active unit identity/association/claim remain necessary. Locks alone are not the integrity guarantee.
 
-**Decision required:** confirm the domain meaning of canonical identity (instrument/type + normalized serial and any approved scope dimensions) and whether conflict resolution may change identity or only resolve an existing conflict. Engineering/Security must approve the actual arbitration primitive and constraints.
+**PO disposition (LPR-02): APPROVED.** Canonical identity is `(instrument_type, serial_normalized)` and is global across projects, consistent with T-16. Cross-project duplicates are controlled conflicts requiring authorized review, reason and audit; no silent merge/overwrite. The exact normalization algorithm, arbitration primitive, uniqueness constraints and exception policy remain subject to Engineering/Security and institutional review.
 
 ### 4.2 CMD-028–032 and CMD-035: claim/inspection/revision/review/sync
 
@@ -80,7 +80,7 @@ The L00 arbitration must be short and transactionally safe. The same semantic re
 - Exact expected_row_version, expected_revision_no and sync operation identity remain distinct tokens. Each command validates all relevant tokens after acquiring its aggregate locks.
 - CMD-035 must not lock an inspection through a different path than online commands; sync conflict records require their own documented child rank and idempotency identity.
 
-**Decision required:** approve whether a claim is mandatory for every in-scope inspection transition and define exceptions (e.g. administrative correction or migration). Any exception must be explicit and permission-bounded.
+**PO disposition (LPR-03): APPROVED.** A valid active claim is mandatory before every normal inspection workflow. Any administrative correction/migration exception must use a separately permissioned, reasoned and audited path. Engineering/Security must define exact command, permission, audit and legacy-data treatment.
 
 ### 4.3 CMD-009–016: project/session parent fence and T-14 capacity
 
@@ -101,7 +101,7 @@ The L00 arbitration must be short and transactionally safe. The same semantic re
 - If deactivation needs to enumerate or mutate assignments, redesign as a separate bounded workflow/outbox that follows L30 → L40 → L50; do not perform instrument-first then assignment mutation.
 - Historical session/assignment references remain pinned to immutable instrument versions; deactivation must not rewrite historical snapshots.
 
-**PO decision required:** confirm whether deactivation blocks only new assignments or also blocks in-progress sessions using a pinned historical version. Recommended default: block new assignment selection; preserve already-pinned historical versions unless an explicit safety withdrawal policy is approved. Security/Engineering must validate the concurrency and integrity mechanism.
+**PO disposition (LPR-06): APPROVED.** Deactivation blocks new assignment selection; sessions already pinned to an immutable version retain that historical version by default. A safety withdrawal may explicitly override continued use through a separately authorized, reasoned and audited workflow. The safety authority, affected-session handling and technical enforcement remain open; Engineering/Security must validate the concurrency and integrity mechanism.
 
 ### 4.5 CMD-033–040: evidence, documents, attendance and print
 
@@ -144,11 +144,11 @@ The inventory currently covers 54/54 command IDs but certifies 0/54 complete man
 | ID | Decision | Decision owner | Status |
 |---|---|---|---|
 | LPR-01 | Endorse/reject the candidate rank hierarchy as the basis for technical review | PO for product-impacting policy; Engineering + Security for technical approval | OPEN |
-| LPR-02 | Define canonical unit identity and conflict-resolution semantics | PO + domain owner; Engineering + Security for enforcement | OPEN |
-| LPR-03 | Confirm mandatory claim requirement and documented exceptions | PO | OPEN |
-| LPR-04 | Define project/session closure and treatment of in-flight work | PO + institutional operations owner where policy requires | OPEN |
-| LPR-05 | Confirm T-14 eligibility counting rule and effective-time semantics | PO + institutional operations owner; Security/Engineering implement | OPEN |
-| LPR-06 | Define instrument deactivation effect on already-pinned sessions | PO + instrument owner | OPEN |
+| LPR-02 | Define canonical unit identity and conflict-resolution semantics | PO + domain owner; Engineering + Security for enforcement | PO APPROVED — technical enforcement OPEN |
+| LPR-03 | Confirm mandatory claim requirement and documented exceptions | PO | PO APPROVED — exception implementation review OPEN |
+| LPR-04 | Define project/session closure and treatment of in-flight work | PO + institutional operations owner where policy requires | PO APPROVED — lifecycle/authority enforcement OPEN |
+| LPR-05 | Confirm T-14 eligibility counting rule and effective-time semantics | PO + institutional operations owner; Security/Engineering implement | PO APPROVED — preserve T-14 predicate; technical path audit OPEN |
+| LPR-06 | Define instrument deactivation effect on already-pinned sessions | PO + instrument owner | PO APPROVED — safety withdrawal authority/enforcement OPEN |
 | LPR-07 | Approve exact lock primitives, function/trigger graph and effective privileges | Engineering + Security | OPEN |
 | LPR-08 | Approve worker identity, queue fencing, provider callback trust and ACL | Security + Operations + provider owner | OPEN |
 | LPR-09 | Reconcile all 54 command manifests and physical constraints/call graph | Engineering + Database/Security + QA | OPEN |
@@ -197,4 +197,9 @@ No test, CI, SQL, migration, live database query, grant, deployment or runtime i
 | G9 SSOT/scope freeze | NOT READY | Product, institutional and technical blockers remain |
 | G10 implementation | NOT AUTHORIZED | Separate written implementation authorization is absent |
 
-**Final disposition:** this is a consolidated recommendation to resolve LM-01–LM-09. It reduces ambiguity and assigns decision owners, but it does not approve the canonical lock protocol, close the blockers, certify deadlock freedom or authorize implementation.
+**Final disposition:** PO product semantics LPR-02–LPR-06 are approved and recorded in the Decision Register. LPR-01 (candidate rank hierarchy) and LPR-07–LPR-10 remain open for technical review, manifest reconciliation and authorized concurrency evidence. This does not approve the canonical lock protocol, close DGA-B18/B19/B20, certify deadlock freedom or authorize implementation.
+
+
+## 10. Decision update — 2026-11-24
+
+Document version 0.2.0 records the Product Owner approvals for LPR-02 through LPR-06. T-14's existing approved eligibility predicate and 1–100 combined capacity remain controlling; LPR-05 is a clarification and does not supersede them. LPR-01 and LPR-07–LPR-10 remain open. All physical lock mechanisms, exact constraints, trigger/function paths, effective privileges and adversarial concurrency evidence remain unapproved or unverified. No tests, CI, SQL, migration, live database query, grants or deployment were performed.
