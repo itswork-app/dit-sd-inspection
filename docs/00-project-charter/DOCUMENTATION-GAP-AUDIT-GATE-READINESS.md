@@ -230,6 +230,6 @@ A targeted static consistency pass found two material documentation contradictio
 
 LOCK-MANIFEST-001 is now v0.3.4. Its §2 source set was refreshed against the current corrective branch after the prior v0.3.2 method paragraph was found to retain historical source labels (including DGA-001 v1.4.0, command catalogue v0.2.0, physical schema v0.2.0 and lock graph v0.1.0). The refreshed baseline records MIB-001 v1.0.1, DGA-001 v1.9.2, IRG-001 v1.0.1, PostgreSQL Command Contract Catalogue v0.3.1, Physical Database Schema v0.3.0, LOCK-GRAPH-001 v0.3.2, CONCURRENCY-001 v0.1.2 and LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.2.1.
 
-LOCK-GRAPH-001 was bumped to v0.3.4 solely to synchronize its reference to LOCK-MANIFEST-001 v0.3.3. No candidate lock rank, command contract, physical constraint or PO/security decision was changed.
+LOCK-GRAPH-001 was bumped to v0.3.4 solely to synchronize its reference to LOCK-MANIFEST-001 v0.3.4. No candidate lock rank, command contract, physical constraint or PO/security decision was changed.
 
 **Disposition:** DGA-B19 remains OPEN; 54/54 logical command IDs remain inventoried and 0/54 are certified lock-complete. This source-version refresh is not evidence of physical FK/index/trigger/function behavior, effective grants/RLS, acyclic lock graph or passing concurrency tests. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT AUTHORIZED. No SQL, migration, CI, automated test, live database inspection or deployment was performed.
