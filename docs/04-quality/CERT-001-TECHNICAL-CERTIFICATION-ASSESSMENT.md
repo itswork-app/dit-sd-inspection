@@ -202,9 +202,9 @@ No certification gate advances. G9 remains NOT READY; G10 remains NOT ACTIVE; ap
 
 ## CMD-045–048 and notification audience snapshot review — 2026-11-24
 
-CMD-045–048 PO-approved application-scope disposition is now consistent in the resolution proposal v0.1.2, detailed review v0.1.4, canonical command catalogue and QA v0.4.2. These are traceability-only external control-plane responsibilities with no application permission or physical command boundary. External T-10/T-12/incident-response/release evidence remains open; no live settings or absence verification is claimed.
+CMD-045–048 PO-approved application-scope disposition is now consistent in the resolution proposal v0.1.2, detailed review v0.1.4, canonical command catalogue and QA v0.4.3. These are traceability-only external control-plane responsibilities with no application permission or physical command boundary. External T-10/T-12/incident-response/release evidence remains open; no live settings or absence verification is claimed.
 
-NLA-001 v0.1.4 identifies the POQ-01 physical gap and proposes candidate-only `notification_outbox_recipients` to persist event-time recipient/scope snapshots. The candidate is mapped across schema v0.4.4, RLS v0.2.5, ERD v0.3.3, permission v0.2.5, command catalogue v0.4.8, crosswalk v0.1.2 and QA v0.4.1. It is NOT ADMITTED and not counted in the canonical 48 tables. The product semantics are PO-approved; physical representation, bounds, indexes/FKs, RLS/ACL, worker identity and runtime behavior are not approved or verified.
+NLA-001 v0.1.5 identifies the POQ-01 physical gap and proposes candidate-only `notification_outbox_recipients` to persist event-time recipient/scope snapshots. The candidate is mapped across schema v0.4.4, RLS v0.2.5, ERD v0.3.3, permission v0.2.5, command catalogue v0.4.8, crosswalk v0.1.2 and QA v0.4.3. It is NOT ADMITTED and not counted in the canonical 48 tables. The product semantics are PO-approved; physical representation, bounds, indexes/FKs, RLS/ACL, worker identity and runtime behavior are not approved or verified.
 
 TC-NOTIF-030..035 and TC-RLS-024-049 are PLANNED / NOT EXECUTED. No passing evidence is added. G9 remains NOT READY; G10 remains NOT ACTIVE; application lock certification remains 0/50. No source, SQL, migration, grant, RLS deployment, runtime test, CI or deployment was performed.
 
