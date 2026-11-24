@@ -1,7 +1,7 @@
 # Data Model and ERD — Dit. SD Inspection
 
 Status: Logical data model draft — not a migration specification  
-Version: 0.3.1
+Version: 0.3.2
 
 
 ## Physical schema and RLS reconciliation status
