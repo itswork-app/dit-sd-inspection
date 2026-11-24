@@ -567,3 +567,34 @@ The read-only repository audit found no application implementation or runtime/co
 - TC-NOTIF-018: cursor pagination cannot cross recipient identity or filter scope.
 
 These cases are test specifications only. No notification tests have been executed.
+
+| TC-RLS-024-042 | `print_batches` | R-scope for authorized print/operational roles; R-admin | Batch metadata is restricted to its project/session/location scope; item outcomes are derived from authorized per-document events; retry cannot widen scope; browser direct DML denied. |
+| TC-RLS-024-043 | `notification_policy_versions` | R-config-scope for explicitly authorized policy administrators; R-admin | Only approved config scope can read/manage drafts; published versions immutable; no role grant inferred from title; browser direct DML denied. |
+| TC-RLS-024-044 | `notification_outbox` | NONE for browser roles; internal worker only | Anonymous/authenticated browser SELECT and DML are denied; only separately approved worker path can claim/complete leases; no payload leakage. |
+| TC-RLS-024-045 | `notifications` | R-self where recipient_user_id = auth.uid(); R-admin | Recipient A cannot read/mark-read/dismiss recipient B's row; resource navigation independently re-authorizes; project role alone cannot read another recipient's inbox. |
+| TC-RLS-024-046 | `notification_deliveries` | NONE for browser roles; internal worker; restricted operations reader only if approved | Recipients cannot inspect provider state; worker-only mutation; unauthenticated/forged provider callback cannot change delivery state. |
+| TC-RLS-024-047 | `notification_delivery_attempts` | NONE for browser roles; internal worker; restricted oversight only if approved | No browser access; attempts are append-only and sanitized; no provider credentials, tokens or message bodies exposed. |
+| TC-RLS-024-048 | `notification_escalation_events` | R-config-scope only for explicitly authorized oversight; internal worker | No cross-scope escalation visibility; append-only; escalation cannot mutate inspection/project/session state. |
+
+## Notification lifecycle verification — NLA-001 (planned, not executed)
+
+- TC-NOTIF-001: source event and outbox intent commit atomically; audit/outbox failure rolls back the business mutation.
+- TC-NOTIF-002: duplicate outbox processing creates one inbox row per recipient.
+- TC-NOTIF-003: multiple selectors resolving the same user produce one recipient notification.
+- TC-NOTIF-004: role membership without matching assignment scope cannot receive or read scoped notification.
+- TC-NOTIF-005: recipient A cannot list/read/mark-read recipient B's notification.
+- TC-NOTIF-006: notification link does not bypass authorization on the referenced resource.
+- TC-NOTIF-007: delivery state and read state remain independent under all transitions.
+- TC-NOTIF-008: quiet hours suppress/defer only channels allowed by the pinned policy and correct time zone.
+- TC-NOTIF-009: provider retry is idempotent; duplicate webhook/result does not create duplicate state transitions.
+- TC-NOTIF-010: provider accepted + worker crash yields safe UNKNOWN/reconciliation behavior, not false exactly-once claims.
+- TC-NOTIF-011: expired worker lease is reclaimable without duplicate fan-out.
+- TC-NOTIF-012: policy publish creates immutable version/hash; old outbox retains old policy version.
+- TC-NOTIF-013: escalation step runs once; no eligible recipient does not widen scope.
+- TC-NOTIF-014: failed notification delivery never changes inspection/project/session status.
+- TC-NOTIF-015: revoked/disabled account or push subscription is excluded at dispatch.
+- TC-NOTIF-016: sensitive payloads, tokens and provider secrets are absent from logs/audit/attempt records.
+- TC-NOTIF-017: outbox backlog, dead-letter, retry age and provider failure metrics/alerts are observable.
+- TC-NOTIF-018: cursor pagination cannot cross recipient identity or filter scope.
+
+These cases are test specifications only. No notification tests have been executed.
