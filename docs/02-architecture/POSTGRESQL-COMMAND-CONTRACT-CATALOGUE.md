@@ -1,7 +1,7 @@
 # PostgreSQL Command Contract Catalogue
 
 **Status:** Detailed engineering contract proposal — PO/security review required; NOT approved for implementation  
-**Version:** 0.3.0 | **Date:** 2026-11-24  
+**Version:** 0.3.1 | **Date:** 2026-11-24  
 **Decision basis:** T-14, T-15, T-16, T-17, T-18; Package L/M; canonical permission registry v0.2.0.
 
 ## 1. Purpose and boundary
@@ -180,7 +180,7 @@ Update this catalogue, API contracts, command boundary, permission registry, RBA
 
 ## Function security and EXECUTE ACL dependency
 
-See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md) v0.2.0. The 54 operations are assigned provisional F1/F2/F5/F6 classes, not deployed function names or grants. T-18 Option A resolves the architecture selection; per-function owner, effective privilege, RLS, caller-JWT, signature and exact EXECUTE evidence remain required before exposure.
+See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md) v0.3.0. The 54 operations are assigned provisional F1/F2/F5/F6 classes, not deployed function names or grants. T-18 Option A resolves the architecture selection; per-function owner, effective privilege, RLS, caller-JWT, signature and exact EXECUTE evidence remain required before exposure.
 
 ## NLA-001 notification command extension — proposed IDs CMD-049..054
 
