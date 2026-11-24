@@ -128,10 +128,7 @@ These are planned verification cases only; not executed. T-10 option B is PO-app
 - TC-COMP-004: Tablet is accepted only after responsive layout, camera, upload and PDF/print checks pass.
 - TC-COMP-005: Unsupported/obsolete, embedded in-app and modified browsers are rejected or shown a clear unsupported-browser notice.
 - TC-COMP-006: Record exact OS/device models and browser build numbers for every compatibility run.
-- TC-LOAD-001: Execute representative mixed workload at 10, 25, 50, 75 and 100 concurrent authenticated users; capture p50/p95/p99 latency, throughput, error rate, database and storage metrics.
-- TC-LOAD-002: At target load, verify no acknowledged write loss, duplicate active claim/revision, unauthorized transition, cross-scope access or silent conflict overwrite.
-
-These are planned cases only; not executed. TC-LOAD-001..003 above are the canonical load-test IDs; do not duplicate them under T-11. 100 concurrent users is a load-test target, not a production capacity or SLA claim. Numeric SLO thresholds remain open pending measured baseline and provider verification.
+These are planned cases only; not executed. TC-LOAD-001..003 in Section 3 are the canonical load-test IDs; T-11 adds browser/device compatibility prerequisites only. 100 concurrent users is a load-test target, not a production capacity or SLA claim. Numeric SLO thresholds remain open pending measured baseline and provider verification.
 
 
 
