@@ -51,7 +51,7 @@ Resolve effective access from explicit grants and active assignment membership. 
 | Reopen approved work | No | No by default | Explicit permission only | Yes, with reason |
 | Configure instrument versions | No | No | No by default | Yes |
 | Manage users/roles/scopes | No | No | No by default | Yes |
-| View audit events | Own relevant history | Scoped as approved | Location scope as approved | Global read/export; no edit |
+| View audit events | Only relevant history when explicitly permitted | Scoped only with explicit audit-read permission | Location/project scope only with explicit audit-read permission | No implicit global read/export; explicit audit-read/export permission and institutional authority required; no edit |
 | Print approved PDF | No by default | No by default | If separately assigned Print Officer | If separately assigned Print Officer |
 
 This matrix is a draft and must be reconciled with the final role/permission catalog.
@@ -66,8 +66,9 @@ This matrix is a draft and must be reconciled with the final role/permission cat
 
 ## 7. Capacity and concurrency controls
 
-- Distinct active Inspector accounts across both locations are counted globally.
-- Configured Inspector capacity ranges from 1 to 100 distinct active Inspector accounts across both locations combined; default value is 50. Super Admin may change the configured value within the approved range. Count each person once regardless of assignment count. Capacity changes and Inspector activation/role grant must be authorized, audited, and enforced atomically.
+- Use the T-14 PO-approved qualifying-account predicate: distinct enabled login account + active Inspector role grant + at least one currently effective operational Inspector assignment within the governed project/session scope.
+- Exclude pending, rejected, suspended, disabled and expired-role accounts; count each account once across both locations, multiple assignments and multiple roles.
+- Configured capacity ranges from 1 to 100 qualifying accounts across both locations combined; default value is 50. Super Admin may change the configured value within the approved range. Capacity changes and Inspector eligibility changes must be authorized, audited, and enforced atomically under the governed project's capacity-settings row lock.
 - Count and activation/role grant must be checked in one serializable/locked transaction (or equivalent single-row capacity lock) to prevent concurrent over-allocation.
 - Revoke/deactivate transitions must update the count semantics atomically.
 - Every capacity change records actor, previous value, new value, time, and reason.
@@ -86,6 +87,7 @@ This matrix is a draft and must be reconciled with the final role/permission cat
 
 ## 9. Open decisions
 
+- Canonical permission registry and mapping between the legacy RBAC vocabulary and T-17/T-18 command identifiers.
 - Exact permission granularity and configurable permission administration UX.
 - Whether Super Admin global audit export is all data or filtered.
 - RLS helper-function design and JWT claims strategy.
@@ -128,3 +130,10 @@ T-18 is an approved architecture decision only. This document is not evidence th
 - Claim and inspection commands lock the canonical unit and validate the exact active association plus same-project assignment. A unique ACTIVE claim on `unit_id` prevents a second project from concurrently claiming the same physical unit.
 
 Required RLS/grant matrix cases: associated project member allowed only within assignment/session scope; another project member denied absent their own association; former association member denied current operational access; historical access follows explicit approved history permission; conflict reviewer sees minimum necessary metadata; unaffiliated caller cannot enumerate canonical serials or candidate project membership. These are design requirements, not deployed policies or executed tests.
+
+
+## T-18 permission and audit-read reconciliation
+
+The role/action matrix above is descriptive only and does not grant permissions. T-17's explicit `instrument.manage`, `instrument.publish` and `instrument.deactivate` permissions remain separate. T-18 requires narrow command-specific permission codes; the legacy RBAC permission catalogue has not yet been fully mapped to the command inventory. Evidence read/export, audit read/export and project closure must receive explicit permissions and approved scope/authority; Super Admin status alone is not a substitute. The RLS matrix must not imply automatic global audit export.
+
+The canonical permission registry, legacy-code mapping, role grants, command EXECUTE grants and table RLS remain open review items. No deployed authorization policy is claimed.
