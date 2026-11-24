@@ -45,7 +45,7 @@ Recommendations in this pack are not approvals. Explicit Product Owner approvals
 | T-13 | Print Officer and print-control workflow | PO APPROVED (B) | Permissioned queue; individual + bounded batch printing; per-document outcomes and audited print/reprint events | High |
 | T-14 | Inspector capacity semantics | PO APPROVED (A) | Count distinct enabled accounts with active Inspector role and effective operational assignment | High |
 | T-15 | Audit event policy INS-016 | PO APPROVED (A) | Append-only catalogue; atomic audit + critical mutation; fail-closed on audit failure | Blocker until implementation and institutional controls verified |
-| T-16 | Serial-number uniqueness and evidence/revision linkage | OPEN | Enforce scoped uniqueness rules only after source/business rules are confirmed; bind evidence to immutable revision and instrument version | Blocker |
+| T-16 | Serial-number uniqueness and evidence/revision linkage | PO APPROVED (B) | Unique normalized serial within instrument type across all projects; immutable evidence-to-revision/version linkage and audited replacement | Blocker until schema, transaction and tests are reconciled |
 | T-17 | Instrument configuration governance CFG-001 | APPROVED DIRECTION; detailed controls OPEN | Declarative, versioned configuration with bounded supported field and validation types; no arbitrary code | Must be completed in design |
 | T-18 | Privileged command boundary | OPEN | All privileged mutations through narrowly scoped server-side commands with caller identity, authorization and atomic transactions | Blocker |
 
@@ -353,7 +353,7 @@ The enforcement must be atomic. Reject 0 and values above 100. If reducing the c
 
 **Decision required:** Approve serial uniqueness scope and duplicate handling.
 
-**State:** OPEN; schema invariant blocked.
+**State after PO response (2026-11-24): PO APPROVED option B.** Within one instrument type, a normalized serial number is unique across all projects. The uniqueness key is instrument type + normalized serial, not project + instrument. The rule does not assert uniqueness across different instrument types. A detected cross-project duplicate within the same instrument type is a conflict requiring controlled, reasoned and audited resolution; the system must not silently merge records or discard history. Evidence is bound to the exact immutable inspection revision and instrument version; original metadata, checksum, uploader, capture/upload timestamps and storage object identity are preserved. Evidence is never overwritten in place; replacement creates a new evidence record and audit event. This is Product Owner direction; source/institutional exception policy and implementation verification remain open.
 
 ### T-17 — Instrument configuration governance CFG-001
 
