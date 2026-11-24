@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.26  
+**Version:** 0.1.27  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -595,3 +595,11 @@ No row above proves implementation. All associated QA remains PLANNED / NOT EXEC
 The approved product behavior is an exceptional Inspector-requested, Admin/Korlap-approved disposition after Reviewer return for an identified error when the physical unit is already packed/boxed and prepared for shipment, making correction/reinspection impracticable. If correction remains practically possible, same-Inspector/same-active-session correction and resubmission remains required.
 
 Trace this behavior through the session-bound inspection lifecycle, Reviewer return, terminal ABORTED state, audit/history preservation and session FINAL_CLOSE blocker. ABORTED is not approval, inspection completion, good/defective classification or print completion. Any later inspection is a new session-bound attempt. Exact command, permission/SoD, reason/evidence policy, persistence/lock/RLS and QA evidence remain OPEN; QA remains PLANNED / NOT EXECUTED.
+
+## SES-001 / packed-unit ABORT — technical trace update (2026-11-24)
+
+| Requirement / decision | Workflow and state | Command / data boundary | Security and QA evidence | Disposition |
+|---|---|---|---|---|
+| SES-001 packed-unit ABORT | Reviewer RETURN → Inspector request → Admin/Korlap approve/reject → terminal ABORTED only on approval; rejection returns to WF-001 correction path | Two logical protected actions; exact command identities and persistence object remain unassigned; CMD-027 remains release-only; CMD-013 remains final-close only | Exact returned revision/session binding, requester != approver, scoped authority, packed-state evidence, stale-version denial, atomic claim/state/audit/idempotency, FINAL_CLOSE race | PO semantics APPROVED; technical contract CANDIDATE; physical/security/lock/QA evidence OPEN |
+
+No command, permission or physical object is admitted by this trace row.
