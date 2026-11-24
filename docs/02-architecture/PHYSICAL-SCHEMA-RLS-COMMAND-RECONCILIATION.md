@@ -1,7 +1,7 @@
 # Physical Schema ↔ RLS ↔ Command Reconciliation
 
 **Status:** Engineering/security reconciliation draft — review required; no implementation authority  
-**Version:** 0.2.1  
+**Version:** 0.2.2  
 **Date:** 2026-11-24  
 **Scope:** Package L physical table catalogue, Package M table-by-table RLS catalogue, logical ERD, T-18 command boundary and command authorization matrix.
 
@@ -86,7 +86,7 @@ The key-column/constraint descriptions are transcribed from Package L; SELECT cl
 | Former discrepancy | Design disposition | Evidence | Remaining gate |
 |---|---|---|---|
 | `print_batches` | RETAIN and add to physical schema/RLS. T-13 option B requires a durable batch ID and per-document outcomes. `print_events` stores append-only per-document attempts and optional batch reference. | T-13 PO-approved decision; API contract §6 print/batch-print; NLA-001 print model | Exact schema constraints, lock order, route contract and tests need technical review |
-| `notification_events` | REMOVE as ambiguous placeholder. Replace with `notification_policy_versions`, `notification_outbox`, `notifications`, `notification_deliveries`, `notification_delivery_attempts`, `notification_escalation_events`. | INS-015 PO-approved direction; NLA-001 v0.1.2 | PO/security review, worker principal/ACL, T-10 retention/privacy and provider approvals |
+| `notification_events` | REMOVE as ambiguous placeholder. Replace with `notification_policy_versions`, `notification_outbox`, `notifications`, `notification_deliveries`, `notification_delivery_attempts`, `notification_escalation_events`. | INS-015 PO-approved direction; NLA-001 v0.1.3 | PO/security review, worker principal/ACL, T-10 retention/privacy and provider approvals |
 
 The 48/48 count is a proposed documentation inventory. It does not prove live database existence, deployed RLS or grants.
 
@@ -177,8 +177,17 @@ The six notification entities remain the same six tables; proposed physical/RLS 
 
 - notification_outbox uses safe_payload and explicit lease_owner, lease_token_hash, lease_generation and lease_expires_at fields.
 - notification_deliveries uses the same logical lease-fencing tuple. A stale worker generation cannot finalize after lease reclaim.
-- notifications has no row-version token for CMD-050; read_at is a guarded set-once transition. dismissed_at remains reserved and inactive pending PO/UX approval.
+- notifications has no row-version token for CMD-050; read_at is a guarded set-once transition. dismissed_at remains dormant because POQ-03 excludes dismiss/archive from MVP; no command, permission or browser mutation exists.
 - Browser access is recipient-self SELECT on notifications only. No global R-admin inbox access is inferred. Worker queue/attempt/escalation tables remain unavailable to browser roles; policy configuration reads require an explicitly approved scoped grant.
 - CMD-051 is publish-only; no persisted draft CRUD is included. INT-NOTIF-001 is a provider callback ingress and adds no table or command ID.
 
 These are static design reconciliations only. Exact composite FKs, indexes, enum/check constraints, policy expressions, grants, function owners, provider callback deduplication and live schema/RLS evidence remain open. No live database was queried.
+
+
+## POQ-01..03 physical-schema implications — 2026-11-24
+
+POQ-01 requires a durable event-time candidate-audience snapshot/checkpoint bound to the source event, authorized scope and policy version. The current six-table name inventory does not, by itself, prove that the physical schema has sufficient columns/relations to persist that snapshot and partial fan-out progress. Engineering/Database must specify the canonical representation, uniqueness/fencing constraints and retry semantics before the schema is implementation-ready. Do not infer a new table or column name without that review.
+
+POQ-02 requires immutable policy documents to encode an explicit elapsed/business-time mode and requires the initial-release policy default to ELAPSED_UTC. Exact typed fields, enum/check constraints and validation rules remain to be reconciled in the physical specification. Quiet hours must not pause/reset the SLA clock.
+
+POQ-03 excludes dismissal from MVP. If dismissed_at remains in the proposed schema for compatibility, it is dormant and must not be exposed or mutated. These decisions do not establish live schema/RLS/grants or authorize migration.
