@@ -263,3 +263,8 @@ The proposed Canonical Permission Registry and Command Authorization Matrix v0.1
 ## SEC-006 — Live Supabase security inventory
 
 Before implementation, collect and review a read-only live database inventory covering project/environment identity, PostgreSQL version, roles/memberships, schema/table/routine/sequence ownership and ACLs, RLS flags/policies, function exact signatures/owners/security modes/search_path/EXECUTE ACLs, default privileges, views/triggers, Storage policies and Dashboard exposure/backup configuration. Evidence and acceptance criteria are defined in [Supabase Live Database Security Inventory Runbook](../02-architecture/SUPABASE-LIVE-DATABASE-SECURITY-INVENTORY-RUNBOOK.md). Status: NOT EXECUTED; no live database connector/session available in this workspace. Repository-only design review does not satisfy SEC-006. T-18 execution-model conflict remains OPEN; implementation remains NOT AUTHORIZED.
+
+## SEC-006 — Live Supabase security inventory verification cases
+
+QA cases TC-LIVE-INV-026-001..010 define the evidence checks for target environment/version, role/membership, ownership/schema ACL, table ACL/RLS, function/EXECUTE inventory, SECURITY DEFINER owner hardening, default ACL/inheritance, views/triggers/sequences, Storage policies and Dashboard/provider controls. All 10 are PLANNED / NOT EXECUTED pending an approved read-only live database session. See the Supabase Live Database Security Inventory Runbook. This is a metadata audit only and does not authorize schema or privilege changes.
+
