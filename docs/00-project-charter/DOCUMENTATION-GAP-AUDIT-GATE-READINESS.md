@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.47
+**Version:** 1.11.48
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -582,3 +582,8 @@ Current lock source pointers: LOCK-MANIFEST-001 v0.4.24; LOCK-GRAPH-001 v0.4.17;
 ## Physical command-to-schema reconciliation addendum — 2026-11-24
 
 [CMD-SCHEMA-RECONCILIATION-001](../02-architecture/PHYSICAL-COMMAND-SCHEMA-RECONCILIATION-001.md) v0.1.0 records a static comparison of Package L and Package M: 48 unique physical table names and 48 RLS catalogue names, with exact 48/48 name parity. This closes only the table-name inventory comparison; it does not verify deployed RLS, grants, constraints, functions or live objects. Command physicalization remains incomplete. Material unresolved items include project/session and other aggregate row-version/CAS fields, CMD-035 per-operation sync result ledger and device trust model, CMD-036 renderer job/template model, CMD-038 durable batch item manifest, CMD-039 attendance upload/version authority, CMD-040 append-only verification history, CMD-041–044 query/audit/export contracts, and notification worker/callback ACL and deduplication evidence. Candidate object names are not approved schema. Application lock certification remains 0/50; LPR-09 OPEN; LPR-10 NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE. No gate status is advanced by this static comparison.
+
+
+## CMD-009–016 aggregate concurrency proposal — 2026-11-24
+
+[AGGREGATE-CONCURRENCY-RESOLUTION-001](../02-architecture/AGGREGATE-CONCURRENCY-RESOLUTION-001.md) v0.1.0 proposes a canonical BIGINT `row_version` convention and a field map for project, session, assignment-membership aggregate and project capacity settings. It explicitly separates optimistic CAS tokens, project/session parent fences and T-14 capacity serialization. The proposal also identifies a candidate CMD-015 `expected_row_version` precondition for assignment membership batches. This is a proposal for Engineering/Database review, not an approved physical schema or command contract. Exact PostgreSQL row-lock modes, implicit FK/trigger/function edges, complete child-writer/finalizer coverage, complete T-14 population-writer coverage, deadlock/retry behavior and race-test evidence remain OPEN. No LPR item or gate is closed by this proposal. CMD-009–016 remain not technically certified; application lock certification 0/50; G9 NOT READY; G10 NOT ACTIVE.
