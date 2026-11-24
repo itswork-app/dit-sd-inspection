@@ -4,7 +4,7 @@
 **Version:** 0.4.27
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
-**Parent:** LOCK-GRAPH-001 v0.4.19  
+**Parent:** LOCK-GRAPH-001 v0.4.20  
 **Scope:** Per-command resource inventory, source-stated lock sequence, shared invariants, competing commands, constraints and unresolved ordering  
 **Gate:** G3 NOT READY; G4 NOT READY; G5 NOT READY; G7 NOT READY; G9 NOT READY; G10 NOT ACTIVE.
 
@@ -489,7 +489,7 @@ CMD-041–044 now have candidate read-boundary normalization. CMD-045–048 are 
 
 ## 10. Application certification denominator and current cross-document baseline — 2026-11-24
 
-The inventory retains **54/54 stable traceability IDs** for historical continuity. CMD-045–048 are external control-plane responsibilities and are not executable application commands; they have no application lock manifest, route, RPC, worker or transaction. The application lock-certification denominator is therefore **50**, not 54. Current static coverage is **50/50 application commands with candidate execution/transaction boundaries documented; 0/50 technically approved or certified lock-complete**. Candidate boundaries do not mean the full normalized manifest schema is complete, the global graph is acyclic, or PostgreSQL behavior is proven. LPR-09 remains OPEN; LPR-10 remains NOT EXECUTED. Current parent graph: LOCK-GRAPH-001 v0.4.19. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT ACTIVE.
+The inventory retains **54/54 stable traceability IDs** for historical continuity. CMD-045–048 are external control-plane responsibilities and are not executable application commands; they have no application lock manifest, route, RPC, worker or transaction. The application lock-certification denominator is therefore **50**, not 54. Current static coverage is **50/50 application commands with candidate execution/transaction boundaries documented; 0/50 technically approved or certified lock-complete**. Candidate boundaries do not mean the full normalized manifest schema is complete, the global graph is acyclic, or PostgreSQL behavior is proven. LPR-09 remains OPEN; LPR-10 remains NOT EXECUTED. Current parent graph: LOCK-GRAPH-001 v0.4.20. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT ACTIVE.
 
 
 ## 11. Canonical normalized register pointer — 2026-11-24
@@ -499,7 +499,7 @@ The inventory retains **54/54 stable traceability IDs** for historical continuit
 
 ## 7.6 CMD-049–054 POQ-01 audience snapshot and implicit lock-edge reconciliation — 2026-11-24
 
-POQ-01 requires the event-time recipient and authorized source-scope candidate set to be durably persisted before the source event transaction commits. NLA-001 v0.1.4 proposes `notification_outbox_recipients` and outbox snapshot header fields (version/hash/count/completion). These are candidate-only, NOT ADMITTED, and are excluded from the canonical 48-table inventory.
+POQ-01 requires the event-time recipient and authorized source-scope candidate set to be durably persisted before the source event transaction commits. NLA-001 v0.1.5 proposes `notification_outbox_recipients` and outbox snapshot header fields (version/hash/count/completion). These are candidate-only, NOT ADMITTED, and are excluded from the canonical 48-table inventory.
 
 ### Candidate resource/transaction boundaries
 
