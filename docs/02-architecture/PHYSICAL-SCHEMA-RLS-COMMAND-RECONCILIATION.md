@@ -1,7 +1,7 @@
 # Physical Schema ↔ RLS ↔ Command Reconciliation
 
 **Status:** Engineering/security reconciliation draft — review required; no implementation authority  
-**Version:** 0.2.3  
+**Version:** 0.2.4
 **Date:** 2026-11-24  
 **Scope:** Package L physical table catalogue, Package M table-by-table RLS catalogue, logical ERD, T-18 command boundary and command authorization matrix.
 
@@ -217,3 +217,13 @@ The CMD-035/036/038/039/040 durable-operation proposal identified eight candidat
 The canonical permission registry addendum makes no new permission effective. It explicitly prohibits deriving device enrollment/revocation from sync.apply, template publication from document.generate, or worker execution from user-role permissions/service_role. The candidate ERD annex is excluded from the Mermaid graph and 48-table count.
 
 **Important:** This is a documentation completeness improvement, not physical parity for the candidate objects. The existing 48/48 parity applies only to the canonical proposed inventory. The eight candidate object families have not been admitted, modeled as approved ERD relationships, validated against deployed PostgreSQL, or assigned executable RLS/ACL. No gate or command certification advances.
+
+
+## CMD-041–044 physical crosswalk update — 2026-11-24
+
+- CMD-041 source read set is now enumerated against existing proposed source entities: inspection/revision/event/review, document/print, canonical unit/project association, assignment, session/location/project and instrument-version records. No report snapshot table is assumed. Metric dictionary, exact event/state period attribution, query plan/index proof and numeric bounds remain OPEN.
+- CMD-042 source read set is enumerated against target_plans, target_allocations, project/session/location and assignment scope. Each pagination chain pins one immutable published plan version. No report snapshot table is assumed; optional actual overlay remains PO decision.
+- CMD-043 read set is audit_events plus minimum purpose/scope authorization references. Event-specific allowlisted projection and a non-recursive access append path are required. T-10 controls reader purpose, classification, retention, access authority and append-failure policy; these remain BLOCKED.
+- CMD-044 has three future candidate object families: audit_export_jobs, audit_export_manifests, audit_export_artifacts. They are documented as candidate-only in physical schema, RLS and ERD annexes; they are NOT ADMITTED and do not change canonical 48/48 parity. No route, job, worker, bucket, permission, grant or artifact is authorized.
+
+This closes the static source-object mapping gap for CMD-041/042 and improves the CMD-043/044 candidate boundary. It does not close report metric semantics, T-10, deployed RLS/ACL, query plan evidence, test execution or technical certification.
