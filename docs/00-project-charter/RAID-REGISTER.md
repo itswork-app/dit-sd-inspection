@@ -1,5 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
+**Document ID:** RAID-001  
+**Version:** 0.1.0  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -134,7 +136,7 @@ Residual risks/dependencies remain OPEN/BLOCKED: browser/device support, local-d
 The 100 concurrent authenticated-user load-test target remains the required acceptance profile, tested at 10/25/50/75/100 concurrent users. This is a test target, not a demonstrated production capacity or SLA. Numeric latency/error-rate SLOs remain OPEN pending workload definition, provider plan/region/quota verification and baseline measurement. No implementation, compatibility test or load test is claimed as executed.
 
 
-| R-014 | Alternative provider-ownership arrangement may lack clear legal owner, billing authority, custodian continuity or exit rights | High | Medium | Obtain institutionally approved written ownership/billing/custodian/region/exit arrangement; name primary and secondary recovery contacts; verify access and offboarding | Project Sponsor / Institutional Authority | OPEN |
+| R-036 | Alternative provider-ownership arrangement may lack clear legal owner, billing authority, custodian continuity or exit rights | High | Medium | Obtain institutionally approved written ownership/billing/custodian/region/exit arrangement; name primary and secondary recovery contacts; verify access and offboarding | Project Sponsor / Institutional Authority | OPEN |
 
 ### T-13 mitigation — print batch integrity
 
@@ -247,3 +249,8 @@ CMD-045–048 Detailed Contract Review v0.1.0 records the present safe-unavailab
 | R-035 | Risk | Ambiguous provider acceptance followed by blind retry may duplicate a sensitive notification; callbacks may arrive late or out of order | High | Keep UNKNOWN until safe reconciliation, use provider idempotency where supported, authenticate INT-NOTIF-001, enforce monotonic transitions and alert on unresolved age | Engineering / Security / Operations | MITIGATING BY DESIGN; VERIFICATION OPEN |
 
 CMD-049–054 Detailed Contract Review v0.1.1 and NLA-001 v0.1.2 resolve several documentation-level mismatches only. D-034..D-036 and R-034..R-035 remain open; no worker, provider, role, grant, route, table, SQL or test execution is authorized by this register update.
+
+
+## Identifier uniqueness audit correction — 2026-11-24
+
+The final documentation audit detected a duplicate risk identifier. R-014 remains assigned to the project-wide scope-freeze risk. The alternative provider-ownership continuity risk is now R-036. The risk description, impact, likelihood, mitigation, owner and OPEN status are unchanged. RAID identifiers are unique within this register.
