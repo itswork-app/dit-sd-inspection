@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.51
+**Version:** 1.11.52
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -608,3 +608,6 @@ Residual decisions: candidate FK/cardinality and indexes; device trust/recovery;
 ## Candidate durable-object QA coverage — 2026-11-24
 
 TEST-CASE-CATALOG-AND-UAT v0.3.7 now allocates 14 candidate-only planned cases TC-CANDIDATE-LEDGER-001..014 for sync replay/partial results/device trust, renderer lease fencing/source provenance, print manifest/retry, attendance version/verification/SoD, candidate RLS/ACL and permission non-inheritance. All remain PLANNED / NOT EXECUTED and are excluded from passing/executed denominators. The cases are conditional on schema admission, G10 authorization and controlled test deployment. This closes a test-specification traceability gap only; it is not test evidence and advances no gate.
+
+
+The canonical permission registry addendum is versioned as v0.2.3. It preserves existing permission mappings and explicitly records device enrollment/revocation and template publication as unresolved authorization design, while separating document-generation request authorization from renderer workload identity. No new permission or role grant is approved.
