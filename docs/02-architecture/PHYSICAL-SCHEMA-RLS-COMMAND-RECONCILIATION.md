@@ -152,10 +152,14 @@ Before implementation authorization, produce and review:
 - Live database existence/RLS/grants inspected: **NO**.
 - SQL migrations or policies created/executed: **NO**.
 - Command function inventory/signatures complete: **NO**.
-- Per-table executable authorization tests: **NOT EXECUTED**.
+- Per-table verification cases: **41 planned** (TC-RLS-024-001..041); executable authorization tests: **NOT EXECUTED**.
 - Scope freeze: **NOT READY**.
 - Implementation authorization: **NOT GRANTED**.
 
 ## 8. Change control
 
 Any change to physical tables, ERD entities, RLS classes, table privileges, command functions, Storage objects, views or elevated functions must update this reconciliation, Package L, Package M, ERD, Command Authorization Verification Matrix, QA catalogue and RTM/Package S as applicable. Keep logical model entities, approved physical schema, deployed schema and tested policy evidence as four distinct states.
+
+## 9. Per-table verification case allocation
+
+The QA catalogue now allocates one design-level test to each of the 41 tables: TC-RLS-024-001..041. Each case checks the table's declared SELECT class, an unauthorized/wrong-scope read, and the T-18 prohibition on browser-facing direct INSERT/UPDATE/DELETE even when the catalogue labels a mutation CMD. Internal tables with SELECT NONE receive explicit no-client-access assertions. All 41 cases are planned only and require execution against staging Supabase after approved migrations/grants.
