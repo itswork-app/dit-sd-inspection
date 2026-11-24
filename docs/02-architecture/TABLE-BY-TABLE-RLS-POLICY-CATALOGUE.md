@@ -82,11 +82,13 @@ Legend:
 | `specification_fields` | R-published; R-admin | CMD | CMD | NONE | Typed values; no executable expressions |
 | `evidence_slot_definitions` | R-published; R-admin | CMD | CMD | NONE | Required status and allowed media are versioned |
 | `instrument_version_publications` | R-scope; R-admin | CMD | NONE | NONE | Append-only publication history |
-| `units` | R-scope; R-admin | CMD | CMD | NONE | Unit creation/serial normalization command only; serial uniqueness DB enforced |
+| `units` | R-scope; R-admin | CMD | CMD | NONE | Unit creation/serial normalization command only; canonical serial uniqueness DB enforced; unit ID alone grants no scope |
+| `unit_project_associations` | R-scope through matching project membership; R-admin | CMD | CMD | NONE | Durable ACTIVE/ENDED/REVOKED episodes; create/end only through reasoned audited commands; no hard delete |
+| `unit_identity_conflicts` | R-conflict-reviewer; minimum necessary project-scoped metadata only | CMD | CMD | NONE | Restricted same-instrument duplicate workflow; authorized resolution only; never exposes candidate project's inspection history |
 | `inspections` | R-scope according to Inspector/Reviewer/Korlap/Print Officer permissions; R-admin | CMD | CMD | NONE | Aggregate state changes only through commands |
 | `inspection_revisions` | R-scope; R-admin | CMD | NONE | NONE | Immutable after submission; draft snapshot handling only via command |
-| `checklist_responses` | R-scope; R-admin | CMD | CMD | NONE | Direct draft writes prohibited until a narrow, reviewed draft-write contract exists |
-| `specification_responses` | R-scope; R-admin | CMD | CMD | NONE | Same as checklist responses |
+| `checklist_responses` | R-scope; R-admin | CMD | CMD | NONE | Draft writes are command-only through T-18; browser direct DML is denied |
+| `specification_responses` | R-scope; R-admin | CMD | CMD | NONE | Draft writes are command-only through T-18; browser direct DML is denied |
 | `unit_claims` | R-scope for holder and authorized supervisors/reviewers; R-admin | CMD | CMD | NONE | Atomic claim and release command; no client expiry edits |
 | `review_events` | R-scope for assigned reviewers and authorized supervisors; R-admin | CMD | NONE | NONE | Append-only |
 | `inspection_events` | R-scope; R-admin | CMD | NONE | NONE | Append-only |
