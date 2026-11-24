@@ -220,4 +220,4 @@ D-030 remains OPEN/BLOCKING. The first ten command manifests now have a candidat
 **Current normalization references:** CMD-001–010 Detailed Contract Review v0.3.4; LOCK-MANIFEST-001 v0.4.10; LOCK-GRAPH-001 v0.4.8; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.6; QA Catalogue v0.3.2; DGA-001 v1.11.12. All remain proposals / planned evidence except the documentation normalization itself.
 
 
-**Final reviewed source snapshot for CMD-001–010 checkpoint:** CMD detail v0.3.4; LOCK-MANIFEST-001 v0.4.12; LOCK-GRAPH-001 v0.4.10; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.8; Cross-Command Reconciliation v0.8.7; QA Catalogue v0.3.3; DGA-001 v1.11.14. D-030/R-030 remain OPEN; no implementation or concurrency evidence is claimed.
+**Final reviewed source snapshot for CMD-001–010 checkpoint:** CMD detail v0.3.4; LOCK-MANIFEST-001 v0.4.13; LOCK-GRAPH-001 v0.4.10; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.8; Cross-Command Reconciliation v0.8.8; QA Catalogue v0.3.3; DGA-001 v1.11.15. D-030/R-030 remain OPEN; no implementation or concurrency evidence is claimed.
