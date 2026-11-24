@@ -286,10 +286,22 @@ QA added 12 unique planned cases (TC-EXEC-MODEL-027-001..012) covering owner att
 **Decision status:** T-18 execution-model selection PO APPROVED Option A. **Verification status:** actual repository runtime route/client implementation, live Supabase role/function/ACL inventory, exact function signatures/owners/grants and runtime tests remain OPEN / NOT EXECUTED. Option B is not selected. Scope freeze remains NOT READY; implementation remains NOT AUTHORIZED.
 
 
-## 9.13 T-19 repository runtime architecture audit (2026-11-24)
+## 9.13 T-19 repository runtime architecture audit — superseded interpretation (2026-11-24)
 
-Created [T-19 Repository Runtime Architecture Audit](../02-architecture/T19-REPOSITORY-RUNTIME-ARCHITECTURE-AUDIT.md) from a read-only recursive Git tree inspection. The audited documentation branch contains 54 blobs limited to `AGENTS.md`, `README.md` and `docs/`; the source/configuration extension scan returned zero implementation files. The default branch `main` contains only `README.md` at the inspected ref. No Vercel routes, Supabase clients, caller-JWT forwarding implementation, SQL migrations/functions, RLS/grants, test suites or deployment configuration can be inspected in this repository.
+The original T-19 tree inspection was performed against the documentation branch and `main`. The initial audit correctly recorded that no application source/configuration was present in those refs, but its proposed follow-up question about whether a separate application repository was intended is superseded by the Product Owner clarification on 2026-11-24.
 
-This finding does not assert that code does not exist in another repository or local workspace. The canonical application repository/branch must be confirmed before runtime implementation review. QA allocated 8 cases (TC-REPO-AUDIT-028-001..008), all BLOCKED / NOT EXECUTED. T-18 Option A remains PO APPROVED as a design decision; implementation conformance is NOT VERIFIED.
+**Confirmed repository intent:** `itswork-app/dit-sd-inspection` is the single repository for both the authoritative documentation and the future application. The current phase is intentionally documentation/SSOT maturation. Application source, migrations and deployment artifacts are not expected until documentation gates close and separate implementation authorization is granted. Their current absence is not a repository defect.
 
-**Disposition:** repository tree audit COMPLETE for inspected refs; application implementation absent from inspected refs; live Supabase inventory NOT EXECUTED; scope freeze NOT READY; implementation, migrations, grants, deployment and merge NOT AUTHORIZED.
+The T-19 source-tree scan remains a valid historical snapshot only. Its earlier file-count value is not treated as a current inventory count. The latest T-19 audit document records the updated branch intent and evidence boundary.
+
+**Disposition:** documentation-first repository intent CONFIRMED; no application implementation expected in current phase; scope freeze NOT READY; implementation NOT AUTHORIZED. See [T-19 Repository Runtime Architecture Audit](../02-architecture/T19-REPOSITORY-RUNTIME-ARCHITECTURE-AUDIT.md).
+
+## 9.14 Documentation gap audit — implementation gate readiness (2026-11-24)
+
+Created [Documentation Gap Audit — Gate Implementation Readiness](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) v1.0.0 after reviewing the current Master Implementation Blueprint, Package S/T, Decision Register, RTM, RAID, PRD, PostgreSQL command catalogue, physical schema, RLS reconciliation, QA catalogue, backup/recovery, performance and provider governance documents.
+
+The audit confirms substantial documentation coverage but identifies active blockers: authoritative IFP/evidence-slot source; Standing Bracket annex/photo rules; institutional BA/signatory authority; T-10 records/privacy/legal approvals; T-12 provider ownership/region/plan/quota/budget evidence; offline device/local-data controls; numeric SLOs; canonical permission/role/grantor/SoD approval; incomplete 48 command contracts (0 approved/executable end-to-end); unresolved ERD-only `print_batches` and `notification_events`; exact RLS/grants/function signatures and caller-JWT runtime proof; notification lifecycle/physical persistence; report/closure reconciliation; CI/branch protection evidence; and stale status language across historical decision/audit artifacts.
+
+The QA catalogue contains 348 distinct test identifiers by text-level scan, including 48 command-contract, 36 command-authorization, 41 RLS-table, 63 function-security, 12 T-18 execution-model, 10 live-inventory and 8 repository-audit planned cases. These are specifications, not executed or passing tests. One test identifier appears more than once as a textual reference. No application, live database, CI, security, restore, load or UAT execution was performed by this audit.
+
+**Updated disposition:** documentation inventory SUBSTANTIAL; documentation closure INCOMPLETE; scope freeze NOT READY; implementation NOT AUTHORIZED; production readiness NOT VERIFIED. The gap audit is the active work queue and must be reconciled as each item closes.
