@@ -1,7 +1,7 @@
 # Data Model and ERD — Dit. SD Inspection
 
 Status: Logical data model draft — not a migration specification  
-Version: 0.3.0
+Version: 0.3.1
 
 
 ## Physical schema and RLS reconciliation status
@@ -101,9 +101,9 @@ erDiagram
 - `idempotency_records`: command key, actor, request hash, result reference, expiry/retention.
 - `sync_batches`: client batch identity, acknowledgement, conflict references.
 - `notification_policy_versions`: immutable, validated, scope-bound notification policy snapshots.
-- `notification_outbox`: transactional source-event fan-out intents, pinned to a policy version.
-- `notifications`: recipient-specific in-app inbox records with independent read/dismiss timestamps.
-- `notification_deliveries`: current per-channel delivery projection, separate from inbox read state.
+- `notification_outbox`: transactional source-event fan-out intents, pinned to a policy version, with safe_payload and owner/token-hash/generation/expiry lease fencing.
+- `notifications`: recipient-specific in-app inbox records with independent read timestamp; dismissed_at remains reserved until PO/UX approval.
+- `notification_deliveries`: current per-channel delivery projection, separate from inbox read state, with the same worker lease-fencing tuple.
 - `notification_delivery_attempts`: append-only sanitized provider attempt history.
 - `notification_escalation_events`: append-only SLA/reminder/escalation decisions.
 
@@ -194,3 +194,8 @@ This is the recommended relational resolution of T-16's approved uniqueness rule
 The logical ERD must represent the PO-approved semantics recorded in the Decision Register: canonical T-07 session states (DRAFT/ACTIVE/PAUSED/CLOSED); closure request as an event/action rather than a persisted state; immutable session code; session-scoped target plans by default; per-membership effective end times; end-dated assignment history; normalized unique instrument code; complete draft configuration replacement; immutable published instrument versions and session/assignment version pinning.
 
 This is a logical-model alignment note, not a physical schema approval. The ERD must not imply that row-version fields, canonical config hashes, timestamp precision, uniqueness/exclusion constraints, trigger behavior, RLS or lock ordering have been finalized. Those remain explicit technical design dependencies in the physical schema, concurrency reconciliation and command reviews.
+
+
+## Notification contract alignment — 2026-11-24
+
+CMD-050 uses a set-once read_at field and intentionally has no row-version column. CMD-052/053 lease fencing uses owner, token hash, monotonic generation and expiry; it is not a business row-version token. CMD-051 is publish-only in the current command set; no persisted draft CRUD is represented. Provider callback ingress INT-NOTIF-001 is an integration boundary and does not add a seventh notification entity. The proposed physical/RLS inventory remains 48 tables; no live schema is implied.
