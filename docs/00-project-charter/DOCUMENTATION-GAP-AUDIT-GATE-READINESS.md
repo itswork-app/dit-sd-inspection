@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.9.7
+**Version:** 1.9.8
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -252,3 +252,9 @@ The notification boundary explicitly keeps queue claims in short isolated transa
 Following the CMD-049–054 transaction-boundary reconciliation, the controlled-document cross-references were synchronized: LOCK-MANIFEST-001 v0.3.7 now points to LOCK-GRAPH-001 v0.3.6 and LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.2.2; LOCK-GRAPH-001 v0.3.6 points to LOCK-MANIFEST-001 v0.3.7. The manifest's source table retains the exact earlier reviewed snapshot identifiers (DGA-001 v1.9.5, LOCK-GRAPH-001 v0.3.4 and protocol resolution v0.2.1) rather than misrepresenting them as the post-edit versions.
 
 **Disposition unchanged:** DGA-B18 PARTIAL; DGA-B19 OPEN; 54/54 inventoried, 0/54 normalized/certified. LPR-01 and LPR-07–LPR-10 remain open/not executed. G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED. No CI, tests, SQL, migrations, live database inspection, deployment or merge occurred.
+
+## Candidate rank summary correction — 2026-11-24
+
+LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.2.3 now explicitly includes L100 dependent mutable aggregates in its recommended-order summary between L90 inspection and L110 append-only facts. LOCK-GRAPH-001 v0.3.7 and LOCK-MANIFEST-001 v0.3.8 cross-references are synchronized. This removes a summary omission; it does not approve the candidate hierarchy or close any command manifest.
+
+**Disposition unchanged:** DGA-B18 PARTIAL; DGA-B19 OPEN; 54/54 inventoried, 0/54 normalized/certified. LPR-01 and LPR-07–LPR-10 remain open/not executed. G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED.
