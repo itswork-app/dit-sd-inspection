@@ -1,7 +1,7 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.11  
+**Version:** 0.1.12  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
@@ -484,3 +484,12 @@ Current controlled L05 references are:
 - RTM-001 v0.1.9; QA Catalogue v0.4.6.
 
 Earlier dated sections retain the versions that were actually reviewed at those checkpoints and are historical, not current pointers. The CMD-031–040 overlay remains candidate-only; 0/40 resolver paths and 0/50 application commands are certified. Candidate snapshot relation/header remain NOT ADMITTED. NRL-T01..T13 and TC-NOTIF-001..054 remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 20. POQ-04 event-transition recipient semantics — PO APPROVED (2026-11-24)
+
+The Product Owner approved all five transition outcomes in DECISION-REGISTER.md POQ-04 without changes. The immutable event-time candidate audience is evaluated against serialized pre-mutation state at the single captured `audience_evaluated_at`; the source mutation, canonical event and candidate snapshot must commit atomically. Actor, target and affected member are included only when selected by the exact approved event selector; no participant is implicitly appended. Dispatch-time account, channel, consent/revocation, current-scope and mandatory security checks may suppress an existing candidate but must never widen the audience. Retries reuse the original candidate set and checkpoint.
+
+The approved transition-specific assertions are: (1) role revoke — target only if selected and eligible pre-revoke; actor not auto-added; current role/scope may suppress; (2) account reject/disable/suspend — snapshot may retain a selected pre-transition candidate, suppress while not enabled, and permit a later retry only for that same candidate after reactivation; (3) assignment-member end — evaluate pre-end membership at the captured instant using half-open effective intervals; current scope may suppress, with no substitute member; (4) project/session close — evaluate pre-close parent state and commit snapshot with closure event; current active-scope policy may suppress, with no post-close additions; (5) self-revoke — actor only if exact selector independently selects under pre-revoke eligibility, followed by current role/scope revalidation.
+
+This PO approval settles product semantics only. Selector grammar, physical snapshot schema, source-path and writer participation, lock ordering, function/RLS/ACL details, technical approval and runtime evidence remain OPEN. F-05 remains OPEN pending Security/Engineering validation; G9 NOT READY; G10 NOT ACTIVE.
