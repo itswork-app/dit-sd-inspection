@@ -686,3 +686,8 @@ Internal review [L05-TECHNICAL-REVIEW-001](../04-quality/L05-TECHNICAL-REVIEW-00
 ### L05 source-event path mapping — 2026-11-24
 
 [L05-SOURCE-MAP-001](../02-architecture/L05-SOURCE-EVENT-PATH-MAPPING-001.md) v0.1.0 maps all 40 canonical event declarations, event-producing transaction boundaries, existing candidate lock paths and the proposed L05 prefix. This closes the documentation inventory gap for a single source-event mapping artifact only. It does not normalize existing command lock orders or prove all event-producing function/finalizer paths. CMD-012/013, CMD-023–032 and CMD-035–040 retain transaction/order issues; CMD-035 transaction/savepoint choice and CMD-036–040 finalizer paths remain open. Resolver paths remain 0/40 certified; application lock certification 0/50; L05 unadmitted; graph acyclicity NOT PROVEN; G9 NOT READY; G10 NOT ACTIVE.
+
+
+### L05 eligibility-writer participation inventory — 2026-11-24
+
+[NLA-L05-WRITER-MATRIX-001](../02-architecture/L05-ELIGIBILITY-WRITER-PARTICIPATION-MATRIX-001.md) v0.1.0 identifies known CMD-level eligibility writers and non-command writer classes. This advances the inventory, not certification: the selector dependency universe, exact deployed RPC/helper/trigger/job inventory, owner/ACL, direct-DML bypass controls, admin/import/repair/expiry paths and actual L05 participation evidence remain incomplete. All-writer certification remains 0; F-04 remains OPEN. No live database inspection or implementation occurred.
