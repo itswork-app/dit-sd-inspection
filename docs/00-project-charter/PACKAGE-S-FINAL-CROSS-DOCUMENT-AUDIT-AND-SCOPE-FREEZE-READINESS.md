@@ -254,3 +254,13 @@ The QA catalogue now contains **48 unique planned cases** (TC-CMD-CONTRACT-024-0
 **Important distinction:** 48 draft contract rows exist, but **0 approved/executable command contracts** are complete. Exact OpenAPI/JSON Schema, route mapping, PostgreSQL signatures/types, function owner/security mode/search_path, per-role table grants, RPC EXECUTE grants, executable RLS predicates, Storage policy, exact role/grantor matrix, idempotency retention and staging test evidence remain open. The permission registry is still a draft.
 
 **Disposition unchanged:** no migrations, seeds, grants, RLS changes, functions, routes, runtime tests or deployment were performed. Scope freeze NOT READY; implementation NOT AUTHORIZED.
+
+## 9.10 PostgreSQL function security and EXECUTE grant design (2026-11-24)
+
+Created [PostgreSQL Function Security & EXECUTE Grant Design](../02-architecture/POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md) v0.1.0. It maps 48 logical operations to provisional function classes (F1 protected mutations, F2 scoped reads, F3 internal helpers, F4 triggers, F5 workers, F6 blocked institutional operations), defines target caller-principal classes, exact-signature ACL principles, PUBLIC/anon denial, SECURITY DEFINER hardening, catalog introspection requirements and 62 planned security cases (48 per-operation + 14 global).
+
+**Critical compatibility finding:** T-18 combines a prohibition on browser-facing `authenticated` table DML with a preference for SECURITY INVOKER command functions. An INVOKER function executes with caller privileges; if `authenticated` lacks protected table DML, it cannot perform protected writes. If table DML is granted to that same role, the browser may also use it directly unless a separate execution boundary is proven. This is not solved by RLS alone. The design explicitly rejects broad authenticated DML and service-role substitution. PO/security must decide between narrowly hardened SECURITY DEFINER command wrappers (candidate, not approved) and a proven separate command-executor principal. SECURITY INVOKER remains preferred for read-only paths/helpers that do not need privilege elevation.
+
+No live Supabase role/function/ACL introspection was performed. No functions, role changes, grants/revokes, table ACL changes, RLS, migrations or runtime tests were executed. All 62 cases remain PLANNED / NOT EXECUTED.
+
+**Updated disposition:** function security design documented; INVOKER/DML compatibility decision OPEN; role/ACL inventory OPEN; exact function signatures and grants OPEN; scope freeze NOT READY; implementation NOT AUTHORIZED.
