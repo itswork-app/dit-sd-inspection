@@ -136,7 +136,15 @@ Every requirement must have a stable ID and map to:
 
 A requirement without a complete trace is not implementation-ready. A test case without a requirement or explicit risk rationale must be reviewed for necessity. A source or decision change must trigger impact analysis across every linked artifact.
 
-## 7. Change control and document lifecycle
+## 7. Change control, agent governance and document lifecycle
+
+- Root `AGENTS.md` is mandatory for every contributor and agent. Read it at the beginning of every work session and before each substantive task; if unavailable, stop repository edits. Re-read after any change to the file.
+- Follow [Implementation Roadmap and Release Governance](IMPLEMENTATION-ROADMAP-AND-RELEASE-GOVERNANCE.md) for pre-implementation phases, G10 authorization, implementation phases I0–I7 and release workflow.
+- Application releases use Semantic Versioning 2.0.0. Pre-1.0 versions use `0.y.z`; `v1.0.0` is reserved for the first formally accepted stable production release after G12. API, DB migration, documentation baseline, instrument configuration and test evidence have independent version/identity domains.
+- Database migrations use immutable monotonic identifiers and compatibility notes; application SemVer does not replace migration ordering.
+- Maintain CHANGELOG and immutable release tags; never move a published tag.
+
+### Existing document lifecycle controls
 
 - Use stable IDs for requirements, decisions, ADRs, risks, commands, API operations and test cases.
 - Approved decisions are immutable in history; changes create a superseding decision with rationale, approver, date, impact analysis and migration/deprecation notes.
@@ -181,6 +189,9 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 
 - Repository intent: **DOCUMENTATION AND APPLICATION IN ONE REPOSITORY — CONFIRMED BY PRODUCT OWNER**
 - Documentation gap audit: **DGA-001 v1.0.0 RECORDED; closure IN PROGRESS**
+- Mandatory agent instructions: **AGENTS.md v1.1.0 — READ BEFORE EVERY WORK SESSION/TASK**
+- Implementation roadmap: **IRG-001 v1.0.0 — APPROVED PLAN, NOT AUTHORIZATION**
+- SemVer policy: **2.0.0 adopted; application version not assigned before release**
 - Active implementation gate: **NOT READY — see DGA-001**
 - Current phase: **DOCUMENTATION / SSOT MATURATION**
 - Application source code: **INTENTIONALLY NOT STARTED**
