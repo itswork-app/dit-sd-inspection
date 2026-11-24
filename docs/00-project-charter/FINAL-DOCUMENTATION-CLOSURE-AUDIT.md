@@ -1,13 +1,13 @@
 # Final Documentation Closure Audit — Dit. SD Inspection
 
 **Document ID:** DOC-AUDIT-001  
-**Version:** 0.1.2  
+**Version:** 0.1.3  
 **Status:** STATIC DOCUMENTATION AUDIT COMPLETED — IMPLEMENTATION READINESS NOT ESTABLISHED  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
 **Pull request:** #3 — Draft / Open  
-**Authority:** AGENTS.md v1.2.0; MIB-001 v1.0.2; IRG-001 v1.0.1; DGA-001 v1.11.21  
+**Authority:** AGENTS.md v1.2.0; MIB-001 v1.0.3; IRG-001 v1.0.1; DGA-001 v1.11.22  
 **Gate:** G9 NOT READY; G10 NOT AUTHORIZED
 
 ---
@@ -56,20 +56,20 @@ The audit used read-only GitHub file/tree/PR inspection and static identifier, t
 | DOC-AUD-003 | Command catalogue called the global lock sequence “approved” while the graph and manifest explicitly said proposal only | Replaced with candidate L00–L110 resource ranks and explicit NOT APPROVED / not proven acyclic qualification | Command Catalogue v0.4.4; LOCK-GRAPH-001 v0.4.10 |
 | DOC-AUD-004 | Concurrency reconciliation retained CMD-050 as an unresolved request-field mismatch after expected_version was removed | CV-06 marked resolved at request-contract level; approval and runtime evidence remain open | CONCURRENCY-001 v0.1.5 |
 | DOC-AUD-005 | RLS summary implied a future “approved dismiss field” despite dismissed_at being dormant | Clarified that CMD-050 exposes only recipient-owned read_at; no dismiss command is approved | RLS Catalogue v0.2.2 |
-| DOC-AUD-006 | Current-source pointers lagged the documents they described | Refreshed current references while preserving dated historical checkpoint snapshots | Lock Manifest v0.4.15; Cross-Command Reconciliation v0.8.11; DGA-001 v1.11.18 |
+| DOC-AUD-006 | Current-source pointers lagged the documents they described | Refreshed MIB current-status pointers and this audit's canonical source snapshot; preserved dated historical checkpoint snapshots | MIB-001 v1.0.3; DGA-001 v1.11.22; Cross-Command Reconciliation v0.8.13 |
 
 ## 5. Canonical source snapshot
 
 | Artifact | Version / state |
 |---|---|
 | Root AGENTS.md | 1.2.0 — mandatory policy |
-| MIB-001 | 1.0.2 |
+| MIB-001 | 1.0.3 |
 | IRG-001 | 1.0.1 |
-| DGA-001 | 1.11.18 — audit in progress |
+| DGA-001 | 1.11.22 — audit in progress |
 | NLA-001 | 0.1.2 — proposal |
 | CMD-049–054 Detailed Contract Review | 0.1.1 — proposal |
 | PostgreSQL Command Contract Catalogue | 0.4.4 |
-| CMD-001–054 Cross-Command Reconciliation | 0.8.11 |
+| CMD-001–054 Cross-Command Reconciliation | 0.8.13 |
 | Physical Database Schema | 0.4.1 |
 | Table-by-Table RLS Catalogue | 0.2.2 |
 | Lock Manifest | 0.4.15 |
@@ -110,7 +110,7 @@ PR #3 remains Draft/Open. No CI success is claimed. G9 remains NOT READY. G10 re
 
 ## 8. Related source documents
 
-- [DGA-001 — Documentation Gap Audit](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) v1.11.19
+- [DGA-001 — Documentation Gap Audit](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) v1.11.22
 - [RTM-001 — Requirements Traceability Matrix](REQUIREMENTS-TRACEABILITY-MATRIX.md) v0.1.0
 - [RAID-001 — Risks, Assumptions, Issues and Dependencies](RAID-REGISTER.md) v0.1.0
 - [PostgreSQL Command Contract Catalogue](../02-architecture/POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) v0.4.4
