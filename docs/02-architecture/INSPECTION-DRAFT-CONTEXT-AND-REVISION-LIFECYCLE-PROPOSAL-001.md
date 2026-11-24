@@ -6,7 +6,7 @@
 **Status:** Engineering / Database / Security / Product Owner review required — NOT APPROVED  
 **Scope:** CMD-026 claim-unit; CMD-028 save-draft; CMD-029 submit-inspection; CMD-030 return-inspection; CMD-032 reopen-inspection; CMD-033/034 evidence upload/finalization  
 **Product journey:** Dit. SD IFP and Standing Bracket inspection only  
-**Authority:** PRD §6; Decision Register WF-001, WF-002, INS-010, T-09, T-16, SES-001; CMD-021–030 and CMD-031–040 detailed reviews; physical schema v0.4.4; AGENTS.md.
+**Authority:** PRD §6; Decision Register WF-001, WF-002, INS-010, T-09, T-16, SES-001; CMD-021–030 and CMD-031–040 detailed reviews; physical schema v0.4.7 candidate addendum; AGENTS.md.
 
 ## 1. Purpose and user-journey contract
 
