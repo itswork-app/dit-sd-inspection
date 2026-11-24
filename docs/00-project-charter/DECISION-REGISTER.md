@@ -256,3 +256,26 @@ These dispositions close the application-surface design ambiguity only. They do 
 The Product Owner explicitly clarified in the project conversation on 2026-11-24: **“Semua ijin sudah diberikan”** (all permissions have been given). For project execution, this is accepted as confirmation that the Product Owner has granted the permissions within the Product Owner's authority for the team/agent to continue the authorized work without repeatedly requesting the same PO permission.
 
 This clarification does not fabricate or substitute a third party's signed institutional delegation, security certification, provider ownership evidence, repository administrator evidence, or independent technical review. Where AUTH-001 requires evidence from a separately accountable authority, the evidence must be attached or referenced and verified before that specific gate is marked approved. The team must continue all work that is already authorized and does not depend on the missing evidence; do not pause unrelated engineering preparation or ask the Product Owner to repeat the same authorization.
+
+
+## Product Owner decision — L05 audience-guard candidate direction (2026-11-24)
+
+**Decision:** APPROVED — select one global transaction-scoped PostgreSQL advisory guard, candidate rank L05, as the primary mechanism for formal technical review. The Product Owner endorses the direction represented by NLA-L05-TDR-001 v0.1.1 and its controlled technical amendments, not an executable implementation.
+
+**Approved direction only:**
+- Continue formal review of `pg_advisory_xact_lock(int,int)` as the candidate primitive with one reserved global key pair; actual key values and namespace remain unapproved.
+- Continue formal review of READ COMMITTED with lock acquisition completed before a separate audience-resolution query.
+- Require all source-event and eligibility-changing writer paths, including policy publication and asynchronous finalizers, to participate before conflicting mutable locks.
+- Require event-time recipient snapshots to remain immutable and fan-out to consume only the persisted candidate set.
+
+**Technical amendments requiring validation:** TDR v0.1.2 proposes VOLATILE PostgREST RPC wrappers with separate internal SQL commands and one `clock_timestamp()` audience-evaluation instant captured immediately after L05. The half-open effective-interval convention `[valid_from, valid_until)` is a technical proposal only and is not approved where it changes an existing domain contract.
+
+**Not approved / not authorized:**
+- canonical L05 rank admission, numeric advisory key values or global lock namespace;
+- deployed isolation, function volatility metadata, function ownership/search_path/ACL, direct-DML denial or helper signatures;
+- complete source-event/eligibility-writer lock matrix, FK/unique/trigger/helper graph, acyclicity or any resolver certification;
+- candidate snapshot relation/header DDL, constraints or indexes;
+- numeric lock/statement/transaction timeouts, retry/backoff, audience maximum or performance SLO;
+- SQL, migration, source code, grants/revokes, RLS changes, live database inspection, runtime tests, provider setup, deployment or production operations.
+
+**Authority and gate boundary:** This decision is Product Owner candidate-direction approval only. It does not substitute for Engineering, Database, Security, Operations or institutional approvals and evidence. F-01/F-02 remain open pending authenticated RPC/database evidence and adversarial tests. Resolver lock certification remains 0/40; application lock certification remains 0/50; global graph acyclicity is NOT PROVEN; candidate snapshot relation remains NOT ADMITTED; G9 remains NOT READY and G10 remains NOT ACTIVE.
