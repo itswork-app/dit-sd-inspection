@@ -35,7 +35,9 @@ If two authoritative sources conflict, do not guess or implement around the conf
 Current phase: **DOCUMENTATION / SSOT MATURATION**.
 
 - Scope freeze: **NOT READY**.
-- Implementation authorization: **NOT GRANTED**.
+- Product Owner authorization: **CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)**.
+- G9 scope freeze: **NOT READY**.
+- G10 implementation activation: **NOT ACTIVE — pending verified G9 and the required G10 activation record**.
 - Production readiness: **NOT VERIFIED**.
 
 Until a separate written G10 implementation authorization is recorded, permitted work is limited to documentation, read-only repository inspection, static consistency analysis and approved documentation updates.
@@ -49,6 +51,12 @@ Not permitted without separate explicit authorization:
 - handling or requesting secrets in chat.
 
 A general “continue” instruction does not override this boundary.
+
+### 3.1 Product Owner conditional authorization received — 2026-11-24
+
+The Product Owner supplied explicit written authorization to transition toward implementation from zero in this repository, using the current SSOT as the build baseline. The authorization directs the team to close G9 prerequisites, freeze scope only after critical blockers are closed, and activate G10 only after verification. After G10 activation, implementation may proceed on a dedicated branch for source code, database schema, migrations, API, frontend and automated testing. Production changes, deployment and operations affecting real data require separate approval. No gate may be marked PASS without required evidence and approvals.
+
+This is conditional authorization, not G10 activation and not a waiver of institutional, Security, Database, Operations or provider approvals. Until G9 is verified and the required G10 activation record is approved, the prohibitions above remain in force. Canonical PO approval record: `docs/00-project-charter/DECISION-REGISTER.md`.
 
 ## 4. Architecture and security invariants
 
