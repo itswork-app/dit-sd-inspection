@@ -675,9 +675,14 @@ PO selected the global transaction-scoped audience guard (candidate L05) as the 
 
 ### PO approval of L05 candidate — 2026-11-24
 
-The Product Owner approved NLA-L05-TDR-001 v0.1.1 as the preferred candidate for formal Engineering/Database/Security review. This does not constitute technical certification or admit L05 into the global lock graph. Exact key registry, deployed isolation, all writer paths, helper ACL, FK/unique/trigger graph, numeric budgets, audience/performance limits and NRL-T01..T10 evidence remain open. G9 NOT READY; G10 NOT ACTIVE.
+The Product Owner approved NLA-L05-TDR-001 v0.1.2 as the preferred candidate for formal Engineering/Database/Security review. This does not constitute technical certification or admit L05 into the global lock graph. Exact key registry, deployed isolation, all writer paths, helper ACL, FK/unique/trigger graph, numeric budgets, audience/performance limits and NRL-T01..T10 evidence remain open. G9 NOT READY; G10 NOT ACTIVE.
 
 
 ### L05 internal technical review response — 2026-11-24
 
 Internal review [L05-TECHNICAL-REVIEW-001](../04-quality/L05-TECHNICAL-REVIEW-001.md) v0.1.0 returned REQUEST CHANGES for TDR v0.1.1. F-01 and F-02 are addressed at the design-specification level in NLA-L05-TDR-001 v0.1.2: participating PostgREST RPC wrappers are required to be VOLATILE with separate internal SQL commands, and one `clock_timestamp()` audience-evaluation instant is captured immediately after L05. NRL-T11/T12 and TC-NOTIF-052/053 specify adversarial verification; all remain PLANNED / NOT EXECUTED. Function metadata, actual authenticated RPC snapshot behavior, exact effective-time domain approval and runtime evidence are still absent, so F-01/F-02 remain OPEN pending evidence. F-03/F-04 (complete source-path and eligibility-writer matrices), F-05 (post-transition audience semantics), F-06 (remaining traceability synchronization) and F-07 (measured performance envelope) remain open. L05 remains a candidate only; resolver certification 0/40, application lock certification 0/50, global graph NOT PROVEN acyclic, candidate snapshot relation NOT ADMITTED, G9 NOT READY and G10 NOT ACTIVE. No implementation, SQL, migration, grant, RLS or runtime test was performed or authorized.
+
+
+### L05 source-event path mapping — 2026-11-24
+
+[L05-SOURCE-MAP-001](../02-architecture/L05-SOURCE-EVENT-PATH-MAPPING-001.md) v0.1.0 maps all 40 canonical event declarations, event-producing transaction boundaries, existing candidate lock paths and the proposed L05 prefix. This closes the documentation inventory gap for a single source-event mapping artifact only. It does not normalize existing command lock orders or prove all event-producing function/finalizer paths. CMD-012/013, CMD-023–032 and CMD-035–040 retain transaction/order issues; CMD-035 transaction/savepoint choice and CMD-036–040 finalizer paths remain open. Resolver paths remain 0/40 certified; application lock certification 0/50; L05 unadmitted; graph acyclicity NOT PROVEN; G9 NOT READY; G10 NOT ACTIVE.
