@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.22
+**Version:** 0.8.23
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -525,3 +525,12 @@ CMD-052 must consume only the immutable event-time candidate set; CMD-054 create
 **New critical lock-graph finding:** candidate snapshot and inbox writes may trigger implicit FK KEY SHARE locks against app_users, project/session/location and assignment rows. If these occur after L30/L50/L55 source locks or after queue/policy locks, they may invert against L15/L16/L17 revocation paths. No candidate rank is approved. LOCK-MANIFEST-001 v0.4.26 §7.6 and LOCK-GRAPH-001 v0.4.19 §27 record the unresolved edges and LG-41..45 adversarial tests. RAID R-037 and RTM NOTIF-015 track this as OPEN — CRITICAL.
 
 QA v0.4.2 adds TC-NOTIF-030..040, TC-RLS-024-049 and TC-FN-SEC-025-070..071; all PLANNED / NOT EXECUTED. No lock mode, relation, grant, function, provider, migration or implementation is approved by this reconciliation. G9 NOT READY; G10 NOT ACTIVE; application lock certification remains 0/50.
+
+
+## Notification source-event producer lock inventory — 2026-11-24
+
+LOCK-MANIFEST-001 v0.4.27 §7.7 maps 40/40 CMD-001–040 event declarations to candidate lock paths. NLA-001 v0.1.5 §17 and LOCK-GRAPH-001 v0.4.20 §28 reconcile producer transaction boundaries: CMD-001–034 command transactions; CMD-035 operation-level sync events; CMD-036 renderer finalizer; CMD-037 print sequence transaction; CMD-038 per-item print finalizer; CMD-039 verified Storage/document finalizer; CMD-040 attendance verification transaction.
+
+This is static producer coverage only. Recipient resolver L15/L16/L17 and scope-parent L30/L50 lock sets are not mapped for all 40 paths. Many source paths already hold higher-ranked resources before their event append. This is a potential inversion, not an observed deadlock. CMD-041..044 read-side access events are excluded pending a separately approved side-effect boundary; CMD-049..054 are excluded from notification policy matching by default to prevent recursion.
+
+QA v0.4.3 adds TC-NOTIF-041 for event-producer completeness and transaction-boundary evidence; PLANNED / NOT EXECUTED. Candidate snapshot relation/header remain NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE; application lock certification 0/50.
