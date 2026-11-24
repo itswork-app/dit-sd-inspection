@@ -1,6 +1,6 @@
 # Project, Session, Target, and Assignment Model
 
-**Status:** Draft v0.1.0 — requires Product Owner validation  
+**Status:** Draft v0.2.0 — requires Product Owner validation  
 **Package:** C — Functional and Operational Design
 
 ## 1. Core hierarchy
@@ -132,3 +132,22 @@ Changes to target, schedule, location, instrument, assignment, and team membersh
 ## Super Admin authority for team structure and staffing (PO clarification, 2026-11-24)
 
 Super Admin controls the number of teams created for the project/session and the personnel assigned to each team. Personnel must first have registered application accounts; registration does not automatically place a person on a team or grant an operational role. Super Admin approves the account and assigns role(s), permissions, scope, team membership, and the operational assignment. Users cannot self-enroll into teams or self-assign inspection work. Team size and staffing are explicit planning data and must respect the approved combined Inspector cap and session/location/instrument plan.
+
+## Product Owner decision update — closure, capacity and instrument deactivation (2026-11-24)
+
+### Closed project/session fence — LPR-04
+
+- Once a project or session is CLOSED, no new normal mutation or finalization is accepted, including child creation, assignment changes, claim acquisition/release, inspection changes, evidence/document finalization, attendance verification or worker completion that advances scoped work.
+- Closure must serialize against every child writer and asynchronous finalizer. A preflight completeness read is advisory; the closure transaction must revalidate the gates under the approved parent-fence protocol.
+- Reopening requires an explicit privileged workflow, recorded reason and audit. No ordinary transition silently reopens CLOSED state.
+- Existing work is preserved as historical evidence; no automatic deletion or mutation is implied by closure.
+
+### Inspector capacity — LPR-05 / T-14
+
+The already approved T-14 predicate remains authoritative: count distinct login-enabled accounts with an active Inspector role grant and at least one currently effective operational Inspector assignment within the governed project/session scope. Count each account once. Registration alone, pending/rejected/suspended/disabled accounts and expired role grants do not count. Team membership/assignment, role grant/revoke/expiry, account disable/suspension and capacity changes must share one serialization point whenever they can change the qualifying population. The combined 1–100 cap/default 50 and existing no-silent-deactivation rule remain unchanged.
+
+### Instrument deactivation — LPR-06
+
+Deactivation blocks new assignment selection. An already-pinned session/assignment continues to reference its exact immutable historical instrument version by default. A safety withdrawal may override continued use only through a separately authorized, reasoned and audited workflow identifying affected sessions and required operational action. Deactivation must never rewrite historical instrument snapshots.
+
+**Approval boundary:** these are PO-approved product semantics. Exact parent/child lock order, all eligibility-changing paths, safety-withdrawal authority, database enforcement and concurrency tests remain open for Engineering/Security and relevant institutional/operational owners. No implementation or tests are claimed.
