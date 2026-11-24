@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.3.4
+Version: 0.3.5
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -518,7 +518,7 @@ See [PostgreSQL Function Security & EXECUTE Grant Design](../02-architecture/POS
 
 | TC-FN-SEC-025-063 | SECURITY DEFINER owner table ownership | Global | Definer owner does not own protected application tables or inherit table-owner privileges; if an exception is approved, FORCE ROW LEVEL SECURITY and explicit threat-model evidence are required. | PASS only when ownership, role inheritance, FORCE RLS and runtime negative tests agree | PLANNED / NOT EXECUTED |
 | TC-FN-SEC-025-064 | CMD-049 `list-own-notifications` | F2 / `notification.read` | Recipient-self rows only; no resource authorization inherited from notification; exact read RPC or scoped SELECT only; anon/PUBLIC denied. | READ_OWN / DENIED_OTHER_RECIPIENT | PLANNED / NOT EXECUTED |
-| TC-FN-SEC-025-065 | CMD-050 `mark-notification-read` | F1 / `notification.read` | Exact recipient-self row, expected version and idempotent acknowledgement; no cross-recipient update; audit/read state atomicity per approved policy. | MARKED_READ / NOT_FOUND_OR_DENIED | PLANNED / NOT EXECUTED |
+| TC-FN-SEC-025-065 | CMD-050 `mark-notification-read` | F1 / `notification.read` | Exact recipient-self row; guarded set-once read_at update; no expected_version or cross-recipient update; first transition audit atomicity. | MARKED_READ / NOT_FOUND_OR_DENIED | PLANNED / NOT EXECUTED |
 | TC-FN-SEC-025-066 | CMD-051 `publish-notification-policy` | F1 / `notification.policy.manage` | Exact approved policy scope and grantor ceiling; published version immutable; no role grants inferred; policy publication and audit atomic. | PUBLISHED_IF_AUTHORIZED / DENIED_OR_STALE | PLANNED / NOT EXECUTED |
 | TC-FN-SEC-025-067 | CMD-052 `fanout-notification-outbox` | F5 / internal worker principal | No browser EXECUTE; worker identity, lease token, bounded batch and idempotent recipient/channel fan-out required; no user actor impersonation. | WORKER_ONLY / BROWSER_DENIED | PLANNED / NOT EXECUTED |
 | TC-FN-SEC-025-068 | CMD-053 `dispatch-notification-delivery` | F5 / internal delivery worker | No browser EXECUTE; provider I/O outside DB transaction; lease and attempt idempotency; ambiguous provider acceptance remains UNKNOWN; secrets/payloads redacted. | WORKER_ONLY / BROWSER_DENIED | PLANNED / NOT EXECUTED |
@@ -603,6 +603,15 @@ The read-only repository audit found no application implementation or runtime/co
 - TC-NOTIF-016: sensitive payloads, tokens and provider secrets are absent from logs/audit/attempt records.
 - TC-NOTIF-017: outbox backlog, dead-letter, retry age and provider failure metrics/alerts are observable.
 - TC-NOTIF-018: cursor pagination cannot cross recipient identity or filter scope.
+
+- TC-NOTIF-019: CMD-050 first set-once read transition emits exactly one notification.read audit event; duplicate/no-op acknowledgement emits no duplicate event.
+- TC-NOTIF-020: concurrent CMD-051 publishes compare against expected_current_version_id; stale publication is rejected, version allocation is unique and published content remains immutable.
+- TC-NOTIF-021: after CMD-052 lease expiry/reclaim, a stale worker generation cannot finalize or overwrite the current outbox result.
+- TC-NOTIF-022: partial CMD-052 fan-out retry creates no duplicate recipient inbox or channel delivery rows and does not lose the accepted outbox intent.
+- TC-NOTIF-023: INT-NOTIF-001 rejects invalid provider signature, stale callback timestamp, replayed provider event and unknown provider reference without changing delivery state.
+- TC-NOTIF-024: provider callback applies only allowlisted monotonic delivery transitions and cannot change notification read_at or source business state.
+- TC-NOTIF-025: CMD-054 uses one database UTC evaluation instant; caller-supplied evaluation_time is rejected and cannot manipulate due-ness.
+- TC-NOTIF-026: ambiguous provider acceptance remains UNKNOWN until safe reconciliation; retry does not blindly duplicate a potentially accepted send.
 
 These cases are test specifications only. No notification tests have been executed.
 
