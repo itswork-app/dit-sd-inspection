@@ -1,7 +1,7 @@
-# Lock Protocol Decision Resolution — LM-01–LM-09
+# Lock Protocol Decision Resolution — LPR-01–LPR-10
 
 **Document ID:** LOCK-PROTOCOL-DECISION-RESOLUTION-001  
-**Version:** 0.2.0  
+**Version:** 0.2.1  
 **Status:** PO product decisions LPR-02–LPR-06 APPROVED; technical lock protocol remains OPEN / NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** Candidate global lock protocol for CMD-001–054 and asynchronous finalizers  
@@ -204,3 +204,35 @@ No test, CI, SQL, migration, live database query, grant, deployment or runtime i
 ## 10. Decision update — 2026-11-24
 
 Document version 0.2.0 records the Product Owner approvals for LPR-02 through LPR-06. T-14's existing approved eligibility predicate and 1–100 combined capacity remain controlling; LPR-05 is a clarification and does not supersede them. LPR-01 and LPR-07–LPR-10 remain open. All physical lock mechanisms, exact constraints, trigger/function paths, effective privileges and adversarial concurrency evidence remain unapproved or unverified. No tests, CI, SQL, migration, live database query, grants or deployment were performed.
+
+
+## 11. Static reconciliation checkpoint — 2026-11-24
+
+This checkpoint records contradictions and incomplete paths that are visible from the current documentation set. It is a review ledger, not a technical decision and not a substitute for the LPR approvals in §6.
+
+| Area / commands | Static documentation finding | Required closure before certification | Current status |
+|---|---|---|---|
+| Parent/session fence — CMD-012/013 vs CMD-009/010/014/015 | Detailed command recipes describe session-first paths for some updates/transitions, while the candidate global protocol requires parent-before-child fencing. The complete child-writer set is not evidenced as exhaustive. | Engineering/Security must approve one parent/session order, exact lock modes, all closure blockers and every child/worker finalizer path; update each affected command manifest consistently. | OPEN |
+| Canonical unit lifecycle — CMD-022–027 | Source recipes disagree on relative order among canonical identity, project, unit, association, assignment, conflict and claim resources. The command catalogue and lock manifest do not express one identical CMD-026 sequence. | Approve one canonical identity arbitration primitive and one total resource order; reconcile CMD-022–027 catalogue, detailed reviews, manifest, constraints and conflict workflow. | OPEN |
+| Inspection aggregate — CMD-028–032 | Aggregate-first source recipes are not yet reconciled with parent, claim, association and assignment fencing. Claim expiry/takeover and inspection finalization must not authorize stale work. | Approve one shared order and exact CAS/revision semantics for save, submit, return, approve and reopen; prove all terminal decisions and claim transitions are serialized. | OPEN |
+| Offline synchronization — CMD-035 | The source permits either short per-operation transactions or savepoints, but the atomicity and failure model is not selected. | Decide batch envelope semantics, operation commit boundaries, deterministic multi-inspection ordering, replay behavior and partial-result durability. | OPEN |
+| Evidence/document finalizers — CMD-033/034/036 | External Storage/rendering must occur outside DB locks, but the physical intent, immutable source binding, lease generation, worker identity and finalization fence are not verified. | Approve intent/object identity, checksum/metadata verification, source-version revalidation, worker principal/ACL, lease fencing, compensation and orphan reconciliation. | OPEN |
+| Print sequencing — CMD-037/038 | Per-document sequence allocation is proposed, but the physical allocator, durable batch item identity, retry boundary and partial recovery contract remain incomplete. | Approve sequence serialization/uniqueness, batch item manifest, idempotency identity, lease/recovery behavior and event cardinality. | OPEN |
+| Attendance — CMD-039/040 | Upload/replacement and verification are separate, but immutable document version binding, aggregate version token, institutional authority and uploader/verifier separation are not closed. | Obtain institutional verification/SoD authority and approve the physical version, replacement, verify fence and audit contract. | BLOCKED_BY_INSTITUTIONAL_AUTHORITY |
+| Notification workers/callbacks — CMD-049–054 | Outbox, fan-out, dispatch and escalation paths are described, but worker identities, lease fencing, callback trust, provider idempotency and effective ACLs are not verified. | Security/Operations/provider owner must approve worker principals, exact privileges, lease-generation fencing, callback authentication and ambiguous provider-outcome reconciliation. | OPEN |
+| Implicit database edges — CMD-001–054 | Documentation does not establish actual FK checks, unique-index arbitration, triggers, helper-function calls, row-lock modes or effective privilege/RLS behavior. | Inspect the authorized target schema and deployed function/trigger/ACL inventory; produce a complete effective lock/call graph tied to the exact schema head. | NOT VERIFIED |
+| Adversarial evidence — CMD-001–054 and workers | LG-01–LG-41 are planned scenarios only. No deterministic concurrency execution or deadlock diagnostics are recorded. | Run the approved suite in an authorized isolated environment; retain fixtures, barriers, isolation level, SQLSTATE/lock diagnostics and invariant snapshots. | NOT EXECUTED |
+
+### 11.1 Reconciliation rules
+
+1. Do not resolve a contradiction by silently preferring the candidate rank table; it remains subject to LPR-01 and technical approval.
+2. Do not infer physical lock behavior from logical labels such as L20/L30/L50 or from a proposed unique constraint.
+3. A unique index, foreign-key check, trigger, helper function or worker can add an effective lock edge; each must be represented after physical inspection.
+4. A command is not lock-complete merely because its logical operation appears in the 54-row inventory.
+5. Keep institutional blockers distinct from technical blockers. Engineering cannot approve attendance authority, retention/legal hold or provider ownership on behalf of the institution.
+6. Update the canonical command catalogue, detailed review, lock manifest, global graph, QA plan and DGA register together only after the relevant authority has approved the decision.
+7. No row in this checkpoint is certified complete; all tests remain PLANNED / NOT EXECUTED unless a separate reproducible evidence record is attached.
+
+## 12. Change history
+
+- **0.2.1 — 2026-11-24:** Corrected the document heading to reference the actual LPR-01–LPR-10 decision identifiers; added a static reconciliation checkpoint for parent/session ordering, unit/claim lifecycle, inspection/sync, external finalizers, print, attendance, notification workers, implicit database edges and adversarial evidence. No technical lock decision was approved and no implementation authority changed.
