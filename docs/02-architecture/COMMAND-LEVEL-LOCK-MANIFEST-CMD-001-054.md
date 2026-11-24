@@ -609,3 +609,8 @@ Before any notification snapshot relation or lock rank is admitted:
 ## 7.9 Product Owner candidate selection — 2026-11-24
 
 PO has selected Option A, the global transaction-scoped audience guard (candidate L05), as the primary mechanism for technical approval review. See [NLA-RESOLVER-LOCK-001 v0.1.6](NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) §11. Option B SERIALIZABLE remains an alternative only if L05 is rejected or shown infeasible; do not mix mechanisms without a new reviewed design. This does not admit L05 as a canonical rank or authorize a concrete lock primitive, SQL, migration or implementation. Engineering/Database/Security approval, complete writer participation, FK/trigger/helper graph, timeout/retry and contention analysis remain OPEN. All 40 source resolver paths remain uncertified; application lock certification 0/50; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 7.10 L05 technical protocol proposal — 2026-11-24
+
+[NLA-L05-TDR-001 v0.1.0](NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) proposes `pg_advisory_xact_lock(int,int)` with one reserved global key pair, READ COMMITTED and separate lock/read statements. It defines mandatory participation for all eligibility-changing writers including CMD-051, timeout/retry boundaries, FK/unique/trigger/helper review and NRL-T01..T10. Key constants, transaction isolation in deployed paths, command-level writer mapping, timeout/retry values and audience/performance bounds remain TBD. This proposal does not admit L05 or certify any resolver path. 0/40 resolver-certified; 0/50 application lock-certified.
