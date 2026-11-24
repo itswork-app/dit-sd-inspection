@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.10  
+**Version:** 0.1.11  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -323,3 +323,12 @@ The POQ-04 product-decision dependency is resolved, but static review identifies
 **R-037 update:** POQ-04 does not close the concurrency risk. Resolver certification remains 0/40; application lock certification 0/50; global graph acyclicity NOT PROVEN; candidate snapshot relation/header NOT ADMITTED. Selector-to-column dependency mapping is now an explicit prerequisite to complete the physical writer inventory and F-04 closure.
 
 QA v0.4.9 adds TC-NOTIF-060..064; TC-NOTIF-055..064 all remain PLANNED / NOT EXECUTED. R-037 remains OPEN — CRITICAL; D-026 remains OPEN — BLOCKING. G9 NOT READY; G10 NOT ACTIVE. No implementation, SQL, migration, grants, RLS, runtime test or deployment is authorized by this update.
+
+
+## D-026 / R-037 selector registry and dispatch profile update — 2026-11-24
+
+TDR v0.1.8 proposes a constrained selector grammar and event-specific dispatch matrix. These are candidate specifications only. New dependency is an exact event-to-selector registry: the CMD source map is not sufficient because several commands declare alternative or conditional event types. No composite event may be enabled by wildcard or prefix. Each exact token needs source transaction, grammar version, allowed clauses, trusted participant mapping, scope binding, dependency list and dispatch profile.
+
+The eight-clause maximum is provisional and requires Engineering/Operations resource validation plus Security/PO approval. Role-key and scope-binding references are not yet reconciled to canonical SSOT registries. Transition dispatch exceptions for role revoke, assignment-member end and project/session close require explicit Security approval and reconciliation with inbox/source-resource RLS.
+
+D-026 remains OPEN — BLOCKING. R-037 remains OPEN — CRITICAL. Selector dependency universe and complete writer inventory remain unproven; resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED. TC-NOTIF-055..070 remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE.
