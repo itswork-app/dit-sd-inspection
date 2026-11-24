@@ -61,7 +61,7 @@ Auth mapping: `app_users.auth_user_id` references `auth.users(id)`. Do not store
 | `target_plans` | `id`, `project_id`, `version`, `status` | Unique `(project_id, version)`; published plans immutable |
 | `target_allocations` | `id`, `target_plan_id`, `assignment_id`, `target_date`, `quantity` | Nonnegative integer quantity; unique allocation key as defined by target dimension; never rewrites actual activity |
 
-**Inspector capacity counting predicate remains a Product Owner confirmation blocker.** The policy says distinct active Inspector accounts, not assignment rows. The implementation must choose whether the counted set is (a) approved + active accounts with an active Inspector role grant, or (b) those accounts additionally assigned to an active project. Do not ship either interpretation silently. Whichever is approved must be counted once globally for the project across both locations and enforced atomically during account/role/assignment activation and cap changes.
+**Superseded by T-14 PO APPROVED option A (2026-11-24).** Count distinct enabled login accounts with an active Inspector role grant and at least one currently effective operational Inspector assignment in the governed project/session scope. Count each account once across roles and assignments; exclude pending, rejected, suspended, disabled and expired-role accounts. Enforce the combined cap atomically across both locations (1–100, default 50); reject a reduction below the current qualifying count rather than silently deactivating accounts. See the T-14 decision block below.
 
 ### 3.3 Extensible instrument catalogue and configuration
 
@@ -250,7 +250,7 @@ Every evidence record must reference the exact immutable inspection revision and
 - Each operational assignment/session references one published version. New publication does not automatically alter existing assignments or historical inspection revisions. Rebinding/migration of an existing assignment is not implied by T-17 and requires a separately specified, authorized workflow.
 - `published_by`, publication time, version number, schema version, change summary and configuration snapshot/hash must be retained. Database-level constraints/triggers and command authorization must prevent direct browser mutation and post-publication edits.
 
-**T-16 dependency:** canonical unit identity is instrument-type scoped across projects, while project association and inspection access remain explicit and scoped. Final association/FK and claim uniqueness semantics must be reconciled before any migration. T-17 does not resolve that schema dependency. No migration or test execution is claimed.
+**T-16 dependency status (updated 2026-11-24):** canonical unit/project association, composite FK and global claim semantics are now specified in the reconciliation block below. The Product Owner's uniqueness decision is approved; the relational design still requires technical review and institution-approved serial normalization/exception policy before migration. No migration or test execution is claimed.
 
 
 ## T-18 database privilege alignment (PO APPROVED option A, 2026-11-24)
