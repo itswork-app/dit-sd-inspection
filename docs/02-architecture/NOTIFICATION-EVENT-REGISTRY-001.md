@@ -1,8 +1,8 @@
 # Notification Event Registry — PO-Approved Specification Candidates
 
 **Document ID:** NLA-EVENT-REGISTRY-001  
-**Version:** 0.1.0  
-**Status:** DRAFT — PO INTENT APPROVED FOR SPECIFICATION/REVIEW ONLY; ALL ROWS UNRESOLVED / NOT ENABLED  
+**Version:** 0.1.1  
+**Status:** DRAFT — PO INTENT APPROVED FOR SPECIFICATION/REVIEW ONLY; ALL ROWS UNRESOLVED / NOT ENABLED; NREG-001/002 PARTIAL STATIC REVIEW ONLY  
 **Date:** 2026-11-24  
 **Branch:** `docs/notification-resolver-lock-closure`  
 **Authority:** PRD-001, Decision Register PO event-candidate decision (2026-11-24), NLA-EVENT-TRIAGE-001 v0.1.1, CMD source-event map. This document does not supersede them.
@@ -23,7 +23,13 @@ All rows are deliberately initialized as:
 
 No physical event field, participant ID, role ID, scope column, selector expression, channel or dispatch predicate is inferred here. Conceptual workflow actors below are review questions only, not recipient mappings.
 
-## 2. Approved candidate inventory
+## 2. CMD-002/003 technical review checkpoint
+
+NREG-001 (`account.approved`) and NREG-002 (`account.rejected`) received a partial static technical reconciliation in [NLA-EVENT-TECH-RECON-001 v0.1.0](NOTIFICATION-EVENT-REGISTRY-TECHNICAL-RECONCILIATION-001.md). The command-level candidate producer transactions and proposed source objects are identified, but the deployed producer, canonical event envelope/version, participant projection, account-state predicate split, decision uniqueness, complete account-writer inventory, L05/L10 order, and event/outbox/snapshot deduplication remain unresolved. This is not technical approval. Both rows remain `UNRESOLVED / NOT ENABLED`; no selector, recipient, channel, dispatch profile, schema or implementation is admitted.
+
+For these two rows only, `technical_review_status = PARTIAL_STATIC_REVIEW`; all other registry rows remain `NOT_REVIEWED`. The registry's publication status remains `NOT_ENABLED` for all eleven rows.
+
+## 3. Approved candidate inventory
 
 | Registry ID | Source CMD | Candidate event token | PO-approved purpose boundary | Conceptual recipient question (not a mapping) | Contract / dedup issue | Status |
 |---|---:|---|---|---|---|---|
@@ -39,7 +45,7 @@ No physical event field, participant ID, role ID, scope column, selector express
 | NREG-010 | CMD-031 | `inspection.approved` | Notify the responsible inspection workflow about committed approval | Which Inspector principal is selected by the approved event contract? | Exact approved revision and responsible Inspector mapping unresolved | UNRESOLVED / NOT ENABLED |
 | NREG-011 | CMD-032 | `inspection.reopened` | Notify scoped operational participants about authorized reopening | Who owns the next action under the approved event contract? | Reopening authority, next-action owner and assignment mapping unresolved | UNRESOLVED / NOT ENABLED |
 
-## 3. Shared invariants
+## 4. Shared invariants
 
 1. POQ-01 and POQ-04 are binding: resolve an immutable event-time candidate set against serialized pre-mutation state at one captured `audience_evaluated_at`; include actor/target/affected member only if the exact approved selector selects them; commit source mutation, canonical event and candidate snapshot atomically; dispatch-time checks may suppress but never widen; retries reuse the same candidate set/checkpoint.
 2. Event tokens must be exact canonical tokens. No wildcard, prefix match, slash alternatives, generic command token or arbitrary JSON/SQL selector.
@@ -52,7 +58,7 @@ No physical event field, participant ID, role ID, scope column, selector express
 9. Do not include evidence bytes, permanent evidence URLs, JWTs, provider secrets or sensitive finding payloads.
 10. No checklist/photo-slot completion event or evidence-completeness rule is introduced for IFP or Standing Bracket.
 
-## 4. Per-row admission checklist
+## 5. Per-row admission checklist
 
 Each row must remain NOT ENABLED until all applicable evidence is supplied and approved:
 
