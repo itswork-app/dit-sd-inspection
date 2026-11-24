@@ -114,6 +114,8 @@ Reference: https://www.postgresql.org/docs/current/functions-datetime.html
 
 All rows below are in-scope for the guard unless a static proof shows the mutation cannot affect any enabled selector. The final command-ID mapping is a mandatory approval artifact; this category list is not a substitute for that matrix.
 
+See [NLA-L05-WRITER-MATRIX-001](L05-ELIGIBILITY-WRITER-PARTICIPATION-MATRIX-001.md) v0.1.0 for the current static command/non-command writer inventory. That artifact is intentionally PARTIAL: selector dependency grammar, deployed function/trigger/job inventory, direct-DML bypass evidence and actual writer ownership remain unknown. It does not close the complete-writer requirement.
+
 | Writer class | Required behavior |
 |---|---|
 | Account approval/rejection, suspension, disablement, reactivation | Acquire L05 before app_users/account eligibility locks and mutation |
