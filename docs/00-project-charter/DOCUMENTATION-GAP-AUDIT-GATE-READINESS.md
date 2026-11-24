@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.77
+**Version:** 1.11.78
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -792,3 +792,10 @@ This adds detail to DGA-B13 but does not close it. Account approval/rejection an
 NLA-EVENT-TECH-RECON-001 v0.1.1 records a partial static review of NREG-003 `role.revoked`. The CMD-005 source transaction, proposed `user_roles` mutation and POQ-04 pre-revoke snapshot/post-revoke suppression semantics are identified. The event participant projection, canonical event envelope/version, role revocation state/effective-time contract, `expected_version` versus absent physical `user_roles.row_version`, last-admin/recovery and grantor-ceiling policy, conditional T-14 effect, L05/L10 order, and non-command expiry/renewal/delegation/import/repair writer coverage remain unresolved.
 
 NREG-003 is PARTIAL STATIC REVIEW — UNRESOLVED / NOT ENABLED. RTM-001 v0.1.15 adds NOTIF-026/027; QA Catalogue v0.5.5 adds TC-NOTIF-077/078, all PLANNED / NOT EXECUTED. F-05/F-04/F-03/F-07 remain OPEN; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+### CMD-010/013 project/session closure event reconciliation — 2026-11-24
+
+NLA-EVENT-TECH-RECON-001 v0.1.2 records partial static review of NREG-004 `project.closed` and NREG-005 exact final `session.closed`. The final committed producer boundaries and POQ-04 pre-close snapshot/post-close suppression semantics are identified. The closure blocker graph, project/session physical version tokens, complete child-writer/finalizer inventory, compatible parent-first lock order, exact participant/scope projection, event-specific closure dispatch and snapshot/outbox uniqueness remain unresolved. `session.close_requested` remains excluded from NREG-005.
+
+RTM-001 v0.1.16 adds NOTIF-028..030; QA Catalogue v0.5.6 adds TC-NOTIF-079..081, all PLANNED / NOT EXECUTED. DGA-B14 closure fence remains OPEN; F-05/F-04/F-03/F-07 remain OPEN; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
