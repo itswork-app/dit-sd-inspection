@@ -1,8 +1,8 @@
 # Notification Event Registry — Technical Reconciliation
 
 **Document ID:** NLA-EVENT-TECH-RECON-001  
-**Version:** 0.1.3  
-**Status:** STATIC TECHNICAL RECONCILIATION — PARTIAL; CMD-002/003/005/010/013/014/015 REVIEWED, ALL PARTIAL / UNRESOLVED / NOT ENABLED  
+**Version:** 0.1.4  
+**Status:** STATIC TECHNICAL RECONCILIATION — PARTIAL; CMD-002/003/005/010/013/014/015/029/030 REVIEWED, ALL PARTIAL / UNRESOLVED / NOT ENABLED  
 **Date:** 2026-11-24  
 **Branch:** `docs/notification-resolver-lock-closure`  
 **Scope:** First technical pass for NREG-001 (`account.approved`) and NREG-002 (`account.rejected`)  
@@ -14,7 +14,7 @@ This document records a static, evidence-bounded technical pass over the first t
 
 The following remain prohibited until G10 activation: source code, SQL, migrations, grants/revokes, RLS changes, live database operations, provider setup, deployment and production/staging mutation. No event is enabled by this document.
 
-The registry's seven status dimensions remain controlling. All seven reviewed rows remain:
+The registry's seven status dimensions remain controlling. All nine reviewed rows remain:
 
 - PO intent: `APPROVED_FOR_SPECIFICATION_ONLY`
 - Canonical contract: `UNRESOLVED`
@@ -480,3 +480,100 @@ The source command is all-or-nothing and idempotent at the command level, but ex
 - Tests: PLANNED / NOT EXECUTED. G9 NOT READY. G10 NOT ACTIVE.
 
 **Disposition:** Continue with CMD-029 and CMD-030 next. CMD-029 has a dual source declaration (`inspection.submitted` and `inspection_revision.created`) and requires exact one-notice dedup semantics; CMD-030 requires exact assigned-Inspector mapping. Both are PO-approved candidates only.
+
+
+## 22. Reconciliation findings — CMD-029 / NREG-008
+
+### 22.1 Producer and transaction boundary
+
+**Static candidate:** CMD-029 `submit-inspection` is the producer path for the single user-facing notification intent `inspection.submitted`. The source declaration also includes `inspection_revision.created`, a related immutable revision fact. The PO-approved candidate is `inspection.submitted` only; the revision-created fact is not a second approved notice.
+
+The source command transaction validates the active claim/assignment/association, required persisted responses and finalized evidence, creates an immutable submitted revision, advances the inspection aggregate, appends the submission/revision events and audit, and persists idempotency atomically. If the notification candidate is later enabled, its outbox and immutable candidate snapshot must be included in the same source transaction. The exact event cardinality and whether both facts reside in `audit_events` or separate domain-event storage remain unresolved.
+
+### 22.2 Candidate source objects and integrity
+
+Proposed reads include `inspections`, `unit_claims`, `unit_project_associations`, `operational_assignments`, `assignment_members`, pinned `instrument_versions`, checklist/specification definitions and responses, evidence slot definitions/assets, `sync_batches` and idempotency. Writes include inspection status/current revision/row_version, append-only `inspection_revisions`, `inspection_events`, idempotency and audit.
+
+The submitted revision is immutable and contains the exact pinned instrument version, canonical payload snapshot and hash. Submission does not auto-approve, assign a Reviewer, generate a PDF or mutate assignment/association/unit history. A pending upload intent is not finalized evidence; unresolved sync conflicts block submission.
+
+### 22.3 Candidate lock path and F-03/F-04 dependency
+
+The normalized candidate order is L00 → L05 → L30 project/session/assignment context → L60 unit → L70 association → L80 active claim → L90 inspection → L100 evidence/response snapshot inputs → L110 append-only facts. This is a candidate order only. The source-event path map and earlier source manifest place the inspection aggregate before claim/association/assignment dependencies, which conflicts with the normalized parent-first order. That conflict must be resolved before any path is certified; inserting L05 at the front does not repair it.
+
+The selector dependency universe is not frozen. If the notification selector depends on assignment membership, reviewer assignment, inspection state or project/session scope, each referenced table/column and every writer must be included in F-04. Exact evidence-object verification, trigger/FK edges, snapshot canonicalization and lock modes remain open.
+
+### 22.4 Recipient, event token and deduplication
+
+The conceptual recipient is the Reviewer assigned to the submitted inspection. The physical schema and command review do not identify an authoritative Reviewer-assignment relation or exact participant field. Do not infer Reviewer eligibility from Super Admin, project membership, generic `assignment_members` or a role title. A notification selector must bind to an approved reviewer-assignment source and the exact submitted revision/inspection scope.
+
+The two source facts must not become two notices. The registry admits only `inspection.submitted`; `inspection_revision.created` remains a related source fact for provenance/correlation. The exact canonical event ID, revision reference, dedup key and outbox policy pin are unresolved. A replay or duplicate submission must not create a second submitted revision or a second notification snapshot.
+
+| Registry ID | Event | Producer path evidence | Participant / selector | Dedup / transaction | Technical disposition |
+|---|---|---|---|---|---|
+| NREG-008 | `inspection.submitted` | CMD-029 source transaction and immutable revision creation identified statically; deployed producer/event envelope not proven | Assigned Reviewer is conceptual only; authoritative assignment source and participant projection absent | Submission + revision facts atomic; one-notice distinction explicit; exact event ID/dedup and snapshot key unresolved | **PARTIAL STATIC REVIEW — UNRESOLVED / NOT ENABLED** |
+
+## 23. Reconciliation findings — CMD-030 / NREG-009
+
+### 23.1 Producer and transaction boundary
+
+**Static candidate:** CMD-030 `return-inspection` is the source command path for `inspection.returned_for_correction`. The command appends a terminal RETURN decision for the exact current submitted revision, updates the inspection lifecycle state/version, appends inspection/audit events and persists idempotency atomically. It must not mutate the submitted revision snapshot, response rows or evidence identity.
+
+The exact deployed producer, canonical event envelope/schema version and source event identity are not proven. A duplicate return on the same revision is a state conflict, not a second decision or notification.
+
+### 23.2 Candidate source objects and reviewer/Inspector identity
+
+Proposed reads: `inspections`, `inspection_revisions`, `review_events`, reviewer permission/scope, reviewer assignment source (unresolved) and idempotency. Proposed writes: append-only `review_events`, inspection state/row_version, append-only `inspection_events`, idempotency and audit. The review event proposal contains revision ID, reviewer ID, decision, reason and creation time; it does not identify an assignment ID, review round or decision sequence.
+
+The conceptual notification recipient is the responsible Inspector for the returned revision. The stored revision author may be a relevant trusted identity, but the approved assignment-to-Inspector mapping and rule for whether author equals current responsible Inspector are not established. Do not substitute the reviewer, Super Admin, generic assignment member or role title. The exact Inspector participant projection and current assignment scope require approval.
+
+### 23.3 Candidate lock path, SoD and decision uniqueness
+
+Normalized candidate order: L00 → L05 → L30 project/session/assignment/reviewer-authority context → L60 unit → L70 association only if required for current review eligibility → L90 inspection → L100 target revision/review-decision key → L110 append-only facts. This is not certified; the source command review's inspection-first path conflicts with the normalized parent-first order. Do not add a lower-rank parent/association lock after taking the inspection lock.
+
+The reviewer must be the currently assigned reviewer for the exact inspection scope; reviewer != revision author is mandatory, including users holding both Inspector and Reviewer permissions. The physical review model lacks an explicit reviewer-assignment ID, decision sequence or review-round key. Exactly one terminal review decision per revision must be enforced; approve-vs-return must serialize on the inspection aggregate. The source event and candidate snapshot must commit atomically with the return transition.
+
+### 23.4 Recipient, selector and dispatch
+
+Only the exact approved selector may select the responsible Inspector. No participant is appended implicitly. Dispatch must preserve the captured event-time candidate set; current account/channel/consent/security and approved current-scope checks may suppress but never widen. A notification does not expose the return reason or protected evidence unless the approved privacy and message projection explicitly permits it; source-resource access remains independently authorized.
+
+### 23.5 Deduplication and admission
+
+One successful RETURN decision for the exact current revision may produce one `inspection.returned_for_correction` source fact and one immutable candidate snapshot. Same-key replay returns the prior outcome; distinct-key duplicate return is rejected. The exact unique decision key, review round identity, event ID and outbox/snapshot dedup remain unresolved.
+
+| Registry ID | Event | Producer path evidence | Participant / selector | Dedup / transaction | Technical disposition |
+|---|---|---|---|---|---|
+| NREG-009 | `inspection.returned_for_correction` | CMD-030 return decision transaction identified statically; deployed producer/event envelope not proven | Responsible Inspector is conceptual only; author/current-assignment mapping and reviewer-assignment source unresolved | One terminal RETURN per revision proposed; exact decision uniqueness, event ID and snapshot dedup unresolved | **PARTIAL STATIC REVIEW — UNRESOLVED / NOT ENABLED** |
+
+## 24. Inspection-event cross-command blockers
+
+| ID | Finding | Impact | Required evidence / owner |
+|---|---|---|---|
+| NER-TR-29 | CMD-029 declares both `inspection.submitted` and `inspection_revision.created` | Duplicate notices or incorrect source-event identity | Engineering + Database: canonical event cardinality/storage mapping; only `inspection.submitted` is the approved notice candidate |
+| NER-TR-30 | Reviewer assignment source is not concretely physicalized | No trusted assigned-Reviewer recipient can be resolved for submission | PO + Engineering + Security + Database: explicit reviewer assignment entity/relationship, scope and effective-time mapping |
+| NER-TR-31 | CMD-029 source lock order inspection-first conflicts with normalized parent/claim/assignment order | Deadlock or audience snapshot race; resolver cannot be certified | Engineering + Database + Security: canonical global order and full opposing transaction graph |
+| NER-TR-32 | CMD-030 review event lacks assignment ID, review round and decision sequence | Multiple terminal decisions or ambiguous review ownership | Database + Engineering: exact unique terminal-decision key and reviewer assignment provenance |
+| NER-TR-33 | Inspector recipient mapping from revision author to currently responsible assigned Inspector is not approved | Notice may target stale author or wrong assignment member | PO + Engineering + Security: exact author/current-member semantics and event participant projection |
+| NER-TR-34 | Reviewer != author and current reviewer assignment checks are not backed by a physical assignment source | SoD and review authorization cannot be proven | Security + Database: reviewer assignment, current scope, reviewer/author identity and ACL evidence |
+| NER-TR-35 | Evidence/response snapshot, claim, association and inspection locks/FKs are not reconciled | Event transaction and L05 audience resolution may invert lock order | Engineering + Database: full FK/trigger/helper graph and canonical order |
+
+## 25. Evidence required to close CMD-029/030
+
+1. Exact event schema/version and transaction identity for `inspection.submitted`, with `inspection_revision.created` explicitly treated as a related non-notification fact unless separately approved.
+2. Approved physical Reviewer assignment source, scope/effective-time semantics and exact participant projection for NREG-008.
+3. Approved current responsible-Inspector mapping for NREG-009, including whether revision author and current assignment member must match.
+4. Exact physical review-decision unique key/review round and reviewer-assignment ID; enforce one terminal decision per revision and approve-vs-return serialization.
+5. Canonical lock order across project/session/assignment/unit/association/claim/inspection/evidence/revision and every writer; include implicit FK/trigger/helper edges.
+6. Approved selector dependencies and complete F-04 writer map for assignment, review authority, inspection, claim, association and evidence state.
+7. Atomic source mutation + revision/review facts + event + audit + idempotency + outbox + complete immutable candidate snapshot proof at one captured instant.
+8. Exact event/snapshot dedup keys, no duplicate submission/return notice, and planned negative tests for wrong Reviewer/Inspector, stale revision, SoD, replay and lock inversion. Execute only after G10 activation.
+
+## 26. Updated gate and work status
+
+- CMD-002/003/005/010/013/014/015/029/030: partial static producer/transaction review completed; technical admission remains OPEN.
+- NREG-001..009: PARTIAL STATIC REVIEW; canonical contract, recipient mapping, selector and dispatch profile UNRESOLVED; NOT ENABLED.
+- L05, parent/claim/assignment/inspection lock order: candidate proposals only; not technically approved.
+- Reviewer assignment and responsible-Inspector mapping: NOT ADMITTED.
+- Resolver certification: 0/40. Application lock certification: 0/50. Global lock graph NOT PROVEN ACYCLIC.
+- Candidate snapshot relation/header NOT ADMITTED. Tests PLANNED / NOT EXECUTED. G9 NOT READY. G10 NOT ACTIVE.
+
+**Disposition:** Continue with CMD-031/032 next. Their event candidates are PO-approved, but review-decision and reopen semantics must be reconciled against exact current revision, SoD, active work and immutable event boundaries.
