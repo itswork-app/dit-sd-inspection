@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.80
+**Version:** 1.11.81
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -813,3 +813,12 @@ RTM-001 v0.1.17 adds NOTIF-031..034; QA Catalogue v0.5.7 adds TC-NOTIF-082..085,
 NLA-EVENT-TECH-RECON-001 v0.1.4 partially reviews NREG-008 `inspection.submitted` and NREG-009 `inspection.returned_for_correction`. CMD-029's dual source facts are distinguished: only `inspection.submitted` is the PO-approved notice candidate; `inspection_revision.created` is related provenance, not a second notice. The assigned Reviewer source is not physicalized. CMD-030's responsible Inspector mapping from revision author/current assignment is not approved, and review decision round/uniqueness plus reviewer != author SoD remain unresolved. Both source paths also retain inspection-first vs parent/claim/assignment lock-order conflicts.
 
 RTM-001 v0.1.18 adds NOTIF-035..038; QA Catalogue v0.5.8 adds TC-NOTIF-086..089, all PLANNED / NOT EXECUTED. F-05/F-04/F-03/F-07 remain OPEN; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+### CMD-031/032 approval and reopen event reconciliation — 2026-11-24
+
+NLA-EVENT-TECH-RECON-001 v0.1.6 completes a bounded partial static pass for NREG-010 `inspection.approved` and NREG-011 `inspection.reopened`. CMD-031 approval must reference the exact current immutable submitted revision; explicit persisted Reviewer assignment, exact scope and reviewer != author SoD are required. The responsible Inspector candidate cannot be inferred from reviewer, approval actor, revision author or generic assignment membership. CMD-030 return and CMD-031 approval require one terminal-decision-per-revision arbiter and shared inspection-aggregate serialization.
+
+CMD-032 reopen requires explicit approved `inspection.reopen` authority, scope and mandatory reason. The role/grant/SoD matrix and next-action owner remain unresolved. Mutable draft persistence/state vocabulary and one-active-draft invariant are not physically defined. Active claim/association/assignment and evidence/document finalizer blockers require a complete writer/lock graph. Historical approved revision, evidence, generated documents and print events must remain immutable.
+
+RTM-001 v0.1.19 adds NOTIF-039..043; QA Catalogue v0.5.9 adds TC-NOTIF-090..094, all PLANNED / NOT EXECUTED. All eleven registry rows are PARTIAL_STATIC_REVIEW only; all canonical contracts, recipient mappings, selectors and dispatch profiles remain UNRESOLVED; all events remain NOT ENABLED. F-05/F-04/F-03/F-07 remain OPEN; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
