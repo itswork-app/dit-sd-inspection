@@ -1,7 +1,7 @@
 # L05 Audience Guard — Internal Technical Review
 
 **Document ID:** L05-REVIEW-001  
-**Version:** 0.1.3  
+**Version:** 0.1.4  
 **Review status:** REQUEST CHANGES — NOT TECHNICALLY APPROVED  
 **Review date:** 2026-11-24  
 **Reviewer capacity:** Internal technical reviewer acting for Product Owner interests; not an independent human Engineering, Database, Security or institutional sign-off  
@@ -178,3 +178,10 @@ F-06 is partially closed: canonical decision and core L05 parent/TDR/manifest/gr
 F-03 has advanced but remains OPEN: CMD-031/032/033/034/037 have partial candidate lock ordering in LOCK-MANIFEST-001 §7.13; CMD-035/036/038/039/040 remain blocked. The source map is an inventory, not proof of all held locks, function/finalizer call graphs, or a cycle-free total order. F-04 remains OPEN because the writer matrix is incomplete and no physical writer is certified. F-05 transition semantics and F-07 measured contention envelope remain OPEN.
 
 Reviewer disposition remains REQUEST CHANGES — NOT TECHNICALLY APPROVED. L05 remains unadmitted; resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; NRL-T01..T13 and TC-NOTIF-001..054 PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## F-05 follow-up — POQ-04 proposal recorded (2026-11-24)
+
+The canonical Decision Register now contains POQ-04 as **PROPOSED — NOT APPROVED**. The proposal defines pre-mutation event-time candidate evaluation, exact-selector-only actor/target inclusion, and separate dispatch-time suppression for current account, role/scope and parent eligibility. It explicitly addresses role revoke, account reject/disable/suspend, assignment-member end, project/session close and self-revoke. TDR v0.1.5 records the same matrix; QA v0.4.7 adds TC-NOTIF-055..059 as PLANNED / NOT EXECUTED.
+
+This advances F-05 from an unstructured question to a reviewable PO decision package; it does **not** close F-05. PO approval or corrections are still required, followed by Security/Engineering validation of selector and suppression semantics. No implementation, database/runtime test or gate activation occurred.
