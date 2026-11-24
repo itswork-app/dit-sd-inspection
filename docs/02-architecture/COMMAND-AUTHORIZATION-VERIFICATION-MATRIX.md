@@ -1,7 +1,7 @@
 # Command Authorization Verification Matrix
 
 **Status:** Design draft — PO/security review required; not implementation authority  
-**Version:** 0.4.0  
+**Version:** 0.4.1  
 **Date:** 2026-11-24  
 **Depends on:** T-15, T-16, T-17, T-18; Canonical Permission Registry v0.2.0; RLS and Authorization Design; Privileged Command Boundary and Transaction Specification
 
@@ -49,7 +49,7 @@ Object names below are logical resource/data classes from current architecture a
 | CA-03 Role/permission grant | grant-role/revoke-role | role.manage | Grantor authority and target-role ceiling; no self-grant/elevation; T-14 capacity lock for Inspector eligibility | user_roles, permissions, role_permissions, project_capacity_settings; exact grantor policy TBD | role.*, permission.changed | 003–004 |
 | CA-04 Scope grant | grant-scope/revoke-scope | scope.manage | Explicit target principal/project/session/location/team; no self-assignment; delegation authority required | user_scope_grants, assignment_members; command-only writes | scope.changed | 005 |
 | CA-05 Project lifecycle | create/update-project; close-project | project.manage; project.close | Project-scoped closure; session, inspection, document and actual/target reconciliation gates; reason/confirmation; closure authority still open for approval | projects and related resources; dependency graph/table list TBD | project.created/updated/closed | 006–007 |
-| CA-06 Session lifecycle | create/update-session; transition-session | session.manage; session.transition | Super Admin configuration; Korlap only approved transitions in assigned scope; allowed transition graph; CLOSED terminal normally | sessions, projects; project/session RLS; command-only writes | session.* | 008 |
+| CA-06 Session lifecycle | create/update-session; transition-session | session.manage; session.transition | PO semantics: T-07 states DRAFT/ACTIVE/PAUSED/CLOSED; Korlap may activate/pause/resume/request closure only in assigned scope; Super Admin final closure after gates; CLOSED terminal in ordinary flow; reopen privileged/reasoned/audited. Exact permission grants/transition matrix remain open | sessions, projects; project/session RLS; command-only writes | session.*; CLOSE_REQUESTED action/event only | 008 |
 | CA-07 Assignment/staffing | publish-assignment/change-assignment-members | assignment.manage | Exact project/session/location/instrument; no self-assignment; overlap/staffing rules; published instrument required | operational_assignments, assignment_members; command-only writes | assignment.* | 009 |
 | CA-08 Inspector capacity | change-inspector-capacity | capacity.manage | Governed project settings; 1..100; reject below distinct enabled account + active Inspector grant + effective operational assignment count; serialize with role/assignment eligibility | project_capacity_settings, user_roles, assignment_members; one settings-row lock | capacity.limit_changed | 010 |
 | CA-09 Target planning | create/update/publish target plan/allocation | target.manage | Authorized project/session planner; published target immutable; target never mutates actuals | target_plans, target_allocations; exact RLS/planner authority TBD | target.* | 011 |
@@ -183,3 +183,9 @@ Changes to permission codes, command mappings, role grants, scope predicates, RL
 ## PostgreSQL function security and caller ACL dependency
 
 See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md) for the function class matrix, exact-signature ACL rules and 62 planned QA cases. No role/ACL inventory has been captured from live Supabase. T-18 Option A resolves the architecture selection; individual function owners, effective privileges, RLS interaction, exact EXECUTE ACLs and caller-JWT route-path evidence remain explicit PO/security implementation blockers.
+
+
+## CMD-011–020 Product Owner semantic alignment — authorization verification boundary (2026-11-24)
+
+Product semantics for CMD-011–020 are PO APPROVED. This matrix records the approved actor/action boundary where relevant; it does not approve permission codes, role-to-permission mappings, grantor ceilings, RLS predicates, PostgreSQL EXECUTE grants or implementation. CA-06 explicitly preserves the T-07 state vocabulary and prevents Korlap request authority from being interpreted as final-close or reopen authority. T-14 and T-17 remain existing controlling decisions.
+
