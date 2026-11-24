@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.68
+**Version:** 1.11.69
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -740,3 +740,10 @@ NLA-001 v0.1.13 records the dispatch, retry and audit gaps. Writer matrix v0.1.3
 ### F-05 traceability and RAID synchronization — 2026-11-24
 
 RTM-001 v0.1.11 now traces NOTIF-016..020 to F05-T1..T5 and TC-NOTIF-060..064. RAID-001 v0.1.10 updates D-026 and R-037 with the selector dependency, dispatch, retry, audit and atomicity risks. These are controlled requirements/risk records only; all associated tests remain PLANNED / NOT EXECUTED. F-05 remains OPEN; F-04 remains OPEN because selector dependency and writer inventory are incomplete. Current pointers: NLA-001 v0.1.13; NLA-L05-TDR-001 v0.1.7; writer matrix v0.1.3; QA v0.4.9; L05-REVIEW-001 v0.1.6; RTM-001 v0.1.11; RAID-001 v0.1.10. Resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+### F-05 selector grammar and dispatch profile review — 2026-11-24
+
+TDR v0.1.8 adds a bounded candidate grammar (ROLE_SCOPE and EVENT_PARTICIPANT) and an event-specific dispatch matrix. NLA-001 v0.1.14 records the registry/profile contract; writer matrix v0.1.4 records dependency intake; QA v0.5.0 adds TC-NOTIF-065..070; L05 review v0.1.7 remains REQUEST CHANGES. RTM-001 v0.1.12 adds NOTIF-021/022; RAID-001 v0.1.11 records D-026/R-037 impacts.
+
+This is a specification candidate, not an approval. Exact canonical role/scope registry identifiers, complete exact event registry, participant mappings, selector-to-column dependency map, dispatch profile sign-off, candidate scope serialization and physical writer inventory remain open. The eight-clause cap is provisional. F-05 remains OPEN; F-04 remains OPEN. TC-NOTIF-055..070 PLANNED / NOT EXECUTED; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
