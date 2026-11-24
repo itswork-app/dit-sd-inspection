@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.52
+**Version:** 1.11.53
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -611,3 +611,16 @@ TEST-CASE-CATALOG-AND-UAT v0.3.7 now allocates 14 candidate-only planned cases T
 
 
 The canonical permission registry addendum is versioned as v0.2.3. It preserves existing permission mappings and explicitly records device enrollment/revocation and template publication as unresolved authorization design, while separating document-generation request authorization from renderer workload identity. No new permission or role grant is approved.
+
+
+## CMD-041–044 physical read/export reconciliation — 2026-11-24
+
+Static reconciliation completed across CMD-041–044 Detailed Contract Review v0.1.1, Command Physical Object Crosswalk v0.1.1, Physical Database Schema v0.4.3, RLS Catalogue v0.2.4, ERD v0.3.2, Permission Registry v0.2.4, Audit Event Catalogue and QA v0.3.8.
+
+CMD-041 actual-report and CMD-042 target-report now have enumerated source read sets against existing canonical proposed tables; no materialized report table is assumed. CMD-041 remains blocked on metric dictionary, distinct counting unit, event/state period attribution, reopen/reapproval rules, Completed finalization semantics, query bounds and measured plans. CMD-042 pins one immutable published target-plan version per cursor chain; actual-progress overlay remains a PO decision.
+
+CMD-043 now has a bounded audit_events read boundary, event-specific projection and a proposed non-recursive access-event rule. Institutional reader authority, purpose taxonomy, field classification, retention, legal hold and access-append failure policy remain T-10 blockers.
+
+CMD-044 has three candidate-only object families audit_export_jobs, audit_export_manifests and audit_export_artifacts mapped across physical schema/RLS/ERD. They are NOT ADMITTED, excluded from canonical 48-table inventory and do not authorize route, worker, bucket, permission, grant or artifact creation. T-10 remains BLOCKED.
+
+QA v0.3.8 adds 18 CMD-041–044 cases; all PLANNED / NOT EXECUTED. This closes the static source-object mapping omission for CMD-041/042 and makes the CMD-044 future schema gap reviewable. It does not close T-05 metric decisions, T-10 institutional authority, query-plan evidence, live RLS/ACL, tests or certification. G9 NOT READY; G10 NOT ACTIVE; lock certification remains 0/50.
