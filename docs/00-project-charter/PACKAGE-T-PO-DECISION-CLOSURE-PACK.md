@@ -47,7 +47,7 @@ Recommendations in this pack are not approvals. Explicit Product Owner approvals
 | T-15 | Audit event policy INS-016 | PO APPROVED (A) | Append-only catalogue; atomic audit + critical mutation; fail-closed on audit failure | Blocker until implementation and institutional controls verified |
 | T-16 | Serial-number uniqueness and evidence/revision linkage | PO APPROVED (B) | Unique normalized serial within instrument type across all projects; immutable evidence-to-revision/version linkage and audited replacement | Blocker until schema, transaction and tests are reconciled |
 | T-17 | Instrument configuration governance CFG-001 | APPROVED DIRECTION; detailed controls OPEN | Declarative, versioned configuration with bounded supported field and validation types; no arbitrary code | Must be completed in design |
-| T-18 | Privileged command boundary | OPEN | All privileged mutations through narrowly scoped server-side commands with caller identity, authorization and atomic transactions | Blocker |
+| T-18 | Privileged command boundary | PO APPROVED (A) | Vercel server routes + caller-JWT PostgreSQL command functions; direct browser DML denied; atomic mutation + audit | Design reconciliation and verification blocker |
 
 ## 3. Detailed decision records
 
@@ -405,7 +405,7 @@ Security-definer functions, if required, must pin search_path, validate inputs a
 
 **Decision required:** Approve command boundary and direct-DML denial policy.
 
-**State:** OPEN; implementation blocked.
+**State:** PO APPROVED option A (2026-11-24); architecture selected. Command-specific design reconciliation and implementation remain blocked.
 
 ## 4. Recommended decision order
 
@@ -473,7 +473,7 @@ This package does not authorize:
 | T-03 | APPROVED: signature behavior configurable per report template; default none unless required | Add template configuration and PDF verification; do not hardcode a universal executive-summary signature | PO decision closed; approved template requirement still controls |
 | T-04 | APPROVED: PDF-only client report delivery in initial release | Client portal excluded from initial release; controlled PDF generation/access/distribution remains in scope | PO decision closed; later portal needs change request |
 
-PO approval does not replace institutional authorization or source evidence. T-01 through T-09 have explicit PO outcomes; T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 option B is PO APPROVED; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; the actual alternative arrangement and institutional/provider verification remain BLOCKED. T-13 is PO APPROVED option B; T-14 is PO APPROVED option A; T-15 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
+PO approval does not replace institutional authorization or source evidence. T-01 through T-09 have explicit PO outcomes; T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 option B is PO APPROVED; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; the actual alternative arrangement and institutional/provider verification remain BLOCKED. T-13 is PO APPROVED option B; T-14 is PO APPROVED option A; T-15 through T-18 have PO direction approved; implementation/design evidence and residual gates remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
 
 ## 8. Product Owner decision outcomes — T-05 through T-08 (2026-11-23)
 
@@ -483,7 +483,7 @@ PO approval does not replace institutional authorization or source evidence. T-0
 | T-07 | A — Super Admin creates/configures sessions; Korlap operates assigned sessions within granted permissions. DRAFT, ACTIVE, PAUSED, CLOSED; CLOSED terminal in ordinary flow. | PO APPROVED; reopening requires privileged permission, reason and audit. State/permission tests remain pending. |
 | T-08 | A — Korlap verifies attendance within assigned location/scope. Generate, print, upload, download and verify are separate permissions; upload never automatically verifies. | PO APPROVED; Super Admin assigns/grants verifier authority; implementation and tests remain pending. |
 
-The Product Owner explicitly approved T-05=A, T-06=A, T-07=A and T-08=A on 2026-11-23; T-09 option B was subsequently approved on 2026-11-23. T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 option B is PO APPROVED; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; the actual alternative arrangement and institutional/provider verification remain BLOCKED. T-13 is PO APPROVED option B; T-14 is PO APPROVED option A; T-15 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
+The Product Owner explicitly approved T-05=A, T-06=A, T-07=A and T-08=A on 2026-11-23; T-09 option B was subsequently approved on 2026-11-23. T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 option B is PO APPROVED; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; the actual alternative arrangement and institutional/provider verification remain BLOCKED. T-13 is PO APPROVED option B; T-14 is PO APPROVED option A; T-15 through T-18 have PO direction approved; implementation/design evidence and residual gates remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
 
 ## Package T — T-09 Product Owner decision (2026-11-23)
 
@@ -559,3 +559,19 @@ The Inspector lifecycle is ordered: a person must first register/authenticate an
 6. Audit retention, deletion/disposition, legal hold, and network metadata remain governed by T-10 and institutional records/privacy/security approvals. This decision does not invent retention periods or approve IP/network metadata collection.
 
 **Boundary:** This is Product Owner approval of the INS-016 product/technical control direction. It is not institutional approval of retention, legal hold, classification, WORM archive, network metadata, or provider capabilities. Schema, RLS, command grants, transaction behavior and tests still require detailed reconciliation and implementation evidence. No migration, code, test execution or production activation is claimed. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
+
+
+## T-18 — Privileged command boundary (PO APPROVED option A, 2026-11-24)
+
+The Product Owner approves **option A: Vercel server route + caller-JWT PostgreSQL command-function pattern** as the standard architecture for privileged and state-changing business commands.
+
+- Browser/PWA clients authenticate with Supabase Auth and submit business commands to narrowly scoped Vercel server routes; they do not directly INSERT/UPDATE/DELETE protected business, governance, publication, membership, assignment, audit or idempotency tables.
+- The route validates method, content type, payload schema/version, request size and command envelope; it verifies the Supabase caller session and forwards the caller's authenticated JWT to the corresponding narrowly scoped PostgreSQL function. The caller identity is never replaced by a service-role identity for ordinary commands.
+- PostgreSQL derives the subject from the verified JWT (auth.uid()), resolves an approved/enabled application account and checks permission, role, project/session/assignment scope, resource state and separation-of-duties rules. Actor, role and scope are never trusted from client-supplied fields.
+- The function validates the transition and all inputs, applies concurrency locks and idempotency, and commits the business mutation, canonical event and required audit event in one transaction. Audit failure or any failed invariant aborts the transaction; success is returned only after commit.
+- Database grants and RLS deny browser direct DML to protected tables. Read paths remain RLS-protected or use reviewed views. Command functions are not generic write proxies; grants are command-specific and least-privilege.
+- Any SECURITY DEFINER function requires function-by-function review, pinned search_path, qualified object references, strict input validation, minimal owner privileges and minimal EXECUTE grants. SECURITY INVOKER is preferred where feasible.
+- Service-role credentials must never be exposed to the browser and are not the default command identity. A narrowly isolated server-only exception requires a separate ADR, threat-model review, explicit approval, least privilege and audit.
+- Stable typed outcomes distinguish success, validation failure, unauthenticated, forbidden, conflict/stale state, idempotency-key reuse with a different request hash, and retryable infrastructure failure without leaking sensitive data.
+
+This approves the architecture pattern, not every individual command contract or SECURITY DEFINER exception. T-16 canonical unit/project-association reconciliation, T-17 publication controls, T-15 atomic audit, table-by-table RLS/grants, institutional privacy/provider blockers and command-specific permissions remain required design/acceptance gates. **No code, RPC, migration, deployment or test execution is authorized or claimed. Scope freeze remains NOT READY; feature implementation remains NOT AUTHORIZED.**
