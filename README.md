@@ -38,6 +38,6 @@ The [Decision Register](docs/00-project-charter/DECISION-REGISTER.md) is the ind
 
 Notification lifecycle design: [NLA-001 — Notification Lifecycle and Delivery Architecture](docs/02-architecture/NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md) documents INS-015 persistence, recipient scope, channels, retries, audit and escalation. It is a proposal pending PO/security/institutional review, not implementation authorization.
 
-See docs/00-project-charter/, docs/01-product-requirements/, docs/02-architecture/, docs/03-functional-design/, docs/03-ux/, and docs/04-quality/ for detailed specifications.
+For the complete proposed command inventory, see the [CMD-001–054 Cross-Command Reconciliation](docs/02-architecture/CMD-001-054-CROSS-COMMAND-RECONCILIATION.md) and its seven linked detailed command reviews. These are engineering proposals, not executable-contract approval. See docs/00-project-charter/, docs/01-product-requirements/, docs/02-architecture/, docs/03-functional-design/, docs/03-ux/, and docs/04-quality/ for detailed specifications.
 
 **Governance:** No application code, migrations, SQL execution, grants/revokes, live database changes, deployment, or production activation before scope freeze and separate explicit implementation authorization.
