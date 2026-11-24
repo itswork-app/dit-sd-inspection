@@ -146,10 +146,6 @@ These are planned cases only; not executed. 100 concurrent users is a load-test 
 Add/retain test coverage for: enabled account + active Inspector grant + effective assignment counts once; duplicate assignments/other roles still count once; missing/ineffective assignment does not count; pending/rejected/suspended/disabled/expired-role accounts are excluded; cross-location combined cap is enforced atomically under concurrent role/assignment changes; values 0 and above 100 are rejected; reducing cap below current qualifying count is rejected without deactivation. Test execution is not claimed by this documentation update.
 
 
-## T-14 — Inspector capacity test requirements (PO-approved 2026-11-24)
-
-Add/retain test coverage for: enabled account + active Inspector grant + effective assignment counts once; duplicate assignments/other roles still count once; missing/ineffective assignment does not count; pending/rejected/suspended/disabled/expired-role accounts are excluded; cross-location combined cap is enforced atomically under concurrent role/assignment changes; values 0 and above 100 are rejected; reducing cap below current qualifying count is rejected without deactivation. Test execution is not claimed by this documentation update.
-
 
 ## Registration-first and Super Admin staffing test requirements
 
