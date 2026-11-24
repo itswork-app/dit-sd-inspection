@@ -1,5 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
+**Document ID:** RTM-001  
+**Version:** 0.1.0  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -7,6 +9,7 @@ Purpose: Link product intent to specifications, implementation units, and verifi
 
 - **GOV:** governance and project constraints.
 - **AUTH:** authentication and account lifecycle.
+- **AUTH-LOCK:** identity/authorization serialization and lock-order requirements.
 - **RBAC:** roles, permissions, and assignment scope.
 - **SES:** project/session/location/team/target management.
 - **INS:** inspection and instrument behavior.
@@ -346,7 +349,7 @@ T-13 requires a durable batch identifier and per-document outcomes. The physical
 
 | Requirement ID | Requirement | Authority | Design reference | Verification | Status |
 |---|---|---|---|---|---|
-| AUTH-LOCK-001 | Account approval, role grant/revoke and scope grant/revoke must serialize actor/target identity and exact mutable authorization grants; actor/target rows use deterministic UUID order and grantor authority is revalidated under lock | LPR-11; Engineering + Security; PO/institution for lifecycle policy | CMD-001–010 Detailed Contract Review v0.3.4 §9; LOCK-GRAPH-001 v0.4.10; LOCK-MANIFEST-001 v0.4.13 | Approve/reject, grant/revoke, scope grant/revoke, stale grantor and target eligibility adversarial tests | CANDIDATE-NORMALIZED; TECHNICAL APPROVAL OPEN |
+| AUTH-LOCK-002 | Account approval, role grant/revoke and scope grant/revoke must serialize actor/target identity and exact mutable authorization grants; actor/target rows use deterministic UUID order and grantor authority is revalidated under lock | LPR-11; Engineering + Security; PO/institution for lifecycle policy | CMD-001–010 Detailed Contract Review v0.3.4 §9; LOCK-GRAPH-001 v0.4.10; LOCK-MANIFEST-001 v0.4.13 | Approve/reject, grant/revoke, scope grant/revoke, stale grantor and target eligibility adversarial tests | CANDIDATE-NORMALIZED; TECHNICAL APPROVAL OPEN |
 | CAPACITY-LOCK-001 | Every account/role/scope/assignment path that changes T-14 qualifying Inspector population locks the complete affected project capacity set before principal/role rows | T-14; LPR-05; Engineering + Security + PO | CMD-001–010 Detailed Contract Review v0.3.4 §9.1–9.3; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.8; TECH-RESOLUTION-LPR-001 §3.2 | Cross-command capacity race tests and post-lock affected-project-set revalidation | CANDIDATE-NORMALIZED; PREDICATE/WRITER SET OPEN |
 | PROJECT-FENCE-001 | Project update/closure serializes against every child writer/finalizer using project parent FOR NO KEY UPDATE versus child FOR SHARE candidate modes | T-06; LPR-04; Engineering/Database/Security | CMD-001–010 Detailed Contract Review §9.2; LOCK-GRAPH-001 §19; LOCK-PROTOCOL-DECISION-RESOLUTION §14 | Project close vs CMD-011–054 writer/finalizer barrier tests on exact PostgreSQL major | CANDIDATE-NORMALIZED; TECHNICAL APPROVAL OPEN |
 
@@ -360,7 +363,7 @@ T-13 requires a durable batch identifier and per-document outcomes. The physical
 |---|---|---|---|---|---|
 | RET-001 | Retention, legal hold and disposition require written institutional records/legal/privacy/security policy; no destructive action may be exposed before scope, authority, precedence and evidence lifecycle are approved | T-10; institutional records/legal/privacy/security authorities | CMD-045–048 Detailed Contract Review §4; Decision Register T-10; DGA-B04 | Policy/hold/disposition race, authorization, SoD, audit atomicity, backup/object lifecycle and legal-hold precedence tests | BLOCKED — INSTITUTIONAL APPROVAL REQUIRED |
 | INC-001 | Security incident review requires an approved incident-response owner, case scope, lifecycle, evidence handling and product-vs-external-system boundary; incident access must not grant operational privileges | Institutional security authority; T-10 | CMD-045–048 Detailed Contract Review §5 | Need-to-know, cross-scope denial, break-glass expiry/review, evidence provenance and no-business-state-mutation tests | BLOCKED — AUTHORITY / SCOPE / SCHEMA OPEN |
-| PROV-001 | Provider configuration requires documented account/billing ownership, custodians, region, plan, least-privilege access and an approved secret manager; secret material is never accepted or persisted in application commands/logs | T-12; institution/provider custodians | CMD-045–048 Detailed Contract Review §6; NLA-001 v0.1.1; DGA-B05 | Ownership/custody, secret redaction, environment isolation, rotation/revocation, webhook trust and rollback tests | BLOCKED — T-12 EVIDENCE OPEN |
+| PROV-001 | Provider configuration requires documented account/billing ownership, custodians, region, plan, least-privilege access and an approved secret manager; secret material is never accepted or persisted in application commands/logs | T-12; institution/provider custodians | CMD-045–048 Detailed Contract Review §6; NLA-001 v0.1.2; DGA-B05 | Ownership/custody, secret redaction, environment isolation, rotation/revocation, webhook trust and rollback tests | BLOCKED — T-12 EVIDENCE OPEN |
 | REL-001 | Production release authority must be enforced by approved repository/provider control-plane protections, immutable artifact provenance, required checks, environment approvals and separation of duties; no product command may bypass them | MIB-001; repository administrator; Operations/Security | CMD-045–048 Detailed Contract Review §7; DGA-B15 | Protected branch/environment, required CI, artifact digest, approver/operator SoD, deployment and recovery evidence | BLOCKED — RELEASE GOVERNANCE NOT VERIFIED |
 
 These requirements are governance/architecture traceability records, not implementation authorization. All related tests remain PLANNED / NOT EXECUTED.
@@ -378,3 +381,8 @@ These requirements are governance/architecture traceability records, not impleme
 | NOTIF-012 | Inbox reads are recipient-self only; read_at is set once; first transition emits one notification.read event; delivery and source business state remain independent | INS-015; INS-016; T-15 | NLA-001 v0.1.2 §5/8/14; CMD catalogue CMD-049/050; RLS catalogue | TC-NOTIF-005/007/019/024 | PROPOSED; RLS/AUDIT IMPLEMENTATION VERIFICATION OPEN |
 
 All notification cases TC-NOTIF-001..026 remain PLANNED / NOT EXECUTED. These requirements do not approve any route, function, worker, provider, permission grant, schema object or production activation.
+
+
+## Identifier uniqueness audit correction — 2026-11-24
+
+The final documentation audit detected a duplicate requirement identifier in the appended lock traceability section. The general authorization serialization requirement retains AUTH-LOCK-001; the detailed CMD-001–010 actor/target/grantor lock requirement is now AUTH-LOCK-002. Requirement statements and statuses are unchanged. AUTH-LOCK IDs are unique within this matrix.
