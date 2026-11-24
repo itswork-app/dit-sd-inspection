@@ -325,3 +325,25 @@ All columns, constraints, indexes, policies and functions remain proposed until 
 ## POQ-01..03 schema reconciliation — 2026-11-24
 
 The Product Owner approved: (1) a durable event-time candidate-audience snapshot/checkpoint, with dispatch-time revalidation permitted only to suppress candidates and never to widen the audience; (2) versioned per-policy elapsed/business-time SLA semantics with ELAPSED_UTC as the initial-release default and quiet hours that defer delivery only; and (3) exclusion of dismiss/archive from MVP. The physical schema must still define and review the exact snapshot/checkpoint representation, policy mode fields and constraints. A dormant dismissed_at column is not an MVP capability. All remain proposed pending Engineering/Database/Security review and G10.
+
+
+## Candidate-only physical object annex — CMD-035/036/038/039/040 (2026-11-24)
+
+**Status:** DESIGN CANDIDATES ONLY — NOT PART OF THE CANONICAL 48-TABLE INVENTORY; NOT APPROVED FOR DDL OR IMPLEMENTATION.
+
+The following candidate objects are introduced by DURABLE-OPERATION-LEDGER-AND-ARTIFACT-LIFECYCLE-PROPOSAL-001 v0.1.0 solely to make the schema gap explicit. They must not be treated as existing or approved physical tables.
+
+| Candidate object | Owning command / worker | Purpose | Admission status |
+|---|---|---|---|
+| sync_batch_operations | CMD-035 | Durable per-operation manifest, semantic hash, expected version and terminal result | NOT ADMITTED; batch partial-commit/replay contract and FK/retention open |
+| device_bindings (candidate family; final name TBD) | CMD-035 trusted device enrollment/revocation boundary | User/device binding, trust state and revocation; no private key storage | NOT ADMITTED; identity, attestation and recovery authority open |
+| document_template_versions | Privileged template publication workflow; exact command ID/permission TBD | Immutable approved template version/hash and renderer compatibility | NOT ADMITTED; product approval and template governance open |
+| document_generation_jobs | CMD-036 + internal renderer worker | Durable asynchronous generation intent, source/template identity and lease | NOT ADMITTED; source FK model and worker identity/ACL open |
+| document_generation_attempts | Internal renderer worker | Append-only sanitized attempt outcomes and output provenance | NOT ADMITTED; attempt retention and worker ACL open |
+| print_batch_items | CMD-038 | Immutable requested item manifest and stable item identity | NOT ADMITTED; request/result identity and FK design open |
+| print_batch_item_results | CMD-038 | Durable per-item outcome and retry history | NOT ADMITTED; authoritative attempt identity vs print_events open |
+| attendance_verification_events | CMD-040 | Append-only decision bound to exact attendance document version/checksum | NOT ADMITTED; institutional authority, SoD and retention open |
+
+The candidate object count above is not a revised table count. Package L's canonical inventory remains 48 proposed tables until Product, Engineering, Database, Security and institutional approvals admit a concrete model and the physical schema, RLS, permission registry, ERD, command contracts, indexes/FKs and QA catalogue are updated together.
+
+Do not add a generic polymorphic source FK, generic worker table or generic device credential store without explicit review. Do not reuse notification_outbox for document generation. Do not claim candidate names exist in a deployed database. T-10 retention/legal hold remains externally blocked.
