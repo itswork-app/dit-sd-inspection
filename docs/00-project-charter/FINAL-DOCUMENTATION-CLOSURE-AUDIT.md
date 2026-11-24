@@ -106,7 +106,7 @@ Not performed:
 - staging/production deployment, data mutation or restore drill;
 - PR merge.
 
-PR #3 remains Draft/Open. No CI success is claimed. G9 remains NOT READY. G10 remains NOT AUTHORIZED.
+PR #3 remains Draft/Open. No CI success is claimed. G9 remains NOT READY. G10 remains NOT ACTIVE.
 
 ## 8. Related source documents
 
@@ -149,7 +149,7 @@ This addendum updates current navigation only; §§1–10 remain historical evid
 **Current authority and status:**
 - Root AGENTS.md v1.2.1; MIB-001 v1.0.8; IRG-001 v1.0.2.
 - DGA-001 v1.11.27; SSOT-AUDIT-001 v0.1.4; RTM-001 v0.1.3; RAID-001 v0.1.1.
-- NLA-001 v0.1.3; CMD-049–054 Detailed Contract Review v0.1.2.
+- NLA-001 v0.1.4; CMD-049–054 Detailed Contract Review v0.1.2.
 - PostgreSQL Command Contract Catalogue v0.4.5; Physical Database Schema v0.4.2; RLS Catalogue v0.2.3; API Contracts v0.2.2.
 - QA Catalogue v0.3.6: 413 unique planned test definitions, including TC-NOTIF-001..029; all remain PLANNED / NOT EXECUTED.
 - POQ-001 decision packet v0.1.1; AUTH-001 v0.1.0; Decision Register is the canonical PO decision index.
@@ -158,7 +158,7 @@ This addendum updates current navigation only; §§1–10 remain historical evid
 
 **Remaining gate blockers:** DGA-B01..B21 remain in their individual states; notably instrument source/evidence authority (B01–B03), T-10 institutional data governance (B04), provider ownership/recovery (B05–B06), device/offline and SLO (B07–B08), permission/command/database/function security (B09–B12), notification worker/snapshot/provider/T-10 (B13), project closure/print (B14), CI/rulesets (B15), independent crosswalk review (B16), token and global lock graph/manifest/identity fencing (B17–B21). Lock progress remains 10/54 candidate-normalized and 0/54 technically approved/certified. AUTH-01..09 responses remain pending; no institutional or technical approval is recorded.
 
-No CI/workflow, application build, automated test, SQL, migration, live database/provider inspection, restore drill, UAT, deployment or merge was performed. PR #3 remains Draft/Open. G9 remains NOT READY and G10 remains NOT AUTHORIZED. The next valid step is evidence-backed closure by the accountable owners, then independent G9 review, followed by a separate explicit G10 authorization record.
+No CI/workflow, application build, automated test, SQL, migration, live database/provider inspection, restore drill, UAT, deployment or merge was performed. PR #3 remains Draft/Open. G9 remains NOT READY and G10 remains NOT ACTIVE. The next valid step is evidence-backed closure by the accountable owners, then independent G9 review, followed by a separate explicit G10 authorization record.
 
 
 ## 12. Current documentation and certification status — 2026-11-24
