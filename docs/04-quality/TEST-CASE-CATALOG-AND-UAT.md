@@ -528,3 +528,20 @@ The T-18 execution model is PO APPROVED as Option A. These additional acceptance
 | TC-EXEC-MODEL-027-011 | Idempotency/concurrency | Replays, mismatched request hashes and concurrent duplicate commands cannot duplicate state transitions or audit outcomes. | Concurrent integration test results and transaction traces. | PLANNED / NOT EXECUTED |
 | TC-EXEC-MODEL-027-012 | Read path separation | Read-only queries use SECURITY INVOKER/RLS by default and do not gain write privileges through helper functions or views. | Function/view security inventory and cross-scope read/write negative tests. | PLANNED / NOT EXECUTED |
 
+
+
+### T-19 repository runtime architecture audit verification
+
+The read-only repository audit found no application implementation or runtime/configuration artifacts on the audited refs. The following cases are BLOCKED / NOT EXECUTED until the intended application repository/branch and implementation baseline are available.
+
+| Test ID | Boundary | Assertion | Required evidence | Status |
+|---|---|---|---|---|
+| TC-REPO-AUDIT-028-001 | Repository identity | Confirm the canonical application repository and branch; determine whether this repository is intentionally documentation-only or the application source of truth. | PO-confirmed repository/branch record and tree inventory. | BLOCKED / NOT EXECUTED |
+| TC-REPO-AUDIT-028-002 | Vercel runtime | Verify framework, build configuration, route handlers, serverless runtime and preview/production isolation. | Source/config review and reproducible Vercel build/deployment evidence. | BLOCKED / NOT EXECUTED |
+| TC-REPO-AUDIT-028-003 | Supabase client separation | Verify browser and server clients are separate; server secrets are server-only and never bundled into browser assets. | Client initialization source, build artifact scan and secret-handling review. | BLOCKED / NOT EXECUTED |
+| TC-REPO-AUDIT-028-004 | Caller JWT propagation | Verify Vercel forwards the verified caller JWT unchanged to PostgREST RPC and does not substitute service_role for user commands. | End-to-end authenticated HTTP test with redacted evidence and database auth.uid() assertion. | BLOCKED / NOT EXECUTED |
+| TC-REPO-AUDIT-028-005 | Database migration inventory | Verify versioned migrations, exact SECURITY DEFINER functions, dedicated owners, search_path, table grants, RLS and exact EXECUTE ACLs. | Complete migration/source inventory reconciled with live read-only catalog inventory. | BLOCKED / NOT EXECUTED |
+| TC-REPO-AUDIT-028-006 | Route-command mapping | Verify every protected route maps to one approved command contract and does not permit client-selected function names, overloads or privileged scope. | Route/API/RPC mapping, schema validation and negative authorization tests. | BLOCKED / NOT EXECUTED |
+| TC-REPO-AUDIT-028-007 | Automated quality/security coverage | Verify unit, integration, authorization, tenant/project isolation, audit rollback, idempotency and concurrency tests are present and runnable. | CI workflow inventory, test reports and reproducible local/CI execution. | BLOCKED / NOT EXECUTED |
+| TC-REPO-AUDIT-028-008 | Build and deployment provenance | Verify lockfile, pinned runtime/toolchain, reproducible build, deployment commit provenance and environment protection. | Build logs, artifact provenance and Vercel/GitHub environment configuration evidence. | BLOCKED / NOT EXECUTED |
+
