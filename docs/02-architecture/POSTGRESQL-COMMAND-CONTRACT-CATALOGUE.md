@@ -1,7 +1,7 @@
 # PostgreSQL Command Contract Catalogue
 
 **Status:** PO product semantics for CMD-011–020 APPROVED; detailed engineering/security contract OPEN; NOT approved for implementation  
-**Version:** 0.4.1 | **Date:** 2026-11-24  
+**Version:** 0.4.2 | **Date:** 2026-11-24  
 **Decision basis:** T-14, T-15, T-16, T-17, T-18; Package L/M; canonical permission registry v0.2.0.
 
 ## 1. Purpose and boundary
@@ -85,6 +85,17 @@ The request fields below are proposed allowlists, not finalized OpenAPI/JSON Sch
 | CMD-052 | `fanout-notification-outbox` | Internal worker principal; not a user permission | outbox_id, lease_token, worker_batch_limit | Internal worker; no user actor; recipients resolved from pinned event scope and policy | notification_outbox, notifications, notification_deliveries | Bounded lease + SKIP LOCKED; dedupe recipient/channel; no provider I/O | Unique outbox/recipient/channel; expired lease reclaim | Operational telemetry; no user audit identity | COMPLETED; PARTIAL; RETRY_WAIT; DEAD_LETTER | TC-NOTIF-002/003/011 |
 | CMD-053 | `dispatch-notification-delivery` | Internal delivery worker; not browser callable | delivery_id, lease_token, channel, notification_ref | Internal worker; channel consent/quiet hours checked; provider adapter; no user actor | notification_deliveries, notification_delivery_attempts | Delivery lease; provider I/O outside DB transaction; ambiguous acceptance is UNKNOWN | Delivery/channel/attempt key; provider idempotency where supported | Sanitized attempt outcome; no secrets/message bodies | SENT; DELIVERED; FAILED; UNKNOWN; SUPPRESSED | TC-NOTIF-007/009/010/015/016 |
 | CMD-054 | `evaluate-notification-escalation` | Internal scheduler/worker; not browser callable | notification_id, policy_version_id, step_no, evaluation_time | Internal scheduler/worker; server time; recipients revalidated; no scope widening | notification_escalation_events, notification_outbox | Policy-version-pinned SLA evaluation; no business-state mutation | Unique notification/policy/step/event key | `notification.escalation_evaluated` | ENQUEUED; NO_ELIGIBLE_RECIPIENT; NOT_DUE | TC-NOTIF-013/014 |
+
+## 3.1 CMD-045–048 blocked-command contract boundary
+
+See [CMD-045–048 Detailed Contract Review](CMD-045-048-DETAILED-CONTRACT-REVIEW.md) v0.1.0 for authority gaps, safe-unavailable behavior, candidate security invariants and future verification.
+
+- CMD-045 remains blocked by T-10 institutional records/privacy/legal approval. No retention duration, legal basis, hold authority, disposition rule or destructive endpoint is approved.
+- CMD-046 remains blocked because incident-response authority, product-vs-external-system scope, case lifecycle and physical schema are undefined.
+- CMD-047 remains blocked by T-12 ownership/custody and secret-management decisions. Secret material must never be accepted in a command payload or stored/logged as ordinary configuration.
+- CMD-048 remains blocked pending release ownership, separation of duties, CI/ruleset and protected-environment evidence. Decide whether release control belongs solely to GitHub/Vercel control planes before considering any product API.
+- The four logical rows are not executable contracts. No route, function, permission grant, table, RLS policy, lock mode or idempotency contract is approved by their presence in this catalogue.
+- QA anchors TC-CMD-CONTRACT-024-045..048 and their review subcases remain PLANNED / NOT EXECUTED. The commands remain excluded from implementation until their individual authority and design gates close.
 
 ## 4. RPC signature and route contract status
 
