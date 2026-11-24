@@ -1,7 +1,7 @@
 # Lock Protocol Decision Resolution — LPR-01–LPR-11
 
 **Document ID:** LOCK-PROTOCOL-DECISION-RESOLUTION-001  
-**Version:** 0.3.1  
+**Version:** 0.3.2  
 **Status:** PO product decisions LPR-02–LPR-06 APPROVED; technical lock protocol remains OPEN / NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** Candidate global lock protocol for CMD-001–054 and asynchronous finalizers  
@@ -222,7 +222,7 @@ This checkpoint records contradictions and incomplete paths that are visible fro
 
 | Area / commands | Static documentation finding | Required closure before certification | Current status |
 |---|---|---|---|
-| Parent/session fence — CMD-012/013 vs CMD-009/010/014/015 | Detailed command recipes describe session-first paths for some updates/transitions, while the candidate global protocol requires parent-before-child fencing. The complete child-writer set is not evidenced as exhaustive. | Engineering/Security must approve one parent/session order, exact lock modes, all closure blockers and every child/worker finalizer path; update each affected command manifest consistently. | OPEN |
+| Parent/session fence — CMD-011–015 vs CMD-009/010 | CMD-011 proposes project FOR KEY SHARE; CMD-012/013 lock session before resolving/locking project; CMD-014 lists project/session/assignment refs after T-14 capacity; CMD-015 locks assignment/members/users without an explicit project/session parent fence. PostgreSQL FOR KEY SHARE does not conflict with FOR NO KEY UPDATE, which is normally acquired by a non-key UPDATE; a plain project status update is therefore not proven to fence CMD-011. | Engineering/Security must approve one project/session order, explicit compatible/conflicting lock modes, all closure blockers and every child/worker finalizer path; redesign session-first paths and reconcile CMD-010–015 manifests. | OPEN |
 | Canonical unit lifecycle — CMD-022–027 | Source recipes disagree on relative order among canonical identity, project, unit, association, assignment, conflict and claim resources. The command catalogue and lock manifest do not express one identical CMD-026 sequence. | Approve one canonical identity arbitration primitive and one total resource order; reconcile CMD-022–027 catalogue, detailed reviews, manifest, constraints and conflict workflow. | OPEN |
 | Inspection aggregate — CMD-028–032 | Aggregate-first source recipes are not yet reconciled with parent, claim, association and assignment fencing. Claim expiry/takeover and inspection finalization must not authorize stale work. | Approve one shared order and exact CAS/revision semantics for save, submit, return, approve and reopen; prove all terminal decisions and claim transitions are serialized. | OPEN |
 | Offline synchronization — CMD-035 | The source permits either short per-operation transactions or savepoints, but the atomicity and failure model is not selected. | Decide batch envelope semantics, operation commit boundaries, deterministic multi-inspection ordering, replay behavior and partial-result durability. | OPEN |
@@ -242,6 +242,7 @@ This checkpoint records contradictions and incomplete paths that are visible fro
 5. Keep institutional blockers distinct from technical blockers. Engineering cannot approve attendance authority, retention/legal hold or provider ownership on behalf of the institution.
 6. Update the canonical command catalogue, detailed review, lock manifest, global graph, QA plan and DGA register together only after the relevant authority has approved the decision.
 7. No row in this checkpoint is certified complete; all tests remain PLANNED / NOT EXECUTED unless a separate reproducible evidence record is attached.
+8. Do not infer that a project parent fence is effective from the phrase FOR KEY SHARE. Verify the row-lock conflict matrix against the deployed PostgreSQL major version; FOR KEY SHARE is compatible with FOR NO KEY UPDATE, so an ordinary non-key status UPDATE alone may not serialize a child writer.
 
 ### 11.2 Identity and authorization aggregate rank gap — CMD-001–007
 
@@ -268,3 +269,4 @@ Until LPR-11 is resolved, CMD-001–007 cannot receive normalized candidate-rank
 - **0.2.3 — 2026-11-24:** Corrected the recommended-order summary to include L100 dependent mutable aggregates between L90 inspection and L110 append-only facts, matching the rank table. Candidate order remains unapproved.
 - **0.3.0 — 2026-11-24:** Added LPR-11 to resolve the previously unclassified `app_users`, `user_roles` and `user_scope_grants` lock classes and their ordering against T-14 capacity and project/session parent fences. Added an explicit static gap analysis for CMD-001–007. No rank or technical protocol was approved.
 - **0.3.1 — 2026-11-24:** Reordered §11.2 beneath the §11.1 reconciliation rules for correct document hierarchy and clarified the unresolved identity/authorization rank gap. No decision status changed.
+- **0.3.2 — 2026-11-24:** Added the CMD-011–015 project/session parent-fence cross-check, including PostgreSQL row-lock compatibility implications for CMD-011 versus CMD-010. Parent-fence design remains OPEN; no lock mode was approved.
