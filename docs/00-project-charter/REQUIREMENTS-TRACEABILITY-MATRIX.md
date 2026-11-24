@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -226,7 +226,7 @@ T-01 through T-08 are partial decision closures, not blanket closure of Package 
 T-13 option B is PO APPROVED. Traceable acceptance requirements AC-DOC-008 through AC-DOC-012 and test cases TC-PRINT-001 through TC-PRINT-007 cover permissioned individual/batch print, per-document outcomes, failed-only retry, atomic reprint sequence, exact document-version linkage, and the boundary that application print events do not prove physical paper output. Detailed implementation and test execution remain pending.
 
 
-T-13 option B is PO APPROVED. Traceable acceptance requirements AC-DOC-008 through AC-DOC-012 and test cases TC-DOC-009 through TC-DOC-015 cover permissioned individual/batch print, per-document outcomes, failed-only retry, atomic reprint sequence, exact document-version linkage, and the boundary that application print events do not prove physical paper output. Detailed implementation and test execution remain pending.
+T-13 option B is PO APPROVED. The general print workflow maps to acceptance requirements AC-DOC-008 through AC-DOC-012 and TC-PRINT-001 through TC-PRINT-007. The dedicated durable batch lifecycle maps to TC-PRINT-BATCH-001 through TC-PRINT-BATCH-008. TC-DOC-009..011 remain document/instrument annex cases and are not the print-batch test range. Detailed implementation and test execution remain pending.
 
 
 ## T-14 traceability — Inspector capacity predicate (PO-approved 2026-11-24)
@@ -386,3 +386,15 @@ All notification cases TC-NOTIF-001..026 remain PLANNED / NOT EXECUTED. These re
 ## Identifier uniqueness audit correction — 2026-11-24
 
 The final documentation audit detected a duplicate requirement identifier in the appended lock traceability section. The general authorization serialization requirement retains AUTH-LOCK-001; the detailed CMD-001–010 actor/target/grantor lock requirement is now AUTH-LOCK-002. Requirement statements and statuses are unchanged. AUTH-LOCK IDs are unique within this matrix.
+
+
+## Cross-document governance audit checkpoint — 2026-11-24
+
+The SSOT cross-document audit confirms 125 unique requirement IDs. Package S §9.15 remains a historical snapshot and is superseded for current inventory/status by Package S §9.16 and DGA-001 v1.11.23. Package T v0.1.1 remains a historical decision pack; the Decision Register remains the canonical PO decision index.
+
+T-13 verification traceability is now explicit:
+- TC-PRINT-001..007: general print permission, batch behavior, retry, concurrency and physical-output boundary.
+- TC-PRINT-BATCH-001..008: durable batch identity, per-document projection, scope, partial outcomes, retry, sequence, idempotency and output semantics.
+- TC-DOC-009..011: Standing Bracket annex and IFP document cases; not a print-batch range.
+
+No test was executed. This is a traceability correction only and does not change T-13 product semantics or authorize implementation.
