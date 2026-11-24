@@ -1,7 +1,7 @@
 # Repository Agent Instructions — Dit. SD Inspection
 
 **Document ID:** ENG-AGENT-001  
-**Version:** 1.2.0  
+**Version:** 1.2.1  
 **Status:** MANDATORY ENGINEERING POLICY  
 **Applies to:** Every human contributor, coding agent, reviewer and automation working in this repository.
 
@@ -78,6 +78,16 @@ For every requirement or behavior change:
 
 A document edit does not prove implementation. A planned test does not prove a test passed. Never report an item closed without closure evidence.
 
+### 5.1 Current approved notification product decisions (2026-11-24)
+
+The following POQ-001 decisions are approved in the canonical Decision Register and must be treated as fixed product semantics unless superseded through explicit change control:
+
+- **POQ-01 — Option C, hybrid recipient eligibility:** persist the event-time candidate audience and authorized source scope/checkpoint. Fan-out and retries reuse that immutable candidate set. Dispatch-time account, channel, consent/revocation and mandatory security revalidation may suppress candidates but must never widen the audience.
+- **POQ-02 — Option C, per-policy SLA:** each immutable policy version declares elapsed-time or explicitly defined business-time semantics. Initial-release default is `ELAPSED_UTC`. Quiet hours defer eligible channel delivery only; they do not pause, stop or reset the SLA clock.
+- **POQ-03 — Option A, dismissal excluded from MVP:** expose recipient-owned set-once `read_at` only. No dismiss/archive command, permission, browser write or UX action is in MVP. Any proposed `dismissed_at` field is dormant and must not be exposed or mutated.
+
+These approvals close Product Owner semantics only. They do not approve the durable snapshot/checkpoint schema, selector grammar, worker identity/ACL, provider callbacks, policy administration grants/SoD, T-10 privacy/retention, physical schema/RLS, tests, G9 scope freeze or G10 implementation authorization. NLA-001, CMD contracts, schema, RLS, API, RTM and QA must remain synchronized to these decisions. Current notification QA cases TC-NOTIF-001..029 are planned and NOT EXECUTED.
+
 ## 6. Implementation workflow (only after G10)
 
 Follow IRG-001 phases I0–I7 in order. Do not skip platform, identity, database or security foundations to start visible features. Each phase has explicit entry/exit criteria.
@@ -146,6 +156,7 @@ Never claim “100% ready”, “production-grade”, “passed” or “verifie
 - `docs/00-project-charter/DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md` (DGA-001)
 - `docs/00-project-charter/IMPLEMENTATION-ROADMAP-AND-RELEASE-GOVERNANCE.md` (IRG-001)
 - `docs/00-project-charter/DECISION-REGISTER.md`
+- `docs/00-project-charter/PRODUCT-OWNER-OPEN-DECISION-PACKET.md` (POQ-001)
 - Approved PRD, ADRs, RTM, RAID and detailed architecture/security/QA documents.
 
 ---
