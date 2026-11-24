@@ -1,7 +1,7 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.3  
+**Version:** 0.1.4  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
@@ -297,7 +297,7 @@ All cases are PLANNED / NOT EXECUTED.
 - T-10 retention/privacy: **BLOCKED PENDING INSTITUTIONAL APPROVAL**.
 - Tests: **PLANNED, NOT EXECUTED**.
 - Scope freeze / G9: **NOT READY**.
-- Implementation / G10: **NOT AUTHORIZED**.
+- Implementation / G10: **NOT ACTIVE**.
 
 ---
 
@@ -326,7 +326,7 @@ notification.read is emitted once on the first set-once read transition, not on 
 
 ### 14.4 Approval and gate status
 
-The six notification tables remain a proposed subset of the 48-table physical/RLS inventory. INT-NOTIF-001 is an integration contract, not a new CMD ID or table. Physical constraints, indexes, RLS, role grants, worker identity, provider capability, retry horizons, recipient-selector semantics and T-10 retention/privacy still require approval and/or live evidence. QA TC-NOTIF-001..029 and TC-FN-SEC-025-064..069 remain PLANNED / NOT EXECUTED. G9 remains NOT READY; G10 remains NOT AUTHORIZED.
+The six notification tables remain a proposed subset of the 48-table physical/RLS inventory. INT-NOTIF-001 is an integration contract, not a new CMD ID or table. Physical constraints, indexes, RLS, role grants, worker identity, provider capability, retry horizons, recipient-selector semantics and T-10 retention/privacy still require approval and/or live evidence. QA TC-NOTIF-001..029 and TC-FN-SEC-025-064..069 remain PLANNED / NOT EXECUTED. G9 remains NOT READY; G10 remains NOT ACTIVE.
 
 
 ## 15. Product Owner decision reconciliation — POQ-001 (2026-11-24)
@@ -359,3 +359,57 @@ The Product Owner explicitly approved POQ-01 Option C, POQ-02 Option C and POQ-0
 ### 15.4 Remaining notification gates
 
 These PO approvals do not close technical or external dependencies: selector grammar and snapshot persistence; policy administration grants/SoD; worker identity and scheduler authentication; function ownership and EXECUTE ACL; provider selection/capability/quotas; retry horizons and alert thresholds; exact schema constraints/indexes/RLS; T-10 institutional privacy/records/retention; QA execution and live evidence. The six notification tables remain proposed and unimplemented. G9 remains NOT READY and G10 remains NOT AUTHORIZED.
+
+
+## 16. POQ-01 durable event-time audience snapshot — physical design candidate (2026-11-24)
+
+**Product semantics are APPROVED; this physical representation is a candidate for Engineering/Database/Security review, NOT approved DDL and NOT part of the canonical 48-table inventory.**
+
+### 16.1 Required invariant
+
+The candidate recipient set and each recipient's authorized source scope are determined at the source event's effective transaction time, bound to the immutable notification policy version, and durably persisted before the source business transaction commits. CMD-052 must consume that persisted set. It must never reconstruct the audience by querying current role or assignment membership during a retry. A policy version reference or a selector string alone is not a recipient snapshot.
+
+### 16.2 Candidate relational representation
+
+Use the existing `notification_outbox` row as the snapshot header and consider one candidate-only relation:
+
+**Candidate table:** `notification_outbox_recipients` (NOT ADMITTED).
+
+Candidate fields:
+- `outbox_id` — FK to the immutable outbox intent;
+- `recipient_user_id` — FK to the application identity selected at source-event time;
+- `project_id`, `session_id`, `location_id`, `assignment_id` — nullable typed scope references recording the recipient's authorized source scope at that event;
+- `scope_snapshot_hash` — digest of the canonical scope/membership evidence used for that recipient;
+- `resolved_at` — server transaction timestamp.
+
+Candidate integrity:
+- primary/unique key `(outbox_id, recipient_user_id)` deduplicates a recipient matched by multiple selectors;
+- composite FKs or equivalent trusted transaction assertions prove the project/session/location/assignment references are mutually consistent;
+- candidate rows are immutable after the outbox audience snapshot is finalized;
+- canonical snapshot hash and count on the outbox header reconcile to the sorted recipient/scope rows;
+- no arbitrary selector SQL, client-supplied recipient IDs, role names or scope claims are accepted;
+- the candidate table is not browser-readable or browser-writable.
+
+### 16.3 Transaction and retry protocol
+
+1. The source command resolves the approved, bounded selector grammar against source-event-time account, role, grant and assignment validity.
+2. In the same transaction as the source mutation, canonical domain/audit event and `notification_outbox` insert, it inserts the deduplicated candidate recipient/scope rows and finalizes the header's candidate count/hash/completion marker.
+3. The source transaction does not commit an outbox marked ready if the candidate snapshot is incomplete. A failure to persist the snapshot follows the source command's approved atomic failure policy; it must not silently defer audience resolution to a later current-state query.
+4. CMD-052 reads the immutable candidate rows in deterministic recipient-key order and inserts one `notifications` row per candidate. The existing unique `(outbox_id, recipient_user_id)` key on `notifications` remains a second idempotency arbiter. Partial retry can derive outstanding work by anti-joining candidates to already materialized inbox rows; no mutable rewrite of candidate rows is required.
+5. External channel eligibility is revalidated immediately before each send. A candidate may be suppressed for current account/channel/consent/security restrictions, but no new recipient may be added. Suppression belongs to delivery outcome, not mutation of the historical candidate snapshot.
+
+### 16.4 Unresolved engineering decisions
+
+- Exact selector grammar, source-event timestamp semantics and the authoritative temporal records for account/role/scope membership.
+- Whether candidate materialization in the source transaction meets approved latency/lock budgets at maximum recipient fan-out.
+- Numeric recipient bound, payload/snapshot size bound, query/index strategy and behavior when a configured bound is exceeded. No numeric value is invented here.
+- Exact scope columns/composite FK design and canonical hashing/serialization version.
+- Whether the outbox header stores snapshot version/hash/count/completed_at or an equivalent immutable snapshot reference.
+- RLS/ACL, workload identity, function ownership, lease finalization, monitoring and recovery.
+- T-10 classification, retention, legal hold and privacy review of recipient/scope history.
+
+If same-transaction candidate materialization cannot meet the approved bound, Engineering must propose a different immutable event-time snapshot mechanism that still prevents audience widening; current-state re-resolution on retry is prohibited. This annex does not approve a new table, migration, index, policy, grant, worker or implementation.
+
+### 16.5 Gate disposition
+
+POQ-01 recipient semantics: **APPROVED**. Durable relational representation: **CANDIDATE — ENGINEERING/DB/SECURITY REVIEW REQUIRED**. CMD-052 physical read/write set: **PARTIAL — candidate table not admitted**. Worker identity/ACL and runtime verification: **OPEN**. QA TC-NOTIF-001..029: **PLANNED / NOT EXECUTED**. G9 remains NOT READY; G10 remains NOT ACTIVE.
