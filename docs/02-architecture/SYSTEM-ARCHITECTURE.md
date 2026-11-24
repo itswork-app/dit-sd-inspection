@@ -81,7 +81,7 @@ Preferred: isolated development, staging, and production environments where plan
 ## 8. Architecture decisions still open
 
 - Exact frontend framework and package versions.
-- Whether any privileged operation requires a Vercel server function versus a PostgreSQL RPC; choose per operation after threat and transaction analysis.
+- **T-18 PO APPROVED option A (2026-11-24):** protected browser-facing commands use Vercel server routes forwarding the caller JWT to narrowly scoped PostgreSQL command functions. The database derives the actor and enforces authorization/atomicity; browser direct DML on protected tables is denied. Exact grants, function review and verification remain open.
 - Local offline storage technology, encryption, retention, and supported browsers.
 - PDF generation location and library.
 - Notification delivery mechanism.
@@ -97,3 +97,10 @@ Before implementation:
 - Approve evidence lifecycle and offline threat model.
 - Validate provider plan, quotas, backup/restore, and deployment isolation.
 - Approve measurable performance SLOs after baseline profiling.
+
+
+## T-18 — Approved command trust boundary
+
+The selected state-changing request path is Browser/PWA → Vercel server route → PostgreSQL command function using the authenticated caller JWT. The Vercel route verifies the session and validates request shape; PostgreSQL derives the actor from `auth.uid()` and enforces approval, permission, role, project association, session, assignment, state and separation of duties within the transaction. Protected-table direct browser DML is denied. Business mutation and required audit append are atomic and fail closed. Service-role credentials are never exposed to the browser and are not a blanket identity for user-initiated commands.
+
+This is an approved architecture direction, not an implementation claim. Command-specific EXECUTE grants, RLS policies, function security review and tests remain gates.
