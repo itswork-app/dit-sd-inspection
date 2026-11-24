@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.6.1
+Version: 0.6.2
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -1010,3 +1010,19 @@ The evidence carry-forward decision across revisions, next Inspector/claim owner
 | TC-INS-DRAFT-026 | Start inspection of the same canonical unit in a later session after prior attempt was ABORTED | A new inspection attempt is created with the new session_id; old attempt, revisions and evidence remain immutable; old evidence is not automatically reused |
 
 Returned correction and authorized reopen must additionally remain within the original session and, for correction, the original Inspector. All cases remain PLANNED / NOT EXECUTED.
+
+
+## SES-001 / WF-003 — CMD-013 close gate and CMD-027 non-abort verification (2026-11-24)
+
+**Status:** PLANNED / NOT EXECUTED. All cases require approved command contracts, physical schema/RLS, G10 activation and a controlled test environment.
+
+| Test ID | Scenario | Expected result |
+|---|---|---|
+| TC-SESSION-002 | CMD-013 FINAL_CLOSE while any unit attempt in the session has an active claim, active draft, pending review, evidence finalization or other unresolved work | `CLOSURE_BLOCKED`; session remains ACTIVE/PAUSED as applicable; no session.closed event, partial abort, claim release or history mutation |
+| TC-SESSION-003 | Unit attempt is explicitly aborted with reason, then Super Admin retries FINAL_CLOSE | Abort is a terminal auditable non-completion; claim is no longer active; immutable revisions/evidence remain; final close succeeds only when every other closure gate is satisfied |
+| TC-SESSION-004 | CMD-027 release-unit-claim is called on an incomplete draft before FINAL_CLOSE | Claim becomes RELEASED while draft remains preserved; inspection attempt is still unresolved; CMD-013 remains CLOSURE_BLOCKED until a separate approved abort/completion outcome exists |
+| TC-SESSION-005 | FINAL_CLOSE races an abort, submit, evidence finalization, review decision or document/print finalizer | One deterministic serialized outcome; either child work commits before close and is included in blocker evaluation, or close wins and stale child operation is rejected; no work commits after CLOSED |
+| TC-SESSION-006 | Session closes with one or more ABORTED unit attempts and all other required work complete | Session reaches CLOSED; aborted units remain visible as non-completion and are excluded from inspected/approved/good/defective/printed counts; no evidence or revision is fabricated |
+| TC-SESSION-007 | Abort transaction fails at claim release, inspection/draft state, audit or idempotency write | Full abort rollback; unit remains unresolved; session cannot close; retry with same idempotency key yields one outcome |
+
+These cases extend TC-SESSION-001 and TC-INS-DRAFT-021..026. They do not establish that CMD-027 is an abort command; TC-SESSION-004 explicitly protects the current release-only semantics.
