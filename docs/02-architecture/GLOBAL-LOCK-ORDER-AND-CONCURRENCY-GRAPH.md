@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.3
+**Version:** 0.4.4
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -330,3 +330,8 @@ Required design closure:
 6. Verify the exact behavior against the deployed PostgreSQL major version and physical schema before certification.
 
 The source evidence establishes a design gap, not the deployed lock graph. No PostgreSQL catalog, SQL, lock trace or concurrency test was executed. LPR-01 and LPR-07–LPR-11 remain open; G3/G7/G9 NOT READY and G10 NOT AUTHORIZED.
+
+
+## 17. Refined candidate order and parent-fence review proposal — 2026-11-24
+
+[TECH-RESOLUTION-LPR-001](ENGINEERING-SECURITY-TECHNICAL-RESOLUTION-PACKAGE-LPR-001-011.md) §3–§4 proposes additional L15 app_users, L16 user_roles, L17 user_scope_grants and conditional L18 authorization-catalog ranks. It also proposes project-before-session ordering and compatible child FOR SHARE / parent mutation FOR NO KEY UPDATE modes, subject to Engineering/Database/Security approval and deployed PostgreSQL verification. The graph remains a proposal: no effective function/trigger/FK/index graph or acyclic proof exists. LPR-01/LPR-07/LPR-11 remain OPEN; no rank certification changes.
