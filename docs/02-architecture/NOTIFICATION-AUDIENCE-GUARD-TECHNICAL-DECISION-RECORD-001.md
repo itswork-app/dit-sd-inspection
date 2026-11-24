@@ -98,6 +98,14 @@ For each command that can emit an allowlisted notification event:
 
 A command with an event type statically and immutably excluded from notification policy matching may omit L05 only when the exclusion is explicit in its command manifest and cannot be changed by policy publication. Runtime policy lookup cannot be used to skip L05 before the lock.
 
+### 4.2.1 Post-transition audience semantics — reviewer proposal, PO decision required
+
+The current transaction sequence resolves the candidate audience after L05 and before applying the source mutation. This naturally defines a **pre-transition eligibility snapshot** at `audience_evaluated_at`. Recommended default: candidate eligibility is evaluated against the state serialized before the command's source mutation; the source mutation, canonical event and immutable candidate snapshot then commit atomically. A transition must not retroactively rewrite the captured candidate set.
+
+For explicit event participants (actor, target, affected account/member), inclusion must be represented by an approved event participant/selector rule; do not silently append the actor or target outside the policy's exact selector grammar. Dispatch-time account/channel/consent and mandatory security checks may suppress an existing candidate under POQ-01, but may never add a new candidate. Scope revalidation may also suppress only under the approved POQ-01 contract.
+
+This is a **review recommendation, not a PO-approved semantic decision**. Product Owner must explicitly decide expected outcomes for at least: role revoke (CMD-005), account reject/disable/suspend (CMD-002/003 and any future account lifecycle path), assignment member end (CMD-015), project/session close (CMD-010/013), and self-revoke by the actor. The current phrase “apply explicit post-transition semantics” is not executable until those outcomes are recorded and covered by tests.
+
 ### 4.3 Candidate total order
 
 `L00 → L05 → L10 (when T-14 applies) → L15 → L16 → L17 → conditional L18 → L20 → L30 → L40 → L50 → L55 → L60 → L70 → L80 → L90 → L100 → L110`
@@ -268,8 +276,8 @@ Additional assertions:
 | Timeout/retry/transaction budget | OPEN | Database + Operations |
 | Audience cardinality and performance SLO | OPEN | PO + Engineering + Operations |
 | Function volatility and post-wait snapshot proof through authenticated RPC | OPEN — design requirement added; deployed metadata/evidence absent | Engineering + Database + Security |
-| Post-L05 audience evaluation instant and effective-interval boundary approval | OPEN — proposed `clock_timestamp()` capture; PO/domain confirmation and test evidence pending | PO + Engineering + Database + Security |
-| Static acyclicity and NRL-T01..T12 evidence | NOT EXECUTED | Engineering + Database + Security |
+| Post-L05 audience evaluation instant and effective-interval boundary approval | OPEN — proposed `clock_timestamp()` capture; PO/domain confirmation and test evidence pending | PO + Engineering + Database + Security |\n| Pre-/post-transition recipient inclusion semantics for revoke/suspend/end/close/self-revoke | OPEN — reviewer proposal documented; explicit PO decision required | PO + Security + Engineering |\n| Global-guard contention benchmark and measurable workload acceptance | OPEN — benchmark protocol required; numeric SLOs remain TBD | PO + Engineering + Database + Operations |
+| Static acyclicity and NRL-T01..T13 evidence | NOT EXECUTED | Engineering + Database + Security |
 
 **No numeric constants are approved:** advisory key integers, lock timeout, statement/transaction timeout, retry count, jitter, audience maximum and latency SLO remain TBD.
 
@@ -282,7 +290,7 @@ Additional assertions:
 - Application lock certification: 0/50.
 - Candidate snapshot relation/header: NOT ADMITTED.
 - Static global graph acyclicity: NOT PROVEN.
-- QA NRL-T01..T12 / TC-NOTIF-042..053: PLANNED / NOT EXECUTED.
+- QA NRL-T01..T13 / TC-NOTIF-042..054: PLANNED / NOT EXECUTED.
 - G9: NOT READY. G10: NOT ACTIVE.
 
 This is a documentation-only technical proposal. It authorizes no source code, SQL, migration, function, grant/revoke, RLS change, live database inspection, CI/runtime test, provider setup, deployment or merge.
