@@ -1,7 +1,7 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.12  
+**Version:** 0.1.13  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
@@ -493,3 +493,16 @@ The Product Owner approved all five transition outcomes in DECISION-REGISTER.md 
 The approved transition-specific assertions are: (1) role revoke — target only if selected and eligible pre-revoke; actor not auto-added; current role/scope may suppress; (2) account reject/disable/suspend — snapshot may retain a selected pre-transition candidate, suppress while not enabled, and permit a later retry only for that same candidate after reactivation; (3) assignment-member end — evaluate pre-end membership at the captured instant using half-open effective intervals; current scope may suppress, with no substitute member; (4) project/session close — evaluate pre-close parent state and commit snapshot with closure event; current active-scope policy may suppress, with no post-close additions; (5) self-revoke — actor only if exact selector independently selects under pre-revoke eligibility, followed by current role/scope revalidation.
 
 This PO approval settles product semantics only. Selector grammar, physical snapshot schema, source-path and writer participation, lock ordering, function/RLS/ACL details, technical approval and runtime evidence remain OPEN. F-05 remains OPEN pending Security/Engineering validation; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 21. F-05 technical validation addendum — selector, suppression and audit
+
+POQ-04 is approved, but its exact technical enforcement remains open. The selector sentence in §5.2 is a category-level constraint, not a complete executable grammar. Before technical approval, Engineering/Security must define a versioned event allowlist and typed selector grammar, including allowed principal/scope references, actor/self/target treatment, boolean composition, null behavior, effective-time boundaries, canonicalization, deduplication, complexity/cardinality bounds, and fail-closed validation. The exact set of referenced columns/tables must feed the L05 eligibility-writer inventory.
+
+Dispatch checks must be defined per event/selector. A captured qualification predicate is not automatically equivalent to a current authorization predicate. In particular, a role-revocation notice and a project/session-closure notice must not be accidentally suppressed by a blanket rule that requires the revoked role or active parent to remain true. Conversely, notification delivery must never grant access to the underlying resource; resource access is independently authorized when the notice is opened.
+
+Suppression requires stable reason codes and a deterministic state transition. The approved account-reactivation allowance is limited to an existing immutable candidate; it does not authorize rebuilding the audience, resetting the snapshot, bypassing consent/channel/security checks, or clearing unrelated suppression reasons. Retry limits, expiry, owner, backoff and the set of reschedulable reason codes remain unapproved technical/operational inputs.
+
+Every suppression and retry attempt must be auditable through append-only outcome evidence bound to the source event, outbox, immutable candidate, pinned policy and attempt/checkpoint. The exact reason-code catalog, correlation fields, identity provenance, retention and data-minimization rules remain to be reviewed by Security and the applicable Records/Privacy authority.
+
+See NLA-L05-TDR-001 v0.1.7 §4.2.4 for F05-T1..T5 and the technical exit criteria. Until these are approved and evidenced, F-05 remains OPEN; the candidate snapshot relation/header remains NOT ADMITTED; G9 NOT READY and G10 NOT ACTIVE.
