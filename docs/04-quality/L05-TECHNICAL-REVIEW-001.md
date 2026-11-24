@@ -1,7 +1,7 @@
 # L05 Audience Guard — Internal Technical Review
 
 **Document ID:** L05-REVIEW-001  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Review status:** REQUEST CHANGES — NOT TECHNICALLY APPROVED  
 **Review date:** 2026-11-24  
 **Reviewer capacity:** Internal technical reviewer acting for Product Owner interests; not an independent human Engineering, Database, Security or institutional sign-off  
@@ -169,3 +169,12 @@ F-05 remains OPEN. TDR v0.1.2 now recommends pre-transition eligibility as the d
 F-07 remains OPEN. NRL-T13 / TC-NOTIF-054 now specify the mixed-load benchmark and the required measurements (p50/p95/p99 lock wait/hold/transaction latency, throughput, timeout/deadlock/retry rates, queue age, audience cardinality and database I/O). Numeric workload limits and SLO thresholds remain unapproved and no benchmark has been run.
 
 F-06 is partially remediated: TDR parent pointer now names NLA-RESOLVER-LOCK-001 v0.1.8 and the L05 candidate-direction decision is recorded in the canonical Decision Register. The lock manifest and other cross-references were synchronized where found; a repository-wide link/version audit remains pending.
+
+
+## 9. Current cross-reference and CMD-031–040 response — 2026-11-24
+
+F-06 is closed for the scoped L05 cross-reference set. The current pointer set is NLA-001 v0.1.8; parent resolver review v0.1.9; TDR v0.1.2; source map v0.1.0; writer matrix v0.1.1; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM v0.1.8; RAID v0.1.7; DGA v1.11.60; QA v0.4.5; cross-command reconciliation v0.8.26. Historical source references remain in their dated checkpoints.
+
+F-03 has advanced but remains OPEN: CMD-031/032/033/034/037 have partial candidate lock ordering in LOCK-MANIFEST-001 §7.13; CMD-035/036/038/039/040 remain blocked. The source map is an inventory, not proof of all held locks, function/finalizer call graphs, or a cycle-free total order. F-04 remains OPEN because the writer matrix is incomplete and no physical writer is certified. F-05 transition semantics and F-07 measured contention envelope remain OPEN.
+
+Reviewer disposition remains REQUEST CHANGES — NOT TECHNICALLY APPROVED. L05 remains unadmitted; resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; NRL-T01..T13 and TC-NOTIF-001..054 PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE.
