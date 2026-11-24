@@ -1,7 +1,7 @@
 # Inspection Draft Context and Revision Lifecycle — Technical Proposal
 
 **Document ID:** INSPECTION-DRAFT-001  
-**Version:** 0.1.2  
+**Version:** 0.1.3  
 **Date:** 2026-11-24  
 **Status:** Engineering / Database / Security / Product Owner review required — NOT APPROVED  
 **Scope:** CMD-026 claim-unit; CMD-028 save-draft; CMD-029 submit-inspection; CMD-030 return-inspection; CMD-032 reopen-inspection; CMD-033/034 evidence upload/finalization  
@@ -33,7 +33,7 @@ IFP and Standing Bracket remain separate published instrument versions. Their co
 
 **A draft context is mutable working state; an inspection revision is an immutable submitted snapshot.**
 
-Do not use an unsubmitted mutable row in `inspection_revisions` and then describe it as immutable. Do not update a submitted revision to correct it. Do not create a second inspection aggregate for a return or approved reopen.
+Do not use an unsubmitted mutable row in `inspection_revisions` and then describe it as immutable. Do not update a submitted revision to correct it. Do not create a second inspection aggregate for a return or approved reopen within the same session-bound attempt. A new session after ABORTED is a new inspection attempt and therefore requires a new inspection aggregate/inspection_id.
 
 Candidate relation: `inspection_draft_contexts` (new, candidate-only).
 
@@ -274,9 +274,9 @@ The Product Owner approved SES-001 in the canonical Decision Register. This sect
 - Add ABORTED to the candidate inspection-attempt and draft-context terminal vocabulary; do not represent abort as SUBMITTED or a generic claim release alone.
 - CMD-027 currently means release-unit-claim. Engineering must decide whether it can safely implement the full abort transaction or whether a dedicated command is needed. A claim release without terminally aborting the inspection attempt is insufficient.
 - Session close command must inspect all unit attempts in its exact session and refuse closure until unresolved attempts are completed or aborted.
-- Physical uniqueness must permit a new attempt in a later session while preserving global canonical unit identity and preventing simultaneous active claims. Exact historical-attempt key/constraint strategy remains for Database review.
+- Physical uniqueness must permit a new inspection aggregate for the same canonical unit in a later session after the previous attempt is ABORTED, while preserving global canonical unit identity and preventing simultaneous nonterminal inspection attempts/active claims. The old inspection aggregate and all its revisions/evidence remain historical. Exact historical-attempt key/constraint strategy remains for Database review.
 
-### 11.4 Explicit boundary still requiring resolution
+### 11.4 New-session attempt identity\nAn inspection aggregate is one session-bound attempt, not a permanent row for the physical unit. Once that attempt is ABORTED, a later session must create a new inspection aggregate with a distinct inspection_id and immutable session_id. The old aggregate remains ABORTED and immutable. This does not permit two concurrent nonterminal attempts or active claims for the same canonical unit. Returns and authorized reopens within the original session continue to create new draft contexts on the same inspection aggregate; they do not create a new inspection_id. The physical one-active-inspection invariant must therefore be refined to mean at most one nonterminal attempt per canonical unit, with historical ABORTED attempts retained.\n\n### 11.5 Explicit boundary still requiring resolution
 SES-001 clearly prohibits cross-session continuation and requires abort of unfinished attempts before session close. The precise disposition of a revision returned by a Reviewer but not corrected before session closure must be encoded as an abort of the overall attempt, preserving the returned immutable revision and reason. A later session must start a new attempt; it must not reopen the prior correction context. The same Inspector restriction applies to correction while the original session remains active.
 
 **Disposition:** SES-001 product semantics are PO APPROVED. Session FK, abort state machine, CMD-027 versus dedicated abort command, claim-release atomicity, session-close writer/lock graph, RLS/ACL, event registry, physical constraints and QA remain NOT CERTIFIED / OPEN. No schema or implementation is approved by this proposal.
