@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.48
+**Version:** 1.11.49
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -587,3 +587,8 @@ Current lock source pointers: LOCK-MANIFEST-001 v0.4.24; LOCK-GRAPH-001 v0.4.17;
 ## CMD-009–016 aggregate concurrency proposal — 2026-11-24
 
 [AGGREGATE-CONCURRENCY-RESOLUTION-001](../02-architecture/AGGREGATE-CONCURRENCY-RESOLUTION-001.md) v0.1.0 proposes a canonical BIGINT `row_version` convention and a field map for project, session, assignment-membership aggregate and project capacity settings. It explicitly separates optimistic CAS tokens, project/session parent fences and T-14 capacity serialization. The proposal also identifies a candidate CMD-015 `expected_row_version` precondition for assignment membership batches. This is a proposal for Engineering/Database review, not an approved physical schema or command contract. Exact PostgreSQL row-lock modes, implicit FK/trigger/function edges, complete child-writer/finalizer coverage, complete T-14 population-writer coverage, deadlock/retry behavior and race-test evidence remain OPEN. No LPR item or gate is closed by this proposal. CMD-009–016 remain not technically certified; application lock certification 0/50; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## CMD-035/036/038/039/040 durable object proposal — 2026-11-24
+
+[DURABLE-OPERATION-LEDGER-AND-ARTIFACT-LIFECYCLE-PROPOSAL-001](../02-architecture/DURABLE-OPERATION-LEDGER-AND-ARTIFACT-LIFECYCLE-PROPOSAL-001.md) v0.1.0 documents candidate boundaries for per-operation sync outcomes and device binding, immutable document template versions and renderer jobs/attempts, print batch-item manifests/results, attendance document versions and append-only verification events. These are candidate models only; they are not admitted to the canonical physical schema or RLS catalogue. Product/institutional authority, Security/Database approval, exact FK/index/check/RLS/ACL, worker identity, retention and concurrency evidence remain open. Attendance location-versus-assignment authority and uploader/verifier SoD are not inferred. CMD-035/036/038/039/040 remain not technically certified; no G9/G10 status is advanced.
