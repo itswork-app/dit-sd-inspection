@@ -94,8 +94,11 @@ Use SECURITY INVOKER by default. SECURITY DEFINER is allowed only where RLS recu
 | `change-inspector-capacity` | capacity.manage | Lock global capacity row; count approved predicate; 1..100; reject below count |
 | `create-instrument` / `save-instrument-draft` | instrument.manage | Super Admin; declarative schema allowlist; code unique; draft only |
 | `publish-instrument-version` | instrument.publish | T-17 PO APPROVED (A): authorized Super Admin publishes directly without second-person approval; derive actor from trusted session; validate schema/allowlists; atomically append publication + audit; increment version; immutable snapshot |
-| `claim-unit` / `release-unit-claim` | inspection.claim | Assignment membership; one active claim; server time; draft preserved |
-| `save-draft` | inspection.edit | Assignment + claim; expected row version; draft only |
+| `register-canonical-unit` | unit.register | Normalize using published instrument policy; unique instrument+serial; lock canonical key; collision opens controlled conflict, never duplicate row |
+| `associate-unit-to-project` / `end-unit-project-association` | unit.associate / unit.association.end | Verify actor authority, project and candidate unit; reason; durable association episode; audit same transaction |
+| `resolve-unit-identity-conflict` | unit.identity.resolve | Authorized reviewer verifies candidate; may associate existing canonical unit or reject with reason; never silently merge/create duplicate |
+| `claim-unit` / `release-unit-claim` | inspection.claim | Active unit-project association + same-project assignment + matching instrument; lock canonical unit; one active claim globally per unit; server time; draft preserved |
+| `save-draft` | inspection.edit | Inspection's stored association + same-project assignment + active claim; expected row version; draft only |
 | `create-upload-intent` / `confirm-upload` | evidence.upload | Allowed slot, scope, quota, signature/size/checksum validation; pending to finalized state |
 | `submit-inspection` | inspection.submit | Lock aggregate; required answers/evidence; no conflicts; immutable revision and state transition atomic |
 | `return-inspection` / `approve-inspection` | inspection.review | Assigned reviewer; expected revision; no self-review; append event and transition |
@@ -112,9 +115,11 @@ The command names are logical. REST route names and exact payload schemas remain
 
 Use a documented global lock order to reduce deadlocks:
 1. project capacity/settings row when capacity is involved;
-2. project/session/assignment row(s);
-3. unit row;
-4. inspection aggregate row;
+2. canonical serial-key advisory/unique-key arbitration, if registering/resolving;
+3. project/session/assignment row(s);
+4. canonical unit row;
+5. unit-project association row;
+6. inspection aggregate row;
 5. idempotency record/key;
 6. evidence/document row(s);
 7. append-only event insert.
@@ -220,8 +225,17 @@ T-18 is PO APPROVED option A (2026-11-24): this Vercel route + caller-JWT Postgr
 
 ### Command catalogue and cross-decision consistency
 
-Apply this contract to account approval/role and assignment changes, team staffing, session/project lifecycle, instrument draft/publish/deactivate, unit creation/duplicate resolution/claim, inspection draft/submit/review, evidence finalize/replace/access/export, document generation/print, attendance verification, project closure, audit access/export and offline sync reconciliation. Each command needs a separate request/response schema, permission, scope rule, lock/idempotency key, state invariant, audit event and positive/negative/concurrency test. T-14 capacity count and T-16 canonical serial uniqueness must be checked inside the same serialized transaction as the affected mutation. T-17 publish-instrument-version uses the same boundary and atomic audit rule.
+Apply this contract to account approval/role and assignment changes, team staffing, session/project lifecycle, instrument draft/publish/deactivate, unit creation/duplicate resolution/claim, inspection draft/submit/review, evidence finalize/replace/access/export, document generation/print, attendance verification, project closure, audit access/export and offline sync reconciliation. Each command needs a separate request/response schema, permission, scope rule, lock/idempotency key, state invariant, audit event and positive/negative/concurrency test. T-14 capacity count, T-16 canonical serial uniqueness, association authorization and global active-claim uniqueness must be checked inside the same serialized transaction as the affected mutation. T-17 publish-instrument-version uses the same boundary and atomic audit rule.
 
 ### Approval boundary and remaining gates
 
 T-18 approves the architecture pattern only. It does not approve every command's detailed contract, any SECURITY DEFINER exception, a deployed RLS policy, or production service-role use. Complete command-by-command permission and transaction catalogue, table-level RLS/grant matrix, T-16 unit/project association reconciliation, T-10 institutional policy and T-12 provider/recovery verification before implementation. No route/RPC/migration has been created and no tests have been executed.
+
+
+## T-16 — Canonical unit commands and association enforcement
+
+All unit lifecycle commands use the T-18 Vercel route + caller-JWT PostgreSQL function pattern. `register-canonical-unit` normalizes a serial using the instrument's published policy and arbitrates the unique `(instrument_id, serial_normalized)` key. A collision creates a controlled `unit_identity_conflicts` record and returns a typed conflict; it never creates a second canonical unit. `associate-unit-to-project` creates a durable association episode only after authorized verification and records actor, project, unit, reason and audit event atomically. `end-unit-project-association` ends operational membership without deleting association or inspection history. `resolve-unit-identity-conflict` may attach the proposed project to the verified existing unit or reject/close the conflict with reason; no silent merge or historical row rewrite.
+
+`claim-unit` locks the canonical unit row before association/assignment checks, verifies the association is ACTIVE and belongs to the same project as the assignment, verifies assignment instrument equals unit instrument and caller is an effective assignment member, then checks the global active claim. A partial unique index on active `unit_claims.unit_id` is the final race guard across projects. The claim row stores association ID and project ID. `save-draft`, submit, review, evidence, document and export commands derive scope through the inspection's immutable association/project binding and re-check effective session/assignment/permission. The unit ID alone never grants scope.
+
+Each command requires explicit request/response schema, permission, actor-derived audit envelope, idempotency scope, lock order, typed outcomes and positive/negative/concurrency cases. This is a command-contract design, not implementation.
