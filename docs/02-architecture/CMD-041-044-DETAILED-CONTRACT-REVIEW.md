@@ -1,7 +1,7 @@
 # CMD-041–044 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security/institutional review required; NOT approved for implementation  
-**Document version:** 0.1.0  
+**Document version:** 0.1.1  
 **Date:** 2026-11-24  
 **Scope:** CMD-041 through CMD-044  
 **Repository phase:** Documentation / SSOT maturation  
@@ -602,3 +602,32 @@ Existing catalogue mappings:
 5. Reassess G9 only when closure evidence exists. G10 remains a separate explicit authorization.
 
 **Final boundary:** This review changes documentation only. No source code, SQL, migration, grant/revoke, RLS, live database query, audit export, deployment, CI execution or merge was performed.
+
+## 6.2 Physical read-set and cursor reconciliation — 2026-11-24
+
+The companion COMMAND-PHYSICAL-OBJECT-CROSSWALK-001 now enumerates candidate source read sets for CMD-041/042 and the bounded purpose/scope read set for CMD-043. The source sets are proposals against the current 48-table physical inventory, not a deployed query plan or final index contract.
+
+- CMD-041 reads authoritative inspection/revision/event/review, document/print, unit association, assignment, session/location/project and immutable instrument-version sources. It performs no business mutation. Report metrics remain blocked on a versioned metric dictionary that settles the distinct counting unit, event-time versus state-as-of attribution, reopen/reapproval and Completed finalization boundary.
+- CMD-042 reads target plan/allocation plus only the scope and dimension references needed for the selected published plan. One immutable published plan version is pinned for the full cursor chain. Actual-progress overlay remains a PO decision and cannot be merged into target allocation totals.
+- CMD-043 reads audit_events through a bounded, event-specific projection plus minimum authorization/scope references. Arbitrary metadata JSON, raw payloads and unapproved personal/network fields remain prohibited. Access append is a separate non-recursive operation; at most one access event per request/correlation ID. The failure policy remains an institutional T-10 decision.
+- CMD-041/042 do not assume materialized report tables. Any future cache/snapshot is derived only, requires ADR and invalidation/rebuild proof, and cannot become a second source of truth.
+- Cursor binding must include actor, effective scope, normalized filters, sort, schema/policy version and snapshot/watermark. Target cursor additionally pins plan_version_id. A cursor never freezes authorization: current permission/scope is rechecked on every page.
+
+## 6.3 CMD-044 candidate export physical model — NOT ADMITTED
+
+The physical schema, RLS catalogue and ERD now contain matching candidate-only annexes for audit_export_jobs, audit_export_manifests and audit_export_artifacts. These are NOT tables in the canonical 48-table inventory and are not approved for creation. They exist only to make the future design gap explicit.
+
+The candidate model separates: (1) durable request/job and idempotency/lease state; (2) immutable ordered selection manifest and policy/snapshot provenance; and (3) private artifact metadata with verified checksum and encryption/key reference. It prohibits browser DML, public artifacts, caller-selected object keys and reuse of documents or notification_outbox. Exact relationships, retries/attempt cardinality, approval records, worker identity, Storage provider/region, download authority, encryption, retention/legal hold and deletion proof remain OPEN.
+
+T-10 remains BLOCKED. No export route, function, grant, worker, bucket, job or artifact may be created. audit.export does not imply artifact download. Candidate event names beyond existing audit.exported remain unapproved.
+
+## 6.4 Disposition after static reconciliation
+
+| Area | Static documentation result | Remaining blocker |
+|---|---|---|
+| CMD-041 physical source mapping | RECONCILED AS PROPOSAL | Metric dictionary, scope-safe query plan, indexes, bounds and performance evidence |
+| CMD-042 physical source mapping | RECONCILED AS PROPOSAL | Plan version selection rule, target progress PO decision, query plan and numeric bounds |
+| CMD-043 read boundary | RECONCILED AS PROPOSAL | T-10 reader/purpose/field/retention policy and access-append failure semantics |
+| CMD-044 export lifecycle | CANDIDATE MODEL DOCUMENTED; NOT ADMITTED | T-10 and T-18 institutional/security/operations approvals |
+
+This update closes only the static object-mapping omission for CMD-041/042 and creates a reviewable candidate export model for CMD-044. It does not close the underlying business, institutional, runtime or certification gates.
