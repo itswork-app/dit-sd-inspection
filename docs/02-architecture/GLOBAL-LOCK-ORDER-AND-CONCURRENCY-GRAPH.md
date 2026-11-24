@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.19
+**Version:** 0.4.20
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -506,3 +506,38 @@ These are potential edges, not observed runtime deadlocks. No cycle is claimed p
 - LG-45: stale CMD-052 lease generation vs concurrent fan-out retry — stale worker cannot finalize or alter candidate snapshot.
 
 **Disposition:** POQ-01 product semantics APPROVED; physical snapshot representation NOT ADMITTED; candidate lock order OPEN; worker identity/ACL OPEN; provider callback dedup OPEN; global graph remains NOT CERTIFIED ACYCLIC. Application lock certification remains 0/50; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 28. Complete notification source-producer lock coverage — 2026-11-24
+
+LOCK-MANIFEST-001 v0.4.27 §7.7 now maps all 40 canonical application domain command event declarations (CMD-001–040) to their current candidate lock paths and lock dispositions. This closes a static producer-inventory gap only. It does not certify the event policy allowlist, recipient resolver locks or any source command lock path.
+
+### 28.1 Source event producer classes
+
+- CMD-001–034: command transaction source events. Where an immutable policy explicitly allowlists the exact event type, outbox intent and candidate audience snapshot must be committed atomically with that source event and audit record.
+- CMD-035: operation-level sync events plus domain events emitted by individual operations. Each event instance must be bound to its durable operation result and transaction/savepoint boundary; batch-envelope completion is not a substitute.
+- CMD-036: generated-document event is emitted by guarded renderer finalization, after source revision/template and worker lease validation.
+- CMD-037: each print/reprint event is emitted by the guarded document/version sequence transaction.
+- CMD-038: each item-level print event is distinct from the batch projection event and is bound to the durable item outcome.
+- CMD-039: attendance upload/replacement event is emitted after private Storage verification and guarded document-version finalization.
+- CMD-040: attendance verification event is emitted after exact document-version, verifier scope and SoD validation.
+
+CMD-041/042 conditional report-access events and CMD-043/044 audit access/export events remain excluded from this mutation-producer inventory. Any read-side notification side effect requires a separately approved access-event transaction boundary. CMD-045–048 remain external control-plane IDs. CMD-049–054 are excluded from policy event matching by default to prevent recursive notification chains.
+
+### 28.2 Lock graph coverage gap
+
+The 40 producer rows currently describe each command's candidate source lock path, but do not yet include a complete recipient-resolution lock set. The resolver may need L15 principal, L16 role-grant, L17 scope-grant and applicable L30/L50 scope-parent resources. A producer may already hold L30/L40/L50/L60/L70/L90 before its source event is appended. Acquiring L15/L16/L17 at that point would be a potential lower-rank-after-higher-rank edge.
+
+Asynchronous finalizers add separate edges: CMD-036 renderer lease/source-version fence; CMD-038 batch-item/document sequence; CMD-039 attendance/document version. The finalizer's actual held locks at event commit must be mapped separately from the initiating request's reservation path.
+
+### 28.3 Required proof
+
+1. Approve the exact event-type allowlist and all producers for each enabled type.
+2. Bind every event instance to one command execution or finalizer transaction, including event cardinality and idempotency identity.
+3. Identify the event-time audience linearization point and authoritative temporal source for role, scope and assignment membership.
+4. Map the complete resolver lock set against every producer's already-held locks and all competing grant/revocation/assignment/project/session writers.
+5. Enumerate implicit FK KEY SHARE, unique-index, trigger and helper-function edges.
+6. Prove no reverse-rank acquisition in source commands, CMD-052, CMD-054 or callback/finalizer paths.
+7. Recompute and prove the effective graph acyclic, then execute deterministic opposing-transaction tests.
+
+**Disposition:** 40/40 source command event declarations statically mapped; 0/40 notification-recipient resolver lock paths certified. The candidate relation/header remain NOT ADMITTED. LOCK-GRAPH remains NOT CERTIFIED ACYCLIC; application lock certification 0/50; G9 NOT READY; G10 NOT ACTIVE.
