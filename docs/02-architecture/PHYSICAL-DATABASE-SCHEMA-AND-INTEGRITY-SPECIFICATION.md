@@ -1,7 +1,7 @@
 # Physical Database Schema and Integrity Specification
 
 **Status:** Engineering specification draft — approval required before migrations  
-**Version:** 0.4.5  
+**Version:** 0.4.6  
 **Package:** L — Physical Data Model and Integrity  
 **Date:** 2026-11-23
 
@@ -395,3 +395,18 @@ Candidate impacts requiring admission review:
 - RLS/ACL, append-only history, parent/claim/evidence/finalizer locks and adversarial QA.
 
 This annex adds no admitted table and does not change the 48-table count. No DDL, migration, grant, RLS change, runtime inspection or test was performed. Evidence carry-forward, next Inspector/claim owner and claim lifecycle remain open; do not infer them.
+
+
+## SES-001 candidate physical integrity addendum — 2026-11-24
+
+**Authority:** PO-approved SES-001. Candidate-only; canonical 48-table inventory is unchanged and no new entity, column, enum value, index or constraint is admitted by this addendum.
+
+Candidate inspection aggregate additions/invariants:
+- immutable non-null session_id FK to the exact originating session for every inspection attempt;
+- same-session consistency across inspection, operational assignment, claim, draft context, evidence intent/finalization and submitted revisions;
+- ABORTED terminal state for an incomplete attempt, with no legal transition back to ACTIVE, SUBMITTED, APPROVED or REOPENED;
+- abort atomically seals active draft context, terminates/releases active claim, records event/audit/idempotency and preserves all prior revisions/evidence;
+- final session close is rejected while unresolved inspection attempts remain;
+- later session may create a distinct new attempt for the same canonical unit, while concurrent active-claim uniqueness and global canonical identity remain enforced.
+
+Database must resolve the historical-attempt key/uniqueness strategy, FK graph, abort writer and lock participation, CMD-027 reuse versus dedicated abort command, same-session composite constraints and RLS/ACL. Do not infer a concrete enum/table/index or alter the canonical inventory until the design is approved and G9/G10 gates permit it. SES-001 does not authorize DDL, migration, grants, RLS or implementation.
