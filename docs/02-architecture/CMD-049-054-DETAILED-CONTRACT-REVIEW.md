@@ -282,12 +282,11 @@ No worker identity, scheduler trust model, database role, function owner or exac
 
 - Resolve against the immutable policy version pinned to the outbox.
 - Selector grammar must be explicit and approved; do not interpret free-form role labels.
-- Proposed default is event-time audience eligibility, followed by current account/assignment eligibility checks before sensitive delivery/access. The exact event-time versus dispatch-time semantics require PO/security approval.
-- Exclude disabled, suspended, expired or otherwise ineligible accounts at the policy-defined checkpoint.
-- Deduplicate recipients across selectors.
-- No eligible recipient produces a safe, durable outcome; never widen scope to make fan-out succeed.
-- Revalidate recipient scope before each external channel send where required.
-- Store only minimum recipient-resolution evidence and safe reason codes.
+- POQ-01 fixes the event-time candidate audience. CMD-052 consumes the immutable recipient/scope snapshot; it does not reconstruct recipients from current role/assignment membership.
+- Dispatch-time account/channel/consent/revocation/security checks may suppress an original candidate's external delivery but must never add recipients or widen scope.
+- Deduplicate recipients across selectors before snapshot finalization.
+- An empty event-time audience produces a safe, durable zero-candidate outcome; never widen scope to make fan-out succeed.
+- Store only minimum recipient/scope snapshot evidence and safe reason codes.
 
 ### 8.4 Physical write set and transaction
 
@@ -536,7 +535,7 @@ Existing QA references include TC-NOTIF-001 through TC-NOTIF-018. They remain **
 
 ## 16. Notification engineering reconciliation addendum — 2026-11-24
 
-This addendum records the static contract decisions and remaining approval boundary after reconciliation with NLA-001 v0.1.3. It does not change the proposal status or authorize implementation.
+This addendum records the static contract decisions and remaining approval boundary after reconciliation with NLA-001 v0.1.4. It does not change the proposal status or authorize implementation.
 
 | Area | Documentation-level disposition | Remaining blocker |
 |---|---|---|
@@ -548,7 +547,7 @@ This addendum records the static contract decisions and remaining approval bound
 | CMD-054 escalation | No caller evaluation_time; one database UTC instant per transaction | named SLA start event, per-policy elapsed/business-time mode, ELAPSED_UTC initial default, quiet-hours delivery deferral without SLA pause, and unapproved calendar/pause semantics |
 | Dismissal | dismissed_at reserved only | POQ-03 approval; no dismiss command, permission or browser mutation is in MVP |
 
-The six notification tables remain a proposed subset of the 48-table physical/RLS inventory. INT-NOTIF-001 is an integration contract, not a new CMD ID or table. TC-NOTIF-001..029 and TC-FN-SEC-025-064..069 remain PLANNED / NOT EXECUTED. Worker identities, exact function owners/EXECUTE ACLs, live RLS/grants, provider capability and T-10 institutional retention/privacy remain open. G9 NOT READY; G10 NOT ACTIVE.
+The six notification tables remain a proposed subset of the 48-table physical/RLS inventory. INT-NOTIF-001 is an integration contract, not a new CMD ID or table. TC-NOTIF-001..040, TC-RLS-024-049 and TC-FN-SEC-025-064..071 remain PLANNED / NOT EXECUTED. Worker identities, exact function owners/EXECUTE ACLs, live RLS/grants, provider capability and T-10 institutional retention/privacy remain open. G9 NOT READY; G10 NOT ACTIVE.
 
 
 ## Product Owner notification decisions — POQ-001 (2026-11-24)
