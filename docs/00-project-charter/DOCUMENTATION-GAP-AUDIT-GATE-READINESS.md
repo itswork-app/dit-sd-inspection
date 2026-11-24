@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.12
+**Version:** 1.11.13
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -369,3 +369,6 @@ CMD-001–010 Detailed Contract Review v0.3.3 §9 now records per-command candid
 QA Catalogue v0.3.2 updates TC-CMD-CONTRACT-024-001..010 concurrency assertions for account request/decision races, role and scope grant lifecycle, T-14 serialization, project capacity bootstrap, project CAS and project-close parent fencing. CMD-001–010 Detailed Contract Review v0.3.4, LOCK-MANIFEST-001 v0.4.10, LOCK-GRAPH-001 v0.4.8 and LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.6 are the current candidate design references.
 
 All ten command test cases remain PLANNED / NOT EXECUTED. Progress remains 10/54 candidate-normalized at documentation level and 0/54 technically approved/certified. DGA-B18 PARTIAL, DGA-B19 OPEN, DGA-B21 PARTIAL; LPR-01/LPR-07–LPR-11 remain OPEN, LPR-10 NOT EXECUTED, G3/G4/G5/G7/G9 NOT READY and G10 NOT AUTHORIZED.
+
+
+**Cross-command source synchronization:** CMD-001–054 Cross-Command Reconciliation v0.8.6 now records the CMD-001–010 candidate lock overlay and the 10/54 candidate-normalized progress count. This remains a documentation proposal only; no command contract is approved or certified by this synchronization.
