@@ -44,7 +44,7 @@ Recommendations in this pack are not approvals. Explicit Product Owner approvals
 | T-12 | Provider operations, region, quota, backups and ownership | BLOCKED | Verify actual Supabase/Vercel plans, region, quotas, backup/restore and named operational owners | Blocker |
 | T-13 | Print Officer and print-control workflow | PO APPROVED (B) | Permissioned queue; individual + bounded batch printing; per-document outcomes and audited print/reprint events | High |
 | T-14 | Inspector capacity semantics | PO APPROVED (A) | Count distinct enabled accounts with active Inspector role and effective operational assignment | High |
-| T-15 | Audit event policy INS-016 | OPEN | Approve append-only event catalogue and atomic audit writes for critical state changes | Blocker |
+| T-15 | Audit event policy INS-016 | PO APPROVED (A) | Append-only catalogue; atomic audit + critical mutation; fail-closed on audit failure | Blocker until implementation and institutional controls verified |
 | T-16 | Serial-number uniqueness and evidence/revision linkage | OPEN | Enforce scoped uniqueness rules only after source/business rules are confirmed; bind evidence to immutable revision and instrument version | Blocker |
 | T-17 | Instrument configuration governance CFG-001 | APPROVED DIRECTION; detailed controls OPEN | Declarative, versioned configuration with bounded supported field and validation types; no arbitrary code | Must be completed in design |
 | T-18 | Privileged command boundary | OPEN | All privileged mutations through narrowly scoped server-side commands with caller identity, authorization and atomic transactions | Blocker |
@@ -332,7 +332,7 @@ The enforcement must be atomic. Reject 0 and values above 100. If reducing the c
 
 **Decision required:** Approve the catalogue and fail-closed atomicity rule, or provide the governing alternative.
 
-**State:** OPEN; critical mutation design blocked.
+**State after PO response (2026-11-24): PO APPROVED option A.** Append-only audit records and atomic/fail-closed audit writes for critical mutations are approved. Institutional retention/legal-hold/metadata decisions and technical implementation evidence remain open.
 
 ### T-16 — Serial uniqueness and evidence/revision linkage
 
