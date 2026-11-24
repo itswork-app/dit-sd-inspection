@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.78
+**Version:** 1.11.79
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -799,3 +799,10 @@ NREG-003 is PARTIAL STATIC REVIEW — UNRESOLVED / NOT ENABLED. RTM-001 v0.1.15 
 NLA-EVENT-TECH-RECON-001 v0.1.2 records partial static review of NREG-004 `project.closed` and NREG-005 exact final `session.closed`. The final committed producer boundaries and POQ-04 pre-close snapshot/post-close suppression semantics are identified. The closure blocker graph, project/session physical version tokens, complete child-writer/finalizer inventory, compatible parent-first lock order, exact participant/scope projection, event-specific closure dispatch and snapshot/outbox uniqueness remain unresolved. `session.close_requested` remains excluded from NREG-005.
 
 RTM-001 v0.1.16 adds NOTIF-028..030; QA Catalogue v0.5.6 adds TC-NOTIF-079..081, all PLANNED / NOT EXECUTED. DGA-B14 closure fence remains OPEN; F-05/F-04/F-03/F-07 remain OPEN; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+### CMD-014/015 assignment event reconciliation — 2026-11-24
+
+NLA-EVENT-TECH-RECON-001 v0.1.3 partially reviews NREG-006 `assignment.created` and NREG-007 `assignment.changed`. The source transactions and proposed assignment/member writes are identified, but CMD-014's new-member event-participant semantics under pre-mutation snapshot rules, CMD-015's added/ended/retained event cardinality, active-claim/in-progress-work handling, physical membership uniqueness/interval constraints, and complete L05/L10/T-14 writer order remain unresolved.
+
+RTM-001 v0.1.17 adds NOTIF-031..034; QA Catalogue v0.5.7 adds TC-NOTIF-082..085, all PLANNED / NOT EXECUTED. Assignment and capacity writer coverage remains partial; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; F-05/F-04/F-03/F-07 OPEN; G9 NOT READY; G10 NOT ACTIVE.
