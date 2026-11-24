@@ -49,7 +49,7 @@ No application code, migrations, live Supabase database, deployed RLS/grants, Ve
 | DGA-B10 | Command contracts | 54 stable IDs are inventoried; 50 are application commands with candidate contracts; CMD-045–048 are PO-approved external control-plane traceability IDs, not executable application commands. The 50 application command contracts remain proposed; exact route/RPC signatures, function privileges, physical lock/read-write sets, permission predicates and runtime evidence remain incomplete | Close the 50 in-scope application contracts with accountable approvals, exact route/RPC/schema/permission/lock/QA traceability and implementation evidence; keep CMD-045–048 explicitly out of the application command surface and track external evidence separately | Engineering + Security + PO + institutional/operations owners | OPEN — 50 APPLICATION COMMANDS REVIEWED; APPROVALS/TECHNICAL CLOSURE OPEN; 4 EXTERNAL IDs SCOPE-RESOLVED |
 | DGA-B11 | Database/RLS/ERD | Static documentation inventory remains 48/48; notification field vocabulary now aligns safe_payload and worker lease fencing fields across NLA-001/physical schema/RLS/ERD. Exact composite constraints, grants, RLS predicates, views, functions, triggers, sequences and Storage policies remain unverified | Independent technical review of 48-table crosswalk, all constraints/privileges/RLS and live inventory before implementation | Engineering + security | DESIGN RECONCILED; LIVE VERIFICATION OPEN |
 | DGA-B12 | T-18 execution model | Option A is PO-approved, but function-by-function owner, effective privileges, search_path, exact EXECUTE ACL, JWT forwarding and real route-to-PostgREST path have no runtime evidence | Per-function security review, live inventory, route design, end-to-end caller-JWT negative/positive test | Engineering + security | NOT VERIFIED |
-| DGA-B13 | Audit/INS-015 notifications | NLA-001 v0.1.3 and CMD-049–054 review v0.1.2 reflect POQ-01..03 approvals: hybrid event-time candidate audience with no widening, per-policy SLA with ELAPSED_UTC initial default and quiet-hours delivery deferral only, and no dismiss/archive in MVP. Worker identity/ACL, selector/snapshot implementation, policy grants/SoD, provider callback security, retry horizons and T-10 retention/privacy remain open | Engineering/Security design of durable candidate snapshot/checkpoint and selector grammar; worker principal/ACL; provider capability and callback evidence; institutional T-10 policy; live schema/RLS and tests after G10 | PO (semantics approved) + engineering + institution + Security/Operations | PO SEMANTICS APPROVED; ENGINEERING/EXTERNAL APPROVALS AND RUNTIME EVIDENCE OPEN |
+| DGA-B13 | Audit/INS-015 notifications | NLA-001 v0.1.4 and CMD-049–054 review v0.1.3 reflect POQ-01..03 approvals: hybrid event-time candidate audience with no widening, per-policy SLA with ELAPSED_UTC initial default and quiet-hours delivery deferral only, and no dismiss/archive in MVP. Worker identity/ACL, selector/snapshot implementation, policy grants/SoD, provider callback security, retry horizons and T-10 retention/privacy remain open | Engineering/Security design of durable candidate snapshot/checkpoint and selector grammar; worker principal/ACL; provider capability and callback evidence; institutional T-10 policy; live schema/RLS and tests after G10 | PO (semantics approved) + engineering + institution + Security/Operations | PO SEMANTICS APPROVED; ENGINEERING/EXTERNAL APPROVALS AND RUNTIME EVIDENCE OPEN |
 | DGA-B14 | Reports/project closure | T-05/T-06 metrics, BA/serial annex and closure graph remain open. T-13 print batch persistence is mapped to `print_batches` + append-only per-document `print_events`; eight dedicated print-batch cases are now specified, but projection, retry and concurrency tests remain unexecuted. CMD-010 project closure also lacks a proven parent-fence protocol against CMD-011–015 child writers | Metric definitions, closure gates, project/session parent-fence lock modes and child-writer order, print schema/command review and execution evidence | PO + engineering + security | PARTIAL; PRINT DESIGN SPECIFIED, CLOSURE FENCE OPEN |
 | DGA-B15 | CI/repository governance | Required CI jobs, branch protection, review requirements, secrets scanning, migration checks and actual workflow run were not verified | Live GitHub ruleset/workflow evidence and successful required-check run | Repository administrator | NOT VERIFIED |
 | DGA-B16 | Scope/authority document freshness | Package S §9.15 is preserved as a historical snapshot; §9.16 now reconciles current DGA/QA counts and links current cross-document audit. Package T is confirmed as a historical decision pack with Decision Register as current authority. RTM T-13 print test mapping was corrected against QA. Remaining source/requirement/RAID crosswalk and independent G9 review remain open | Controlled status addenda; reconciled Decision Register/Package S/T/RTM/RAID crosswalk; independent evidence review | Document owner + PO | PARTIAL — DOCUMENTATION RECONCILIATION UPDATED; SOURCE/REQUIREMENT CLOSURE OPEN |
@@ -79,7 +79,7 @@ The Product Owner approved [CMD-045–048 Control-Plane Resolution Proposal](../
 These items may be closable through documentation work but remain implementation blockers until complete:
 
 1. **Command completeness:** CMD-045..048 are intentionally blocked pending institutional/operational authority and missing schemas; CMD-001..044 also require detailed review. A one-row command matrix is not a full API/database contract.
-2. **Notification approval and verification:** NLA-001 v0.1.3 now proposes recipient, priority, channel, quiet-hour, reminder, SLA/escalation, retry, delivery/read, outbox, policy versioning, audit, explicit worker lease fencing and INT-NOTIF-001 callback ingress. POQ-01..03 product semantics are now approved: hybrid event-time candidate audience with no widening, per-policy SLA with ELAPSED_UTC initial default and quiet-hours delivery deferral only, and dismissal excluded from MVP. Remaining blockers are selector/snapshot implementation design, notification.policy.manage grants/SoD, worker identity/ACL, provider capability/callback authentication and T-10 retention/privacy. CMD-050 expected_version and CMD-054 evaluation_time are removed; INT-NOTIF-001 is the provider callback integration boundary. notification_events remains removed as an ambiguous placeholder.
+2. **Notification approval and verification:** NLA-001 v0.1.4 now proposes recipient, priority, channel, quiet-hour, reminder, SLA/escalation, retry, delivery/read, outbox, policy versioning, audit, explicit worker lease fencing and INT-NOTIF-001 callback ingress. POQ-01..03 product semantics are now approved: hybrid event-time candidate audience with no widening, per-policy SLA with ELAPSED_UTC initial default and quiet-hours delivery deferral only, and dismissal excluded from MVP. Remaining blockers are selector/snapshot implementation design, notification.policy.manage grants/SoD, worker identity/ACL, provider capability/callback authentication and T-10 retention/privacy. CMD-050 expected_version and CMD-054 evaluation_time are removed; INT-NOTIF-001 is the provider callback integration boundary. notification_events remains removed as an ambiguous placeholder.
 3. **Print batch technical review:** T-13 requires durable batch identity and per-document outcomes; `print_batches` and batch-linked append-only `print_events` are now specified. Review aggregate projection, retry, lock/idempotency and failure/concurrency tests; do not treat the design as implementation evidence.
 4. **Permission authority:** distinguish role assignment, permission grant, scope grant, grantor ceiling, emergency access, break-glass and revocation freshness. A Super Admin label is not a substitute for a specific permission.
 5. **Evidence lifecycle:** specify upload-intent reservation, object verification, orphan cleanup, immutable original, replacement, malware/content validation if required, signed URL lifetime, export audit and retention/disposition.
@@ -143,7 +143,7 @@ No source code, migration, SQL, grants, live database mutation, deployment, secu
 
 ## NLA-001 / T-13 closure evidence update — 2026-11-24
 
-- NLA-001 v0.1.3 records the INS-015 lifecycle, proposed six-table persistence model, recipient and channel rules, retry/UNKNOWN semantics, audit/privacy boundary, worker lease fencing, INT-NOTIF-001, CMD-049..054 and TC-NOTIF-001..029.
+- NLA-001 v0.1.4 records the INS-015 lifecycle, proposed six-table persistence model, recipient and channel rules, retry/UNKNOWN semantics, audit/privacy boundary, worker lease fencing, INT-NOTIF-001, CMD-049..054 and TC-NOTIF-001..029.
 - T-13 is reconciled by adding `print_batches` to physical schema/RLS and linking per-document attempt outcomes in `print_events`.
 - Proposed physical/RLS inventory: 48 tables each; static document parity only.
 - DGA-B10, B11, B13 and B14 remain open/partial. No PO/security sign-off, live database inspection, migration, grant, provider setup or test execution is claimed.
@@ -172,7 +172,7 @@ The cross-command synthesis is recorded in [CMD-001–054 Cross-Command Reconcil
 | DGA-B10 — command completeness | 54 logical command/read/worker operations reviewed in seven detailed documents; consolidated cross-command register created | OPEN — approvals and exact traceability remain |
 | DGA-B11 — database/RLS/ERD | 48/48 proposed table-name parity crosswalk | DESIGN RECONCILED; LIVE VERIFICATION OPEN |
 | DGA-B12 — T-18 execution | Option A PO-approved; per-function owner, security mode, search_path, exact EXECUTE ACL and caller-JWT proof absent | NOT VERIFIED |
-| DGA-B13 — notification lifecycle | CMD-049–054 review v0.1.2 and NLA-001 v0.1.3 crosswalk synchronized across schema/RLS/API/audit/lock/QA; POQ-01..03 approved | DESIGN RECONCILED; ENGINEERING/SECURITY/WORKER/PROVIDER/T-10 APPROVALS OPEN |
+| DGA-B13 — notification lifecycle | CMD-049–054 review v0.1.3 and NLA-001 v0.1.4 crosswalk synchronized across schema/RLS/API/audit/lock/QA; POQ-01..03 approved | DESIGN RECONCILED; ENGINEERING/SECURITY/WORKER/PROVIDER/T-10 APPROVALS OPEN |
 | DGA-B04 — institutional data governance | T-10 formal review path only | BLOCKED pending written institutional decisions |
 | DGA-B05 — provider ownership | T-12 alternative ownership direction only | BLOCKED pending signed ownership/RACI and provider evidence |
 
@@ -190,7 +190,7 @@ The cross-command synthesis is recorded in [CMD-001–054 Cross-Command Reconcil
 
 ### Gate disposition
 
-G5 remains BLOCKED. G9 remains NOT READY. G10 remains NOT AUTHORIZED. The completion of detailed documentation reviews does not close DGA-B10, authorize implementation or establish production readiness. Each DGA item may be closed only with accountable-owner acceptance and the required source/approval/runtime evidence.
+G5 remains BLOCKED. G9 remains NOT READY. G10 remains NOT ACTIVE. The completion of detailed documentation reviews does not close DGA-B10, authorize implementation or establish production readiness. Each DGA item may be closed only with accountable-owner acceptance and the required source/approval/runtime evidence.
 
 
 ## Concurrency/version-token proposal update — 2026-11-24
@@ -204,14 +204,14 @@ The proposal maps:
 - CMD-005/007/035/040/050 field and target mismatches;
 - immutable revision/hash, print sequence and worker lease/fencing domains.
 
-**Disposition:** DGA-B17 OPEN. No PO/Security decision has been inferred. G3/G5 remain BLOCKED, G9 remains NOT READY and G10 remains NOT AUTHORIZED. The proposal does not alter the canonical physical schema or command contracts and no tests were executed.
+**Disposition:** DGA-B17 OPEN. No PO/Security decision has been inferred. G3/G5 remain BLOCKED, G9 remains NOT READY and G10 remains NOT ACTIVE. The proposal does not alter the canonical physical schema or command contracts and no tests were executed.
 
 
 ## Global lock/concurrency graph update — 2026-11-24
 
 [LOCK-GRAPH-001 — Global Lock-Order and Concurrency Graph Reconciliation](../02-architecture/GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md) v0.3.2 records the cross-command lock-order disagreements and proposes a candidate resource hierarchy, command/race matrix, potential deadlock inversions, lock-manifest requirements and 41 planned concurrency tests, including explicit cross-project canonical-identity collisions, cross-project claim arbitration, T-14 eligibility writers, instrument publish/deactivation, safety withdrawal, parent-fenced async finalizers and immutable notification-policy fan-out.
 
-**Disposition:** DGA-B18 PARTIAL. PO product decisions LPR-02–LPR-06 are recorded; the proposal still does not prove an acyclic graph, resolve the complete CMD-026 and competing-command lock paths, alter canonical command contracts or authorize implementation. G3/G4/G5/G7 remain NOT READY/BLOCKED as recorded above; G9 remains NOT READY and G10 remains NOT AUTHORIZED. No tests or runtime lock inspection were executed.
+**Disposition:** DGA-B18 PARTIAL. PO product decisions LPR-02–LPR-06 are recorded; the proposal still does not prove an acyclic graph, resolve the complete CMD-026 and competing-command lock paths, alter canonical command contracts or authorize implementation. G3/G4/G5/G7 remain NOT READY/BLOCKED as recorded above; G9 remains NOT READY and G10 remains NOT ACTIVE. No tests or runtime lock inspection were executed.
 
 
 ## Command-level lock manifest update — 2026-11-24
@@ -252,7 +252,7 @@ LOCK-MANIFEST-001 is now v0.3.5. Its §2 source set was refreshed against the cu
 
 LOCK-GRAPH-001 was bumped to v0.3.4 solely to synchronize its reference to LOCK-MANIFEST-001 v0.3.4. No candidate lock rank, command contract, physical constraint or PO/security decision was changed.
 
-**Disposition:** DGA-B19 remains OPEN; 54/54 logical command IDs remain inventoried and 0/54 are certified lock-complete. This source-version refresh is not evidence of physical FK/index/trigger/function behavior, effective grants/RLS, acyclic lock graph or passing concurrency tests. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT AUTHORIZED. No SQL, migration, CI, automated test, live database inspection or deployment was performed.
+**Disposition:** DGA-B19 remains OPEN; 54/54 logical command IDs remain inventoried and 0/54 are certified lock-complete. This source-version refresh is not evidence of physical FK/index/trigger/function behavior, effective grants/RLS, acyclic lock graph or passing concurrency tests. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT ACTIVE. No SQL, migration, CI, automated test, live database inspection or deployment was performed.
 
 ## Candidate lock-rank and notification transaction reconciliation — 2026-11-24
 
@@ -265,7 +265,7 @@ The documentation has now been reconciled as follows:
 
 The notification boundary explicitly keeps queue claims in short isolated transactions, commits lease/fencing generation before fan-out/provider I/O, separates recipient read state from delivery state, and leaves provider callback command mapping unresolved. CMD-041–043 remain read/purpose-bound query designs; CMD-044 remains blocked by T-10; CMD-045–048 remain authority/schema/provider/release blocked.
 
-**Disposition:** DGA-B18 remains PARTIAL and DGA-B19 remains OPEN. 54/54 command IDs are inventoried, but 0/54 are normalized and certified lock-complete. LPR-01 and LPR-07–LPR-11 remain open/not executed. No PostgreSQL catalog, trigger/FK/index graph, deployed RLS/ACL, worker principal, CI, test, SQL, migration, live database, deployment or merge was inspected or executed. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT AUTHORIZED.
+**Disposition:** DGA-B18 remains PARTIAL and DGA-B19 remains OPEN. 54/54 command IDs are inventoried, but 0/54 are normalized and certified lock-complete. LPR-01 and LPR-07–LPR-11 remain open/not executed. No PostgreSQL catalog, trigger/FK/index graph, deployed RLS/ACL, worker principal, CI, test, SQL, migration, live database, deployment or merge was inspected or executed. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT ACTIVE.
 
 ## Lock-rank cross-reference synchronization — 2026-11-24
 
@@ -380,7 +380,7 @@ The CMD-011–020 decision package is v0.2.2 and explicitly corrects its older c
 
 CMD-001–010 Detailed Contract Review v0.3.3 §9 now records per-command candidate resources, lock modes, post-lock revalidation, competing writers, open physical evidence and planned adversarial test pairs. LOCK-MANIFEST-001 v0.4.9 updates both the 54-command inventory rows and detailed resource rows; LOCK-GRAPH-001 v0.4.7 and LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.5 carry the same candidate edge overlay.
 
-**Progress accounting:** 10/54 are candidate-normalized at documentation level; 0/54 are technically approved or lock-complete certified. This does not close LPR-01, LPR-07, LPR-11, DGA-B18, DGA-B19, DGA-B21, G3, G4, G5, G7 or G9. LPR-10 remains NOT EXECUTED; G10 remains NOT AUTHORIZED. Physical PostgreSQL object/privilege inventory and concurrency evidence remain absent.
+**Progress accounting:** 10/54 are candidate-normalized at documentation level; 0/54 are technically approved or lock-complete certified. This does not close LPR-01, LPR-07, LPR-11, DGA-B18, DGA-B19, DGA-B21, G3, G4, G5, G7 or G9. LPR-10 remains NOT EXECUTED; G10 remains NOT ACTIVE. Physical PostgreSQL object/privilege inventory and concurrency evidence remain absent.
 
 
 ## CMD-001–010 QA and source-version synchronization — 2026-11-24
@@ -393,7 +393,7 @@ All ten command test cases remain PLANNED / NOT EXECUTED. Progress remains 10/54
 **Cross-command source synchronization:** CMD-001–054 Cross-Command Reconciliation v0.8.8 now records the CMD-001–010 candidate lock overlay and the 10/54 candidate-normalized progress count. This remains a documentation proposal only; no command contract is approved or certified by this synchronization.
 
 
-**CMD-045–048 review synchronization (2026-11-24):** CMD catalogue v0.4.2, CMD-001–054 Cross-Command Reconciliation v0.8.13, QA Catalogue v0.3.4, RTM RET-001 / INC-001 / PROV-001 / REL-001 and RAID D-031..D-033/R-032..R-033 now reference CMD-045–048 Detailed Contract Review v0.1.0. These are documentation updates only. T-10/T-12 institutional approvals, incident scope, provider custody and release governance remain open; no command is approved, no test was executed, 0/54 commands are technically certified, G9 remains NOT READY and G10 remains NOT AUTHORIZED.
+**CMD-045–048 review synchronization (2026-11-24):** CMD catalogue v0.4.2, CMD-001–054 Cross-Command Reconciliation v0.8.13, QA Catalogue v0.3.4, RTM RET-001 / INC-001 / PROV-001 / REL-001 and RAID D-031..D-033/R-032..R-033 now reference CMD-045–048 Detailed Contract Review v0.1.0. These are documentation updates only. T-10/T-12 institutional approvals, incident scope, provider custody and release governance remain open; no command is approved, no test was executed, 0/54 commands are technically certified, G9 remains NOT READY and G10 remains NOT ACTIVE.
 
 
 ## CMD-049–054 notification contract reconciliation checkpoint — 2026-11-24
@@ -406,7 +406,7 @@ The following documentation mismatches have been resolved at proposal level and 
 - CMD-054 no longer accepts evaluation_time; one database UTC instant is captured per scheduler evaluation transaction. POQ-02 approves per-policy elapsed/business-time semantics, ELAPSED_UTC initial default and quiet-hours delivery deferral without SLA pause; exact start event/calendar/pause semantics remain open.
 - Dismiss/archive is excluded from MVP by POQ-03; dismissed_at is dormant with no command, permission or browser mutation.
 
-Updated references: NLA-001 v0.1.3; CMD-049–054 Detailed Contract Review v0.1.2; Command Catalogue v0.4.5; Physical Schema v0.4.2; RLS Catalogue v0.2.3; API Contracts v0.2.2; QA Catalogue v0.3.6; Audit Event Catalogue; Lock Manifest v0.4.14; Concurrency Token Reconciliation v0.1.4; RTM-001 v0.1.3; QA Catalogue v0.3.6; RTM NOTIF-007..013; RAID D-034..D-036/R-034..R-035.
+Updated references: NLA-001 v0.1.4; CMD-049–054 Detailed Contract Review v0.1.2; Command Catalogue v0.4.5; Physical Schema v0.4.2; RLS Catalogue v0.2.3; API Contracts v0.2.2; QA Catalogue v0.3.6; Audit Event Catalogue; Lock Manifest v0.4.14; Concurrency Token Reconciliation v0.1.4; RTM-001 v0.1.3; QA Catalogue v0.3.6; RTM NOTIF-007..013; RAID D-034..D-036/R-034..R-035.
 
 The 29 notification cases are PLANNED / NOT EXECUTED. DGA-B10 remains OPEN because approvals and exact executable contracts are incomplete. DGA-B11 remains design-reconciled/live-unverified. DGA-B13 remains approval/runtime-open. DGA-B17 remains OPEN for other command token mismatches. DGA-B19 remains 10/54 candidate-normalized and 0/54 technically approved/certified. G9 remains NOT READY and G10 NOT AUTHORIZED. No implementation, SQL, migration, grant, CI, test execution, live database inspection, provider setup, deployment or merge occurred.
 
@@ -439,7 +439,7 @@ The static closure audit reviewed the current root AGENTS.md v1.2.0, MIB-001 v1.
 
 This audit does not close DGA-B04/B05/B09/B10/B11/B12/B13/B14/B15/B16/B17/B18/B19/B20/B21. In particular, the candidate global lock graph is not approved or proven acyclic; 44/54 command manifests remain not candidate-normalized; all 54 remain uncertified; exact command JSON Schema/OpenAPI, route/RPC signatures, function owners/privileges/EXECUTE ACL, physical constraints/indexes/FKs, RLS/grants, provider/worker identity, recipient eligibility semantics, retry/SLA policy, T-10 institutional records/privacy authority, T-12 provider ownership, CI/ruleset evidence and implementation/runtime verification remain outstanding.
 
-No CI workflow, automated test, concurrency test, live Supabase inventory, SQL, migration, grant/revoke, provider setup, deployment, production mutation or merge was performed. PR #3 remains Draft/Open. G9 remains NOT READY; G10 remains NOT AUTHORIZED. This checkpoint closes only the identified static documentation inconsistencies, not implementation readiness or all possible repository gaps.
+No CI workflow, automated test, concurrency test, live Supabase inventory, SQL, migration, grant/revoke, provider setup, deployment, production mutation or merge was performed. PR #3 remains Draft/Open. G9 remains NOT READY; G10 remains NOT ACTIVE. This checkpoint closes only the identified static documentation inconsistencies, not implementation readiness or all possible repository gaps.
 
 
 ## 13. Governance source-pointer reconciliation — 2026-11-24
@@ -489,7 +489,7 @@ The Product Owner accepts these supplied artifacts as project evidence and has c
 
 The 20 Nov SB batch (460 inspected / 456 good / 4 defective), 23 Nov IFP visit BA (300 inspected / 300 good / 0 defective; SB 0 inspected), 23 Nov SB form no. 469 and 24 Nov IFP form no. 189 remain distinct events and must not be merged. The 13-row photo is an example only, not the full 460-row annex.
 
-**Disposition:** DGA-B01 = EVIDENCE RECEIVED / SOURCE AUTHORITY OPEN; DGA-B02 = EVIDENCE RECEIVED / ANNEX AND AUTHORITY RECONCILIATION OPEN; DGA-B03 = EXAMPLES RECEIVED / INSTITUTIONAL AUTHORITY OPEN. G1 and G9 remain NOT READY; G10 remains NOT AUTHORIZED. No external approval, signature verification, runtime test or CI result is inferred.
+**Disposition:** DGA-B01 = EVIDENCE RECEIVED / SOURCE AUTHORITY OPEN; DGA-B02 = EVIDENCE RECEIVED / ANNEX AND AUTHORITY RECONCILIATION OPEN; DGA-B03 = EXAMPLES RECEIVED / INSTITUTIONAL AUTHORITY OPEN. G1 and G9 remain NOT READY; G10 remains NOT ACTIVE. No external approval, signature verification, runtime test or CI result is inferred.
 
 
 ## Product Owner conditional implementation authorization — 2026-11-24
