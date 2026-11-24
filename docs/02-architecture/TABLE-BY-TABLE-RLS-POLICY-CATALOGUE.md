@@ -217,7 +217,7 @@ For each test, record actor fixture, grants, resource fixture, request, expected
 
 ## Command authorization matrix cross-reference
 
-See COMMAND-AUTHORIZATION-VERIFICATION-MATRIX.md, section 5, for the 27-family crosswalk against this catalogue's current 41 tables. That crosswalk identifies registry domains for retention/legal-hold, security cases and provider/release that are not represented by current tables, plus the unresolved audit-export artifact model. These are inventory gaps, not permission to create or expose new tables. Update this catalogue before any such object is introduced or exposed. The matrix and this catalogue remain design artifacts; no RLS policy or grant is deployed or verified.
+See COMMAND-AUTHORIZATION-VERIFICATION-MATRIX.md, section 5, for the 28-family crosswalk against this catalogue's current proposed 48 tables. That crosswalk identifies registry domains for retention/legal-hold, security cases and provider/release that are not represented by current tables, plus the unresolved audit-export artifact model. These are inventory gaps, not permission to create or expose new tables. Update this catalogue before any such object is introduced or exposed. The matrix and this catalogue remain design artifacts; no RLS policy or grant is deployed or verified.
 
 ## 10. Release gate and disposition
 
