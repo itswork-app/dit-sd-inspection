@@ -75,12 +75,19 @@ where n.nspname not like 'pg_%'
   and n.nspname <> 'information_schema'
 order by n.nspname;
 
-select grantee, schema_name, privilege_type, is_grantable
-from information_schema.schema_privileges
-order by schema_name, grantee, privilege_type;
+select n.nspname as schema_name,
+       coalesce(r.rolname, 'PUBLIC') as grantee,
+       a.privilege_type,
+       a.is_grantable
+from pg_namespace n
+cross join lateral aclexplode(coalesce(n.nspacl, acldefault('n', n.nspowner))) a
+left join pg_roles r on r.oid = a.grantee
+where n.nspname not like 'pg_%'
+  and n.nspname <> 'information_schema'
+order by n.nspname, grantee, a.privilege_type;
 ~~~
 
-If information_schema.schema_privileges is unavailable on the deployed version, record that and use namespace ACL plus explicit grant review. Identify schemas exposed through Supabase/PostgREST Dashboard configuration; exposure is not reliably inferred from catalog grants alone.
+The ACL expansion above reports explicit/default schema privileges, including PUBLIC grants. Identify schemas exposed through Supabase/PostgREST Dashboard configuration; exposure is not reliably inferred from catalog grants alone.
 
 ## 6. Tables, ownership, ACL, RLS and policies
 
