@@ -8,11 +8,11 @@
 
 ## Approval record
 
-The Product Owner approved version 0.1.0 of this proposal on 2026-11-24. Version 0.1.1 records that disposition and preserves the accepted scope unchanged. Approval applies only to the application-surface treatment and traceability status of CMD-045–048. It does not approve institutional T-10 policy, T-12 provider ownership, incident-response authority, release governance, implementation, tests, deployment or production operation. G9 remains NOT READY; G10 remains NOT ACTIVE.
+The Product Owner approved version 0.1.0 of this proposal on 2026-11-24. Version 0.1.2 reconciles the document with that disposition and preserves the accepted scope unchanged. Approval applies only to the application-surface treatment and traceability status of CMD-045–048. It does not approve institutional T-10 policy, T-12 provider ownership, incident-response authority, release governance, implementation, tests, deployment or production operation. G9 remains NOT READY; G10 remains NOT ACTIVE.
 
 ## 1. Approved application-scope disposition
 
-The Product Owner explicitly approved this proposal's v0.1.0 application-scope treatment on 2026-11-24. Version 0.1.1 records that decision. CMD-045–048 remain stable traceability IDs but are not executable application commands, do not receive application permissions, and must not be implemented as browser-callable CRUD/RPC endpoints, SQL functions, tables, workers or generic administrative interfaces.
+The Product Owner explicitly approved this proposal's v0.1.0 application-scope treatment on 2026-11-24. Version 0.1.2 records the corrected approval state. CMD-045–048 remain stable traceability IDs but are not executable application commands, do not receive application permissions, and must not be implemented as browser-callable CRUD/RPC endpoints, SQL functions, tables, workers or generic administrative interfaces.
 
 The approval closes the product-scope ambiguity only. Institutional records/privacy authority, incident-response ownership, provider custody/recovery, and release governance remain external dependencies with their own accountable authorities and evidence. The application may expose a narrowly scoped read-only evidence reference only under a new requirement/command ID and separate approval.
 
