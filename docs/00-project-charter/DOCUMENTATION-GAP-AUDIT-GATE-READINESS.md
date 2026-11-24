@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.29
+**Version:** 1.11.30
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -494,3 +494,31 @@ The Product Owner's explicit written authorization is recorded in the canonical 
 ### G9 closure focus
 
 The closure sequence must prioritize blockers that determine lawful product scope, authoritative inspection behavior, data integrity, authorization and executable transaction safety. Evidence of future production operations (including restore drills, measured load/SLO, production provider custody and UAT) must remain explicitly assigned to the relevant pre-pilot/release gate where the approved roadmap permits it; it must not be misreported as completed or silently discarded. Any deferral from G9 requires documented scope exclusion or acceptance by the authority accountable for that risk. This audit does not itself reclassify or waive DGA-B01..B21.
+
+
+## G9-to-implementation evidence staging — 2026-11-24
+
+This section clarifies when evidence can logically exist. It does not waive any DGA blocker, change the G9 exit criteria in IRG-001, or authorize implementation. The objective is to prevent two opposite errors: requiring runtime evidence before any runtime exists, and treating a future-phase item as if it were already satisfied.
+
+| DGA IDs | Required before G9 scope freeze | Evidence that can only be produced after G10 | Release / production boundary |
+|---|---|---|---|
+| B01–B03 | Controlled instrument/source inventory, complete applicability and evidence-slot rules; approved BA/signatory/attendance authority or explicit scope exclusion by the competent institution | Validation against implemented forms and generated artifacts | Actual signed/verified BA and attendance records before operational use |
+| B04 | Approved classification, purpose/legal basis, evidence limits, retention/disposition, legal hold and audit/privacy requirements for the in-scope data | Verify implemented retention, access, deletion holds and audit controls | Institutional approval and operational procedures before real data processing |
+| B05 | Provider/region/ownership decision and architecture-compatible capability envelope before provisioning | Actual configuration, quotas, backups and access controls verified in the selected environment | Named account/billing/custody owners and support/recovery arrangements before production |
+| B06 | Recovery design, provider capability assumptions and measurable RPO/RTO targets | Isolated database and object-storage restore drills with checksums and measured RPO/RTO | Operations sign-off before production |
+| B07 | Supported device/browser scope, offline threat model, local data protection, cache/purge and conflict/recovery design | Device, offline, loss/revocation and recovery tests | Institutional/security acceptance before field rollout |
+| B08 | Approved workload profile and numeric SLO/error/availability/upload thresholds | Staging load/performance tests against those thresholds | Capacity and cost acceptance before production |
+| B09–B10 | Approved role/grantor/SoD semantics; exact command request/response, authorization, transaction, idempotency, audit and error contracts; explicit deferrals for commands outside MVP | Implemented command and negative authorization/contract test evidence | Independent security/engineering review before production |
+| B11–B12 | Complete static physical schema/constraint/index/RLS/grant/function design; per-function owner, security mode, search_path, EXECUTE and caller-JWT contract | Live catalog/ACL/RLS inventory and end-to-end caller-JWT tests against the deployed schema | Security/database sign-off before production |
+| B13–B14 | Freeze MVP notification/report/print/closure behavior and exact data/command/security contracts, or explicitly exclude capabilities | Worker/provider callback, retries, print concurrency, closure-fence and report reproducibility tests | Operational/provider acceptance before enabling external delivery or official closure |
+| B15 | Document branch/ruleset/review/required-check policy and responsible administrator | Actual workflows, required checks and protected environment verification on exact commit | Required checks and protected release controls enforced before merge/release |
+| B16 | Complete source→requirement→design→test→gate crosswalk and independent G9 review/signature | Evidence links updated with actual test/build artifacts | Baseline tag only after signed G9 approval |
+| B17–B21 | Resolve version-token mapping, technical lock protocol, all in-scope command/worker manifest rows, identity/authorization lock classes and accountable Engineering/Security decisions | Physical lock-graph validation and adversarial concurrency tests against the exact schema/commit | Technical certification before production use of affected transactional commands |
+
+### Staging rules
+
+1. A design, authority or scope ambiguity that changes what data is collected, who may access it, what an operation means, or whether a transaction preserves integrity remains a G9 blocker while that capability is in scope.
+2. Runtime verification, restore drills, load tests, and deployed ACL/catalog inspection are not claimed as pre-implementation accomplishments. They are mandatory post-G10 exit evidence for the relevant implementation/release phase.
+3. A capability may be deferred from the initial implementation baseline only through explicit PO scope control and, where institutional/security authority is implicated, approval by that competent authority. Deferral must remove its routes, tables, permissions, UI, worker and operational claims from the initial release scope; it cannot be a hidden placeholder.
+4. Independent G9 review remains mandatory. The Product Owner's conditional authorization is not an independent technical review.
+5. Current disposition is unchanged: G9 NOT READY; G10 NOT ACTIVE. This staging map is a proposed sequencing aid, not evidence of closure or a waiver.
