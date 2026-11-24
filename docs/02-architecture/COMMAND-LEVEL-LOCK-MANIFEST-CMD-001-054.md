@@ -1,10 +1,10 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.3.5
+**Version:** 0.3.6
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
-**Parent:** LOCK-GRAPH-001 v0.3.4  
+**Parent:** LOCK-GRAPH-001 v0.3.5  
 **Scope:** Per-command resource inventory, source-stated lock sequence, shared invariants, competing commands, constraints and unresolved ordering  
 **Gate:** G3 NOT READY; G4 NOT READY; G5 NOT READY; G7 NOT READY; G9 NOT READY; G10 NOT AUTHORIZED.
 
@@ -23,12 +23,12 @@ Root `AGENTS.md` v1.2.0 was re-read from the target branch at the start of this 
 | Source | Reviewed snapshot version / identity | Use in this reconciliation |
 |---|---|---|
 | MIB-001 | v1.0.1 | Authority, gates and documentation-phase boundary |
-| DGA-001 | v1.9.2 | Active evidence-backed gap queue and gate disposition |
+| DGA-001 | v1.9.5 | Active evidence-backed gap queue and gate disposition |
 | IRG-001 | v1.0.1 | Phase and authorization governance |
 | Decision Register | Current branch revision | Approved PO decisions and institutional dependencies |
 | PostgreSQL Command Contract Catalogue | v0.3.1 | Canonical logical CMD-001–054 operation inventory and proposed contracts |
 | Physical Database Schema and Integrity Specification | v0.3.0 | Proposed entities, constraints, indexes and transaction invariants |
-| LOCK-GRAPH-001 | v0.3.2 | Candidate resource ranks, cross-command conflicts and planned race scenarios |
+| LOCK-GRAPH-001 | v0.3.4 | Candidate resource ranks, cross-command conflicts and planned race scenarios |
 | CONCURRENCY-001 | v0.1.2 | Aggregate token, idempotency and worker-fencing mismatches |
 | LOCK-PROTOCOL-DECISION-RESOLUTION-001 | v0.2.1 | LPR decision state and static reconciliation checkpoint |
 | Detailed command reviews | Seven current command-range documents | Per-command source-stated operations and dependencies |
@@ -45,22 +45,26 @@ Method:
 
 Evidence is static documentation inspection only. No PostgreSQL catalog, query plan, lock graph, transaction trace, deployed function, RLS/grant, CI or concurrency test was executed.
 
-## 3. Manifest vocabulary
+## 3. Legacy manifest notation and candidate-rank crosswalk
 
-| Code | Candidate class from LOCK-GRAPH-001 | Meaning |
-|---|---|---|
-| L0 | Idempotency arbitration | Unique actor/command/resource/key request identity |
-| L10 | Shared serialization row | T-14 project capacity or another shared invariant row |
-| L20 | Canonical identity arbitration | Canonical `(instrument_type, serial_normalized)` identity or conflict identity |
-| L30 | Project/session parent | Project and session lifecycle gates |
-| L40 | Assignment/instrument references | Assignment, membership, instrument and published version |
-| L50 | Canonical unit | Unit identity/lifecycle |
-| L60 | Association episode | Unit-project association |
-| L70 | Claim/inspection aggregate | Active claim and inspection aggregate |
-| L80 | Dependent child aggregate | Revision, evidence, document, attendance, print, policy or notification row |
-| L90 | Append-only facts | Domain/audit/review/attempt/escalation events |
+The CMD-001–048 rows below retain the compact rank labels used by the earlier LOCK-GRAPH-001 v0.3.2 extraction. Those labels are **legacy inventory notation**, not the current candidate ranks in LOCK-GRAPH-001 v0.3.5 / LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.2.2. They preserve source-order observations for audit traceability and must not be used as executable lock instructions.
 
-The L-ranks are candidate analysis labels, not an approved lock order. A dash means the source does not specify a row lock for that command; it does not mean that implicit database locking is absent.
+| Legacy label in CMD-001–048 rows | Legacy meaning | Current candidate rank mapping | Reconciliation rule |
+|---|---|---|---|
+| L0 | Idempotency arbitration | L00 | Rename only after command-specific idempotency identity/hash is confirmed |
+| L10 | Shared serialization row | L10 | Preserve only where the T-14/shared invariant predicate applies |
+| L20 | Canonical identity arbitration | L20 | Confirm exact canonical key and arbitration primitive |
+| L30 | Project/session parent | L30 | Confirm every applicable parent and stable multi-row order |
+| L40 | Assignment/instrument references | L40 instrument/version **or** L50 assignment/membership | Split by actual resource; never mechanically map the combined legacy label |
+| L50 | Canonical unit | L60 | Confirm unit row and parent ordering |
+| L60 | Association episode | L70 | Confirm exact association episode/key |
+| L70 | Claim/inspection aggregate | L80 claim **or** L90 inspection | Split claim and inspection resources and preserve source order as a conflict where necessary |
+| L80 | Dependent child aggregate | L100 | Identify exact mutable child aggregate and per-command sub-order |
+| L90 | Append-only facts | L110 | Confirm append-only event/audit/revision/attempt identity and unique arbiter |
+
+The current candidate ranks are L00 idempotency, L10 shared invariant, L20 canonical identity, L30 project/session, L40 instrument/version, L50 assignment/membership, L60 canonical unit, L70 association, L80 claim, L90 inspection, L100 dependent mutable aggregates, and L110 append-only facts. These remain proposals, not an approved lock order.
+
+CMD-001–048 legacy labels are intentionally not mechanically rewritten in this checkpoint because that would conceal unresolved source-order conflicts and the L40/L70 one-to-many mappings. They remain OPEN for per-command normalization. CMD-049–054 use explicit resource/transaction descriptions below rather than legacy rank labels. A dash means the source does not specify a row lock; it does not mean implicit database locking is absent.
 
 ## 4. CMD-001–054 command-level inventory
 
@@ -114,12 +118,12 @@ The L-ranks are candidate analysis labels, not an approved lock order. A dash me
 | CMD-046 | review-security-incident | BLOCKED; no approved lock manifest | Concurrent incident review/action and evidence custody | No approved security-case model or designated authority | BLOCKED_BY_SCHEMA_AUTHORITY — do not infer case row or lock order |
 | CMD-047 | manage-provider-configuration | BLOCKED; future provider change outside DB transaction with durable orchestration only if approved | Concurrent config version changes and provider API outcome | T-12 ownership and provider evidence absent | BLOCKED_BY_T12 — no provider settings or lock model approved |
 | CMD-048 | manage-production-release | BLOCKED; release control remains GitHub/Vercel governed unless separate ADR | Concurrent release/rollback and migration compatibility | No application release schema or named release authority | BLOCKED_BY_AUTHORITY — no app RPC/lock path approved |
-| CMD-049 | list-own-notifications | Recipient-owned read query; no write lock specified | CMD-052 fan-out creating inbox rows; CMD-050 read acknowledgement | Recipient RLS and stable pagination keys | PARTIAL — snapshot pagination semantics and safe delivery-field projection open |
-| CMD-050 | mark-notification-read | L0 if mutation idempotency required → one recipient-owned notifications row guarded update → L90 only if approved audit semantics | Concurrent mark-read; CMD-052 notification creation; delivery-state updates must remain separate | Conditional set-once read_at update; no notification row_version | PARTIAL — remove expected_version or approve token; exact audit requirement and set-once semantics open |
-| CMD-051 | publish-notification-policy | L0 → policy draft/version serialization row → policy version/scope uniqueness arbitration → immutable publish/audit | Concurrent draft edit/publish; scheduler CMD-054 reads policy version | Unique policy/scope/version and one effective version per interval proposed | BLOCKED — exact lock target/exclusion constraint, draft hash/version lifecycle and policy scope order open |
-| CMD-052 | fanout-notification-outbox | Short claim transaction: outbox row bounded lease/claim → commit; fan-out writes unique notification and delivery rows; no provider I/O | Duplicate fan-out, lease expiry/reclaim, CMD-049 inbox read, CMD-053 dispatch | Unique source_event_id/policy_version_id; unique outbox/recipient; unique notification/channel | BLOCKED — worker principal/ACL, lease owner/token/expiry, partial checkpointing and payload schema open |
-| CMD-053 | dispatch-notification-delivery | Short claim/attempt transaction → provider I/O outside DB transaction → short guarded outcome transaction on exact delivery/attempt lease | Retry, callback/webhook, UNKNOWN reconciliation, lease reclaim | Attempt idempotency/provider key where supported; append-only attempt history | BLOCKED — callback command boundary, provider capability, worker identity/ACL and attempt unique key open |
-| CMD-054 | evaluate-notification-escalation | Short scheduler transaction: policy-version/notification/step due-check and unique escalation arbitration → append event/outbox; no provider I/O | Duplicate scheduler ticks, CMD-051 policy publish, CMD-052 fan-out | Unique notification/policy_version/step/event key proposed | BLOCKED — server UTC SLA clock, scheduler principal/ACL, due-time predicate and retry/unique contract open |
+| CMD-049 | list-own-notifications | Recipient-owned MVCC read query; no mutation lock specified | CMD-052 fan-out creating inbox rows; CMD-050 read acknowledgement | Recipient RLS and stable pagination keys | PARTIAL — snapshot pagination semantics and safe delivery-field projection open |
+| CMD-050 | mark-notification-read | Short idempotent transaction: one recipient-owned notifications row guarded set-once update; optional append-only access/domain audit only if approved | Concurrent mark-read; CMD-052 notification creation; delivery-state updates must remain separate | Conditional set-once read_at update; no notification row_version | PARTIAL — remove expected_version or approve token; exact audit requirement and set-once semantics open |
+| CMD-051 | publish-notification-policy | Short policy-aggregate transaction: serialize exact draft/version and effective scope, publish immutable version, append audit fact | Concurrent draft edit/publish; scheduler CMD-054 reads policy version | Unique policy/scope/version and one effective version per interval proposed | BLOCKED — exact lock target/exclusion constraint, draft hash/version lifecycle and policy scope order open |
+| CMD-052 | fanout-notification-outbox | Isolated short claim transaction on one bounded outbox row → persist lease/fencing generation → commit; separate fan-out transaction writes recipient notification/delivery rows using unique arbiters; no provider I/O | Duplicate fan-out, lease expiry/reclaim, CMD-049 inbox read, CMD-053 dispatch | Unique source_event_id/policy_version_id; unique outbox/recipient; unique notification/channel | BLOCKED — worker principal/ACL, lease owner/token/expiry, partial checkpointing and payload schema open |
+| CMD-053 | dispatch-notification-delivery | Short claim transaction on exact delivery row and durable attempt identity → commit; provider I/O outside transaction; guarded outcome transaction revalidates exact lease generation and appends attempt result | Retry, callback/webhook, UNKNOWN reconciliation, lease reclaim | Attempt idempotency/provider key where supported; append-only attempt history | BLOCKED — callback command boundary, provider capability, worker identity/ACL and attempt unique key open |
+| CMD-054 | evaluate-notification-escalation | Short scheduler transaction: server-UTC due check against pinned policy version and notification state → unique escalation arbitration → append escalation fact and outbox intent atomically; no source business-state mutation or provider I/O | Duplicate scheduler ticks, CMD-051 policy publish, CMD-052 fan-out | Unique notification/policy_version/step/event key proposed | BLOCKED — server UTC SLA clock, scheduler principal/ACL, due-time predicate and retry/unique contract open |
 
 ## 5. Cross-command lock-order findings
 
@@ -204,3 +208,16 @@ All tests are PLANNED / NOT EXECUTED. No CI, local test, SQL, migration or datab
 [LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.2.1 provides a candidate global rank hierarchy and proposed resolutions for the source-order conflicts. It defines the required per-command manifest evidence, identifies PO-owned product-policy decisions separately from Engineering/Security technical approvals, and preserves the 54/54 inventory with 0/54 certified lock-complete.
 
 The proposal does not amend command recipes, physical schema, constraints or runtime behavior. No tests or database inspection were performed. LM-01–LM-10 remain open/not executed; G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED.
+
+## 4.1 CMD-049–054 notification transaction boundary reconciliation — 2026-11-24
+
+| Command | Logical mutable resource | Append-only fact / arbiter | Transaction boundary and unresolved evidence |
+|---|---|---|---|
+| CMD-049 | None; recipient-owned read projection only | Stable (created_at, id) ordering and actor/filter-bound cursor | MVCC/read consistency only; no row lock over response serialization. Cursor snapshot/watermark and RLS/index evidence remain unverified. |
+| CMD-050 | One recipient-owned notification read projection | Optional L110 audit fact only if approved; set-once read_at is the state guard | One short guarded transaction; delivery state is separate. Remove expected_version or define an approved physical token; no version column is currently specified. |
+| CMD-051 | Policy draft/version and effective scope | Immutable publish/audit fact; uniqueness/exclusion is final arbitration | One short policy transaction. Draft identity/hash, same-scope version allocation, interval exclusion and SoD remain open. |
+| CMD-052 | Outbox lease claim, then recipient notification and delivery projections | Unique source-event/policy, outbox-recipient and notification-channel keys; append-only facts where approved | Claim/lease transaction commits before fan-out. Fan-out must checkpoint safely after partial progress. No queue lock is held during domain aggregate work or provider I/O. |
+| CMD-053 | Exact delivery projection and lease generation | Append-only attempt identity/outcome; provider + event/attempt callback deduplication | Claim and guarded outcome are short transactions; provider I/O is outside. Callback ingestion is a separately authenticated boundary whose logical command mapping remains unresolved. |
+| CMD-054 | Pinned policy/notification due-state read and outbox intent | Unique notification/policy-version/step/window escalation fact | One short scheduler transaction uses server UTC and atomic event/outbox insertion. Scheduler principal, due-time semantics and exact unique key remain open. |
+
+These rows reconcile logical resource/transaction boundaries only. The queue tables, policy/inbox/delivery physical keys, indexes, FK/trigger edges, worker principals, function owners, EXECUTE ACLs and provider callback runtime are not verified. Queue claim rows must never remain locked while external I/O occurs. If a worker ever mutates a source domain aggregate, it must separately reacquire the full approved parent/source lock chain and validate fencing; no such source mutation is authorized by CMD-049–054.
