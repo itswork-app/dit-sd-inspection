@@ -196,7 +196,7 @@ The proposal maps:
 
 ## Command-level lock manifest update — 2026-11-24
 
-[LOCK-MANIFEST-001](../02-architecture/COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.2.0 inventories all 54 command IDs, with source-stated resource/lock sequence, shared invariant, competing command paths, stated constraints and unresolved decisions. Static inventory coverage is 54/54; lock-complete certification is 0/54. DGA-B19 remains OPEN. This does not imply any command is approved, executable or deadlock-free. G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED; no tests or runtime inspection were performed.
+[LOCK-MANIFEST-001](../02-architecture/COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.3.0 inventories all 54 command IDs, with source-stated resource/lock sequence, shared invariant, competing command paths, stated constraints and unresolved decisions. Static inventory coverage is 54/54; lock-complete certification is 0/54. DGA-B19 remains OPEN. This does not imply any command is approved, executable or deadlock-free. G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED; no tests or runtime inspection were performed.
 
 
 ## Lock protocol decision-resolution update — 2026-11-24
