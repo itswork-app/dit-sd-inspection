@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.10
+**Version:** 0.4.11
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -391,3 +391,17 @@ CMD-001–010 are candidate-normalized at documentation level. The effective gra
 ## 20. Current CMD-001–010 source refresh — 2026-11-24
 
 The current candidate overlay is CMD-001–010 Detailed Contract Review v0.3.4 §9; LOCK-MANIFEST-001 v0.4.12; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.8; DGA-001 v1.11.14; QA Catalogue v0.3.3. The older §15 gap narrative is historical and superseded by §§19–20. Candidate design only; LPR-01/LPR-07/LPR-11 remain OPEN and 0/54 certified.
+
+
+## 21. CMD-011–020 manifest integration checkpoint — 2026-11-24
+
+LOCK-MANIFEST-001 v0.4.17 now contains a candidate resource-order overlay for CMD-011–020, derived from their detailed transaction/read-write contracts. The overlay records project/session parent fences, T-14 capacity-first participation, identity/scope rows, instrument/version ordering, and target-plan residuals. It intentionally retains unresolved physical and implicit database edges rather than declaring the global graph complete.
+
+Integration findings:
+- CMD-011–013 introduce/confirm the project-before-session candidate parent fence. The project-closure path CMD-010 must be analyzed against every session child writer, including FK/trigger/function paths and post-wait predicate snapshots.
+- CMD-014–016 must share one L10 capacity serialization primitive and exactly the same qualifying-Inspector predicate as CMD-004. Candidate rank order alone does not prove the invariant if any role, membership, assignment or capacity writer is omitted.
+- CMD-017 target-plan aggregate/child lock ranks are not yet certified; its project/session references and publication/history semantics require an explicit physical aggregate contract.
+- CMD-018 canonical instrument-code uniqueness must be modeled as the actual unique-index arbitration path unless an approved explicit lock is introduced.
+- CMD-019/020 instrument/version/child order requires database-level immutability and child-writer exclusion proof.
+
+The manifest now has 20/54 candidate-normalized documentation rows (CMD-001–020) and 0/54 technically approved/certified. This count describes the manifest's candidate overlays, not an acyclic graph proof. LPR-01, LPR-07 and LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. The effective graph remains uncertified because implicit FK/index/trigger/function edges, exact lock modes and adversarial evidence are outstanding.
