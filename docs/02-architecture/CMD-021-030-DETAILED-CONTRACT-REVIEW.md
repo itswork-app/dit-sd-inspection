@@ -1,7 +1,7 @@
 # CMD-021–030 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security review required; NOT approved for implementation  
-**Version:** 0.1.0  
+**Version:** 0.2.0  
 **Date:** 2026-11-24  
 **Scope:** CMD-021 through CMD-030  
 **Controls:** T-15 append-only audit direction; T-16 canonical unit identity and association model; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
@@ -32,7 +32,7 @@ Where sources omit a field, conflict on lock order, or do not define a lifecycle
 - PostgreSQL derives actor identity from \`auth.uid()\`, resolves exactly one approved/enabled \`app_users\` identity, and evaluates permission, scope, assignment membership, SoD, resource state and effective dates inside the mutation transaction.
 - Client-supplied actor ID, reviewer/author ID, Inspector ID, role, permission, project scope, association status, claim expiry, inspection state, revision number, evidence verification status or audit actor is never authoritative.
 - Protected business tables are command-only mutations. Browser-facing \`anon\`/\`authenticated\` roles receive no direct INSERT/UPDATE/DELETE. RLS remains an independent read boundary.
-- Command functions default to SECURITY INVOKER. Any SECURITY DEFINER exception requires separate approval, least-privileged non-login owner, pinned safe search_path, schema-qualified references, revoked PUBLIC EXECUTE and exact caller grants.
+- Protected writes follow PO-approved T-18 Option A using narrow SECURITY DEFINER wrappers; each function requires individual approval, dedicated least-privileged NOLOGIN owner, fixed empty search_path, schema-qualified references, PUBLIC/anon denial and exact-signature EXECUTE grants. SECURITY INVOKER remains preferred for scoped reads and non-elevated helpers.
 - Actual function owner, security mode, search_path, table privileges, function EXECUTE ACL and live RLS have not been verified against Supabase.
 
 ### 2.2 Proposed common mutation request
@@ -255,7 +255,7 @@ For privacy, a collision response must not disclose the existing canonical unit 
 - Caller must be an approved/enabled actor with \`unit.register\` and explicit project/assignment authority to register a unit in the supplied context. A permission code alone is not proof of assignment scope.
 - Validate that the assignment, project and instrument are mutually consistent and that the caller has the required operational role/scope.
 - The physical canonical \`units\` table is project-independent; it has no \`project_id\`. Do not add project ownership to the unit.
-- T-16 PO-approved option B: a known serial is unique per instrument across all projects, using \`(instrument_id, serial_normalized)\`; project ID is not part of the canonical key.
+- T-16 PO-approved option B: a known serial is unique per instrument across all projects, using \`(instrument_type, serial_normalized)\`; project ID is not part of the canonical key.
 - Preserve exact submitted value in \`serial_raw\`. Candidate normalization: Unicode NFC, trim leading/trailing whitespace, collapse repeated internal whitespace to one ASCII space; case folding only when the instrument's published policy declares case-insensitive identifiers; preserve punctuation and leading zeroes; record \`normalization_version\`.
 - Instrument-specific normalization policy must be published/versioned and tested before use. No policy may silently strip hyphens, slashes or leading zeros.
 - Null/unknown serial must not receive a shared normalized key; the command catalogue says an unknown serial receives a distinct UUID. The exact unknown-serial identity/duplicate-prevention workflow remains unresolved.
@@ -267,7 +267,7 @@ For privacy, a collision response must not disclose the existing canonical unit 
 - Read: \`instruments\`, \`units\`, \`operational_assignments\`, \`projects\`, \`idempotency_records\`; read existing \`unit_project_associations\` only when the approved collision/visibility policy requires it.
 - Write: \`units\` for a genuinely new canonical identity; \`unit_identity_conflicts\` for a controlled collision workflow if the approved policy says registration creates a conflict; \`idempotency_records\`; \`audit_events\`.
 - No write to \`unit_project_associations\`, \`unit_claims\` or \`inspections\`.
-- Physical columns: \`units(id, instrument_id, serial_raw, serial_normalized, normalization_version, status)\`; known serial unique key is \`(instrument_id, serial_normalized)\` for non-null serials.
+- Physical columns: \`units(id, instrument_type, serial_raw, serial_normalized, normalization_version, status)\`; known serial unique key is \`(instrument_id, serial_normalized)\` for non-null serials.
 
 ### Transaction, lock and idempotency
 
@@ -551,7 +551,7 @@ The response must not return unrelated candidate-project data. For REJECT, assoc
 - Read: \`unit_identity_conflicts\`, \`units\`, \`projects\`, \`unit_project_associations\`, reviewer identity/permission/scope state; \`idempotency_records\`.
 - Write: \`unit_identity_conflicts\` (resolution, resolved_by, resolution_reason, resolved_at, status); \`unit_project_associations\` only for approved ASSOCIATE_EXISTING; \`idempotency_records\`; \`audit_events\`.
 - No write to canonical \`units\`, historical associations, inspections, claims, revisions or evidence.
-- Physical conflict columns include \`instrument_id, serial_normalized, serial_raw_submitted, proposed_project_id, candidate_unit_id, reported_by, status, resolution, resolved_by, resolution_reason, created_at, resolved_at\`.
+- Physical conflict columns include \`instrument_type, serial_normalized, serial_raw_submitted, proposed_project_id, candidate_unit_id, reported_by, status, resolution, resolved_by, resolution_reason, created_at, resolved_at\`.
 
 ### Transaction, lock and idempotency
 
