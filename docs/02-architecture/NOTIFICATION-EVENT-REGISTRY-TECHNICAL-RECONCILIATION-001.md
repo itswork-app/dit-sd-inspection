@@ -1,8 +1,8 @@
 # Notification Event Registry — Technical Reconciliation
 
 **Document ID:** NLA-EVENT-TECH-RECON-001  
-**Version:** 0.1.2  
-**Status:** STATIC TECHNICAL RECONCILIATION — PARTIAL; CMD-002/003/005/010/013 REVIEWED, ALL PARTIAL / UNRESOLVED / NOT ENABLED  
+**Version:** 0.1.3  
+**Status:** STATIC TECHNICAL RECONCILIATION — PARTIAL; CMD-002/003/005/010/013/014/015 REVIEWED, ALL PARTIAL / UNRESOLVED / NOT ENABLED  
 **Date:** 2026-11-24  
 **Branch:** `docs/notification-resolver-lock-closure`  
 **Scope:** First technical pass for NREG-001 (`account.approved`) and NREG-002 (`account.rejected`)  
@@ -14,7 +14,7 @@ This document records a static, evidence-bounded technical pass over the first t
 
 The following remain prohibited until G10 activation: source code, SQL, migrations, grants/revokes, RLS changes, live database operations, provider setup, deployment and production/staging mutation. No event is enabled by this document.
 
-The registry's seven status dimensions remain controlling. All five reviewed rows remain:
+The registry's seven status dimensions remain controlling. All seven reviewed rows remain:
 
 - PO intent: `APPROVED_FOR_SPECIFICATION_ONLY`
 - Canonical contract: `UNRESOLVED`
@@ -376,3 +376,107 @@ One final state transition must emit one exact `session.closed` fact. A precedin
 - Tests: PLANNED / NOT EXECUTED. G9 NOT READY. G10 NOT ACTIVE.
 
 **Disposition:** Continue with CMD-014 and CMD-015 next. Both are PO-approved candidates, but CMD-014 is create-only with complete initial roster, and CMD-015 requires explicit added/ended/retained-member treatment under POQ-04. Preserve their exact membership transition boundaries; do not infer recipients.
+
+
+## 17. Reconciliation findings — CMD-014 / NREG-006
+
+### 17.1 Producer and transaction boundary
+
+**Static candidate:** CMD-014 `publish-assignment` is the source command path for `assignment.created`. The proposed command is create-only and publishes one assignment plus its complete initial roster atomically. The L05 source-event path map places the canonical event, audit, idempotency, and (only after future event admission and physical model approval) outbox plus immutable candidate snapshot in this same source transaction. It is not a per-member asynchronous producer by inference.
+
+The exact deployed producer/function, canonical event envelope/schema version, event identity, and whether the source emits one aggregate event or any per-member facts are not proven.
+
+### 17.2 Candidate mutation and write set
+
+Proposed source objects include `projects`, `sessions`, `locations`, `instruments`, `instrument_versions`, `teams`, `app_users`, `user_roles`, `operational_assignments`, `assignment_members`, `project_capacity_settings`, `idempotency_records` and `audit_events`.
+
+The command writes `operational_assignments`, all `assignment_members` rows, idempotency and audit/event facts. It requires a complete initial roster and all-or-nothing validation; no partial assignment publication is allowed. Assignment status is server-selected, but the exact initial status and assignment row-version/overlap constraints remain open. No direct capacity-setting write is intended.
+
+### 17.3 Candidate lock path and T-14
+
+Candidate normalized order: L00 idempotency → L05 audience guard → conditional L10 capacity row(s), sorted by project UUID, if any proposed member can qualify as Inspector → L15 affected principals → L16 role grants → L17 scope grants → conditional L18 catalogue → L30 project then session parent fences → L40 instrument/version → L50 assignment → L55 initial membership rows in stable key order → L110 append-only facts.
+
+The source map and normalized manifest are not identical in every rank detail; the normalized register is itself a review candidate. Exact L05/L10 order, affected project set, L15–L18 physical coverage, project/session/instrument/assignment FK lock edges, overlap uniqueness, trigger/helper graph and lock compatibility remain uncertified. T-14 requires the same distinct enabled-account predicate and one shared serialization point across role grants/revokes, assignment publication/member changes and capacity changes.
+
+### 17.4 Recipient and event-time semantics
+
+The conceptual recipient question is limited to members explicitly selected by the exact approved event contract. The command's initial `members[]` request data is not itself an approved event payload or participant projection; client-supplied user IDs cannot become trusted notification recipients without server-side validation and a canonical event contract. No actor auto-inclusion or role-wide broadcast is allowed.
+
+A key unresolved boundary exists: the initial membership rows are created by this command and therefore do not exist in the pre-mutation assignment state. POQ-01/04 still requires the immutable audience to be evaluated at the serialized pre-mutation instant and exact selectors alone to select participants. The event contract must explicitly define whether a trusted `AFFECTED_MEMBER` participant projection can select newly inserted members as event participants without treating them as pre-existing assignment members. No automatic append of all inserted members is authorized by this technical review. The source event and candidate snapshot must commit atomically with the assignment and roster.
+
+### 17.5 Deduplication and admission
+
+The source command idempotency and unique assignment/member constraints are candidate arbiters only. Exact uniqueness of initial roster entries, event identity, duplicate membership handling, one-candidate-per-principal dedup, source-event/outbox uniqueness and immutable snapshot checkpoint are unresolved. A retry must reuse the original candidate set and must not fan out once per duplicate selector or member row.
+
+| Registry ID | Event | Producer path evidence | Participant / selector | Dedup / transaction | Technical disposition |
+|---|---|---|---|---|---|
+| NREG-006 | `assignment.created` | CMD-014 atomic create + complete initial roster transaction identified statically; deployed producer/event envelope not proven | Initial members are conceptual candidates only; pre-mutation event-participant semantics and trusted mapping unresolved | Aggregate transaction proposed; roster uniqueness, event cardinality and snapshot dedup unresolved | **PARTIAL STATIC REVIEW — UNRESOLVED / NOT ENABLED** |
+
+## 18. Reconciliation findings — CMD-015 / NREG-007
+
+### 18.1 Producer and transaction boundary
+
+**Static candidate:** CMD-015 `change-assignment-members` is the source command path for `assignment.changed`. The command validates all add/end operations before any write, applies them atomically, preserves historical membership rows and appends the event/audit/idempotency facts. The L05 source-event map proposes outbox and immutable candidate snapshot in the same source transaction only after event admission and physical approval.
+
+The exact event schema/version, aggregate event cardinality, member-delta payload and deployed producer are not proven. It is not yet established whether one aggregate `assignment.changed` event represents all membership changes or whether a separate exact event per member operation is required; do not invent multiple notifications.
+
+### 18.2 Candidate mutation, effective time and active-work boundary
+
+Proposed write set: `assignment_members`, `idempotency_records`, `audit_events`; no role grant/revoke write and no reassignment of existing inspections/claims. The request requires a per-membership `effective_at` for each end operation. The exact event-time eligibility evaluation uses one captured `audience_evaluated_at`; end-membership intervals are half-open `[valid_from, valid_until)` under the POQ-04 approved pre-end rule.
+
+The command review leaves active-claim/in-progress-inspection behavior unresolved: block the end, allow a future-effective end, or preserve a grandfathered workflow. No option is assumed. The exact physical membership lifecycle fields, uniqueness and history model also remain proposed.
+
+### 18.3 Candidate lock path and T-14
+
+Candidate normalized order: L00 → L05 → conditional L10 capacity rows sorted by project UUID if Inspector eligibility changes → L15–L18 affected principal/role/scope rows → L30 project then session parent fences → L50 assignment → L55 affected membership rows in stable key order → L110 append-only event/audit facts.
+
+This remains a proposal. The source path map's shorter assignment-first path must be reconciled with the parent-first normalized order. All membership expiry/renewal/reconciliation, administrative roster import/repair and direct-DML paths must be included. The same T-14 predicate and serialization point must be used before and after the entire atomic membership change; no partial add/end batch is allowed.
+
+### 18.4 Recipient and POQ-04 dispatch semantics
+
+POQ-04 specifically requires pre-end membership evaluation at the one captured instant. A member may enter the immutable candidate set only if the exact event selector selects that principal while the pre-end membership is effective. After commit, current assignment/member scope revalidation may suppress the captured candidate because the membership has ended; no substitute member may be added.
+
+The event may also add new members. Their inclusion semantics are not settled by the approved end-member rule. Retained members must not be silently included or excluded by inference. The event registry's added/ended/retained distinction must be made explicit in the canonical event/selector contract. Actor is never implicit; no global assignment or role broadcast is authorized.
+
+### 18.5 Deduplication and admission
+
+The source command is all-or-nothing and idempotent at the command level, but exact event cardinality, semantic member-delta identity, duplicate add/end operation handling, source event ID and outbox/snapshot dedup remain unresolved. Replays must not produce a second event or new recipient set. An ended member must not be replaced by another current member on retry.
+
+| Registry ID | Event | Producer path evidence | Participant / selector | Dedup / transaction | Technical disposition |
+|---|---|---|---|---|---|
+| NREG-007 | `assignment.changed` | CMD-015 atomic member add/end transaction identified statically; deployed producer/event envelope not proven | Added/ended/retained member selection unresolved; POQ-04 pre-end semantics apply; no substitute member | Aggregate event cardinality, semantic delta identity and snapshot/outbox dedup unresolved | **PARTIAL STATIC REVIEW — UNRESOLVED / NOT ENABLED** |
+
+## 19. Assignment-event cross-command blockers
+
+| ID | Finding | Impact | Required evidence / owner |
+|---|---|---|---|
+| NER-TR-23 | CMD-014 initial roster rows do not exist in the pre-mutation assignment state | A selector cannot treat inserted members as pre-existing effective members without an explicit event-participant rule | PO + Engineering + Security: define trusted new-member participant semantics consistent with POQ-01/04 |
+| NER-TR-24 | CMD-015 event does not yet distinguish added, ended and retained members in an approved canonical contract | Incorrect recipients, retained-member broadcast or duplicate per-member notices may result | PO + Engineering: approve event cardinality and exact member-delta projection |
+| NER-TR-25 | CMD-015 active claim/in-progress inspection behavior is unresolved | Ending membership may orphan work or silently reassign ownership | PO + Engineering + Operations: block/future-effective/grandfather rule and operational recovery |
+| NER-TR-26 | T-14 L10, L05, L15–L18, L30, L40, L50 and L55 ordering is not certified for assignment writers | Capacity corruption, deadlocks or eligibility snapshot races | Engineering + Database + Security: one complete global lock/parent-FK graph and opposing-transaction proof |
+| NER-TR-27 | Assignment/member unique constraints, interval overlap, physical version/history and exact FK/trigger graph remain open | Source event and candidate snapshot cannot be bound to a deterministic membership delta | Database: approved physical constraints and event-to-row provenance |
+| NER-TR-28 | Expiry/renewal/import/repair/direct-DML writers are incomplete | L05 writer completeness cannot be proven | Engineering + Security + Operations: complete entrypoint/owner/ACL and guarded transaction inventory |
+
+## 20. Evidence required to close CMD-014/015
+
+1. Exact canonical event schema/version, producer identity, source-event identity and event cardinality for assignment creation and membership changes.
+2. Approved trusted participant projection for the complete initial roster and explicit semantics for new members under the pre-mutation snapshot rule.
+3. PO-approved added/ended/retained member event semantics, including whether a single aggregate event or multiple exact member events are produced; no inferred fan-out.
+4. PO/Operations decision for active claims and in-progress inspections when a member is ended; no automatic reassignment.
+5. Physical assignment/member keys, interval constraints, overlap semantics, history/immutability, aggregate version strategy and all FK/trigger/unique lock edges.
+6. Complete T-14 qualifying population writer inventory and approved L05/L10/L15–L18/L30/L40/L50/L55 global order.
+7. Exact event/outbox/snapshot dedup keys and proof that source mutation + event + audit + idempotency + immutable snapshot commit atomically.
+8. Security/Engineering/Database review of trusted caller identity, role/scope grants, function owner/search_path/EXECUTE ACL, direct-DML bypass and L05 participation.
+9. TC-NOTIF-082..085 and command/concurrency/security cases remain PLANNED until G10 activation; execute only in the authorized isolated environment.
+
+## 21. Updated gate and work status
+
+- CMD-002/003/005/010/013/014/015: partial static producer/transaction review completed; technical admission remains OPEN.
+- NREG-001..007: PARTIAL STATIC REVIEW; canonical contract, recipient mapping, selector and dispatch profile UNRESOLVED; NOT ENABLED.
+- L05/L10, assignment membership and project/session parent fences: candidate proposals only; not technically approved.
+- Eligibility/source writer coverage: PARTIAL; non-command writers, expiry and repair paths incomplete; 0 writers certified.
+- Resolver certification: 0/40. Application lock certification: 0/50.
+- Global lock graph: NOT PROVEN ACYCLIC. Candidate snapshot relation/header: NOT ADMITTED.
+- Tests: PLANNED / NOT EXECUTED. G9 NOT READY. G10 NOT ACTIVE.
+
+**Disposition:** Continue with CMD-029 and CMD-030 next. CMD-029 has a dual source declaration (`inspection.submitted` and `inspection_revision.created`) and requires exact one-notice dedup semantics; CMD-030 requires exact assigned-Inspector mapping. Both are PO-approved candidates only.
