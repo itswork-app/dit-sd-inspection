@@ -1,7 +1,7 @@
 # Physical Database Schema and Integrity Specification
 
 **Status:** Engineering specification draft — approval required before migrations  
-**Version:** 0.2.0  
+**Version:** 0.3.0  
 **Package:** L — Physical Data Model and Integrity  
 **Date:** 2026-11-23
 
@@ -72,7 +72,7 @@ Auth mapping: `app_users.auth_user_id` references `auth.users(id)`. Do not store
 
 | Table | Key columns | Required constraints / indexes |
 |---|---|---|
-| `instruments` | `id`, `code`, `name`, `description`, `status`, `created_by` | Unique immutable code; status ACTIVE/INACTIVE/ARCHIVED; Super Admin command controls lifecycle |
+| `instruments` | `id`, `instrument_type`, `code`, `name`, `description`, `status`, `created_by` | `instrument_type` is a unique, immutable canonical type key; `code` is a unique catalog code; status ACTIVE/INACTIVE/ARCHIVED; Super Admin command controls lifecycle |
 | `instrument_versions` | `id`, `instrument_id`, `version_number`, `status`, `schema_version`, `published_at`, `published_by` | Unique `(instrument_id, version_number)`; DRAFT/PUBLISHED/RETIRED; published rows immutable |
 | `checklist_sections` | `id`, `instrument_version_id`, `code`, `label`, `sort_order` | Unique code/order within version; FK |
 | `checklist_items` | `id`, `section_id`, `code`, `label`, `answer_type`, `sort_order`, `required`, `applicability_rule`, `validation_config` | Unique code/order within section; answer_type allowlist; declarative validation only |
@@ -88,9 +88,9 @@ Every assignment/session binds to one published instrument version. Every inspec
 
 | Table | Key columns | Required constraints / indexes |
 |---|---|---|
-| `units` | `id`, `instrument_id`, `serial_raw`, `serial_normalized`, `normalization_version`, `status` | Canonical physical identity; no `project_id`; unique `(instrument_id, serial_normalized)` for non-null serial; retain raw input and normalization version |
+| `units` | `id`, `instrument_type`, `serial_raw`, `serial_normalized`, `normalization_version`, `status` | Canonical physical identity; no `project_id` or catalog-row identity in the uniqueness key; FK to `instruments.instrument_type`; unique `(instrument_type, serial_normalized)` for non-null serial; retain raw input and normalization version |
 | `unit_project_associations` | `id`, `unit_id`, `project_id`, `status`, `associated_at`, `associated_by`, `association_reason`, `ended_at`, `ended_by`, `end_reason` | Status ACTIVE/ENDED/REVOKED; valid start/end interval; FK to canonical unit and project; partial unique ACTIVE `(unit_id, project_id)`; unique `(id, unit_id, project_id)` for composite references; no hard delete |
-| `unit_identity_conflicts` | `id`, `instrument_id`, `serial_normalized`, `serial_raw_submitted`, `proposed_project_id`, `candidate_unit_id`, `reported_by`, `status`, `resolution`, `resolved_by`, `resolution_reason`, `created_at`, `resolved_at` | Durable controlled duplicate workflow; candidate FK; reasoned/audited resolution; never creates a second canonical unit by itself |
+| `unit_identity_conflicts` | `id`, `instrument_type`, `serial_normalized`, `serial_raw_submitted`, `proposed_project_id`, `candidate_unit_id`, `reported_by`, `status`, `resolution`, `resolved_by`, `resolution_reason`, `created_at`, `resolved_at` | Durable controlled duplicate workflow keyed by canonical type + normalized serial; candidate FK; reasoned/audited resolution; never creates a second canonical unit by itself |
 | `inspections` | `id`, `unit_id`, `unit_project_association_id`, `project_id`, `assignment_id`, `status`, `current_revision_no`, `row_version` | Composite FK proves association matches unit+project and assignment belongs to same project; command proves instrument match and active association; one active inspection lifecycle per canonical unit subject to authorized reopen/reinspection rules |
 | `inspection_revisions` | `id`, `inspection_id`, `revision_no`, `instrument_version_id`, `snapshot_hash`, `author_id`, `submitted_at`, `payload_snapshot` | Unique `(inspection_id, revision_no)`; immutable after submission; instrument version must match assignment snapshot |
 | `checklist_responses` | `id`, `inspection_revision_id`, `checklist_item_id`, `answer`, `note`, `answered_by`, `answered_at` | Unique `(inspection_revision_id, checklist_item_id)`; item belongs to revision's instrument version; answer conforms to item schema |
@@ -109,7 +109,7 @@ Every assignment/session binds to one published instrument version. Every inspec
 - Empty/unknown serials do not receive a shared normalized key; they require a separate authorized identification workflow.
 - If an official instrument-specific rule differs, it must be configured/versioned and tested before use.
 
-PO-approved T-16 option B: one normalized serial per instrument type across all projects. Enforce unique `(instrument_id, serial_normalized)` for non-null serials; project ID is not part of the key. `units` therefore has no `project_id`. `unit_project_associations` records durable project membership episodes; inspections and claims reference the exact association and same-project assignment through composite foreign keys. An association may be ended without rewriting historical inspections. A same-type cross-project collision opens a controlled conflict record; only an authorized, reasoned and audited resolution may associate the candidate canonical unit with the project. Never create a second same-type canonical unit, silently merge records or rewrite historical inspection rows. Reinspection follows the authorized lifecycle and preserves revision/evidence history. This is a design invariant, not an executed migration.
+PO-approved T-16 option B: one normalized serial per canonical `instrument_type` across all projects. Enforce unique `(instrument_type, serial_normalized)` for non-null serials; project ID and catalog-row `instrument_id` are not part of the key. `instruments.instrument_type` is the stable, unique, immutable type identifier referenced by `units` and `unit_identity_conflicts`. Assignment/catalog configuration continues to use `instrument_id`; trusted commands verify that the assignment's catalog row resolves to the same `instrument_type` as the canonical unit. `units` therefore has no `project_id`. `unit_project_associations` records durable project membership episodes; inspections and claims reference the exact association and same-project assignment through composite foreign keys. An association may be ended without rewriting historical inspections. A same-type cross-project collision opens a controlled conflict record; only an authorized, reasoned and audited resolution may associate the candidate canonical unit with the project. Never create a second same-type canonical unit, silently merge records or rewrite historical inspection rows. Reinspection follows the authorized lifecycle and preserves revision/evidence history. This is a design invariant, not an executed migration.
 
 #### Active claim and assignment overlap
 
@@ -148,7 +148,7 @@ Required before production migration:
 2. Unique project-scoped codes for locations, sessions, teams.
 3. Unique `instruments(code)`.
 4. Unique `instrument_versions(instrument_id, version_number)`.
-5. Partial unique `units(instrument_id, serial_normalized)` for non-null serial keys; project ID is excluded.
+5. Partial unique `units(instrument_type, serial_normalized)` for non-null serial keys; project ID and catalog-row ID are excluded.
 6. Partial unique `unit_project_associations(unit_id, project_id)` where status = ACTIVE; retain ended association episodes.
 7. Unique `unit_project_associations(id, unit_id, project_id)` to support composite inspection/claim FKs.
 8. Partial unique `unit_claims(unit_id)` where status = ACTIVE, enforcing one physical-unit claim across projects.
@@ -249,7 +249,7 @@ The account lifecycle must precede staffing: a registered/authenticated identity
 
 ## T-16 — Approved serial and evidence integrity invariant (2026-11-24)
 
-The canonical serial uniqueness key is `(instrument_id, serial_normalized)` across all projects; project ID is deliberately excluded. Different instrument types may reuse the same serial string. Null/unknown serial handling remains a separate authorized identification workflow and must not be represented by a shared empty key. A duplicate within the same instrument type is not silently merged: block creation of a second canonical unit and route the conflict to authorized resolution with reason and append-only audit. The project association model must permit project-scoped inspection history to reference the canonical unit identity while preserving project/session scope.
+The canonical serial uniqueness key is `(instrument_type, serial_normalized)` across all projects; project ID and catalog-row ID are deliberately excluded. `instrument_type` is a stable immutable key on the instrument catalogue and is referenced by canonical units. Different instrument types may reuse the same serial string. Null/unknown serial handling remains a separate authorized identification workflow and must not be represented by a shared empty key. A duplicate within the same instrument type is not silently merged: block creation of a second canonical unit and route the conflict to authorized resolution with reason and append-only audit. The project association model must permit project-scoped inspection history to reference the canonical unit identity while preserving project/session scope.
 
 Every evidence record must reference the exact immutable inspection revision and instrument version and a valid slot/item in that version. Preserve original metadata, checksum, uploader, capture time, upload time and immutable storage object identity. Finalized evidence objects are never overwritten in place. Replacement creates a new evidence record/object identity and audit event; historical revision/evidence links remain intact. Database constraints, transaction locking, RLS/command authorization and tests must enforce these rules together. No migration or runtime implementation is claimed.
 
@@ -267,22 +267,22 @@ Every evidence record must reference the exact immutable inspection revision and
 
 ## T-18 database privilege alignment (PO APPROVED option A, 2026-11-24)
 
-The selected command architecture requires the database privilege model to deny browser-facing anon/authenticated roles direct INSERT/UPDATE/DELETE on protected business and governance tables. Expose only narrowly scoped command functions with explicit EXECUTE grants; keep ordinary reads under RLS. Derive actor from the caller JWT at the PostgreSQL boundary and validate permission, role, project association, session, assignment, state and separation-of-duties within the command transaction. Prefer SECURITY INVOKER; any SECURITY DEFINER exception requires pinned search_path, schema-qualified references, strict validation, least-privileged ownership and minimal grants. The architecture decision is approved, but exact grants/policies and executable verification remain pending. No migration or test execution is claimed.
+The selected command architecture requires the database privilege model to deny browser-facing anon/authenticated roles direct INSERT/UPDATE/DELETE on protected business and governance tables. Expose only narrowly scoped command functions with explicit EXECUTE grants; keep ordinary reads under RLS. Derive actor from the caller JWT at the PostgreSQL boundary and validate permission, role, project association, session, assignment, state and separation-of-duties within the command transaction. Protected writes use the PO-approved narrow SECURITY DEFINER command-wrapper model, subject to individual function review, dedicated least-privileged NOLOGIN ownership, fixed empty search_path, schema-qualified references, strict validation, exact-signature EXECUTE grants, PUBLIC/anon denial and effective-privilege/RLS analysis. SECURITY INVOKER remains preferred for scoped reads and non-elevated helpers. The architecture decision is approved, but exact grants/policies and executable verification remain pending. No migration or test execution is claimed.
 
 
 ## T-16 — Reconciled canonical unit / project association contract
 
-The canonical `units` table is project-independent. Its candidate key is `(instrument_id, serial_normalized)` for known serials. Project-specific visibility and work are represented only by `unit_project_associations`; no RLS policy or command may infer association from `unit_id` alone. Each association episode is durable and auditable. The model allows one unit to be associated with multiple projects, but the partial unique active claim index on `unit_id` prevents concurrent claims of that physical item across any projects.
+The canonical `units` table is project-independent. Its candidate key is `(instrument_type, serial_normalized)` for known serials. The stable `instrument_type` FK is resolved from the instrument catalogue; assignment `instrument_id` remains a configuration reference and must resolve to the same type in the trusted command. Project-specific visibility and work are represented only by `unit_project_associations`; no RLS policy or command may infer association from `unit_id` alone. Each association episode is durable and auditable. The model allows one unit to be associated with multiple projects, but the partial unique active claim index on `unit_id` prevents concurrent claims of that physical item across any projects.
 
 `inspections` and `unit_claims` carry `unit_id`, `unit_project_association_id`, and `project_id`; composite foreign keys prove the association belongs to that unit and project and the assignment belongs to that same project. A trusted command additionally proves assignment instrument equals the unit instrument and the association is ACTIVE at claim/start. Historical inspection rows retain their association ID when an association ends. The physical unit record is never cloned to create a project-local copy.
 
 `unit_identity_conflicts` captures same-instrument normalized-serial collisions. Conflict resolution either creates an association to the verified existing canonical unit or closes/rejects the report with reason; it cannot create a second canonical unit or silently merge/retarget historical records. No institution-specific duplicate exception is permitted until the external exception policy is approved.
 
-**Constraint correction:** the previous project-scoped unique index `units(project_id, instrument_id, serial_normalized)` is withdrawn. It contradicted T-16 option B and is replaced by the canonical instrument+serial unique key plus association constraints above. The schema remains design-only; no migration has been created or executed.
+**Constraint correction:** the previous project-scoped unique index `units(project_id, instrument_id, serial_normalized)` and the subsequent `(instrument_id, serial_normalized)` candidate key are withdrawn. Both contradicted the controlling PO key `(instrument_type, serial_normalized)`. The canonical key is now explicit and independent of project and instrument-catalog row identity; association constraints remain as specified above. The schema remains design-only; no migration has been created or executed.
 
 ## PostgreSQL function privilege compatibility gate
 
-See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md). The T-18 design requires no direct browser DML while command functions default to INVOKER. Under the same authenticated database role these requirements conflict for protected writes unless an independently approved execution boundary exists. This must be resolved before defining function owners, grants or migrations; no broad table DML is permitted as a shortcut.
+See [T-18 Execution Model Security Review](T18-EXECUTION-MODEL-SECURITY-REVIEW.md) and [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md). T-18 Option A resolves the architecture-level conflict by selecting narrow SECURITY DEFINER wrappers for protected writes and SECURITY INVOKER for scoped reads where feasible. This is not blanket approval: each function's owner, memberships, effective privileges, RLS interaction, search_path, signature, caller-JWT path and exact EXECUTE ACL must be reviewed and verified before exposure. No broad table DML is permitted as a shortcut; no live ACL or runtime path has been verified.
 
 ## Notification and print persistence design addendum — NLA-001 / T-13
 
