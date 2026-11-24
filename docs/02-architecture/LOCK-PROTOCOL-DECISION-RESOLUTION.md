@@ -90,8 +90,9 @@ The L00 arbitration must be short and transactionally safe. The same semantic re
 - T-14 capacity uses L10 before any user/role/membership row that contributes to the qualifying count. Every eligibility-changing path must participate: role grant/revoke/expiry, account disable/suspension, assignment membership activation/deactivation, and capacity changes.
 - A path that does not affect the T-14 qualifying population need not acquire L10, but that exclusion must be proven in its manifest.
 
-**PO decision required:** define the business event at which a project/session becomes closed and whether already-started work may finish after closure. Recommended default: no new child mutation or finalization after the closure transaction commits; explicit reopen or exception workflow is required to resume.  
-**PO decision required:** confirm the intended T-14 counting rule (which active/approved users and assignments count, and the effective-time boundary). Engineering/Security then formalize the predicate and serialization implementation.
+**PO disposition (LPR-04): APPROVED.** A closed project/session rejects new normal mutations and finalization; reopening requires an explicit privileged workflow, reason and audit. This aligns with T-06/T-07. Engineering/Security must define the complete parent-fence and in-flight finalizer graph.
+
+**PO disposition (LPR-05): APPROVED as a clarification of existing T-14, not a replacement.** The controlling predicate counts distinct login-enabled accounts with an active Inspector role grant and at least one currently effective operational Inspector assignment in governed project/session scope. Registration alone and pending/rejected/suspended/disabled or expired-role accounts do not count. Assignment/team-membership and capacity-changing paths must use one shared serialization point when they can change that population. The existing combined 1–100 cap/default 50 remains controlling. Engineering/Security must verify every eligibility-changing path and exact effective-time semantics.
 
 ### 4.4 CMD-014/018–021: instrument/version/assignment interaction
 
