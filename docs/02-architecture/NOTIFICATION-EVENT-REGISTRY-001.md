@@ -1,7 +1,7 @@
 # Notification Event Registry — PO-Approved Specification Candidates
 
 **Document ID:** NLA-EVENT-REGISTRY-001  
-**Version:** 0.1.9  
+**Version:** 0.1.10  
 **Status:** DRAFT — PO INTENT APPROVED FOR SPECIFICATION/REVIEW ONLY; ALL ROWS UNRESOLVED / NOT ENABLED; NREG-001..011 PARTIAL STATIC REVIEW ONLY  
 **Date:** 2026-11-24  
 **Branch:** `docs/notification-resolver-lock-closure`  
@@ -104,7 +104,7 @@ This is a documentation artifact only. No source code, SQL, migration, grants/re
 
 ## 8. CMD-031/032 static review checkpoint — 2026-11-24
 
-NREG-010 `inspection.approved` and NREG-011 `inspection.reopened` received a partial static technical reconciliation in NLA-EVENT-TECH-RECON-001 v0.1.6.
+NREG-010 `inspection.approved` and NREG-011 `inspection.reopened` received a partial static technical reconciliation in NLA-EVENT-TECH-RECON-001 v0.1.7.
 
 - NREG-010: approval is tied to one exact current immutable submitted revision. Explicit persisted Reviewer assignment and reviewer != revision author are required. The terminal-decision arbiter must serialize CMD-030 return against CMD-031 approval. The responsible Inspector recipient mapping is not established by the approval actor, reviewer, author or generic assignment membership.
 - NREG-011: reopen requires explicit `inspection.reopen` authority, scope, mandatory reason and preservation of approved revision/evidence/documents/print history. The role/grant matrix, next-action owner and mutable draft representation are unresolved. Do not infer that the prior Inspector, reviewer or reopening actor owns the next action.
