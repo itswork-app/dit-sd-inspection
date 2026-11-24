@@ -6,7 +6,7 @@
 
 ## 1. Purpose and strict boundary
 
-This document defines the intended PostgreSQL function privilege model and maps the 48 logical operations to function security classes and caller roles. It is a review artifact only. It does not create functions, roles, schemas, ACLs, grants, revokes, migrations, policies or runtime tests.
+This document defines the intended PostgreSQL function privilege model and maps the 54 proposed operations to function security classes and caller roles. It is a review artifact only. It does not create functions, roles, schemas, ACLs, grants, revokes, migrations, policies or runtime tests.
 
 **Important:** PostgreSQL function EXECUTE permission is not the same as business authorization. An EXECUTE grant only permits invocation. Every exposed function must still authenticate the caller, derive actor from `auth.uid()`, check account status, approved permission, scope, resource state and SoD, and enforce invariants transactionally.
 
@@ -79,9 +79,11 @@ Names below are **logical candidate identifiers only**, not approved PostgreSQL 
 
 | Command IDs | Candidate function grouping | Class | Intended caller | EXECUTE decision |
 |---|---|---|---|---|
-| CMD-001..040 | One distinct function per command; do not bundle unrelated commands into a generic executor | F1 | `authenticated` via caller JWT, only after T-18 Option A/B resolution | Exact signature only; PUBLIC/anon denied; authenticated grant pending |
-| CMD-041..044 | Separate read RPCs only if a read route needs database function abstraction; otherwise ordinary RLS-scoped SELECT | F2 | `authenticated` | Exact signature only if implemented; no broader grant |
+| CMD-001..040 | One distinct function per command; do not bundle unrelated commands into a generic executor | F1 | `authenticated` via caller JWT, after per-function Option A security review | Exact signature only; PUBLIC/anon denied; authenticated grant pending |
+| CMD-041..044, CMD-049 | Separate read RPCs only if a read route needs database function abstraction; otherwise ordinary RLS-scoped SELECT | F2 | `authenticated`, recipient-self predicate for CMD-049 | Exact signature only if implemented; no broader grant |
 | CMD-045..048 | No function / no route | F6 | None | Explicitly denied / not created |
+| CMD-050..051 | One distinct mutation function per command; read acknowledgement and policy publication remain separate | F1 | `authenticated` only after recipient-self or approved policy-scope checks | Exact signature only; PUBLIC/anon denied; policy role grants not approved |
+| CMD-052..054 | Internal-only fan-out, provider dispatch and escalation workers; never browser callable | F5 | Dedicated non-login worker principal/scheduler trust path; not `authenticated` or `service_role` impersonation | No browser EXECUTE; exact worker identity, owner and EXECUTE ACL require T-18 security approval |
 | RLS helper functions | `current_app_user_id`, `has_permission`, `has_scope`, `is_assigned_to`, `can_access_project` are illustrative names from RLS design | F3 | Internal only | No direct browser EXECUTE; exact internal call chain TBD |
 | Audit/immutability triggers | Exact trigger inventory not yet supplied | F4 | Trigger invocation only | No direct browser EXECUTE |
 | Storage/object verification and outbox callbacks | Separate contracts required | F5 | No user role by default | Not approved |
@@ -111,7 +113,7 @@ A SECURITY DEFINER exception is permitted only after an individual threat model 
 
 ## 7. Schema/table privilege posture
 
-The following is the target policy class, not an executable grant matrix. Exact per-table privileges must be generated from the reconciled 41-table inventory and separately approved.
+The following is the target policy class, not an executable grant matrix. Exact per-table privileges must be generated from the reconciled 48-table proposed inventory and separately approved.
 
 | Table class | anon | authenticated browser | Hardened command owner (if approved) | Migration owner |
 |---|---|---|---|---|
@@ -165,10 +167,10 @@ Global tests must prove:
 
 ## 10. Open decisions and blockers
 
-- **Critical:** resolve SECURITY INVOKER versus browser direct-DML denial (Option A or B) with PO/security approval.
+- **Critical:** verify each protected command's approved T-18 Option A execution path against direct-DML denial; the model selection itself is PO-approved, but per-function owner/ACL/RLS/JWT evidence remains open.
 - Verify actual Supabase role names, memberships, attributes and PostgREST schema configuration.
 - Approve canonical permission semantics and role/grantor/delegation matrix.
-- Inspect actual 41-table ACL/RLS inventory and exact SQL types/constraints.
+- Inspect actual 48-table proposed ACL/RLS inventory and exact SQL types/constraints.
 - Decide which read operations are ordinary RLS SELECT versus read RPC.
 - Approve function owner strategy, SECURITY DEFINER exception list and internal helper call chain.
 - Formalize route/function version mapping, request/response schemas and idempotency retention.
@@ -177,7 +179,7 @@ Global tests must prove:
 
 ## 11. Current disposition
 
-- Logical operations mapped to function security classes: 48.
+- Logical operations mapped to function security classes: 54 (CMD-001..054); exact per-function signatures and grants remain unapproved.
 - Exact PostgreSQL functions inspected: 0 in this document workflow.
 - Exact function signatures approved: 0.
 - Role/ACL introspection from live Supabase: not performed.
@@ -185,7 +187,7 @@ Global tests must prove:
 - Protected-table DML grants/revokes applied: none.
 - RLS/Storage changes deployed: none.
 - Runtime security tests executed: none.
-- Critical INVOKER/DML compatibility issue: identified; PO/security decision OPEN.
+- T-18 Option A model: PO APPROVED; per-function implementation/security verification and INVOKER/DEFINER compatibility remain OPEN.
 - Scope freeze: **NOT READY**.
 - Implementation authorization: **NOT GRANTED**.
 
