@@ -91,3 +91,14 @@ This matrix is a draft and must be reconciled with the final role/permission cat
 - RLS helper-function design and JWT claims strategy.
 - Whether server-side operations use Edge/Server functions or tightly scoped PostgreSQL RPCs.
 - Institutional privacy and audit-retention rules.
+
+
+## T-17 — Instrument publication permissions
+
+- `instrument.manage` permits authorized Super Admin catalog/draft management; it does not implicitly grant publication.
+- `instrument.publish` is an explicit privileged permission assigned only to authorized Super Admin principals. Under PO-approved T-17 option A, this permission allows direct publication after server-side declarative schema validation; no second-person approval step is required.
+- `instrument.deactivate` is a separate privileged permission/action and must include reason + audit. Deactivation never deletes or mutates a published version.
+- Publication must occur only through the trusted command boundary; browser direct INSERT/UPDATE/DELETE of instrument catalog/version/configuration/publication/audit tables is denied.
+- Global catalog administration does not grant operational inspection membership. Unit inspection, claims, evidence, and responses must enforce explicit project association, session, assignment, role and permission. Cross-project canonical unit references must not widen RLS visibility.
+
+These are authorization design requirements, not deployed policies or test results. T-18 approval remains pending.
