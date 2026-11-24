@@ -104,7 +104,7 @@ Package T's document-level status must be updated from “Draft for Product Owne
 | G7 QA strategy closure | PARTIAL | Test design extensive; traceability gaps and all relevant execution evidence pending |
 | G8 Production operations closure | BLOCKED | Provider, ownership, region, quotas, SLO, restore and incident owners unverified |
 | G9 Final SSOT/scope freeze | NOT READY | Upstream blockers and document freshness remain |
-| G10 Implementation authorization | NOT AUTHORIZED | Separate explicit authorization required after G9 |
+| G10 Implementation authorization | NOT ACTIVE | Conditional PO implementation authorization was received on 2026-11-24; activate only after verified G9, approved scope freeze, and a separate G10 activation record |
 | G11 Build/verification | NOT STARTED | No application implementation |
 | G12 Production release | NOT STARTED | No deployment/UAT/restore/load/security evidence |
 
