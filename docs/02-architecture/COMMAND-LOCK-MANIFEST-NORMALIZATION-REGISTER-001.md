@@ -1,7 +1,7 @@
 # Command Lock Manifest Normalization Register — CMD-001–054
 
 **Document ID:** LOCK-NORMALIZATION-001  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Date:** 2026-11-24  
 **Status:** Candidate normalized source register — Engineering / Database / Security / QA review REQUIRED; NOT approved for implementation  
 **Repository phase:** Documentation / SSOT maturation  
@@ -22,12 +22,13 @@ Every application command is represented against these fields:
 
 1. **Command identity:** stable CMD ID and logical operation.
 2. **Boundary kind:** short mutation transaction, bounded read, multi-step durable workflow, or worker/scheduler transaction.
-3. **Ordered resources:** candidate lock/arbitration classes and deterministic same-class key order; read commands explicitly state no mutation lock.
-4. **Post-lock revalidation:** actor, authority, scope, lifecycle, effective time, version, capacity and source state predicates.
-5. **Shared invariant / final arbiter:** unique/exclusion constraint, guarded state transition, parent fence, row version, lease/fencing tuple, or explicit unresolved arbiter.
-6. **Competing writers:** all known commands, workers and provider callback paths that can race.
-7. **Atomicity / external effects:** domain mutation + audit + idempotency result; durable intent/outbox and external I/O outside DB locks.
-8. **Open evidence:** missing physical object, lock mode, implicit FK/index/trigger/function edge, token, RLS/ACL, institutional/provider decision, reviewer approval or test evidence.
+3. **Physical read/write set:** proposed physical tables/objects and read/write effects, with schema gaps explicit. See [CMD-PHYSICAL-CROSSWALK-001](COMMAND-PHYSICAL-OBJECT-CROSSWALK-001.md) v0.1.0 for all 50 application command IDs.
+4. **Ordered resources:** candidate lock/arbitration classes and deterministic same-class key order; read commands explicitly state no mutation lock.
+5. **Post-lock revalidation:** actor, authority, scope, lifecycle, effective time, version, capacity and source state predicates.
+6. **Shared invariant / final arbiter:** unique/exclusion constraint, guarded state transition, parent fence, row version, lease/fencing tuple, or explicit unresolved arbiter.
+7. **Competing writers:** all known commands, workers and provider callback paths that can race.
+8. **Atomicity / external effects:** domain mutation + audit + idempotency result; durable intent/outbox and external I/O outside DB locks.
+9. **Open evidence:** missing physical object, lock mode, implicit FK/index/trigger/function edge, token, RLS/ACL, institutional/provider decision, reviewer approval or test evidence.
 
 A field is not considered closed merely because a candidate value is written. Unknown physical names, lock modes, grants, indexes, functions, or worker identities are recorded as OPEN rather than inferred.
 
@@ -175,3 +176,8 @@ Until these items are evidenced, LPR-09 remains OPEN and LPR-10 remains NOT EXEC
 - PostgreSQL Command Contract Catalogue v0.4.7; Physical Database Schema v0.4.2; Physical Schema/RLS Reconciliation v0.2.3; Permission Registry v0.2.2; CONCURRENCY-001 v0.1.7; QA Catalogue v0.3.6.
 
 **Disposition:** 50/50 application command boundaries consolidated into a uniform candidate register; field-level technical closure is still PARTIAL/OPEN; 0/50 technically approved/certified; G9 NOT READY; G10 NOT ACTIVE. No source code, SQL, migration, grant/revoke, CI, test, live database/provider inspection, deployment, merge or production data operation was performed.
+
+
+## 9. Physical read/write crosswalk linkage — 2026-11-24
+
+[CMD-PHYSICAL-CROSSWALK-001](COMMAND-PHYSICAL-OBJECT-CROSSWALK-001.md) v0.1.0 contains 50 command-specific physical read/write entries: source-derived proposal sets for CMD-001–040 and CMD-049–054, plus explicit OPEN/BLOCKED entries for CMD-041–044. CMD-045–048 remain excluded external IDs. This closes the documentation locator gap only; it does not prove physical table existence, exact schema, indexes, triggers, function call graph, RLS or deployed grants. LPR-09 remains OPEN and 0/50 certified.
