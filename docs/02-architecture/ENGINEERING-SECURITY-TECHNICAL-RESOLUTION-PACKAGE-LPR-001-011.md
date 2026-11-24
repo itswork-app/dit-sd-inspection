@@ -1,11 +1,11 @@
 # Engineering & Security Technical Resolution Package — LPR-01 and LPR-07–LPR-11
 
 **Document ID:** TECH-RESOLUTION-LPR-001  
-**Version:** 0.1.6  
+**Version:** 0.1.7  
 **Status:** TECHNICAL RECOMMENDATION FOR ENGINEERING / DATABASE / SECURITY REVIEW — NOT APPROVED FOR IMPLEMENTATION  
 **Date:** 2026-11-24  
 **Repository / branch:** `itswork-app/dit-sd-inspection` / `docs/audit-lock-and-identity-reconciliation`  
-**Authority:** AGENTS.md v1.2.2; MIB-001 v1.0.11; IRG-001 v1.0.4; DGA-001 v1.11.41; SSOT-AUDIT-001 v0.1.5; Decision Register; T-07, T-14, T-16, T-17, T-18; LOCK-PROTOCOL-DECISION-RESOLUTION-001; LOCK-GRAPH-001; LOCK-MANIFEST-001  
+**Authority:** AGENTS.md v1.2.2; MIB-001 v1.0.11; IRG-001 v1.0.4; DGA-001 v1.11.42; SSOT-AUDIT-001 v0.1.5; Decision Register; T-07, T-14, T-16, T-17, T-18; LOCK-PROTOCOL-DECISION-RESOLUTION-001; LOCK-GRAPH-001; LOCK-MANIFEST-001  
 **Scope:** LPR-01, LPR-07, LPR-08, LPR-09, LPR-10, LPR-11; cross-command project/session fences; CMD-001–054 and asynchronous finalizers  
 **Gate:** G3/G4/G5/G7/G9 NOT READY; G10 NOT ACTIVE
 
@@ -365,9 +365,14 @@ CMD-045–048 are Product Owner-approved external control-plane traceability IDs
 
 ## 15. Current cross-document lock baseline — 2026-11-24
 
-Current linked document versions are DGA-001 v1.11.40, LOCK-MANIFEST-001 v0.4.23, LOCK-GRAPH-001 v0.4.16, LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.10, CMD-CROSSWALK-001-054 v0.8.17 and CONCURRENCY-001 v0.1.7. The traceability inventory is 54 IDs, comprising 50 application commands and 4 external control-plane IDs. LPR-09 and LPR-10 apply to the 50 application commands only. Candidate transaction/resource boundaries are documented for 50/50 application commands, but full normalized-manifest completion and technical certification remain OPEN; certified lock-complete is 0/50. LPR-01 and LPR-07–LPR-09/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. This addendum is a static source-version/denominator reconciliation, not technical approval or runtime evidence.
+Current linked document versions are DGA-001 v1.11.40, LOCK-MANIFEST-001 v0.4.24, LOCK-GRAPH-001 v0.4.17, LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.11, CMD-CROSSWALK-001-054 v0.8.18 and CONCURRENCY-001 v0.1.7. The traceability inventory is 54 IDs, comprising 50 application commands and 4 external control-plane IDs. LPR-09 and LPR-10 apply to the 50 application commands only. Candidate transaction/resource boundaries are documented for 50/50 application commands, but full normalized-manifest completion and technical certification remain OPEN; certified lock-complete is 0/50. LPR-01 and LPR-07–LPR-09/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. This addendum is a static source-version/denominator reconciliation, not technical approval or runtime evidence.
 
 
 ## 16. Normalized manifest register and LPR-09 scope — 2026-11-24
 
 [LOCK-NORMALIZATION-001](COMMAND-LOCK-MANIFEST-NORMALIZATION-REGISTER-001.md) v0.1.0 now provides a single structured register for all 50 in-scope application commands, preserving candidate resource order, revalidation/invariants and unresolved evidence. It is not an approved physical lock manifest. LPR-09 remains OPEN until all 50 records are reconciled to exact physical objects, implicit FK/index/trigger/function edges, privileges and competing writers and receive accountable Engineering/Database/Security/QA approval. LPR-10 remains NOT EXECUTED; no concurrency certification is claimed. CMD-045–048 remain excluded external IDs.
+
+
+## 17. Normalized register inventory verification — 2026-11-24
+
+The new LOCK-NORMALIZATION-001 v0.1.0 contains exactly 50 unique in-scope application command rows: CMD-001–044 and CMD-049–054. CMD-045–048 are excluded external control-plane IDs. This verifies row inventory and traceability only. It does not close LPR-09: exact physical objects, PostgreSQL implicit edges, privileges, complete competing writers, and named technical approvals remain outstanding. LPR-10 remains NOT EXECUTED; certified lock-complete remains 0/50; G9 NOT READY; G10 NOT ACTIVE.
