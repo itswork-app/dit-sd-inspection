@@ -1,10 +1,10 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.3.4
+**Version:** 0.3.5
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
-**Parent:** LOCK-GRAPH-001 v0.3.2  
+**Parent:** LOCK-GRAPH-001 v0.3.4  
 **Scope:** Per-command resource inventory, source-stated lock sequence, shared invariants, competing commands, constraints and unresolved ordering  
 **Gate:** G3 NOT READY; G4 NOT READY; G5 NOT READY; G7 NOT READY; G9 NOT READY; G10 NOT AUTHORIZED.
 
@@ -18,9 +18,9 @@ No command catalogue, physical schema, function, API, migration or runtime behav
 
 ## 2. Authority, source set and method
 
-Root `AGENTS.md` v1.2.0 was re-read from the target branch at the start of this work session. The source baseline was refreshed against the current corrective branch on 2026-11-24:
+Root `AGENTS.md` v1.2.0 was re-read from the target branch at the start of this work session. The source baseline below records the exact reviewed snapshot used for this reconciliation checkpoint on 2026-11-24 (it is not a live pointer to later document edits):
 
-| Source | Current reviewed version / identity | Use in this reconciliation |
+| Source | Reviewed snapshot version / identity | Use in this reconciliation |
 |---|---|---|
 | MIB-001 | v1.0.1 | Authority, gates and documentation-phase boundary |
 | DGA-001 | v1.9.2 | Active evidence-backed gap queue and gate disposition |
