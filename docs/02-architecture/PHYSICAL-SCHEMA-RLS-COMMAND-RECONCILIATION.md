@@ -16,14 +16,14 @@ The prior two ERD-only entities have been dispositioned in the documentation des
 ## 2. Controlling sources and rules
 
 - [Physical Database Schema and Integrity Specification](PHYSICAL-DATABASE-SCHEMA-AND-INTEGRITY-SPECIFICATION.md) defines the 41 proposed physical tables and key columns.
-- [Table-by-Table RLS Policy Catalogue](TABLE-BY-TABLE-RLS-POLICY-CATALOGUE.md) defines the current 41-table proposed SELECT and mutation posture.
+- [Table-by-Table RLS Policy Catalogue](TABLE-BY-TABLE-RLS-POLICY-CATALOGUE.md) defines the proposed 48-table SELECT and mutation posture.
 - [Data Model and ERD](DATA-MODEL-AND-ERD.md) is the logical model and currently names additional entities.
 - [Command Authorization Verification Matrix](COMMAND-AUTHORIZATION-VERIFICATION-MATRIX.md) maps logical command families and their authorization/testing responsibilities.
 - T-18 option A is PO-approved: browser-facing anon/authenticated roles receive no direct INSERT/UPDATE/DELETE on protected business/governance tables. Mutations run through narrowly granted PostgreSQL command functions with caller JWT. RLS remains an independent read boundary.
 
 Interpretation: the catalogue's INSERT/UPDATE value `CMD` means a mutation may occur only inside an authorized trusted command transaction. It is **not** a direct PostgREST/browser table grant. `NONE` means no direct browser table access for that operation. Exact database role grants and command-function EXECUTE grants remain unapproved/unimplemented.
 
-## 3. Exact 41-table inventory and privilege posture
+## 3. Proposed 48-table inventory and privilege posture
 
 The key-column/constraint descriptions are transcribed from Package L; SELECT classes and mutation classifications are transcribed from Package M. This table is a review crosswalk, not executable SQL.
 
@@ -100,7 +100,7 @@ The RLS catalogue correctly classifies protected mutations as `CMD`, but it does
 4. Function owner, SECURITY INVOKER/DEFINER mode, fixed search_path, PUBLIC execute revocation and nested object privileges.
 5. SELECT grants and RLS policies independently; a SELECT grant without a matching RLS policy must remain deny-by-default.
 6. Storage bucket/object policies and signed URL issuance separately from relational table RLS.
-7. Views, materialized views, triggers, helper functions, sequences and extensions as separate attack surfaces; none is covered merely by a 41-table count.
+7. Views, materialized views, triggers, helper functions, sequences and extensions are separate attack surfaces; none is covered merely by a table count.
 
 ### 4.4 Table-level policy is not a complete command contract
 
@@ -134,7 +134,7 @@ The SELECT classes `R-self`, `R-scope`, `R-admin`, `R-published`, and `R-conflic
 
 Before implementation authorization, produce and review:
 
-1. A PO-approved disposition for `print_batches` and `notification_events`, including explicit removal from ERD if not required.
+1. Independent technical review of the T-13 `print_batches` design and NLA-001's six notification lifecycle tables; confirm removal of the ambiguous `notification_events` placeholder from the ERD.
 2. A per-table DB-role privilege matrix with exact GRANT/REVOKE statements, reviewed against T-18.
 3. A per-command RPC catalogue with exact schema/signature, caller role, EXECUTE grant, actor derivation, authorization predicates, lock/idempotency/audit/error contract.
 4. Executable RLS predicate specifications and positive/negative tests for every table, including nested relations and revoked memberships.
