@@ -1,7 +1,7 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.13  
+**Version:** 0.1.14  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
@@ -506,3 +506,18 @@ Suppression requires stable reason codes and a deterministic state transition. T
 Every suppression and retry attempt must be auditable through append-only outcome evidence bound to the source event, outbox, immutable candidate, pinned policy and attempt/checkpoint. The exact reason-code catalog, correlation fields, identity provenance, retention and data-minimization rules remain to be reviewed by Security and the applicable Records/Privacy authority.
 
 See NLA-L05-TDR-001 v0.1.7 §4.2.4 for F05-T1..T5 and the technical exit criteria. Until these are approved and evidenced, F-05 remains OPEN; the candidate snapshot relation/header remains NOT ADMITTED; G9 NOT READY and G10 NOT ACTIVE.
+
+
+## 22. Selector registry and event-specific dispatch profiles — F-05 candidate
+
+NLA-L05-TDR-001 v0.1.8 §4.2.5–4.2.6 defines a bounded review-candidate grammar with only ROLE_SCOPE and EVENT_PARTICIPANT clauses. It is not approved for publication or implementation. A selector is not executable policy until an exact event-to-selector registry entry exists.
+
+The registry must bind an exact canonical event token to its source transaction/worker, grammar version, permitted clause kinds, source-scope binding, participant field mappings, dependency references and dispatch profile. Source map v0.1.0 is only a CMD/event declaration inventory; it does not itself enable notifications. Composite/conditional event declarations must be split into exact tokens and mapped before enablement. No wildcard, prefix event matching, arbitrary JSON path or SQL expression is permitted.
+
+Dispatch profiles must separately state account, channel, consent, mandatory security, current role/scope, parent-state, retry and suppression-reason predicates. In particular:
+- a role-revocation notice must not require the revoked role to remain effective merely to deliver the notice;
+- an assignment-member-end notice must not universally require current membership in the ended assignment;
+- a project/session-closure notice must not be suppressed by a blanket current-active-parent predicate;
+- account reactivation may reconsider only a candidate already in the immutable snapshot and cannot clear unrelated restrictions.
+
+The source resource is independently re-authorized when opened. Notification delivery is not an access grant. The candidate grammar's eight-clause bound is a review proposal only and requires Engineering resource validation plus Security/PO approval. F-05 and F-04 remain OPEN; no physical schema, selector registry table, SQL, migration or runtime behavior is admitted by this document.
