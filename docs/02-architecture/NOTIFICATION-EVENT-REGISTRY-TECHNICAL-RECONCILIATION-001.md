@@ -33,6 +33,7 @@ The registry's seven status dimensions remain controlling. Both rows remain:
 | Command Physical Object Crosswalk | CMD-002/003 proposed `app_users`, `account_decisions`, `idempotency_records`, `audit_events` dependencies | Proposed physical model, not live schema proof |
 | Physical Database Schema and Integrity Specification | `app_users` candidate fields include `id`, `auth_user_id`, `approval_status`, `account_status`; `account_decisions` is proposed append-only with user, decision, actor, reason and time | Exact constraints, state model, deployed columns and ACL are unverified |
 | LOCK-NORMALIZATION-001 v0.1.1 | Candidate L05 and lock-order paths for CMD-002/003 | Candidate order only; no admitted rank or certified path |
+| L05 Source-Event Path Mapping v0.1.0 | CMD-002/003 source command transaction boundary, candidate lock sequence and required L05 insertion point | Candidate map copied from command manifest; source-code/function call-graph evidence and post-L05 order remain absent |
 | L05 Eligibility-Writer Participation Matrix | CMD-002/003 are known account/login-eligibility writer paths; admin, support, disable/suspend/reactivate, auth reconciliation and other non-command writers are incomplete | No complete physical writer inventory; zero writers certified to participate |
 | NLA-001 and NLA-L05-TDR-001 | POQ-01/04 snapshot and suppression invariants; proposed outbox and L05 protocol | Snapshot relation/header NOT ADMITTED; L05 and transaction isolation not technically approved |
 | Decision Register / POQ-04 | Approved pre-mutation candidate snapshot and post-mutation suppression semantics | Event-specific eligibility mapping for pending account transitions is not yet resolved |
@@ -43,7 +44,7 @@ The registry's seven status dimensions remain controlling. Both rows remain:
 
 **Static candidate:** CMD-002 `approve-account` is the producer path for the logical candidate `account.approved`.
 
-The detailed contract proposes one database command transaction that conditionally changes the target account's approval state, appends an immutable account decision, records idempotency and appends the canonical audit/domain fact. The catalogue and cross-command reconciliation identify the event as part of CMD-002's transaction; the command does not represent an asynchronous post-commit event or an external provider callback.
+The detailed contract and L05 source-event path map identify one source command transaction: conditional target-account approval, immutable account decision, idempotency result, canonical event/audit fact, and (only after a future event is enabled and the physical model is admitted) outbox plus immutable candidate snapshot. This is not an asynchronous post-commit producer or provider callback. The path map explicitly requires those facts to commit atomically.
 
 **Not proven:** the actual producer function, physical event writer, exact event envelope/schema version, exact canonical event storage representation, and transaction behavior in a deployed database. The proposed use of `audit_events.id` as `notification_outbox.source_event_id` in NLA-001 does not by itself prove that every audit row is a canonical notification source event.
 
@@ -61,13 +62,13 @@ The candidate atomic unit is account transition + immutable decision + idempoten
 LOCK-NORMALIZATION-001 records this candidate order:
 
 1. L00 idempotency arbitration.
-2. L05 audience guard before mutable eligibility/domain locks, if this event is admitted for notification matching.
-3. L10 capacity rows only if the account transition changes the approved T-14 qualifying-Inspector population.
+2. Candidate L05 audience guard before the first mutable lock, if this event is admitted for notification matching.
+3. Conditional L10 capacity rows only if the account transition changes login-enabled eligibility in the approved T-14 qualifying-Inspector predicate; affected project set must be stable and ordered.
 4. L15 actor and target principals in stable UUID order.
 5. L16 actor role-grant rows; L17 applicable actor scope-grant rows; conditional L18 authorization catalogue rows.
 6. Target account transition and append-only decision/audit facts at the relevant terminal rank.
 
-This is a normalization proposal, not an approved lock plan. The exact L05 key, L05/L10 order, account row lock mode, decision uniqueness arbiter, FK/trigger edges and opposing-writer graph remain unapproved. The detailed command review's simpler target-row locking statement must be reconciled to this normalized global order before certification.
+The L05 source-event path map independently records the same candidate prefix and CMD-002 transaction boundary. This is a normalization proposal, not an approved lock plan. The exact L05 key, L05/L10 order, account row lock mode, decision uniqueness arbiter, FK/trigger edges and opposing-writer graph remain unapproved. The detailed command review's simpler target-row locking statement must be reconciled to this normalized global order before certification.
 
 ### 3.4 Recipient and selector
 
@@ -95,7 +96,7 @@ The source command is idempotent by actor + command + target/resource + opaque k
 
 **Static candidate:** CMD-003 `reject-account` is the producer path for the logical candidate `account.rejected`.
 
-The proposed transaction conditionally transitions the target account to rejected, appends an immutable account decision, persists idempotency and appends the canonical event/audit fact atomically. Rejection is not deletion.
+The proposed source command transaction conditionally transitions the target account to rejected, appends an immutable account decision, persists idempotency and appends the canonical event/audit fact atomically; the L05 source-event path map also places any future outbox and immutable candidate snapshot in this same transaction. Rejection is not deletion.
 
 **Not proven:** the actual producer function, event envelope/schema version, physical canonical event representation, deployed transaction behavior, and whether any account/auth synchronization occurs inside or outside the transaction.
 
