@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.49
+**Version:** 1.11.50
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -592,3 +592,14 @@ Current lock source pointers: LOCK-MANIFEST-001 v0.4.24; LOCK-GRAPH-001 v0.4.17;
 ## CMD-035/036/038/039/040 durable object proposal — 2026-11-24
 
 [DURABLE-OPERATION-LEDGER-AND-ARTIFACT-LIFECYCLE-PROPOSAL-001](../02-architecture/DURABLE-OPERATION-LEDGER-AND-ARTIFACT-LIFECYCLE-PROPOSAL-001.md) v0.1.0 documents candidate boundaries for per-operation sync outcomes and device binding, immutable document template versions and renderer jobs/attempts, print batch-item manifests/results, attendance document versions and append-only verification events. These are candidate models only; they are not admitted to the canonical physical schema or RLS catalogue. Product/institutional authority, Security/Database approval, exact FK/index/check/RLS/ACL, worker identity, retention and concurrency evidence remain open. Attendance location-versus-assignment authority and uploader/verifier SoD are not inferred. CMD-035/036/038/039/040 remain not technically certified; no G9/G10 status is advanced.
+
+
+## Candidate physical object / ERD / RLS / permission reconciliation — 2026-11-24
+
+The durable operation proposal for CMD-035/036/038/039/040 is now cross-referenced in four governing architecture artifacts: PHYSICAL-DATABASE-SCHEMA-AND-INTEGRITY-SPECIFICATION candidate-only annex, TABLE-BY-TABLE-RLS-POLICY-CATALOGUE candidate-only RLS annex, CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX addendum, and DATA-MODEL-AND-ERD candidate-only annex. PHYSICAL-SCHEMA-RLS-COMMAND-RECONCILIATION records the admission boundary.
+
+Eight candidate object families are mapped across those documents. They remain NOT ADMITTED and are excluded from the canonical 48-table inventory and Mermaid ERD. Existing 48/48 exact name parity is unchanged and applies only to the canonical proposed inventory; it does not extend to candidate objects or deployed database state.
+
+Permission reconciliation confirms existing mappings for sync.apply, document.generate, document.print.batch, attendance.upload, attendance.verify, report.read and audit.export. No new permission is approved. Device enrollment/revocation and template publication require separately defined command/permission boundaries. Renderer workers remain a distinct workload identity and do not inherit document.generate, authenticated-user permissions or service_role.
+
+Residual decisions: candidate FK/cardinality and indexes; device trust/recovery; template governance; renderer identity/ACL; print item/attempt identity; attendance scope authority and uploader/verifier SoD; export artifact model and T-10. No SQL, schema migration, RLS deployment, GRANT/REVOKE, runtime test or live DB verification occurred. G9 NOT READY; G10 NOT ACTIVE; 0/50 lock-certified.
