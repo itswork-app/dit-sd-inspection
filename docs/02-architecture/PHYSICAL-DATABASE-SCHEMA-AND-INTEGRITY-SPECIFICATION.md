@@ -1,7 +1,7 @@
 # Physical Database Schema and Integrity Specification
 
 **Status:** Engineering specification draft — approval required before migrations  
-**Version:** 0.4.7  
+**Version:** 0.4.8  
 **Package:** L — Physical Data Model and Integrity  
 **Date:** 2026-11-23
 
@@ -415,3 +415,28 @@ Database must resolve the historical-attempt key/uniqueness strategy, FK graph, 
 ### SES-001 historical attempt identity clarification (candidate only)
 
 An `inspections` row represents one inspection attempt and is immutably bound to one session_id. After an attempt reaches ABORTED, a later session must create a new `inspections.id` for the same canonical unit; it must not update the old row's session_id or reactivate its draft. The previous ABORTED inspection, revisions, evidence and events remain historical. Return correction and authorized reopen within the same originating session remain new draft contexts on the same inspection aggregate. The existing phrase “one active inspection lifecycle per canonical unit” must be interpreted as at most one nonterminal inspection attempt per canonical unit, while allowing multiple historical terminal attempts. Exact partial unique/exclusion constraints and terminal-state vocabulary require Database/Engineering/Security approval; canonical 48-table inventory remains unchanged and no DDL is admitted.
+
+## Candidate integrity requirements — packed-unit ABORT request/decision (2026-11-24)
+
+**Proposal only; no physical object is admitted and no migration is authorized.**
+
+The current physical inventory describes unit_claims, review_events and inspection_events, but it does not yet provide an admitted request/approval record that can preserve the Inspector request, Admin/Korlap decision, decision reason, evidence references and idempotent outcome as one auditable lifecycle.
+
+Database review should compare:
+- a dedicated append-only request/decision record with explicit request and decision facts; versus
+- a bounded request aggregate with immutable terminal decision fields plus append-only inspection_events and audit_events.
+
+Do not silently overload review_events: its existing decision vocabulary and reviewer authority are for inspection review, not Admin/Korlap abort disposition. Do not overload CMD-027 or treat a claim release as the ABORT decision.
+
+Minimum logical integrity requirements (names/types/constraints are intentionally not assigned):
+1. Each request binds to one inspection, immutable session, exact submitted revision and exact Reviewer RETURN decision.
+2. Requester and approver identities are server-derived; requester != approver.
+3. At most one pending ABORT request exists for an inspection at a time; historical rejected/approved requests remain retained.
+4. Decision is immutable once terminal; approval and rejection both carry server time, actor and mandatory reason.
+5. Evidence references point only to finalized private objects authorized for the exact inspection/session; evidence bytes remain in Storage, not database rows.
+6. Approval can transition only the exact still-current returned revision to terminal ABORTED. A stale revision/request cannot be approved.
+7. If an active claim exists, its release is part of the approval transaction; no claim is released on request or rejection.
+8. Request/decision, inspection transition, conditional claim release, domain event, audit and idempotency outcome have all-or-nothing transaction semantics.
+9. Historical inspection/revision/evidence records are never deleted, rewritten or automatically reused by a later attempt.
+
+Exact table/column names, enum values, FK/partial-unique/CAS strategy, event vocabulary, evidence policy, RLS and command function grants remain OPEN. The canonical table count and physical schema inventory are unchanged.
