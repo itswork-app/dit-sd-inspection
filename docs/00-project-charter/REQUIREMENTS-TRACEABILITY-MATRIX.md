@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.16  
+**Version:** 0.1.17  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -512,3 +512,15 @@ TC-NOTIF-077/078 remain PLANNED / NOT EXECUTED. NOTIF-026/027 do not authorize i
 | NOTIF-030 | Project/session closure is serialized against every child writer/finalizer using compatible parent-first fences and physical concurrency tokens; closure gate set is complete and idempotent | T-07; CMD-010–015; T-18; Database/Security | NLA-EVENT-TECH-RECON-001 v0.1.2 §§12–15; LOCK-NORMALIZATION-001 v0.1.1 | TC-NOTIF-081; parent/child race, CAS, blocker completeness and rollback evidence | OPEN — PARENT FENCE / CAS / CHILD WRITER INVENTORY INCOMPLETE |
 
 TC-NOTIF-079..081 remain PLANNED / NOT EXECUTED. NOTIF-028..030 do not authorize implementation or G10 activation.
+
+
+## Assignment event technical traceability — 2026-11-24
+
+| Requirement ID | Requirement / invariant | Authority | Design reference | Verification | Status |
+|---|---|---|---|---|---|
+| NOTIF-031 | `assignment.created` must bind to one committed create-only transaction and a trusted event-participant projection for its complete initial roster; new members are not assumed to be pre-existing members in the pre-mutation state | POQ-01; POQ-04; CMD-014; Security | NLA-EVENT-REGISTRY-001 v0.1.4; NLA-EVENT-TECH-RECON-001 v0.1.3 §17 | TC-NOTIF-082; event-participant and complete-roster atomicity review | OPEN — NEW-MEMBER SNAPSHOT SEMANTICS UNRESOLVED |
+| NOTIF-032 | `assignment.changed` must define exact added/ended/retained member event cardinality and selector mapping; ended membership is evaluated pre-end at one captured instant, with no replacement recipient | POQ-01; POQ-04; CMD-015 | NLA-EVENT-TECH-RECON-001 v0.1.3 §18; NLA-L05-TDR-001 v0.1.8 §4.2.2 | TC-NOTIF-083; member-delta and no-widening tests | OPEN — MEMBER-DELTA CONTRACT UNRESOLVED |
+| NOTIF-033 | Ending assignment membership with active claims/in-progress inspections follows an explicit operational rule and never silently reassigns or deletes work | CMD-015; POQ/Operations | NLA-EVENT-TECH-RECON-001 v0.1.3 §§18–20 | TC-NOTIF-084; active-work ownership and recovery evidence | OPEN — ACTIVE-WORK POLICY UNRESOLVED |
+| NOTIF-034 | Assignment/member writers, role/account eligibility writers and capacity updates share one approved L05/L10 serialization and atomic idempotent event/snapshot protocol | T-14; POQ-01; POQ-04; T-18; Database/Security | NLA-EVENT-TECH-RECON-001 v0.1.3 §§17–20; LOCK-NORMALIZATION-001 v0.1.1; L05 writer matrix v0.1.4 | TC-NOTIF-085; concurrency, capacity, lock-order and writer-completeness evidence | OPEN — GLOBAL WRITER / LOCK PROOF MISSING |
+
+TC-NOTIF-082..085 remain PLANNED / NOT EXECUTED. NOTIF-031..034 do not authorize implementation or G10 activation.
