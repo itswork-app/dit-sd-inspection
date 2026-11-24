@@ -91,7 +91,7 @@ Use SECURITY INVOKER by default. SECURITY DEFINER is allowed only where RLS recu
 | `create-project` / `update-project` | project.manage | Project code unique; status transition valid |
 | `create-session` / `transition-session` | session.manage / session.transition | Project scope; allowed transition; closure gates checked atomically |
 | `publish-assignment` / `change-assignment-members` | assignment.manage | One location/instrument/team; published instrument version; no overlapping cross-location membership |
-| `change-inspector-capacity` | capacity.manage | Lock global capacity row; count approved predicate; 1..100; reject below count |
+| `change-inspector-capacity` | capacity.manage | Lock the governed project's capacity-settings row; count distinct qualifying accounts across both locations using the T-14 predicate; 1..100; reject below count |
 | `create-instrument` / `save-instrument-draft` | instrument.manage | Super Admin; declarative schema allowlist; code unique; draft only |
 | `publish-instrument-version` | instrument.publish | T-17 PO APPROVED (A): authorized Super Admin publishes directly without second-person approval; derive actor from trusted session; validate schema/allowlists; atomically append publication + audit; increment version; immutable snapshot |
 | `register-canonical-unit` | unit.register | Normalize using published instrument policy; unique instrument+serial; lock canonical key; collision opens controlled conflict, never duplicate row |
@@ -151,9 +151,9 @@ Stable error families:
 - Account: `ACCOUNT_NOT_APPROVED`, `ACCOUNT_SUSPENDED`
 - Authorization: `PERMISSION_DENIED`, `SCOPE_DENIED`, `SEPARATION_OF_DUTIES_VIOLATION`
 - State/version: `INVALID_STATE_TRANSITION`, `STALE_VERSION`
-- Integrity: `DUPLICATE_SERIAL`, `ACTIVE_CLAIM_EXISTS`, `ASSIGNMENT_OVERLAP`, `INSPECTOR_CAPACITY_EXCEEDED`
-- Evidence: `EVIDENCE_NOT_READY`, `EVIDENCE_INVALID`, `QUOTA_EXCEEDED`
-- Idempotency/sync: `IDEMPOTENCY_KEY_REUSED`, `SYNC_CONFLICT`
+- Integrity: `CANONICAL_UNIT_CONFLICT`, `UNIT_ASSOCIATION_REQUIRED`, `INSTRUMENT_MISMATCH`, `ACTIVE_CLAIM_EXISTS`, `ASSIGNMENT_OVERLAP`, `INSPECTOR_CAPACITY_EXCEEDED`
+- Evidence/audit: `EVIDENCE_NOT_READY`, `EVIDENCE_INVALID`, `QUOTA_EXCEEDED`, `AUDIT_WRITE_FAILED`
+- Idempotency/sync: `IDEMPOTENCY_KEY_REUSED`, `SYNC_CONFLICT`, `RETRYABLE_FAILURE`
 - General: `VALIDATION_FAILED`, `RATE_LIMITED`, `INTERNAL_ERROR`
 
 Errors must not disclose whether an unauthorized resource exists. Use a consistent not-found/denied strategy based on the threat model.
