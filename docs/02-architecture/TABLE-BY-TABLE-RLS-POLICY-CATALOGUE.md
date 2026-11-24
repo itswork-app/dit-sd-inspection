@@ -201,6 +201,12 @@ For each test, record actor fixture, grants, resource fixture, request, expected
 6. **INS-016 PO APPROVED (T-15 option A):** implement append-only audit writes and atomic fail-closed critical commands; institutional retention/legal-hold/disposition and final audit-reader/export authority remain open under T-10.
 7. Institutional data classification and privacy/legal basis.
 
+
+
+## Command authorization matrix cross-reference
+
+See COMMAND-AUTHORIZATION-VERIFICATION-MATRIX.md, section 5, for the 27-family crosswalk against this catalogue's current 41 tables. That crosswalk identifies registry domains for retention/legal-hold, security cases and provider/release that are not represented by current tables, plus the unresolved audit-export artifact model. These are inventory gaps, not permission to create or expose new tables. Update this catalogue before any such object is introduced or exposed. The matrix and this catalogue remain design artifacts; no RLS policy or grant is deployed or verified.
+
 ## 10. Release gate and disposition
 
 Before production:
