@@ -516,7 +516,7 @@ Access logging is a distinct append operation, not a read-triggered call back in
 
 ### CMD-044
 
-**BLOCKED / NO EXECUTABLE PHYSICAL SET:** T-10 institutional records/privacy authority is absent. No export route, function, permission grant, job, bucket, worker or artifact may be created. A candidate-only object model is documented in the CMD-041–044 review and physical schema annex for future review; it is NOT admitted to the canonical 48-table inventory. Export requires institutional approval of authority, purpose, SoD, scope, classification, format/volume, recipient, encryption/key custody, download authorization, retention/legal hold, deletion and recovery. Existing `documents` and `notification_outbox` are not to be repurposed.
+**BLOCKED / NO EXECUTABLE PHYSICAL SET:** T-10 institutional records/privacy authority is absent. No export route, function, permission grant, job, bucket, worker or artifact may be created. Three candidate-only object families are documented for future review: audit_export_jobs, audit_export_manifests and audit_export_artifacts. They are NOT admitted to the canonical 48-table inventory. Export requires institutional approval of authority, purpose, SoD, scope, classification, format/volume, recipient, encryption/key custody, download authorization, retention/legal hold, deletion and recovery. Existing `documents` and `notification_outbox` are not to be repurposed.
 
 ### CMD-049
 
