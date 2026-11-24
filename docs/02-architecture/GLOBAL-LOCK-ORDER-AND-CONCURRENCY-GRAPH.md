@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.22
+**Version:** 0.4.23
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -556,3 +556,31 @@ The Product Owner selected Option A — a global transaction-scoped audience ser
 ## 29.2 L05 technical protocol proposal — 2026-11-24
 
 [NLA-L05-TDR-001 v0.1.0](NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) proposes a transaction-scoped two-key PostgreSQL advisory lock as candidate L05, with a single reserved global key pair (values TBD), READ COMMITTED separate-statement resolver snapshot, and complete writer participation. Advisory lock acquisition must precede every participating domain row lock; it is not enforced against uncooperative writers. The exact key registry, deployed isolation, all writer paths, FK/unique/trigger/helper edges, numeric timeout/retry budgets and measured contention remain unverified. No graph edge is certified by the proposal; acyclicity remains NOT PROVEN.
+
+
+## 30. CMD-031–040 candidate lock-order reconciliation — 2026-11-24
+
+LOCK-MANIFEST-001 v0.4.30 §7.13 adds a command-specific candidate overlay for CMD-031–040. This section records graph obligations, not certified edges. Candidate L05 remains unadmitted; no physical lock mode or graph cycle is asserted as proven.
+
+### 30.1 Candidate graph edges
+
+- **Review lifecycle (CMD-030/031/032):** reviewer principal and role/scope authorization → project/session parent → assignment/member scope → optional active-claim blocker where the reopen predicate requires it → inspection aggregate → dependent mutable draft context → append-only review/inspection/audit facts. CMD-030 return, CMD-031 approve and CMD-032 reopen must converge on one inspection aggregate and one terminal-decision-per-revision arbiter. Reopen must not mutate immutable approved revisions or prior artifacts.
+- **Evidence lifecycle (CMD-033/034):** authorization and project/session/assignment/claim scope → inspection aggregate → quota/reservation and exact evidence intent. CMD-034 performs private Storage observation before opening the finalization transaction, then revalidates the same pending intent and all mutable scope/claim predicates under the ordered database locks. Storage calls never occur while database locks are held.
+- **Offline sync (CMD-035):** batch envelope and each operation have distinct identity. The operation transaction, not a batch-wide lock, owns each domain mutation/event. Transaction-versus-savepoint and event cardinality remain unresolved; no normalized graph edge is admitted for this command.
+- **Document generation (CMD-036):** initiating reservation, worker claim, external render/Storage, and guarded finalization are distinct phases. Only the finalizer emits pdf.generated; its workload identity, lease/fencing row and lock rank are missing. No source event may be attributed to the request transaction unless the event contract is changed.
+- **Print (CMD-037/038):** document-version/sequence arbitration is a dependent mutable resource. CMD-038 processes one item per short transaction; batch envelope events and item events are separate source-event instances. A batch-wide lock across physical printing is prohibited.
+- **Attendance upload/verification (CMD-039/040):** private Storage upload and observation are outside DB locks. The attendance aggregate's rank and immutable document-version/verification-history model are not specified, so no total order can yet be proved. Verification must fence the exact document version against replacement and serialize one terminal decision.
+
+### 30.2 Unresolved graph edges
+
+1. reviewer principal/grant → assignment membership → inspection must be reconciled with every assignment revocation and inspection lifecycle writer.
+2. claim → inspection → evidence intent must be reconciled with claim release/takeover, submit, reopen and sync operation paths.
+3. document generation lease → source revision → document has no approved worker-principal or lease-rank mapping.
+4. document sequence → print event lacks a physical version/sequence arbiter and a verified FK/unique-index edge inventory.
+5. attendance record → attendance document version → verification decision lacks a physical attendance aggregate rank, version constraint and immutable decision history.
+6. L05 → authorization/scope/source locks is only a proposed order. Full writer participation, implicit FK KEY SHARE, unique-index, trigger, cascade and helper edges are still unverified.
+
+### 30.3 Disposition
+
+CMD-031/032/033/034/037 now have partial candidate ordering proposals; CMD-035/036/038/039/040 remain blocked on transaction boundary, worker/lease, per-item event, attendance physical model or institutional authority. This does not increase the certified denominator: CMD-031–040 0/10 certified, all application commands 0/50 certified, resolver paths 0/40 certified. The effective graph remains NOT PROVEN ACYCLIC. NRL-T01..T13 and related QA remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE.
+
