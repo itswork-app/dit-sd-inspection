@@ -1,7 +1,7 @@
 # Implementation Roadmap and Release Governance
 
 **Document ID:** IRG-001  
-**Version:** 1.0.0  
+**Version:** 1.0.1  
 **Status:** CONTROLLED PLAN — PRE-IMPLEMENTATION  
 **Date:** 2026-11-24  
 **Authority:** MIB-001, AGENTS.md, approved Decision Register and ADRs  
@@ -227,6 +227,18 @@ The application and released public interfaces use **Semantic Versioning 2.0.0**
 - Use conventional commit style where practical; commit messages do not replace PR review or release notes.
 
 ### 6.1 Independent version domains
+### 6.2 Controlled document SemVer
+
+Each controlled specification (PRD, ADR, architecture contract, permission registry, QA catalogue, MIB, DGA and controlled operational plan) has its own version. Document version and approval status are separate: a document at 1.x may still be a draft or proposal and does not imply approval.
+
+- **MAJOR:** incompatible change to an approved requirement, authority boundary, public contract, security invariant or previously approved baseline; requires impact analysis and explicit supersession/approval.
+- **MINOR:** backward-compatible addition or material expansion of requirements, commands, permissions, test coverage or design detail.
+- **PATCH:** editorial correction, clarification or traceability/status correction that does not change approved behavior or authority.
+- Pre-1.0 proposals use `0.y.z`; do not imply stability or implementation approval.
+- Bump the affected document version in the same commit as its content change. Update dependent documents, RTM/DGA/RAID references and cross-document links in the same coherent change set.
+- Never use a document version bump to silently approve a PO or institutional decision. Approval evidence and approver remain explicit.
+- A scope-freeze baseline at G9 is separately identified by its immutable Git commit/tag and approval record; it does not retroactively make every individual draft authoritative.
+
 
 Do not force every artifact to share one version number:
 - **Application release:** SemVer tag, e.g. `v0.8.0` or `v1.0.0`.
