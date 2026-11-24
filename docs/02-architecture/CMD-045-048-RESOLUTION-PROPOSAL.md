@@ -1,7 +1,7 @@
 # CMD-045–048 — Control-Plane Resolution Proposal
 
 **Document ID:** CMD-RESOLUTION-045-048  
-**Version:** 0.1.1  
+**Version:** 0.1.2  
 **Date:** 2026-11-24  
 **Status:** PO APPROVED application-scope disposition (approval of v0.1.0 recorded 2026-11-24); external evidence gates remain OPEN; no implementation authorization  
 **Related:** CMD-REVIEW-045-048 v0.1.0; T-10; T-12; T-15; T-18; DGA-B04/B05/B10/B12/B15; D-031..D-033; R-032/R-033.
@@ -10,15 +10,13 @@
 
 The Product Owner approved version 0.1.0 of this proposal on 2026-11-24. Version 0.1.1 records that disposition and preserves the accepted scope unchanged. Approval applies only to the application-surface treatment and traceability status of CMD-045–048. It does not approve institutional T-10 policy, T-12 provider ownership, incident-response authority, release governance, implementation, tests, deployment or production operation. G9 remains NOT READY; G10 remains NOT ACTIVE.
 
-## 1. Executive recommendation
+## 1. Approved application-scope disposition
 
-The four logical IDs currently grouped as blocked commands do not belong to one application command surface. They are governance/control-plane capabilities with different accountable owners and external systems.
+The Product Owner explicitly approved this proposal's v0.1.0 application-scope treatment on 2026-11-24. Version 0.1.1 records that decision. CMD-045–048 remain stable traceability IDs but are not executable application commands, do not receive application permissions, and must not be implemented as browser-callable CRUD/RPC endpoints, SQL functions, tables, workers or generic administrative interfaces.
 
-**Recommendation:** retain CMD-045..048 as stable traceability IDs, but do not implement them as browser-callable application CRUD/RPC endpoints in the DIT SD Inspection product. Treat them as external institutional/provider/release control-plane responsibilities. The application may later expose narrowly scoped, read-only evidence references or integration status only if a separately approved requirement justifies it.
+The approval closes the product-scope ambiguity only. Institutional records/privacy authority, incident-response ownership, provider custody/recovery, and release governance remain external dependencies with their own accountable authorities and evidence. The application may expose a narrowly scoped read-only evidence reference only under a new requirement/command ID and separate approval.
 
-This recommendation is a scope/design proposal. It is not a Product Owner decision, institutional approval, provider authorization, release authority, or permission grant. The four IDs remain BLOCKED until the Product Owner accepts the disposition and the external dependencies below are evidenced.
-
-## 2. Proposed disposition by command
+## 2. Approved disposition by command
 
 | Command | Proposed application disposition | Authoritative control plane | What the application may do later | What it must never do |
 |---|---|---|---|---|
@@ -62,9 +60,9 @@ The actual legal/account owner, billing owner, primary/secondary custodians, reg
 
 Repository administrator and Operations must evidence protected branches/rulesets, required checks, workflow permissions, secret scanning, protected environments, deployment approvals, artifact provenance, migration compatibility, rollback/forward-fix and operator/approver separation. This is a release-control-plane requirement, not an app feature.
 
-## 5. Proposed command catalogue semantics after PO acceptance
+## 5. Canonical command catalogue semantics — PO APPROVED
 
-If the Product Owner accepts this proposal, preserve CMD-045..048 as stable historical/traceability IDs but change their canonical status to:
+The following canonical dispositions are approved and must remain synchronized across the command catalogue, crosswalk, permission registry, RTM, RAID, DGA and QA:
 - CMD-045: `DEFERRED_EXTERNAL_CONTROL_PLANE` — institutional T-10 policy remains a production blocker.
 - CMD-046: `DEFERRED_EXTERNAL_CONTROL_PLANE` — incident-response process/RACI remains an operational dependency.
 - CMD-047: `OUT_OF_APPLICATION_SCOPE_EXTERNAL_PROVIDER_CONTROL` — T-12 evidence remains a production operations blocker.
@@ -74,7 +72,7 @@ They must not be counted as executable application commands or seeded permission
 
 ## 6. Gate impact
 
-Accepting this proposal can close the **application-surface design ambiguity** for CMD-046, CMD-047 and CMD-048, and define the non-destructive application boundary for CMD-045. It does not close:
+The PO approval closes the **application-surface design ambiguity** for CMD-045–048 and establishes their non-executable application boundary. It does not close:
 - DGA-B04/T-10 institutional records/privacy policy;
 - DGA-B05/T-12 provider ownership and recovery evidence;
 - DGA-B15 repository/release governance;
@@ -83,18 +81,18 @@ Accepting this proposal can close the **application-surface design ambiguity** f
 
 No G9 or G10 PASS may be inferred from this proposal alone.
 
-## 7. Required Product Owner disposition
+## 7. Approval boundary and remaining accountable owners
 
-The Product Owner must explicitly accept, reject or amend the proposed scope treatment in Section 2 and the canonical status semantics in Section 5. If accepted, the document owner must update the command catalogue, cross-command reconciliation, RTM, RAID, DGA and QA catalogue consistently. Accountable institutional, Security, Database, Operations and repository/provider owners must then supply their own evidence for the residual gates.
+The Product Owner decision is recorded in the canonical Decision Register dated 2026-11-24. No repeat PO approval is required for the accepted application-scope treatment. The remaining work is evidence collection and review by the accountable institutional records/legal/privacy/security authority (T-10), incident-response owner, provider/account custodians and Operations (T-12), and repository administrator/release authority (DGA-B15). These authorities must supply their own evidence; PO approval cannot substitute for it.
 
-## 8. Acceptance criteria for this proposal
+## 8. Traceability and verification status
 
-- [ ] Product Owner decision recorded with date and exact option.
-- [ ] CMD-045..048 catalogue rows retain stable IDs and show the accepted non-executable disposition.
-- [ ] No role permission is seeded for the four proposed labels.
-- [ ] No route, RPC, function, table, worker or generic admin endpoint is created for these commands.
-- [ ] RTM/RAID/DGA/QA traceability is updated without closing external dependencies prematurely.
-- [ ] T-10, T-12, incident response and release governance evidence is tracked to the correct accountable owner.
-- [ ] G9 remains NOT READY until every applicable upstream gate has objective evidence.
+- [x] Product Owner decision recorded in Decision Register on 2026-11-24.
+- [x] CMD-045–048 retain stable IDs and have canonical non-executable dispositions in the command catalogue.
+- [x] Application permission column is NONE for all four IDs; no role grants are approved.
+- [x] Physical crosswalk excludes all four IDs from application read/write sets and lock manifests.
+- [ ] Independent inspection of live database grants, routes, workers, provider controls and GitHub/Vercel release settings remains outstanding; documentation alone cannot prove absence in deployed systems.
+- [ ] T-10, T-12, incident-response RACI and release-governance evidence must be supplied by their accountable owners.
+- [ ] RTM/RAID/DGA/QA cross-document evidence mapping requires final independent review.
 
-**Final status:** recommendation prepared; Product Owner disposition and external evidence pending. No implementation is authorized by this proposal.
+**Final status:** PO-approved application-scope disposition recorded; external authority/evidence remains OPEN. No implementation or external control-plane action is authorized by this document.
