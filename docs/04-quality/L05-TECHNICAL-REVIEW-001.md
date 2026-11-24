@@ -160,3 +160,12 @@ TDR v0.1.2 and the synchronized QA artifacts now specify the proposed response t
 [NLA-L05-WRITER-MATRIX-001](../02-architecture/L05-ELIGIBILITY-WRITER-PARTICIPATION-MATRIX-001.md) v0.1.0 advances F-04 by listing known command and non-command writer classes. It is explicitly partial because exact deployed functions, triggers, jobs, selector dependencies, ACLs and bypass evidence are unavailable. No writer is certified to participate in L05.
 
 F-05 post-transition audience outcomes and F-07 measured contention envelope remain open. F-06 is partially addressed by updating the TDR parent pointer to NLA-RESOLVER-LOCK-001 v0.1.8 and recording the candidate-direction decision in canonical DECISION-REGISTER.md; remaining cross-document pointers still require a final audit.
+
+
+## 8. Remaining decision/evidence checkpoint — 2026-11-24
+
+F-05 remains OPEN. TDR v0.1.2 now recommends pre-transition eligibility as the default because resolution precedes the source mutation, but this is not a Product Owner decision. Explicit outcomes are still required for role revoke, account rejection/suspension, assignment-member end, project/session closure and self-revoke.
+
+F-07 remains OPEN. NRL-T13 / TC-NOTIF-054 now specify the mixed-load benchmark and the required measurements (p50/p95/p99 lock wait/hold/transaction latency, throughput, timeout/deadlock/retry rates, queue age, audience cardinality and database I/O). Numeric workload limits and SLO thresholds remain unapproved and no benchmark has been run.
+
+F-06 is partially remediated: TDR parent pointer now names NLA-RESOLVER-LOCK-001 v0.1.8 and the L05 candidate-direction decision is recorded in the canonical Decision Register. The lock manifest and other cross-references were synchronized where found; a repository-wide link/version audit remains pending.
