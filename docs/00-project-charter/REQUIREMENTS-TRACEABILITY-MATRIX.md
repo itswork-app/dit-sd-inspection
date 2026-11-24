@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.11  
+**Version:** 0.1.12  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -462,3 +462,13 @@ The CMD-031–040 candidate overlay is partial and does not certify any resolver
 | NOTIF-020 | Source mutation, canonical event, audit, idempotency result, outbox intent, pinned policy and complete immutable candidate set commit atomically at one captured audience_evaluated_at | POQ-01; POQ-04; T-18 | NLA-L05-TDR-001 v0.1.7 §4.2.4 F05-T5; L05 source map v0.1.0; writer matrix v0.1.3 | TC-NOTIF-055..064 plus transaction-boundary and rollback evidence | OPEN — SNAPSHOT RELATION/HEADER NOT ADMITTED; PRODUCER PATHS NOT CERTIFIED |
 
 All TC-NOTIF-055..064 remain PLANNED / NOT EXECUTED. These requirements do not authorize implementation, SQL, migration, grants, RLS, runtime testing or G10 activation. F-05 remains OPEN; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## F-05 selector registry and dispatch profile traceability — 2026-11-24
+
+| Requirement ID | Requirement / invariant | Authority | Design reference | Verification | Status |
+|---|---|---|---|---|---|
+| NOTIF-021 | Every enabled event has an exact canonical event-to-selector registry entry binding source transaction, grammar version, allowed clause kinds, participant/scope mapping, dependencies and dispatch profile; composite/conditional event declarations are split before enablement | INS-015; POQ-01; POQ-04; Security/Engineering | NLA-L05-TDR-001 v0.1.8 §4.2.5; NLA-001 v0.1.14 §22; source map v0.1.0 | TC-NOTIF-067/068; exact-token registry review and dependency completeness | OPEN — REGISTRY NOT ESTABLISHED |
+| NOTIF-022 | Dispatch authorization is a versioned event-specific profile that separates event-time qualification from account/channel/consent/security/current-scope/parent-state checks; transition notices cannot be accidentally suppressed by revoked-role, ended-membership or active-parent predicates | POQ-04; INS-015; Security | NLA-L05-TDR-001 v0.1.8 §4.2.6; NLA-001 v0.1.14 §22 | TC-NOTIF-062/063/069; Security review of transition matrix and source-resource reauthorization | OPEN — SECURITY/ENGINEERING APPROVAL REQUIRED |
+
+TC-NOTIF-065..070 supplement TC-NOTIF-055..064. All TC-NOTIF-055..070 remain PLANNED / NOT EXECUTED. Grammar v1, eight-clause bound, event registry and dispatch profiles are review candidates only. No implementation, SQL, migration, grants, RLS, runtime testing or G10 activation is approved.
