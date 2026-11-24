@@ -260,7 +260,7 @@ This clarification does not fabricate or substitute a third party's signed insti
 
 ## Product Owner decision — L05 audience-guard candidate direction (2026-11-24)
 
-**Decision:** APPROVED — select one global transaction-scoped PostgreSQL advisory guard, candidate rank L05, as the primary mechanism for formal technical review. The Product Owner endorses the direction represented by NLA-L05-TDR-001 v0.1.1 and its controlled technical amendments, not an executable implementation.
+**Decision:** APPROVED — select one global transaction-scoped PostgreSQL advisory guard, candidate rank L05, as the primary mechanism for formal technical review. The Product Owner endorses the direction initially represented by NLA-L05-TDR-001 v0.1.1 and its controlled technical amendments; the current technical proposal is v0.1.3. This remains candidate-direction approval, not an executable implementation.
 
 **Approved direction only:**
 - Continue formal review of `pg_advisory_xact_lock(int,int)` as the candidate primitive with one reserved global key pair; actual key values and namespace remain unapproved.
