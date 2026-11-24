@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.3.6
+Version: 0.3.7
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -661,3 +661,27 @@ The concurrency expectations in TC-CMD-CONTRACT-024-001..009 have been aligned w
 ## POQ-01..03 acceptance coverage — 2026-11-24
 
 The Product Owner approved the audience, SLA and dismissal semantics on 2026-11-24. TC-NOTIF-027..029 add explicit acceptance cases for non-widening audience retries, quiet-hours/SLA independence and the absence of dismiss/archive in MVP. All TC-NOTIF-001..029 remain PLANNED / NOT EXECUTED; no implementation or runtime behavior is proven by this catalogue update.
+
+
+## 12. Candidate durable-object verification cases — CMD-035/036/038/039/040
+
+**Status:** PLANNED / NOT EXECUTED. These cases are conditional specifications for candidate objects only. They must not be run until the corresponding objects are approved, admitted to the physical schema and RLS catalogue, implemented in an authorized G10 phase, and deployed to a controlled test environment. They do not imply the candidate objects exist.
+
+| Test ID | Candidate boundary | Verification objective | Expected result | Status |
+|---|---|---|---|---|
+| TC-CANDIDATE-LEDGER-001 | CMD-035 sync_batch_operations | Same batch/operation ID and same canonical semantic hash replay | Return identical durable terminal result; no duplicate mutation or event | PLANNED / NOT EXECUTED |
+| TC-CANDIDATE-LEDGER-002 | CMD-035 sync_batch_operations | Same operation ID with different semantic hash | Reject IDEMPOTENCY_KEY_REUSED; preserve original result; no second mutation | PLANNED / NOT EXECUTED |
+| TC-CANDIDATE-LEDGER-003 | CMD-035 sync_batch_operations | Partial batch crash between operation commits and client acknowledgement | Every accepted operation has one durable terminal result; replay reconstructs exact batch outcome | PLANNED / NOT EXECUTED |
+| TC-CANDIDATE-LEDGER-004 | CMD-035 device binding | Revoked, rebound or wrong-owner device submits queued operation | Deny before mutation; no trust inferred from possession of device_id | PLANNED / NOT EXECUTED |
+| TC-CANDIDATE-LEDGER-005 | CMD-036 document generation | Worker lease expires and stale worker attempts finalization after a newer generation claims job | Stale finalizer rejected by owner/token-hash/generation/expiry fence; newer output remains authoritative | PLANNED / NOT EXECUTED |
+| TC-CANDIDATE-LEDGER-006 | CMD-036 template/source provenance | Source revision or template version changes after generation request | Artifact remains bound to exact immutable source/template versions and hashes; no silent substitution | PLANNED / NOT EXECUTED |
+| TC-CANDIDATE-LEDGER-007 | CMD-038 print batch manifest | Invalid/unresolvable item and lost acknowledgement | Immutable manifest and durable per-item rejection survive replay; requested item count is reconstructable | PLANNED / NOT EXECUTED |
+| TC-CANDIDATE-LEDGER-008 | CMD-038 print batch results | retry_failed_only after mixed success/failure | Only retryable failed items receive a new attempt; successful items are never duplicated | PLANNED / NOT EXECUTED |
+| TC-CANDIDATE-LEDGER-009 | CMD-039 attendance document version | Replacement upload races with verification of prior version | Both versions remain immutable; verification binds exact version/checksum; no replacement overwrites evidence | PLANNED / NOT EXECUTED |
+| TC-CANDIDATE-LEDGER-010 | CMD-040 attendance verification history | Concurrent VERIFIED and REJECTED decisions for same document version/round | One legal terminal decision wins under approved serialization; losing request receives typed conflict; history is append-only | PLANNED / NOT EXECUTED |
+| TC-CANDIDATE-LEDGER-011 | CMD-040 institutional SoD | Uploader attempts verification when policy requires separation | Deny with SOD_VIOLATION; expected behavior remains blocked until institution approves the SoD rule | PLANNED / NOT EXECUTED |
+| TC-CANDIDATE-LEDGER-012 | Candidate RLS/ACL | Browser attempts direct DML or cross-tenant reads on every candidate object | Deny; no browser direct mutation; only explicitly approved narrow read projections are visible | PLANNED / NOT EXECUTED |
+| TC-CANDIDATE-LEDGER-013 | CMD-036 worker identity | Renderer job invoked with user JWT, service_role impersonation or untrusted workload identity | Deny; only separately approved workload principal and exact EXECUTE ACL may claim/finalize jobs | PLANNED / NOT EXECUTED |
+| TC-CANDIDATE-LEDGER-014 | Candidate permission boundary | sync.apply attempts device enrollment/revocation; document.generate attempts template publication | Deny; no implicit permission inheritance; dedicated command/permission must be approved first | PLANNED / NOT EXECUTED |
+
+**Execution guard:** The 14 cases above are not part of the existing executed-test denominator and do not count as passing evidence. Allocate final test IDs and bind them to approved schemas, exact function signatures, database roles, RLS policies, fixtures and test evidence only after design admission. No tests were run as part of this documentation update.
