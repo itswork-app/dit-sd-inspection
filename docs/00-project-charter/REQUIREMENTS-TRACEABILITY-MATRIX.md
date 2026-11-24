@@ -437,3 +437,8 @@ QA v0.4.4 maps recipient-resolver lock-set verification to TC-NOTIF-042..051. Th
 ### NOTIF-015 resolver mechanism selection — 2026-11-24
 
 PO selected Option A (global transaction-scoped audience guard, candidate L05) as the primary mechanism to submit for technical approval; Option B SERIALIZABLE remains contingency-only. See [NLA-RESOLVER-LOCK-001 v0.1.6](../02-architecture/NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) §11. NOTIF-015 remains OPEN — CRITICAL until Engineering/Database/Security approve the primitive/key, canonical order, full writer participation, FK/trigger/helper graph, timeout/retry, contention limits and acyclicity evidence. No L05 rank or implementation is approved; resolver certification 0/40 and application lock certification 0/50.
+
+
+### NOTIF-015 technical design checkpoint — 2026-11-24
+
+[NLA-L05-TDR-001 v0.1.0](../02-architecture/NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) proposes the concrete L05 PostgreSQL transaction guard protocol. NOTIF-015 remains OPEN — CRITICAL pending Engineering/Database/Security approval, deployed isolation evidence, complete writer-to-command matrix, exact FK/trigger/helper topology, lock budgets, bounded audience/performance SLO and NRL-T01..T10 execution. L05 is not admitted; candidate snapshot relation/header remain NOT ADMITTED.
