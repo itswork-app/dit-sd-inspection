@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.56
+**Version:** 1.11.57
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -651,3 +651,8 @@ LOCK-MANIFEST-001 v0.4.27 §7.7 maps all 40/40 CMD-001–040 canonical event dec
 This closes static producer-inventory coverage only. The recipient resolver lock set (L15 principal, L16 role grant, L17 scope grant, and applicable L30/L50 scope parent) is not reconciled against all 40 existing source lock paths. Potential lower-rank-after-higher-rank inversions remain, especially where a source command already holds L30/L40/L50/L60/L70/L90 before appending its event. No lock-safe ordering or temporal snapshot strategy is approved. CMD-041..044 read-side events remain excluded absent a separately approved access-event transaction boundary; CMD-049..054 are excluded from recursive matching by default.
 
 Candidate relation/header remain NOT ADMITTED and outside the 48-table inventory. Global graph remains NOT CERTIFIED ACYCLIC; application lock certification 0/50; G9 NOT READY; G10 NOT ACTIVE. No code, SQL, migration, database, CI or runtime test work was performed.
+
+
+### Notification recipient-resolver lock-set review checkpoint — 2026-11-24
+
+[NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001](../02-architecture/NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) v0.1.0 refines the completed 40/40 source-event declaration inventory into a source-specific resolver lock coverage review. It records that existing actor/target locks do not prove complete audience-predicate serialization and that 0/40 resolver paths are certified. A global transaction-scoped L05 audience guard is recommended for design review, with SERIALIZABLE predicate snapshot as an alternative; neither is approved. DGA notification blockers remain OPEN: event-time linearization, exact allowlist/selector grammar, all eligibility-writer participation, exact snapshot FK/index/trigger/helper graph, worker boundaries, full acyclicity and runtime evidence. Candidate snapshot relation/header remain NOT ADMITTED. QA TC-NOTIF-001..041 and related RLS/function-security cases remain PLANNED / NOT EXECUTED. Application lock certification 0/50; G9 NOT READY; G10 NOT ACTIVE. No code, SQL, migration, grant, live DB inspection or runtime test performed.
