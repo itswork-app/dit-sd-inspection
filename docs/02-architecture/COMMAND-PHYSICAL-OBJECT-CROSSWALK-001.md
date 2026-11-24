@@ -590,3 +590,7 @@ NLA-001 proposes unique notification_id/policy_version_id/step_no/event_type. Ex
 Static extraction produced 50 command-specific entries: 40 source-derived entries for CMD-001–040, 4 explicit OPEN/BLOCKED entries for CMD-041–044, and 6 source-derived entries for CMD-049–054. CMD-045–048 are excluded external IDs. This is source extraction, not physical schema validation.
 
 Current status: LPR-09 OPEN; LPR-10 NOT EXECUTED; 0/50 technically certified; G9 NOT READY; G10 NOT ACTIVE. No live database, RLS, grants, Storage or provider environment was inspected; no SQL, migration, test, CI or deployment was executed.
+
+## Aggregate concurrency proposal cross-reference — 2026-11-24
+
+[AGGREGATE-CONCURRENCY-RESOLUTION-001](AGGREGATE-CONCURRENCY-RESOLUTION-001.md) v0.1.0 records a candidate aggregate-token and parent-fence design for CMD-009–016. It distinguishes entity row-version CAS, parent lifecycle fences and T-14 capacity serialization. Candidate tokens are proposed for `projects`, `sessions`, `operational_assignments` and `project_capacity_settings`; no field is approved by this cross-reference. CMD-015's expected assignment aggregate version is a proposed request-contract addition and remains open. The proposal does not resolve the complete project/session child-writer/finalizer inventory, the complete T-14 population writer set, PostgreSQL lock compatibility or implicit FK/trigger/function edges. Existing OPEN status remains unchanged; no command is technically certified.
