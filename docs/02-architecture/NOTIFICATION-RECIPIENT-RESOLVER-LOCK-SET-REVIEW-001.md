@@ -1,7 +1,7 @@
 # Notification Recipient-Resolver Lock-Set Review
 
 **Document ID:** NLA-RESOLVER-LOCK-001  
-**Version:** 0.1.7  
+**Version:** 0.1.8  
 **Status:** Engineering design proposal — NOT APPROVED; no lock rank or physical mechanism is admitted  
 **Date:** 2026-11-24  
 **Repository baseline:** docs/audit-lock-and-identity-reconciliation at 7d722a77ac37a4c82a026daeddd1b00df4a4f713  
@@ -243,3 +243,8 @@ This document advances static analysis only. It does not close RAID R-037 or RTM
 ## 12. L05 technical decision record — 2026-11-24
 
 [NLA-L05-TDR-001](NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) v0.1.0 now records the concrete candidate PostgreSQL protocol for Engineering/Database/Security review: transaction-scoped `pg_advisory_xact_lock(int,int)`, one reserved global key pair (numeric values TBD), READ COMMITTED with lock acquisition and resolver read in separate SQL statements, full writer participation, bounded timeout/retry, FK/unique/trigger/helper graph and NRL-T01..T10. The key pair, isolation configuration, command writer matrix, timeouts, audience cap and performance SLO are deliberately not invented or approved. The TDR is PROPOSED only; L05 remains unadmitted, 0/40 resolver paths certified, 0/50 application locks certified, G9 NOT READY and G10 NOT ACTIVE.
+
+
+## 13. Product Owner disposition — 2026-11-24
+
+The Product Owner approved [NLA-L05-TDR-001 v0.1.1](NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) as the preferred technical candidate and baseline for Engineering, Database and Security review. This approves the design direction only. L05 is not yet admitted to the canonical graph; exact key values, deployed isolation, complete writer mapping, helper ACL, FK topology, numeric budgets and performance evidence remain open. Technical certification, G9 readiness and G10 activation are not implied.
