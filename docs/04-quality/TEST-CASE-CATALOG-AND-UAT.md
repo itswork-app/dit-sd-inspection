@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.3.7
+Version: 0.3.8
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -685,3 +685,31 @@ The Product Owner approved the audience, SLA and dismissal semantics on 2026-11-
 | TC-CANDIDATE-LEDGER-014 | Candidate permission boundary | sync.apply attempts device enrollment/revocation; document.generate attempts template publication | Deny; no implicit permission inheritance; dedicated command/permission must be approved first | PLANNED / NOT EXECUTED |
 
 **Execution guard:** The 14 cases above are not part of the existing executed-test denominator and do not count as passing evidence. Allocate final test IDs and bind them to approved schemas, exact function signatures, database roles, RLS policies, fixtures and test evidence only after design admission. No tests were run as part of this documentation update.
+
+
+## 13. CMD-041–044 physical read/export verification cases
+
+**Status:** PLANNED / NOT EXECUTED. All cases below require approved contracts and a controlled G10 test environment. CMD-043 and CMD-044 cases requiring T-10 remain non-executable until institutional approval. No live audit data or production export is permitted.
+
+| Test ID | Command | Scenario | Expected result | Status |
+|---|---|---|---|---|
+| TC-REPORT-ACTUAL-001 | CMD-041 | Assigned-location user requests project-wide actual aggregate including unauthorized locations | Scope predicate is applied before aggregation; unauthorized locations and their counts are not disclosed | PLANNED / NOT EXECUTED |
+| TC-REPORT-ACTUAL-002 | CMD-041 | Reopened/revised inspection has multiple submission/approval/print events | Counts follow approved metric dictionary and distinct-resource key; no raw event double-counting | PLANNED / NOT EXECUTED |
+| TC-REPORT-ACTUAL-003 | CMD-041 | Completed inspection has approval and final PDF but no Print Officer print action | Completed count excludes it; PDF open/download is not treated as print | PLANNED / NOT EXECUTED |
+| TC-REPORT-ACTUAL-004 | CMD-041 | New events occur between cursor pages | Cursor watermark yields documented consistent/as-of behavior; no silent metric drift or duplicate/omitted resource | PLANNED / NOT EXECUTED |
+| TC-REPORT-TARGET-001 | CMD-042 | New target plan version is published between cursor pages | Existing cursor remains pinned to original immutable published plan version | PLANNED / NOT EXECUTED |
+| TC-REPORT-TARGET-002 | CMD-042 | Caller supplies draft, superseded or cross-project plan version | Denied or non-disclosing not-visible result; no draft/scope leakage | PLANNED / NOT EXECUTED |
+| TC-REPORT-TARGET-003 | CMD-042 | Actual progress overlay is disabled or not approved | Response contains target allocations only; no actual values or implied actual completion | PLANNED / NOT EXECUTED |
+| TC-AUDIT-READ-001 | CMD-043 | Reader has report.read but lacks audit.read or approved purpose | Denied without event/resource existence disclosure | PLANNED / NOT EXECUTED |
+| TC-AUDIT-READ-002 | CMD-043 | Audit event contains unknown or sensitive metadata keys | Event-specific projection redacts/rejects unapproved fields; arbitrary metadata JSON is never returned | PLANNED / NOT EXECUTED |
+| TC-AUDIT-READ-003 | CMD-043 | Successful audit search emits access event | Exactly one access event per request/correlation ID; access event does not recursively invoke CMD-043 | PLANNED / NOT EXECUTED |
+| TC-AUDIT-READ-004 | CMD-043 | Access-event append fails | Behavior follows explicit T-10 fail-closed or durable-monitored policy; no silent suppression | PLANNED / NOT EXECUTED |
+| TC-AUDIT-EXPORT-001 | CMD-044 | T-10 is absent, incomplete or revoked | Export remains unavailable; no job, artifact, bucket write or signed URL is created | PLANNED / NOT EXECUTED |
+| TC-AUDIT-EXPORT-002 | CMD-044 | Same approved export idempotency key and same normalized filter hash is replayed | Same job/result is returned; no duplicate export artifact | PLANNED / NOT EXECUTED |
+| TC-AUDIT-EXPORT-003 | CMD-044 | Same idempotency key is reused with a different purpose/scope/filter hash | Reject key reuse; original request/job remains unchanged | PLANNED / NOT EXECUTED |
+| TC-AUDIT-EXPORT-004 | CMD-044 | Export worker lease expires and stale worker finalizes after a newer generation claims job | Stale finalizer rejected by lease fencing; no stale artifact becomes authoritative | PLANNED / NOT EXECUTED |
+| TC-AUDIT-EXPORT-005 | CMD-044 | Storage upload acknowledgement is uncertain or checksum differs | Reconciliation detects orphan/partial object; artifact not marked EXPORTED until checksum and manifest verify | PLANNED / NOT EXECUTED |
+| TC-AUDIT-EXPORT-006 | CMD-044 | User has audit.export but lacks separately approved artifact download authority | Download denied; no object key or signed URL disclosed | PLANNED / NOT EXECUTED |
+| TC-AUDIT-EXPORT-007 | CMD-044 | Legal hold is applied while export is queued or before artifact disposition | Policy-defined hold blocks prohibited generation/disposition; decision is auditable and no retention bypass occurs | PLANNED / NOT EXECUTED |
+
+**Execution guard:** 18 cases above are specification-only. CMD-043 execution requires T-10 reader-purpose-field/retention authority. CMD-044 execution requires complete T-10 approval plus approved schema, RLS, worker, Storage, encryption, download, retention and recovery controls. These cases are not passing evidence and do not change G9/G10.
