@@ -47,7 +47,7 @@ Evidence is static documentation inspection only. No PostgreSQL catalog, query p
 
 ## 3. Legacy manifest notation and candidate-rank crosswalk
 
-CMD-001–010 now have a separate candidate-normalized overlay in §7 and in CMD-001–010 Detailed Contract Review v0.3.3. CMD-011–048 retain legacy inventory notation pending per-command normalization. Those labels preserve source-order observations and must not be used as executable lock instructions.
+CMD-001–010 now have a separate candidate-normalized overlay in §7 and in CMD-001–010 Detailed Contract Review v0.3.4. CMD-011–048 retain legacy inventory notation pending per-command normalization. Those labels preserve source-order observations and must not be used as executable lock instructions.
 
 | Legacy label in CMD-001–048 rows | Legacy meaning | Current candidate rank mapping | Reconciliation rule |
 |---|---|---|---|
@@ -283,7 +283,7 @@ These rows reconcile logical resource/transaction boundaries only. The queue tab
 
 ## 7. Current source-version and rank synchronization — 2026-11-24
 
-Current linked candidate sources: LOCK-GRAPH-001 v0.4.7; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.5; CMD-011–020 Detailed Contract Review v0.3.6; PostgreSQL Command Contract Catalogue v0.4.1; CONCURRENCY-001 v0.1.3; TECH-RESOLUTION-LPR-001 v0.1.0. The refined L15–L18 identity/authorization and L55 membership classes are candidate ranks only. This source refresh does not normalize or certify any of the 54 rows: 54/54 remain INVENTORIED; 0/54 CERTIFIED.
+Current linked candidate sources: LOCK-GRAPH-001 v0.4.8; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.6; CMD-011–020 Detailed Contract Review v0.3.6; PostgreSQL Command Contract Catalogue v0.4.1; CONCURRENCY-001 v0.1.3; TECH-RESOLUTION-LPR-001 v0.1.0. The refined L15–L18 identity/authorization and L55 membership classes are candidate ranks only. This source refresh does not normalize or certify any of the 54 rows: 54/54 remain INVENTORIED; 0/54 CERTIFIED.
 
 
 **Parent reference note:** this manifest was refreshed against LOCK-GRAPH-001 v0.4.7; the source-version table in §7 is a dated review snapshot, not a live version pointer. Subsequent parent edits require a new explicit review checkpoint.
@@ -311,3 +311,6 @@ The authoritative per-command candidate sequence and revalidation contract is **
 ## 8. Current source-version checkpoint — 2026-11-24
 
 The CMD-001–010 candidate overlay in §7 supersedes the historical source-order extraction in §4.1 and the earlier technical overlay in §6. Current linked sources: CMD-001–010 Detailed Contract Review v0.3.3; LOCK-GRAPH-001 v0.4.7; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.5; PostgreSQL Command Contract Catalogue v0.4.1; DGA-001 v1.11.11; TECH-RESOLUTION-LPR-001 v0.1.0. The manifest source list is a dated review snapshot, not a live pointer. 54/54 remain inventoried; 10/54 candidate-normalized; 0/54 technically approved/certified.
+
+
+**Current linked source refresh:** CMD-001–010 review v0.3.4; LOCK-GRAPH-001 v0.4.8; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.6; DGA-001 v1.11.12; QA Catalogue v0.3.2. The §2 source snapshot remains the original review baseline and is not rewritten as a live pointer.
