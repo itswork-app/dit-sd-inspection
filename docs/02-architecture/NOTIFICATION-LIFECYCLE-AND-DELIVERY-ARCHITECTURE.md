@@ -1,8 +1,8 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.2  
-**Status:** ENGINEERING DESIGN PROPOSAL — PO/SECURITY REVIEW REQUIRED  
+**Version:** 0.1.3  
+**Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
 **Related controls:** INS-016 / T-15, T-18, T-10, MIB-001, DGA-001  
@@ -36,7 +36,7 @@ The implementation must preserve these INS-015 requirements:
 
 1. An authorized domain command changes business state and appends its canonical domain event and audit event atomically.
 2. If the event matches an enabled notification rule, the same transaction appends a minimal `notification_outbox` record containing the source event reference, scope, event type and immutable policy-version reference. The business transaction does not call an external provider.
-3. An internal fan-out worker claims the outbox row with a bounded lease and idempotently resolves recipients from the event-time policy and effective role/assignment scope.
+3. An internal fan-out worker claims the outbox row with a bounded lease and idempotently materializes the persisted event-time candidate audience and authorized source scope/checkpoint. Retries reuse that immutable candidate audience; current account/channel restrictions are revalidated before each external send and may suppress candidates but never widen the audience.
 4. One `notifications` inbox row is created per recipient. The unique source-outbox/recipient key prevents duplicate inbox records.
 5. One `notification_deliveries` row is created per selected external channel. In-app availability is represented by the inbox row; external push/email delivery is tracked separately.
 6. A delivery worker claims eligible channel rows, sends through a provider adapter, and appends a `notification_delivery_attempts` record for each attempt. Provider I/O occurs outside a database transaction.
@@ -111,7 +111,7 @@ Minimum fields:
 
 Constraints:
 - Unique (`outbox_id`, `recipient_user_id`).
-- Recipient and scope are resolved server-side from the pinned policy version. Whether eligibility is snapshotted at source-event time or evaluated at fan-out time remains a PO/Security decision; no event-time snapshot is claimed until a durable snapshot/checkpoint is specified.
+- Recipient and scope are resolved server-side at source-event time into a durable candidate-audience snapshot/checkpoint bound to the source event, scope and policy version. Fan-out and retries reuse this immutable candidate audience. Before each external send, revalidate current account status, channel eligibility, consent/revocation and mandatory security restrictions. Revalidation may suppress a candidate but must never add a recipient outside the original snapshot. The exact durable representation, selector grammar and partial-fan-out checkpoint remain Engineering/Security design items.
 - A role label alone never grants access to a notification or its source resource.
 - Read is recipient-self only and set-once. dismissed_at is reserved; no dismiss action is exposed until PO/UX approval. The source resource still requires its own authorization.
 - Do not place sensitive evidence or full personal data in notification text/payload. Use opaque resource references and re-authorize on navigation.
@@ -165,13 +165,13 @@ Constraints:
 
 ## 5. Recipient, scope and authorization rules
 
-1. Resolve recipients using the immutable policy version and an explicitly approved eligibility checkpoint. PO/Security must decide event-time snapshot versus fan-out-time resolution and define a deterministic snapshot/checkpoint for partial retries; a policy-version pin alone is not a recipient snapshot. Revalidate current authorization before any sensitive link or resource access.
+1. Resolve and persist the event-time candidate audience and authorized source scope/checkpoint as part of durable fan-out intent. The candidate audience is immutable across retries. Before each external send, revalidate current account status, channel eligibility, consent/revocation and mandatory security restrictions; suppress ineligible candidates but never add recipients outside the event-time snapshot. A policy-version pin alone is not a recipient snapshot. Reauthorize independently before any sensitive link or resource access.
 2. Recipient selectors must be explicit and bounded: role + effective project/session/location/assignment membership, or a named self/actor selector where approved.
 3. Never use global role membership as a substitute for assignment scope.
 4. Do not notify a user whose account is disabled, suspended, expired or otherwise ineligible at dispatch time.
 5. Deduplicate recipients across multiple matching selectors before creating inbox rows.
 6. The inbox query is restricted to `recipient_user_id = auth.uid()`; project scope is additional filtering, not a way to widen recipient ownership.
-7. Mark-read requires the caller to own the notification row. dismissed_at is reserved and no dismiss command is exposed until PO/UX approval. A forged notification ID returns a non-enumerating denial/not-found response.
+7. Mark-read requires the caller to own the notification row and is set-once. Dismiss/archive is excluded from MVP by POQ-03: no dismiss command, permission, browser write or UX action exists. Any retained dismissed_at column is dormant with no runtime behavior. A forged notification ID returns a non-enumerating denial/not-found response.
 8. Clicking a notification must independently re-authorize access to the referenced resource; the notification itself is not an access token.
 9. Role-to-permission grants for policy administration remain unapproved until the canonical permission registry and grantor/SoD matrix receive PO/security approval.
 
@@ -192,7 +192,7 @@ Constraints:
 - Retry only retryable failures with bounded exponential backoff, jitter and a maximum attempt/age policy approved before production.
 - Permanent errors (invalid address, revoked push subscription, rejected payload) become terminal or suppressed with a safe reason code.
 - A worker claim is leased; expired leases are reclaimable. A worker must not hold DB locks across provider network calls.
-- SLA clocks use a named start event and server UTC timestamps. Paused/closed business states may affect reminder eligibility only if a policy explicitly defines it; notification processing itself never changes those states.
+- Each immutable policy version explicitly selects elapsed-time or business-time SLA semantics. Initial-release default is `ELAPSED_UTC`, calculated from a named start event using server/database UTC instants and fixed elapsed durations. Quiet hours defer eligible channel delivery only; they do not pause or stop the SLA clock. Business-time calendars/time zones and pause/reset conditions require separately specified and approved policy rules. Notification processing never changes source business states.
 - Reminder/escalation steps are version-pinned, idempotent and append-only.
 - Escalation may target only recipients resolved from explicit policy and currently valid scope. If no valid recipient exists, record NO_ELIGIBLE_RECIPIENT and do not broaden scope.
 - Failed delivery does not block or roll back the underlying inspection command. Failure is visible to operations through delivery state and monitoring.
@@ -212,7 +212,7 @@ Constraints:
 Proposed externally visible user operations:
 - Read own notification inbox (cursor pagination; unread filter).
 - Mark own notification read (idempotent).
-- Dismiss own notification if the product UX/PO confirms this state.
+- No dismiss/archive operation in MVP (POQ-03 approved exclusion).
 
 Proposed policy administration operation:
 - Create/update draft and publish a new immutable policy version, subject to explicit `notification.policy.manage` grant and scope/SoD approval.
@@ -278,13 +278,13 @@ All cases are PLANNED / NOT EXECUTED.
 
 ## 12. Open approvals and dependencies
 
-1. PO/security approval of the exact notification recipient-selector grammar and event-time versus dispatch-time eligibility semantics.
+1. Engineering/Security design and review of the approved hybrid recipient rule: exact selector grammar, durable event-time candidate snapshot/checkpoint, partial fan-out/retry semantics, and dispatch-time revalidation without recipient widening.
 2. PO/security approval of notification policy administrator authority, `notification.policy.manage` scope and role/grantor/SoD matrix.
 3. Security approval of internal worker identity, scheduler authentication, database role, function owner and exact EXECUTE ACL.
 4. Institutional T-10 approval for classification, content minimization, retention, deletion, legal hold, audit access/export and time-zone/network metadata.
 5. Provider decision and verified capabilities/quotas for email and optional browser/device push; cost envelope and failure behavior.
-6. Numeric retry horizon, maximum attempts, SLA clock semantics, quiet-hour exception policy and operational alert thresholds.
-7. UX decision on dismiss/archive behavior and unread/read retention; dismissed_at remains dormant until approved.
+6. Numeric retry horizon, maximum attempts, quiet-hour exception policy and operational alert thresholds. POQ-02 has approved per-policy elapsed/business-time semantics, `ELAPSED_UTC` as the initial default, and quiet hours as delivery deferral only; exact start events, calendar definitions and pause/reset rules remain to be specified where applicable.
+7. Dismiss/archive is excluded from MVP by POQ-03; no dismiss UX, command or permission is in scope. Any retained dismissed_at column remains dormant.
 8. Exact physical composite FKs, indexes, enum/check definitions and RLS predicates reviewed across all six proposed tables.
 
 ## 13. Gate disposition
@@ -314,7 +314,7 @@ This addendum aligns NLA-001 with CMD-049–054 Detailed Contract Review v0.1.1,
 - **CMD-052:** canonical payload field is safe_payload. Outbox lease fields are lease_owner, lease_token_hash, monotonic lease_generation and lease_expires_at; the same fencing contract applies to delivery claims in CMD-053. Claim transactions commit before fan-out work. Partial retries rely on unique source-event/policy, outbox/recipient and notification/channel arbiters. Recipient eligibility timing remains an explicit PO/security decision: a policy-version pin is not itself a recipient snapshot.
 - **CMD-053:** provider I/O remains outside database transactions. Ambiguous provider acceptance is UNKNOWN, not success. Inbound provider status notifications are a distinct integration ingress, INT-NOTIF-001, not a browser command or a seventh CMD ID. The ingress must authenticate provider-specific signatures, validate freshness and provider/delivery references, deduplicate provider event IDs through an approved durable mechanism, apply only allowlisted monotonic delivery transitions and never mutate read_at or business state. Provider-specific auth/dedup details remain blocked until a provider is selected.
 - **CMD-054:** request contains notification_id, policy_version_id and step_no; remove caller-supplied evaluation_time. Capture one database-controlled UTC instant per evaluation transaction and use it for due checks. SLA start event, elapsed/business-time rules, pause/close semantics, timezone and escalation policy remain PO/security decisions.
-- **Dismissal:** dismissed_at is a reserved schema field only. No dismiss command, browser write or UX behavior is authorized until PO/UX approval.
+- **Dismissal:** POQ-03 approves exclusion from MVP. No dismiss command, permission, browser write or UX behavior is in scope. Any retained dismissed_at field is dormant and has no runtime behavior; future inclusion requires a new change request.
 
 ### 14.2 Durable worker lease/fencing contract
 
@@ -327,3 +327,35 @@ notification.read is emitted once on the first set-once read transition, not on 
 ### 14.4 Approval and gate status
 
 The six notification tables remain a proposed subset of the 48-table physical/RLS inventory. INT-NOTIF-001 is an integration contract, not a new CMD ID or table. Physical constraints, indexes, RLS, role grants, worker identity, provider capability, retry horizons, recipient-selector semantics and T-10 retention/privacy still require approval and/or live evidence. QA TC-NOTIF-001..026 and TC-FN-SEC-025-064..069 remain PLANNED / NOT EXECUTED. G9 remains NOT READY; G10 remains NOT AUTHORIZED.
+
+
+## 15. Product Owner decision reconciliation — POQ-001 (2026-11-24)
+
+The Product Owner explicitly approved POQ-01 Option C, POQ-02 Option C and POQ-03 Option A on 2026-11-24. This section is controlling for product semantics and supersedes earlier statements in this document that described those three semantics as awaiting PO decisions.
+
+### 15.1 POQ-01 — hybrid event-time candidate audience
+
+- At source-event time, resolve and durably persist the candidate recipient audience together with its authorized source scope/checkpoint and immutable policy-version reference.
+- Fan-out and partial retries reuse that same candidate audience; they do not re-resolve a wider audience from current role membership.
+- Immediately before each external send, revalidate current account status, channel eligibility, consent/revocation and mandatory security restrictions.
+- Revalidation may suppress an original candidate. It must never add a recipient who was not in the event-time candidate snapshot.
+- Exact selector grammar, durable snapshot representation, checkpointing under partial fan-out and the technical implementation of revalidation remain Engineering/Security review items.
+
+### 15.2 POQ-02 — per-policy SLA semantics
+
+- Every immutable policy version declares `ELAPSED_UTC` or an explicitly defined business-time mode.
+- The initial-release default is `ELAPSED_UTC`, using a named start event and server/database UTC instants.
+- Quiet hours delay eligible channel delivery only. They do not pause, stop or reset the SLA clock.
+- Business-time calendars, authoritative time zones, DST/holiday handling and any pause/reset conditions must be explicitly specified and reviewed before a policy using them can be activated.
+- This approval does not select arbitrary calendars or approve unbounded policy expressions.
+
+### 15.3 POQ-03 — dismiss/archive excluded from MVP
+
+- MVP exposes recipient-owned, set-once `read_at` only.
+- No dismiss/archive command, permission, browser write or UX action is included.
+- If `dismissed_at` remains in a proposed physical schema for compatibility, it is dormant and must not be exposed or mutated.
+- Future inclusion requires a separately scoped change request and renewed product, UX, security, schema and QA review.
+
+### 15.4 Remaining notification gates
+
+These PO approvals do not close technical or external dependencies: selector grammar and snapshot persistence; policy administration grants/SoD; worker identity and scheduler authentication; function ownership and EXECUTE ACL; provider selection/capability/quotas; retry horizons and alert thresholds; exact schema constraints/indexes/RLS; T-10 institutional privacy/records/retention; QA execution and live evidence. The six notification tables remain proposed and unimplemented. G9 remains NOT READY and G10 remains NOT AUTHORIZED.
