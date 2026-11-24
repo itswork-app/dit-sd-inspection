@@ -92,8 +92,8 @@ Use SECURITY INVOKER by default. SECURITY DEFINER is allowed only where RLS recu
 | `create-session` / `transition-session` | session.manage / session.transition | Project scope; allowed transition; closure gates checked atomically |
 | `publish-assignment` / `change-assignment-members` | assignment.manage | One location/instrument/team; published instrument version; no overlapping cross-location membership |
 | `change-inspector-capacity` | capacity.manage | Lock global capacity row; count approved predicate; 1..100; reject below count |
-| `create-instrument` / `save-instrument-draft` | instrument.manage | Super Admin; declarative schema allowlist; code unique |
-| `publish-instrument-version` | instrument.publish | Validate schema; increment version; published snapshot immutable |
+| `create-instrument` / `save-instrument-draft` | instrument.manage | Super Admin; declarative schema allowlist; code unique; draft only |
+| `publish-instrument-version` | instrument.publish | T-17 PO APPROVED (A): authorized Super Admin publishes directly without second-person approval; derive actor from trusted session; validate schema/allowlists; atomically append publication + audit; increment version; immutable snapshot |
 | `claim-unit` / `release-unit-claim` | inspection.claim | Assignment membership; one active claim; server time; draft preserved |
 | `save-draft` | inspection.edit | Assignment + claim; expected row version; draft only |
 | `create-upload-intent` / `confirm-upload` | evidence.upload | Allowed slot, scope, quota, signature/size/checksum validation; pending to finalized state |
@@ -196,3 +196,10 @@ Errors must not disclose whether an unauthorized resource exists. Use a consiste
 Every critical command that changes business, security or governance state must write its canonical audit event in the same PostgreSQL transaction as the state mutation. The command must return failure and roll back the mutation if the audit insert or required audit validation fails. Do not emit a success response before both state and audit event commit. The event must bind the authenticated actor, active role, authorized scope, command/action, timestamp, correlation/idempotency reference and privacy-safe change context. Evidence access/export commands must also create audit events under the approved event catalogue.
 
 The command boundary must not expose audit update/delete operations to application callers. Audit read/export is separately permissioned. This extends the command transaction requirements; it does not waive caller-JWT authorization, RLS, least privilege, idempotency or server-side validation. T-10 retention/legal-hold and network metadata policy remain externally blocked. No implementation or tests are claimed.
+
+
+## T-17 publication command contract
+
+`publish-instrument-version` is a privileged command. It must authenticate the caller, derive actor identity server-side, require explicit `instrument.publish`, verify the caller is an authorized Super Admin, validate supported declarative field types/validation primitives, checklist ordering/applicability, expected values and evidence-slot rules, and reject arbitrary scripts/SQL/executable expressions. It atomically transitions the draft to PUBLISHED and writes the publication record plus required audit event; failure of either write rolls back the entire transaction. No second-person approval is required under PO-approved T-17 option A. The published version and children are immutable; a correction requires a new version. Deactivation is a separate reasoned/audited command. Existing assignments and historical revisions remain pinned to their selected version.
+
+T-18 (command architecture and direct-DML denial) is still awaiting Product Owner approval; this document currently describes the proposed design, not an approved implementation authorization.
