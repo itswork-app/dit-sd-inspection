@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.3.9
+Version: 0.4.0
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -713,3 +713,25 @@ The Product Owner approved the audience, SLA and dismissal semantics on 2026-11-
 | TC-AUDIT-EXPORT-007 | CMD-044 | Legal hold is applied while export is queued or before artifact disposition | Policy-defined hold blocks prohibited generation/disposition; decision is auditable and no retention bypass occurs | PLANNED / NOT EXECUTED |
 
 **Execution guard:** 18 cases above are specification-only. CMD-043 execution requires T-10 reader-purpose-field/retention authority. CMD-044 execution requires complete T-10 approval plus approved schema, RLS, worker, Storage, encryption, download, retention and recovery controls. These cases are not passing evidence and do not change G9/G10.
+
+
+## POQ-01 candidate audience snapshot verification — planned only
+
+The following tests validate the approved event-time audience semantics against the candidate relation `notification_outbox_recipients`. They remain PLANNED / NOT EXECUTED; the relation is NOT ADMITTED and no runtime behavior is claimed.
+
+| Test ID | Scenario | Expected result | Status |
+|---|---|---|---|
+| TC-NOTIF-030 | Source event creates notification outbox intent and candidate recipients | Candidate recipient/scope rows and canonical snapshot hash/count are committed atomically with the source event; incomplete snapshot cannot become claimable | PLANNED / NOT EXECUTED |
+| TC-NOTIF-031 | Role or assignment membership changes after source event but before CMD-052 retry | Retry consumes only the persisted event-time candidate set; no current-state re-resolution and no recipient widening | PLANNED / NOT EXECUTED |
+| TC-NOTIF-032 | Same recipient matches multiple policy selectors | One candidate row and one inbox notification per outbox/recipient; selector overlap cannot duplicate recipients or channel rows | PLANNED / NOT EXECUTED |
+| TC-NOTIF-033 | Candidate scope tuple contains cross-project/session/location/assignment references or a mismatched scope hash | Composite integrity/transaction validation rejects the inconsistent candidate; no outbox is marked snapshot-complete | PLANNED / NOT EXECUTED |
+| TC-NOTIF-034 | Account/channel consent is revoked after event-time snapshot but before external dispatch | Original candidate remains immutable; the affected channel is suppressed; no new recipient is added and no inbox/source business state is rewritten | PLANNED / NOT EXECUTED |
+| TC-NOTIF-035 | Partial CMD-052 fan-out crashes after some inbox rows are materialized | Retry deterministically scans candidate rows missing inbox rows; unique keys prevent duplicates; outbox completes only when candidate and materialized counts reconcile | PLANNED / NOT EXECUTED |
+
+### Candidate RLS case
+
+| Test ID | Candidate object | Scenario | Expected result | Status |
+|---|---|---|---|---|
+| TC-RLS-024-049 | `notification_outbox_recipients` (NOT ADMITTED) | Anonymous/authenticated browser attempts SELECT/INSERT/UPDATE/DELETE; CMD-052 attempts cross-outbox read or stale-lease read | All browser access denied; worker read is restricted to the currently claimed outbox and valid lease; candidate rows remain immutable | PLANNED / NOT EXECUTED |
+
+**Execution gate:** Engineering/Database/Security must first admit or replace the candidate physical representation, approve exact scope FKs/hash/count/transaction bounds, RLS/ACL and workload identity, and activate G10. No test may be reported PASS before reproducible staging evidence is attached.
