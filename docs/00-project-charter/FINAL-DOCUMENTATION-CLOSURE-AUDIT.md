@@ -1,13 +1,13 @@
 # Final Documentation Closure Audit — Dit. SD Inspection
 
 **Document ID:** DOC-AUDIT-001  
-**Version:** 0.1.4  
+**Version:** 0.1.5  
 **Status:** STATIC DOCUMENTATION AUDIT COMPLETED — IMPLEMENTATION READINESS NOT ESTABLISHED  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
 **Pull request:** #3 — Draft / Open  
-**Authority:** AGENTS.md v1.2.0; MIB-001 v1.0.4; IRG-001 v1.0.1; DGA-001 v1.11.23  
+**Authority:** AGENTS.md v1.2.0; MIB-001 v1.0.5; IRG-001 v1.0.1; DGA-001 v1.11.24  
 **Gate:** G9 NOT READY; G10 NOT AUTHORIZED
 
 ---
@@ -110,8 +110,8 @@ PR #3 remains Draft/Open. No CI success is claimed. G9 remains NOT READY. G10 re
 
 ## 8. Related source documents
 
-- [DGA-001 — Documentation Gap Audit](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) v1.11.23
-- [RTM-001 — Requirements Traceability Matrix](REQUIREMENTS-TRACEABILITY-MATRIX.md) v0.1.1
+- [DGA-001 — Documentation Gap Audit](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) v1.11.24
+- [RTM-001 — Requirements Traceability Matrix](REQUIREMENTS-TRACEABILITY-MATRIX.md) v0.1.2
 - [RAID-001 — Risks, Assumptions, Issues and Dependencies](RAID-REGISTER.md) v0.1.1
 - [PostgreSQL Command Contract Catalogue](../02-architecture/POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) v0.4.4
 - [Command-Level Lock Manifest](../02-architecture/COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.4.15
@@ -129,7 +129,7 @@ The next valid gate is accountable-owner closure of the remaining DGA/LPR items,
 This current addendum supersedes the canonical-source navigation values in the earlier audit snapshot without rewriting its historical evidence boundary.
 
 Current controlled sources:
-- AGENTS.md v1.2.0; MIB-001 v1.0.4; IRG-001 v1.0.1; DGA-001 v1.11.23.
+- AGENTS.md v1.2.0; MIB-001 v1.0.5; IRG-001 v1.0.1; DGA-001 v1.11.23.
 - Package S §9.16 current inventory addendum; Package T v0.1.1 historical decision pack.
 - Decision Register remains the current PO decision authority.
 - RTM-001 v0.1.1; RAID-001 v0.1.1; QA Catalogue v0.3.5.
