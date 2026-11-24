@@ -1,13 +1,13 @@
 # Final Documentation Closure Audit — Dit. SD Inspection
 
 **Document ID:** DOC-AUDIT-001  
-**Version:** 0.1.3  
+**Version:** 0.1.4  
 **Status:** STATIC DOCUMENTATION AUDIT COMPLETED — IMPLEMENTATION READINESS NOT ESTABLISHED  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
 **Pull request:** #3 — Draft / Open  
-**Authority:** AGENTS.md v1.2.0; MIB-001 v1.0.3; IRG-001 v1.0.1; DGA-001 v1.11.22  
+**Authority:** AGENTS.md v1.2.0; MIB-001 v1.0.4; IRG-001 v1.0.1; DGA-001 v1.11.23  
 **Gate:** G9 NOT READY; G10 NOT AUTHORIZED
 
 ---
@@ -110,9 +110,9 @@ PR #3 remains Draft/Open. No CI success is claimed. G9 remains NOT READY. G10 re
 
 ## 8. Related source documents
 
-- [DGA-001 — Documentation Gap Audit](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) v1.11.22
-- [RTM-001 — Requirements Traceability Matrix](REQUIREMENTS-TRACEABILITY-MATRIX.md) v0.1.0
-- [RAID-001 — Risks, Assumptions, Issues and Dependencies](RAID-REGISTER.md) v0.1.0
+- [DGA-001 — Documentation Gap Audit](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) v1.11.23
+- [RTM-001 — Requirements Traceability Matrix](REQUIREMENTS-TRACEABILITY-MATRIX.md) v0.1.1
+- [RAID-001 — Risks, Assumptions, Issues and Dependencies](RAID-REGISTER.md) v0.1.1
 - [PostgreSQL Command Contract Catalogue](../02-architecture/POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) v0.4.4
 - [Command-Level Lock Manifest](../02-architecture/COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.4.15
 - [Global Lock-Order and Concurrency Graph](../02-architecture/GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md) v0.4.10
@@ -123,3 +123,20 @@ PR #3 remains Draft/Open. No CI success is claimed. G9 remains NOT READY. G10 re
 The six static documentation findings listed in §4 are corrected and the reviewed cross-document inventory checks pass. This is **not** a declaration that all project gaps are closed, all 54 commands are approved, the schema is production-ready, or implementation may begin.
 
 The next valid gate is accountable-owner closure of the remaining DGA/LPR items, followed by an independent review and explicit written G10 authorization.
+
+## 10. Current cross-document governance checkpoint — 2026-11-24
+
+This current addendum supersedes the canonical-source navigation values in the earlier audit snapshot without rewriting its historical evidence boundary.
+
+Current controlled sources:
+- AGENTS.md v1.2.0; MIB-001 v1.0.4; IRG-001 v1.0.1; DGA-001 v1.11.23.
+- Package S §9.16 current inventory addendum; Package T v0.1.1 historical decision pack.
+- Decision Register remains the current PO decision authority.
+- RTM-001 v0.1.1; RAID-001 v0.1.1; QA Catalogue v0.3.5.
+- SSOT-AUDIT-001 v0.1.0; POQ-001 v0.1.0; AUTH-001 v0.1.0.
+
+The cross-document review confirmed 125 unique RTM requirement IDs, 53 unique RAID IDs and 50 unique Decision Register IDs. Package S §9.15's 391-test identifier count remains historical; the current DGA scan reports 410 unique planned test definitions. The RTM T-13 mapping now points to TC-PRINT-001..007 and TC-PRINT-BATCH-001..008; TC-DOC-009..011 remain instrument/document cases.
+
+No PO decision was changed. T-10/T-12 institutional/provider approvals remain outstanding. DGA-B04/B05/B09/B10/B11/B12/B13/B14/B15/B16/B17/B18/B19/B20/B21 remain open/partial. Lock progress remains 10/54 candidate-normalized and 0/54 technically approved/certified. No tests, CI, live database/provider inspection, restore drill, UAT, merge or implementation were performed.
+
+**Disposition:** documentation crosswalk improved; documentation closure remains PARTIAL; G9 NOT READY; G10 NOT AUTHORIZED.
