@@ -147,7 +147,7 @@ Do not run broad privilege-changing DDL while inventory is incomplete. Do not ex
 
 ## 9. Verification plan
 
-The QA catalogue allocates one planned security case per logical operation plus global privilege boundary tests. All remain PLANNED / NOT EXECUTED until a staging database and approved ACL/migration exist.
+The QA catalogue allocates one planned security case per each of the 54 proposed operations plus 15 global privilege-boundary tests. All remain PLANNED / NOT EXECUTED until a staging database and approved ACL/migration exist.
 
 Global tests must prove:
 1. `anon` cannot execute protected RPCs or read protected tables.
