@@ -1,10 +1,10 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.4.22
+**Version:** 0.4.23
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
-**Parent:** LOCK-GRAPH-001 v0.4.12  
+**Parent:** LOCK-GRAPH-001 v0.4.16  
 **Scope:** Per-command resource inventory, source-stated lock sequence, shared invariants, competing commands, constraints and unresolved ordering  
 **Gate:** G3 NOT READY; G4 NOT READY; G5 NOT READY; G7 NOT READY; G9 NOT READY; G10 NOT ACTIVE.
 
@@ -12,7 +12,7 @@
 
 This document converts the current command reviews into a 54-row lock manifest inventory. It records only resource and ordering facts that are explicitly present in the reviewed command documents, and labels missing or contradictory information as OPEN. It is not a normalized, approved lock plan.
 
-**Critical result:** 54/54 logical command IDs are represented in the inventory, but **0/54 are certified lock-complete**. The manifest is an evidence and reconciliation artifact, not a proof of deadlock freedom. In particular, source-stated lock order conflicts remain in CMD-023/024/025/026/027/028, and CMD-031–040 contain further aggregate/child and external-effect boundaries requiring cross-check against the global candidate ranks.
+**Critical result:** 54/54 traceability IDs are represented: 50 application commands and 4 external control-plane IDs. The application lock-certification denominator is **0/50 certified lock-complete**; CMD-045–048 have no application lock set and are excluded. The manifest is an evidence and reconciliation artifact, not a proof of deadlock freedom. In particular, source-stated lock order conflicts remain in CMD-023/024/025/026/027/028, and CMD-031–040 contain further aggregate/child and external-effect boundaries requiring cross-check against the global candidate ranks.
 
 No command catalogue, physical schema, function, API, migration or runtime behavior is changed by this document.
 
@@ -195,12 +195,12 @@ All tests are PLANNED / NOT EXECUTED. No CI, local test, SQL, migration or datab
 |---|---|---|
 | G3 data/transaction | NOT READY | Source lock orders remain inconsistent and physical constraints are not verified |
 | G4 security | NOT READY | Worker identity/ACL and runtime function privileges unverified |
-| G5 API/command | NOT READY | 54 manifests inventoried, 0 certified lock-complete |
+| G5 API/command | NOT READY | 50 application manifests in scope; 4 external IDs excluded; 0/50 application manifests certified lock-complete |
 | G7 QA/evidence | NOT READY | Concurrency tests planned only |
 | G9 scope freeze | NOT READY | LM-01–LM-10 and existing institutional/technical blockers remain |
 | G10 implementation | NOT AUTHORIZED | No separate written implementation authorization |
 
-**Final disposition:** LOCK-MANIFEST-001 provides a 54-command source-evidence inventory and identifies where a complete manifest cannot yet be established. It does not normalize conflicting orders, approve any command, prove deadlock freedom or authorize implementation.
+**Final disposition:** LOCK-MANIFEST-001 provides a 54-ID traceability inventory (50 application commands + 4 external control-plane IDs) and identifies where application manifests cannot yet be certified. It does not normalize conflicting orders, approve any command, prove deadlock freedom or authorize implementation.
 
 
 ## 9. Lock protocol decision-resolution proposal — 2026-11-24
@@ -485,3 +485,8 @@ No application permission labels for CMD-045–048 may be seeded or granted. No 
 ### 7.5.1 Normalization and evidence boundary
 
 CMD-041–044 now have candidate read-boundary normalization. CMD-045–048 are external control-plane traceability IDs with no application lock set. CMD-049–054 retain their separately recorded notification transaction boundaries in §4.2 and subsequent notification alignment notes. Across the 54-ID inventory, **50 application commands have candidate execution/transaction boundaries; 4 IDs are external control-plane responsibilities; 0/50 application commands are technically approved/certified lock-complete**. This count is documentation coverage only, not proof of database locks, RLS, ACL or runtime behavior.
+
+
+## 10. Application certification denominator and current cross-document baseline — 2026-11-24
+
+The inventory retains **54/54 stable traceability IDs** for historical continuity. CMD-045–048 are external control-plane responsibilities and are not executable application commands; they have no application lock manifest, route, RPC, worker or transaction. The application lock-certification denominator is therefore **50**, not 54. Current static coverage is **50/50 application commands with candidate execution/transaction boundaries documented; 0/50 technically approved or certified lock-complete**. Candidate boundaries do not mean the full normalized manifest schema is complete, the global graph is acyclic, or PostgreSQL behavior is proven. LPR-09 remains OPEN; LPR-10 remains NOT EXECUTED. Current parent graph: LOCK-GRAPH-001 v0.4.16. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT ACTIVE.
