@@ -1,7 +1,7 @@
 # Lock Protocol Decision Resolution — LPR-01–LPR-10
 
 **Document ID:** LOCK-PROTOCOL-DECISION-RESOLUTION-001  
-**Version:** 0.2.1  
+**Version:** 0.2.2  
 **Status:** PO product decisions LPR-02–LPR-06 APPROVED; technical lock protocol remains OPEN / NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** Candidate global lock protocol for CMD-001–054 and asynchronous finalizers  
@@ -40,8 +40,8 @@ Use the following total order. A command acquires only the classes it needs, in 
 | L70 | Association episode | unit-project association | One active episode invariant; exact association is revalidated after lock |
 | L80 | Claim aggregate | unit claim | Claim lifecycle before inspection lifecycle; unique active claim is final database arbitration |
 | L90 | Inspection aggregate | inspection | Inspection state/version and current revision are revalidated after lock |
-| L100 | Dependent mutable aggregates | evidence upload intent, attendance record, document job, print batch | Exact per-command sub-order and source-version binding required; no external I/O while held |
-| L110 | Append-only facts | revisions, review decisions, domain events, audit events, delivery attempts | Insert after mutable aggregate validation; uniqueness constraints remain final arbitration |
+| L100 | Dependent mutable aggregates | evidence upload intent, attendance record, document job, print batch, notification policy/inbox/delivery state | Exact per-command sub-order and source-version binding required; no external I/O while held |
+| L110 | Append-only facts | revisions, review decisions, domain events, audit events, delivery attempts, notification escalation/access events | Insert after mutable aggregate validation; uniqueness constraints remain final arbitration |
 
 ### 3.1 Deterministic same-rank ordering
 
@@ -122,6 +122,15 @@ The L00 arbitration must be short and transactionally safe. The same semantic re
 - If finalization changes a source aggregate, reacquire the entire relevant domain lock chain in ascending order and verify the fencing token before commit.
 - Scheduler ticks use a unique policy-version + escalation-step + target-window identity so duplicate ticks cannot create duplicate escalation events.
 - Worker principal, role, function owner, EXECUTE ACL, secret custody, provider capabilities and T-10 data policy remain separate approvals.
+
+- Command mapping for review (not implementation approval):
+  - CMD-049 is a recipient-scoped read; use MVCC/read consistency and a stable actor-bound cursor, not a mutation lock.
+  - CMD-050 mutates only the recipient-owned notification read projection at L100; append an L110 audit fact only if the approved audit policy requires it. Do not modify delivery state.
+  - CMD-051 serializes the policy draft/version and effective-scope publication at L100, then appends the L110 audit fact. Draft identity, canonical hash, same-scope ordering and interval exclusion remain open.
+  - CMD-052 claims one bounded outbox item in a short isolated queue transaction; commit the lease/fencing generation before fan-out. Recipient inbox and delivery projections are L100 writes, with unique constraints as final duplicate arbitration. Never hold the queue-row lock while acquiring domain aggregates or performing provider I/O.
+  - CMD-053 claims/updates the exact delivery projection at L100 and appends immutable attempt outcomes at L110. Provider I/O occurs outside transactions. Provider callback ingestion is a separately authenticated boundary; its logical command mapping remains unresolved.
+  - CMD-054 evaluates due state against server UTC and the pinned policy version; it writes notification/outbox projections at L100 and one unique escalation fact at L110. Duplicate scheduler ticks must converge on the same policy-version/step/window identity.
+- These mappings reconcile logical resource classes only. Queue claim tables, notification physical keys, indexes, triggers, function calls, worker principals and ACLs are not verified; no rank or implementation mechanism is approved by this paragraph.
 
 ## 5. Per-command manifest closure requirements
 
@@ -235,4 +244,4 @@ This checkpoint records contradictions and incomplete paths that are visible fro
 
 ## 12. Change history
 
-- **0.2.1 — 2026-11-24:** Corrected the document heading to reference the actual LPR-01–LPR-10 decision identifiers; added a static reconciliation checkpoint for parent/session ordering, unit/claim lifecycle, inspection/sync, external finalizers, print, attendance, notification workers, implicit database edges and adversarial evidence. No technical lock decision was approved and no implementation authority changed.
+- **0.2.2 — 2026-11-24:** Aligned the L100/L110 resource examples with mutable notification policy/inbox/delivery state and append-only notification escalation/access facts; added per-command logical mappings for CMD-049–054 and explicitly retained queue isolation, callback-boundary and worker-security gaps. No technical lock decision was approved and no implementation authority changed.
