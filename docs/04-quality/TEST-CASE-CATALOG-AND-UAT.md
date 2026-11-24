@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.6.5
+Version: 0.6.6
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -1049,3 +1049,17 @@ Extend the existing CMD-013 / TC-SESSION-002..008 coverage to prove:
 - Race tests cover FINAL_CLOSE against every writer/finalizer family listed in CMD-001–054 Cross-Command Reconciliation. A test pass is not valid until the canonical lock order, parent/child fences and lock graph are approved and executable.
 
 Extend TC-INS-DRAFT-021..027 / TC-SESSION-002..008 traceability as applicable; do not mark any case executed. Required future evidence includes database concurrency runs, rollback/audit atomicity, Storage finalization, renderer/print reconciliation, attendance authority evidence and post-close async notification behavior.
+
+## SES-001 QA clarification — packed-unit abort approval (2026-11-24)
+
+Add the following acceptance assertions to the existing SES-001 / inspection-draft QA coverage. All remain **PLANNED / NOT EXECUTED**:
+
+- A Reviewer-returned inspection whose unit remains practically accessible must follow same-Inspector correction and resubmission; ABORT is not offered as routine cleanup.
+- A Reviewer-returned inspection whose unit is already packed/boxed and prepared for shipment may enter an ABORT request workflow; Inspector request alone must not transition the attempt to ABORTED.
+- Admin/Korlap rejection leaves the attempt unresolved and preserves the submitted revision, return decision, evidence and audit history.
+- Admin/Korlap approval makes the attempt terminal ABORTED, preserves all prior history, and records the request and approval decision; retry/idempotency must not duplicate the disposition.
+- ABORTED does not count as approved, good, defective, inspection-complete or printed, and cannot bypass required evidence, document, print or attendance gates.
+- A later inspection creates a distinct inspection_id bound to its own session; the ABORTED attempt cannot be reactivated and prior evidence is not automatically reused.
+- FINAL_CLOSE cannot initiate, approve or bulk-apply ABORT; a pending ABORT request blocks closure until an authorized decision is recorded.
+
+The exact proof/evidence for packed shipment state and technical authorization controls remain open. No test execution is claimed.
