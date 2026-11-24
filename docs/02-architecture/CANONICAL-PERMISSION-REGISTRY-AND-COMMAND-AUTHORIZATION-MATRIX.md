@@ -173,7 +173,7 @@ T-15 requires critical permission/command events to be appended atomically with 
 
 ## Individual command contract reference
 
-The [PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) expands the registry's logical families into 54 proposed operations (CMD-001..054): 48 original domain operations plus six NLA-001 notification operations. The original 48 have individual contract test IDs; notification operations have lifecycle tests TC-NOTIF-001..018 and authorization tests TC-CMD-AUTHZ-024-037..040. This does not approve any permission semantics, role grant, grantor authority, RPC signature or EXECUTE grant. The registry remains a PO/security review draft and is not permission-seed authority.
+The [PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) expands the registry's 28 logical families into 54 proposed operations (CMD-001..054): 48 original domain operations plus six NLA-001 notification operations. The original 48 have individual contract test IDs; notification operations have lifecycle tests TC-NOTIF-001..018 and authorization tests TC-CMD-AUTHZ-024-037..040. This does not approve any permission semantics, role grant, grantor authority, RPC signature or EXECUTE grant. The registry remains a PO/security review draft and is not permission-seed authority.
 
 ## Function ACL and caller execution model
 
