@@ -8,7 +8,7 @@
 
 ## Physical schema reconciliation reference
 
-See [Physical Schema ↔ RLS ↔ Command Reconciliation](PHYSICAL-SCHEMA-RLS-COMMAND-RECONCILIATION.md) for the exact 41-table name-parity check, table key-column crosswalk, T-18 privilege interpretation and ERD-only entities `print_batches` / `notification_events`. The 41 rows are proposed policy design only; no live RLS or grants are verified.
+See [Physical Schema ↔ RLS ↔ Command Reconciliation](PHYSICAL-SCHEMA-RLS-COMMAND-RECONCILIATION.md) for the proposed 48-table crosswalk, including T-13 `print_batches` and the six NLA-001 notification tables. These are proposed policies only; no live RLS or grants are verified.
 
 ## 1. Purpose and security boundary
 
@@ -99,12 +99,19 @@ Legend:
 | `inspection_events` | R-scope; R-admin | CMD | NONE | NONE | Append-only |
 | `evidence_assets` | R-scope; R-admin | CMD | CMD | NONE | Pending metadata managed by upload commands; finalized metadata immutable |
 | `documents` | R-scope; R-admin | CMD | CMD | NONE | Generation/finalization command only; output immutable |
-| `print_events` | R-scope for authorized print/operational roles; R-admin | CMD | NONE | NONE | Append-only sequence allocation |
+| `print_batches` | R-scope for authorized print/operational roles; R-admin | CMD | CMD | NONE | Batch metadata scoped to project/session/location; created/updated only by bounded batch command; no direct DML |
+| `print_events` | R-scope for authorized print/operational roles; R-admin | CMD | NONE | NONE | Append-only per-document attempt; batch reference must be in same authorized scope |
 | `attendance_records` | R-scope; R-admin | CMD | CMD | NONE | Lifecycle command only |
 | `attendance_documents` | R-scope; R-admin | CMD | CMD | NONE | Replacement creates new version; no overwrite of original |
 | `audit_events` | R-admin; R-scope only if a specific audit-read permission is granted | CMD | NONE | NONE | No direct client write; no update/delete for application roles |
 | `idempotency_records` | NONE | CMD | CMD | NONE | Internal command machinery; retention cleanup via controlled maintenance |
 | `sync_batches` | R-self/R-scope for own device batches only | CMD | CMD | NONE | Batch payload not exposed broadly; no cross-user read |
+| `notification_policy_versions` | R-config-scope for explicitly authorized policy administrators; R-admin | CMD | CMD | NONE | Published immutable; draft/publish only via reviewed commands; role grants not yet approved |
+| `notification_outbox` | NONE for browser roles; internal worker only | CMD | CMD | NONE | Private fan-out queue; no browser reads; internal worker privilege separately reviewed |
+| `notifications` | R-self where `recipient_user_id = auth.uid()`; R-admin | CMD | CMD | NONE | Self-only inbox/read/dismiss; scope columns narrow results but never widen recipient ownership |
+| `notification_deliveries` | NONE for browser roles; internal worker; narrowly scoped operations reader only if approved | CMD | CMD | NONE | Provider state not exposed to recipients; worker-only mutation |
+| `notification_delivery_attempts` | NONE for browser roles; internal worker; restricted audit/operations reader if approved | CMD | NONE | NONE | Append-only sanitized attempts; no provider secrets or message bodies |
+| `notification_escalation_events` | R-config-scope only for authorized oversight; internal worker | CMD | NONE | NONE | Append-only; no access beyond policy/scope authority |
 
 **Important:** this is the complete catalogue for Package L's proposed table inventory. Any new table, view, RPC, or Storage bucket must be added to this catalogue before it is exposed. A missing row is a release blocker.
 
@@ -244,3 +251,11 @@ The catalogue still requires a table-by-table privilege review, exact command-fu
 ## Function ACL and caller-role dependency
 
 See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md) for the independent function EXECUTE and table ACL posture. CMD means command-only mutation, not table DML for the caller role. RLS policies do not grant SQL privileges. Exact ACL and caller-role verification remains open; no grants are deployed.
+
+## NLA-001 notification security notes
+
+- Browser callers can read only their own `notifications` rows and can mutate only their own `read_at`/approved dismiss field through commands; direct DML remains denied.
+- No browser role reads or mutates outbox, delivery queue, provider attempt or escalation worker tables.
+- Policy versions require explicit config scope and `notification.policy.manage`; no role-to-permission grant is implied by title.
+- Internal worker role, owner, JWT/scheduler trust, exact EXECUTE ACL and effective privileges are a separate T-18 security blocker.
+- Every new row above requires table-specific positive/negative RLS tests and exact grants before exposure.
