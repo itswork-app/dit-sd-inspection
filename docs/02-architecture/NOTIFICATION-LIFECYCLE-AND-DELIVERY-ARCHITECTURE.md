@@ -1,7 +1,7 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.15  
+**Version:** 0.1.16  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
@@ -521,3 +521,16 @@ Dispatch profiles must separately state account, channel, consent, mandatory sec
 - account reactivation may reconsider only a candidate already in the immutable snapshot and cannot clear unrelated restrictions.
 
 The source resource is independently re-authorized when opened. Notification delivery is not an access grant. The candidate grammar's eight-clause bound is a review proposal only and requires Engineering resource validation plus Security/PO approval. F-05 and F-04 remain OPEN; no physical schema, selector registry table, SQL, migration or runtime behavior is admitted by this document.
+
+
+## 23. PRD domain and recipient scope guard — SCOPE-RECON-001
+
+[PRD-SCOPE-AND-NOTIFICATION-DOMAIN-RECONCILIATION-001](../01-product-requirements/PRD-SCOPE-AND-NOTIFICATION-DOMAIN-RECONCILIATION-001.md) v0.1.0 is the static scope reconciliation for this notification workstream. The product's initial instrument rollout is IFP and Standing Bracket. The PRD actor set is Project Sponsor, Product Owner, Super Admin, Admin/Korlap, Inspector, Reviewer, Print Officer and the proposed Attendance Verifier (authority OPEN). The canonical permission/grant matrix remains NOT APPROVED; these actor descriptions do not create grants or recipient eligibility.
+
+No Principal/Kepala Sekolah, teacher, student, parent or school-customer persona is defined as an application role or default notification recipient by the PRD. Institutional affiliation or being named in an inspection context does not create application identity, permission, scope or notification eligibility. Adding such a persona/workflow/audience requires formal PRD change control and Product Owner approval.
+
+The CMD-001–040 source map is a producer/event declaration inventory, not a notification allowlist. CMD-041–044 read-side activity does not gain notification side effects by inference; CMD-045–048 require separate control-plane review; CMD-049–054 remain excluded from ordinary matching by default to avoid recursion. No event is enabled merely because it appears in a command catalogue. Only exact event tokens with approved product purpose, participant mapping, scope selector, dispatch profile and required technical approvals may be enabled.
+
+Do not mechanically convert all 40 source commands into notification triggers. Prioritize review of actual IFP/Standing Bracket operational workflows (assignment, inspection submission, review/return/approval, and explicitly approved document/attendance workflows), but keep every event `UNRESOLVED — NOT ENABLED` until the exact event allowlist and recipient intent are approved. Notifications remain advisory delivery artifacts: they do not mutate inspection outcomes or grant access to underlying resources.
+
+SCOPE-RECON-001 is a scope-control review artifact, not a PRD amendment, PO approval, role grant, enabled event registry, technical sign-off or implementation authorization. F-05 and F-04 remain OPEN; G9 NOT READY; G10 NOT ACTIVE.
