@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.5.4
+Version: 0.5.5
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -906,3 +906,13 @@ These cases guard the unresolved mapping between account event-time candidate se
 | TC-NOTIF-076 | Race CMD-002 approval against CMD-003 rejection and replay either command with the same or conflicting idempotency key | At most one terminal account decision and its canonical source event commit; replay does not create a second decision/event/outbox/snapshot; conflicting payload or terminal state is rejected; audit failure rolls back the atomic source transaction | PLANNED / NOT EXECUTED |
 
 **Execution control:** TC-NOTIF-075/076 require the approved account state machine, event/participant contract, decision uniqueness/CAS and source transaction proof. Runtime execution requires G10 activation and an authorized isolated environment. No test result is implied.
+
+
+### Role revocation event candidate safety — 2026-11-24
+
+| Test ID | Scenario | Expected result / invariant | Status |
+|---|---|---|---|
+| TC-NOTIF-077 | CMD-005 revokes a role selected by a notification policy, including a self-revoke attempt | Event-time candidate set is evaluated against pre-revoke state; target or actor is included only if the exact selector independently selects them; actor/target is never auto-appended; post-commit current role/scope revalidation may suppress but cannot widen or rewrite the snapshot | PLANNED / NOT EXECUTED |
+| TC-NOTIF-078 | Concurrent role grant/revoke, duplicate revoke replay, stale expected_version, and revoke of an already expired/revoked grant | At most one valid role transition and canonical `role.revoked` event commit; replay/no-op does not create duplicate event/outbox/snapshot; stale version is rejected only when backed by an approved physical CAS token; L05/L10 serialization covers all qualifying Inspector writers | PLANNED / NOT EXECUTED |
+
+**Execution control:** TC-NOTIF-077/078 require the approved role lifecycle, exact target participant mapping, selector/dispatch profile, physical version strategy, last-admin/SoD policy and complete L05/L10 writer proof. Runtime execution requires G10 activation and an authorized isolated environment. No test result is implied.
