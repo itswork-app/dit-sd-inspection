@@ -1,7 +1,7 @@
 # Command Authorization Verification Matrix
 
 **Status:** Design draft — PO/security review required; not implementation authority  
-**Version:** 0.4.1  
+**Version:** 0.4.2  
 **Date:** 2026-11-24  
 **Depends on:** T-15, T-16, T-17, T-18; Canonical Permission Registry v0.2.0; RLS and Authorization Design; Privileged Command Boundary and Transaction Specification
 
@@ -178,7 +178,7 @@ Changes to permission codes, command mappings, role grants, scope predicates, RL
 
 ## Individual command contract catalogue dependency
 
-[PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) expands the 28 authorization families into 54 proposed operations (CMD-001..054). The original 48 operations have TC-CMD-CONTRACT-024-001..048; NLA-001 notification operations have TC-NOTIF-001..018 and TC-CMD-AUTHZ-024-037..040. This is a detailed proposal, not 54 approved/executable contracts: exact physical PostgreSQL signatures, API routes, role grants, deployed RLS, EXECUTE grants, approved schemas and runtime evidence remain absent. CMD-045..048 are explicitly blocked pending institutional authority/schema. CMD-052..054 are internal-only workers and require dedicated non-browser identity/ACL review.
+[PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) expands the 28 authorization families into 54 proposed operations (CMD-001..054). The original 48 operations have TC-CMD-CONTRACT-024-001..048; NLA-001 notification operations have TC-NOTIF-001..026 and TC-CMD-AUTHZ-024-037..040. This is a detailed proposal, not 54 approved/executable contracts: exact physical PostgreSQL signatures, API routes, role grants, deployed RLS, EXECUTE grants, approved schemas and runtime evidence remain absent. CMD-045..048 are explicitly blocked pending institutional authority/schema. CMD-052..054 are internal-only workers and require dedicated non-browser identity/ACL review.
 
 ## PostgreSQL function security and caller ACL dependency
 
@@ -189,3 +189,14 @@ See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SE
 
 Product semantics for CMD-011–020 are PO APPROVED. This matrix records the approved actor/action boundary where relevant; it does not approve permission codes, role-to-permission mappings, grantor ceilings, RLS predicates, PostgreSQL EXECUTE grants or implementation. CA-06 explicitly preserves the T-07 state vocabulary and prevents Korlap request authority from being interpreted as final-close or reopen authority. T-14 and T-17 remain existing controlling decisions.
 
+
+
+## Notification command and integration verification alignment — 2026-11-24
+
+The notification authorization boundary is aligned to NLA-001 v0.1.2 and CMD-049–054 Detailed Contract Review v0.1.1:
+- CMD-049 is recipient-self read only with an actor/filter-bound cursor.
+- CMD-050 is a trusted recipient-self set-once read transition; no expected_version or direct browser DML.
+- CMD-051 is publish-only and requires an approved scoped notification.policy.manage grant; no role assignment is approved.
+- CMD-052..054 are internal-only worker/scheduler operations with a separate workload identity and exact EXECUTE ACL still pending.
+- INT-NOTIF-001 is a provider-authenticated server integration ingress, not a CMD ID or browser RPC.
+- No provider, worker principal, database role, function owner, grant, route or live RLS behavior is verified. TC-NOTIF-001..026 and the notification function-security cases remain PLANNED / NOT EXECUTED.
