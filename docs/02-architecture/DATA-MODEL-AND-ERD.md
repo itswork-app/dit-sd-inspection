@@ -215,3 +215,10 @@ The following candidate objects have been identified by the CMD-035/036/038/039/
 The exact candidate names, attributes, relationships, PK/FK, cardinality, delete behavior, indexes and retention model are specified only as design proposals in DURABLE-OPERATION-LEDGER-AND-ARTIFACT-LIFECYCLE-PROPOSAL-001. They are not ERD-approved entities. No candidate is allowed to become an implementation table until the physical schema, permission registry, RLS catalogue, function security, audit catalogue, command contracts and QA test inventory are updated consistently and approved.
 
 Permission boundaries are cross-referenced in CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md. In particular, sync.apply does not authorize device enrollment/revocation, document.generate does not authorize template publication, and renderer workers do not inherit user permissions or service_role. Attendance scope authority and uploader/verifier SoD remain open.
+
+
+## CMD-044 candidate-only ERD disposition — NOT ADMITTED (2026-11-24)
+
+The future audit-export lifecycle may require three candidate entities: audit_export_jobs, audit_export_manifests, and audit_export_artifacts. They are intentionally excluded from the Mermaid ERD and canonical 48-table count. No relationship, FK, ownership cardinality or retention cascade is approved.
+
+Candidate lifecycle relationship for review only: one export job may produce one immutable manifest and one or more artifact attempts/versions only if policy explicitly permits; otherwise enforce one terminal artifact. Exact cardinality, retry semantics, approval/dual-control records, download grants and deletion linkage must be decided after T-10. Never repurpose documents or notification_outbox. No export object or bucket may be created while T-10 remains blocked.
