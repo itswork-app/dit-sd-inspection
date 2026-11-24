@@ -112,7 +112,7 @@ Product Owner explicitly approved T-01=A, T-02=B, T-03=C and T-04=A, then T-05=A
 - T-07 Super Admin session creation/configuration and scoped Korlap operation are PO-approved; state/permission implementation and tests remain open.
 - T-08 Korlap attendance verification within assigned scope is PO-approved; separate permissions and verification tests remain open.
 
-The Decision Register and affected specifications have been updated and fetched back for verification. T-05 through T-09 are PO-approved; T-10 option B is PO APPROVED as the required formal institutional records/legal/privacy review path; written institutional policy remains BLOCKED. T-11 option B is PO APPROVED for current mainstream stable browsers with explicit exclusions; exact device/OS/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; institutional ownership arrangement and provider/recovery verification remain BLOCKED. T-13 is PO APPROVED option B (individual + bounded batch printing); detailed implementation and tests remain pending. T-14 is PO APPROVED option A; T-15 through T-18 have PO direction approved; residual design and institutional gates remain OPEN/BLOCKED. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
+The Decision Register and affected specifications have been updated and fetched back for verification. T-05 through T-09 are PO-approved; T-10 option B is PO APPROVED as the required formal institutional records/legal/privacy review path; written institutional policy remains BLOCKED. T-11 option B is PO APPROVED for current mainstream stable browsers with explicit exclusions; exact device/OS/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; institutional ownership arrangement and provider/recovery verification remain BLOCKED. T-13 is PO APPROVED option B (individual + bounded batch printing); detailed implementation and tests remain pending. T-14 is PO APPROVED option A; T-15 through T-18 have PO direction approved; residual design and institutional gates remain OPEN/BLOCKED. Scope freeze remains NOT READY; G10 is NOT ACTIVE pending separate gate activation.
 
 
 ## Package T T-09 decision update (2026-11-23)
@@ -223,6 +223,14 @@ D-030 remains OPEN/BLOCKING. The first ten command manifests now have a candidat
 
 
 **Final reviewed source snapshot for CMD-001–010 checkpoint:** CMD detail v0.3.4; LOCK-MANIFEST-001 v0.4.13; LOCK-GRAPH-001 v0.4.10; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.8; Cross-Command Reconciliation v0.8.8; QA Catalogue v0.3.3; DGA-001 v1.11.15. D-030/R-030 remain OPEN; no implementation or concurrency evidence is claimed.
+
+
+
+## CMD-045–048 Product Owner disposition — 2026-11-24
+
+Product Owner approved CMD-045–048 Control-Plane Resolution Proposal v0.1.0. The application-surface design ambiguity is CLOSED: the four IDs remain for traceability but are not executable application commands; no app permission, route, RPC, function, table, worker or generic CRUD is permitted. Their responsibilities are assigned to institutional records governance, institutional incident response, provider-native/secret-management operations and protected source-control/deployment systems respectively.
+
+This decision closes the application-feature design question only. It does not close external dependencies D-031 through D-033 or critical risk R-033 until accountable owners supply objective evidence. DGA-B04/B05/B15 remain open; G9 remains NOT READY; G10 remains NOT ACTIVE. The former proposed app-command acceptance tests are no longer an application implementation backlog; control-plane verification requirements remain in the RTM and detailed review.
 
 
 ## CMD-045–048 blocked-command review — 2026-11-24
