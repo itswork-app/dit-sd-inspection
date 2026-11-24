@@ -496,6 +496,22 @@ Proposed writes:
 
 Physical schema gap: the current catalogue lists attendance_records and attendance_documents but no dedicated verification-event table or detailed verification columns. Updating attendance_records.status alone cannot preserve which document version was checked, who decided, the decision/reason, the checksum, or the history of a later replacement/reverification. The append-only history model must be made explicit before implementation.
 
+### CMD-041
+
+**OPEN:** The detailed contract review does not enumerate a complete command-specific physical read/write set. Candidate boundary is a bounded, actor/scope-authorized actual-data query with stable scope/time ordering and cursor pagination. Exact source tables, joins, snapshot/watermark, indexes, query plan and RLS policy must be mapped from the approved report contract before implementation.
+
+### CMD-042
+
+**OPEN:** The detailed contract review does not enumerate a complete command-specific physical read/write set. Candidate boundary is a bounded target-plan/allocation read with deterministic calculation/version. Exact source tables, published-versus-draft selection, snapshot semantics, indexes, query plan and RLS policy remain OPEN. Target data must remain separate from actual inspection data.
+
+### CMD-043
+
+**OPEN:** The detailed contract review does not enumerate a complete command-specific physical read/write set. Candidate boundary is a bounded purpose-bound audit read under SECURITY INVOKER/RLS with stable cursor pagination. Exact audit columns, reader-purpose authorization, anti-recursion, access-audit append policy, retention and function owner/EXECUTE ACL are controlled by T-10 and remain OPEN.
+
+### CMD-044
+
+**BLOCKED / NO EXECUTABLE PHYSICAL SET:** T-10 institutional records/privacy authority is absent. No export request/job/manifest/artifact table, worker, permission, grant or command implementation may be inferred. A future export design requires institutional approval, export SoD, purpose/scope, encryption, access expiry, retention/legal hold and durable audit.
+
 ### CMD-049
 
 Source section: ### 5.5 Physical query and consistency
@@ -571,6 +587,6 @@ NLA-001 proposes unique notification_id/policy_version_id/step_no/event_type. Ex
 
 ## 4. Verification result
 
-Static extraction produced 46 command-specific entries: 40 entries for CMD-001–040 and 6 for CMD-049–054. CMD-041–044 remain explicit OPEN entries because their detailed review does not enumerate a complete command-specific physical read/write set. CMD-045–048 are excluded external IDs. This is source extraction, not physical schema validation.
+Static extraction produced 50 command-specific entries: 40 source-derived entries for CMD-001–040, 4 explicit OPEN/BLOCKED entries for CMD-041–044, and 6 source-derived entries for CMD-049–054. CMD-045–048 are excluded external IDs. This is source extraction, not physical schema validation.
 
 Current status: LPR-09 OPEN; LPR-10 NOT EXECUTED; 0/50 technically certified; G9 NOT READY; G10 NOT ACTIVE. No live database, RLS, grants, Storage or provider environment was inspected; no SQL, migration, test, CI or deployment was executed.
