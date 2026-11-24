@@ -1,7 +1,7 @@
 # Final Documentation Closure Audit — Dit. SD Inspection
 
 **Document ID:** DOC-AUDIT-001  
-**Version:** 0.2.7  
+**Version:** 0.2.8  
 **Status:** STATIC DOCUMENTATION AUDIT COMPLETED — IMPLEMENTATION READINESS NOT ESTABLISHED  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
@@ -182,3 +182,8 @@ Current lock baseline: LOCK-MANIFEST-001 v0.4.24; LOCK-GRAPH-001 v0.4.17; LOCK-P
 ## 14. Physical command-to-schema reconciliation — 2026-11-24
 
 CMD-SCHEMA-RECONCILIATION-001 v0.1.0 was added and linked from DGA-001 v1.11.47. Static table-name comparison found exact parity between the 48-table Package L physical inventory and 48-entry Package M RLS catalogue. This is not live RLS or grant verification. Command-level physicalization remains NOT PASS: aggregate row-version/CAS fields, durable sync operation outcomes, document renderer jobs/templates, print batch item manifests, attendance upload and verification history, report/audit/export read models, and notification worker/provider callback controls remain unresolved. CMD-041–044 remain OPEN/BLOCKED. Application lock certification remains 0/50; G9 NOT READY; G10 NOT ACTIVE. No implementation, SQL, migration, live DB, CI, test, deployment, merge or production-data operation was performed.
+
+
+## 15. CMD-009–016 aggregate concurrency proposal — 2026-11-24
+
+AGGREGATE-CONCURRENCY-RESOLUTION-001 v0.1.0 was added and cross-referenced by CMD-PHYSICAL-CROSSWALK-001. The proposal distinguishes aggregate row-version/CAS, project/session parent fences and T-14 capacity serialization; proposes candidate BIGINT row-version fields for projects, sessions, operational assignments and project capacity settings; and identifies an expected assignment aggregate version for CMD-015 as a request-contract proposal. These are not approved DDL or command signatures. PostgreSQL row-lock compatibility, implicit lock edges, complete child-writer/finalizer coverage, complete T-14 population-writer coverage, retries and concurrency test evidence remain open. No LPR status is advanced; 0/50 application commands are lock-certified; G9 NOT READY; G10 NOT ACTIVE.
