@@ -1,7 +1,7 @@
 # CMD-045–048 Detailed Contract Review
 
 **Document ID:** CMD-REVIEW-045-048  
-**Version:** 0.1.1  
+**Version:** 0.1.2  
 **Status:** Engineering boundary review — BLOCKED; institutional/operational authority and schema approval required  
 **Date:** 2026-11-24  
 **Scope:** CMD-045 through CMD-048  
@@ -11,6 +11,18 @@
 **Current gate clarification (2026-11-24):** the historical G10 NOT AUTHORIZED wording above predates the Product Owner's conditional implementation authorization. Current state: conditional PO authorization received; G9 NOT READY; G10 NOT ACTIVE. No implementation is permitted until G9 passes and a separate G10 activation record is approved.
 
 **Resolution proposal:** [CMD-045–048 Control-Plane Resolution Proposal](CMD-045-048-RESOLUTION-PROPOSAL.md) v0.1.0 recommends retaining the stable IDs while deferring/removing these operations from the application command surface. It is a recommendation only; the current blocked dispositions remain unchanged until PO acceptance and external evidence.
+
+## Current disposition after Product Owner approval — 2026-11-24
+
+The Product Owner approved CMD-045–048 Control-Plane Resolution Proposal v0.1.0 on 2026-11-24. This decision supersedes the earlier unresolved application-scope question in this review:
+- CMD-045 is deferred to the institutional records/legal/privacy control plane.
+- CMD-046 is deferred to the designated institutional incident-response control plane.
+- CMD-047 is outside the application command surface; provider-native controls and approved secret management are authoritative.
+- CMD-048 is outside the application command surface; protected source-control/deployment systems are authoritative.
+
+The four stable IDs remain for traceability only. They are not executable application commands. Do not create app permissions, routes, RPCs, SQL functions, tables, workers or generic CRUD endpoints for them. The detailed risk analysis below remains useful as control-plane requirements and residual dependency evidence; it must not be read as an implementation backlog for application features.
+
+**Residual status:** T-10 institutional records/privacy policy remains BLOCKED; T-12 provider ownership/recovery evidence remains BLOCKED; incident-response RACI remains OPEN; GitHub/release governance remains OPEN/BLOCKING. G9 remains NOT READY and G10 remains NOT ACTIVE. This approval does not close those external gates.
 
 ## 1. Purpose and non-authority
 
