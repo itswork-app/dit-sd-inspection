@@ -1,7 +1,7 @@
 # CMD-021–030 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security review required; NOT approved for implementation  
-**Version:** 0.3.1  
+**Version:** 0.3.2  
 **Date:** 2026-11-24  
 **Scope:** CMD-021 through CMD-030  
 **Controls:** T-15 append-only audit direction; T-16 canonical unit identity and association model; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
@@ -1239,3 +1239,8 @@ No implementation readiness or production readiness is claimed by this review.
 The proposal also clarifies that CMD-033/034's unresolved `revision_context` should refer to the active draft context, and that evidence is bound to the exact immutable revision at successful submission. Evidence carry-forward across revisions remains OPEN and must not be inferred.
 
 This is a candidate cross-check only. The physical relation, payload schema, claim/resume semantics, evidence linkage, state vocabulary, lock order and all tests remain unapproved. CMD-026/028/029/030 remain NOT CERTIFIED; no command contract or canonical schema is changed by this addendum.
+
+
+## SES-001 session-bound inspection and abort contract cross-check — 2026-11-24
+
+PO decision SES-001 is APPROVED in the Decision Register. CMD-026 must bind every new inspection attempt to the exact active session_id and must reject a claim when that session is not active or outside the caller's assignment scope. CMD-027 release-unit-claim must not be treated as equivalent to abort: session-end abort must terminally mark the inspection attempt/context ABORTED, release its active claim, preserve historical revisions/evidence, and append audit/event/idempotency atomically. Engineering must decide whether CMD-027 can support this complete semantic or a dedicated abort command is required. CMD-028, CMD-029, CMD-033/034 and returned correction remain bound to the same immutable session_id; offline editing under T-09 does not extend across sessions. A returned revision is correctable only by its original Inspector and only while the original session remains active. No cross-session draft resume, claim transfer or context reactivation is permitted. Session final close must be blocked until each unresolved unit attempt is completed or explicitly aborted. These are PO product semantics; command write sets, physical state/constraints, event names, locks, ACL/RLS and tests remain uncertified. No implementation is authorized by this addendum.
