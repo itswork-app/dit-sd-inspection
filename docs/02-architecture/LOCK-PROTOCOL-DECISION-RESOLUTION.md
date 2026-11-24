@@ -1,7 +1,7 @@
 # Lock Protocol Decision Resolution — LPR-01–LPR-11
 
 **Document ID:** LOCK-PROTOCOL-DECISION-RESOLUTION-001  
-**Version:** 0.3.9  
+**Version:** 0.3.10  
 **Status:** PO product decisions LPR-02–LPR-06 APPROVED; technical lock protocol remains OPEN / NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** Candidate global lock protocol for CMD-001–054 and asynchronous finalizers  
@@ -166,7 +166,7 @@ The inventory currently covers 54/54 command IDs but certifies 0/54 complete man
 | LPR-06 | Define instrument deactivation effect on already-pinned sessions | PO + instrument owner | PO APPROVED — safety withdrawal authority/enforcement OPEN |
 | LPR-07 | Approve exact lock primitives, function/trigger graph and effective privileges | Engineering + Security | OPEN |
 | LPR-08 | Approve worker identity, queue fencing, provider callback trust and ACL | Security + Operations + provider owner | OPEN |
-| LPR-09 | Reconcile all 54 command manifests and physical constraints/call graph | Engineering + Database/Security + QA | OPEN |
+| LPR-09 | Normalize/review all 50 in-scope application command manifests and physical constraints/call graph; retain CMD-045–048 as external traceability only | Engineering + Database/Security + QA | OPEN |
 | LPR-10 | Run adversarial concurrency suite in authorized isolated environment | Engineering + QA + Security | NOT EXECUTED |
 | LPR-11 | Define and approve lock classes/order for account identity and authorization aggregates (`app_users`, `user_roles`, `user_scope_grants`) relative to T-14 capacity, project/session parents and assignment membership | Engineering + Security; PO for product-impacting lifecycle; institution where authority applies | OPEN |
 
@@ -333,3 +333,8 @@ CMD-001–010 are candidate-normalized at documentation level only. LPR-01 and L
 ## Conditional Product Owner authorization status synchronization — 2026-11-24
 
 The Product Owner's explicit conditional implementation authorization is recorded in the canonical Decision Register. It permits transition toward implementation from zero using the SSOT baseline, subject to G9 closure and a separate G10 activation record. **Current status: G9 NOT READY; G10 NOT ACTIVE.** This status synchronization does not approve this technical proposal, any lock mode, permission, function ACL, migration or runtime behavior. Technical and institutional approval boundaries stated in this document remain unchanged.
+
+
+## 13. LPR-09 application-scope denominator clarification — 2026-11-24
+
+LPR-09 applies to **50 application commands**, not all 54 traceability IDs. CMD-045–048 are approved external control-plane dispositions and must not be assigned application lock sets. The 54/54 inventory count remains valid only as traceability coverage. The current manifest records candidate transaction/resource boundaries for the 50 application commands, but complete normalized-field coverage, physical lock-target evidence and accountable technical approvals are not yet established. Therefore LPR-09 remains OPEN and application lock certification remains **0/50**. LPR-10 remains NOT EXECUTED. No lock mode, privilege, schema, function, worker ACL or runtime behavior is approved by this clarification. LOCK-MANIFEST-001 v0.4.23 and LOCK-GRAPH-001 v0.4.16 are the current linked baselines.
