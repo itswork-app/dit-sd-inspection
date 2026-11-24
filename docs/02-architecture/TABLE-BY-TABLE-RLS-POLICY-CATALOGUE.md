@@ -1,7 +1,7 @@
 # Table-by-Table RLS Policy Catalogue
 
 **Status:** Security policy design draft — security review and implementation approval required  
-**Version:** 0.2.4
+**Version:** 0.2.5
 **Package:** M — RLS and Authorization Policy Catalogue  
 **Date:** 2026-11-23
 
@@ -315,3 +315,21 @@ The existing 48-table policy matrix remains the canonical proposed table invento
 No candidate object inherits access from audit.read or audit.export automatically. audit.export authorizes only the approved export request boundary if T-10 later permits it; it does not itself authorize artifact download. Worker identities must be dedicated, non-user workload principals with exact table/function ACL, no browser EXECUTE and no service_role impersonation. No direct browser DML on audit records or candidate export records is permitted.
 
 The candidate annex is excluded from the 48-table canonical inventory. T-10 authority, purpose, classification, SoD, field projection, recipient, retention/legal hold, storage provider/region, encryption/key custody and deletion evidence remain blockers.
+
+
+## POQ-01 candidate notification audience snapshot RLS/ACL — NOT ADMITTED (2026-11-24)
+
+**Candidate relation:** `notification_outbox_recipients`. This is a future-review security boundary only; it is not added to the canonical 48-table RLS inventory and no policy/grant is approved.
+
+| Access path | Candidate policy |
+|---|---|
+| Anonymous/browser SELECT | DENY |
+| Authenticated/browser SELECT | DENY, including recipient self; candidate audience is not an inbox/read API |
+| Browser INSERT/UPDATE/DELETE | DENY |
+| Source domain command transaction | Narrow server-owned command path may insert the event-time snapshot atomically with source event/outbox, only after exact T-18 function review |
+| CMD-052 workload | SELECT only for rows belonging to the claimed outbox and current fenced lease; no direct mutation of immutable recipient/scope snapshot |
+| Admin/operations | No default access; break-glass or diagnostics require separately approved purpose, scope and audit |
+
+Candidate immutable fields: outbox_id, recipient_user_id, project/session/location/assignment scope references, scope_snapshot_hash and resolved_at. The snapshot must be complete before outbox work is claimable. Candidate rows cannot be updated to replace recipients after source-event time; current dispatch restrictions are represented by channel suppression outcomes, not snapshot edits.
+
+The workload identity, function owner, exact EXECUTE ACL, caller-JWT propagation, RLS interaction and lease predicate remain T-18 review items. No worker may impersonate service_role or receive an authenticated-user permission. Candidate relation is NOT ADMITTED and does not change the canonical 48-table count.
