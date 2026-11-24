@@ -153,7 +153,7 @@ This review is based on repository documentation and official PostgreSQL documen
 
 ## 7. Revision response checkpoint — 2026-11-24
 
-TDR v0.1.2 and the synchronized QA artifacts now specify the proposed response to F-01/F-02, with NRL-T11/T12 and TC-NOTIF-052/053. The response is documentation-only; deployed wrapper volatility, authenticated RPC snapshot behavior, effective-time policy approval and execution evidence remain absent. F-01/F-02 remain OPEN pending evidence.
+TDR v0.1.3 and the synchronized QA artifacts now specify the proposed response to F-01/F-02, with NRL-T11/T12 and TC-NOTIF-052/053. The response is documentation-only; deployed wrapper volatility, authenticated RPC snapshot behavior, effective-time policy approval and execution evidence remain absent. F-01/F-02 remain OPEN pending evidence.
 
 [L05-SOURCE-MAP-001](../02-architecture/L05-SOURCE-EVENT-PATH-MAPPING-001.md) v0.1.0 provides a 40-row source-event/transaction-boundary mapping for F-03. It does not normalize the existing command lock sequences; 0/40 paths remain normalized/certified.
 
