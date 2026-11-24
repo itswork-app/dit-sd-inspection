@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.3.4
+**Version:** 0.3.5
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -23,15 +23,15 @@ The repository therefore cannot currently claim that all command lock paths are 
 
 ## 2. Authority and evidence boundary
 
-Reviewed on branch `docs/t17-instrument-governance-t18-command-boundary`:
+Reviewed on branch `docs/audit-lock-and-identity-reconciliation` on 2026-11-24:
 
 - Root `AGENTS.md` v1.2.0.
 - PostgreSQL Command Contract Catalogue v0.3.1.
 - Physical Database Schema and Integrity Specification v0.3.0.
 - Privileged Command Boundary and Transaction Specification v0.2.0.
-- CMD-001–010, CMD-011–020, CMD-021–030, CMD-031–040 and CMD-049–054 detailed reviews.
+- CMD-001–010, CMD-011–020, CMD-021–030, CMD-031–040, CMD-041–044, CMD-045–048 and CMD-049–054 detailed reviews.
 - CONCURRENCY-001 v0.1.2 and CMD-001–054 Cross-Command Reconciliation v0.8.2.
-- DGA-001 v1.3.0 and notification worker design references.
+- DGA-001 v1.9.5 and NLA-001 / notification worker design references.
 
 Evidence is static document inspection only. No live Supabase catalog, PostgreSQL lock table, deployed function, query plan, transaction trace, RLS/grant, worker runtime, CI workflow or test result was inspected or executed. The catalogue's “approved global order” wording is not treated as proof that the complete hierarchy passed cross-command review; the detailed reviews themselves identify unresolved conflicts.
 
@@ -67,16 +67,18 @@ This is a candidate ordering to reconcile current sources, not an approved imple
 
 | Candidate rank | Resource class | Examples | Open point |
 |---:|---|---|---|
-| 0 | Idempotency arbitration | `idempotency_records`, command request key | Atomic claim before domain locks |
-| 10 | Shared invariant/serialization rows | `project_capacity_settings` | Must precede role/assignment eligibility rows for T-14 |
-| 20 | Canonical identity arbitration | instrument + normalized serial key; conflict identity | All unit writers use same key protocol |
-| 30 | Project/session parents | `projects`, `sessions` | Deterministic UUID order |
-| 40 | Assignment and instrument references | `operational_assignments`, `assignment_members`, `instruments`, `instrument_versions`, teams/locations | Relative assignment-versus-instrument order is OPEN |
-| 50 | Canonical unit | `units` | Unit identity/lifecycle |
-| 60 | Association episode | `unit_project_associations` | Exact project/unit relationship |
-| 70 | Claim and inspection aggregate | `unit_claims`, `inspections` | Claim-versus-inspection order is OPEN |
-| 80 | Evidence/document/attendance/print aggregates | evidence assets, documents, attendance records/documents, print batches | Relative ordering must be specified per command |
-| 90 | Append-only facts | domain events, audit events, revisions, review decisions, delivery attempts | Insert after mutable-state checks |
+| L00 | Idempotency arbitration | `idempotency_records`, actor + command + scope + key | Atomic claim before domain locks; same-key/different-hash rejects |
+| L10 | Shared invariant serialization | `project_capacity_settings` and other approved cross-row serialization rows | Must precede all eligibility-changing role/assignment paths for T-14 |
+| L20 | Canonical identity arbitration | `(instrument_type, serial_normalized)` and conflict identity | All unit writers derive and arbitrate the same canonical key |
+| L30 | Project/session lifecycle parents | `projects`, `sessions` | Parent fence before child work; multiple parents in stable ID order |
+| L40 | Instrument and immutable version references | `instruments`, `instrument_versions` | Validate active/selectable status and pin immutable version |
+| L50 | Assignment and membership aggregates | `operational_assignments`, `assignment_members`, team/location membership | Deterministic ID order; revalidate eligibility after parent/instrument checks |
+| L60 | Canonical unit | `units` | Unit identity/lifecycle after canonical identity and scoped parents |
+| L70 | Association episode | `unit_project_associations` | Exact active association revalidated after lock |
+| L80 | Claim aggregate | `unit_claims` | Claim lifecycle before inspection lifecycle; unique active claim is final arbitration |
+| L90 | Inspection aggregate | `inspections` | Inspection state/version and current revision revalidated after lock |
+| L100 | Dependent mutable aggregates | evidence intents, attendance records, document jobs, print batches, notification policy/inbox/delivery projections | Exact per-command sub-order and source-version binding; no external I/O while held |
+| L110 | Append-only facts | revisions, review decisions, domain/audit events, delivery attempts, escalation/access events | Insert after mutable-state validation; uniqueness constraints remain final arbitration |
 
 Unresolved rank questions:
 
@@ -260,13 +262,27 @@ Do not update canonical lock recipes to the candidate hierarchy before approval.
 
 ## 12. Command-level manifest inventory update — 2026-11-24
 
-[LOCK-MANIFEST-001 — Command-Level Lock Manifest Reconciliation CMD-001–054](COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.3.4 now inventories source-stated lock/resource sequences for all 54 logical command IDs. It records 54/54 inventory coverage and 0/54 certified lock-complete based on the current static evidence. It explicitly preserves unresolved ordering rather than normalizing conflicting source contracts.
+[LOCK-MANIFEST-001 — Command-Level Lock Manifest Reconciliation CMD-001–054](COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.3.6 now inventories source-stated lock/resource sequences for all 54 logical command IDs. It records 54/54 inventory coverage and 0/54 certified lock-complete based on the current static evidence. It explicitly preserves unresolved ordering rather than normalizing conflicting source contracts.
 
 The manifest confirms the CMD-023/024/025/026/027/028 ordering issues, parent/child closure conflicts, T-14 eligibility path gaps, instrument/assignment rank gap, evidence/document/attendance finalization gaps, print sequence allocator gaps and notification worker fencing gaps. It is an evidence inventory, not an approved lock plan or proof of deadlock freedom. All new tests remain planned/not executed; G9 remains NOT READY and G10 NOT AUTHORIZED.
 
 
 ## 13. Lock protocol decision-resolution proposal — 2026-11-24
 
-[LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.2.1 consolidates a candidate monotonic resource order and explicit recommendations for CMD-022–027, CMD-028–032/035, project/session closure, T-14 capacity, instrument/assignment interaction, evidence/document/attendance/print, and notification worker/callback boundaries. It assigns PO, Engineering, Security, institutional and Operations decision ownership.
+[LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.2.2 consolidates a candidate monotonic resource order and explicit recommendations for CMD-022–027, CMD-028–032/035, project/session closure, T-14 capacity, instrument/assignment interaction, evidence/document/attendance/print, and notification worker/callback boundaries. It assigns PO, Engineering, Security, institutional and Operations decision ownership.
 
 **Disposition:** proposal only; not an approved lock protocol and not proof of an acyclic graph. Canonical command contracts and physical schema remain unchanged. 54/54 commands remain inventoried and 0/54 certified lock-complete. All tests remain PLANNED / NOT EXECUTED. G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED.
+
+## 14. Candidate-rank and notification boundary reconciliation — 2026-11-24
+
+The rank table in §4 is now aligned with the candidate L00–L110 vocabulary in LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.2.2. This corrects the prior graph's compressed 0–90 model, which combined instrument with assignment, claim with inspection, and omitted the dependent-mutable versus append-only distinction. The candidate order remains unapproved; the change is a documentation reconciliation, not Engineering/Security approval.
+
+CMD-049–054 must be interpreted as follows:
+- CMD-049: recipient-owned read only; MVCC/read consistency and actor/filter-bound cursor, no mutation lock.
+- CMD-050: one recipient-owned read-state projection in a short guarded transaction; delivery state remains separate; expected_version remains unresolved against the physical schema.
+- CMD-051: policy draft/version and effective-scope serialization in one short policy transaction; immutable published version and append-only audit fact; exact draft/hash/interval arbitration remains open.
+- CMD-052: isolated bounded outbox claim transaction with lease/fencing generation, committed before fan-out; separate fan-out transaction creates recipient inbox/delivery projections with unique arbiters; no provider I/O.
+- CMD-053: exact delivery claim/outcome transactions and append-only attempt facts; provider I/O outside transactions; callback authentication and logical command mapping remain open.
+- CMD-054: server-UTC due evaluation against pinned policy version; unique escalation fact and outbox intent committed atomically; no source business-state mutation.
+
+The notification queue is not a license to acquire queue locks and then domain aggregate locks. If any future worker operation must mutate a source aggregate, it must release its queue claim transaction, start a new transaction, acquire the full approved L30–L100 source chain in ascending order and validate the fencing generation. Physical queue tables, unique/FK indexes, triggers, helper calls, worker identity, function owner, EXECUTE ACL and provider callback runtime remain NOT VERIFIED.
