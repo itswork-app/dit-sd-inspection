@@ -1,7 +1,7 @@
 # Lock Protocol Decision Resolution — LPR-01–LPR-11
 
 **Document ID:** LOCK-PROTOCOL-DECISION-RESOLUTION-001  
-**Version:** 0.3.7  
+**Version:** 0.3.8  
 **Status:** PO product decisions LPR-02–LPR-06 APPROVED; technical lock protocol remains OPEN / NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** Candidate global lock protocol for CMD-001–054 and asynchronous finalizers  
@@ -289,7 +289,7 @@ The main candidate rank table now includes L15–L18 and separates assignment ro
 
 ## 14. CMD-001–010 candidate manifest normalization — 2026-11-24
 
-**Reference baseline:** CMD-001–010 Detailed Contract Review v0.3.4 §9; LOCK-MANIFEST-001 v0.4.10; LOCK-GRAPH-001 v0.4.8. This is a technical proposal for review, not approval of LPR-01, LPR-07 or LPR-11.
+**Reference baseline:** CMD-001–010 Detailed Contract Review v0.3.4 §9; LOCK-MANIFEST-001 v0.4.12; LOCK-GRAPH-001 v0.4.10. This is a technical proposal for review, not approval of LPR-01, LPR-07 or LPR-11.
 
 ### 14.1 Proposed command order
 
