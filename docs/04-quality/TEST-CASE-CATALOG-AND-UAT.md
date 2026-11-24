@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.6.6
+Version: 0.6.7
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -1063,3 +1063,19 @@ Add the following acceptance assertions to the existing SES-001 / inspection-dra
 - FINAL_CLOSE cannot initiate, approve or bulk-apply ABORT; a pending ABORT request blocks closure until an authorized decision is recorded.
 
 The exact proof/evidence for packed shipment state and technical authorization controls remain open. No test execution is claimed.
+
+## SES-001 — technical ABORT request/decision QA refinement (2026-11-24)
+
+All cases below remain **PLANNED / NOT EXECUTED** and require approved contracts, physical schema/RLS, G10 activation and a controlled test environment. Extend existing stable IDs; no new command/test IDs are assigned here.
+
+- **TC-INS-DRAFT-024:** Inspector request alone leaves inspection in RETURNED_FOR_CORRECTION; no claim release or ABORTED transition occurs before Admin/Korlap decision.
+- **TC-INS-DRAFT-024:** Admin/Korlap approval by a different principal transitions only the exact still-current Reviewer-returned revision to ABORTED; approval by requester, wrong scope, disabled account, missing permission or stale revision is denied.
+- **TC-INS-DRAFT-024:** Admin/Korlap rejection records mandatory decision reason, preserves history, does not release claim, and leaves correction available under WF-001.
+- **TC-INS-DRAFT-025:** Audit/event/idempotency failure during request or decision rolls back the corresponding transaction; approval cannot leave inspection ABORTED while claim or audit remains partially updated.
+- **TC-INS-DRAFT-025 / TC-SESSION-005:** Race request/approval against correction submit, review decision, claim release, evidence finalization and FINAL_CLOSE. Exactly one legal serialized outcome; stale approval is rejected; pending request blocks close.
+- **TC-INS-DRAFT-024:** Request with no exact Reviewer RETURN, wrong revision, wrong session, non-finalized evidence reference or unauthorized object reference is denied.
+- **TC-SESSION-003 / TC-SESSION-007:** Approved ABORT releases the exact active claim atomically if present; rejected/pending request does not release it. Failed claim release rolls back ABORTED transition.
+- **TC-SESSION-004:** CMD-027 still releases claim while preserving draft and never creates ABORTED.
+- **TC-INS-DRAFT-026:** Later session creates distinct inspection_id; old ABORTED attempt and evidence remain immutable and are not automatically reused.
+
+Do not mark any case executed. The evidence minimum and accepted packed/shipment proof types remain an operational/institutional approval gap.
