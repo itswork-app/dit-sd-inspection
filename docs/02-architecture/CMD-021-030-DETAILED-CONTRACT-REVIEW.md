@@ -1319,7 +1319,7 @@ Do not accept raw evidence bytes, arbitrary object paths, signed URLs, client-de
 
 ### F. Lock and FINAL_CLOSE integration
 
-The candidate path must conform to the approved global order only after its effective graph is certified: idempotency arbitration; trusted actor/role/scope authorization rows; canonical identity where required; session/project parent fence; assignment/membership; unit; association; claim; inspection; pending request/other dependent mutable records; append-only review/domain/audit/idempotency facts in their approved order. Exact resource inclusion, rank, FK/trigger/helper edges and same-rank comparator remain unverified; this is not an executable lock recipe.
+The candidate path must conform to the approved global order only after its effective graph is certified: idempotency arbitration; trusted actor/role/scope authorization rows; canonical identity where required; session/project parent fence; assignment/membership; unit; association; claim; inspection; pending request/other dependent mutable records; append-only review/domain/audit facts at the approved terminal-fact rank; idempotency reservation and durable outcome must follow the canonical L00 protocol. Exact resource inclusion, rank, FK/trigger/helper edges and same-rank comparator remain unverified; this is not an executable lock recipe.
 
 Request and approval must serialize with CMD-029 submit, CMD-030 return, CMD-031 approval, CMD-032 reopen, CMD-027 claim release, evidence finalization and CMD-013 FINAL_CLOSE. FINAL_CLOSE blocks on a pending request and on any returned correction not resolved by correction/resubmission or approved ABORT. CMD-013 never requests or approves ABORT.
 
