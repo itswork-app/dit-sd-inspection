@@ -288,3 +288,9 @@ T-19 read-only tree audit on 2026-11-24 found 54 blobs on `docs/t17-instrument-g
 ## T-13 batch print traceability update
 
 T-13 requires a durable batch identifier and per-document outcomes. The physical design now includes `print_batches` and extends `print_events` with batch linkage, outcome and append-only attempt semantics. Verify bounded batch size, partial outcomes, failed-only retries, idempotency, concurrency and no physical-printer-success claim. Related planned test series: TC-CMD-CONTRACT-024-038 and DOC-PRINT; exact cases remain to be allocated and executed.
+
+## T-13 print batch verification traceability — 2026-11-24
+
+| Requirement ID | Requirement | Authority | Design reference | Verification | Status |
+|---|---|---|---|---|---|
+| PRINT-BATCH-001 | Bounded batch persists durable batch identity and per-document outcomes with partial-result semantics | T-13 PO APPROVED option B | API and Transaction Contracts §6; Physical Database Schema; NLA-001 §13; CMD-038 | TC-PRINT-BATCH-001..008 | DESIGN RECORDED; TECH REVIEW OPEN |
