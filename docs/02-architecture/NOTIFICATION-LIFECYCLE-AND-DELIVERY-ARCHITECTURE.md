@@ -460,3 +460,8 @@ No generic “append snapshot after source lock” sequence is approved. Before 
 ### Recipient-resolver QA linkage — 2026-11-24
 
 QA v0.4.4 adds TC-NOTIF-042..051 for source-event recipient resolution versus role/account/scope/assignment/capacity/parent changes, overlapping producers, CMD-052 fan-out, CMD-054 scheduler publication/revocation races and atomic rollback/retry. All remain PLANNED / NOT EXECUTED. The tests are conditional on approval of the event-time linearization and resolver serialization mechanism; they do not approve L05, SERIALIZABLE isolation, schema or runtime implementation.
+
+
+## 18.1 PO selection of resolver serialization candidate — 2026-11-24
+
+PO selected the global transaction-scoped audience guard (candidate L05) as the primary mechanism for technical approval review. Option B SERIALIZABLE remains a contingency alternative only; do not combine the mechanisms without a separately reviewed design. See [NLA-RESOLVER-LOCK-001 v0.1.6](NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) §11. This is not final technical approval: exact PostgreSQL primitive/key, canonical rank, every eligibility-writer path including CMD-051, FK parent order, timeout/retry, throughput bounds and full acyclicity remain under Engineering/Database/Security review. No schema, lock rank, SQL or implementation is admitted. Candidate snapshot relation/header remain NOT ADMITTED; QA remains PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE.
