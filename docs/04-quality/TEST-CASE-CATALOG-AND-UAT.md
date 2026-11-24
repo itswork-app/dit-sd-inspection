@@ -784,17 +784,17 @@ These cases are mapped to LOCK-GRAPH-001 LG-41..LG-45. They are deterministic co
 | TC-NOTIF-050 | CMD-054 duplicate scheduler ticks race CMD-051 policy publication and recipient revocation | Exactly one escalation event wins; pinned policy and event-time snapshot remain immutable; no lower-rank-after-higher-rank acquisition | PLANNED / NOT EXECUTED |
 | TC-NOTIF-051 | Inject FK violation, unique conflict, deadlock or serialization failure during source snapshot transaction | Source mutation, event, audit, idempotency, outbox and snapshot roll back atomically; retry is bounded/idempotent; SQLSTATE and lock diagnostics are captured | PLANNED / NOT EXECUTED |
 | TC-NOTIF-052 | Authenticated PostgREST RPC waits on L05 while an eligibility writer commits; wrapper volatility and internal SQL command boundaries are inspected | Wrapper is VOLATILE; lock and resolver are separate internal SQL commands; post-wait resolver sees the committed writer under READ COMMITTED; STABLE/combined-statement negative control is rejected | PLANNED / NOT EXECUTED |
-| TC-NOTIF-053 | Source transaction waits across a role, assignment or policy effective-time boundary before acquiring L05 | One clock_timestamp instant is captured after L05; every effective predicate and immutable snapshot uses the same value; transaction-start timestamp is not used for eligibility | PLANNED / NOT EXECUTED |
+| TC-NOTIF-053 | Source transaction waits across a role, assignment or policy effective-time boundary before acquiring L05 | One clock_timestamp instant is captured after L05; every effective predicate and immutable snapshot uses the same value; transaction-start timestamp is not used for eligibility | PLANNED / NOT EXECUTED |\n| TC-NOTIF-054 | Mixed source-event and eligibility-writer workload at the PO/Operations-approved maximum audience cardinality | p50/p95/p99 L05 wait/hold/transaction latency, throughput, timeout/deadlock/retry rates, queue age, audience size and database I/O are measured and meet approved SLO; no partial audience, starvation or unbounded queue growth | PLANNED / NOT EXECUTED |
 
 **Execution evidence required:** exact approved mechanism and lock-rank version; schema/FK/index/trigger/function SHA; PostgreSQL major/version; deterministic transaction barriers; SQLSTATE and lock-wait/deadlock diagnostics; final invariant queries; source-event/outbox/snapshot correlation; rollback and retry evidence. Mocks or static reasoning do not pass these cases. G10 activation and an authorized isolated PostgreSQL environment are prerequisites.
 
 
 ### Resolver test execution prerequisite — 2026-11-24
 
-PO has selected candidate L05 as the primary mechanism for technical approval review. TC-NOTIF-042..053 remain PLANNED / NOT EXECUTED until Engineering/Database/Security approve the concrete primitive/key, transaction-scoped lifetime, writer participation, canonical order, timeout/retry and bounded contention profile. If L05 is rejected, the cases must be re-baselined against the approved alternative; do not test a mixed L05 + SERIALIZABLE design. This selection does not activate G10 or authorize database/runtime testing.
+PO has selected candidate L05 as the primary mechanism for technical approval review. TC-NOTIF-042..054 remain PLANNED / NOT EXECUTED until Engineering/Database/Security approve the concrete primitive/key, transaction-scoped lifetime, writer participation, canonical order, timeout/retry and bounded contention profile. If L05 is rejected, the cases must be re-baselined against the approved alternative; do not test a mixed L05 + SERIALIZABLE design. This selection does not activate G10 or authorize database/runtime testing.
 
 
-### NRL-T01..T12 execution controls — 2026-11-24
+### NRL-T01..T13 execution controls — 2026-11-24
 
 [NLA-L05-TDR-001 v0.1.2](../02-architecture/NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) defines the concurrency schedules and required outcomes for NRL-T01..T12, including VOLATILE wrapper snapshot behavior, post-lock time capture, a READ COMMITTED stale-snapshot control and `pg_locks` inspection. These tests remain PLANNED / NOT EXECUTED until G10 is activated, exact DDL/functions/grants and deployed isolation are approved, and an isolated PostgreSQL environment is available. Do not claim runtime or concurrency certification from this document.
 
@@ -802,3 +802,8 @@ PO has selected candidate L05 as the primary mechanism for technical approval re
 ### L05 review response — snapshot and time linearization cases — 2026-11-24
 
 TC-NOTIF-052 and TC-NOTIF-053 extend the planned QA set for F-01/F-02 from L05-REVIEW-001. Both are specification-only and PLANNED / NOT EXECUTED. They require the final approved wrapper/function definitions, exact PostgREST caller-JWT execution path, deployed READ COMMITTED evidence and an isolated PostgreSQL environment after G10 activation. No runtime result is implied.
+
+
+### L05 transition-semantics and contention evidence — 2026-11-24
+
+TC-NOTIF-054 specifies the mixed-load benchmark for the global audience guard. It remains PLANNED / NOT EXECUTED until PO/Operations approve audience/workload limits and numeric SLOs, Engineering/Database approve the final lock design, and G10 activates an isolated PostgreSQL test environment. Pre-/post-transition recipient outcomes remain PO decision inputs and must be added as explicit assertions before these tests can pass.
