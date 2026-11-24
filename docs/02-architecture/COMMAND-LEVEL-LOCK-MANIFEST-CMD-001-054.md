@@ -1,7 +1,7 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.4.30
+**Version:** 0.4.31
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Parent:** LOCK-GRAPH-001 v0.4.21  
@@ -652,3 +652,16 @@ PO has selected Option A, the global transaction-scoped audience guard (candidat
 6. CMD-037/038 sequence allocation and CMD-039/040 version decisions require physical uniqueness/serialization arbiters; an append-only event table alone does not prove monotonic sequence or one terminal decision.
 7. Candidate lock coverage for CMD-031–040 remains **0/10 certified**. The global graph remains NOT PROVEN ACYCLIC; application lock certification remains 0/50; NRL-T01..T13 and related QA remain PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE.
 
+
+
+### 7.13.2 CMD-030/031 shared terminal-decision arbiter
+
+[REVIEW-ARBITER-001 v0.1.0](REVIEW-DECISION-ARBITER-TECHNICAL-PROPOSAL-001.md) defines the candidate shared invariant:
+
+- CMD-030 RETURN and CMD-031 APPROVE append to the same `review_events` relation and must use one terminal-decision uniqueness arbiter keyed to the immutable `inspection_revision_id`.
+- Preferred constraint candidate is UNIQUE(`inspection_revision_id`) if every row is terminal; a partial unique index is conditional on Database confirming the exact terminal decision vocabulary.
+- Both commands serialize on the same inspection aggregate, revalidate the exact current submitted revision and Reviewer SoD after serialization, and atomically commit state, review event, audit and idempotency outcome.
+- A unique conflict maps to a stable already-reviewed outcome; it is not retried as a transient deadlock.
+- CMD-032 uses the same inspection serialization point but its active-draft uniqueness arbiter remains OPEN until the physical draft-context model is defined.
+
+This is a candidate physical invariant, not an approved DDL or certified lock recipe. Reviewer assignment, parent/assignment/claim lock order, implicit FK/index/trigger/helper edges, and all competing writer paths remain open. The 0/50 certified count is unchanged.
