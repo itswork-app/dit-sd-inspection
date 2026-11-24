@@ -180,7 +180,7 @@ Update this catalogue, API contracts, command boundary, permission registry, RBA
 
 ## Function security and EXECUTE ACL dependency
 
-See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md). The 48 operations are assigned provisional F1/F2/F6 classes, not deployed function names or grants. The INVOKER/direct-DML compatibility blocker applies to protected mutation functions and must be resolved before any function is exposed.
+See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md). The 54 operations are assigned provisional F1/F2/F5/F6 classes, not deployed function names or grants. The INVOKER/direct-DML compatibility blocker applies to protected mutation functions and must be resolved before any function is exposed.
 
 ## NLA-001 notification command extension — proposed IDs CMD-049..054
 
