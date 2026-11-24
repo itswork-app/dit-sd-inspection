@@ -754,7 +754,7 @@ Next documentation-only step: resolve the cross-command decisions above with PO/
 The row-level CMD-001–010 overlay in LOCK-MANIFEST-001 v0.4.5 preserves source-stated lock/transaction behavior while distinguishing candidate-rank mappings from unclassified resources.
 
 - CMD-001–003 mutate or arbitrate app_users account identity/state. CMD-004/005 mutate user_roles. CMD-006/007 mutate user_scope_grants. None of these mutable resource classes is named in the current L00–L110 candidate hierarchy.
-- Do not map these resources to L50 assignment/membership or L110 append-only facts by analogy. LPR-11 is OPEN and requires Engineering/Security resolution before CMD-001–007 can be rank-normalized.
+- Do not map these resources to L50 assignment/membership or L110 append-only facts by analogy. This historical statement that CMD-001–007 are not rank-normalized is superseded by §9's candidate normalization; LPR-11 technical approval remains OPEN.
 - CMD-004/005 must share the T-14 capacity serialization point whenever a role/account mutation changes the qualifying Inspector population; the full eligibility-changing writer set is not yet proven complete.
 - CMD-002/003 must share the same target-account terminal transition and uniqueness protocol; actor authorization revocation race remains unresolved.
 - CMD-006/007 require an explicit order among target principal, grantor authority, scope parent and scope-grant row, plus a revocation-freshness policy.
