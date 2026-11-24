@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.4.1
+Version: 0.4.2
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -740,3 +740,18 @@ The following tests validate the approved event-time audience semantics against 
 
 
 The two new function-security cases are conditional on approval/admission of the candidate notification audience snapshot design and exact F3/F5 function identities. They are PLANNED / NOT EXECUTED and do not authorize function creation or grant changes.
+
+
+## POQ-01 notification audience lock-order adversarial cases
+
+These cases are mapped to LOCK-GRAPH-001 LG-41..LG-45. They are deterministic concurrency specifications only; all remain PLANNED / NOT EXECUTED. The candidate relation is NOT ADMITTED, and these cases cannot be run until the physical representation and transaction/lock protocol are approved.
+
+| Test ID | Graph edge | Concurrent scenario | Required invariant / expected result | Status |
+|---|---|---|---|---|
+| TC-NOTIF-036 | LG-41 | Source event persists event-time audience while a grantor concurrently revokes a recipient role/scope grant | One serializable/locked winner is reflected in the immutable candidate snapshot; no mixed authorization state, audience widening or deadlock; exact typed outcome recorded | PLANNED / NOT EXECUTED |
+| TC-NOTIF-037 | LG-42 | Source event snapshot races assignment-member end and project/session closure | Candidate scope is consistent with the approved event-time linearization point; no recipient is retained outside its authorized source scope; closure fence and snapshot path do not deadlock | PLANNED / NOT EXECUTED |
+| TC-NOTIF-038 | LG-43 | CMD-052 claims outbox and materializes inbox rows while source-scope FK checks and project/session lifecycle writers run | No lower-rank-after-higher-rank acquisition; no duplicate inbox/delivery rows; stale or out-of-scope candidate cannot be materialized | PLANNED / NOT EXECUTED |
+| TC-NOTIF-039 | LG-44 | CMD-054 scheduler tick snapshots escalation recipients while role/scope revocation and duplicate scheduler tick race | One unique escalation event and one immutable event-time candidate set; no re-resolution/widening; no deadlock or duplicate outbox | PLANNED / NOT EXECUTED |
+| TC-NOTIF-040 | LG-45 | CMD-052 lease expires and is reclaimed while stale and current worker generations attempt fan-out finalization | Only current owner/token-hash/generation/expiry can finalize; immutable candidate rows unchanged; inbox creation remains idempotent | PLANNED / NOT EXECUTED |
+
+**Evidence required when authorized:** exact migration/schema SHA, PostgreSQL major, deterministic transaction barriers, lock wait graph/deadlock diagnostics, SQLSTATE/typed outcomes, final invariant queries and test-runner evidence. Do not mark PASS from mocks or static reasoning.
