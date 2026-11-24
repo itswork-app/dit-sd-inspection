@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.38
+**Version:** 0.8.39
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -596,3 +596,10 @@ The update does not change resolver certification 0/40, application lock certifi
 NLA-EVENT-TECH-RECON-001 v0.1.1 records a partial static review of NREG-003 `role.revoked`. The candidate producer is CMD-005's source command transaction; its proposed mutation is the target `user_roles` grant transition with idempotency and append-only audit. POQ-04 requires exact-selector-only pre-revoke candidate selection, no implicit actor inclusion, and dispatch-time current role/scope suppression without widening.
 
 The physical `user_roles` proposal has no `row_version`, while the CMD-005 draft request contains `expected_version`; revocation representation, effective-time semantics, last-admin/recovery, grantor ceiling, T-14 capacity effect and L05/L10 order remain unresolved. Non-command role expiry/renewal/delegation, import/sync, repair and bypass writers remain incomplete. NREG-003 remains PARTIAL STATIC REVIEW — UNRESOLVED / NOT ENABLED. RTM-001 v0.1.15 adds NOTIF-026/027; QA Catalogue v0.5.5 adds TC-NOTIF-077/078, all PLANNED / NOT EXECUTED. No event or implementation is admitted.
+
+
+## CMD-010/013 project/session closure event registry checkpoint — 2026-11-24
+
+NLA-EVENT-TECH-RECON-001 v0.1.2 partially reviews NREG-004 `project.closed` and NREG-005 exact final `session.closed`. The candidate source transaction is the committed project/session CLOSED transition; `session.close_requested` is an action/event and is excluded from the approved final-session event. POQ-04 requires the candidate set to be evaluated against pre-close state and committed atomically with the final closure event.
+
+The closure blocker graph, project/session physical row-version/CAS fields, exact child writer/finalizer set, parent-first lock compatibility, trusted participant/scope projection, closure dispatch profile and source/outbox/snapshot uniqueness remain unresolved. CMD-011/012/014/015 lock order and CMD-015 parent-fence omissions remain material closure race blockers. RTM-001 v0.1.16 adds NOTIF-028..030; QA Catalogue v0.5.6 adds TC-NOTIF-079..081, all PLANNED / NOT EXECUTED. No event or implementation is admitted.
