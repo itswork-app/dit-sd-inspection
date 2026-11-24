@@ -153,3 +153,8 @@ The current command inventory uses additional identifiers including `account.req
 **Required before implementation:** publish one canonical permission registry with immutable permission codes, human-readable capability, resource/action, required scope type, assignable principal class, grant/revoke authority, separation-of-duties constraints and linked command/function. Record explicit mapping or retirement for every legacy code. Add separate least-privilege permissions for evidence read/export and audit read/export; confirm project-close authority; do not infer these from Super Admin role alone. Do not silently alias old and new codes or grant broad permissions to make commands pass.
 
 No final role-to-permission matrix, SQL permission seed, RLS grant, command EXECUTE grant or runtime test is approved by this reconciliation. Permission-code reconciliation remains OPEN.
+
+
+## 13. Canonical permission registry reference
+
+The single proposed permission vocabulary and command mapping is maintained in [Canonical Permission Registry and Command Authorization Matrix](../02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md). Section 7 in this document remains a legacy vocabulary snapshot and is not authoritative for new command implementation. The registry's legacy mappings, code semantics, role-to-permission matrix, grant/revoke authority and SoD rules require explicit PO/security approval. Until then, no permission seed or new role grants are authorized.
