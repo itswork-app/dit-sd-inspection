@@ -164,13 +164,13 @@ No initial status, actor, project scope, location, team, assignment or approval 
 - Read: \`projects\`; \`sessions\` for duplicate code and lifecycle checks; \`idempotency_records\`.
 - Write: \`sessions\`; \`idempotency_records\`; \`audit_events\`.
 - Physical schema documents \`sessions(id, project_id, code, status, starts_at, ends_at)\`, unique \`(project_id, code)\`, and valid interval.
-- No session-level \`version\`/row_version is specified.
+- No session-level \`row_version\` is specified in the physical schema. The API token proposal is \`expected_row_version\`; physical approval remains open.
 
 ### Transaction, lock and idempotency
 
-- Begin transaction; claim idempotency key.
-- Lock target project row \`FOR KEY SHARE\` or the approved equivalent to prevent conflicting project lifecycle changes while creating the session. Exact lock mode must be validated against the project-close command contract.
-- Validate project lifecycle and normalized code; rely on unique constraint as final duplicate arbiter.
+- Begin transaction; claim idempotency key at L00.
+- Acquire the project parent fence before session insertion. Candidate mode is \`FOR SHARE\`, which is compatible with concurrent child writers and conflicts with parent state mutation/closure using \`FOR NO KEY UPDATE\`; exact mode remains subject to Engineering/Database approval and deployed PostgreSQL verification.
+- Revalidate project lifecycle after any lock wait; validate normalized code; rely on unique \`(project_id, code)\` as final duplicate arbiter.
 - Insert session using server-selected initial status; insert idempotency result and \`session.created\` audit event atomically.
 - Concurrent same project/code requests must yield one created session and a typed duplicate result; do not leak another project's session.
 
@@ -251,7 +251,7 @@ Patch keys must be an explicit allowlist. Session code is immutable. Status, pro
 
 - Read: \`sessions\`, parent \`projects\`, relevant \`operational_assignments\` and any session-bound work needed to validate impact; \`idempotency_records\`.
 - Write: \`sessions\` and \`audit_events\`, plus \`idempotency_records\`.
-- **Blocking schema gap:** \`sessions\` physical catalogue does not define \`version\`, \`row_version\`, or \`updated_at\`, while CMD-012 requires \`expected_version\`. Do not implement optimistic concurrency until an explicit version column and increment rule are approved and added to the physical specification.
+- **Blocking schema gap:** \`sessions\` physical catalogue does not define \`version\`, \`row_version\`, or \`updated_at\`, while CMD-012 proposes \`expected_row_version\`. Physical row_version and increment rule remain unapproved. Do not implement optimistic concurrency until an explicit version column and increment rule are approved and added to the physical specification.
 
 ### Transaction, lock and idempotency
 
@@ -259,7 +259,7 @@ Patch keys must be an explicit allowlist. Session code is immutable. Status, pro
 - Validate dependent assignment/session time constraints under deterministic row locks or an approved exclusion/constraint mechanism, without acquiring a lower-ranked resource late.
 - Update only allowlisted metadata; increment approved row version atomically.
 - Append \`session.updated\` and idempotency result in the same transaction.
-- Until the version field is defined, any \`expected_version\` contract is provisional and must fail design review rather than silently use timestamps or client values as a substitute.
+- Until the version field is defined, any \`expected_row_version\` contract is provisional and must fail design review rather than silently use timestamps or client values as a substitute.
 
 ### Audit and typed outcomes
 
@@ -339,8 +339,8 @@ Allowed target states are not free-form. The exact transition graph must be an a
 
 - Read: \`sessions\`, \`projects\`; \`operational_assignments\`, \`assignment_members\` for Korlap scope; closure dependency records for a close transition; \`idempotency_records\`.
 - Write: \`sessions\`; \`audit_events\`; \`idempotency_records\`.
-- **Blocking schema gap:** \`sessions\` has no defined row version field, although CMD-013 requires \`expected_version\`.
-- **Lifecycle gap:** the full state enum, allowed transition edges, close-request vs close-finalization authority and closure dependency checklist are not specified.
+- **Blocking schema gap:** \`sessions\` has no defined row version field, although CMD-013 proposes \`expected_row_version\`. Physical row_version and increment rule remain unapproved.
+- **Lifecycle status:** T-07 state vocabulary and actor boundary are PO-approved; exact transition matrix, action-to-permission mapping, closure checklist evidence and institutional gates remain open.
 
 ### Transaction, lock and idempotency
 
@@ -511,7 +511,7 @@ No status, actor, approval, effective project scope or publication bypass field 
 }
 \`\`\`
 
-The canonical catalogue lists \`effective_at\` at command level; this review proposes explicit per-membership end time to avoid ambiguity when multiple members are changed. PO approval is required. Client cannot provide status or actor.
+The PO-approved contract requires per-membership \`effective_at\` for each end operation. Client cannot provide status or actor.
 
 ### Response
 
@@ -563,7 +563,7 @@ The canonical catalogue lists \`effective_at\` at command level; this review pro
 ### Audit and typed outcomes
 
 - Required event: \`assignment.changed\`; metadata records added/ended counts and reason, not unnecessary personal data.
-- Outcomes: \`UPDATED\`, \`CAPACITY_EXCEEDED\`, \`OVERLAP\`, \`MEMBER_NOT_ACTIVE\`, \`MEMBERSHIP_NOT_IN_ASSIGNMENT\`, \`ACTIVE_CLAIM_BLOCKS_CHANGE\` (only if PO approves this gate), \`INVALID_EFFECTIVE_TIME\`, \`DENIED\`, \`SCOPE_DENIED\`, \`IDEMPOTENCY_KEY_REUSED\`, \`AUDIT_WRITE_FAILED\`.
+- Outcomes: \`UPDATED\`, \`CAPACITY_EXCEEDED\`, \`OVERLAP\`, \`MEMBER_NOT_ACTIVE\`, \`MEMBERSHIP_NOT_IN_ASSIGNMENT\`, \`ACTIVE_CLAIM_BLOCKS_CHANGE\` (only where removal would orphan an active claim/in-progress workflow under the approved operational policy), \`INVALID_EFFECTIVE_TIME\`, \`DENIED\`, \`SCOPE_DENIED\`, \`IDEMPOTENCY_KEY_REUSED\`, \`AUDIT_WRITE_FAILED\`.
 
 ### Tests
 
@@ -641,12 +641,12 @@ Cap must be an integer. Reject null, float, string coercion, zero, negative valu
 
 - Read: \`projects\`, \`project_capacity_settings\`, \`app_users\`, \`user_roles\`, \`operational_assignments\`, \`assignment_members\`, \`idempotency_records\`.
 - Write: \`project_capacity_settings\`, \`idempotency_records\`, \`audit_events\`.
-- **Blocking schema gap:** physical \`project_capacity_settings\` defines \`project_id, inspector_cap, updated_at, updated_by\`, but no \`version\`/row_version. CMD-016 requires \`expected_version\`; the version column and increment rule must be approved and specified before optimistic concurrency is implemented.
+- **Blocking schema gap:** physical \`project_capacity_settings\` defines \`project_id, inspector_cap, updated_at, updated_by\`, but no \`version\`/row_version. CMD-016 proposes \`expected_row_version\`; the physical version column and increment rule must be approved and specified before optimistic concurrency is implemented.
 
 ### Transaction, lock and idempotency
 
-- Claim idempotency key, then lock exactly one \`project_capacity_settings\` row for the project. If no row exists, initialization semantics must be approved; do not race-create defaults without a unique project key and deterministic upsert.
-- Lock/read eligibility rows consistently after the capacity row; any command that changes Inspector role or effective assignment must use the same capacity-row-first protocol (T-14).
+- Claim idempotency key at L00, then acquire exactly one \`project_capacity_settings\` row at L10 using the Database-approved exclusive serialization primitive. If no row exists, fail closed; initialization/backfill must be defined before any writer is enabled.
+- Lock/read eligibility rows at L15–L17 after the capacity row; every command that changes the T-14 qualifying population must use the same capacity-row-first protocol.
 - Compute qualifying count from the canonical predicate under this serialization point.
 - Validate cap range and reject if new cap < qualifying count.
 - Update cap, updated_at and updated_by from server/actor; increment approved version token; append \`capacity.limit_changed\` and idempotency result atomically.
