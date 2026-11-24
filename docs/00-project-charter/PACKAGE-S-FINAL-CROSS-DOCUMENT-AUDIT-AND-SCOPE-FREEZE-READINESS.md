@@ -259,11 +259,11 @@ The QA catalogue now contains **48 unique planned cases** (TC-CMD-CONTRACT-024-0
 
 Created [PostgreSQL Function Security & EXECUTE Grant Design](../02-architecture/POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md) v0.1.0. It maps 48 logical operations to provisional function classes (F1 protected mutations, F2 scoped reads, F3 internal helpers, F4 triggers, F5 workers, F6 blocked institutional operations), defines target caller-principal classes, exact-signature ACL principles, PUBLIC/anon denial, SECURITY DEFINER hardening, catalog introspection requirements and 63 planned security cases (48 per-operation + 15 global).
 
-**Critical compatibility finding:** T-18 combines a prohibition on browser-facing `authenticated` table DML with a preference for SECURITY INVOKER command functions. An INVOKER function executes with caller privileges; if `authenticated` lacks protected table DML, it cannot perform protected writes. If table DML is granted to that same role, the browser may also use it directly unless a separate execution boundary is proven. This is not solved by RLS alone. The design explicitly rejects broad authenticated DML and service-role substitution. PO/security must decide between narrowly hardened SECURITY DEFINER command wrappers (candidate, not approved) and a proven separate command-executor principal. SECURITY INVOKER remains preferred for read-only paths/helpers that do not need privilege elevation.
+**Resolution:** the Product Owner approved Option A on 2026-11-24: narrow SECURITY DEFINER command wrappers for protected writes, with SECURITY INVOKER for read-only paths/helpers where feasible. The approved model rejects broad authenticated table DML, service-role substitution and a separate executor connection as the default. Each definer function requires a dedicated least-privileged NOLOGIN owner, fixed empty search_path, schema-qualified references, exact-signature grants, caller-JWT actor derivation, internal authorization and atomic audit. See T18 Execution Model Security Review. Exact functions, owner grants, live ACL inventory and runtime verification remain open.
 
 No live Supabase role/function/ACL introspection was performed. No functions, role changes, grants/revokes, table ACL changes, RLS, migrations or runtime tests were executed. All 63 cases remain PLANNED / NOT EXECUTED.
 
-**Updated disposition:** function security design documented; INVOKER/DML compatibility decision OPEN; role/ACL inventory OPEN; exact function signatures and grants OPEN; scope freeze NOT READY; implementation NOT AUTHORIZED.
+**Updated disposition:** T-18 execution-model decision PO APPROVED Option A; role/ACL inventory OPEN; exact function signatures, owners and grants OPEN; end-to-end JWT and runtime verification NOT EXECUTED; scope freeze NOT READY; implementation NOT AUTHORIZED.
 
 ## 9.11 Supabase live database security inventory runbook (2026-11-24)
 
@@ -273,5 +273,5 @@ Repository path inspection did not find supabase/config.toml or supabase/migrati
 
 QA added 10 unique planned cases (TC-LIVE-INV-026-001..010) for live inventory evidence. The runbook SQL blocks were statically checked to contain SELECT statements only; no SQL was executed. Existing 63 function-security cases remain separate and PLANNED / NOT EXECUTED.
 
-**Disposition unchanged:** live role/ACL/RLS/function inventory OPEN; T-18 SECURITY INVOKER versus direct-DML execution model OPEN; T-10 institutional records/privacy and T-12 provider/backup/ownership evidence remain blockers; scope freeze NOT READY; implementation NOT AUTHORIZED.
+**Disposition unchanged:** live role/ACL/RLS/function inventory OPEN; T-18 Option A selection PO APPROVED but deployed conformance unverified; T-10 institutional records/privacy and T-12 provider/backup/ownership evidence remain blockers; scope freeze NOT READY; implementation NOT AUTHORIZED.
 
