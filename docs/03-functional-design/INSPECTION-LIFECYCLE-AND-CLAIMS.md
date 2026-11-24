@@ -107,3 +107,10 @@ Submission is blocked if required checklist items, required photos, serial ident
 - Whether more than one Inspector may collaborate on one unit (current design assumes one active claim/owner).
 - Whether a reviewer may delegate a review to another assigned Reviewer.
 - Exact answer value set and per-checklist-item validation schema.
+
+
+## T-16 — Serial identity and evidence history (PO-approved option B, 2026-11-24)
+
+A normalized serial is unique within its instrument type across all projects. The uniqueness key excludes project ID; the same serial string may exist for a different instrument type. Claiming a unit resolves the canonical instrument-type identity while all inspection access remains constrained by project, session, assignment and role scope. A same-type duplicate detected across projects is a controlled conflict requiring authorized resolution, reason and audit; do not silently create a second canonical unit, merge records or erase historical inspections.
+
+Every evidence item remains linked to the exact immutable inspection revision and instrument version. Preserve its original metadata, checksum, uploader, capture/upload timestamps and immutable storage object identity. Do not overwrite finalized evidence; replacement creates a new evidence record and audit event. Historical revision/evidence relationships remain readable and unchanged.
