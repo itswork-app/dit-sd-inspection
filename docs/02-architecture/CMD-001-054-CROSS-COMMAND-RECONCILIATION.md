@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.4
+**Version:** 0.8.5
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -404,3 +404,8 @@ The approved semantics are not lock approvals. CMD-010–015 project/session par
 The current candidate technical recommendations are consolidated in [TECH-RESOLUTION-LPR-001](ENGINEERING-SECURITY-TECHNICAL-RESOLUTION-PACKAGE-LPR-001-011.md) v0.1.0. The detailed CMD-011–020 review v0.3.6 and PostgreSQL Command Contract Catalogue v0.4.1 now identify the proposed project-before-session fence, L15–L18 identity/authorization ordering and T-14 capacity-first path for CMD-009–016. The CMD decision package v0.2.3 directly preserves T-07's DRAFT/ACTIVE/PAUSED/CLOSED states; CLOSE_REQUESTED is action/event only.
 
 These are candidate specifications, not technical approval. LPR-01/LPR-07/LPR-08/LPR-09/LPR-11 remain OPEN; LPR-10 NOT EXECUTED. The global graph is not proven acyclic, all 54 manifests are not certified, and no physical lock/privilege graph or concurrency evidence exists. G3/G4/G5/G7/G9 remain NOT READY; G10 NOT AUTHORIZED.
+
+
+## Current lock source baseline — 2026-11-24
+
+Current linked lock sources are LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.4; LOCK-GRAPH-001 v0.4.6; LOCK-MANIFEST-001 v0.4.7; TECH-RESOLUTION-LPR-001 v0.1.0; CMD-011–020 Detailed Contract Review v0.3.6; PostgreSQL Command Contract Catalogue v0.4.1. The proposed L15–L18 and L55 classes and parent-fence modes remain subject to Engineering/Database/Security approval. This document remains OPEN; 0/54 lock-complete certification and G9/G10 statuses are unchanged.
