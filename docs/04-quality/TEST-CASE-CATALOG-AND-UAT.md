@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.5.1
+Version: 0.5.2
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -871,3 +871,14 @@ This case verifies that notification policy cannot introduce application persona
 | TC-NOTIF-071 | Attempt to publish a notification policy that targets an unregistered institutional persona (for example, a school principal/Kepala Sekolah), teacher, student, parent or school-customer persona, or relies only on institutional affiliation rather than an approved application principal and scoped assignment | Policy publication fails closed; no recipient or event is enabled; no role, permission, scope or audience is inferred from institution metadata; rejection is auditable. Only principals and scope mappings explicitly admitted by the approved PRD/permission registry and exact event policy can be selected | PLANNED / NOT EXECUTED |
 
 **Execution control:** TC-NOTIF-071 requires an approved canonical principal/role registry, PO-approved event allowlist and Security/Engineering-approved policy validation. Runtime execution requires G10 activation and an authorized isolated environment. No test result is implied.
+
+
+### Product allowlist and event-triage guard — 2026-11-24
+
+This case validates that a producer event declaration does not become a notification trigger merely by existing in the CMD catalogue or candidate triage. It remains PLANNED / NOT EXECUTED.
+
+| Test ID | Scenario | Expected result / invariant | Status |
+|---|---|---|---|
+| TC-NOTIF-072 | Attempt to publish a notification policy for an event absent from the explicit PO-approved event allowlist, including an operational/control event, unresolved composite token, generic command token, or a triage-only PO discussion candidate | Publication fails closed; no outbox notification is created and no recipient is resolved. Only an exact canonical event token with explicit PO approval, complete participant/scope mapping, approved dispatch profile and technical sign-offs can be enabled. Triage classification alone never enables an event | PLANNED / NOT EXECUTED |
+
+**Execution control:** TC-NOTIF-072 requires the exact PO-approved event allowlist and complete technical registry. Runtime execution requires G10 activation and the authorized isolated environment. No test result is implied.
