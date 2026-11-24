@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.49
+**Version:** 0.8.50
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -676,3 +676,47 @@ An `inspection_id` represents one session-bound inspection attempt. After ABORTE
 ### Privileged session reopen after an aborted unit — open policy edge
 
 T-07 permits a privileged, reasoned and audited reopening of a CLOSED session. SES-001 does not permit reactivation of an ABORTED inspection attempt. It remains unresolved whether a privilegedly reopened session may accept a brand-new inspection aggregate under the same session_id or whether new work must wait for a distinct new session. Until PO/operational policy decides, CMD-013/CMD-026 must fail closed for new inspection work after session reopen where the outcome would depend on this ambiguity. This question does not weaken the immutable ABORTED terminal state.
+
+
+## CMD-013 FINAL_CLOSE cross-lifecycle blocker audit — 2026-11-24
+
+**Status:** Static documentation reconciliation only; candidate closure predicate NOT CERTIFIED. G9 NOT READY; G10 NOT ACTIVE. This addendum applies only to IFP and Standing Bracket inspection sessions.
+
+### Closure predicate — required domains and disposition
+
+| Domain | Final-close disposition | Reason / authoritative boundary |
+|---|---|---|
+| Assigned inspection attempts, active claims and mutable draft contexts | **MUST BLOCK** while any attempt is nonterminal or any claim/draft remains active | SES-001/WF-003 require every assigned unit attempt to reach an allowed terminal outcome. A hanging attempt requires an explicit per-unit abort; CMD-027 release-only is not abort. |
+| Submitted revisions awaiting review, returned corrections, or unresolved authorized reopen work | **MUST BLOCK** | A submitted revision must reach its required review outcome. A returned correction remains unresolved work in the originating session; it cannot be bypassed by aborting a different attempt or changing session identity. |
+| Evidence upload intents, pending Storage transfers, and evidence finalizers | **MUST BLOCK** when attached to an unresolved inspection or required evidence slot | CMD-033 creates intent only; CMD-034 verifies/finalizes. Pending or uncertain evidence work cannot be treated as satisfied evidence or silently discarded. Storage transfer itself is external and must not run while database locks are held. |
+| Document/BA/report generation and finalization for completed units | **MUST COMPLETE BEFORE CLOSE** where required by approved DOC-002/WF-003; unresolved generation/finalizer or missing required artifact blocks | PDF generation is distinct from approval and physical print. CMD-036/037 source and renderer lifecycle is still a proposal; do not infer artifact completion from a queued job or a client response. |
+| Print batch items, per-document outcomes, retries and uncertain print acknowledgements | **MUST COMPLETE / RECONCILE BEFORE CLOSE** for required completed-unit print actions | DOC-002 requires approval, final PDF generation and print action; CMD-038 must preserve per-item outcomes. A queued, processing, failed or uncertain required print outcome is not a completed print. A print click is not proof of physical printer success. |
+| Session attendance records and verification | **UNRESOLVED INSTITUTIONAL CLOSURE DEPENDENCY**; do not waive or invent a completion predicate | CMD-039/040 and T-08 direction exist, but attendance acceptance, verifier authority and institutional sign-off remain open. The session-close contract must identify the authorized evidence and accountable verifier before G9. |
+| Notifications/outbox/provider delivery | **POST-CLOSE ASYNCHRONOUS; NON-BLOCKING by default** | No approved product rule makes notification delivery a session-completion prerequisite. Source mutation/outbox intent remains atomic where applicable; asynchronous dispatch must not hold session closure open unless a future approved policy explicitly says so. |
+| Assignment/member changes and other session-scoped writers | **MUST BE FENCED AGAINST CLOSE** | A writer must not create new eligible work or change the closure predicate after CMD-013 has checked it. Exact parent/child fence and writer lock edges remain unproven. |
+
+### Abort boundary
+
+Per-unit abort is available only for an incomplete/hanging inspection attempt under SES-001. It is not a substitute for review, evidence finalization, document generation, printing, attendance verification, or any other session-level obligation. Abort is terminal and preserves the attempt, draft/revision history, evidence and audit trail. A later session creates a new inspection attempt; it does not reactivate or retarget the aborted attempt.
+
+CMD-027 remains release-unit-claim only. No dedicated abort command ID, permission or event name is assigned by this addendum. The command/permission/event identity and atomic writer contract remain open for Product/Engineering/Security/Database resolution.
+
+### Final-close transaction and race requirements
+
+CMD-013 FINAL_CLOSE must, in one protected transaction, revalidate the exact session state/version and the complete authoritative blocker predicate under a certified parent/child serialization protocol; then commit CLOSED, the canonical session.closed event, audit and idempotency outcome atomically. A closure request is not final closure. FINAL_CLOSE must not bulk-abort attempts, release claims, delete drafts, fabricate evidence, mark documents printed, or infer attendance verification.
+
+Candidate writer/finalizer families that must be included in the lock/fence audit:
+- session/assignment/member writers: CMD-012–016;
+- unit claim and inspection lifecycle writers: CMD-026–032;
+- evidence intent/finalization and offline draft application: CMD-033–035;
+- document generation/version and print writers/workers: CMD-036–038;
+- attendance upload/verification: CMD-039–040;
+- any approved reopen or administrative writer that can change session or child eligibility.
+
+External Storage, renderer, printer and notification provider calls must execute outside database lock-holding transactions. Their durable state must be reconciled before close when the corresponding artifact/action is a required closure dependency.
+
+### Lock-graph and evidence disposition
+
+The current global lock-order proposal is not a certification. The cross-command reconciliation already records a CMD-026 local/global order contradiction and X-17 requires review of the 54-command resource/lock inventory. The complete writer-to-resource matrix, parent/child fence coverage, finalizer lease fencing, and acyclicity proof have not been demonstrated. **Global lock graph remains NOT PROVEN ACYCLIC.** Do not claim that CMD-013 is race-safe or closure-ready.
+
+Existing CMD-013 and SES-001 QA cases remain PLANNED / NOT EXECUTED. No runtime, database, concurrency, Storage, renderer, printer or attendance-verification evidence was produced by this audit. The attendance closure predicate, finalizer inventories, abort command identity, session reopen edge, physical constraints, exact lock modes and ACL/RLS remain blockers.
