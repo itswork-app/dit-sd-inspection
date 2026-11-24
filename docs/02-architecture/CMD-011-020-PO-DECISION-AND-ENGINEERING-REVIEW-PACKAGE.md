@@ -1,7 +1,7 @@
 # CMD-011–020 Product Decision and Engineering Review Package
 
 **Document ID:** CMD-011-020-DECISION-PACKAGE-001  
-**Version:** 0.2.0  
+**Version:** 0.2.1  
 **Status:** PO PRODUCT DECISIONS APPROVED; ENGINEERING / SECURITY REVIEW OPEN  
 **Date:** 2026-11-24  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
