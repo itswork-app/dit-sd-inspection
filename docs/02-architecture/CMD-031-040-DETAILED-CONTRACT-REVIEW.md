@@ -1,7 +1,7 @@
 # CMD-031–040 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security/institutional review required; NOT approved for implementation  
-**Document version:** 0.2.1  
+**Document version:** 0.2.2  
 **Date:** 2026-11-24  
 **Scope:** CMD-031 through CMD-040  
 **Repository phase:** Documentation / SSOT maturation  
@@ -1307,3 +1307,8 @@ Existing catalogue mappings:
 The candidate also requires CMD-032 to serialize against the inspection aggregate and conflicting active claims/finalizers, without silently transferring or releasing claims or selecting a next Inspector. Next-action ownership, claim resume/reassignment, evidence carry-forward and the canonical REOPENED state label remain OPEN.
 
 This is documentation-only candidate design. The proposal does not approve the role/grant matrix, physical schema, DDL, RLS, ACL, command implementation, runtime tests or lock certification. CMD-032 remains NOT CERTIFIED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## SES-001 session-bound correction and reopen guardrail — 2026-11-24
+
+PO decision SES-001 is APPROVED. CMD-030 return does not authorize cross-session correction: only the exact original revision author/Inspector may correct, and only within the inspection attempt's originating active session. CMD-032 approved reopen is likewise constrained to that same originating session while it remains active; if the session is already finally closed, CMD-032 must fail closed and must not create a new draft context under the old inspection attempt. A later session must create a new inspection attempt instead. Any incomplete or returned-but-unresolved unit attempt must be explicitly aborted before final session closure, preserving the returned revision and reason as history. These constraints do not resolve the CMD-032 explicit authority, claim, finalizer, lock graph, RLS/ACL or physical schema blockers. No implementation or schema admission is implied.
