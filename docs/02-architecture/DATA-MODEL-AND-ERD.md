@@ -3,6 +3,11 @@
 Status: Logical data model draft — not a migration specification  
 Version: 0.1.0
 
+
+## Physical schema and RLS reconciliation status
+
+The logical ERD is reconciled against Package L and Package M in [Physical Schema ↔ RLS ↔ Command Reconciliation](PHYSICAL-SCHEMA-RLS-COMMAND-RECONCILIATION.md). The current physical schema and RLS catalogue each contain 41 tables with exact name parity. `print_batches` and `notification_events` are currently ERD-only entities; their retention/removal or physical design and RLS disposition remain open. Do not treat their ERD presence as authorization to create or expose them.
+
 ## 1. Modeling rules
 
 - PostgreSQL is the sole source of truth.
