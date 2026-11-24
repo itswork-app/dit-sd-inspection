@@ -1,6 +1,6 @@
 # Audit Event Catalogue and Governance
 
-**Status:** Design draft — pending Product Owner, institutional security, privacy, and records approval  
+**Status:** Design draft — T-15 audit direction PO APPROVED; institutional security, privacy, records and implementation verification remain open  
 **Package:** R  
 **Date:** 2026-11-23  
 **Implementation status:** Not implemented; no database migration, trigger, policy, export, or tamper-evidence control has been deployed or tested.
@@ -210,3 +210,8 @@ This package is a governance and architecture specification only. It does not au
 The earlier statement that INS-016 awaits Product Owner approval is superseded by the T-15 decision dated 2026-11-24. INS-016 is **PO APPROVED (A)**; institutional records/privacy/security approvals and implementation evidence remain OPEN/BLOCKED as specified above.
 
 This remains a design/governance document. No migrations, triggers, application code, archive procurement, or production configuration are authorized or claimed.
+
+
+## Permission registry linkage
+
+Audit read and export are separate proposed permissions (audit.read and audit.export) in ../02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md. Evidence read/export is also separated. These codes remain subject to PO/security approval and do not authorize global access by role name. Every access/export command must be audited; institutional T-10 retention, legal hold, disposition, network metadata and final reader/export authority remain open.
