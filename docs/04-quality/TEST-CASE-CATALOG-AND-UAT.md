@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.4.9
+Version: 0.5.0
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -844,3 +844,19 @@ These cases supplement TC-NOTIF-055..059. They are derived from the PO-approved 
 | TC-NOTIF-064 | Multiple suppression/retry attempts occur, including terminal and retryable reasons | Each outcome is append-only, correlated to source event/outbox/candidate/policy/attempt, uses an approved reason code, records worker identity/time, excludes unnecessary sensitive payload and cannot rewrite candidate membership | PLANNED / NOT EXECUTED |
 
 **Execution control:** TC-NOTIF-060..064 require the approved selector grammar, event-specific dispatch matrix, suppression reason/state catalog, audit schema and F05-T1..T5 sign-offs. Runtime execution additionally requires G10 activation and the authorized isolated PostgreSQL environment. No test result is implied.
+
+
+### F-05 selector grammar and event-specific dispatch profile tests — 2026-11-24
+
+These acceptance cases target TDR v0.1.8 §4.2.5–4.2.6. They remain PLANNED / NOT EXECUTED; the grammar and dispatch profile are review candidates, not approved runtime contracts.
+
+| Test ID | Scenario | Expected result / invariant | Status |
+|---|---|---|---|
+| TC-NOTIF-065 | Validate grammar v1 with each permitted clause kind and canonical ordering | ROLE_SCOPE and EVENT_PARTICIPANT are the only accepted clause kinds; canonicalization is deterministic; duplicate clauses collapse without changing the selected principal/scope set | PLANNED / NOT EXECUTED |
+| TC-NOTIF-066 | Submit nested logic, NOT, wildcard, arbitrary JSON path, SQL/expression text, client principal/scope IDs, unknown keys, duplicate keys, unknown version or more than eight clauses | Policy publication fails closed; no policy version becomes effective; sanitized rejection is auditable | PLANNED / NOT EXECUTED |
+| TC-NOTIF-067 | Evaluate actor/target/affected-member bindings with missing, ambiguous or untrusted event fields | Publication rejects an incomplete registry mapping; no caller-supplied identity is accepted; source transaction cannot create a partial outbox/snapshot | PLANNED / NOT EXECUTED |
+| TC-NOTIF-068 | Event token is composite, conditional, unknown, prefix-matched or absent from the exact event registry | No wildcard/prefix fallback; ambiguous composite token is not enabled; transaction fails atomically without a partial candidate snapshot | PLANNED / NOT EXECUTED |
+| TC-NOTIF-069 | Role-revocation, assignment-member-end and project/session-close dispatch | Each pinned dispatch profile follows its transition-specific rule; no blanket revoked-role/current-membership/active-parent predicate suppresses the notice; opening source resource still requires independent authorization | PLANNED / NOT EXECUTED |
+| TC-NOTIF-070 | Multiple matching clauses select same recipient with overlapping/different authorized scopes | One canonical recipient candidate is produced; only scopes explicitly selected by matching clauses are retained; deduplication and scope serialization are deterministic and cannot widen authorization | PLANNED / NOT EXECUTED |
+
+**Execution control:** TC-NOTIF-065..070 require PO/Security/Engineering approval of grammar v1, event registry, dispatch profiles and canonical candidate/scope serialization. Runtime execution requires G10 activation and the authorized isolated PostgreSQL environment. No test result is implied.
