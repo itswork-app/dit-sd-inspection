@@ -1,7 +1,7 @@
 # Notification Recipient-Resolver Lock-Set Review
 
 **Document ID:** NLA-RESOLVER-LOCK-001  
-**Version:** 0.1.5  
+**Version:** 0.1.6  
 **Status:** Engineering design proposal — NOT APPROVED; no lock rank or physical mechanism is admitted  
 **Date:** 2026-11-24  
 **Repository baseline:** docs/audit-lock-and-identity-reconciliation at 7d722a77ac37a4c82a026daeddd1b00df4a4f713  
@@ -217,3 +217,24 @@ All tests are PLANNED / NOT EXECUTED. Execution requires G10 activation and an a
 | G10 | NOT ACTIVE |
 
 This document advances static analysis only. It does not close RAID R-037 or RTM NOTIF-015, admit a physical relation, approve a new rank, certify any command, authorize code/SQL/migration/grants, or change G9/G10.
+
+
+## 11. Product Owner candidate-selection decision — 2026-11-24
+
+**Decision recorded:** The Product Owner has approved Option A — one global transaction-scoped audience serialization guard — as the **primary candidate to enter technical approval**. Option B (PostgreSQL SERIALIZABLE predicate snapshot) is retained only as a documented alternative if technical review rejects Option A or establishes that it cannot meet the required correctness/performance constraints. Do not combine the two mechanisms without a separately reviewed design.
+
+**Decision boundary:** This is candidate selection, not final technical approval. It does not yet authorize L05 as a canonical lock rank, a concrete advisory-lock key/function, SQL, migration, grant, implementation, or runtime execution. Engineering, Database and Security must still validate lock identity and acquisition semantics, participation by every eligibility-changing writer (including CMD-051 policy publication), timeout/retry behavior, throughput/transaction bounds, FK/index/trigger/helper edges and the complete global graph. The exact event-time linearization and post-transition recipient semantics remain subject to the already approved product rule and any unresolved PO clarifications.
+
+**Required next review:** Produce the L05 technical decision record with (1) PostgreSQL lock primitive and key derivation, (2) transaction-scoped lifetime and isolation assumptions, (3) canonical order relative to L00/L10/L15–L110, (4) complete writer participation matrix, (5) lock timeout/deadlock/retry/idempotency policy, (6) contention and bounded-audience performance analysis, (7) exact FK parent pre-acquisition plan, and (8) static cycle analysis plus NRL-T01..T10 test plan. Only after those reviews may L05 be admitted into LOCK-GRAPH-001 and the command manifests.
+
+| Decision item | Result |
+|---|---|
+| Primary candidate | Option A — global transaction-scoped audience guard (candidate L05) |
+| Product Owner selection | APPROVED — 2026-11-24 |
+| Option B SERIALIZABLE | Retained as alternative; not selected as primary |
+| Technical approval | PENDING Engineering + Database + Security |
+| Canonical L05 rank / primitive | NOT APPROVED |
+| Implementation / SQL / migration | NOT AUTHORIZED |
+| Resolver certification | 0/40; unchanged |
+| Application lock certification | 0/50; unchanged |
+| G9 / G10 | NOT READY / NOT ACTIVE |
