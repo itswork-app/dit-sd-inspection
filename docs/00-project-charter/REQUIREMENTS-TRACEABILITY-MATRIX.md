@@ -240,3 +240,8 @@ Trace T-16 through PRD INS-002, canonical unit identity in the ERD, physical uni
 
 
 T-17 decision traceability: Super Admin direct publication is authorized only through a trusted server command that derives the actor from the authenticated session, checks explicit `instrument.publish`, validates the complete declarative version and atomically records publication plus audit. No second-person publication approval is required. Published configuration cannot be edited in place. Operational access to units/inspections remains project/session/assignment/permission-scoped even though canonical unit identity is cross-project. T-16 association/schema reconciliation remains a pre-migration dependency.
+
+
+## T-18 traceability — PO-approved command architecture (2026-11-24)
+
+Trace every state-changing business/governance command from browser action through Vercel route, verified Supabase caller session, caller-JWT PostgreSQL function, database-derived actor (auth.uid()), explicit permission/role/scope/assignment/state/separation-of-duties checks, concurrency/idempotency controls and atomic state + event/audit transaction. Verify protected-table browser INSERT/UPDATE/DELETE is denied by grants/RLS; caller JWT is propagated rather than replaced with service-role identity; service-role secrets never reach the browser; SECURITY DEFINER functions pin search_path and have reviewed minimal grants; typed outcomes do not leak sensitive details. Include T-15 audit rollback behavior and T-17 instrument publish/deactivate commands. Cross-project canonical unit identity must not widen project authorization; reconcile T-16 associations before migration. Architecture approval is recorded; implementation, RLS deployment and test execution remain pending.
