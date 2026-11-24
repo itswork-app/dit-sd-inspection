@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.6.2
+Version: 0.6.3
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -1007,7 +1007,7 @@ The evidence carry-forward decision across revisions, next Inspector/claim owner
 | TC-INS-DRAFT-023 | Session close requested while a unit attempt remains incomplete or a returned correction remains unresolved | Final session close is blocked until that unit attempt is explicitly aborted or reaches an allowed terminal outcome |
 | TC-INS-DRAFT-024 | Abort an incomplete unit attempt at session end, including retry with same idempotency key | One terminal ABORTED outcome; active draft is sealed against writes; claim is released; audit/event/idempotency commit atomically; retries do not duplicate effects |
 | TC-INS-DRAFT-025 | Abort fails during audit/event/claim-release write or races with submit/evidence finalization/session close | Entire abort transaction rolls back or one legal serialized outcome wins; no partially aborted attempt or falsely closed session |
-| TC-INS-DRAFT-026 | Start inspection of the same canonical unit in a later session after prior attempt was ABORTED | A new inspection attempt is created with the new session_id; old attempt, revisions and evidence remain immutable; old evidence is not automatically reused |
+| TC-INS-DRAFT-026 | Start inspection of the same canonical unit in a later session after prior attempt was ABORTED | A new inspection aggregate with a distinct inspection_id and new session_id is created; old attempt, revisions and evidence remain immutable; old evidence is not automatically reused |\n| TC-INS-DRAFT-027 | Return correction or authorized reopen occurs within the still-active originating session | A new draft context is created on the same inspection_id and same immutable session_id; no second inspection aggregate is created |
 
 Returned correction and authorized reopen must additionally remain within the original session and, for correction, the original Inspector. All cases remain PLANNED / NOT EXECUTED.
 
@@ -1026,3 +1026,6 @@ Returned correction and authorized reopen must additionally remain within the or
 | TC-SESSION-007 | Abort transaction fails at claim release, inspection/draft state, audit or idempotency write | Full abort rollback; unit remains unresolved; session cannot close; retry with same idempotency key yields one outcome |
 
 These cases extend TC-SESSION-001 and TC-INS-DRAFT-021..026. They do not establish that CMD-027 is an abort command; TC-SESSION-004 explicitly protects the current release-only semantics.
+
+
+**Attempt identity invariant:** each inspection_id represents one session-bound attempt. A new session after ABORTED creates a new inspection_id; return/reopen within the same session keeps the original inspection_id. TC-INS-DRAFT-027 is PLANNED / NOT EXECUTED.
