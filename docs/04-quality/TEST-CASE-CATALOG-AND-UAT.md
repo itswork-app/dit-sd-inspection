@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.5.0
+Version: 0.5.1
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -860,3 +860,14 @@ These acceptance cases target TDR v0.1.8 §4.2.5–4.2.6. They remain PLANNED / 
 | TC-NOTIF-070 | Multiple matching clauses select same recipient with overlapping/different authorized scopes | One canonical recipient candidate is produced; only scopes explicitly selected by matching clauses are retained; deduplication and scope serialization are deterministic and cannot widen authorization | PLANNED / NOT EXECUTED |
 
 **Execution control:** TC-NOTIF-065..070 require PO/Security/Engineering approval of grammar v1, event registry, dispatch profiles and canonical candidate/scope serialization. Runtime execution requires G10 activation and the authorized isolated PostgreSQL environment. No test result is implied.
+
+
+### PRD scope and notification-domain guard test — 2026-11-24
+
+This case verifies that notification policy cannot introduce application personas or recipient roles that are absent from the approved PRD/permission registry. It is PLANNED / NOT EXECUTED and does not approve the still-unapproved role/grant matrix.
+
+| Test ID | Scenario | Expected result / invariant | Status |
+|---|---|---|---|
+| TC-NOTIF-071 | Attempt to publish a notification policy that targets an unregistered institutional persona (for example, a school principal/Kepala Sekolah), teacher, student, parent or school-customer persona, or relies only on institutional affiliation rather than an approved application principal and scoped assignment | Policy publication fails closed; no recipient or event is enabled; no role, permission, scope or audience is inferred from institution metadata; rejection is auditable. Only principals and scope mappings explicitly admitted by the approved PRD/permission registry and exact event policy can be selected | PLANNED / NOT EXECUTED |
+
+**Execution control:** TC-NOTIF-071 requires an approved canonical principal/role registry, PO-approved event allowlist and Security/Engineering-approved policy validation. Runtime execution requires G10 activation and an authorized isolated environment. No test result is implied.
