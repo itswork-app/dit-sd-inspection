@@ -295,3 +295,8 @@ The source event declaration inventory is complete at 40/40 in LOCK-MANIFEST-001
 ### R-037 decision update — 2026-11-24
 
 PO has selected candidate L05 (global transaction-scoped audience guard) as the primary mechanism for technical approval review; Option B SERIALIZABLE remains contingency-only. See [NLA-RESOLVER-LOCK-001 v0.1.6](../02-architecture/NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) §11. R-037 remains OPEN — CRITICAL pending Engineering/Database/Security approval of the exact PostgreSQL primitive/key, rank/order, complete eligibility-writer participation, FK/trigger/helper edges, timeout/retry, contention bounds and graph acyclicity. This PO selection does not authorize implementation or admit L05 as a canonical rank. Resolver certification 0/40; application lock certification 0/50; G9 NOT READY; G10 NOT ACTIVE.
+
+
+### R-037 technical protocol checkpoint — 2026-11-24
+
+[NLA-L05-TDR-001 v0.1.0](../02-architecture/NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) proposes a transaction-scoped two-key PostgreSQL advisory lock at candidate L05. Exact key pair/registry, deployed READ COMMITTED configuration, complete writer mapping, helper ACL, FK/unique/trigger graph, numeric lock/transaction/retry budgets, audience cap, SLO and acyclicity evidence remain OPEN. R-037 remains OPEN — CRITICAL; no technical approval or implementation authorization is inferred. Resolver certification 0/40; application lock certification 0/50.
