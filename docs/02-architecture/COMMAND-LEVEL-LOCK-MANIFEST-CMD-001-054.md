@@ -4,7 +4,7 @@
 **Version:** 0.4.26
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
-**Parent:** LOCK-GRAPH-001 v0.4.16  
+**Parent:** LOCK-GRAPH-001 v0.4.19  
 **Scope:** Per-command resource inventory, source-stated lock sequence, shared invariants, competing commands, constraints and unresolved ordering  
 **Gate:** G3 NOT READY; G4 NOT READY; G5 NOT READY; G7 NOT READY; G9 NOT READY; G10 NOT ACTIVE.
 
@@ -23,15 +23,15 @@ Root `AGENTS.md` v1.2.0 was re-read from the target branch at the start of this 
 | Source | Reviewed snapshot version / identity | Use in this reconciliation |
 |---|---|---|
 | MIB-001 | v1.0.1 | Authority, gates and documentation-phase boundary |
-| DGA-001 | v1.11.10 | Active evidence-backed gap queue and gate disposition |
+| DGA-001 | v1.11.55 | Active evidence-backed gap queue and gate disposition |
 | IRG-001 | v1.0.1 | Phase and authorization governance |
 | Decision Register | Current branch revision | Approved PO decisions and institutional dependencies |
-| PostgreSQL Command Contract Catalogue | v0.4.1 | Canonical logical CMD-001–054 operation inventory and proposed contracts |
-| Physical Database Schema and Integrity Specification | v0.3.0 | Proposed entities, constraints, indexes and transaction invariants |
-| LOCK-GRAPH-001 | v0.4.6 | Candidate resource ranks, cross-command conflicts and planned race scenarios |
-| CONCURRENCY-001 | v0.1.3 | Aggregate token, idempotency and worker-fencing mismatches |
-| LOCK-PROTOCOL-DECISION-RESOLUTION-001 | v0.3.4 | LPR decision state and static reconciliation checkpoint |
-| Detailed command reviews | Seven current command-range documents; CMD-001–010 review v0.3.2 at this checkpoint | Per-command source-stated operations and dependencies |
+| PostgreSQL Command Contract Catalogue | v0.4.8 | Canonical logical CMD-001–054 operation inventory and proposed contracts |
+| Physical Database Schema and Integrity Specification | v0.4.4 | Proposed entities, constraints, indexes and transaction invariants |
+| LOCK-GRAPH-001 | v0.4.19 | Candidate resource ranks, cross-command conflicts and planned race scenarios |
+| CONCURRENCY-001 | v0.1.7 | Aggregate token, idempotency and worker-fencing mismatches |
+| LOCK-PROTOCOL-DECISION-RESOLUTION-001 | v0.3.12 | LPR decision state and static reconciliation checkpoint |
+| Detailed command reviews | Seven current command-range documents; CMD-049–054 review v0.1.3 at this checkpoint | Per-command source-stated operations and dependencies |
 
 This replaces the stale historical snapshot labels in the original v0.3.2 review method (including DGA v1.4.0, catalogue/physical schema v0.2.0 and lock graph v0.1.0). Version refresh is a traceability correction only; it does not imply those sources or any command lock manifest are approved.
 
