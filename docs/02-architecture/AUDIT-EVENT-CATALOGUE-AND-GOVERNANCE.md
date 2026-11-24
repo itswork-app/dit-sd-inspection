@@ -222,5 +222,12 @@ Audit read and export are separate proposed permissions (audit.read and audit.ex
 - Policy draft/publish/retire and security-relevant configuration changes are recorded in `audit_events` with actor, scope, policy key/version/hash and reason.
 - Escalation decisions are recorded append-only in `notification_escalation_events` and linked to audit evidence where policy requires.
 - Routine provider delivery attempts are recorded in `notification_delivery_attempts`; do not flood the general audit stream with every retry. Operational telemetry may summarize retry/backlog/error metrics.
-- Recipient read acknowledgement may emit `notification.read` under the approved audit policy; do not log message bodies or sensitive payloads.
+- The first successful set-once recipient read transition emits one `notification.read` event atomically with read_at; duplicate/no-op acknowledgements and inbox page reads do not emit general audit events. Do not log message bodies or sensitive payloads.
 - Delivery/provider events never mutate inspection/project/session state. T-10 controls for retention, legal hold, audit read/export and disposition remain blocked.
+
+
+## NLA-001 notification audit reconciliation — 2026-11-24
+
+The canonical event mapping is limited to the existing notification events: notification.policy_published, notification.read, notification.escalation_evaluated and notification.escalation_enqueued. CMD-050 emits notification.read only on the first successful set-once read transition; the audit event and read_at update are atomic, and duplicate/no-op acknowledgements do not append another event. Inbox page access is not a general audit event. Routine provider attempts and callback status updates remain in dedicated notification delivery/attempt state and privacy-safe operational telemetry; do not flood the general audit stream with every retry or callback.
+
+No notification message body, evidence, full provider response, credential, token or signed URL may be placed in general audit metadata. T-10 institutional classification, retention, legal hold, disposition and audit export authority remain blocked. This is a documentation proposal, not a deployed audit control.
