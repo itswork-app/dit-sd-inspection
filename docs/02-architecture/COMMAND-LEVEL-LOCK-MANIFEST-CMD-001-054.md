@@ -1,7 +1,7 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.4.19
+**Version:** 0.4.20
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Parent:** LOCK-GRAPH-001 v0.4.12  
@@ -454,3 +454,34 @@ This overlay maps the reviewed transaction boundaries for approval/reopen, evide
 ### 7.4.2 Evidence and disposition
 
 CMD-031–040 now have candidate transaction/resource overlays (10 additional rows; **40/54 candidate-normalized at documentation level**). This does not certify the lock graph or imply that missing physical aggregates exist. Worker identity/lease/ACL, device registry, evidence quota, attendance verification history, review uniqueness, document sequence, exact lock modes and implicit FK/index/trigger/function edges remain open. Engineering/Database/Security review and adversarial concurrency evidence are still required. **Certified lock-complete remains 0/54.**
+
+
+## 7.5 CMD-041–048 read-path and authority-gate reconciliation — 2026-11-24
+
+### CMD-041–044 — read/report/audit operations
+
+These commands are read-oriented and do not acquire write locks in the proposed contract. The candidate execution boundary is therefore a bounded, scoped read rather than a fabricated row-lock sequence:
+
+| Command | Candidate read boundary | Required controls | Unresolved boundary |
+|---|---|---|---|
+| CMD-041 get-actual-report | Resolve actor/scope → bounded actual-data query with stable scope/time ordering → cursor/page response | Actual-only source; separate Inspected/Submitted/Approved/Completed semantics; stable opaque cursor bound to actor/scope/filter/watermark; bounded range/page | Exact report snapshot/watermark strategy, headline-count basis, query plans/indexes and workload limits remain unapproved |
+| CMD-042 get-target-report | Resolve actor/scope → bounded target-plan query → deterministic calculation/version → cursor/page response | Target plan is read-only and cannot rewrite actuals; target data is distinct from actual; deterministic calculation/version | Target snapshot/calculation version, templates, indexes and workload limits remain open |
+| CMD-043 read-audit | Validate audit.read + approved purpose/scope → bounded SECURITY INVOKER/RLS read → stable cursor/page; separate narrow access-audit append path only if approved | audit.read is distinct from report.read/export; no raw evidence, secrets, object keys or unrestricted network metadata; anti-recursion | T-10 reader/purpose/classification policy, RLS, function owner/ACL, access event policy and retention remain unresolved |
+| CMD-044 export-audit | No executable lock plan; policy-gated design only | T-10 institutional approval, export authority/SoD, purpose/scope, artifact encryption/access/expiry/retention/legal hold, durable job and audit required before design can be enabled | Explicitly BLOCKED by T-10; export job/manifest/artifact schema and policy are absent. Do not implement or grant |
+
+### CMD-045–048 — privileged authority-gated commands
+
+No executable lock-order overlay is assigned because their authority and physical state machines are not approved. They remain hard-gated, not normalized:
+
+| Command | Status | Required precondition before lock design |
+|---|---|---|
+| CMD-045 retention/legal-hold | BLOCKED_BY_POLICY | Written institutional classification, retention schedule, legal-hold/release and disposition authority; approved lifecycle, SoD and external-object reconciliation |
+| CMD-046 review-security-incident | BLOCKED_BY_SCHEMA_AUTHORITY | Approved security incident authority, evidence custody/classification, incident state model, access/SoD and immutable audit evidence |
+| CMD-047 manage-provider-configuration | BLOCKED_BY_T12 | Actual provider/legal account owner, billing owner, custodians, region, plan, quotas, budget, recovery and credential custody |
+| CMD-048 manage-production-release | BLOCKED_BY_AUTHORITY | Approved release authority, environment separation, CI/ruleset required checks, rollback and production change-control evidence |
+
+No proposed permission labels for CMD-045–048 may be seeded or granted. No route, worker, function, migration, provider mutation or production action is authorized by this reconciliation.
+
+### 7.5.1 Normalization and evidence boundary
+
+CMD-041–044 now have candidate read-boundary normalization. CMD-045–048 remain deliberately unnormalized because their authority/state model is blocked. CMD-049–054 retain their separately recorded notification transaction boundaries in §4.2 and subsequent notification alignment notes. Across the command set, **50/54 commands have a documented candidate execution/transaction boundary (CMD-001–044 and CMD-049–054); 4/54 privileged commands remain hard-gated; 0/54 are technically approved/certified**. This count is documentation coverage only, not proof of database locks, RLS, ACL or runtime behavior.
