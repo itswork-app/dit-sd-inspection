@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.59
+**Version:** 1.11.60
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -696,3 +696,12 @@ Internal review [L05-TECHNICAL-REVIEW-001](../04-quality/L05-TECHNICAL-REVIEW-00
 ### L05 transition semantics and contention evidence — 2026-11-24
 
 NLA-L05-TDR-001 v0.1.2 now records a reviewer proposal to interpret event-time eligibility as pre-transition state at the captured `audience_evaluated_at`, because audience resolution precedes the source mutation. This is not a PO decision. Explicit recipient outcomes for role revoke, account rejection/suspension, assignment-member end, project/session closure and self-revoke remain OPEN. NRL-T13 / TC-NOTIF-054 specify mixed-load guard benchmarking, but maximum audience/workload limits and numeric p50/p95/p99 SLOs remain TBD. These cases are PLANNED / NOT EXECUTED; no performance evidence exists. G9 NOT READY; G10 NOT ACTIVE.
+
+
+### L05 cross-reference audit and CMD-031–040 lock-order checkpoint — 2026-11-24
+
+A scoped cross-reference audit was performed across the 14-file L05 review PR. The current controlled pointer set is synchronized as follows: NLA-001 v0.1.8; NLA-RESOLVER-LOCK-001 v0.1.9; NLA-L05-TDR-001 v0.1.2; L05 source-event map v0.1.0; L05 eligibility-writer matrix v0.1.1; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.8; RAID-001 v0.1.6; QA Catalogue v0.4.5; CMD-CROSSWALK-001-054 v0.8.26. Earlier dated version references are retained as historical source snapshots and must not be mistaken for current pointers.
+
+LOCK-MANIFEST-001 §7.13 and LOCK-GRAPH-001 §30 provide a partial CMD-031–040 candidate lock-order overlay. CMD-031/032/033/034/037 have partial candidate ordering proposals; CMD-035/036/038/039/040 remain blocked on exact transaction/event boundaries, worker/lease identity and rank, per-item event cardinality, attendance aggregate/version physicalization and institutional authority. This is static design progress only.
+
+F-06 is CLOSED FOR THE SCOPED L05 CROSS-REFERENCE SET; a repository-wide audit of unrelated document families is not claimed. F-03 remains OPEN because the overlay is not complete or certified. F-04 remains OPEN because the physical writer/bypass inventory is incomplete. F-05 and F-07 remain OPEN. Resolver certification remains 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; NRL-T01..T13 and TC-NOTIF-001..054 PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE. No code, SQL, migration, grant, RLS, live DB, runtime test or deployment was performed.
