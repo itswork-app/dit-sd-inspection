@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.5.7
+Version: 0.5.8
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -939,3 +939,15 @@ These cases guard the unresolved mapping between account event-time candidate se
 | TC-NOTIF-085 | Concurrent CMD-014/015 membership changes, CMD-004/005 role eligibility changes and CMD-016 capacity updates; duplicate command replay | One shared approved T-14/L05 serialization protocol preserves the distinct enabled-Inspector cap; command/event/snapshot is atomic and idempotent; no partial roster/member change or duplicate notification is produced | PLANNED / NOT EXECUTED |
 
 **Execution control:** TC-NOTIF-082..085 require approved event/participant contract, member-delta semantics, active-work policy, physical membership constraints and complete L05/L10 writer/lock proof. Runtime execution requires G10 activation and an authorized isolated environment. No test result is implied.
+
+
+### Inspection submission/return event candidate safety — 2026-11-24
+
+| Test ID | Scenario | Expected result / invariant | Status |
+|---|---|---|---|
+| TC-NOTIF-086 | CMD-029 emits both `inspection.submitted` and `inspection_revision.created` for one submitted revision | Only the exact approved `inspection.submitted` candidate can trigger one user notice; revision-created remains a related provenance fact and cannot create a second notice; replay does not create a new revision or candidate snapshot | PLANNED / NOT EXECUTED |
+| TC-NOTIF-087 | Resolve a Reviewer for a submitted inspection when no approved physical reviewer-assignment source is configured, or when only Super Admin/project membership/generic role labels exist | Registry admission/publication fails closed; no Reviewer is inferred from title, global role or generic membership; exact inspection/project/session/assignment scope is required | PLANNED / NOT EXECUTED |
+| TC-NOTIF-088 | CMD-030 returns a submitted revision; attempt to notify the revision author, current assignment Inspector, another member or the reviewer | Only the exact approved responsible-Inspector participant mapping may be selected; reviewer != author SoD is enforced; no author/current-member equivalence or recipient substitution is assumed | PLANNED / NOT EXECUTED |
+| TC-NOTIF-089 | Concurrent approve vs return, duplicate return replay, stale revision, and audit failure for the same submitted revision | Exactly one terminal review decision commits per revision; event, audit, idempotency and any admitted outbox/snapshot are atomic; duplicate decision creates no second event/notice; submitted revision/evidence remain immutable | PLANNED / NOT EXECUTED |
+
+**Execution control:** TC-NOTIF-086..089 require approved event cardinality, physical Reviewer assignment, responsible-Inspector mapping, review-round/decision uniqueness, SoD and canonical lock graph. Runtime execution requires G10 activation and an authorized isolated environment. No test result is implied.
