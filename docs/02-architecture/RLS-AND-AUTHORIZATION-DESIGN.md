@@ -89,7 +89,7 @@ This matrix is a draft and must be reconciled with the final role/permission cat
 - Exact permission granularity and configurable permission administration UX.
 - Whether Super Admin global audit export is all data or filtered.
 - RLS helper-function design and JWT claims strategy.
-- Whether server-side operations use Edge/Server functions or tightly scoped PostgreSQL RPCs.
+- Final table-by-table RLS/grant catalogue, including reviewed command-specific RPC EXECUTE grants and any SECURITY DEFINER exceptions.
 - Institutional privacy and audit-retention rules.
 
 
@@ -101,4 +101,17 @@ This matrix is a draft and must be reconciled with the final role/permission cat
 - Publication must occur only through the trusted command boundary; browser direct INSERT/UPDATE/DELETE of instrument catalog/version/configuration/publication/audit tables is denied.
 - Global catalog administration does not grant operational inspection membership. Unit inspection, claims, evidence, and responses must enforce explicit project association, session, assignment, role and permission. Cross-project canonical unit references must not widen RLS visibility.
 
-These are authorization design requirements, not deployed policies or test results. T-18 approval remains pending.
+These are authorization design requirements, not deployed policies or test results. T-18 option A is PO APPROVED: Vercel routes forward the caller JWT to narrowly scoped PostgreSQL commands; protected-table browser DML is denied. The exact table/function grants and RLS policies remain design gates, not deployed policies.
+
+
+## T-18 — Caller-JWT command authorization and direct-DML denial (PO APPROVED option A, 2026-11-24)
+
+- Vercel routes are the only browser-facing entry point for protected state-changing commands. They verify the Supabase session and forward the caller JWT; they do not accept client-supplied actor, role or scope as authority.
+- PostgreSQL derives the authenticated subject from auth.uid() and resolves an approved/enabled app_users identity. Every command checks explicit permission, active role, project association, session, assignment, target state and separation of duties at the database transaction boundary.
+- Browser roles have no direct INSERT/UPDATE/DELETE privilege on protected business, membership, assignment, instrument/version/configuration/publication, evidence, revision, audit or idempotency tables. RLS remains enabled and deny-by-default for exposed tables; command EXECUTE grants are specific and least-privilege.
+- Read access is independently scoped by RLS. A global Super Admin instrument-catalog permission does not grant inspection access to units, sessions, assignments or evidence.
+- Prefer SECURITY INVOKER. A SECURITY DEFINER function must be explicitly reviewed, pin search_path, qualify object names, validate all inputs, use a minimally privileged owner, revoke unnecessary PUBLIC execution and grant EXECUTE only to the intended caller role.
+- Service-role keys are server-only and must not be used as a blanket RLS bypass for user-initiated commands. Any exception requires a separate ADR, threat-model and audit.
+- RLS/grant tests must attempt direct DML through anon/authenticated clients and verify denial, then verify authorized command success and wrong-role/wrong-project/wrong-session/wrong-assignment denial. Also test revoked/expired JWT, pending/disabled account, self-review, replay, idempotency hash mismatch and audit rollback.
+
+T-18 is an approved architecture decision only. This document is not evidence that RLS or grants have been deployed or tested. T-16 project-association reconciliation remains a pre-migration dependency.
