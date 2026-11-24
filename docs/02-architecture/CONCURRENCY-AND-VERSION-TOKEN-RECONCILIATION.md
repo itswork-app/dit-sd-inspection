@@ -1,7 +1,7 @@
 # Concurrency and Version Token Reconciliation
 
 **Document ID:** CONCURRENCY-001  
-**Version:** 0.1.4  
+**Version:** 0.1.5  
 **Status:** Engineering proposal — PO/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054, physical schema, command catalogue, transaction/lock contracts, audit and QA traceability  
@@ -110,7 +110,7 @@ A zero-row compare-and-swap result must be resolved without leaking existence or
 2. Resolve the idempotency key and canonical request hash.
 3. For a matching completed replay, re-check current authorization as required by the command contract and return the stored original result; do not compare the stale client version again or mutate.
 4. Reject same key with a different semantic request hash.
-5. For a new command, acquire required locks in the approved global order.
+5. For a new command, acquire required locks in the candidate global rank order under review; do not treat the proposal as approved until LPR-01/LPR-07/LPR-11 and effective graph evidence are accepted.
 6. Compare the expected token and revalidate state/scope/SoD under the lock.
 7. Apply the semantic mutation and increment the aggregate token once.
 8. Append required domain/audit evidence and persist the result atomically.
@@ -265,7 +265,7 @@ Use existing IDs such as \`TC-CMD-CONTRACT-024-005\`, \`TC-CMD-CONTRACT-024-007\
 | API JSON representation | Engineering + Security | Decimal string recommended for BIGINT | OPEN |
 | CMD-005/007 CAS requirement | PO + Security | Explicitly decide required token vs lock-only transition | OPEN |
 | CMD-030/031 review concurrency | PO + Engineering + Security | Keep revision identity and decide aggregate CAS requirement | OPEN |
-| CMD-050 set-once read | PO + Security | Remove optional expected_version; conditional update | OPEN |
+| CMD-050 set-once read | PO + Security | Confirm recipient-self notification_id-only request, guarded read_at IS NULL update and first-transition audit atomicity | OPEN — DOCUMENTATION REQUEST ALIGNED; APPROVAL/VERIFICATION OPEN |
 | CMD-017/019 draft concurrency | PO + Engineering | Approve row token/hash model and immutable publish behavior | OPEN |
 | CMD-040 attendance aggregate | PO + Institution | Approve attendance record state model and version target; institutional verifier/SoD remains separate | OPEN |
 | Worker lease fencing | Security + Operations | Approve lease generation/token and physical fields | OPEN |
@@ -316,3 +316,8 @@ It does **not** approve the physical session_id column/FK design, target quantit
 - CMD-051 uses expected_current_version_id as a compare-and-publish guard for the current published policy version. The server computes policy_hash and version_no; exact lock/exclusion implementation remains open.
 - CMD-054 does not accept evaluation_time. The database captures one UTC instant per scheduler evaluation transaction.
 - These are documentation proposals only; no physical columns, indexes, functions, locks or concurrency tests have been implemented or verified.
+
+
+## Final audit correction — CMD-050 token disposition (2026-11-24)
+
+CMD-050 no longer has an unresolved catalogue-versus-request mismatch: the current command catalogue and detailed review both specify notification_id only. The historical CV-06 finding is retained as a resolved finding with an explicit boundary. This does not approve the command's physical RLS, audit atomicity implementation or runtime behavior.
