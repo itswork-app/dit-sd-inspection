@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.5  
+**Version:** 0.1.6  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -422,3 +422,8 @@ The following technical details remain open: exact selector grammar and snapshot
 | NOTIF-015 | Notification snapshot writers, CMD-052 fan-out, CMD-054 scheduler and CMD-053 callback ingress must include all source/recipient/scope/queue/policy locks and implicit FK KEY SHARE/unique-index/trigger/helper edges in the global resource order; no lower-rank resource may be acquired after a higher-rank lock. | LPR-09; T-18; Engineering/Database/Security | LOCK-MANIFEST-001 v0.4.26 §7.6; LOCK-GRAPH-001 v0.4.19 §27; CMD-049–054 review v0.1.3 §17; RAID R-037 | TC-NOTIF-036–040; LG-41–45; exact PostgreSQL lock traces, deterministic concurrency tests and full acyclic graph proof | OPEN — CRITICAL; 0/50 LOCK-CERTIFIED |
 
 All related notification and concurrency tests remain PLANNED / NOT EXECUTED. These requirements do not approve a new table, migration, index, RLS policy, worker identity, function, grant or implementation. G9 remains NOT READY; G10 remains NOT ACTIVE.
+
+
+### NOTIF-015 resolver lock-set evidence pointer — 2026-11-24
+
+[NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001](../02-architecture/NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) v0.1.0 classifies the complete 40-command source inventory and identifies 0/40 resolver paths with certified complete audience locks. Candidate options are a global transaction-scoped L05 guard or a fully participating SERIALIZABLE predicate protocol; neither is approved. NOTIF-015 remains OPEN — CRITICAL pending PO event-time semantics, Engineering/Database/Security mechanism approval, complete writer participation, exact FK/index/trigger/function graph, acyclicity proof and NRL-T01..T10 runtime evidence. Related QA remains PLANNED / NOT EXECUTED; application lock certification 0/50.
