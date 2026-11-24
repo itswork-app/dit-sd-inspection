@@ -5,6 +5,11 @@
 **Date:** 2026-11-24  
 **Depends on:** T-15, T-16, T-17, T-18; Canonical Permission Registry v0.1.0; RLS and Authorization Design; Privileged Command Boundary and Transaction Specification
 
+
+## Physical schema/RLS reconciliation dependency
+
+See [Physical Schema ↔ RLS ↔ Command Reconciliation](PHYSICAL-SCHEMA-RLS-COMMAND-RECONCILIATION.md) for the 41-table physical/RLS name parity, exact key-column crosswalk, and the two ERD-only entities requiring disposition. The command-family mapping remains logical; this reconciliation does not finalize individual command schemas, RPC signatures, table grants or executable predicates.
+
 ## 1. Purpose and decision boundary
 
 This matrix converts the current logical command-family inventory into a reviewable authorization and verification contract. It bridges the PO-approved architecture direction and later API/RPC design. It does not claim that route names, PostgreSQL function names, physical table names, grants, RLS policies or executable tests are finalized.
