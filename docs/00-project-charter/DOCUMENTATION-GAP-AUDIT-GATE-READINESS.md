@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.61
+**Version:** 1.11.62
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -704,4 +704,4 @@ A scoped cross-reference audit was performed across the 14-file L05 review PR. T
 
 LOCK-MANIFEST-001 §7.13 and LOCK-GRAPH-001 §30 provide a partial CMD-031–040 candidate lock-order overlay. CMD-031/032/033/034/037 have partial candidate ordering proposals; CMD-035/036/038/039/040 remain blocked on exact transaction/event boundaries, worker/lease identity and rank, per-item event cardinality, attendance aggregate/version physicalization and institutional authority. This is static design progress only.
 
-F-06 is CLOSED FOR THE SCOPED L05 CROSS-REFERENCE SET; a repository-wide audit of unrelated document families is not claimed. F-03 remains OPEN because the overlay is not complete or certified. F-04 remains OPEN because the physical writer/bypass inventory is incomplete. F-05 and F-07 remain OPEN. Resolver certification remains 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; NRL-T01..T13 and TC-NOTIF-001..054 PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE. No code, SQL, migration, grant, RLS, live DB, runtime test or deployment was performed.
+F-06 is PARTIALLY CLOSED: canonical decision and core L05 parent/TDR/manifest/graph links are synchronized; remaining secondary current-pointer entries require one final reconciliation pass; a repository-wide audit of unrelated document families is not claimed. F-03 remains OPEN because the overlay is not complete or certified. F-04 remains OPEN because the physical writer/bypass inventory is incomplete. F-05 and F-07 remain OPEN. Resolver certification remains 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; NRL-T01..T13 and TC-NOTIF-001..054 PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE. No code, SQL, migration, grant, RLS, live DB, runtime test or deployment was performed.
