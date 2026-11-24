@@ -265,7 +265,9 @@ Additional assertions:
 | Exact FK/unique/trigger/helper topology | OPEN | Database |
 | Timeout/retry/transaction budget | OPEN | Database + Operations |
 | Audience cardinality and performance SLO | OPEN | PO + Engineering + Operations |
-| Function volatility and post-wait snapshot proof through authenticated RPC | OPEN — design requirement added; deployed metadata/evidence absent | Engineering + Database + Security |\n| Post-L05 audience evaluation instant and effective-interval boundary approval | OPEN — proposed `clock_timestamp()` capture; PO/domain confirmation and test evidence pending | PO + Engineering + Database + Security |\n| Static acyclicity and NRL-T01..T12 evidence | NOT EXECUTED | Engineering + Database + Security |
+| Function volatility and post-wait snapshot proof through authenticated RPC | OPEN — design requirement added; deployed metadata/evidence absent | Engineering + Database + Security |
+| Post-L05 audience evaluation instant and effective-interval boundary approval | OPEN — proposed `clock_timestamp()` capture; PO/domain confirmation and test evidence pending | PO + Engineering + Database + Security |
+| Static acyclicity and NRL-T01..T12 evidence | NOT EXECUTED | Engineering + Database + Security |
 
 **No numeric constants are approved:** advisory key integers, lock timeout, statement/transaction timeout, retry count, jitter, audience maximum and latency SLO remain TBD.
 
@@ -303,5 +305,7 @@ This is a documentation-only technical proposal. It authorizes no source code, S
 - numeric lock/statement/transaction timeouts, retry count/backoff, audience cap or performance SLO;
 - any SQL, migration, source code, CI/runtime test, database mutation, provider setup, deployment or production operation.
 
-**Revision 0.1.2 review note:** F-01 and F-02 have been translated into explicit proposed requirements: VOLATILE RPC wrapper with separate internal SQL statements; and one `clock_timestamp()` capture immediately after L05 for all effective-time predicates. These amendments do not prove deployed function metadata, isolation or runtime behavior and do not close the review findings until independent evidence is supplied.\n\n**Authority separation:** This is Product Owner approval of the candidate design direction, not Engineering, Database or Security technical certification. Those approvals and their evidence remain mandatory. G9 remains NOT READY and G10 remains NOT ACTIVE until the repository's gate requirements are independently satisfied and recorded.
+**Revision 0.1.2 review note:** F-01 and F-02 have been translated into explicit proposed requirements: VOLATILE RPC wrapper with separate internal SQL statements; and one `clock_timestamp()` capture immediately after L05 for all effective-time predicates. These amendments do not prove deployed function metadata, isolation or runtime behavior and do not close the review findings until independent evidence is supplied.
+
+**Authority separation:** This is Product Owner approval of the candidate design direction, not Engineering, Database or Security technical certification. Those approvals and their evidence remain mandatory. G9 remains NOT READY and G10 remains NOT ACTIVE until the repository's gate requirements are independently satisfied and recorded.
 
