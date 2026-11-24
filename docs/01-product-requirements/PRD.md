@@ -65,7 +65,7 @@ Users may hold multiple roles, but operational authority requires explicit assig
 - **Project:** bounded inspection engagement with locations, dates, targets, and instruments.
 - **Session:** operational time window and scope under a project.
 - **Assignment:** one location + one instrument + one team + schedule/scope; parallel assignments may operate in the same session period.
-- **Unit:** physical item identified by serial number within project/instrument scope.
+- **Unit:** canonical physical item identified by normalized serial number within an instrument type across all projects; project-scoped inspections reference the canonical unit identity.
 - **Inspection:** an Inspector's examination of one unit.
 - **Inspection revision:** immutable submitted version; correction creates a subsequent version.
 - **Evidence:** photo/video/document attached to an inspection or checklist item; original is preserved.
@@ -90,7 +90,7 @@ Users may hold multiple roles, but operational authority requires explicit assig
 
 ### 6.3 Inspection
 1. Inspector opens an active assigned session and selects/enters a unit serial number.
-2. System normalizes serial number under approved instrument rules and claims the unit atomically.
+2. System normalizes serial number under the published instrument rules and resolves the canonical unit atomically using instrument type + normalized serial across all projects.
 3. Existing claim by another Inspector cannot be duplicated; authorized resume/reassignment follows recovery rules.
 4. Inspector completes configured checklist and evidence slots, records findings and evidence where needed.
 5. Draft and evidence persist locally during permitted offline operation and sync safely.
@@ -129,7 +129,7 @@ Super Admin is the final project-closure authority. Project closure is explicit 
 | SES-001 | Project/session/location/instrument/team planning | Must | Super Admin can configure; parallel assignments remain independently scoped |
 | SES-002 | Assignment conflict prevention | Must | Overlapping assignment for same user is rejected atomically |
 | INS-001 | Versioned instrument configuration | Must | Session retains immutable version snapshot |
-| INS-002 | Serial number claim and duplicate control | Must | One active claim per normalized unit; duplicate does not create second inspection |
+| INS-002 | Serial number claim and duplicate control | Must | One canonical unit per instrument type + normalized serial across all projects; one active claim per unit; duplicates enter controlled review |
 | INS-003 | Checklist and evidence capture | Must | Inspector can complete configured instrument requirements |
 | OFF-001 | Limited offline draft and synchronization | Must | No loss/overwrite on retry, conflict, or temporary disconnection |
 | INS-004 | Pre-submit validation | Must | Incomplete or conflicted inspection cannot submit |
@@ -276,3 +276,10 @@ The configurable combined Inspector capacity counts distinct accounts that are e
 ## Registration, role assignment and team staffing (PO clarification, 2026-11-24)
 
 All personnel must first register/authenticate to create an application account. Registration alone does not authorize access or count toward Inspector capacity. Super Admin approves each account and controls role(s), permissions, data scope, team membership and operational assignment. Super Admin also determines the number of teams and the number/identity of personnel in each team. Users cannot self-select roles, teams or assignments. The Inspector capacity predicate remains T-14: enabled account + active Inspector role + at least one currently effective operational Inspector assignment; count each account once.
+
+
+## T-16 — Product Owner-approved serial/evidence rules (option B, 2026-11-24)
+
+Within a given instrument type, a normalized serial number identifies one canonical physical unit across all projects. The uniqueness rule does not cross instrument types. A same-type duplicate discovered in another project is a controlled conflict and must be reviewed by an authorized person with a recorded reason and audit trail; the application must not silently merge or discard prior records. Project/session access remains independently scoped.
+
+Evidence is permanently associated with the exact immutable inspection revision and instrument version. Preserve original metadata, checksum, uploader, capture/upload timestamps and storage object identity. Evidence cannot be overwritten in place; a replacement is a new evidence record with a corresponding audit event. These requirements are approved product direction; source-based exception policy and implementation/UAT remain pending.
