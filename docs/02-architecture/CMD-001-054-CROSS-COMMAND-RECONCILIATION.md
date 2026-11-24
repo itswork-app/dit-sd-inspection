@@ -1,12 +1,12 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.3.0  
+**Version:** 0.4.0  
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
 **Authority:** AGENTS.md, MIB-001, DGA-001, IRG-001, T-10, T-14–T-18 and the approved Decision Register  
-**Controls:** G2–G10; DGA-B04–B18; G9 NOT READY; G10 NOT AUTHORIZED.
+**Controls:** G2–G10; DGA-B04–B19; G9 NOT READY; G10 NOT AUTHORIZED.
 
 ## 1. Purpose and conclusion
 
@@ -297,7 +297,8 @@ This reconciliation does not close any DGA, RTM or RAID item. A status change re
 | X-13 | High | All | Execute live read-only Supabase inventory and reconcile actual objects/ACL/RLS after authorized access | Security + authorized DB owner | G4/G9 |
 | X-14 | High | All | Verify GitHub rulesets, required CI checks, secrets scanning and release workflow | Repository administrator | G0/G8 |
 | X-15 | High | All | Reconcile DGA/RAID/RTM with accepted evidence; no status-only closure | Document owner + PO | G9 |
-| X-16 | Critical | CMD-001–054 | Reconcile global lock ranks, CMD-023/024/026 order, T-14 eligibility serialization, parent closure fences, claim/inspection ordering and worker lease boundaries; add lock manifests and execute adversarial concurrency tests | Engineering + Security + PO; Operations/Institution where applicable | G3/G4/G5/G7/G9 |
+| X-16 | Critical | CMD-001–054 | Reconcile global lock ranks, CMD-023/024/026 order, T-14 eligibility serialization, parent closure fences, claim/inspection ordering and worker lease boundaries; add lock manifests and execute adversarial concurrency tests | Engineering + Security + PO; Operations/Institution where applicable | G3/G4/G5/G7/G9 |\n
+| X-17 | Critical | CMD-001–054 | Review LOCK-MANIFEST-001 54-command resource/lock inventory; resolve all source-order contradictions, missing lock targets, implicit constraints and competing worker paths; certify manifests and execute concurrency evidence | Engineering + Security + PO; Operations/Institution where applicable | G3/G4/G5/G7/G9 |
 
 ## 7. Gate disposition
 
@@ -364,3 +365,10 @@ Key findings:
 - The static review cannot prove the graph acyclic; no runtime deadlock or concurrency test was executed.
 
 **Disposition:** X-16 OPEN; DGA-B18 OPEN. LOCK-GRAPH-001 is a proposal only. The canonical command catalogue, detailed command reviews and physical schema have not been silently changed. G3/G4/G5/G7/G9 remain NOT READY and G10 remains NOT AUTHORIZED.
+
+
+## 12. Command-level lock manifest inventory — 2026-11-24
+
+[LOCK-MANIFEST-001 — Command-Level Lock Manifest Reconciliation CMD-001–054](COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.1.0 records a source-evidence inventory for every proposed command. Coverage is 54/54 IDs; lock-complete certification is 0/54. This is not a pass result: source order conflicts and incomplete lock targets remain explicit.
+
+The manifest does not change the canonical command catalogue, physical schema or detailed command reviews. It adds X-17 and requires approved global order, per-command lock targets, deterministic multi-row ordering, implicit constraint/trigger review, worker fencing and adversarial test evidence. No test was executed. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT AUTHORIZED.
