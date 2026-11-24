@@ -1,7 +1,7 @@
 # Table-by-Table RLS Policy Catalogue
 
 **Status:** Security policy design draft — security review and implementation approval required  
-**Version:** 0.2.0  
+**Version:** 0.2.1  
 **Package:** M — RLS and Authorization Policy Catalogue  
 **Date:** 2026-11-23
 
@@ -106,12 +106,12 @@ Legend:
 | `audit_events` | R-admin; R-scope only if a specific audit-read permission is granted | CMD | NONE | NONE | No direct client write; no update/delete for application roles |
 | `idempotency_records` | NONE | CMD | CMD | NONE | Internal command machinery; retention cleanup via controlled maintenance |
 | `sync_batches` | R-self/R-scope for own device batches only | CMD | CMD | NONE | Batch payload not exposed broadly; no cross-user read |
-| `notification_policy_versions` | R-config-scope for explicitly authorized policy administrators; R-admin | CMD | CMD | NONE | Published immutable; draft/publish only via reviewed commands; role grants not yet approved |
+| `notification_policy_versions` | NONE by default; narrowly scoped configuration read only after explicit grant approval | CMD-051 only | CMD-051 only | NONE | Published immutable; CMD-051 publish-only; no persisted draft CRUD; role/grantor/SoD grants not approved |
 | `notification_outbox` | NONE for browser roles; internal worker only | CMD | CMD | NONE | Private fan-out queue; no browser reads; internal worker privilege separately reviewed |
-| `notifications` | R-self where `recipient_user_id = auth.uid()`; R-admin | CMD | CMD | NONE | Self-only inbox/read/dismiss; scope columns narrow results but never widen recipient ownership |
+| `notifications` | R-self where `recipient_user_id = auth.uid()` only | CMD-050 set-once read through trusted command; no direct DML | NONE | NONE | No R-admin/global inbox read; dismissed_at is dormant pending PO/UX approval; scope columns never widen recipient ownership |
 | `notification_deliveries` | NONE for browser roles; internal worker; narrowly scoped operations reader only if approved | CMD | CMD | NONE | Provider state not exposed to recipients; worker-only mutation |
 | `notification_delivery_attempts` | NONE for browser roles; internal worker; restricted audit/operations reader if approved | CMD | NONE | NONE | Append-only sanitized attempts; no provider secrets or message bodies |
-| `notification_escalation_events` | R-config-scope only for authorized oversight; internal worker | CMD | NONE | NONE | Append-only; no access beyond policy/scope authority |
+| `notification_escalation_events` | NONE for browser roles; internal worker only; restricted operations reader only after explicit approval | CMD | NONE | NONE | Append-only; no browser oversight access inferred from role title |
 
 **Important:** this is the complete catalogue for Package L's proposed table inventory. Any new table, view, RPC, or Storage bucket must be added to this catalogue before it is exposed. A missing row is a release blocker.
 
@@ -259,3 +259,12 @@ See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SE
 - Policy versions require explicit config scope and `notification.policy.manage`; no role-to-permission grant is implied by title.
 - Internal worker role, owner, JWT/scheduler trust, exact EXECUTE ACL and effective privileges are a separate T-18 security blocker.
 - Every new row above requires table-specific positive/negative RLS tests and exact grants before exposure.
+
+
+### Notification least-privilege reconciliation — 2026-11-24
+
+- notifications is recipient-self SELECT only; no R-admin/global browse path is proposed. CMD-050 read acknowledgement is a trusted-command mutation with a recipient-self predicate; browser direct UPDATE remains denied.
+- notification_policy_versions is default-deny for browser roles. Any scoped configuration read requires an explicit approved grant; CMD-051 publication remains a trusted command and no role grant is implied.
+- notification_outbox, notification_deliveries, notification_delivery_attempts and notification_escalation_events are not browser-readable or browser-mutable. Internal workers require a separately approved workload identity and exact function ACL; service_role is not an assumed worker identity.
+- INT-NOTIF-001 is a server-side provider integration ingress, not a browser RPC and not a table grant.
+- Exact policies, grants, function owners, worker identity and live RLS tests remain unverified. These are design-only dispositions.
