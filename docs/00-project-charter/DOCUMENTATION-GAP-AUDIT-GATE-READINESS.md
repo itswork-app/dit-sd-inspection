@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.87
+**Version:** 1.11.88
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -870,3 +870,8 @@ PO product semantics are approved and synchronized to Decision Register SES-001.
 ## SES-001 inspection-attempt identity and session-close reconciliation — 2026-11-24
 
 Static review confirms CMD-013 is the final session-close command; REQUEST_CLOSURE is only a request/action. WF-003 requires each assigned unit attempt to reach a valid terminal outcome, and an incomplete/returned-but-unresolved attempt must be explicitly aborted before final close. CMD-027 currently releases a claim while preserving the draft and is not an abort operation. A separate abort command identity or explicitly versioned CMD-027 contract remains undecided. An inspection_id represents one session-bound attempt: after ABORTED, a later session requires a new inspection aggregate/inspection_id; return/reopen within the same originating active session uses the same inspection_id with a new draft context. The physical schema still lacks admitted session_id/ABORTED constraints, historical-attempt uniqueness, complete blocker inventory, final-close/abort writer fences and concurrency evidence. CMD-013/CMD-027 contracts and TC-SESSION-002..007 are specification only. DGA-B14/B18/B19 remain partial/open, G9 NOT READY and G10 NOT ACTIVE. No runtime tests, SQL, migration or database inspection occurred.
+
+
+### Privileged session reopen after ABORTED inspection — policy dependency
+
+T-07 permits privileged, reasoned and audited reopening of a CLOSED session, while SES-001 makes an ABORTED unit attempt terminal and non-resumable. Whether a reopened session may accept a brand-new inspection aggregate under the same session_id remains an explicit PO/operational policy question (IDC-O10; TC-SESSION-008). Until resolved, no command may reactivate an aborted attempt or infer that new work is allowed in the reopened session. This is an additional G2/G5 workflow edge; G9 remains NOT READY and G10 NOT ACTIVE.
