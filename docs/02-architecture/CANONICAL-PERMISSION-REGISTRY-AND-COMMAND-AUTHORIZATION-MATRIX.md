@@ -165,3 +165,7 @@ T-15 requires critical permission/command events to be appended atomically with 
 - [ ] Security review and staging verification evidence is attached.
 
 **Disposition:** DRAFT / NOT APPROVED. This document does not authorize permission seed, grants, schema migration, route/RPC implementation, runtime tests, deployment or scope freeze.
+
+## Individual command contract reference
+
+The [PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) expands the registry's 27 logical families into 48 proposed command/read operations (CMD-001..048), each linked to a planned QA case. This does not approve any permission semantics, role grant, grantor authority, RPC signature or EXECUTE grant. The registry remains a PO/security review draft and is not permission-seed authority.
