@@ -26,7 +26,7 @@ These states must not be collapsed.
 
 Reviewed the current documentation branch's Master Implementation Blueprint, README, T-19 audit, Package S, Package T, Decision Register, RTM, RAID, PRD, command contract catalogue, physical schema, RLS catalogue/reconciliation, QA catalogue, recovery plan, performance baseline and provider governance.
 
-The QA catalogue contains 385 distinct test identifiers by text-level scan. TC-LOAD-001 and TC-NOTIF-001 each appear more than once as a cross-reference plus a test definition; this does not create additional unique cases. Major planned series include 48 original command-contract cases, 40 command-authorization cases, 48 table/RLS cases, 63 function-security cases, 12 T-18 execution-model cases, 10 live-inventory cases, 8 repository-audit cases, 18 notification lifecycle cases and 8 T-13 print-batch cases. They are specifications only unless an execution record explicitly proves otherwise.
+The QA catalogue contains 391 distinct test identifiers by text-level scan. TC-LOAD-001 and TC-NOTIF-001 each appear more than once as a cross-reference plus a test definition; this does not create additional unique cases. Major planned series include 48 original command-contract cases, 40 command-authorization cases, 48 table/RLS cases, 69 function-security cases, 12 T-18 execution-model cases, 10 live-inventory cases, 8 repository-audit cases, 18 notification lifecycle cases and 8 T-13 print-batch cases. They are specifications only unless an execution record explicitly proves otherwise.
 
 No application code, migrations, live Supabase database, deployed RLS/grants, Vercel runtime, production provider account, CI workflow execution, backup restore, load test, security test or UAT was executed by this documentation audit.
 
