@@ -90,11 +90,11 @@ For each command that can emit an allowlisted notification event:
 3. Acquire L05 in a dedicated SQL command using the fixed internal key pair.
 4. Immediately after the L05 lock call returns, capture exactly one database wall-clock instant as `audience_evaluated_at := clock_timestamp()`. This is the audience eligibility linearization instant for this transaction.
 5. In a subsequent SQL command, read the immutable effective notification policy version and resolve the bounded event-time recipient/scope candidate set using that captured instant for every time-dependent predicate. Do not use `now()`, `CURRENT_TIMESTAMP`, `transaction_timestamp()` or `statement_timestamp()` as the post-wait audience evaluation instant.
-7. Acquire the union of actor, target and candidate principal rows in stable UUID order (L15), then applicable role rows (L16), scope-grant rows (L17), and conditional catalogue rows (L18).
-8. Acquire every required FK parent in the approved canonical order (L20 and L30–L55 classes as applicable); then acquire remaining source-specific domain locks in the admitted global order.
-9. Revalidate policy version, account state, role/scope validity, assignment membership/effective dates, capacity and parent lifecycle while L05 is still held. Apply explicit post-transition semantics for self-revoke, account suspension, membership end and closure.
-10. Perform the source mutation; append canonical event, required audit, idempotency result, outbox intent and all immutable snapshot rows in the same transaction.
-11. Verify the snapshot row count/hash/completion marker against the exact inserted set, then commit. Any failure in the required atomic unit rolls back the source mutation.
+6. Acquire the union of actor, target and candidate principal rows in stable UUID order (L15), then applicable role rows (L16), scope-grant rows (L17), and conditional catalogue rows (L18).
+7. Acquire every required FK parent in the approved canonical order (L20 and L30–L55 classes as applicable); then acquire remaining source-specific domain locks in the admitted global order.
+8. Revalidate policy version, account state, role/scope validity, assignment membership/effective dates, capacity and parent lifecycle while L05 is still held. Apply explicit post-transition semantics for self-revoke, account suspension, membership end and closure.
+9. Perform the source mutation; append canonical event, required audit, idempotency result, outbox intent and all immutable snapshot rows in the same transaction.
+10. Verify the snapshot row count/hash/completion marker against the exact inserted set, then commit. Any failure in the required atomic unit rolls back the source mutation.
 
 A command with an event type statically and immutably excluded from notification policy matching may omit L05 only when the exclusion is explicit in its command manifest and cannot be changed by policy publication. Runtime policy lookup cannot be used to skip L05 before the lock.
 
