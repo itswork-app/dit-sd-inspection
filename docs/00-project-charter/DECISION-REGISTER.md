@@ -57,6 +57,8 @@ Only explicitly approved decisions are marked APPROVED.
 
 Proposed or illustrative decisions are not approved until explicitly accepted.
 
+**Open product-semantic questions (not decisions):** POQ-001 v0.1.0 requests explicit Product Owner direction on notification recipient eligibility snapshot timing, notification SLA clock semantics, and whether a separate dismiss/archive action is excluded from the initial release or requires a new scoped design. No answer is approved or implied. Record any response here as a dated decision before updating dependent specifications.
+
 ## Product Owner decisions — Package T (2026-11-23)
 
 | ID | Decision | State | Qualification / remaining dependency |
