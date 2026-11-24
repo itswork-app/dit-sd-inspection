@@ -1,7 +1,7 @@
 # Notification Audience Guard — Technical Decision Record
 
 **Document ID:** NLA-L05-TDR-001  
-**Version:** 0.1.6  
+**Version:** 0.1.7  
 **Status:** PO-APPROVED CANDIDATE — technical approval pending Engineering, Database and Security  
 **Date:** 2026-11-24  
 **Decision authority:** Product Owner candidate selection recorded in NLA-RESOLVER-LOCK-001 §11  
@@ -98,13 +98,13 @@ For each command that can emit an allowlisted notification event:
 
 A command with an event type statically and immutably excluded from notification policy matching may omit L05 only when the exclusion is explicit in its command manifest and cannot be changed by policy publication. Runtime policy lookup cannot be used to skip L05 before the lock.
 
-### 4.2.1 Post-transition audience semantics — reviewer proposal, PO decision required
+### 4.2.1 Historical pre-PO review checkpoint — superseded by approved POQ-04
 
 The current transaction sequence resolves the candidate audience after L05 and before applying the source mutation. This naturally defines a **pre-transition eligibility snapshot** at `audience_evaluated_at`. Recommended default: candidate eligibility is evaluated against the state serialized before the command's source mutation; the source mutation, canonical event and immutable candidate snapshot then commit atomically. A transition must not retroactively rewrite the captured candidate set.
 
 For explicit event participants (actor, target, affected account/member), inclusion must be represented by an approved event participant/selector rule; do not silently append the actor or target outside the policy's exact selector grammar. Dispatch-time account/channel/consent and mandatory security checks may suppress an existing candidate under POQ-01, but may never add a new candidate. Scope revalidation may also suppress only under the approved POQ-01 contract.
 
-This is a **review recommendation, not a PO-approved semantic decision**. Product Owner must explicitly decide expected outcomes for at least: role revoke (CMD-005), account reject/disable/suspend (CMD-002/003 and any future account lifecycle path), assignment member end (CMD-015), project/session close (CMD-010/013), and self-revoke by the actor. The current phrase “apply explicit post-transition semantics” is not executable until those outcomes are recorded and covered by tests.
+**Historical note:** this paragraph records the pre-approval state only. The Product Owner subsequently approved all five transition outcomes in §4.2.2 and DECISION-REGISTER.md POQ-04 on 2026-11-24. The product-decision dependency is resolved; technical validation requirements remain open.
 
 ### 4.3 Candidate total order
 
@@ -347,3 +347,36 @@ This section records the complete five-row product decision approved by the Prod
 ## 4.2.3 POQ-04 approval and remaining technical disposition — 2026-11-24
 
 The Product Owner approved all five transition outcomes in §4.2.2 without changes. POQ-04 is therefore closed as a product decision. F-05 remains OPEN pending Security/Engineering validation of the exact selector grammar, current-scope suppression rules, retry-after-reactivation behavior, parent-state semantics, auditability and consistency with the selected L05 protocol. This approval does not admit a physical snapshot relation/header, lock rank, PostgreSQL primitive, function contract or runtime behavior. Resolver certification remains 0/40; application lock certification remains 0/50; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 4.2.4 F-05 technical validation contract — OPEN (2026-11-24)
+
+POQ-04 is approved at Product Owner level. The following technical items are mandatory before F-05 can be closed. This section defines review/evidence requirements; it does not invent missing product policy or admit implementation details.
+
+| ID | Required technical definition / evidence | Current finding | Required owner |
+|---|---|---|---|
+| F05-T1 Selector grammar and allowlist | Versioned, typed grammar with explicit event-type allowlist; permitted selector kinds; role and scope identifiers; named actor/self/target semantics; boolean composition; null/missing-field behavior; effective-time rules; deterministic canonicalization; overlap/dedup semantics; maximum depth/cardinality; invalid-selector fail-closed behavior; policy-version pin | NLA-001 §5 gives only broad selector examples. Exact grammar, dependency columns and bounds are not defined. | Engineering + Security; PO only if product behavior changes |
+| F05-T2 Dispatch authorization matrix | For each selector/event type, identify which captured qualification predicates are rechecked at dispatch, which current security predicates are always rechecked, and which transition-specific parent/scope checks apply. Distinguish recipient qualification from independent authorization to receive/open the notice. | Generic current-scope wording is insufficient. Role-revoke and project/session-close notices can be suppressed by the very transition they announce unless an event-specific rule is explicit. | Security + Engineering |
+| F05-T3 Suppression/retry state machine | Enumerate stable reason codes and classify each as terminal, retryable, or policy-reschedulable; define retry owner, attempt ceiling/backoff/expiry, checkpoint handling, and permitted recovery triggers. Reactivation may only resume an original snapshot candidate and must re-run every current mandatory check. | POQ-04 permits retry after account reactivation for the same candidate but does not define timing, state transition, retry limits or interaction with consent/channel/policy changes. | Engineering + Security + Operations |
+| F05-T4 Audit evidence | Define append-only event/attempt records, reason-code taxonomy, correlation IDs, actor/worker identity, policy and snapshot references, timestamps, outcome transitions, integrity/retention controls and data-minimization rules. | Auditable suppression is required but exact evidence contract and immutability proof are not specified. | Security + Engineering + Records/Privacy authority |
+| F05-T5 Atomicity and snapshot binding | Prove source mutation, canonical event, audit, idempotency outcome, outbox intent, pinned policy reference and complete immutable candidate set share the approved transaction boundary and captured audience_evaluated_at. | Candidate snapshot relation/header remains NOT ADMITTED; producer paths and writer participation remain uncertified. | Engineering + Database + Security |
+
+### Event-specific hazards requiring explicit review
+
+1. **Role revoke / self-revoke:** the event-time selector may include a target/actor under pre-revoke state, while dispatch-time authorization may suppress them immediately after revocation. Security must distinguish recipient qualification from access to the protected resource; the notice itself must never grant resource access.
+2. **Account suspension/reactivation:** only a recipient already in the immutable snapshot can be reconsidered after reactivation. Consent revocation, channel disablement, policy expiry, account re-suspension and other mandatory restrictions must be re-evaluated. Reactivation must not clear unrelated suppression reasons or reset the candidate checkpoint.
+3. **Assignment-member end:** current assignment membership may suppress a captured candidate, but the system must not substitute a new member or rebuild the audience.
+4. **Project/session close:** a blanket parent-must-currently-be-active dispatch predicate can suppress the closure notification for every intended recipient. Security/Engineering must define an explicit per-event dispatch rule and demonstrate the PO-approved outcome; do not infer a universal active-parent requirement.
+5. **Selector overlap:** one principal matching multiple selectors must yield one candidate identity per outbox/scope according to a canonical deduplication key; channel fan-out must not duplicate the recipient snapshot.
+
+### F-05 technical exit criteria
+
+- F05-T1..T5 have reviewed, versioned specifications and named approvers.
+- Every enabled event selector has an explicit deterministic selector definition and a traceable dependency-column set.
+- Dispatch/suppression behavior is deterministic for all five POQ-04 transitions and ordinary events, including closure notices.
+- Suppression reason codes and retry state transitions are exhaustive, append-only/auditable and do not mutate the candidate set.
+- Security and Engineering approvals are recorded; Database approves transaction/schema/lock integration where applicable.
+- TC-NOTIF-055..064 are mapped to the final definitions, then executed only after G10 activation in the authorized isolated environment.
+- No unresolved conflict remains between POQ-01, POQ-04, NLA-001, TDR, worker state machine, RLS/ACL and QA.
+
+Until all criteria are met, F-05 remains OPEN. No lock rank, physical relation, function, SQL, migration, grants, RLS, runtime behavior or G10 activation is approved by this addendum.
