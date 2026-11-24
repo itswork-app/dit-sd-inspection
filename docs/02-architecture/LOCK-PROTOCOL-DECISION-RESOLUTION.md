@@ -1,7 +1,7 @@
-# Lock Protocol Decision Resolution — LPR-01–LPR-10
+# Lock Protocol Decision Resolution — LPR-01–LPR-11
 
 **Document ID:** LOCK-PROTOCOL-DECISION-RESOLUTION-001  
-**Version:** 0.2.3  
+**Version:** 0.3.0  
 **Status:** PO product decisions LPR-02–LPR-06 APPROVED; technical lock protocol remains OPEN / NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** Candidate global lock protocol for CMD-001–054 and asynchronous finalizers  
@@ -163,6 +163,7 @@ The inventory currently covers 54/54 command IDs but certifies 0/54 complete man
 | LPR-08 | Approve worker identity, queue fencing, provider callback trust and ACL | Security + Operations + provider owner | OPEN |
 | LPR-09 | Reconcile all 54 command manifests and physical constraints/call graph | Engineering + Database/Security + QA | OPEN |
 | LPR-10 | Run adversarial concurrency suite in authorized isolated environment | Engineering + QA + Security | NOT EXECUTED |
+| LPR-11 | Define and approve lock classes/order for account identity and authorization aggregates (`app_users`, `user_roles`, `user_scope_grants`) relative to T-14 capacity, project/session parents and assignment membership | Engineering + Security; PO for product-impacting lifecycle; institution where authority applies | OPEN |
 
 The user/PO is not asked to approve SQL, lock primitives, function owners, grants or RLS. Those are Engineering/Security decisions and require their own evidence and review.
 
@@ -207,12 +208,12 @@ No test, CI, SQL, migration, live database query, grant, deployment or runtime i
 | G9 SSOT/scope freeze | NOT READY | Product, institutional and technical blockers remain |
 | G10 implementation | NOT AUTHORIZED | Separate written implementation authorization is absent |
 
-**Final disposition:** PO product semantics LPR-02–LPR-06 are approved and recorded in the Decision Register. LPR-01 (candidate rank hierarchy) and LPR-07–LPR-10 remain open for technical review, manifest reconciliation and authorized concurrency evidence. This does not approve the canonical lock protocol, close DGA-B18/B19/B20, certify deadlock freedom or authorize implementation.
+**Final disposition:** PO product semantics LPR-02–LPR-06 are approved and recorded in the Decision Register. LPR-01 (candidate rank hierarchy) and LPR-07–LPR-11 remain open for technical review, manifest reconciliation and authorized concurrency evidence. This does not approve the canonical lock protocol, close DGA-B18/B19/B20, certify deadlock freedom or authorize implementation.
 
 
 ## 10. Decision update — 2026-11-24
 
-Document version 0.2.0 records the Product Owner approvals for LPR-02 through LPR-06. T-14's existing approved eligibility predicate and 1–100 combined capacity remain controlling; LPR-05 is a clarification and does not supersede them. LPR-01 and LPR-07–LPR-10 remain open. All physical lock mechanisms, exact constraints, trigger/function paths, effective privileges and adversarial concurrency evidence remain unapproved or unverified. No tests, CI, SQL, migration, live database query, grants or deployment were performed.
+Document version 0.2.0 records the Product Owner approvals for LPR-02 through LPR-06. T-14's existing approved eligibility predicate and 1–100 combined capacity remain controlling; LPR-05 is a clarification and does not supersede them. LPR-01 and LPR-07–LPR-11 remain open. All physical lock mechanisms, exact constraints, trigger/function paths, effective privileges and adversarial concurrency evidence remain unapproved or unverified. No tests, CI, SQL, migration, live database query, grants or deployment were performed.
 
 
 ## 11. Static reconciliation checkpoint — 2026-11-24
@@ -232,6 +233,25 @@ This checkpoint records contradictions and incomplete paths that are visible fro
 | Implicit database edges — CMD-001–054 | Documentation does not establish actual FK checks, unique-index arbitration, triggers, helper-function calls, row-lock modes or effective privilege/RLS behavior. | Inspect the authorized target schema and deployed function/trigger/ACL inventory; produce a complete effective lock/call graph tied to the exact schema head. | NOT VERIFIED |
 | Adversarial evidence — CMD-001–054 and workers | LG-01–LG-41 are planned scenarios only. No deterministic concurrency execution or deadlock diagnostics are recorded. | Run the approved suite in an authorized isolated environment; retain fixtures, barriers, isolation level, SQLSTATE/lock diagnostics and invariant snapshots. | NOT EXECUTED |
 
+## 11.2 Identity and authorization aggregate rank gap — CMD-001–007
+
+A row-by-row review of CMD-001–007 found mutable or authorization-bearing resources that are not represented by a named class in the current L00–L110 candidate hierarchy:
+
+- `app_users`: own-account request state and target-account approval/rejection state (CMD-001–003); target-account eligibility in role/scope grants (CMD-004/006).
+- `user_roles`: grant/revoke lifecycle and Inspector eligibility (CMD-004/005).
+- `user_scope_grants`: scope grant/revoke lifecycle (CMD-006/007).
+
+These resources must not be silently mapped to L50 assignment/membership, L30 project/session, or L110 append-only facts. L110 applies only to append-only decision/audit facts, not mutable account or grant state. The exact lock class and ordering are not decided in this document.
+
+The candidate protocol must explicitly resolve:
+1. Whether account, role-grant and scope-grant rows form one rank or separate ordered ranks, including stable same-rank table/key ordering.
+2. How CMD-004/005 Inspector eligibility mutations acquire the L10 capacity serialization row before any row whose change can alter the T-14 qualifying population.
+3. How account approval/disable/suspension and role/scope revocation serialize with permission revalidation and any active-work policy.
+4. How grantor authorization rows, target principal rows and project/session/location/team/assignment scope rows are ordered without creating reverse edges.
+5. Whether commands need to lock actor authorization rows or use a separately approved authorization-epoch/snapshot contract to prevent revocation races.
+
+Until LPR-11 is resolved, CMD-001–007 cannot receive normalized candidate-rank sequences. Their row-level overlays in LOCK-MANIFEST-001 are resource inventories only, not approved acquisition orders.
+
 ### 11.1 Reconciliation rules
 
 1. Do not resolve a contradiction by silently preferring the candidate rank table; it remains subject to LPR-01 and technical approval.
@@ -246,3 +266,4 @@ This checkpoint records contradictions and incomplete paths that are visible fro
 
 - **0.2.2 — 2026-11-24:** Aligned the L100/L110 resource examples with mutable notification policy/inbox/delivery state and append-only notification escalation/access facts; added per-command logical mappings for CMD-049–054 and explicitly retained queue isolation, callback-boundary and worker-security gaps. No technical lock decision was approved and no implementation authority changed.
 - **0.2.3 — 2026-11-24:** Corrected the recommended-order summary to include L100 dependent mutable aggregates between L90 inspection and L110 append-only facts, matching the rank table. Candidate order remains unapproved.
+- **0.3.0 — 2026-11-24:** Added LPR-11 to resolve the previously unclassified `app_users`, `user_roles` and `user_scope_grants` lock classes and their ordering against T-14 capacity and project/session parent fences. Added an explicit static gap analysis for CMD-001–007. No rank or technical protocol was approved.
