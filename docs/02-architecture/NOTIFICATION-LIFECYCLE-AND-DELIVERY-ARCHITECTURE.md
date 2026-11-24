@@ -1,12 +1,13 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.10  
+**Version:** 0.1.11  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
 **Related controls:** INS-016 / T-15, T-18, T-10, MIB-001, DGA-001  
-**Implementation authorization:** NOT GRANTED
+**Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)  
+**G10 implementation activation:** NOT ACTIVE — pending verified G9 and a separate G10 activation record
 
 ## 1. Purpose and authority boundary
 
