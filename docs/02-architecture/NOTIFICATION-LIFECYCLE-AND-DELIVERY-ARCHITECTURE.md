@@ -1,7 +1,7 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
