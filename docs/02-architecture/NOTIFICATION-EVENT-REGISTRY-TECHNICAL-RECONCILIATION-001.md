@@ -1,7 +1,7 @@
 # Notification Event Registry — Technical Reconciliation
 
 **Document ID:** NLA-EVENT-TECH-RECON-001  
-**Version:** 0.1.6  
+**Version:** 0.1.7  
 **Status:** STATIC TECHNICAL RECONCILIATION — PARTIAL; NREG-001..011 (CMD-002/003/005/010/013/014/015/029/030/031/032) REVIEWED, ALL PARTIAL / UNRESOLVED / NOT ENABLED  
 **Date:** 2026-11-24  
 **Branch:** `docs/notification-resolver-lock-closure`  
@@ -672,3 +672,10 @@ NREG-011 is now `PARTIAL_STATIC_REVIEW` only. Canonical contract, recipient mapp
 - Candidate snapshot relation/header NOT ADMITTED. Tests PLANNED / NOT EXECUTED. G9 NOT READY. G10 NOT ACTIVE.
 
 **Disposition:** All eleven PO-approved candidates have now received a partial static technical pass. This does not admit any canonical event contract, recipient, selector, dispatch profile, physical schema or event publication.
+
+
+## 31. Closure ownership and evidence pointer — 2026-11-24
+
+The detailed approval/reopen acceptance matrix is maintained in [TECH-RESOLUTION-LPR-001 v0.1.11](ENGINEERING-SECURITY-TECHNICAL-RESOLUTION-PACKAGE-LPR-001-011.md) §18. It assigns product-semantic decisions to PO/operational authority, permission and SoD review to Security, physical identity/constraint/transaction/lock proof to Engineering and Database, and planned verification review to QA. The matrix is a review instrument only; it does not grant authority or close an item.
+
+The controlling lock decision status is [LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.13](LOCK-PROTOCOL-DECISION-RESOLUTION.md): LPR-01/LPR-07/LPR-09/LPR-11 OPEN and LPR-10 NOT EXECUTED. CMD-031/032 source order, candidate rank order, and complete writer/implicit-edge graph remain unreconciled and uncertified. No change to NREG row admission or publication status follows from this pointer.
