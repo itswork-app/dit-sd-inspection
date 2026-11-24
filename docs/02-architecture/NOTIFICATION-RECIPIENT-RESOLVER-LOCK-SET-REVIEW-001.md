@@ -1,7 +1,7 @@
 # Notification Recipient-Resolver Lock-Set Review
 
 **Document ID:** NLA-RESOLVER-LOCK-001  
-**Version:** 0.1.9  
+**Version:** 0.1.10  
 **Status:** Engineering design proposal — NOT APPROVED; no lock rank or physical mechanism is admitted  
 **Date:** 2026-11-24  
 **Repository baseline:** docs/audit-lock-and-identity-reconciliation at 7d722a77ac37a4c82a026daeddd1b00df4a4f713  
@@ -277,6 +277,6 @@ NRL-T13 adds the mixed-load contention benchmark at the approved maximum audienc
 
 ## 19. Current source baseline and CMD-031–040 normalization checkpoint — 2026-11-24
 
-Current controlled inputs for this review are NLA-001 v0.1.7; NLA-L05-TDR-001 v0.1.3; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.7; RAID-001 v0.1.6; DGA-001 v1.11.59; source-event map v0.1.0; eligibility-writer matrix v0.1.0; QA Catalogue v0.4.5.
+Current controlled inputs for this review are NLA-001 v0.1.9; NLA-L05-TDR-001 v0.1.4; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.9; RAID-001 v0.1.8; DGA-001 v1.11.61; source-event map v0.1.0; eligibility-writer matrix v0.1.2; QA Catalogue v0.4.6.
 
 LOCK-MANIFEST-001 §7.13 now provides a partial candidate ordering overlay for CMD-031/032/033/034/037. CMD-035/036/038/039/040 remain blocked on operation transaction semantics, worker/lease identity and rank, per-item event boundaries, attendance aggregate/version physicalization or institutional authority. This advances the static source lock-order proposal only. It does not increase the 0/40 resolver certification or 0/50 application-command certification. F-03 remains OPEN pending all 40 producer paths, actual function/finalizer call graphs, complete post-L05 lock unions and graph proof. F-04 remains OPEN pending exact physical writer and bypass inventory. G9 NOT READY; G10 NOT ACTIVE.
