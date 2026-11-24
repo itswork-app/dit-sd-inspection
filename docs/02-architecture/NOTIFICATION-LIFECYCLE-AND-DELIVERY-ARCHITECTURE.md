@@ -38,7 +38,7 @@ The implementation must preserve these INS-015 requirements:
 2. If the event matches an enabled notification rule, the same transaction appends a minimal `notification_outbox` record containing the source event reference, scope, event type and immutable policy-version reference. The business transaction does not call an external provider.
 3. An internal fan-out worker claims the outbox row with a bounded lease and idempotently resolves recipients from the event-time policy and effective role/assignment scope.
 4. One `notifications` inbox row is created per recipient. The unique source-outbox/recipient key prevents duplicate inbox records.
-5. One `notification_deliveries` row is created per selected channel. In-app availability is represented by the inbox row; external push/email delivery is tracked separately.
+5. One `notification_deliveries` row is created per selected external channel. In-app availability is represented by the inbox row; external push/email delivery is tracked separately.
 6. A delivery worker claims eligible channel rows, sends through a provider adapter, and appends a `notification_delivery_attempts` record for each attempt. Provider I/O occurs outside a database transaction.
 7. A delivery result is persisted using a guarded idempotent completion operation. If the worker crashes after provider acceptance but before recording the result, retry uses provider idempotency where supported; otherwise the system records an uncertain outcome and applies bounded duplicate-tolerant retry rules rather than claiming exactly-once delivery.
 8. A user read action updates only that recipient's `read_at`; it does not mutate delivery state or source business state.
@@ -86,7 +86,7 @@ Policy document fields are limited to: event type/rule enablement, priority, rec
 Purpose: transactional bridge from a domain event to asynchronous recipient fan-out.
 
 Minimum fields:
-- `id`, `source_event_id`, `event_type`, `scope_type`, `scope_id`
+- `id`, `source_event_id` (canonical `audit_events.id`), `event_type` (audited action), `scope_type`, `scope_id`
 - `policy_version_id`, `payload_ref` or minimized `payload`
 - `status` (PENDING, PROCESSING, COMPLETED, RETRY_WAIT, DEAD_LETTER)
 - `attempt_count`, `next_attempt_at`, `lease_owner`, `lease_expires_at`
