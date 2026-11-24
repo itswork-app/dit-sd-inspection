@@ -150,3 +150,10 @@ All commands that create/enable an Inspector role grant, establish an effective 
 ## Registration-first and Super Admin staffing command rules (PO clarification, 2026-11-24)
 
 `request-account-access` creates/provisions a pending account only; it must not create Inspector eligibility. Super Admin-only commands approve/reject accounts, grant/revoke roles, set scopes, create/configure teams, add/remove team members, and publish/change operational assignments. These commands must reject unregistered, pending, rejected, suspended or disabled accounts as assignees; reject caller self-elevation/self-assignment; validate staffing against the session plan and combined Inspector cap in one transaction. Team count and personnel composition are Super Admin-controlled configuration, not user self-service.
+
+
+## T-16 — Serial identity and evidence transaction rules (PO-approved option B, 2026-11-24)
+
+`claim-unit` must resolve the canonical unit using `(instrument_id, serial_normalized)` across all projects; project ID is not part of the uniqueness key. Different instrument types may reuse the same serial. Before creating a unit, the command must atomically check/lock the canonical key and route a same-type cross-project collision to controlled conflict resolution rather than create a duplicate or silently merge records. Authorization remains project/session/assignment scoped even when the canonical unit is shared across projects. Conflict resolution requires an authorized actor, explicit reason, deterministic outcome and append-only audit.
+
+Evidence commands must bind each evidence record to the exact immutable inspection revision and instrument version. Preserve checksum, uploader, capture/upload timestamps and immutable storage object identity. Finalized evidence cannot be overwritten in place; replacement creates a new evidence record/object and audit event while retaining the original history. All checks and writes must be transactional/idempotent as applicable. This contract is not implemented or tested yet.
