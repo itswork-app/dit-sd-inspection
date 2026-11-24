@@ -149,3 +149,14 @@ PostgreSQL advisory-lock semantics reference: https://www.postgresql.org/docs/cu
 ## 6. Evidence limitations
 
 This review is based on repository documentation and official PostgreSQL documentation. No source code, deployed function metadata, live PostgreSQL/Supabase configuration, advisory-lock registry, catalog, query plan, trigger graph, CI run or concurrency test was inspected. No claim of runtime safety or independent institutional sign-off is made.
+
+
+## 7. Revision response checkpoint — 2026-11-24
+
+TDR v0.1.2 and the synchronized QA artifacts now specify the proposed response to F-01/F-02, with NRL-T11/T12 and TC-NOTIF-052/053. The response is documentation-only; deployed wrapper volatility, authenticated RPC snapshot behavior, effective-time policy approval and execution evidence remain absent. F-01/F-02 remain OPEN pending evidence.
+
+[L05-SOURCE-MAP-001](../02-architecture/L05-SOURCE-EVENT-PATH-MAPPING-001.md) v0.1.0 provides a 40-row source-event/transaction-boundary mapping for F-03. It does not normalize the existing command lock sequences; 0/40 paths remain normalized/certified.
+
+[NLA-L05-WRITER-MATRIX-001](../02-architecture/L05-ELIGIBILITY-WRITER-PARTICIPATION-MATRIX-001.md) v0.1.0 advances F-04 by listing known command and non-command writer classes. It is explicitly partial because exact deployed functions, triggers, jobs, selector dependencies, ACLs and bypass evidence are unavailable. No writer is certified to participate in L05.
+
+F-05 post-transition audience outcomes and F-07 measured contention envelope remain open. F-06 is partially addressed by updating the TDR parent pointer to NLA-RESOLVER-LOCK-001 v0.1.8 and recording the candidate-direction decision in canonical DECISION-REGISTER.md; remaining cross-document pointers still require a final audit.
