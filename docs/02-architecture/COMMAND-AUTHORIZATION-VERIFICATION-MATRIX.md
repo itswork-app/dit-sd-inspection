@@ -172,3 +172,7 @@ The physical schema specification and ERD remain authoritative for actual table 
 ## 9. Change control
 
 Changes to permission codes, command mappings, role grants, scope predicates, RLS, function grants, audit events or test expectations must update this matrix, the Canonical Permission Registry, RBAC, RLS, command boundary, test catalogue and RTM/Package S as applicable. Do not silently alias legacy permissions or infer grants from job titles.
+
+## Individual command contract catalogue dependency
+
+[PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) now expands the 27 families into 48 logical operations (CMD-001..048) and links 48 planned QA cases (TC-CMD-CONTRACT-024-001..048). This is a detailed proposal, not 48 approved/executable contracts: exact physical PostgreSQL signatures, API routes, role grants, deployed RLS, EXECUTE grants, approved schemas and runtime evidence remain absent. CMD-045..048 are explicitly blocked pending institutional authority/schema.
