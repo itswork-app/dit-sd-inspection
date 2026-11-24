@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.12  
+**Version:** 0.1.13  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -339,3 +339,12 @@ D-026 remains OPEN — BLOCKING. R-037 remains OPEN — CRITICAL. Selector depen
 The Product Owner approved eleven first-batch notification event intents for specification and technical review only. NLA-EVENT-REGISTRY-001 v0.1.0 records these candidates; no row is technically admitted or enabled. This resolves the PO decision dependency for the first batch but does not close selector grammar/dependency, source contract, dispatch, retry, audit, atomicity, lock certification or writer-inventory risks. 
 
 D-026 remains OPEN — BLOCKING. R-037 remains OPEN — CRITICAL. F-05/F-04/F-03/F-07 remain OPEN; resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED. TC-NOTIF-073/074 PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE.
+
+
+## D-026 / R-037 CMD-002/003 account-event reconciliation — 2026-11-24
+
+NLA-EVENT-TECH-RECON-001 v0.1.0 partially reconciles `account.approved` and `account.rejected` against CMD-002/003. The command transaction and proposed account/decision/audit/idempotency objects are documented, but exact event schema/version and participant projection, pending-applicant snapshot eligibility versus dispatch-time enabled-account suppression, terminal decision uniqueness/CAS, non-command account eligibility writers, conditional T-14/L05 ordering, and event/outbox/snapshot dedup remain open.
+
+**D-026:** registry technical admission remains blocked; both rows remain NOT ENABLED. The candidate event participant cannot be inferred from `target_user_id` or `account_decisions.user_id` without an approved event contract and selector.
+
+**R-037:** account writer coverage remains partial; L05 is a candidate only; 0 writers certified, resolver 0/40, application lock 0/50, graph NOT PROVEN ACYCLIC, candidate snapshot relation/header NOT ADMITTED. TC-NOTIF-073/074 remain PLANNED / NOT EXECUTED. D-026 remains OPEN — BLOCKING; R-037 remains OPEN — CRITICAL; G9 NOT READY; G10 NOT ACTIVE.
