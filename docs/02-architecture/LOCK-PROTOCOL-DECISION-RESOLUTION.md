@@ -289,7 +289,7 @@ The main candidate rank table now includes L15–L18 and separates assignment ro
 
 ## 14. CMD-001–010 candidate manifest normalization — 2026-11-24
 
-**Reference baseline:** CMD-001–010 Detailed Contract Review v0.3.3 §9; LOCK-MANIFEST-001 v0.4.9; LOCK-GRAPH-001 v0.4.7. This is a technical proposal for review, not approval of LPR-01, LPR-07 or LPR-11.
+**Reference baseline:** CMD-001–010 Detailed Contract Review v0.3.4 §9; LOCK-MANIFEST-001 v0.4.10; LOCK-GRAPH-001 v0.4.8. This is a technical proposal for review, not approval of LPR-01, LPR-07 or LPR-11.
 
 ### 14.1 Proposed command order
 
