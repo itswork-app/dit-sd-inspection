@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.72
+**Version:** 1.11.73
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -768,3 +768,6 @@ NLA-001 v0.1.17 references the triage; QA v0.5.2 adds TC-NOTIF-072 to ensure tri
 
 
 **Triage clarification:** The shortlist in NLA-EVENT-TRIAGE-001 §5 is the first PO discussion batch, not an exhaustive list of all rows classified P. Secondary P candidates (including account.requested) remain deferred and neither approved nor rejected. This preserves the distinction between product relevance classification and PO allowlist decision.
+
+
+**Current pointer synchronization — 2026-11-24:** NLA-001 v0.1.20; NLA-EVENT-TRIAGE-001 v0.1.1; SCOPE-RECON-001 v0.1.2; QA v0.5.2; DGA-001 v1.11.73. First-batch PO review shortlist is not an exhaustive list of P-class candidates; secondary candidates remain deferred, not approved or rejected. Event registry remains NOT CREATED / NOT APPROVED.
