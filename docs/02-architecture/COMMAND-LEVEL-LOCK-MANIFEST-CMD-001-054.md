@@ -1,10 +1,10 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.4.14
+**Version:** 0.4.15
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
-**Parent:** LOCK-GRAPH-001 v0.4.6  
+**Parent:** LOCK-GRAPH-001 v0.4.10  
 **Scope:** Per-command resource inventory, source-stated lock sequence, shared invariants, competing commands, constraints and unresolved ordering  
 **Gate:** G3 NOT READY; G4 NOT READY; G5 NOT READY; G7 NOT READY; G9 NOT READY; G10 NOT AUTHORIZED.
 
@@ -322,3 +322,8 @@ The CMD-001–010 candidate overlay in §7 supersedes the historical source-orde
 ## CMD-049–054 notification contract field alignment — 2026-11-24
 
 The current candidate request/transaction overlay is synchronized to NLA-001 v0.1.2 and CMD review v0.1.1: CMD-050 has no expected_version; CMD-052/053 use the same lease owner/token-hash/generation/expiry fencing tuple; CMD-053 provider callbacks use INT-NOTIF-001; CMD-054 uses one database UTC instant and no caller evaluation_time. These changes clarify logical contracts only. They do not normalize additional command lock manifests or approve the effective lock graph. DGA-B19 remains OPEN; 10/54 candidate-normalized and 0/54 technically approved/certified.
+
+
+## Current parent snapshot correction — 2026-11-24
+
+The manifest header parent pointer is updated to LOCK-GRAPH-001 v0.4.10, the current candidate graph reviewed for this audit. Historical source-version tables and dated checkpoint notes remain historical snapshots and are not silently rewritten. The parent graph remains unapproved; 10/54 manifests are candidate-normalized at documentation level and 0/54 are technically approved/certified.
