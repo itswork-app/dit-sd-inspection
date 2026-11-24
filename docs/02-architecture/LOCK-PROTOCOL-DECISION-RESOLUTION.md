@@ -1,7 +1,7 @@
 # Lock Protocol Decision Resolution — LPR-01–LPR-11
 
 **Document ID:** LOCK-PROTOCOL-DECISION-RESOLUTION-001  
-**Version:** 0.3.4  
+**Version:** 0.3.5  
 **Status:** PO product decisions LPR-02–LPR-06 APPROVED; technical lock protocol remains OPEN / NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** Candidate global lock protocol for CMD-001–054 and asynchronous finalizers  
@@ -285,3 +285,46 @@ Until LPR-11 is resolved, CMD-001–007 cannot receive normalized candidate-rank
 ## 14. Refined identity/authorization rank proposal — 2026-11-24
 
 The main candidate rank table now includes L15–L18 and separates assignment rows at L50 from assignment membership at L55, matching TECH-RESOLUTION-LPR-001 v0.1.0. This is a candidate hierarchy for Engineering/Security review, not an approved global lock order. LPR-01 and LPR-11 remain OPEN until the accountable reviewers record explicit approval or amendment.
+
+
+## 14. CMD-001–010 candidate manifest normalization — 2026-11-24
+
+**Reference baseline:** CMD-001–010 Detailed Contract Review v0.3.3 §9; LOCK-MANIFEST-001 v0.4.9; LOCK-GRAPH-001 v0.4.7. This is a technical proposal for review, not approval of LPR-01, LPR-07 or LPR-11.
+
+### 14.1 Proposed command order
+
+| Command | Candidate order | Main concurrency contract |
+|---|---|---|
+| CMD-001 | L00 → L15 own account row / unique Auth identity insert arbiter | One request lifecycle per Auth identity; no assumed row lock for absent identity |
+| CMD-002/003 | L00 → conditional L10 → L15 sorted actor/target → L16/L17 actor authority → L18 catalog → L110 decision | One target-account terminal transition; approve/reject race serialized on same target row |
+| CMD-004/005 | L00 → conditional L10 → L15 sorted principals → L16 role grants → L17 delegation grants → L18 catalog → L110 audit | Grant/revoke and all Inspector eligibility writers share L10 and exact L16 grant identity |
+| CMD-006/007 | L00 → conditional L10 → L15 → L16 if role authority → L17 → L18 → L30/L50 scope target → L110 audit | Grant/revoke and duplicate interval operations share the exact L17 grant key and approved parent mapping |
+| CMD-008 | L00 → L15/L16/L17/L18 actor authority → L30 unique project-code insert; capacity row bootstrapped atomically | Project and default capacity settings commit or roll back together |
+| CMD-009 | L00 → L15/L16/L17/L18 actor authority → L30 project FOR NO KEY UPDATE candidate + CAS | Metadata update serializes with close and project child writers |
+| CMD-010 | L00 → conditional L10 → L15/L16/L17/L18 actor authority → L30 project FOR NO KEY UPDATE candidate → blocker evaluation | Close is fenced against every project child writer/finalizer using project FOR SHARE |
+
+### 14.2 T-14 and authorization lock prerequisites
+
+- The T-14 affected project set must be discovered before L15, L10 rows locked by ascending project UUID, and the set revalidated after lock. If the set expands, abort/retry; no late lower-rank lock acquisition.
+- Whether CMD-002/003 account-state transitions, CMD-006/007 role-bearing scope grants, or CMD-010 project closure alter the qualifying predicate is not yet approved. Each must either use L10 or document a predicate proof that it cannot affect the count.
+- Actor and target principals are locked by sorted UUID. Actor role/scope grants used to authorize the mutation are locked at L16/L17 so a concurrent revoke cannot silently race the authorization decision.
+- Mutable authorization catalog rows must be frozen for normal writes or governed under an approved L18 protocol.
+- A project/session scope grant must lock the scope's lifecycle parent after L17 and before its L50 operational target; exact type-to-table mapping and inheritance remain open.
+
+### 14.3 Project closure fence
+
+CMD-010 takes the project `FOR NO KEY UPDATE` candidate fence before evaluating closure blockers. Every project-scoped child command and asynchronous finalizer must take project `FOR SHARE` before any child aggregate and revalidate project state after waiting. The fence makes preflight reads advisory only. A missing fence in any writer path invalidates the closure safety claim. No cascade, implicit session close or history deletion is introduced. Pending durable intents and external in-flight work require explicit blocker/reconciliation policy.
+
+### 14.4 Remaining technical decisions
+
+| Decision | Current proposal | Approval / evidence still required |
+|---|---|---|
+| LPR-01 / LPR-11 | L15 app_users, L16 user_roles, L17 user_scope_grants, conditional L18 authorization catalog | Engineering + Security approve rank and actor/target/grantor lock coverage |
+| LPR-07 | L00/L10/L15–L18/L30 parent-first order | Database/Engineering inspect FK, unique-index, trigger, helper-function and actual PostgreSQL lock edges |
+| T-14 affected project set | L10 rows sorted before identity rows | Engineering/PO confirm account/project/session/role/scope predicate and complete writer set |
+| Project fence | Child FOR SHARE; project mutation/close FOR NO KEY UPDATE | Engineering/Database/Security validate lock matrix and every CMD-011–054 child/finalizer |
+| CAS tokens | Existing request expected_version fields retained as unresolved contract inputs | Physical schema must define row_version/increment semantics or contracts must remove the token; no token is invented here |
+| Project capacity bootstrap | Create default capacity row atomically with new project | Database approve physical key, default, unique constraint and FK/trigger path |
+| Closure blocker graph | Evaluate after project fence | PO/institution define blocker classes, Operations define pending-work policy, Engineering maps physical predicates |
+
+CMD-001–010 are candidate-normalized at documentation level only. LPR-01 and LPR-07–LPR-11 remain OPEN; LPR-10 NOT EXECUTED; 0/54 commands are certified lock-complete.
