@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.3
+**Version:** 0.8.4
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -49,7 +49,7 @@ The detailed review documents are engineering proposals. Their presence does not
 - Root AGENTS.md v1.2.0.
 - MIB-001 and IRG-001.
 - DGA-001 and Decision Register.
-- PostgreSQL Command Contract Catalogue v0.3.1.
+- PostgreSQL Command Contract Catalogue v0.4.1.
 - Canonical Permission Registry and Command Authorization Matrix v0.2.0.
 - Command Authorization Verification Matrix.
 - Physical Database Schema and Integrity Specification v0.3.0.
@@ -397,3 +397,10 @@ The approved LPR-02–LPR-06 product semantics are now traced into the Decision 
 Product semantics for CMD-011–020 are PO APPROVED and recorded in the Decision Register. The detailed review, command catalogue, Project/Session/Assignment Model, physical-schema semantic overlay, RTM and QA traceability now consume those decisions. This does not change this cross-command reconciliation's status: **engineering reconciliation OPEN; no executable command contract approved**.
 
 The approved semantics are not lock approvals. CMD-010–015 project/session parent-fence incompatibility, T-14 capacity serialization, row-version/CAS physicalization, identity/authorization rank gaps, function privilege/ACL evidence, and all 54 command manifests remain technical dependencies. DGA-B14/B17/B18/B19/B21 remain partial/open as recorded; lock certification remains 0/54; G9 NOT READY; G10 NOT AUTHORIZED.
+
+
+## LPR technical resolution and command-contract overlay — 2026-11-24
+
+The current candidate technical recommendations are consolidated in [TECH-RESOLUTION-LPR-001](ENGINEERING-SECURITY-TECHNICAL-RESOLUTION-PACKAGE-LPR-001-011.md) v0.1.0. The detailed CMD-011–020 review v0.3.6 and PostgreSQL Command Contract Catalogue v0.4.1 now identify the proposed project-before-session fence, L15–L18 identity/authorization ordering and T-14 capacity-first path for CMD-009–016. The CMD decision package v0.2.3 directly preserves T-07's DRAFT/ACTIVE/PAUSED/CLOSED states; CLOSE_REQUESTED is action/event only.
+
+These are candidate specifications, not technical approval. LPR-01/LPR-07/LPR-08/LPR-09/LPR-11 remain OPEN; LPR-10 NOT EXECUTED. The global graph is not proven acyclic, all 54 manifests are not certified, and no physical lock/privilege graph or concurrency evidence exists. G3/G4/G5/G7/G9 remain NOT READY; G10 NOT AUTHORIZED.
