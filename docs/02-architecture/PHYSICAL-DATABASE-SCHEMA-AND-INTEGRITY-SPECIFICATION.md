@@ -1,7 +1,7 @@
 # Physical Database Schema and Integrity Specification
 
 **Status:** Engineering specification draft — approval required before migrations  
-**Version:** 0.4.4  
+**Version:** 0.4.5  
 **Package:** L — Physical Data Model and Integrity  
 **Date:** 2026-11-23
 
@@ -379,3 +379,19 @@ Candidate transaction requirements:
 - No browser SELECT/INSERT/UPDATE/DELETE, no authenticated user grant, no generic worker table and no service_role impersonation.
 
 Numeric fan-out bound, transaction latency/lock budget, exact scope FKs, canonical hash format, outbox snapshot header fields, RLS/ACL, workload identity and recovery behavior remain OPEN. This candidate is NOT ADMITTED, creates no migration authority, and does not change the current 48-table parity count.
+
+## Candidate-only annex — inspection draft context (2026-11-24)
+
+**Source:** [INSPECTION-DRAFT-001](INSPECTION-DRAFT-CONTEXT-AND-REVISION-LIFECYCLE-PROPOSAL-001.md) v0.1.0.  
+**Status:** NOT ADMITTED; excluded from the canonical 48-table inventory and ERD until Product Owner, Engineering, Database and Security approval.
+
+Candidate relation `inspection_draft_contexts` separates mutable in-progress work from immutable submitted `inspection_revisions`. The candidate fields, integrity rules, active-context uniqueness, strict versioned JSONB payload, source-draft linkage, and one-time evidence-to-revision binding are specified in INSPECTION-DRAFT-001.
+
+Candidate impacts requiring admission review:
+- `inspections.active_draft_context_id` pointer with same-inspection proof;
+- `inspection_revisions.source_draft_context_id` unique linkage;
+- `evidence_assets.draft_context_id` during upload/finalization and one-time `inspection_revision_id` binding at submit;
+- CMD-026 initial context creation, CMD-028 patch semantics, CMD-029 atomic sealing/materialization, CMD-030 correction context, CMD-032 reopen context, and CMD-033/034 draft-context reference;
+- RLS/ACL, append-only history, parent/claim/evidence/finalizer locks and adversarial QA.
+
+This annex adds no admitted table and does not change the 48-table count. No DDL, migration, grant, RLS change, runtime inspection or test was performed. Evidence carry-forward, next Inspector/claim owner and claim lifecycle remain open; do not infer them.
