@@ -32,7 +32,7 @@ Version: 0.1.0
 | Documents | `generate-approved-pdf`, `record-print`, `record-print-batch` | Generate snapshot PDF; record individual or bounded batch print actions with per-document outcomes |
 | Reporting | `get-actual-report`, `get-target-report` | Read distinct actual/target dimensions |
 
-These are logical command names, not a finalized REST URL contract. Batch print is an orchestration of independently authorized per-document print commands; it is not a single all-or-nothing print-success transaction. Batch print is an orchestration of independently authorized per-document print commands; it is not a single all-or-nothing print-success transaction.
+These are logical command names, not a finalized REST URL contract. Batch print is an orchestration of independently authorized per-document print commands; it is not a single all-or-nothing print-success transaction.
 
 ## 3. Standard request envelope
 
