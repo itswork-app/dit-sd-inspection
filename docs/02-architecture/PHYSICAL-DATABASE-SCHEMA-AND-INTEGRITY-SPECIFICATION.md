@@ -83,7 +83,7 @@ Every assignment/session binds to one published instrument version. Every inspec
 
 | Table | Key columns | Required constraints / indexes |
 |---|---|---|
-| `units` | `id`, `project_id`, `instrument_id`, `serial_raw`, `serial_normalized`, `normalization_version`, `status` | Unique `(project_id, instrument_id, serial_normalized)` when serial is present; retain raw input; normalization version required |
+| `units` | `id`, `project_id`, `instrument_id`, `serial_raw`, `serial_normalized`, `normalization_version`, `status` | Unique `(instrument_id, serial_normalized)` when serial is present, enforced across all projects; retain raw input; normalization version required |
 | `inspections` | `id`, `unit_id`, `assignment_id`, `status`, `current_revision_no`, `row_version` | Unit/assignment project+instrument consistency; one active inspection lifecycle per unit subject to authorized reopen/reinspection rules |
 | `inspection_revisions` | `id`, `inspection_id`, `revision_no`, `instrument_version_id`, `snapshot_hash`, `author_id`, `submitted_at`, `payload_snapshot` | Unique `(inspection_id, revision_no)`; immutable after submission; instrument version must match assignment snapshot |
 | `checklist_responses` | `id`, `inspection_revision_id`, `checklist_item_id`, `answer`, `note`, `answered_by`, `answered_at` | Unique `(inspection_revision_id, checklist_item_id)`; item belongs to revision's instrument version; answer conforms to item schema |
@@ -102,7 +102,7 @@ Every assignment/session binds to one published instrument version. Every inspec
 - Empty/unknown serials do not receive a shared normalized key; they require a separate authorized identification workflow.
 - If an official instrument-specific rule differs, it must be configured/versioned and tested before use.
 
-Uniqueness scope proposed for initial release: one normalized serial per project + instrument. Reinspection must link to the existing unit and follow an authorized new inspection/reopen path; it must not create a duplicate unit row. This scope requires Product Owner sign-off before migration.
+PO-approved T-16 option B: one normalized serial per instrument type across all projects. Enforce the unique key `(instrument_id, serial_normalized)` for non-null normalized serials; project ID must not be part of this uniqueness key. The data model must support an existing physical unit being referenced by project-scoped inspection activity without creating a second same-type unit identity. A same-type cross-project collision must enter controlled review with reason and audit; never silently merge or discard history. Reinspection must link to the canonical unit identity and follow an authorized new inspection/reopen path. This is a design invariant, not an executed migration.
 
 #### Active claim and assignment overlap
 
@@ -185,7 +185,7 @@ Corrections create a new version or append-only event. Do not update historical 
 ## 7. Unresolved Product Owner / institutional decisions
 
 These are not silently resolved by engineering:
-1. Confirm serial uniqueness scope (recommended project + instrument) and instrument-specific case sensitivity.
+1. Reconcile PO-approved T-16 option B (instrument type + normalized serial across all projects) into the final unit/project association model; confirm any institution-approved exception and instrument-specific normalization/case-sensitivity policy before migration.
 2. Confirm exact Inspector capacity counting predicate (active Inspector role grant versus additionally assigned active project).
 3. Approve INS-016 audit event scope, access, retention, export, and legal hold.
 4. Approve privacy classification, evidence retention/deletion, and institutional legal basis.
@@ -228,3 +228,10 @@ The capacity count is the number of **distinct user accounts** satisfying all th
 ## Account registration and Super Admin-controlled staffing invariant (PO clarification, 2026-11-24)
 
 The account lifecycle must precede staffing: a registered/authenticated identity is provisioned as pending; only Super Admin approval/activation may grant role(s), permissions, scope, team membership and operational assignment. Registration alone confers no operational access and is not counted as an Inspector. Super Admin owns team creation/count and team-member assignment. Enforce foreign keys to an existing approved application account for every role grant/team membership/operational assignment; reject self-assignment and assignments to pending, rejected, suspended or disabled accounts. Capacity counting follows T-14's canonical distinct-account predicate and must be evaluated atomically with changes that affect eligibility.
+
+
+## T-16 — Approved serial and evidence integrity invariant (2026-11-24)
+
+The canonical serial uniqueness key is `(instrument_id, serial_normalized)` across all projects; project ID is deliberately excluded. Different instrument types may reuse the same serial string. Null/unknown serial handling remains a separate authorized identification workflow and must not be represented by a shared empty key. A duplicate within the same instrument type is not silently merged: block creation of a second canonical unit and route the conflict to authorized resolution with reason and append-only audit. The project association model must permit project-scoped inspection history to reference the canonical unit identity while preserving project/session scope.
+
+Every evidence record must reference the exact immutable inspection revision and instrument version and a valid slot/item in that version. Preserve original metadata, checksum, uploader, capture time, upload time and immutable storage object identity. Finalized evidence objects are never overwritten in place. Replacement creates a new evidence record/object identity and audit event; historical revision/evidence links remain intact. Database constraints, transaction locking, RLS/command authorization and tests must enforce these rules together. No migration or runtime implementation is claimed.
