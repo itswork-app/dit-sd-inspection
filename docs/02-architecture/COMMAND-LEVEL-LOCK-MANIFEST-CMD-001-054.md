@@ -1,7 +1,7 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.4.31
+**Version:** 0.4.32
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Parent:** LOCK-GRAPH-001 v0.4.21  
@@ -665,3 +665,11 @@ PO has selected Option A, the global transaction-scoped audience guard (candidat
 - CMD-032 uses the same inspection serialization point but its active-draft uniqueness arbiter remains OPEN until the physical draft-context model is defined.
 
 This is a candidate physical invariant, not an approved DDL or certified lock recipe. Reviewer assignment, parent/assignment/claim lock order, implicit FK/index/trigger/helper edges, and all competing writer paths remain open. The 0/50 certified count is unchanged.
+
+## CMD-001–054 lock-manifest overlay — SES-001 ABORT request and decision (2026-11-24)
+
+**Candidate only; no lock path is certified.** The request and approval are distinct protected write paths. Both must serialize against submit, return, approve, reopen, claim release and FINAL_CLOSE. The approval path conditionally touches the claim and inspection aggregates; the request path must not release a claim or transition inspection to ABORTED.
+
+Candidate logical resources: idempotency arbitration; actor/role/scope authorization; canonical unit identity if needed to validate the exact physical unit; session/project parent fence; assignment/membership; unit; association; claim (approval only, when active); inspection; pending abort-request aggregate (approval and request as applicable); append-only decision/domain/audit facts.
+
+The candidate relative chain follows the current global proposal from lower to higher rank, with claim before inspection and append-only facts after mutable-state validation. Exact ranks, omitted-resource proof, FK/unique-index/trigger/helper locks, request-row ordering, parent/child fence participation, retry/timeout budget and graph acyclicity remain OPEN. Do not implement a guessed lock list. CMD-027 remains release-only and is not the abort path.
