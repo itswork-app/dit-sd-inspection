@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.2  
+**Version:** 0.1.3  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -282,7 +282,7 @@ T-19 read-only tree audit on 2026-11-24 found 54 blobs on `docs/t17-instrument-g
 
 | Requirement ID | Requirement | Authority | Design reference | Verification | Status |
 |---|---|---|---|---|---|
-| NOTIF-001 | Notification intent is durable and created atomically with source event/audit | INS-015; INS-016; T-18 | NLA-001 v0.1.2 §3, §8; notification_outbox | TC-NOTIF-001..003, TC-NOTIF-022 | DESIGN PROPOSED; REVIEW OPEN |
+| NOTIF-001 | Notification intent is durable and created atomically with source event/audit | INS-015; INS-016; T-18 | NLA-001 v0.1.3 §3, §8; notification_outbox | TC-NOTIF-001..003, TC-NOTIF-022 | DESIGN PROPOSED; REVIEW OPEN |
 | NOTIF-002 | In-app inbox is recipient-self scoped; source resource is re-authorized | INS-015 | NLA-001 §4.3, §5, §9 | TC-NOTIF-004..006, TC-NOTIF-018 | DESIGN PROPOSED; SECURITY REVIEW OPEN |
 | NOTIF-003 | Delivery and read state are independent; retries are idempotent | INS-015 | NLA-001 §3.2, §4.4–4.5, §7 | TC-NOTIF-007..011, TC-NOTIF-015, TC-NOTIF-021..024, TC-NOTIF-026 | DESIGN PROPOSED; PROVIDER/WORKER REVIEW OPEN |
 | NOTIF-004 | Policy configuration is versioned, validated and audited | INS-015 | NLA-001 §4.1, §8–9 | TC-NOTIF-012, TC-NOTIF-016, TC-NOTIF-020 | DESIGN PROPOSED; PO/SECURITY APPROVAL OPEN |
@@ -360,7 +360,7 @@ T-13 requires a durable batch identifier and per-document outcomes. The physical
 |---|---|---|---|---|---|
 | RET-001 | Retention, legal hold and disposition require written institutional records/legal/privacy/security policy; no destructive action may be exposed before scope, authority, precedence and evidence lifecycle are approved | T-10; institutional records/legal/privacy/security authorities | CMD-045–048 Detailed Contract Review §4; Decision Register T-10; DGA-B04 | Policy/hold/disposition race, authorization, SoD, audit atomicity, backup/object lifecycle and legal-hold precedence tests | BLOCKED — INSTITUTIONAL APPROVAL REQUIRED |
 | INC-001 | Security incident review requires an approved incident-response owner, case scope, lifecycle, evidence handling and product-vs-external-system boundary; incident access must not grant operational privileges | Institutional security authority; T-10 | CMD-045–048 Detailed Contract Review §5 | Need-to-know, cross-scope denial, break-glass expiry/review, evidence provenance and no-business-state-mutation tests | BLOCKED — AUTHORITY / SCOPE / SCHEMA OPEN |
-| PROV-001 | Provider configuration requires documented account/billing ownership, custodians, region, plan, least-privilege access and an approved secret manager; secret material is never accepted or persisted in application commands/logs | T-12; institution/provider custodians | CMD-045–048 Detailed Contract Review §6; NLA-001 v0.1.2; DGA-B05 | Ownership/custody, secret redaction, environment isolation, rotation/revocation, webhook trust and rollback tests | BLOCKED — T-12 EVIDENCE OPEN |
+| PROV-001 | Provider configuration requires documented account/billing ownership, custodians, region, plan, least-privilege access and an approved secret manager; secret material is never accepted or persisted in application commands/logs | T-12; institution/provider custodians | CMD-045–048 Detailed Contract Review §6; NLA-001 v0.1.3; DGA-B05 | Ownership/custody, secret redaction, environment isolation, rotation/revocation, webhook trust and rollback tests | BLOCKED — T-12 EVIDENCE OPEN |
 | REL-001 | Production release authority must be enforced by approved repository/provider control-plane protections, immutable artifact provenance, required checks, environment approvals and separation of duties; no product command may bypass them | MIB-001; repository administrator; Operations/Security | CMD-045–048 Detailed Contract Review §7; DGA-B15 | Protected branch/environment, required CI, artifact digest, approver/operator SoD, deployment and recovery evidence | BLOCKED — RELEASE GOVERNANCE NOT VERIFIED |
 
 These requirements are governance/architecture traceability records, not implementation authorization. All related tests remain PLANNED / NOT EXECUTED.
@@ -370,12 +370,12 @@ These requirements are governance/architecture traceability records, not impleme
 
 | Requirement ID | Requirement | Authority | Design reference | Verification | Status |
 |---|---|---|---|---|---|
-| NOTIF-007 | CMD-052/053 workers use a least-privilege workload identity and durable owner/token-hash/generation/expiry fencing; stale workers cannot finalize after lease reclaim | T-18; LPR-08; Security/Operations | NLA-001 v0.1.2 §4.2/4.4/9/14; CMD-049–054 review v0.1.1 §8–9; LOCK-MANIFEST-001 | TC-NOTIF-021/022; lease reclaim, stale finalizer, partial fan-out replay | PROPOSED; WORKER IDENTITY/ACL APPROVAL OPEN |
-| NOTIF-008 | Provider callbacks are accepted only through INT-NOTIF-001 with provider authentication, freshness, known delivery reference, durable event deduplication and monotonic status transitions | T-18; provider security authority | NLA-001 v0.1.2 §9/14; API and Transaction Contracts §INT-NOTIF-001 | TC-NOTIF-023/024/026; signature/replay, unknown reference, out-of-order callback and UNKNOWN reconciliation | PROPOSED; PROVIDER SELECTION/AUTHENTICATION OPEN |
-| NOTIF-009 | CMD-051 publishes only a validated immutable policy version using server-canonical hash and expected-current-version comparison; no draft CRUD or role grant is inferred | INS-015; T-18 | NLA-001 v0.1.2 §10/14; CMD-049–054 review v0.1.1 §7; permission registry | TC-NOTIF-012/020; schema allowlist, stale publish, concurrent version allocation, immutability | PROPOSED; PERMISSION/SCOPE/SoD APPROVAL OPEN |
-| NOTIF-010 | CMD-054 uses one database-derived UTC instant per evaluation; no caller-supplied evaluation_time; due checks remain pinned to policy version | INS-015; T-18 | NLA-001 v0.1.2 §7/14; CMD-049–054 review v0.1.1 §10 | TC-NOTIF-013/014/025; repeated tick, time spoof rejection, due boundary | PROPOSED; SLA CLOCK/POLICY APPROVAL OPEN |
-| NOTIF-011 | Notification content and operational metadata are minimized; no evidence, message body, token, secret, signed URL or full provider response enters general audit/logs; T-10 controls retention/disposition | T-10; INS-016 | NLA-001 v0.1.2 §8/14; Audit Event Catalogue; Evidence Privacy Specification | TC-NOTIF-016 and privacy/retention review | BLOCKED — INSTITUTIONAL T-10 APPROVAL |
-| NOTIF-012 | Inbox reads are recipient-self only; read_at is set once; first transition emits one notification.read event; delivery and source business state remain independent | INS-015; INS-016; T-15 | NLA-001 v0.1.2 §5/8/14; CMD catalogue CMD-049/050; RLS catalogue | TC-NOTIF-005/007/019/024 | PROPOSED; RLS/AUDIT IMPLEMENTATION VERIFICATION OPEN |
+| NOTIF-007 | CMD-052/053 workers use a least-privilege workload identity and durable owner/token-hash/generation/expiry fencing; stale workers cannot finalize after lease reclaim; CMD-052 reuses the approved immutable event-time candidate audience and may only suppress candidates after dispatch-time revalidation | T-18; LPR-08; POQ-01; Security/Operations | NLA-001 v0.1.3 §3/4.3/5/14/15; CMD-049–054 review v0.1.3; LOCK-MANIFEST-001 | TC-NOTIF-002/003/015/021/022 and new audience non-widening case | PO SEMANTICS APPROVED; SNAPSHOT/WORKER IDENTITY/ACL DESIGN OPEN |
+| NOTIF-008 | Provider callbacks are accepted only through INT-NOTIF-001 with provider authentication, freshness, known delivery reference, durable event deduplication and monotonic status transitions | T-18; provider security authority | NLA-001 v0.1.3 §9/14; API and Transaction Contracts §INT-NOTIF-001 | TC-NOTIF-023/024/026; signature/replay, unknown reference, out-of-order callback and UNKNOWN reconciliation | PROPOSED; PROVIDER SELECTION/AUTHENTICATION OPEN |
+| NOTIF-009 | CMD-051 publishes only a validated immutable policy version using server-canonical hash and expected-current-version comparison; no draft CRUD or role grant is inferred | INS-015; T-18 | NLA-001 v0.1.3 §10/14; CMD-049–054 review v0.1.1 §7; permission registry | TC-NOTIF-012/020; schema allowlist, stale publish, concurrent version allocation, immutability | PROPOSED; PERMISSION/SCOPE/SoD APPROVAL OPEN |
+| NOTIF-010 | CMD-054 uses one database-derived UTC instant per evaluation; no caller-supplied evaluation_time; due checks remain pinned to policy version. POQ-02 approves per-policy elapsed/business-time semantics, initial default ELAPSED_UTC, and quiet hours as delivery deferral only | INS-015; T-18; POQ-02 | NLA-001 v0.1.3 §7/14/15; CMD-049–054 review v0.1.2 | TC-NOTIF-013/014/025 plus explicit quiet-hours-do-not-pause-SLA case | PO SEMANTICS APPROVED; START EVENT/CALENDAR/PAUSE RULES AND EXECUTION OPEN |
+| NOTIF-011 | Notification content and operational metadata are minimized; no evidence, message body, token, secret, signed URL or full provider response enters general audit/logs; T-10 controls retention/disposition | T-10; INS-016 | NLA-001 v0.1.3 §8/14; Audit Event Catalogue; Evidence Privacy Specification | TC-NOTIF-016 and privacy/retention review | BLOCKED — INSTITUTIONAL T-10 APPROVAL |
+| NOTIF-012 | Inbox reads are recipient-self only; read_at is set once; first transition emits one notification.read event; delivery and source business state remain independent. Dismiss/archive is excluded from MVP; dismissed_at is dormant and no dismiss operation is exposed | INS-015; INS-016; T-15; POQ-03 | NLA-001 v0.1.3 §5/8/14/15; CMD catalogue CMD-049/050; RLS catalogue | TC-NOTIF-005/007/019/024; negative dismiss-surface check | PO SEMANTICS APPROVED; RLS/AUDIT IMPLEMENTATION VERIFICATION OPEN |
 
 All notification cases TC-NOTIF-001..026 remain PLANNED / NOT EXECUTED. These requirements do not approve any route, function, worker, provider, permission grant, schema object or production activation.
 
@@ -395,3 +395,16 @@ T-13 verification traceability is now explicit:
 - TC-DOC-009..011: Standing Bracket annex and IFP document cases; not a print-batch range.
 
 No test was executed. This is a traceability correction only and does not change T-13 product semantics or authorize implementation.
+
+| NOTIF-013 | MVP has no dismiss/archive command, permission, browser write or UX action; only recipient-owned set-once read_at is supported | INS-015; POQ-03 | NLA-001 v0.1.3 §15; CMD-049–054 review v0.1.2; RLS and API catalogues | TC-NOTIF-027; static API/permission/UX absence review | PO APPROVED; CROSS-DOCUMENT IMPLEMENTATION DESIGN REVIEW OPEN |
+
+
+## Product Owner notification decisions — POQ-001 (2026-11-24)
+
+POQ-01 Option C, POQ-02 Option C and POQ-03 Option A were explicitly approved by the Product Owner on 2026-11-24 and are recorded in the Decision Register. These approvals close the three product-semantic questions only:
+
+- **Audience (POQ-01):** persist the event-time candidate audience and authorized source scope/checkpoint; fan-out/retries reuse it; dispatch-time account/channel/consent/revocation checks may suppress candidates but must never widen the audience.
+- **SLA (POQ-02):** immutable policy versions declare elapsed or business-time semantics; initial default is `ELAPSED_UTC`. Quiet hours defer delivery only and do not pause/stop/reset the SLA clock. Business calendars, time zones and pause/reset conditions need explicit policy specification before activation.
+- **Dismissal (POQ-03):** dismiss/archive is excluded from MVP. Only recipient-owned set-once `read_at` is exposed; no dismiss command, permission, browser write or UX action exists. Any `dismissed_at` field retained in a proposal is dormant.
+
+The following technical details remain open: exact selector grammar and snapshot/checkpoint representation; partial fan-out fencing; policy schema and worker authorization; provider capability/callback security; exact schema constraints/indexes/RLS; institutional T-10 retention/privacy; test execution and live evidence. G9 remains NOT READY and G10 NOT AUTHORIZED.
