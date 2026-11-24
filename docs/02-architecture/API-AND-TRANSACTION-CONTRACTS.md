@@ -1,7 +1,7 @@
 # API and Transaction Contracts — Dit. SD Inspection
 
 Status: Application command design draft — endpoint implementation not authorized  
-Version: 0.2.1
+Version: 0.2.2
 
 ## 1. Contract principles
 
@@ -202,14 +202,14 @@ The route-to-RPC contract must follow [PostgreSQL Function Security & EXECUTE Gr
 
 ### Outbox fan-out
 - The originating domain command writes its domain event, audit event and minimal outbox intent atomically. Failure to persist audit or outbox intent rolls back that source command.
-- Internal fan-out claims a bounded lease using lease_owner, lease_token_hash, lease_generation and lease_expires_at, resolves recipients from the pinned policy, deduplicates recipient selectors and creates one inbox row and per-channel delivery projection idempotently. Partial progress remains PROCESSING and resumes through unique arbiters. No provider I/O occurs in the transaction.
+- Internal fan-out claims a bounded lease using lease_owner, lease_token_hash, lease_generation and lease_expires_at, materializes the immutable event-time candidate-audience snapshot/checkpoint, deduplicates within that fixed audience and creates one inbox row and per-channel delivery projection idempotently. Dispatch-time revalidation may suppress but never widen the audience. Partial progress remains PROCESSING and resumes through unique arbiters. No provider I/O occurs in the transaction.
 
 ### Provider dispatch and retry
 - Worker claims a delivery lease using the same owner/token-hash/generation/expiry fencing tuple, appends an attempt record and performs provider I/O outside a database transaction. Completion is guarded/idempotent. Use provider idempotency where supported; otherwise represent ambiguous acceptance as UNKNOWN and reconcile before claiming success. Provider callbacks enter only through separately authenticated integration boundary INT-NOTIF-001, not a browser RPC.
 - Retry is bounded and policy-controlled; routine delivery failure never blocks or rolls back the underlying business command.
 
 ### SLA/reminder/escalation
-- Evaluate policy-version-pinned thresholds using one database-derived UTC instant per transaction; no caller evaluation_time is accepted. Append one unique escalation event per notification/policy/step/type. Enqueue another notification only after recipient scope is revalidated. Never change source business state.
+- Evaluate policy-version-pinned thresholds using one database-derived UTC instant per transaction and the policy's declared elapsed/business-time mode; initial-release default is ELAPSED_UTC. Quiet hours defer channel delivery only and do not pause the SLA clock; no caller evaluation_time is accepted. Append one unique escalation event per notification/policy/step/type. Enqueue another notification only after recipient scope is revalidated. Never change source business state.
 
 Worker identity, scheduler authentication, database role, function owner and exact EXECUTE ACL remain a separate T-18 security approval. CMD-052..054 must not be browser-callable.
 
@@ -217,3 +217,10 @@ Worker identity, scheduler authentication, database role, function owner and exa
 ## Notification integration boundary — INT-NOTIF-001 (proposal)
 
 INT-NOTIF-001 is the provider callback ingress used by CMD-053's external delivery lifecycle. It is a separate server-side integration route, not a CMD ID, user permission or browser-callable PostgreSQL RPC. The selected provider must supply a verifiable signature/authentication mechanism and stable event identity. The ingress must validate signature and freshness, resolve only a known provider_message_ref, apply an allowlisted monotonic delivery-state transition, deduplicate provider event IDs through an approved durable mechanism, and reject replay/unknown references without revealing unrelated deliveries. It must never update notifications.read_at or source business state. Provider choice, callback credentials, event dedup persistence and exact route/function ACL remain unapproved.
+
+
+## POQ-01..03 API contract reconciliation — 2026-11-24
+
+- CMD-052 fan-out uses the persisted event-time candidate audience and its authorized scope/checkpoint. Dispatch-time account/channel/consent/revocation checks can suppress candidates only; no retry may widen the audience.
+- CMD-054 applies the immutable policy version's SLA mode. Initial-release default is ELAPSED_UTC; quiet hours defer delivery only and do not pause/reset the SLA clock. Business calendars and pause/reset behavior require explicit policy definitions.
+- Dismiss/archive is excluded from MVP. Only recipient-owned set-once read_at is exposed; no API route or command may mutate dismissed_at.
