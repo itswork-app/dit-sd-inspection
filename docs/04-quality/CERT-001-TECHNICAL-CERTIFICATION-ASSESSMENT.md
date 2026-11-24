@@ -1,7 +1,7 @@
 # CERT-001 — Technical Certification Assessment
 
 **Document ID:** CERT-001  
-**Version:** 0.1.4  
+**Version:** 0.1.5  
 **Assessment date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
