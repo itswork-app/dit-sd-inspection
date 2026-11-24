@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.11
+**Version:** 0.4.12
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -405,3 +405,16 @@ Integration findings:
 - CMD-019/020 instrument/version/child order requires database-level immutability and child-writer exclusion proof.
 
 The manifest now has 20/54 candidate-normalized documentation rows (CMD-001–020) and 0/54 technically approved/certified. This count describes the manifest's candidate overlays, not an acyclic graph proof. LPR-01, LPR-07 and LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. The effective graph remains uncertified because implicit FK/index/trigger/function edges, exact lock modes and adversarial evidence are outstanding.
+
+
+## 22. CMD-021–030 lock-manifest integration checkpoint — 2026-11-24
+
+LOCK-MANIFEST-001 v0.4.18 adds candidate overlays for CMD-021–030. The integration exposes material conflicts that must remain visible in the global graph:
+
+- CMD-023 source order (unit before project) conflicts with the candidate L30 project-before-L60 unit rank. The manifest records the global-rank candidate but preserves the source conflict for Engineering/Database resolution.
+- CMD-025 source order (conflict row first) conflicts with canonical serial/project/unit ordering. The conflict row is not accepted as an executable first lock; its rank and safe locator/revalidation strategy remain open.
+- CMD-026 preserves canonical serial-key arbitration before project/session/assignment, unit, association, claim and inspection. This path must be reconciled against all unit and claim writers.
+- CMD-028/029/030 share the inspection aggregate serialization point; revision, response, evidence and review children must not be acquired first by a competing writer.
+- CMD-021 deactivation must preserve published instrument versions and assignment history; CMD-022 canonical serial uniqueness is a unique-index arbitration path unless a reviewed design explicitly defines a separate lock.
+
+The candidate manifest count is now 30/54 documentation-normalized (CMD-001–030); 0/54 are technically approved or certified. This is not a proof of an acyclic graph. Exact lock modes, implicit FK/index/trigger/function edges, complete competing-writer coverage, physical constraints, independent Engineering/Database/Security review and adversarial concurrency evidence remain open. LPR-01/LPR-07/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED.
