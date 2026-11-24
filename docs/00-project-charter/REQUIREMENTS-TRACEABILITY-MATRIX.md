@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.13  
+**Version:** 0.1.14  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -481,3 +481,13 @@ TC-NOTIF-065..070 supplement TC-NOTIF-055..064. All TC-NOTIF-055..070 remain PLA
 | NOTIF-023 | The notification registry contains only the eleven PO-approved first-batch candidate intents for specification/review; each remains NOT ENABLED until exact canonical source contract, trusted participant mapping, selector dependencies, dispatch profile, deduplication, atomicity and required technical approvals are complete | INS-015; PO event-candidate decision (2026-11-24); POQ-01; POQ-04 | NLA-EVENT-TRIAGE-001 v0.1.2; NLA-EVENT-REGISTRY-001 v0.1.0; NLA-001 v0.1.21 | TC-NOTIF-073/074; row-by-row registry admission evidence and negative publication tests | OPEN — SPECIFICATION CANDIDATES ONLY; TECHNICAL ADMISSION PENDING |
 
 TC-NOTIF-073/074 remain PLANNED / NOT EXECUTED. PO approval does not authorize event publication, recipient/channel activation, implementation or G10. F-05/F-04/F-03/F-07 remain OPEN; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## Account outcome event technical traceability — 2026-11-24
+
+| Requirement ID | Requirement / invariant | Authority | Design reference | Verification | Status |
+|---|---|---|---|---|---|
+| NOTIF-024 | Account outcome candidates must bind an exact CMD-002/003 producer transaction, canonical event schema/version and trusted participant projection; pre-transition snapshot selection must be explicitly separated from dispatch-time enabled-account suppression | INS-015; POQ-01; POQ-04; CMD-002/003; Security | NLA-EVENT-REGISTRY-001 v0.1.1; NLA-EVENT-TECH-RECON-001 v0.1.0 §§3–4; L05 source-event path map v0.1.0 | TC-NOTIF-073/075; exact source/participant/selector review | OPEN — ACCOUNT PARTICIPANT AND STATE-PREDICATE CONTRACT UNRESOLVED |
+| NOTIF-025 | CMD-002/003 must serialize competing terminal decisions and atomically bind account mutation, immutable decision, canonical event, audit, idempotency and (only after admission) outbox/candidate snapshot; every account eligibility writer must participate in the approved L05 protocol | POQ-01; POQ-04; T-18; Security/Engineering/Database | NLA-EVENT-TECH-RECON-001 v0.1.0 §§3–5; LOCK-NORMALIZATION-001 v0.1.1; L05 writer matrix v0.1.4 | TC-NOTIF-076; command concurrency, atomic rollback, uniqueness and complete-writer evidence | OPEN — DECISION UNIQUENESS / WRITER COVERAGE / LOCK PROOF MISSING |
+
+TC-NOTIF-075/076 remain PLANNED / NOT EXECUTED. NOTIF-024/025 are design/verification requirements, not implementation authorization. G9 NOT READY; G10 NOT ACTIVE.
