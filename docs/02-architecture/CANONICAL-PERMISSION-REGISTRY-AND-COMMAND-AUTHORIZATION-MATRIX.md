@@ -1,7 +1,7 @@
 # Canonical Permission Registry and Command Authorization Matrix
 
 **Status:** Draft for Product Owner and security review — NOT approved for implementation  
-**Version:** 0.2.0 | **Package:** M/N | **Date:** 2026-11-24  
+**Version:** 0.2.1 | **Package:** M/N | **Date:** 2026-11-24  
 **Authority:** T-15, T-17, T-18; legacy RBAC catalogue and privileged command inventory
 
 ## 1. Purpose and mandatory rules
@@ -31,7 +31,7 @@ All codes are proposed unless explicitly identified as T-17 decisions. Immutable
 | project.manage | Create/update project metadata | PROJECT | Super Admin; unique code and valid state | create-project/update-project | project.created/updated |
 | project.close | Final project closure | PROJECT | Explicit Super Admin authority; gates, reconciliation, reason and confirmation | close-project | project.closed |
 | session.manage | Create/update session configuration | PROJECT_SESSION | Super Admin; project scope | create-session/update-session | session.created/updated |
-| session.transition | Activate/pause/resume/close/reopen session | PROJECT_SESSION | Super Admin and Korlap only for approved transitions in assigned scope | transition-session | session.* |
+| session.transition | Activate/pause/resume/request closure; final close and reopen are separately privileged actions | PROJECT_SESSION | Korlap limited to activate/pause/resume/request closure in assigned scope; Super Admin final close after gates; reopen requires privileged reasoned audited workflow | transition-session | session.* |
 | assignment.manage | Publish assignment and change members | PROJECT_SESSION_ASSIGNMENT | Explicit staffing authority; no self-assignment; no overlapping membership | publish-assignment/change-assignment-members | assignment.* |
 | capacity.manage | Change combined Inspector cap | PROJECT_CAPACITY | Super Admin; 1..100; reject below T-14 qualifying count; atomic settings-row lock | change-inspector-capacity | capacity.limit_changed |
 | target.manage | Create/update/publish target plan and allocation | PROJECT_SESSION | Authorized planner; published target immutable; never writes actuals | target commands | target.* |
@@ -182,3 +182,15 @@ See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SE
 ## NLA-001 permission extension
 
 `notification.read` is self-scoped and never grants access to the referenced project/inspection/evidence. `notification.policy.manage` is a proposed scoped configuration permission; no role-to-permission assignment or grantor authority is approved. CMD-052..054 are internal worker operations and must not be represented as user-role permissions. Add exact scope predicates, grants, negative tests and SoD review before implementation.
+
+
+## CMD-011–020 Product Owner approval boundary — permission semantics (2026-11-24)
+
+The Product Owner has approved the product-level actors, action boundaries and invariants for CMD-011–020 as recorded in the Decision Register. This does **not** approve the permission identifiers as a deployed authorization contract, any role-to-permission mapping, grantor/delegation ceiling, scope predicate implementation, RLS policy, function EXECUTE grant or role seed.
+
+In particular:
+- `session.transition` must not imply Korlap authority to perform final closure or reopen. Korlap may only activate/pause/resume/request closure within assigned scope; Super Admin performs final closure after gates; reopening is a separate privileged, reasoned and audited workflow.
+- `instrument.manage` does not imply `instrument.publish`; T-17 remains controlling.
+- The approved CMD-011–020 product semantics must be reconciled with the command authorization verification matrix and exact per-command scope/SoD rules by Security/Engineering before any role mapping or grant is approved.
+
+**Registry status remains DRAFT / NOT APPROVED FOR IMPLEMENTATION.**
