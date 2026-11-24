@@ -114,7 +114,7 @@ These are authorization design requirements, not deployed policies or test resul
 - Service-role keys are server-only and must not be used as a blanket RLS bypass for user-initiated commands. Any exception requires a separate ADR, threat-model and audit.
 - RLS/grant tests must attempt direct DML through anon/authenticated clients and verify denial, then verify authorized command success and wrong-role/wrong-project/wrong-session/wrong-assignment denial. Also test revoked/expired JWT, pending/disabled account, self-review, replay, idempotency hash mismatch and audit rollback.
 
-T-18 is an approved architecture decision only. This document is not evidence that RLS or grants have been deployed or tested. T-16 project-association reconciliation remains a pre-migration dependency.
+T-18 is an approved architecture decision only. This document is not evidence that RLS or grants have been deployed or tested. T-16 association model is specified in the ERD/physical schema; technical review and institution-approved normalization/exception policy remain pre-migration dependencies.
 
 
 ## T-16 — Unit association RLS and project isolation contract
