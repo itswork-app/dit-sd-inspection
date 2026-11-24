@@ -137,3 +137,8 @@ Required RLS/grant matrix cases: associated project member allowed only within a
 The role/action matrix above is descriptive only and does not grant permissions. T-17's explicit `instrument.manage`, `instrument.publish` and `instrument.deactivate` permissions remain separate. T-18 requires narrow command-specific permission codes; the legacy RBAC permission catalogue has not yet been fully mapped to the command inventory. Evidence read/export, audit read/export and project closure must receive explicit permissions and approved scope/authority; Super Admin status alone is not a substitute. The RLS matrix must not imply automatic global audit export.
 
 The canonical permission registry, legacy-code mapping, role grants, command EXECUTE grants and table RLS remain open review items. No deployed authorization policy is claimed.
+
+
+## Canonical permission registry dependency
+
+Use ../02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md as the proposed canonical vocabulary and command mapping. The role/action matrix in this document is descriptive and does not grant authority. Final role-to-permission mapping, grant/revoke authority, exact scope predicates, per-object RLS and RPC EXECUTE grants remain open pending PO/security review. Evidence read/export and audit read/export are separate capabilities.
