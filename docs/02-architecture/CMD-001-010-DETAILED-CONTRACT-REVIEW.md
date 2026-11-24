@@ -1,7 +1,7 @@
 # CMD-001–010 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security review required; NOT approved for implementation  
-**Version:** 0.3.0  
+**Version:** 0.3.1  
 **Date:** 2026-11-24  
 **Scope:** CMD-001 through CMD-010  
 **Controls:** T-15 append-only audit direction; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
@@ -750,7 +750,7 @@ Next documentation-only step: resolve the cross-command decisions above with PO/
 
 ## 7. Lock-rank reconciliation checkpoint — 2026-11-24
 
-The row-level CMD-001–010 overlay in LOCK-MANIFEST-001 v0.4.0 preserves source-stated lock/transaction behavior while distinguishing candidate-rank mappings from unclassified resources.
+The row-level CMD-001–010 overlay in LOCK-MANIFEST-001 v0.4.3 preserves source-stated lock/transaction behavior while distinguishing candidate-rank mappings from unclassified resources.
 
 - CMD-001–003 mutate or arbitrate app_users account identity/state. CMD-004/005 mutate user_roles. CMD-006/007 mutate user_scope_grants. None of these mutable resource classes is named in the current L00–L110 candidate hierarchy.
 - Do not map these resources to L50 assignment/membership or L110 append-only facts by analogy. LPR-11 is OPEN and requires Engineering/Security resolution before CMD-001–007 can be rank-normalized.
@@ -764,3 +764,4 @@ No candidate rank or lock primitive is approved by this checkpoint. No source co
 ## 8. Change history
 
 - **0.3.0 — 2026-11-24:** Added the missing identity/authorization resource-class finding and LPR-11 traceability; reconciled the detailed CMD-001–010 review with the new row-level manifest overlay. Proposal status and G9/G10 boundaries unchanged.
+- **0.3.1 — 2026-11-24:** Synchronized the row-level overlay reference to LOCK-MANIFEST-001 v0.4.3. No contract authority or approval status changed.
