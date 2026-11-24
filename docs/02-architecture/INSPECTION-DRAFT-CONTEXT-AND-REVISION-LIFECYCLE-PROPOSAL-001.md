@@ -1,7 +1,7 @@
 # Inspection Draft Context and Revision Lifecycle — Technical Proposal
 
 **Document ID:** INSPECTION-DRAFT-001  
-**Version:** 0.1.3  
+**Version:** 0.1.4  
 **Date:** 2026-11-24  
 **Status:** Engineering / Database / Security / Product Owner review required — NOT APPROVED  
 **Scope:** CMD-026 claim-unit; CMD-028 save-draft; CMD-029 submit-inspection; CMD-030 return-inspection; CMD-032 reopen-inspection; CMD-033/034 evidence upload/finalization  
@@ -237,7 +237,7 @@ This proposal is not admitted until the following are reconciled and approved:
 | IDC-O06 | Decide evidence carry-forward/reuse across revisions and its provenance/link model | Product Owner / institutional evidence authority / Database |
 | IDC-O07 | Approve draft payload answer types, note/privacy policy, JSONB bounds and canonical hash | Product Owner / Security / Engineering / Database |
 | IDC-O08 | Prove active-context uniqueness, FK consistency, CAS and lock graph under concurrency | Database / Engineering / Security / QA |
-| IDC-O09 | Confirm CMD-032 blocker policy against claims, association, session closure and document finalizers | Operational owner / Engineering / Database |
+| IDC-O09 | Confirm CMD-032 blocker policy against claims, association, session closure and document finalizers | Operational owner / Engineering / Database |\n| IDC-O10 | Decide whether a privilegedly reopened CLOSED session may accept a new inspection attempt under the same session_id; an ABORTED attempt must never be reactivated | Product Owner / operational owner / Security |
 
 **Disposition:**
 - Separate mutable draft context from immutable submitted revision: **CANDIDATE PROPOSED; NOT APPROVED**.
