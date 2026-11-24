@@ -1,7 +1,7 @@
 # Concurrency and Version Token Reconciliation
 
 **Document ID:** CONCURRENCY-001  
-**Version:** 0.1.2  
+**Version:** 0.1.3  
 **Status:** Engineering proposal — PO/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054, physical schema, command catalogue, transaction/lock contracts, audit and QA traceability  
@@ -300,3 +300,10 @@ Do not edit all canonical sources to the proposed values before PO/Security appr
 | G10 implementation authorization | NOT AUTHORIZED | No separate written authorization |
 
 **Final disposition:** The concurrency/version model is now mapped as a decision-ready proposal. It is not an approved schema, executable API contract, migration plan or evidence of runtime correctness.
+
+
+## CMD-011–020 Product Owner semantic approval boundary — 2026-11-24
+
+The Product Owner has approved CMD-011–020 product semantics, including CMD-017's session-scoped-by-default target plans, explicit CREATE_DRAFT / REPLACE_DRAFT_ALLOCATIONS / PUBLISH actions, immutable published versions and allocation uniqueness key. This closes the product decision about normal plan scope and allocation identity.
+
+It does **not** approve the physical session_id column/FK design, target quantity type/unit/range, draft row-version/hash CAS, session/project parent-fence protocol, or any lock order. CMD-012/013/016 row-version requirements and CMD-019/020 canonical instrument hash/snapshot requirements also remain technical decisions. No proposed token field in this document is approved for DDL or implementation by the PO semantic approval.
