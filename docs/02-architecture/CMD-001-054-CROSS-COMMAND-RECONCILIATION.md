@@ -450,7 +450,7 @@ No route, RPC, table, permission grant, secret-manager resource, CI rule or depl
 | Audit Event Catalogue | Current NLA linkage addendum | First-read event, policy publication and escalation event semantics |
 | Command-Level Lock Manifest | 0.4.26 | POQ-01 audience snapshot potential FK/lock-order edges; 0/50 certified |
 | Concurrency and Version Token Reconciliation | 0.1.6 | CMD-050 notification_id-only request; CMD-052/053 lease fencing; CMD-054 DB time |
-| QA Catalogue | 0.4.2 | TC-NOTIF-001..040, TC-RLS-024-049 and TC-FN-SEC-025-064..071 |
+| QA Catalogue | 0.4.3 | TC-NOTIF-001..041, TC-RLS-024-049 and TC-FN-SEC-025-064..071 |
 | RTM / RAID / DGA | RTM-001 v0.1.5; RAID-001 v0.1.3; DGA-001 v1.11.54 | NOTIF-007..015; D-026/D-034..D-036/R-034/R-035/R-037; gate blockers |
 
 ### 2. Command-to-domain crosswalk
@@ -508,7 +508,7 @@ The current source versions in §1 supersede older source-version references in 
 
 ## 15. Current lock-manifest scope and certification denominator — 2026-11-24
 
-The stable inventory remains **54/54 traceability IDs**. CMD-045–048 are PO-approved external control-plane responsibilities and are not executable application commands; they have no application route/RPC/permission/transaction/lock set. The correct application denominator for LPR-09 and LPR-10 is therefore **50 commands**. Static documentation currently records candidate execution/transaction boundaries for 50/50 application commands; this is coverage, not full normalized-manifest completion or technical certification. **Application lock certification remains 0/50.** LPR-01, LPR-07–LPR-09 and LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. The 54-ID inventory and historical 0/54 statements in earlier dated checkpoints are preserved as historical inventory snapshots, not current application certification denominators. Current sources: LOCK-MANIFEST-001 v0.4.26; LOCK-GRAPH-001 v0.4.19; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.12; TECH-RESOLUTION-LPR-001 v0.1.3; CONCURRENCY-001 v0.1.7. G9 remains NOT READY; G10 remains NOT ACTIVE.
+The stable inventory remains **54/54 traceability IDs**. CMD-045–048 are PO-approved external control-plane responsibilities and are not executable application commands; they have no application route/RPC/permission/transaction/lock set. The correct application denominator for LPR-09 and LPR-10 is therefore **50 commands**. Static documentation currently records candidate execution/transaction boundaries for 50/50 application commands; this is coverage, not full normalized-manifest completion or technical certification. **Application lock certification remains 0/50.** LPR-01, LPR-07–LPR-09 and LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. The 54-ID inventory and historical 0/54 statements in earlier dated checkpoints are preserved as historical inventory snapshots, not current application certification denominators. Current sources: LOCK-MANIFEST-001 v0.4.27; LOCK-GRAPH-001 v0.4.20; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.12; TECH-RESOLUTION-LPR-001 v0.1.3; CONCURRENCY-001 v0.1.7. G9 remains NOT READY; G10 remains NOT ACTIVE.
 
 
 ## 16. Uniform application lock-manifest register — 2026-11-24
@@ -518,13 +518,13 @@ The stable inventory remains **54/54 traceability IDs**. CMD-045–048 are PO-ap
 
 ## 17. CMD-049–054 event-time audience snapshot and lock-order reconciliation — 2026-11-24
 
-NLA-001 v0.1.4 and CMD-049–054 Detailed Contract Review v0.1.3 now distinguish the approved POQ-01 product invariant from its unapproved physical implementation. The candidate relation `notification_outbox_recipients` and outbox snapshot header fields (version/hash/count/completion) are documented across physical schema v0.4.4, RLS v0.2.5, ERD v0.3.3, permission registry v0.2.5, command catalogue v0.4.8, physical crosswalk v0.1.2 and QA v0.4.2. They remain NOT ADMITTED and excluded from the canonical 48-table inventory.
+NLA-001 v0.1.5 and CMD-049–054 Detailed Contract Review v0.1.3 now distinguish the approved POQ-01 product invariant from its unapproved physical implementation. The candidate relation `notification_outbox_recipients` and outbox snapshot header fields (version/hash/count/completion) are documented across physical schema v0.4.4, RLS v0.2.5, ERD v0.3.3, permission registry v0.2.5, command catalogue v0.4.8, physical crosswalk v0.1.2 and QA v0.4.2. They remain NOT ADMITTED and excluded from the canonical 48-table inventory.
 
 CMD-052 must consume only the immutable event-time candidate set; CMD-054 creates its own event-time candidate set; neither may re-resolve current role/assignment membership on retry. Dispatch-time revalidation may suppress external delivery only. Candidate snapshot rows and outbox header are proposed to be persisted atomically with the source event. Exact selector grammar, scope FKs, canonical serialization/hash, recipient bounds, transaction latency and RLS/ACL remain open.
 
 **New critical lock-graph finding:** candidate snapshot and inbox writes may trigger implicit FK KEY SHARE locks against app_users, project/session/location and assignment rows. If these occur after L30/L50/L55 source locks or after queue/policy locks, they may invert against L15/L16/L17 revocation paths. No candidate rank is approved. LOCK-MANIFEST-001 v0.4.26 §7.6 and LOCK-GRAPH-001 v0.4.19 §27 record the unresolved edges and LG-41..45 adversarial tests. RAID R-037 and RTM NOTIF-015 track this as OPEN — CRITICAL.
 
-QA v0.4.2 adds TC-NOTIF-030..040, TC-RLS-024-049 and TC-FN-SEC-025-070..071; all PLANNED / NOT EXECUTED. No lock mode, relation, grant, function, provider, migration or implementation is approved by this reconciliation. G9 NOT READY; G10 NOT ACTIVE; application lock certification remains 0/50.
+QA v0.4.3 adds TC-NOTIF-030..041, TC-RLS-024-049 and TC-FN-SEC-025-070..071; all PLANNED / NOT EXECUTED. No lock mode, relation, grant, function, provider, migration or implementation is approved by this reconciliation. G9 NOT READY; G10 NOT ACTIVE; application lock certification remains 0/50.
 
 
 ## Notification source-event producer lock inventory — 2026-11-24
