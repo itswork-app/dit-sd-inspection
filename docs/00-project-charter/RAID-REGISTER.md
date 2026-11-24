@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.25  
+**Version:** 0.1.26  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -450,3 +450,11 @@ The static cross-lifecycle audit confirms that session closure remains a critica
 - Notifications remain asynchronous/non-blocking unless a future approved policy changes that behavior.
 
 No new risk/dependency ID is assigned by this note. G9 remains NOT READY; G10 NOT ACTIVE; relevant QA remains PLANNED / NOT EXECUTED.
+
+## SES-001 — packed-unit ABORT clarification (2026-11-24)
+
+The PO clarification narrows ABORT to an exceptional disposition: Reviewer has returned the inspection for an identified error, but the physical unit is already packed/boxed and prepared for shipment so correction/reinspection is impracticable. Inspector requests; Admin/Korlap explicitly approves or rejects. If correction is practically possible, WF-001 correction/resubmission remains the required path.
+
+Until approved, the returned attempt remains unresolved. Approved ABORT is terminal and preserves submitted revision, Reviewer return, evidence and audit history; it is not approval, inspection completion, good/defective classification or print completion. A later inspection uses a new session-bound inspection_id. CMD-013 cannot create/approve/bulk-abort. Do not treat every unfinished attempt as eligible for ABORT.
+
+R-017, I-013 and D-010 remain OPEN — BLOCKING for command identity, authorization/SoD, reason and packed-state evidence policy, atomicity, lock/RLS/schema and QA evidence. No implementation or test execution is implied.
