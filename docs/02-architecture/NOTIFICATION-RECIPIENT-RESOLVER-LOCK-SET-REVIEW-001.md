@@ -255,3 +255,8 @@ The Product Owner approved [NLA-L05-TDR-001 v0.1.1](NOTIFICATION-AUDIENCE-GUARD-
 ## 14. Reviewer response tracking — 2026-11-24
 
 Internal review L05-REVIEW-001 v0.1.0 raised F-01 (function volatility/fresh snapshot) and F-02 (post-lock event-time instant) as correctness blockers. TDR v0.1.2 now specifies a VOLATILE RPC wrapper with distinct internal SQL commands and one `clock_timestamp()` capture immediately after L05; NRL-T11 and NRL-T12 define the required adversarial schedules. These are design amendments only. Function metadata, authenticated RPC behavior, exact isolation, half-open interval semantics approval and runtime traces remain unverified. F-01/F-02 therefore remain OPEN pending evidence and required approvals.
+
+
+## 15. Source-event path mapping artifact — 2026-11-24
+
+[L05-SOURCE-MAP-001](L05-SOURCE-EVENT-PATH-MAPPING-001.md) v0.1.0 maps all 40 canonical source-event declarations to their documented transaction boundary, existing candidate lock path and required L05 prefix. It preserves the distinction between command transactions and asynchronous finalizers (CMD-036–040), and records unresolved CMD-012/013, CMD-023–032 and CMD-035 transaction-boundary conflicts. The mapping is an inventory and candidate placement artifact only: 0/40 source lock sequences are normalized after L05 and 0/40 resolver paths are certified. Exact function/worker call graph, implicit locks, eligibility-writer participation, static acyclicity and runtime evidence remain OPEN.
