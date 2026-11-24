@@ -1,7 +1,7 @@
 # Lock Protocol Decision Resolution — LPR-01–LPR-11
 
 **Document ID:** LOCK-PROTOCOL-DECISION-RESOLUTION-001  
-**Version:** 0.3.10  
+**Version:** 0.3.11  
 **Status:** PO product decisions LPR-02–LPR-06 APPROVED; technical lock protocol remains OPEN / NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** Candidate global lock protocol for CMD-001–054 and asynchronous finalizers  
@@ -338,3 +338,8 @@ The Product Owner's explicit conditional implementation authorization is recorde
 ## 13. LPR-09 application-scope denominator clarification — 2026-11-24
 
 LPR-09 applies to **50 application commands**, not all 54 traceability IDs. CMD-045–048 are approved external control-plane dispositions and must not be assigned application lock sets. The 54/54 inventory count remains valid only as traceability coverage. The current manifest records candidate transaction/resource boundaries for the 50 application commands, but complete normalized-field coverage, physical lock-target evidence and accountable technical approvals are not yet established. Therefore LPR-09 remains OPEN and application lock certification remains **0/50**. LPR-10 remains NOT EXECUTED. No lock mode, privilege, schema, function, worker ACL or runtime behavior is approved by this clarification. LOCK-MANIFEST-001 v0.4.23 and LOCK-GRAPH-001 v0.4.16 are the current linked baselines.
+
+
+## 14. Normalized manifest register reference — 2026-11-24
+
+[LOCK-NORMALIZATION-001](COMMAND-LOCK-MANIFEST-NORMALIZATION-REGISTER-001.md) v0.1.0 is the consolidated field-level review index for the 50 application commands. It does not resolve or approve LPR-01 or LPR-07–LPR-09/LPR-11; LPR-10 remains NOT EXECUTED. CMD-045–048 remain external control-plane IDs and are excluded. The register's OPEN items must be resolved against exact physical schema and effective PostgreSQL behavior before any lock protocol approval.
