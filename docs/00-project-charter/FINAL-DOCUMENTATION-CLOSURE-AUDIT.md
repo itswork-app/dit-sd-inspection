@@ -1,7 +1,7 @@
 # Final Documentation Closure Audit — Dit. SD Inspection
 
 **Document ID:** DOC-AUDIT-001  
-**Version:** 0.2.8  
+**Version:** 0.2.9  
 **Status:** STATIC DOCUMENTATION AUDIT COMPLETED — IMPLEMENTATION READINESS NOT ESTABLISHED  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
@@ -187,3 +187,8 @@ CMD-SCHEMA-RECONCILIATION-001 v0.1.0 was added and linked from DGA-001 v1.11.47.
 ## 15. CMD-009–016 aggregate concurrency proposal — 2026-11-24
 
 AGGREGATE-CONCURRENCY-RESOLUTION-001 v0.1.0 was added and cross-referenced by CMD-PHYSICAL-CROSSWALK-001. The proposal distinguishes aggregate row-version/CAS, project/session parent fences and T-14 capacity serialization; proposes candidate BIGINT row-version fields for projects, sessions, operational assignments and project capacity settings; and identifies an expected assignment aggregate version for CMD-015 as a request-contract proposal. These are not approved DDL or command signatures. PostgreSQL row-lock compatibility, implicit lock edges, complete child-writer/finalizer coverage, complete T-14 population-writer coverage, retries and concurrency test evidence remain open. No LPR status is advanced; 0/50 application commands are lock-certified; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 16. Durable operation and artifact lifecycle proposals — 2026-11-24
+
+DURABLE-OPERATION-LEDGER-AND-ARTIFACT-LIFECYCLE-PROPOSAL-001 v0.1.0 was added and cross-referenced by CMD-PHYSICAL-CROSSWALK-001. Candidate models cover CMD-035 per-operation sync ledger/device binding; CMD-036 immutable template versions and renderer job/attempt lifecycle; CMD-038 print batch-item manifest and append-only outcomes; and CMD-039/040 attendance document versions and verification history. These are review proposals, not canonical schema additions or approved DDL. Device trust, renderer authority/worker ACL, print attempt identity, attendance location/assignment authority, uploader/verifier SoD, RLS, retention and concurrency tests remain open. No command certification or gate is advanced. G9 NOT READY; G10 NOT ACTIVE.
