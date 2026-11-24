@@ -1,7 +1,7 @@
 # CMD-011–020 Detailed Contract Review
 
 **Status:** PO product semantics APPROVED (2026-11-24); Engineering/Security contract review OPEN; NOT approved for implementation  
-**Version:** 0.3.7  
+**Version:** 0.3.8  
 **Date:** 2026-11-24  
 **Scope:** CMD-011 through CMD-020  
 **Controls:** T-14 Inspector capacity; T-15 append-only audit direction; T-17 instrument governance; T-18 Option A command boundary; G9 NOT READY; G10 NOT ACTIVE.
@@ -1225,3 +1225,17 @@ Product-semantic review for CMD-011–020 is **PO APPROVED**. This does not clos
 ## 10. Current gate status synchronization — 2026-11-24
 
 The current controlling authorization state is recorded in root `AGENTS.md` v1.2.2 and MIB-001: conditional Product Owner implementation authorization has been received; G9 remains NOT READY; G10 remains NOT ACTIVE pending verified G9 and a separate approved G10 activation record. Historical wording in prior snapshots is not current authorization. This status correction does not close any engineering/security finding, approve a command contract or lock protocol, or authorize implementation. All CMD-011–020 execution tests remain PLANNED / NOT EXECUTED.
+
+
+## SES-001 / WF-003 — CMD-013 final session-close inspection gate (2026-11-24)
+
+PO-approved SES-001 and WF-003 refine the CMD-013 closure precondition:
+
+1. `REQUEST_CLOSURE` remains a request/action only. It does not set the session to CLOSED and does not itself abort unit work.
+2. Before `FINAL_CLOSE`, every inspection attempt belonging to the exact session must be accounted for. A completed attempt must satisfy the approved inspection/review/document/print completion requirements. An incomplete or returned-but-unresolved attempt must already have a committed terminal ABORTED outcome.
+3. CMD-013 must fail with `CLOSURE_BLOCKED` while any attempt has no allowed terminal outcome, including an active claim, active draft context, pending submit/review, evidence finalization or other in-flight inspection work. The exact blocker inventory must be completed with Operations/Engineering/Database; absence of a row in one current table is not proof of no work.
+4. CMD-013 must not silently abort units, release claims, delete drafts or synthesize missing evidence. Abort is an explicit per-unit operation before final close. A failed/partial abort leaves the session open and the attempt unresolved.
+5. Once all blockers are cleared, Super Admin final close rechecks the complete blocker predicate under the approved session parent fence and child-writer serialization protocol, then atomically commits session CLOSED, `session.closed`, required audit and idempotency. It must not cascade-delete or rewrite inspection history.
+6. An ABORTED attempt remains a non-completion in actual reports/recaps and must not be counted as inspected, approved, good, defective or printed. A later session starts a new attempt; the old attempt remains immutable.
+
+**Technical disposition:** CMD-013 session row_version/CAS, complete inspection/evidence/document/print/worker blocker inventory, parent/child lock protocol, event/audit atomicity and runtime tests remain OPEN. The ABORTED state/event and exact abort command contract are not yet physically admitted. No implementation or test execution is authorized by this addendum.
