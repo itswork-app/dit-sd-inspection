@@ -1,7 +1,7 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.4.27
+**Version:** 0.4.28
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Parent:** LOCK-GRAPH-001 v0.4.20  
@@ -599,3 +599,8 @@ Before any notification snapshot relation or lock rank is admitted:
 - prove the resulting effective global graph acyclic and execute opposing-transaction tests.
 
 **Disposition:** 40/40 domain command event declarations mapped to candidate lock paths; recipient resolver lock-set coverage remains incomplete; no producer is lock-certified by this matrix. Candidate snapshot relation/header remain NOT ADMITTED. G9 NOT READY; G10 NOT ACTIVE; application lock certification 0/50.
+
+
+## 7.8 Recipient-resolver lock-set review — 2026-11-24
+
+[NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001](NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) v0.1.0 analyzes the resolver lock-set coverage for all 40 source declarations already inventoried in §7.7. It finds that actor/target locks do not prove the complete candidate recipient set is fenced; 0/40 source resolver paths are certified. It proposes (not approves) a global transaction-scoped audience guard at candidate L05, with SERIALIZABLE predicate snapshot as an alternative, followed by deterministic L15/L16/L17 and scope-parent pre-acquisition. L05 is NOT APPROVED and must not be used as an executable instruction. Event-time linearization, policy allowlist, selector grammar, writer participation, FK DDL, worker boundaries and all command-specific lock conflicts remain OPEN. Candidate relation/header remain NOT ADMITTED. 0/50 application lock certification; G9 NOT READY; G10 NOT ACTIVE.
