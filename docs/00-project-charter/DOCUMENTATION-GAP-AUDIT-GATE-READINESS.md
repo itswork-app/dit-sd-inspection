@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.9.8
+**Version:** 1.9.9
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -258,3 +258,9 @@ Following the CMD-049–054 transaction-boundary reconciliation, the controlled-
 LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.2.3 now explicitly includes L100 dependent mutable aggregates in its recommended-order summary between L90 inspection and L110 append-only facts. LOCK-GRAPH-001 v0.3.7 and LOCK-MANIFEST-001 v0.3.8 cross-references are synchronized. This removes a summary omission; it does not approve the candidate hierarchy or close any command manifest.
 
 **Disposition unchanged:** DGA-B18 PARTIAL; DGA-B19 OPEN; 54/54 inventoried, 0/54 normalized/certified. LPR-01 and LPR-07–LPR-10 remain open/not executed. G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED.
+
+## Final lock artifact parent-version synchronization — 2026-11-24
+
+The final parent/reference chain is synchronized: LOCK-MANIFEST-001 v0.3.9 declares LOCK-GRAPH-001 v0.3.8 as its parent; LOCK-GRAPH-001 v0.3.8 references LOCK-MANIFEST-001 v0.3.9 and LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.2.3. The manifest's source snapshot table intentionally retains the older exact versions reviewed at the start of this reconciliation, rather than claiming those snapshots are the latest edited artifacts.
+
+**Disposition unchanged:** DGA-B18 PARTIAL; DGA-B19 OPEN; 54/54 inventoried, 0/54 normalized/certified. LPR-01 and LPR-07–LPR-10 remain open/not executed. G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED. No CI, tests, SQL, migrations, live database inspection, deployment or merge occurred.
