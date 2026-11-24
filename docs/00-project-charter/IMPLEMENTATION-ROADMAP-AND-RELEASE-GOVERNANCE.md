@@ -1,11 +1,12 @@
 # Implementation Roadmap and Release Governance
 
 **Document ID:** IRG-001  
-**Version:** 1.0.3  
+**Version:** 1.0.4  
 **Status:** CONTROLLED PLAN — PRE-IMPLEMENTATION  
 **Date:** 2026-11-24  
 **Authority:** MIB-001, AGENTS.md, approved Decision Register and ADRs  
-**Implementation authorization:** NOT GRANTED
+**Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
+**G10 implementation activation:** NOT ACTIVE — pending verified G9 and the required G10 activation record
 
 ## 1. Purpose
 
@@ -269,7 +270,8 @@ G12 production approval is an explicit sign-off, not an automatic result of a su
 - Pre-implementation documentation phases 0–6: **IN PROGRESS; DGA-001 v1.11.28 blockers remain**.
 - POQ-01..03 notification product semantics: **APPROVED 2026-11-24; technical and institutional dependencies remain OPEN**.
 - G9 scope freeze: **NOT READY**.
-- G10 implementation authorization: **NOT GRANTED**.
+- Product Owner authorization: **CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)**.
+- G10 implementation activation: **NOT ACTIVE — pending verified G9 and the required G10 activation record**.
 - I0–I7 implementation: **NOT STARTED / NOT AUTHORIZED**.
 - Current SSOT audit: **SSOT-AUDIT-001 v0.1.5 — closure PARTIAL**.
 - Application SemVer: **not assigned yet**; no release tag exists.
@@ -281,3 +283,10 @@ G12 production approval is an explicit sign-off, not an automatic result of a su
 ## 9. External evidence intake — 2026-11-24
 
 EVID-EXT-001 v0.1.0 indexes the six Product Owner-supplied inspection artifacts. DGA-B01..B03 have been refined to distinguish evidence receipt and PO acceptance from institutional source/signatory/attendance authority. This is a documentation and evidence-indexing milestone only; it does not pass G1/G9, authorize merge or open G10.
+
+
+## 10. Product Owner conditional implementation authorization — 2026-11-24
+
+The Product Owner's written conditional authorization is recorded in the Decision Register and MIB-001. It authorizes transition toward implementation from zero in this repository, using the SSOT baseline; closure of G9 prerequisites; scope freeze only after critical blockers are closed; and G10 activation only after verification. After G10 activation, source code, database schema, migrations, API, frontend and automated tests may proceed on a dedicated implementation branch. Production changes, deployment and operations affecting real data require separate approval. No gate may be reported PASS without required evidence and approvals.
+
+**Current disposition:** PO conditional authorization RECEIVED; G9 NOT READY; G10 NOT ACTIVE; I0–I7 NOT STARTED. This does not waive institutional, Security, Database, Operations or provider approvals. The root AGENTS.md remains the controlling execution boundary.
