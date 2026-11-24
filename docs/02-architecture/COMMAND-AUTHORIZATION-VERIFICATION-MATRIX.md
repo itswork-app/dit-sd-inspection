@@ -161,8 +161,10 @@ The physical schema specification and ERD remain authoritative for actual table 
 ## 8. Verification status
 
 - Logical command families mapped: 27.
-- Complete command-specific contracts: **0**; exact schemas, physical object mappings, grants and detailed predicates remain incomplete.
-- Planned design-level verification IDs: TC-CMD-AUTHZ-024-001 through TC-CMD-AUTHZ-024-036 (36 cases); not executed.
+- Individual command contract draft rows: **48** (CMD-001..048) in PostgreSQL Command Contract Catalogue.
+- Approved/executable command-specific contracts: **0**; exact schemas, physical PostgreSQL signatures, role grants, EXECUTE grants, deployed RLS and staging evidence remain incomplete.
+- Planned family-level verification IDs: TC-CMD-AUTHZ-024-001 through TC-CMD-AUTHZ-024-036 (36 cases); not executed.
+- Planned individual contract cases: TC-CMD-CONTRACT-024-001 through TC-CMD-CONTRACT-024-048 (48 cases); not executed.
 - RLS/grants/RPCs deployed: **No evidence / not performed**.
 - Runtime/security/concurrency tests executed: **No**.
 - Permission registry approved: **No; draft only**.
