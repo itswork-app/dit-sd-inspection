@@ -1,12 +1,12 @@
 # Package T — Product Owner Decision Closure Pack
 
-**Document status:** Draft for Product Owner review  
+**Document status:** Historical decision pack — PO outcomes recorded; current decision authority is the Decision Register and dated reconciliation addenda  
 **Version:** 0.1.0  
 **Date:** 2026-11-23  
 **Repository branch:** `docs/phase-0-foundation`  
 **Purpose:** Convert the remaining Package S scope-freeze blockers and high-risk items into explicit, reviewable Product Owner decisions.
 
-> This pack is a decision instrument, not an approval record. Recommendations below are proposals only. A recommendation becomes an approved product decision only after the Product Owner explicitly accepts it and the Decision Register is updated.
+ > Historical note (2026-11-24): This pack began as a decision instrument. Product Owner outcomes T-01 through T-18 have since been recorded in the Decision Register and dated sections below. Treat recommendation text as historical unless explicitly superseded by an approved outcome. Residual institutional, design, implementation and verification dependencies remain open; PO approval does not authorize implementation.
 
 ## 1. Executive status
 
@@ -608,3 +608,17 @@ The Product Owner has explicitly selected **Option A: narrow SECURITY DEFINER co
 See [T-18 Execution Model Security Review](../02-architecture/T18-EXECUTION-MODEL-SECURITY-REVIEW.md), [PostgreSQL Function Security & EXECUTE Grant Design](../02-architecture/POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md), and [Privileged Command Boundary](../02-architecture/PRIVILEGED-COMMAND-BOUNDARY-AND-TRANSACTION-SPECIFICATION.md).
 
 The model decision is **PO APPROVED**. Exact route-to-function mappings, 48 command schemas/signatures, owner and ACL design, table-by-table RLS/grants, actual Vercel/Supabase implementation evidence, read-only live database inventory, per-function threat reviews and runtime acceptance tests remain OPEN. No SQL, migration, grant/revoke, deployment or runtime test is authorized or claimed. Scope freeze remains NOT READY; implementation remains NOT AUTHORIZED.
+
+
+## 10. Current status reconciliation — 2026-11-24
+
+This document is retained as the historical decision pack and evidence of decision evolution. Its original version/date and proposal language are not to be interpreted as the current approval state. The **Decision Register** is the canonical index of current PO decision status; the **Master Implementation Blueprint** and **Documentation Gap Audit — Gate Implementation Readiness** govern current delivery gates.
+
+- T-05 through T-18 have explicit PO direction recorded; do not present them as undecided product choices. Their detailed design, institutional approval, schema/RLS/command reconciliation and verification remain open as applicable.
+- T-01 is only partially closed: the Standing Bracket source is confirmed; official IFP source and full evidence-slot/annex reconciliation remain open.
+- T-02 is PO-approved for configurable signatory blocks; actual institutional signatory authority and approved template remain open.
+- T-10 approves the formal institutional review path only; written institutional records/legal/privacy decisions remain blocked.
+- T-12 approves an alternative provider-ownership path only; actual ownership, billing, custodians, region, plan and recovery evidence remain blocked.
+- T-18 Option A is an approved execution-model selection, not approval of individual functions, signatures, grants, routes, RLS or implementation.
+
+**Current disposition:** documentation closure INCOMPLETE; scope freeze NOT READY; implementation NOT AUTHORIZED; production readiness NOT VERIFIED.
