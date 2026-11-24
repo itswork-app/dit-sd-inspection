@@ -1,11 +1,13 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.14
+**Version:** 0.4.15
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
 **Gate:** G3 NOT READY; G4 NOT READY; G5 NOT READY; G7 NOT READY; G9 NOT READY; G10 NOT ACTIVE (conditional PO authorization received; activation remains gated by verified G9 and a separate G10 activation record).
+
+**Current gate interpretation (2026-11-24):** Dated historical sections below that say “G10 NOT AUTHORIZED” are preserved snapshots from before the Product Owner's conditional implementation authorization. The current controlling state is G9 NOT READY and G10 NOT ACTIVE; implementation remains gated by verified G9 and a separate G10 activation record.
 
 ## 1. Executive conclusion
 
