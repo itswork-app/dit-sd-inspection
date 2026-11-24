@@ -1,7 +1,7 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.4.5
+**Version:** 0.4.6
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Parent:** LOCK-GRAPH-001 v0.4.3  
@@ -274,3 +274,8 @@ The first-ten-command overlay depends on a project-parent fence. Static comparis
 | CMD-054 | Pinned policy/notification due-state read and outbox intent | Unique notification/policy-version/step/window escalation fact | One short scheduler transaction uses server UTC and atomic event/outbox insertion. Scheduler principal, due-time semantics and exact unique key remain open. |
 
 These rows reconcile logical resource/transaction boundaries only. The queue tables, policy/inbox/delivery physical keys, indexes, FK/trigger edges, worker principals, function owners, EXECUTE ACLs and provider callback runtime are not verified. Queue claim rows must never remain locked while external I/O occurs. If a worker ever mutates a source domain aggregate, it must separately reacquire the full approved parent/source lock chain and validate fencing; no such source mutation is authorized by CMD-049–054.
+
+
+## 6. Technical resolution overlay — 2026-11-24
+
+[TECH-RESOLUTION-LPR-001](ENGINEERING-SECURITY-TECHNICAL-RESOLUTION-PACKAGE-LPR-001-011.md) §7 defines the required normalized manifest schema. This overlay is not a replacement for the source-stated 54 rows and does not upgrade any row's status. L15–L18 identity/authorization ranks, project/session fence modes, implicit database lock edges, worker identities/fencing and pairwise evidence remain unverified. Baseline remains 54/54 INVENTORIED and 0/54 CERTIFIED; LPR-09 OPEN; LPR-10 NOT EXECUTED.
