@@ -255,3 +255,48 @@ The generic TC-CMD-018 suite is a boundary-level security suite; it does not by 
 - Audit read/export, retention/legal-hold command controls, and any privileged maintenance command.
 
 For each test, record exact command/function, caller fixture, permission/scope fixture, resource state, request/idempotency key, expected typed outcome, audit event expectation, lock/concurrency setup and evidence. These are test-design gaps, not permission to add implementation or run tests. No test execution is claimed.
+
+## T-18 — Command authorization verification matrix (design cases, 2026-11-24)
+
+The command-family authorization mapping is maintained in [Command Authorization Verification Matrix](../02-architecture/COMMAND-AUTHORIZATION-VERIFICATION-MATRIX.md). The following 36 cases are allocated to command-family review and common security-boundary verification. They are planned specifications, not executed tests. They do not replace later per-command request/response, RLS, EXECUTE-grant, audit rollback, idempotency and concurrency cases once exact command contracts are approved.
+
+| Test ID | Scenario | Expected result |
+|---|---|---|
+| TC-CMD-AUTHZ-024-001 | Account self-request — Authenticated caller requests access for another UID or supplies role/scope fields | Request is rejected or constrained to auth.uid(); no privilege or scope is created |
+| TC-CMD-AUTHZ-024-002 | Account decision SoD — Approver approves/rejects own account or submits decision without authority/reason | Denied; actor != subject enforced; no decision mutation; no audit success event |
+| TC-CMD-AUTHZ-024-003 | Role grant authority — Grantor assigns a role above own delegation ceiling or self-grants | Denied in PostgreSQL; no role/permission mutation; security event audited |
+| TC-CMD-AUTHZ-024-004 | Inspector grant capacity — Concurrent Inspector role/assignment grants race at configured capacity | Capacity row lock serializes; qualifying distinct account count never exceeds configured limit |
+| TC-CMD-AUTHZ-024-005 | Scope grant self-assignment — Caller grants own project/session/location/team scope or targets unauthorized resource | Denied; no scope row is created; scope mutation is audited only on success |
+| TC-CMD-AUTHZ-024-006 | Project closure gates — Caller closes project with open session/inspection/document or unreconciled actual/target data | Closure denied with stable typed blocker; no project close timestamp/state mutation |
+| TC-CMD-AUTHZ-024-007 | Project closure audit rollback — Required audit insert fails during otherwise eligible project closure | Entire closure rolls back; no success response |
+| TC-CMD-AUTHZ-024-008 | Session transition scope — Korlap transitions a session outside assigned project/location or requests prohibited transition | Denied; no state change or cross-scope disclosure |
+| TC-CMD-AUTHZ-024-009 | Assignment publication — Assignment contains overlapping member/location/instrument or unpublished instrument version | Rejected atomically; no partial membership changes; audit failure rolls back |
+| TC-CMD-AUTHZ-024-010 | Capacity mutation — Capacity set outside 1..100 or below qualifying active Inspector count | Rejected; no silent deactivation; concurrent eligibility changes serialize |
+| TC-CMD-AUTHZ-024-011 | Target plan isolation — Target planner attempts to alter actual inspection counts or published target version | Denied; actual facts unchanged; published target remains immutable |
+| TC-CMD-AUTHZ-024-012 | Instrument draft permission — Non-Super Admin or caller lacking instrument.manage edits catalog/draft | Denied; no draft/catalog mutation |
+| TC-CMD-AUTHZ-024-013 | Instrument publish permission — Caller lacks explicit instrument.publish or is not authorized Super Admin | Denied; no publication/version record |
+| TC-CMD-AUTHZ-024-014 | Instrument publication atomicity — Audit insert fails during valid T-17 direct publication | Draft remains unpublished; publication and audit both roll back |
+| TC-CMD-AUTHZ-024-015 | Canonical unit key — Concurrent registration of same instrument_id + serial_normalized from two projects | One canonical unit maximum; second request enters controlled conflict/association flow |
+| TC-CMD-AUTHZ-024-016 | Unit association authority — Caller associates/ends unit association without project authority or reason | Denied; association episode/history unchanged |
+| TC-CMD-AUTHZ-024-017 | Identity conflict reviewer — Unauthorized caller enumerates or resolves cross-project identity conflict | Denied; minimum metadata only; no merge or historical rewrite |
+| TC-CMD-AUTHZ-024-018 | Claim global uniqueness — Two projects concurrently claim same canonical unit via separate active associations | Exactly one active claim; losing command receives typed conflict; no cross-project leakage |
+| TC-CMD-AUTHZ-024-019 | Draft ownership/version — Caller saves another inspector's draft or stale row version | Denied or STALE_VERSION; no overwrite; audit records only valid mutation |
+| TC-CMD-AUTHZ-024-020 | Submit/review/reopen lifecycle — Submit missing evidence, self-review, wrong reviewer scope or reopen without reason | Each invalid transition denied; immutable prior revisions remain unchanged |
+| TC-CMD-AUTHZ-024-021 | Evidence upload boundary — Upload intent targets unauthorized slot/scope or object fails signature/checksum/size | Rejected; object not finalized; no unauthorized Storage metadata exposure |
+| TC-CMD-AUTHZ-024-022 | Evidence access/export separation — Caller has evidence.read but not evidence.export and attempts export | Read may follow approved scope; export denied; access/export audit behavior is distinct |
+| TC-CMD-AUTHZ-024-023 | Offline sync reauthorization — Revoked account/device/assignment replays a previously claimed-draft batch | Server reauthorization rejects unauthorized changes; conflict/replay outcome is durable and idempotent |
+| TC-CMD-AUTHZ-024-024 | Document generation snapshot — Generate PDF from unapproved revision or altered template instead of pinned snapshot | Denied or deterministic validation failure; no misleading artifact is published |
+| TC-CMD-AUTHZ-024-025 | Print batch authorization — Batch contains wrong-scope/unapproved document and successful plus failed items | Per-document authorization and partial outcomes; successful items not duplicated on retry |
+| TC-CMD-AUTHZ-024-026 | Attendance upload/verify separation — Uploader attempts to mark own upload verified without attendance.verify | Denied; upload remains unverified; distinct permission and audit trail enforced |
+| TC-CMD-AUTHZ-024-027 | Report read isolation — Caller requests another project/session actual or target report | Denied by RLS/scope; actual and target sources remain separate |
+| TC-CMD-AUTHZ-024-028 | Audit read/export separation — Caller has audit.read only and attempts export or global unfiltered query | Export/global query denied absent explicit scope/authority; access attempt is handled safely |
+| TC-CMD-AUTHZ-024-029 | Retention/legal hold gate — Caller attempts deletion/disposition without written T-10 institutional policy or during legal hold | No irreversible disposition; legal hold takes precedence; command remains blocked |
+| TC-CMD-AUTHZ-024-030 | Security case isolation — Operational Admin or Super Admin without security.review opens restricted incident | Denied; no case detail leakage; only designated reviewer receives minimum necessary access |
+| TC-CMD-AUTHZ-024-031 | Provider/release authority — Unapproved custodian changes provider or deploys/rolls back production | Denied pending T-12 authority/process; no configuration or release state change |
+| TC-CMD-AUTHZ-024-032 | Caller identity spoofing — Client sends forged actor, active role, project, session or assignment fields | Database uses auth.uid() and persisted grants; forged fields cannot widen authority |
+| TC-CMD-AUTHZ-024-033 | Protected-table direct DML — Anon/authenticated client attempts direct INSERT/UPDATE/DELETE on every protected table | All prohibited operations denied; no business/audit rows change |
+| TC-CMD-AUTHZ-024-034 | Idempotency replay and hash — Same key/same semantic request then same key/different semantic request | First replay returns original outcome; changed hash returns IDEMPOTENCY_KEY_REUSED |
+| TC-CMD-AUTHZ-024-035 | Audit fail-closed boundary — Required audit validation/insert fails for any critical state-changing command | Business mutation rolls back and no success response is emitted |
+| TC-CMD-AUTHZ-024-036 | RPC/SECURITY DEFINER grant review — Unauthorized role calls RPC or PUBLIC attempts SECURITY DEFINER function | Only explicit EXECUTE principals succeed; pinned search_path, minimal owner/grants, schema-qualified refs verified |
+
+**Execution status:** NOT EXECUTED. No runtime, database, RLS, grant, RPC or deployment changes were made by adding these specifications.
