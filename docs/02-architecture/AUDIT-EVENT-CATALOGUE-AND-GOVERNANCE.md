@@ -91,11 +91,12 @@ The catalogue below defines required event families. Exact event keys and payloa
 - `evidence.uploaded`, `evidence.downloaded`, `evidence.access_denied`, `evidence.deletion_requested`, `evidence.deleted`
 - `inspection_revision.created`, `inspection_revision.superseded`
 
-### 4.4 Documents, reporting, and attendance
-- `pdf.generated`, `pdf.regenerated`, `document.printed`, `document.reprinted`
+### 4.4 Documents, reporting, attendance, and notifications
+- `pdf.generated`, `pdf.regenerated`, `document.printed`, `document.reprinted`, `document.print_batch_created`, `document.print_batch_completed`, `document.print_batch_partial`
 - `ba.generated`, `ba.issued`, `ba.signed_copy_uploaded`, `ba.status_changed`
 - `attendance.generated`, `attendance.printed`, `attendance.uploaded`, `attendance.replaced`, `attendance.verified`
 - `report.generated`, `report.exported`, `report.approved`
+- `notification.policy_published`, `notification.read`, `notification.escalation_evaluated`, `notification.escalation_enqueued`
 
 ### 4.5 Security, privacy, and operations
 - `audit.exported`, `audit.accessed`, `audit.search_performed`
@@ -215,3 +216,11 @@ This remains a design/governance document. No migrations, triggers, application 
 ## Permission registry linkage
 
 Audit read and export are separate proposed permissions (audit.read and audit.export) in ../02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md. Evidence read/export is also separated. These codes remain subject to PO/security approval and do not authorize global access by role name. Every access/export command must be audited; institutional T-10 retention, legal hold, disposition, network metadata and final reader/export authority remain open.
+
+## NLA-001 notification audit linkage
+
+- Policy draft/publish/retire and security-relevant configuration changes are recorded in `audit_events` with actor, scope, policy key/version/hash and reason.
+- Escalation decisions are recorded append-only in `notification_escalation_events` and linked to audit evidence where policy requires.
+- Routine provider delivery attempts are recorded in `notification_delivery_attempts`; do not flood the general audit stream with every retry. Operational telemetry may summarize retry/backlog/error metrics.
+- Recipient read acknowledgement may emit `notification.read` under the approved audit policy; do not log message bodies or sensitive payloads.
+- Delivery/provider events never mutate inspection/project/session state. T-10 controls for retention, legal hold, audit read/export and disposition remain blocked.
