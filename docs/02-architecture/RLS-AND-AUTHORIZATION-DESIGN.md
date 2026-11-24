@@ -148,3 +148,7 @@ Use ../02-architecture/COMMAND-AUTHORIZATION-VERIFICATION-MATRIX.md as the comma
 ## Canonical permission registry dependency
 
 Use ../02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md as the proposed canonical vocabulary and command mapping. The role/action matrix in this document is descriptive and does not grant authority. Final role-to-permission mapping, grant/revoke authority, exact scope predicates, per-object RLS and RPC EXECUTE grants remain open pending PO/security review. Evidence read/export and audit read/export are separate capabilities.
+
+## PostgreSQL function execution privilege dependency
+
+See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md). RLS, SQL table ACL and function EXECUTE ACL are separate controls. The design identifies a critical unresolved interaction between SECURITY INVOKER and the T-18 prohibition on browser direct table DML; do not grant protected table DML to authenticated as a workaround. PO/security must approve the execution model before implementation.
