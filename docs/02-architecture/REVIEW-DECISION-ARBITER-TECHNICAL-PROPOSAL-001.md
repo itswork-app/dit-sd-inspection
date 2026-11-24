@@ -142,11 +142,17 @@ All cases below are specifications only; they are NOT EXECUTED.
 | RA-11 | Unique terminal-decision constraint is hit under race | Stable terminal conflict; no partial state/audit/outbox/snapshot result |
 | RA-12 | Resubmission creates a new immutable revision | New revision may receive one terminal decision; prior revision remains immutable and terminal |
 
+## 6.1 Reviewer assignment source — linked candidate
+
+[REVIEW-ASSIGNMENT-001](INSPECTION-REVIEWER-ASSIGNMENT-ENTITY-PROPOSAL-001.md) v0.1.0 now proposes a separate persisted `inspection_reviewer_assignments` entity, anchored to the exact existing `operational_assignments` scope. It explicitly rejects using Inspector `assignment_members`, generic project membership or a Super Admin label as Reviewer authority. The working baseline is one effective Reviewer appointment for the target revision, with no self-review against the exact immutable revision author.
+
+This is a design proposal only. Grantor authority, self-appointment/revoker SoD, the inspection→claim→assignment FK path, overlapping-interval physical arbiter and appointment writer lock paths remain OPEN. It does not approve a role grant, schema object or implementation.
+
 ## 7. Open decisions and evidence
 
 | ID | Open item | Owner / required evidence |
 |---|---|---|
-| RA-O01 | Persisted Reviewer assignment entity, grantor, effective interval and exact project/session/location/assignment scope | Product Owner / Security / Database; approved authority matrix and physical relationship |
+| RA-O01 | Reviewer appointment entity and exact scope relationship | Candidate documented in REVIEW-ASSIGNMENT-001 v0.1.0; PO/governance, Security and Database approval/evidence still required |
 | RA-O02 | Exact decision vocabulary and whether review_events contains terminal decisions only | Engineering / Database; canonical enum and schema contract |
 | RA-O03 | Returned-for-correction state transition and resubmission/new-revision lifecycle | Product Owner / institutional workflow authority; approved state machine |
 | RA-O04 | CMD-032 explicit reopen grant matrix, SoD, next-action owner and active-work blocker set | Product Owner / Security / institutional authority |
@@ -159,7 +165,7 @@ All cases below are specifications only; they are NOT EXECUTED.
 
 - CMD-030/031 shared terminal-decision invariant: **SPECIFIED AS A CANDIDATE; PHYSICAL ARBITER NOT APPROVED**.
 - CMD-032 active-draft invariant: **BLOCKED — physical draft context missing**.
-- Reviewer assignment / permission / SoD: **UNRESOLVED**.
+- Reviewer assignment entity: **CANDIDATE PROPOSED in REVIEW-ASSIGNMENT-001 v0.1.0; NOT APPROVED**. Grantor authority, extended SoD and physical lock integration remain OPEN.
 - Global lock order / acyclicity: **NOT PROVEN**.
 - Resolver certification: **0/40**.
 - Application lock certification: **0/50**.
