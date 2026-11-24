@@ -224,3 +224,13 @@ Created docs/02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZA
 The document is a draft baseline, not a PO decision. The legacy permission table remains a historical vocabulary snapshot. No permission code is approved for seeding merely by appearing in the new registry. PO/security approval is required for code semantics, every legacy mapping/retirement, role-to-permission grants, grant/revoke authority, project-close authority, evidence/audit read/export, security/platform custodians, and SoD. Exact per-table RLS, per-function EXECUTE grants and concrete command-specific test IDs remain incomplete. RBAC-004 is now DESIGN DRAFT CREATED, not closed.
 
 **Package M/N status:** canonical vocabulary draft created; approval and executable authorization traceability OPEN. Scope freeze remains NOT READY. No permission seed, SQL grant, RLS change, route/RPC, migration, runtime test or deployment occurred.
+
+## 9.7 Command authorization verification matrix (2026-11-24)
+
+Created [Command Authorization Verification Matrix](../02-architecture/COMMAND-AUTHORIZATION-VERIFICATION-MATRIX.md) v0.1.0 and linked it to the QA catalogue. It maps 27 logical command families to proposed canonical permission codes, trusted actor/scope/SoD rules, logical data and RLS/grant review classes, atomic audit events and 36 newly allocated design-level verification cases (TC-CMD-AUTHZ-024-001..036). The 36 IDs were checked for uniqueness within the new series; they are specifications only and have not been executed.
+
+The matrix explicitly leaves unknown physical table/function names, request/response schemas, exact role/grantor authority, detailed scope predicates, table-by-table RLS, RPC EXECUTE grants, SECURITY DEFINER exceptions, idempotency retention and some command authorities as TBD/open. It does not convert the permission registry into approved policy and does not authorize implementation.
+
+**Package N follow-up:** command-family mapping is now documented, but individual command contracts remain incomplete (0 complete command-specific contracts). The next technical closure must reconcile the authoritative physical schema and every table's SELECT/INSERT/UPDATE/DELETE policy, then define each individual RPC signature/EXECUTE grant and exact positive/negative/replay/audit-rollback/concurrency tests. T-10 institutional records/privacy, T-12 provider ownership, T-16 serial policy/relational technical review and remaining instrument/document source authorities continue to block scope freeze.
+
+**Disposition unchanged:** permission registry PO/security approval OPEN; RLS/grants/RPCs NOT IMPLEMENTED; tests NOT EXECUTED; scope freeze NOT READY; implementation NOT AUTHORIZED.
