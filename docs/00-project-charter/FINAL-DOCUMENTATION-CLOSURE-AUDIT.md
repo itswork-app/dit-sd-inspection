@@ -1,13 +1,13 @@
 # Final Documentation Closure Audit — Dit. SD Inspection
 
 **Document ID:** DOC-AUDIT-001  
-**Version:** 0.1.7  
+**Version:** 0.1.8  
 **Status:** STATIC DOCUMENTATION AUDIT COMPLETED — IMPLEMENTATION READINESS NOT ESTABLISHED  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
 **Pull request:** #3 — Draft / Open  
-**Authority:** AGENTS.md v1.2.0; MIB-001 v1.0.6; IRG-001 v1.0.1; DGA-001 v1.11.25  
+**Authority:** AGENTS.md v1.2.0; MIB-001 v1.0.7; IRG-001 v1.0.1; DGA-001 v1.11.26  
 **Gate:** G9 NOT READY; G10 NOT AUTHORIZED
 
 ---
@@ -129,11 +129,11 @@ The next valid gate is accountable-owner closure of the remaining DGA/LPR items,
 This current addendum supersedes the canonical-source navigation values in the earlier audit snapshot without rewriting its historical evidence boundary.
 
 Current controlled sources:
-- AGENTS.md v1.2.0; MIB-001 v1.0.6; IRG-001 v1.0.1; DGA-001 v1.11.25.
+- AGENTS.md v1.2.0; MIB-001 v1.0.7; IRG-001 v1.0.1; DGA-001 v1.11.26.
 - Package S §9.16 current inventory addendum; Package T v0.1.1 historical decision pack.
 - Decision Register remains the current PO decision authority.
 - RTM-001 v0.1.2; RAID-001 v0.1.1; QA Catalogue v0.3.5.
-- SSOT-AUDIT-001 v0.1.1; POQ-001 v0.1.0; AUTH-001 v0.1.0.
+- SSOT-AUDIT-001 v0.1.2; POQ-001 v0.1.0; AUTH-001 v0.1.0.
 
 The cross-document review confirmed 125 unique RTM requirement IDs, 65 unique RAID IDs and 50 unique Decision Register IDs. Package S §9.15's 391-test identifier count remains historical; the current DGA scan reports 410 unique planned test definitions. The RTM T-13 mapping now points to TC-PRINT-001..007 and TC-PRINT-BATCH-001..008; TC-DOC-009..011 remain instrument/document cases.
 
