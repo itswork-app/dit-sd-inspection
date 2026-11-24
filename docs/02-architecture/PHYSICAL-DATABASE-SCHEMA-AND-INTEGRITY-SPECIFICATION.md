@@ -1,7 +1,7 @@
 # Physical Database Schema and Integrity Specification
 
 **Status:** Engineering specification draft — approval required before migrations  
-**Version:** 0.4.0  
+**Version:** 0.4.1  
 **Package:** L — Physical Data Model and Integrity  
 **Date:** 2026-11-23
 
@@ -133,9 +133,9 @@ PO-approved T-16 option B: one normalized serial per canonical `instrument_type`
 | `idempotency_records` | `id`, `actor_id`, `command_type`, `scope_key`, `idempotency_key`, `request_hash`, `result_reference`, `status`, `expires_at` | Unique `(actor_id, command_type, scope_key, idempotency_key)`; same key/different hash rejected; retention > maximum offline retry window |
 | `sync_batches` | `id`, `actor_id`, `device_id`, `batch_key`, `payload_hash`, `status`, `acknowledged_at` | Unique actor/device/batch key; replay safe; conflict records retained |
 | `notification_policy_versions` | `id`, `policy_key`, `version_no`, `scope_type`, `scope_id`, `schema_version`, `policy_document`, `policy_hash`, `status`, `effective_from`, `effective_until`, `created_by`, `published_by`, timestamps | Unique policy/scope/version; strict versioned allowlist validation; published immutable; one effective version per scope/time |
-| `notification_outbox` | `id`, `source_event_id`, `event_type`, `scope_type`, `scope_id`, `policy_version_id`, `safe_payload`, `status`, `attempt_count`, `next_attempt_at`, lease fields, timestamps | Unique source-event/policy; short lease; `SKIP LOCKED` claim; bounded retry/dead-letter; no provider I/O in transaction |
-| `notifications` | `id`, `outbox_id`, `recipient_user_id`, project/session/location/assignment scope, `event_type`, `priority`, `title_key`, `body_key`, `safe_payload`, `created_at`, `expires_at`, `read_at`, `dismissed_at` | Unique `(outbox_id, recipient_user_id)`; self-only read/dismiss; safe minimal payload; source resource re-authorized on navigation |
-| `notification_deliveries` | `id`, `notification_id`, `channel`, `status`, `attempt_count`, `next_attempt_at`, `last_attempt_at`, `sent_at`, `delivered_at`, `provider_message_ref`, `last_error_code`, timestamps | Unique `(notification_id, channel)`; delivery state independent of inbox read state; provider callback transitions validated/idempotent |
+| `notification_outbox` | `id`, `source_event_id`, `event_type`, `scope_type`, `scope_id`, `policy_version_id`, `safe_payload`, `status`, `attempt_count`, `next_attempt_at`, `lease_owner`, `lease_token_hash`, `lease_generation`, `lease_expires_at`, `last_error_code`, `created_at`, `processed_at` | Unique source-event/policy; server-issued token hash + monotonic fencing generation; short `SKIP LOCKED` claim; bounded retry/dead-letter; no provider I/O in transaction |
+| `notifications` | `id`, `outbox_id`, `recipient_user_id`, project/session/location/assignment scope, `event_type`, `priority`, `title_key`, `body_key`, `safe_payload`, `created_at`, `expires_at`, `read_at`, `dismissed_at` (reserved) | Unique `(outbox_id, recipient_user_id)`; self-only read; set-once `read_at` with no row-version token; dismissal inactive until PO/UX approval; safe minimal payload; source resource re-authorized on navigation |
+| `notification_deliveries` | `id`, `notification_id`, `channel`, `status`, `attempt_count`, `next_attempt_at`, `last_attempt_at`, `sent_at`, `delivered_at`, `lease_owner`, `lease_token_hash`, `lease_generation`, `lease_expires_at`, `provider_message_ref`, `last_error_code`, timestamps | Unique `(notification_id, channel)`; delivery state independent of inbox read state; lease fencing on every finalizer; provider callback transitions validated/idempotent |
 | `notification_delivery_attempts` | `id`, `delivery_id`, `attempt_no`, `idempotency_key`, `started_at`, `finished_at`, `outcome`, `provider_message_ref`, `safe_error_code`, `retryable`, `worker_correlation_id` | Unique delivery/attempt and idempotency key; append-only; sanitized provider metadata only |
 | `notification_escalation_events` | `id`, `notification_id`, `policy_version_id`, `step_no`, `event_type`, `due_at`, `evaluated_at`, `recipient_resolution_ref`, `outbox_id`, `outcome`, `reason_code` | Unique notification/policy/step/event; append-only; no business-state mutation |
 
@@ -286,7 +286,7 @@ See [T-18 Execution Model Security Review](T18-EXECUTION-MODEL-SECURITY-REVIEW.m
 
 ## Notification and print persistence design addendum — NLA-001 / T-13
 
-The six notification tables above are proposed by [Notification Lifecycle and Delivery Architecture](NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md). `notification_events` is not a physical entity and must not be added. Source mutation + domain event + audit + outbox intent are atomic; fan-out and provider delivery are asynchronous. Delivery attempts and escalation history are append-only. Read state is stored only on recipient-owned `notifications` rows.
+The six notification tables above are proposed by [Notification Lifecycle and Delivery Architecture](NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md) v0.1.2. `notification_events` is not a physical entity and must not be added. Source mutation + domain event + audit + outbox intent are atomic; fan-out and provider delivery are asynchronous. Delivery attempts and escalation history are append-only. Read state is stored only on recipient-owned `notifications` rows. CMD-050 has no row-version field; CMD-052/053 use separate lease fencing fields, not a business row-version token. INT-NOTIF-001 is a provider callback ingress and adds no table to the current 48-table proposal.
 
 T-13 requires durable batch identity and per-document outcomes. `print_batches` stores batch lifecycle and request identity; `print_events` stores every per-document attempt/outcome and optional batch reference. Batch status/counts are reconciled from latest per-document outcomes. Retry is failed-only and appends attempts; it never overwrites prior outcomes or claims physical printer success.
 
@@ -311,3 +311,12 @@ The Product Owner has approved the product-semantic invariants in the Decision R
 | CMD-020 T-17 explicit publish permission and immutable version pinning | Publication row/event, immutable child snapshot and assignment/session version references | Existing T-17 design remains subject to exact function/ACL/constraint review |
 
 **No inferred DDL:** This table records semantic obligations and missing physical decisions. It deliberately does not invent column names, data types, indexes, constraints, triggers, lock modes or migration order. G3/G5/G9 remain NOT READY; G10 NOT AUTHORIZED.
+
+
+## NLA-001 physical field reconciliation — 2026-11-24
+
+The notification physical proposal uses one canonical minimized payload field, safe_payload, for outbox and inbox records. The outbox and delivery queue projections carry the same logical lease tuple: lease_owner, lease_token_hash, monotonic lease_generation and lease_expires_at. The opaque lease token is returned only to the authenticated internal worker; raw tokens are never persisted or logged. Completion, failure, retry and dead-letter transitions validate the current owner, token hash, generation and expiry.
+
+The notifications table intentionally has no row_version for CMD-050. Its read_at field is set once by a recipient-owned guarded update. dismissed_at remains reserved and is not exposed to browser writes until PO/UX approval. The provider callback ingress INT-NOTIF-001 uses the existing delivery projection and an approved durable deduplication mechanism; this addendum does not create a seventh notification table or claim live schema verification.
+
+All columns, constraints, indexes, policies and functions remain proposed until Engineering/Database/Security review and separate G10 authorization.
