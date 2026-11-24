@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.25
+**Version:** 0.8.26
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -549,3 +549,12 @@ PO selected Option A, the global transaction-scoped audience guard (candidate L0
 ## L05 technical decision record — 2026-11-24
 
 [NLA-L05-TDR-001 v0.1.0](NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) is the current technical proposal for the PO-selected audience guard. It proposes transaction-scoped `pg_advisory_xact_lock(int,int)`, one global key pair with values TBD, READ COMMITTED and separate lock/read statements. Full writer-to-command mapping (including CMD-051 and admin/import/repair paths), deployed isolation verification, exact FK/unique/trigger/helper graph, lock budgets and measured audience/throughput bounds remain open. PO selection is not technical approval; 0/40 resolver paths and 0/50 application lock paths certified; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## Current L05 and CMD-031–040 lock-order baseline — 2026-11-24
+
+The current controlled references for the L05 notification resolver are NLA-001 v0.1.8; NLA-RESOLVER-LOCK-001 v0.1.9; NLA-L05-TDR-001 v0.1.2; source-event path map v0.1.0; eligibility-writer matrix v0.1.1; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.7; RAID-001 v0.1.6; DGA-001 v1.11.59; QA Catalogue v0.4.5.
+
+LOCK-MANIFEST-001 §7.13 and LOCK-GRAPH-001 §30 add a candidate CMD-031–040 overlay. CMD-031/032/033/034/037 have partial candidate ordering only. CMD-035/036/038/039/040 remain blocked on unresolved transaction/event boundaries, worker/lease fencing, per-item events, attendance physical rank/version and institutional authority. No command is technically certified; application lock certification remains 0/50, resolver certification 0/40, global graph NOT PROVEN ACYCLIC, tests PLANNED / NOT EXECUTED, G9 NOT READY and G10 NOT ACTIVE.
+
+Historical addenda above intentionally preserve the source versions reviewed at their original checkpoints. The list above is the current pointer set for this branch.
