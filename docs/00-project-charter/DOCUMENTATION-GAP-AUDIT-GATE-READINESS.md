@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.27
+**Version:** 1.11.28
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -34,9 +34,9 @@ No application code, migrations, live Supabase database, deployed RLS/grants, Ve
 
 | ID | Area | Evidence-backed gap | Required closure evidence | Accountable authority | Status |
 |---|---|---|---|---|---|
-| DGA-B01 | Instrument authority — IFP | Official controlled IFP source/version, exact checklist/specification wording, applicability and photo-slot rules not evidenced | Controlled source document, provenance, item-by-item reconciliation and authorized approval | PO + institutional instrument owner | BLOCKED |
-| DGA-B02 | Standing Bracket instrument | Official SB PDF and 19 visible rows confirmed by PO, but annex/specification completeness, ambiguous source wording and photo-slot mandatory rules remain unresolved | Full source/annex inventory and explicit item/evidence-slot applicability approval | PO + institutional instrument owner | OPEN |
-| DGA-B03 | BA and attendance authority | Configurable signatory-block product direction approved; actual authorized signatory identities/titles/template and attendance verification authority remain institution-dependent | Approved BA template and written signatory/attendance authority matrix | Institutional owner | BLOCKED |
+| DGA-B01 | Instrument authority — IFP | PO-supplied IFP checklist (form no. 189, 24 Nov 2026) and separate IFP visit BA (23 Nov 2026; 300 good, 0 defective) are inventoried in EVID-EXT-001; PO accepts these as project evidence. Controlled source/version provenance, complete applicability and photo-slot rules are still not established by the samples | Link the controlled instrument/version and complete source/annex inventory; obtain instrument-owner provenance and item/evidence-slot applicability confirmation | PO evidence acceptance recorded; institutional instrument owner still required | EVIDENCE RECEIVED; SOURCE AUTHORITY OPEN |
+| DGA-B02 | Standing Bracket instrument | PO-confirmed SB instrument baseline plus 20 Nov 2026 BA (460 inspected, 456 good, 4 defective), 23 Nov form no. 469 and 13-row serial-number example are inventoried in EVID-EXT-001. PO explicitly confirms the 3TB75B-prefixed serial examples shown in the supplied PDF are correct; do not flag them solely by prefix. Full 460-row annex reconciliation, source/annex completeness, ambiguous wording and photo-slot rules remain open | Reconcile all 460 serial rows and condition totals against the BA; inventory every source/annex page; resolve exact wording and photo-slot applicability with controlled source owner | PO baseline and sample evidence accepted; institutional/source completeness remains required | EVIDENCE RECEIVED; ANNEX/AUTHORITY RECONCILIATION OPEN |
+| DGA-B03 | BA and attendance authority | Supplied 20 Nov and 23 Nov BA examples and 23–25 Nov attendance-sheet photograph are inventoried in EVID-EXT-001. The samples show document layouts and named parties; blank/unclear sign-off and unfilled attendance marks cannot prove delegated authority or actual attendance | Institution-approved BA template; written signatory and attendance-verifier authority matrix; completed signed/verified attendance and BA evidence | PO accepts examples for product/design analysis; institutional authority remains external | EXAMPLES RECEIVED; INSTITUTIONAL AUTHORITY OPEN |
 | DGA-B04 | Institutional data governance | T-10 approves formal review path only; classification, legal basis/purpose, evidence limits, retention, deletion/disposition, legal hold, audit retention/export and network metadata not approved | Written decisions by authorized records/legal/privacy/security functions | Institution | BLOCKED |
 | DGA-B05 | Provider and ownership | T-12 approves alternative ownership path only; actual legal/account owner, billing owner, custodians, region, plans, quotas, budget and recovery entitlements unverified | Signed ownership/RACI, current provider account evidence, quota/cost sheet, region approval | Sponsor + institution | BLOCKED |
 | DGA-B06 | Recovery and backup | Proposed RPO/RTO and cadence are not provider capability evidence; database and object restore not demonstrated | Isolated PostgreSQL and Storage restore drills with checksums, measured RPO/RTO and sign-off | Operations owner | NOT EXECUTED |
@@ -470,3 +470,14 @@ POQ-01 Option C, POQ-02 Option C and POQ-03 Option A were explicitly approved by
 - **Dismissal (POQ-03):** dismiss/archive is excluded from MVP. Only recipient-owned set-once `read_at` is exposed; no dismiss command, permission, browser write or UX action exists. Any `dismissed_at` field retained in a proposal is dormant.
 
 The following technical details remain open: exact selector grammar and snapshot/checkpoint representation; partial fan-out fencing; policy schema and worker authorization; provider capability/callback security; exact schema constraints/indexes/RLS; institutional T-10 retention/privacy; test execution and live evidence. G9 remains NOT READY and G10 NOT AUTHORIZED.
+
+
+## 13. External inspection evidence checkpoint — 2026-11-24
+
+[EVID-EXT-001 — External Inspection Evidence Register](EXTERNAL-INSPECTION-EVIDENCE-REGISTER-001.md) v0.1.0 inventories the six supplied source artifacts: the 20 Nov SB BA and annex PDF; the 23 Nov SB checklist form no. 469; the 24 Nov IFP checklist form no. 189; the 13-row serial-number photograph; the 23–25 Nov attendance sheet; and the 23 Nov IFP visit BA. The register separates the inspection events and records direct observations from authority claims.
+
+The Product Owner accepts these supplied artifacts as project evidence and has clarified that the 3TB75B-prefixed serial-number examples in the supplied PDF are correct. No prefix-only mismatch is raised. Original serial strings must be preserved exactly. This closes the evidence-receipt and PO interpretation subcomponents of DGA-B01..B03, not institutional instrument provenance, complete annex/source verification, signatory delegation, attendance verification or T-10 records/privacy authority.
+
+The 20 Nov SB batch (460 inspected / 456 good / 4 defective), 23 Nov IFP visit BA (300 inspected / 300 good / 0 defective; SB 0 inspected), 23 Nov SB form no. 469 and 24 Nov IFP form no. 189 remain distinct events and must not be merged. The 13-row photo is an example only, not the full 460-row annex.
+
+**Disposition:** DGA-B01 = EVIDENCE RECEIVED / SOURCE AUTHORITY OPEN; DGA-B02 = EVIDENCE RECEIVED / ANNEX AND AUTHORITY RECONCILIATION OPEN; DGA-B03 = EXAMPLES RECEIVED / INSTITUTIONAL AUTHORITY OPEN. G1 and G9 remain NOT READY; G10 remains NOT AUTHORIZED. No external approval, signature verification, runtime test or CI result is inferred.
