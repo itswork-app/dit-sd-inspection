@@ -1,12 +1,12 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.5
+**Version:** 0.8.6
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
 **Authority:** AGENTS.md, MIB-001, DGA-001, IRG-001, T-10, T-14–T-18 and the approved Decision Register  
-**Controls:** G2–G10; DGA-B04–B20; G9 NOT READY; G10 NOT AUTHORIZED.
+**Controls:** G2–G10; DGA-B04–B21; G9 NOT READY; G10 NOT AUTHORIZED.
 
 ## 1. Purpose and conclusion
 
@@ -401,11 +401,18 @@ The approved semantics are not lock approvals. CMD-010–015 project/session par
 
 ## LPR technical resolution and command-contract overlay — 2026-11-24
 
-The current candidate technical recommendations are consolidated in [TECH-RESOLUTION-LPR-001](ENGINEERING-SECURITY-TECHNICAL-RESOLUTION-PACKAGE-LPR-001-011.md) v0.1.0. The detailed CMD-011–020 review v0.3.6 and PostgreSQL Command Contract Catalogue v0.4.1 now identify the proposed project-before-session fence, L15–L18 identity/authorization ordering and T-14 capacity-first path for CMD-009–016. The CMD decision package v0.2.3 directly preserves T-07's DRAFT/ACTIVE/PAUSED/CLOSED states; CLOSE_REQUESTED is action/event only.
+The current candidate technical recommendations are consolidated in [TECH-RESOLUTION-LPR-001](ENGINEERING-SECURITY-TECHNICAL-RESOLUTION-PACKAGE-LPR-001-011.md) v0.1.0. The detailed CMD-001–010 review v0.3.4 and CMD-011–020 review v0.3.6 and PostgreSQL Command Contract Catalogue v0.4.1 now identify the proposed project-before-session fence, L15–L18 identity/authorization ordering and T-14 capacity-first path for CMD-009–016. The CMD decision package v0.2.4 directly preserves T-07's DRAFT/ACTIVE/PAUSED/CLOSED states; CLOSE_REQUESTED is action/event only.
 
 These are candidate specifications, not technical approval. LPR-01/LPR-07/LPR-08/LPR-09/LPR-11 remain OPEN; LPR-10 NOT EXECUTED. The global graph is not proven acyclic, all 54 manifests are not certified, and no physical lock/privilege graph or concurrency evidence exists. G3/G4/G5/G7/G9 remain NOT READY; G10 NOT AUTHORIZED.
 
 
 ## Current lock source baseline — 2026-11-24
 
-Current linked lock sources are LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.4; LOCK-GRAPH-001 v0.4.6; LOCK-MANIFEST-001 v0.4.7; TECH-RESOLUTION-LPR-001 v0.1.0; CMD-011–020 Detailed Contract Review v0.3.6; PostgreSQL Command Contract Catalogue v0.4.1. The proposed L15–L18 and L55 classes and parent-fence modes remain subject to Engineering/Database/Security approval. This document remains OPEN; 0/54 lock-complete certification and G9/G10 statuses are unchanged.
+Current linked lock sources are LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.6; LOCK-GRAPH-001 v0.4.8; LOCK-MANIFEST-001 v0.4.10; TECH-RESOLUTION-LPR-001 v0.1.0; CMD-011–020 Detailed Contract Review v0.3.6; PostgreSQL Command Contract Catalogue v0.4.1. The proposed L15–L18 and L55 classes and parent-fence modes remain subject to Engineering/Database/Security approval. This document remains OPEN; 0/54 lock-complete certification and G9/G10 statuses are unchanged.
+
+
+## CMD-001–010 candidate lock-manifest normalization — 2026-11-24
+
+CMD-001–010 Detailed Contract Review v0.3.4 §9, LOCK-MANIFEST-001 v0.4.10, LOCK-GRAPH-001 v0.4.8 and LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.6 now share one candidate ordering overlay. It covers L00 idempotency; conditional L10 T-14 serialization; sorted L15 principal, L16 role, L17 scope-grant and conditional L18 catalog resources; L30 project/session parents; L50 operational scope targets; and L110 append-only facts. Candidate project fencing uses project FOR SHARE for child writers and FOR NO KEY UPDATE for project update/closure; closure/capacity predicates require fresh post-fence READ COMMITTED snapshots or SERIALIZABLE with retry.
+
+QA Catalogue v0.3.2 aligns TC-CMD-CONTRACT-024-001..010 concurrency assertions. All remain PLANNED / NOT EXECUTED. **10/54 command manifests are candidate-normalized at documentation level; 0/54 are technically approved or lock-complete certified.** LPR-01/LPR-07/LPR-11 remain OPEN; LPR-10 NOT EXECUTED; the graph is not proven acyclic; G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED.
