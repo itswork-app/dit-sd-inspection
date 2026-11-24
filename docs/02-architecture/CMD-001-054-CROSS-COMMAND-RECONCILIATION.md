@@ -697,7 +697,7 @@ T-07 permits a privileged, reasoned and audited reopening of a CLOSED session. S
 
 ### Abort boundary
 
-Per-unit abort is available only for an incomplete/hanging inspection attempt under SES-001. It is not a substitute for review, evidence finalization, document generation, printing, attendance verification, or any other session-level obligation. Abort is terminal and preserves the attempt, draft/revision history, evidence and audit trail. A later session creates a new inspection attempt; it does not reactivate or retarget the aborted attempt.
+Per-unit ABORT is available only for the SES-001 packed-unit exception: Reviewer returned an identified error, the unit is already packed/prepared for shipment so correction is impracticable, Inspector requests, and Admin/Korlap approves. Generic incomplete/hanging work is not eligible. ABORT is not a substitute for review, required evidence, document generation, printing, attendance verification or any other session-level obligation. ABORT is terminal and preserves the attempt, submitted revision, return decision, evidence and audit trail. A later session creates a new inspection attempt; it does not reactivate or retarget the aborted attempt.
 
 CMD-027 remains release-unit-claim only. No dedicated abort command ID, permission or event name is assigned by this addendum. The command/permission/event identity and atomic writer contract remain open for Product/Engineering/Security/Database resolution.
 
