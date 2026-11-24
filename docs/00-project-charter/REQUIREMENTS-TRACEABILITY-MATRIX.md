@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.10  
+**Version:** 0.1.11  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -449,3 +449,16 @@ PO selected Option A (global transaction-scoped audience guard, candidate L05) a
 Current references: NLA-001 v0.1.10; NLA-RESOLVER-LOCK-001 v0.1.10; NLA-L05-TDR-001 v0.1.4; L05 source-event map v0.1.0; L05 eligibility-writer matrix v0.1.2; LOCK-MANIFEST-001 v0.4.30 §§7.7/7.13; LOCK-GRAPH-001 v0.4.23 §§28–30; QA Catalogue v0.4.6.
 
 The CMD-031–040 candidate overlay is partial and does not certify any resolver path. The exact deployed writer set, selector grammar, FK/trigger/helper edges, worker identity/lease, attendance aggregate/version constraints and full graph acyclicity remain open. NRL-T01..T13 and TC-NOTIF-001..054 remain PLANNED / NOT EXECUTED. NOTIF-015 remains OPEN — CRITICAL; resolver certification 0/40; application lock certification 0/50; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## F-05 technical acceptance traceability — 2026-11-24
+
+| Requirement ID | Requirement / invariant | Authority | Design / control reference | Verification | Status |
+|---|---|---|---|---|---|
+| NOTIF-016 | Every enabled notification event uses a versioned, deterministic, bounded selector grammar and explicit event allowlist; selector dependencies map to all eligibility-changing writers | POQ-01; POQ-04; Security/Engineering | NLA-L05-TDR-001 v0.1.7 §4.2.4 F05-T1; NLA-001 v0.1.13 §21; writer matrix v0.1.3 | TC-NOTIF-060/061; selector negative controls and selector-to-column/writer inventory | OPEN — SELECTOR GRAMMAR / DEPENDENCY UNIVERSE NOT FROZEN |
+| NOTIF-017 | Dispatch revalidation distinguishes event-time recipient qualification from current delivery/security authorization and defines transition-specific parent/scope behavior | POQ-01; POQ-04; Security | NLA-L05-TDR-001 v0.1.7 §4.2.4 F05-T2; NLA-001 v0.1.13 §21 | TC-NOTIF-055/057/058/059/062; closure and revoke notice cases | OPEN — SECURITY/ENGINEERING VALIDATION REQUIRED |
+| NOTIF-018 | Suppression/retry uses an exhaustive reason/state model; account reactivation can reconsider only the same immutable candidate and cannot clear unrelated restrictions or widen the audience | POQ-01; POQ-04 | NLA-L05-TDR-001 v0.1.7 §4.2.4 F05-T3; NLA-001 v0.1.13 §21 | TC-NOTIF-056/063; bounded retry, consent/channel/re-suspension negative controls | OPEN — RETRY/STATE CONTRACT NOT DEFINED |
+| NOTIF-019 | Suppression and retry outcomes are append-only, correlated, privacy-minimized and auditable | INS-016; T-10; Security/Records/Privacy | NLA-L05-TDR-001 v0.1.7 §4.2.4 F05-T4; NLA-001 v0.1.13 §21 | TC-NOTIF-064; audit integrity, provenance, retention and minimization review | OPEN — AUDIT CONTRACT / INSTITUTIONAL RETENTION REVIEW REQUIRED |
+| NOTIF-020 | Source mutation, canonical event, audit, idempotency result, outbox intent, pinned policy and complete immutable candidate set commit atomically at one captured audience_evaluated_at | POQ-01; POQ-04; T-18 | NLA-L05-TDR-001 v0.1.7 §4.2.4 F05-T5; L05 source map v0.1.0; writer matrix v0.1.3 | TC-NOTIF-055..064 plus transaction-boundary and rollback evidence | OPEN — SNAPSHOT RELATION/HEADER NOT ADMITTED; PRODUCER PATHS NOT CERTIFIED |
+
+All TC-NOTIF-055..064 remain PLANNED / NOT EXECUTED. These requirements do not authorize implementation, SQL, migration, grants, RLS, runtime testing or G10 activation. F-05 remains OPEN; G9 NOT READY; G10 NOT ACTIVE.
