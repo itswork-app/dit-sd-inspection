@@ -108,7 +108,7 @@ Use SECURITY INVOKER by default. SECURITY DEFINER is allowed only where RLS recu
 | `record-print` | document.print | Authorized print scope; monotonic per-document sequence; append-only |
 | `upload-attendance-document` / `verify-attendance` | attendance.upload / attendance.verify | T-08 PO APPROVED: Korlap verifies within assigned location/scope; upload and verify are separate permissions; upload never auto-verifies; append replacement versions |
 | `get-actual-report` / `get-target-report` | report.read | Actual/target separated; row scope; no actual timestamp rewrite |
-| `deactivate-instrument` | Permission code and scope to be confirmed; reason required | Separate from publication; authorized Super Admin; reasoned status transition; audit same transaction; never rewrites pinned versions |
+| `deactivate-instrument` | `instrument.deactivate` | Separate from publication; authorized Super Admin; reasoned status transition; audit same transaction; never rewrites pinned versions |
 | `access-evidence` / `export-evidence` | Read/export permissions to be confirmed separately | Re-check project/assignment/history authority; short-lived authorized access; audit each sensitive access/export; never expose object keys as authority |
 | `close-project` | Permission code and closure authority to be confirmed | Super Admin closure only after configured session, inspection, document and actual/target reconciliation gates; reason/confirmation and audit |
 | `read-audit` / `export-audit` | Explicit audit-read/export permissions to be confirmed | Least-privilege filters, reason/context where policy requires, access/export itself audited; retention/legal-hold policy remains institutional |
