@@ -181,3 +181,10 @@ PO approved option A on 2026-11-24. Canonical count: distinct enabled login acco
 ## PO clarification — registration-first and Super Admin-controlled staffing (2026-11-24)
 
 Record the lifecycle as registration first, then Super Admin approval and explicit role/scope/team/assignment configuration. Registration alone grants no access or Inspector capacity eligibility. Super Admin determines team count and assigns personnel to each team; users cannot self-assign. Carry this rule through identity/RBAC, session/team model, database invariants, API commands, acceptance criteria and tests. This clarification does not authorize implementation or close remaining institutional/scope-freeze blockers.
+
+
+## Package T — T-17 Product Owner decision update (2026-11-24)
+
+T-17 / CFG-001 is **PO APPROVED option A**: Super Admin may directly publish a validated instrument version without second-person approval. Publication is a privileged server-side command requiring explicit `instrument.publish`, trusted actor derivation, bounded declarative schema validation, atomic publication/audit, immutable published version, session/assignment version pinning and exact historical snapshots. Deactivation is separate and audited. IFP and Standing Bracket remain initial catalog configurations, not permanent catalog limits. This decision is product governance only; schema/RLS/command/QA reconciliation remains open. No coding, migration or test execution was performed.
+
+T-18 remains OPEN and is the next Product Owner decision: approve option A (Vercel server route + caller-JWT PostgreSQL command-function pattern with direct browser DML denied), select an alternative reviewed architecture, or defer privileged mutations. Feature implementation remains unauthorized.
