@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.63
+**Version:** 1.11.64
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -698,7 +698,7 @@ Internal review [L05-TECHNICAL-REVIEW-001](../04-quality/L05-TECHNICAL-REVIEW-00
 NLA-L05-TDR-001 v0.1.2 now records a reviewer proposal to interpret event-time eligibility as pre-transition state at the captured `audience_evaluated_at`, because audience resolution precedes the source mutation. This is not a PO decision. Explicit recipient outcomes for role revoke, account rejection/suspension, assignment-member end, project/session closure and self-revoke remain OPEN. NRL-T13 / TC-NOTIF-054 specify mixed-load guard benchmarking, but maximum audience/workload limits and numeric p50/p95/p99 SLOs remain TBD. These cases are PLANNED / NOT EXECUTED; no performance evidence exists. G9 NOT READY; G10 NOT ACTIVE.
 
 
-### L05 cross-reference audit and CMD-031–040 lock-order checkpoint — 2026-11-24
+### L05 cross-reference audit and CMD-031–040 lock-order checkpoint — 2026-11-24 (historical intermediate checkpoint; superseded below)
 
 A scoped cross-reference audit was performed across the 14-file L05 review PR. The current controlled pointer set is synchronized as follows: NLA-001 v0.1.10; NLA-RESOLVER-LOCK-001 v0.1.10; NLA-L05-TDR-001 v0.1.2; L05 source-event map v0.1.0; L05 eligibility-writer matrix v0.1.2; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.10; RAID-001 v0.1.9; QA Catalogue v0.4.6; CMD-CROSSWALK-001-054 v0.8.28. Earlier dated version references are retained as historical source snapshots and must not be mistaken for current pointers.
 
@@ -709,6 +709,6 @@ F-06 is PARTIALLY CLOSED: canonical decision and core L05 parent/TDR/manifest/gr
 
 ### L05 scoped cross-reference closure — 2026-11-24
 
-A final scoped cross-reference pass was completed for the 14-file L05 review set in this branch. The authoritative current-pointer set is: NLA-001 v0.1.10; NLA-RESOLVER-LOCK-001 v0.1.10; NLA-L05-TDR-001 v0.1.4; L05 source-event map v0.1.0; L05 eligibility-writer matrix v0.1.2; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.10; RAID-001 v0.1.9; QA Catalogue v0.4.6; CMD-CROSSWALK-001-054 v0.8.29; L05-REVIEW-001 v0.1.3. NLA-001 §17 and the cross-command reconciliation current-pointer section were checked against these document headers. Earlier dated references (including TDR v0.1.2/v0.1.3, RTM v0.1.9, RAID v0.1.8 and DGA v1.11.61) remain historical checkpoint snapshots and are not current pointers.
+A final scoped cross-reference pass was completed for the 14-file L05 review set in this branch. The authoritative current-pointer set is: NLA-001 v0.1.11; NLA-RESOLVER-LOCK-001 v0.1.10; NLA-L05-TDR-001 v0.1.4; L05 source-event map v0.1.0; L05 eligibility-writer matrix v0.1.2; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.10; RAID-001 v0.1.9; QA Catalogue v0.4.6; CMD-CROSSWALK-001-054 v0.8.30; L05-REVIEW-001 v0.1.3. NLA-001 §17 and the cross-command reconciliation current-pointer section were checked against these document headers. Earlier dated references (including TDR v0.1.2/v0.1.3, RTM v0.1.9, RAID v0.1.8 and DGA v1.11.61) remain historical checkpoint snapshots and are not current pointers.
 
 **F-06 disposition:** CLOSED for the defined 14-file L05 review set: canonical PO decision, parent/TDR references, source map, writer matrix, lock manifest/graph, QA, RTM/RAID and cross-command pointers are reconciled to the current controlled versions. This is a bounded cross-reference closure, not a repository-wide link/version audit and not proof of technical correctness or runtime behavior. F-03 remains OPEN (source lock paths not fully normalized/certified); F-04 remains OPEN (complete physical writer/bypass inventory absent); F-05 remains OPEN (recipient transition semantics require PO decision); F-07 remains OPEN (numeric performance envelope/evidence absent). Resolver certification remains 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; NRL-T01..T13 and TC-NOTIF-001..054 PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE. No source code, SQL, migration, grant, RLS, live DB, runtime test, deployment or merge was performed.
