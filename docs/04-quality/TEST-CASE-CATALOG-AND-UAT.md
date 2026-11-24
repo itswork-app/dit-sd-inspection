@@ -21,8 +21,8 @@ Each executed case records ID, build SHA, environment, preconditions, steps, exp
 - TC-CAP-001: Default configured Inspector capacity is 50.
 - TC-CAP-002: Super Admin can configure capacity to any integer from 1 through 100, including values below 50.
 - TC-CAP-003: Capacity accepts 1 and 100, rejects 0 and 101, and accepts valid intermediate values below and above default 50.
-- TC-CAP-004: Capacity reduction below current active Inspector count is rejected.
-- TC-CAP-005: Concurrent Inspector activations cannot exceed configured capacity.
+- TC-CAP-004: Capacity reduction below the current qualifying Inspector count (distinct enabled account + active Inspector grant + effective operational assignment) is rejected; pending, rejected, suspended, disabled and expired-role accounts are excluded.
+- TC-CAP-005: Concurrent Inspector activations/assignment grants across both locations cannot exceed the combined configured capacity; each qualifying account is counted once across multiple roles/assignments.
 - TC-LOAD-001: Representative workload at 10/25/50/75/100 concurrent users.
 - TC-LOAD-002: 100-user mixed workload records throughput, p50/p95/p99 latency, errors, database resource use, and media upload performance.
 - TC-LOAD-003: Under 100-user test, no lost acknowledged writes, duplicate claims/revisions, authorization bypass, or transaction corruption.
@@ -85,12 +85,6 @@ These are designed test procedures. Execution has not started. Source authority 
 - TC-PRINT-005: Concurrent print/reprint requests allocate unique atomic ordinals for each document and preserve document-version linkage.
 - TC-PRINT-006: Batch operation rejects unapproved, missing, wrong-scope or non-final-PDF documents without unauthorized disclosure.
 - TC-PRINT-007: Recorded print event does not claim physical paper output; direct printer integration is not required.
-- TC-DOC-010: Bounded batch print enforces configured maximum size and records a distinct outcome for each document.
-- TC-DOC-011: Partial batch failure is represented per document; successful items are not incorrectly retried or duplicated.
-- TC-DOC-012: Retry accepts failed documents only and does not create duplicate success events.
-- TC-DOC-013: Concurrent print/reprint requests allocate unique atomic ordinals for each document and preserve document-version linkage.
-- TC-DOC-014: Batch operation rejects unapproved, missing, wrong-scope or non-final-PDF documents without unauthorized disclosure.
-- TC-DOC-015: Recorded print event does not claim physical paper output; direct printer integration is not required.
 - TC-DOC-005: BA and attendance document lifecycle statuses are correct.
 - TC-DOC-006: BA instrument summary rows reconcile inspected sample, good, and defective counts against source inspection records, including a zero-count instrument row.
 - TC-DOC-007: BA template renders configured activity/date/location narrative and authorized signatory blocks without hardcoded sample values.
@@ -137,7 +131,7 @@ These are planned verification cases only; not executed. T-10 option B is PO-app
 - TC-LOAD-001: Execute representative mixed workload at 10, 25, 50, 75 and 100 concurrent authenticated users; capture p50/p95/p99 latency, throughput, error rate, database and storage metrics.
 - TC-LOAD-002: At target load, verify no acknowledged write loss, duplicate active claim/revision, unauthorized transition, cross-scope access or silent conflict overwrite.
 
-These are planned cases only; not executed. 100 concurrent users is a load-test target, not a production capacity or SLA claim. Numeric SLO thresholds remain open pending measured baseline and provider verification.
+These are planned cases only; not executed. TC-LOAD-001..003 above are the canonical load-test IDs; do not duplicate them under T-11. 100 concurrent users is a load-test target, not a production capacity or SLA claim. Numeric SLO thresholds remain open pending measured baseline and provider verification.
 
 
 
@@ -246,3 +240,21 @@ These are acceptance specifications only. No implementation, migration, security
 | TC-UNIT-016-018 | Serial normalization policy changes for an instrument version | Existing canonical keys are not silently rewritten; migration/re-key requires explicit reviewed plan and collision analysis |
 
 All are acceptance specifications only. No test, migration or runtime implementation has been executed.
+
+
+## Command-to-test traceability gaps (T-18 follow-up)
+
+The generic TC-CMD-018 suite is a boundary-level security suite; it does not by itself prove every command's business invariant. Before implementation authorization, add command-specific positive, negative, audit-failure, idempotent-replay and concurrency cases for every command family. At minimum, the following currently lack explicit dedicated case IDs in this catalogue:
+
+- Account request/approve/reject, role grant/revoke, scope grant/revoke and team staffing, including self-elevation and atomic capacity predicate.
+- Project/session create, update, transition and close, including every closure gate.
+- Assignment publish/member changes, cross-location overlap, instrument-version pinning and staffing authorization.
+- Instrument create/draft/update/deactivate and publication, including deactivation reason, active-session pinning and audit rollback.
+- Canonical unit registration, project association/end, identity-conflict resolution and claim release, including audit rollback and concurrent association/claim races.
+- Evidence read/access/export, upload intent/confirm/finalize/replace, private-object authorization and audit-on-access/export.
+- Inspection draft/save, return, correction, approve, reopen and sync reconciliation, including per-command stale-version/idempotency outcomes.
+- PDF generation, individual print and batch orchestration, including generation retry and per-document partial failure.
+- Attendance document upload/replacement/verification and project-level actual/target report reads.
+- Audit read/export, retention/legal-hold command controls, and any privileged maintenance command.
+
+For each test, record exact command/function, caller fixture, permission/scope fixture, resource state, request/idempotency key, expected typed outcome, audit event expectation, lock/concurrency setup and evidence. These are test-design gaps, not permission to add implementation or run tests. No test execution is claimed.
