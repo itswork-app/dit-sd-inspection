@@ -1,8 +1,8 @@
 # Notification Event Registry — Technical Reconciliation
 
 **Document ID:** NLA-EVENT-TECH-RECON-001  
-**Version:** 0.1.0  
-**Status:** STATIC TECHNICAL RECONCILIATION — PARTIAL; CMD-002/003 REVIEWED, BOTH UNRESOLVED / NOT ENABLED  
+**Version:** 0.1.1  
+**Status:** STATIC TECHNICAL RECONCILIATION — PARTIAL; CMD-002/003/005 REVIEWED, ALL PARTIAL / UNRESOLVED / NOT ENABLED  
 **Date:** 2026-11-24  
 **Branch:** `docs/notification-resolver-lock-closure`  
 **Scope:** First technical pass for NREG-001 (`account.approved`) and NREG-002 (`account.rejected`)  
@@ -176,3 +176,91 @@ No event is technically admitted. No recipient, role, selector, channel, dispatc
 - G9: NOT READY. G10: NOT ACTIVE.
 
 **Disposition:** Continue the same evidence-bounded reconciliation with CMD-005 and CMD-010/013 only after the CMD-002/003 findings are linked to the registry and cross-document pointers. No code or database work is authorized.
+
+
+## 9. Reconciliation findings — CMD-005 / NREG-003
+
+### 9.1 Producer and transaction boundary
+
+**Static candidate:** CMD-005 `revoke-role` is the source command path for `role.revoked`. The L05 source-event path map records a source command transaction in which the role grant is ended, the canonical event/audit fact and idempotency result are appended, and (only after a future event is enabled and the physical model is admitted) the outbox and immutable candidate snapshot commit atomically. This is not an asynchronous provider event.
+
+The exact deployed producer/function, canonical event envelope/schema version, physical event identity and source-code call graph are not proven. The audit event catalogue lists `role.revoked`, but that declaration is not proof of a stable notification contract.
+
+### 9.2 Candidate mutation and write set
+
+Proposed source objects:
+
+- Read: target `user_roles` grant; actor authorization and effective delegation/revocation ceiling; role catalogue; `project_capacity_settings` and qualifying Inspector count where applicable; idempotency record.
+- Write: target `user_roles.status/valid_until` using a canonical revocation representation still to be selected; `idempotency_records`; append-only `audit_events`.
+- Preserve the original role-grant history; do not delete the row.
+
+The physical schema proposal lists `user_roles` fields `user_id`, `role_id`, `valid_from`, `valid_until`, `status`, `granted_by`, `reason`. It does not list `row_version`, although the detailed CMD-005 request currently carries `expected_version`. This mismatch blocks an executable compare-and-swap contract. Either the approved physical schema must define a concurrency token and increment rule, or the request field must be removed through controlled contract reconciliation; do not assume `updated_at` or invent a column.
+
+### 9.3 Candidate lock path and competing writers
+
+The normalized candidate sequence is:
+
+1. L00 idempotency arbitration.
+2. Candidate L05 audience guard before the first mutable lock, if the event is admitted for notification matching.
+3. Conditional L10 capacity serialization if the revoked grant reduces the T-14 qualifying-Inspector population.
+4. L15 actor and target principals in stable UUID order.
+5. L16 actor revocation-authority rows and exact target `user_roles` grant in deterministic order.
+6. L17 applicable delegation/scope rows; conditional L18 role/permission catalogue references if mutable.
+7. Guarded target grant transition and append-only audit/event facts.
+
+This is a candidate order only. L05/L10 compatibility, exact lock modes, principal/grant lock set, FK/trigger/helper edges and acyclicity are not certified. The source map says L05 must precede the first mutable lock; mechanically adding L05 does not repair any existing later-rank inversion.
+
+Known competing writers include CMD-004 grant-role, concurrent CMD-005 revoke, CMD-014/015 assignment eligibility changes, CMD-016 capacity changes, account suspension/disablement, and non-command role expiry/renewal/delegation maintenance, import/synchronization and admin repair. The writer matrix explicitly marks the non-command paths and direct-DML/bypass evidence incomplete.
+
+### 9.4 Recipient, selector and POQ-04 dispatch semantics
+
+The revoked target is a conceptual candidate only. Under POQ-04, evaluate the exact approved selector against serialized pre-revoke role/scope state at the one captured `audience_evaluated_at`. Include the target only if the selector independently selects and pre-mutation eligibility holds. The actor is never automatically appended; for self-revoke, actor inclusion occurs only if the exact selector independently selects the actor under pre-revoke eligibility.
+
+After commit, current role/scope and mandatory security revalidation may suppress the captured candidate because the revocation may have invalidated the qualification that selected it. This is a separate dispatch decision and must not erase or rewrite the immutable candidate snapshot. A notification does not preserve access to the revoked resource and cannot grant access to any source resource.
+
+No event participant field, role ID, scope reference, selector clause, dispatch profile, channel or message payload is approved. The command's `user_role_id` is a grant identifier; it does not alone prove the trusted target-principal projection for the event contract.
+
+### 9.5 Deduplication, replay and state races
+
+The command proposal requires an idempotent guarded transition and a stable no-op/state outcome for an already revoked or expired grant; it must not emit a duplicate success event. The candidate source dedup boundary is therefore tied to the one successful role transition, not to every retry or audit attempt.
+
+Unresolved: exact revocation representation/effective timestamp; whether expired grants can be explicitly revoked; unique transition/event identity; source-event ID; whether event append is guarded by the same state transition; candidate snapshot/outbox uniqueness; and handling of a grant renewed/replaced concurrently with a revoke. The current `expected_version` field has no matching physical version token, so stale-write prevention is not proven.
+
+### 9.6 Additional blockers
+
+| ID | Finding | Impact | Required evidence / owner |
+|---|---|---|---|
+| NER-TR-10 | `user_roles.expected_version` has no proposed physical `row_version` | Stale concurrent revocation cannot be specified as a physical CAS contract | Engineering + Database: approved token/increment or remove request field under change control |
+| NER-TR-11 | Exact revocation representation and effective-time semantics are open | Selector pre-state and dispatch current-scope checks cannot be bound to an exact role validity predicate | PO + Engineering + Security: status/valid_until transition and effective-time contract |
+| NER-TR-12 | Last-admin/recovery protection and revocation delegation ceiling are not approved | Role revocation authority and recovery safety are not executable | PO + Security/institutional authority: exact grantor ceiling, SoD and last-admin recovery policy |
+| NER-TR-13 | T-14 capacity effect is conditional for Inspector role revocation | Missing L10 participation can corrupt the qualifying population under concurrent grant/assignment/cap operations | Engineering + Database: prove predicate impact and approve common L05/L10 order |
+| NER-TR-14 | Non-command role expiry/renewal/delegation, import, sync, repair and privileged bypass writers remain incomplete | L05 writer-completeness cannot be certified | Engineering + Security + Operations: exact entrypoint/table/column/owner/ACL and lock participation inventory |
+| NER-TR-15 | `user_role_id` does not by itself define an approved target participant field | Recipient selector may bind the wrong identity or silently append target/actor | Engineering + Security + PO if product semantics change: trusted event participant projection and selector review |
+
+### 9.7 Admission decision
+
+| Registry ID | Event | Producer path evidence | Participant / selector | Dedup / transaction | Technical disposition |
+|---|---|---|---|---|---|
+| NREG-003 | `role.revoked` | CMD-005 source command transaction identified statically; deployed producer/event envelope not proven | Revoked target is only a conceptual candidate; exact selector and target projection not admitted; actor never implicit | Atomic command boundary proposed; `expected_version` has no physical token; transition identity and snapshot/outbox dedup unresolved | **PARTIAL STATIC REVIEW — UNRESOLVED / NOT ENABLED** |
+
+## 10. Evidence required to close CMD-005
+
+1. Exact canonical `role.revoked` event schema/version, source ID, trusted target participant projection and transaction producer proof.
+2. Approved role-grant lifecycle: active/expired/revoked states, effective interval, canonical revocation write, expected-version/CAS resolution and stable duplicate/no-op behavior.
+3. Approved revocation authority, grantor ceiling, SoD and last-admin/recovery rule.
+4. POQ-04 event-time selector and dispatch suppression profile, including target and self-revoke actor cases; no implicit participant append.
+5. Complete L05/L10 writer inventory for role, account and assignment/capacity eligibility, including non-command expiry/renewal/delegation, import, sync, admin repair, trigger and direct-DML paths.
+6. Engineering/Database/Security approval of L05/L10 order, exact PostgreSQL lock modes, role/scope/parent/FK/unique/trigger/helper graph, function owner/search_path/EXECUTE ACL and authenticated caller-JWT path.
+7. Exact terminal transition/event/outbox/snapshot dedup keys and immutable retry checkpoint; TC-NOTIF-077/078 and command/security concurrency tests specified and later executed only after G10 activation.
+
+## 11. Updated gate and work status
+
+- CMD-002/003 and CMD-005: partial static producer/transaction review completed; technical admission remains OPEN.
+- NREG-001/002/003: PARTIAL STATIC REVIEW; canonical contract, recipient mapping, selector and dispatch profile UNRESOLVED; NOT ENABLED.
+- L05/L10: candidate order only; not technically approved.
+- Eligibility writer coverage: PARTIAL; non-command writers and bypass paths incomplete; 0 writers certified.
+- Resolver certification: 0/40. Application lock certification: 0/50.
+- Global lock graph: NOT PROVEN ACYCLIC. Candidate snapshot relation/header: NOT ADMITTED.
+- Tests: PLANNED / NOT EXECUTED. G9 NOT READY. G10 NOT ACTIVE.
+
+**Disposition:** Continue with CMD-010 and exact final CMD-013 `session.closed` next. CMD-004 remains an unresolved composite notification declaration and is not a PO-approved candidate; it must not be silently added to the event registry.
