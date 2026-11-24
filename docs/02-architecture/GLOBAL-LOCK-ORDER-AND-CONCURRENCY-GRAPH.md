@@ -551,3 +551,8 @@ Asynchronous finalizers add separate edges: CMD-036 renderer lease/source-versio
 ## 29.1 PO candidate selection — 2026-11-24
 
 The Product Owner selected Option A — a global transaction-scoped audience serialization guard at candidate L05 — as the primary mechanism to submit for technical approval. The decision is recorded in [NLA-RESOLVER-LOCK-001 v0.1.6](NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) §11. Option B SERIALIZABLE remains a contingency alternative, not a parallel mechanism. L05 remains a candidate only: it is not yet an admitted graph rank and contributes no certified edge until Engineering, Database and Security approve the exact primitive/key, transaction lifetime, writer participation, ordering, timeout/retry and performance bounds. The global graph remains NOT PROVEN ACYCLIC; resolver certification 0/40; application lock certification 0/50; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 29.2 L05 technical protocol proposal — 2026-11-24
+
+[NLA-L05-TDR-001 v0.1.0](NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) proposes a transaction-scoped two-key PostgreSQL advisory lock as candidate L05, with a single reserved global key pair (values TBD), READ COMMITTED separate-statement resolver snapshot, and complete writer participation. Advisory lock acquisition must precede every participating domain row lock; it is not enforced against uncooperative writers. The exact key registry, deployed isolation, all writer paths, FK/unique/trigger/helper edges, numeric timeout/retry budgets and measured contention remain unverified. No graph edge is certified by the proposal; acyclicity remains NOT PROVEN.
