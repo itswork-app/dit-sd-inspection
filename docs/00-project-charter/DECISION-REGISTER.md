@@ -140,3 +140,12 @@ A user must register/authenticate before Super Admin can approve the account and
 ### T-16 — Serial uniqueness and evidence/revision linkage (PO APPROVED option B, 2026-11-24)
 
 Within each instrument type, a normalized serial number is unique across all projects. The uniqueness scope is `(instrument_type, serial_normalized)` and does not extend across different instrument types. A same-type duplicate found in another project is a controlled conflict: require authorized review, reason and audit; never silently merge, overwrite or discard historical unit/inspection records. Evidence must reference the exact immutable inspection revision and instrument version and preserve original metadata, checksum, uploader, capture/upload timestamps and immutable storage object identity. Evidence replacement creates a new evidence record and audit event; no in-place overwrite. This PO decision does not establish institution-approved exception policy or implementation completion.
+
+
+## Package T — T-17 decision update (2026-11-24)
+
+| ID | Decision | State | Qualification / remaining dependency |
+|---|---|---|---|
+| T-17 / CFG-001 | **PO APPROVED option A:** Super Admin may directly publish an instrument version after server-side validation using bounded declarative field types and validation primitives; no second-person publication approval is required. | PO APPROVED (A) | `instrument.publish` remains an explicit Super Admin permission. Publication is an atomic, audited command; published versions are immutable; active sessions/assignments pin versions and historical revisions retain exact snapshots. Deactivation is separate and audited. Schema/RLS/command/test reconciliation remains OPEN; no migration, code or tests are claimed. |
+
+The approval does not relax project/session/assignment-scoped operational access. A globally canonical unit identity does not grant global inspection access; every inspection action remains constrained by project, session, assignment and permission. T-16 canonical identity/association design reconciliation remains required before migration.
