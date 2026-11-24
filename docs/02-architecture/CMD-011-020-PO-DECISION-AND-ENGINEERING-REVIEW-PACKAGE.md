@@ -1,8 +1,8 @@
 # CMD-011–020 Product Decision and Engineering Review Package
 
 **Document ID:** CMD-011-020-DECISION-PACKAGE-001  
-**Version:** 0.1.0  
-**Status:** REVIEW PACKAGE — PROPOSED; NO NEW PO OR ENGINEERING APPROVAL IMPLIED  
+**Version:** 0.2.0  
+**Status:** PO PRODUCT DECISIONS APPROVED; ENGINEERING / SECURITY REVIEW OPEN  
 **Date:** 2026-11-24  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
 **Parent references:** AGENTS.md v1.2.0; DGA-001; MIB-001; IRG-001; DECISION-REGISTER; LOCK-PROTOCOL-DECISION-RESOLUTION-001; LOCK-GRAPH-001; LOCK-MANIFEST-001; CMD-011–020 Detailed Contract Review v0.2.0  
@@ -12,7 +12,7 @@
 
 ## 1. Purpose and decision boundary
 
-This package converts the open CMD-011–020 design questions into explicit decision requests, recommended defaults, impact statements and closure evidence. It is a controlled documentation artifact only.
+This package records the Product Owner's explicit approval (2026-11-24) of the recommended product semantics for CMD-011–020, with compatibility resolutions against existing T-07, T-14 and T-17 decisions. It remains a controlled documentation artifact; technical and institutional approvals are separate.
 
 It does not:
 - record an approval on behalf of the Product Owner, Engineering, Security, Database, QA or institution;
@@ -28,7 +28,7 @@ The current review is static documentation analysis. No source code, SQL, migrat
 
 ## 2. Recommended Product Owner decisions — CMD-011–020
 
-The following recommendations are deliberately limited to product semantics and business invariants. The PO may approve, reject or amend each item. Approval must be entered in the Decision Register with date, owner and rationale before downstream normative documents are changed.
+The following product semantics and business invariants were explicitly approved by the Product Owner on 2026-11-24 and recorded in the Decision Register. Compatibility resolutions below preserve higher-authority existing decisions. Downstream normative documents still require controlled reconciliation and technical review.
 
 | ID | Decision requested | Recommended PO disposition | Rationale / impact | Required PO response |
 |---|---|---|---|---|
@@ -65,11 +65,9 @@ The following recommendations are deliberately limited to product semantics and 
 | PO-CMD020-02 | Publication immutability | Published version and all child configuration are immutable; correction requires a new draft/version. Assignment/session binding remains pinned; no automatic rebind. | Protects reproducibility and historical inspection evidence. | CONFIRM / AMEND |
 | PO-CMD020-03 | Re-publish behavior | Same idempotency key returns original result; different key against already-published version returns ALREADY_PUBLISHED/IMMUTABLE and emits no second publication event. | Avoids duplicate publication facts. | APPROVE / REJECT / AMEND |
 
-### 2.1 PO items that must not be treated as approved
+### 2.1 Approval interpretation and compatibility resolutions
 
-Every row marked APPROVE / REJECT / AMEND is a proposal awaiting an explicit PO response. T-14 and T-17 items marked CONFIRM EXISTING DECISION refer to already recorded decisions; they do not create new approvals.
-
-The proposed lifecycle labels above are candidate names only. If they conflict with the authoritative state catalogue, the catalogue and state machine must be reconciled before any PO approval is recorded.
+The Product Owner approved the recommended product decisions as a group. The following compatibility resolutions are binding interpretations of that approval: (1) CMD-011 initial state is the existing T-07 `DRAFT`, not a new `PLANNED` state; (2) CMD-013 preserves T-07 states `DRAFT`, `ACTIVE`, `PAUSED`, `CLOSED`; `CLOSE_REQUESTED` is an action/event, not a persisted state; (3) Super Admin remains final session-closure authority consistent with T-06/T-07; (4) T-14 and T-17 are reaffirmed only and are not reopened. Exact enum values and technical enforcement must be reconciled against canonical documents before implementation.
 
 ## 3. Engineering and Security decision requests — LPR-01, LPR-07–LPR-11
 
@@ -189,7 +187,7 @@ Current baseline remains **0/54 certified**. This package does not change that c
 
 | Step | Work | Exit evidence | Status |
 |---:|---|---|---|
-| 1 | PO responds to proposed CMD-011–020 product decisions | Dated Decision Register entries with rationale | PENDING |
+| 1 | PO responds to proposed CMD-011–020 product decisions | Dated Decision Register entries with rationale | **COMPLETE — PO APPROVED 2026-11-24** |
 | 2 | Engineering/Security resolve LPR-01, LPR-07–LPR-09 and LPR-11 | Signed technical decision record and approved logical/physical lock model | PENDING |
 | 3 | Reconcile CMD-011–020 contract/schema/manifest/graph | Cross-document consistency review | PENDING |
 | 4 | Resolve remaining commands and worker paths CMD-001–054 | 54 individually reviewed manifests | PENDING |
@@ -206,16 +204,16 @@ Record each response in the Decision Register; this table is a working response 
 
 | Decision group | Items | Response | Approver | Date / evidence |
 |---|---|---|---|---|
-| Session creation | PO-CMD011-01..04 | PENDING | Product Owner | — |
-| Session update | PO-CMD012-01..03 | PENDING | Product Owner | — |
-| Session transition/closure | PO-CMD013-01..04 | PENDING | Product Owner + institutional owner where applicable | — |
-| Assignment publication | PO-CMD014-01..04 | PENDING | Product Owner | — |
-| Membership changes | PO-CMD015-01..03 | PENDING | Product Owner + operational owner where applicable | — |
-| Inspector capacity | PO-CMD016-01..02 | EXISTING T-14 DECISION | Decision Register | Existing record |
-| Target plans | PO-CMD017-01..04 | PENDING | Product Owner | — |
-| Instrument creation | PO-CMD018-01..02 | PENDING | Product Owner + instrument owner where applicable | — |
-| Instrument draft | PO-CMD019-01..03 | PENDING | Product Owner; Security/Engineering for schema safety | — |
-| Instrument publication | PO-CMD020-01..03 | EXISTING T-17 / PARTLY PENDING | Decision Register / Product Owner | Existing record |
+| Session creation | PO-CMD011-01..04 | **PO APPROVED (DRAFT state compatibility)** | Product Owner | 2026-11-24; Decision Register addendum |
+| Session update | PO-CMD012-01..03 | **PO APPROVED** | Product Owner | 2026-11-24; Decision Register addendum |
+| Session transition/closure | PO-CMD013-01..04 | **PO APPROVED (T-07 state compatibility)** | Product Owner | 2026-11-24; Decision Register addendum |
+| Assignment publication | PO-CMD014-01..04 | **PO APPROVED** | Product Owner | 2026-11-24; Decision Register addendum |
+| Membership changes | PO-CMD015-01..03 | **PO APPROVED (operational exception review remains)** | Product Owner | 2026-11-24; Decision Register addendum |
+| Inspector capacity | PO-CMD016-01..02 | EXISTING T-14 DECISION — REAFFIRMED | Decision Register | T-14; not reopened |
+| Target plans | PO-CMD017-01..04 | **PO APPROVED** | Product Owner | 2026-11-24; Decision Register addendum |
+| Instrument creation | PO-CMD018-01..02 | **PO APPROVED (technical normalization review remains)** | Product Owner | 2026-11-24; Decision Register addendum |
+| Instrument draft | PO-CMD019-01..03 | **PO APPROVED (schema safety review remains)** | Product Owner | 2026-11-24; Decision Register addendum |
+| Instrument publication | PO-CMD020-01..03 | **EXISTING T-17 DECISION — REAFFIRMED** | Decision Register | T-17; not reopened |
 | Logical lock hierarchy | LPR-01 | OPEN | Engineering + Security; PO only for product implications | — |
 | Physical lock/security design | LPR-07 | OPEN | Engineering + Security | — |
 | Worker/callback trust | LPR-08 | OPEN | Security + Operations + provider owner | — |
@@ -225,8 +223,8 @@ Record each response in the Decision Register; this table is a working response 
 
 ## 9. Current gate and work report
 
-- Documentation package: prepared as a proposal; not an approval record.
-- CMD-011–020: detailed design remains proposal; PO decision responses and technical approvals pending.
+- Documentation package: updated to v0.2.0; Product Owner decision responses recorded and verified in Decision Register.
+- CMD-011–020: product-semantic decisions PO APPROVED; detailed contracts still require cross-document reconciliation and Engineering/Security/QA review.
 - LPR-01 and LPR-07–LPR-11: open or not executed as above.
 - Lock-complete certification: 0/54.
 - DGA-B18: PARTIAL.
@@ -236,4 +234,4 @@ Record each response in the Decision Register; this table is a working response 
 - G10: NOT AUTHORIZED.
 - Source code / SQL / migrations / CI / automated tests / concurrency tests / live database inspection / deployment: NOT EXECUTED.
 
-**Next authorized action:** obtain explicit PO responses for product decisions and route the technical decision table to Engineering/Security/QA/Operations. After approvals are recorded, reconcile the canonical documents and re-run static consistency review. Do not start implementation.
+**Next authorized action:** reconcile approved product semantics across canonical command/state/schema/permission/QA documents, while routing LPR-01 and LPR-07–LPR-11 to Engineering/Security/Database/QA/Operations. Obtain institutional approvals where required, then re-run static consistency review. Do not start implementation.
