@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.2.0  
+**Version:** 0.3.0  
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -296,7 +296,7 @@ This reconciliation does not close any DGA, RTM or RAID item. A status change re
 | X-12 | High | CMD-001–054 | Reconcile every command to RTM, QA case IDs, fixtures, expected outcomes and evidence artifacts | Engineering + QA + PO | G7 |
 | X-13 | High | All | Execute live read-only Supabase inventory and reconcile actual objects/ACL/RLS after authorized access | Security + authorized DB owner | G4/G9 |
 | X-14 | High | All | Verify GitHub rulesets, required CI checks, secrets scanning and release workflow | Repository administrator | G0/G8 |
-| X-15 | High | All | Reconcile DGA/RAID/RTM with accepted evidence; no status-only closure | Document owner + PO | G9 |
+| X-15 | High | All | Reconcile DGA/RAID/RTM with accepted evidence; no status-only closure | Document owner + PO | G9 |\n| X-16 | Critical | CMD-001–054 | Reconcile global lock ranks, CMD-023/024/026 order, T-14 eligibility serialization, parent closure fences, claim/inspection ordering and worker lease boundaries; add lock manifests and execute adversarial concurrency tests | Engineering + Security + PO; Operations/Institution where applicable | G3/G4/G5/G7/G9 |
 
 ## 7. Gate disposition
 
@@ -350,3 +350,16 @@ Key dispositions:
 - All proposed fields and API changes remain OPEN pending PO/Security decisions. No physical schema, command catalogue or detailed review is silently amended by this proposal.
 
 **Gate effect:** X-02 remains OPEN; G3/G5/G9 remain NOT READY and G10 remains NOT AUTHORIZED. This update improves traceability but does not close the finding.
+
+
+## 11. Global lock-order and concurrency graph update — 2026-11-24
+
+A dedicated proposal is recorded in [LOCK-GRAPH-001 — Global Lock-Order and Concurrency Graph Reconciliation](GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md) v0.1.0. It reconciles the currently documented lock recipes, records the CMD-026 and CMD-023 ordering conflicts, proposes candidate resource ranks, maps cross-command race intersections, identifies potential deadlock inversions, and specifies per-command lock manifests plus 30 planned concurrency tests.
+
+Key findings:
+- The catalogue's current global sequence and the CMD-011–020 expanded sequence do not fully align on instrument/version placement.
+- CMD-026's detailed lock recipe conflicts with its catalogue row; CMD-023/024 recipes also need normalization.
+- Capacity eligibility, project/session closure, instrument deactivation, association/claim/inspection lifecycle, attendance document verification and worker finalization need complete competing-writer inventories.
+- The static review cannot prove the graph acyclic; no runtime deadlock or concurrency test was executed.
+
+**Disposition:** X-16 OPEN; DGA-B18 OPEN. LOCK-GRAPH-001 is a proposal only. The canonical command catalogue, detailed command reviews and physical schema have not been silently changed. G3/G4/G5/G7/G9 remain NOT READY and G10 remains NOT AUTHORIZED.
