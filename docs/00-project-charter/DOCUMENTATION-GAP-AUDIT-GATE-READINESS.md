@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.0.0  
+**Version:** 1.1.0  
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/t17-instrument-governance-t18-command-boundary`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -49,7 +49,7 @@ No application code, migrations, live Supabase database, deployed RLS/grants, Ve
 | DGA-B13 | Audit/INS-015 notifications | NLA-001 now specifies outbox, recipient inbox, channel delivery, append-only attempts, immutable policy versions and escalation history. Worker identity/ACL, role grants, exact recipient selector semantics, provider capability and T-10 retention/privacy remain open | PO/security review of NLA-001; worker security approval; provider evidence; institutional T-10 policy; cross-document and test review | PO + engineering + institution | DESIGN PROPOSAL RECORDED; APPROVALS OPEN |
 | DGA-B14 | Reports/project closure | T-05/T-06 metrics, BA/serial annex and closure graph remain open. T-13 print batch persistence is mapped to `print_batches` + append-only per-document `print_events`; eight dedicated print-batch cases are now specified, but projection, retry and concurrency tests remain unexecuted | Metric definitions, closure gates, print schema/command review and execution evidence | PO + engineering | PARTIAL; PRINT DESIGN AND TESTS SPECIFIED |
 | DGA-B15 | CI/repository governance | Required CI jobs, branch protection, review requirements, secrets scanning, migration checks and actual workflow run were not verified | Live GitHub ruleset/workflow evidence and successful required-check run | Repository administrator | NOT VERIFIED |
-| DGA-B16 | Scope/authority document freshness | Package T still labels itself draft for PO review despite T-01..T-18 decisions; Package S historical T-19 addendum has old branch-intent wording/counts; RTM and RAID contain historical states needing supersession links | Controlled status addenda and reconciled decision/requirement/RAID crosswalk | Document owner + PO | OPEN |
+| DGA-B16 | Scope/authority document freshness | Package T status was reconciled; Package S now has a current 9.15 addendum superseding historical 9.14 counts; RTM/RAID and remaining historical audit status still require crosswalk review | Controlled status addenda and reconciled decision/requirement/RAID crosswalk | Document owner + PO | PARTIAL; REMAINING CROSSWALK OPEN |
 
 ## 4. High-risk design quality gaps
 
