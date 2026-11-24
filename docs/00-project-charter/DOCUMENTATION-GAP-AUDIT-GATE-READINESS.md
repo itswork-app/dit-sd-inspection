@@ -134,7 +134,7 @@ No source code, migration, SQL, grants, live database mutation, deployment, secu
 
 ## NLA-001 / T-13 closure evidence update — 2026-11-24
 
-- NLA-001 v0.1.3 records the INS-015 lifecycle, proposed six-table persistence model, recipient and channel rules, retry/UNKNOWN semantics, audit/privacy boundary, worker lease fencing, INT-NOTIF-001, CMD-049..054 and TC-NOTIF-001..026.
+- NLA-001 v0.1.3 records the INS-015 lifecycle, proposed six-table persistence model, recipient and channel rules, retry/UNKNOWN semantics, audit/privacy boundary, worker lease fencing, INT-NOTIF-001, CMD-049..054 and TC-NOTIF-001..029.
 - T-13 is reconciled by adding `print_batches` to physical schema/RLS and linking per-document attempt outcomes in `print_events`.
 - Proposed physical/RLS inventory: 48 tables each; static document parity only.
 - DGA-B10, B11, B13 and B14 remain open/partial. No PO/security sign-off, live database inspection, migration, grant, provider setup or test execution is claimed.
@@ -394,7 +394,7 @@ The following documentation mismatches have been resolved at proposal level and 
 - CMD-051 is explicitly publish-only with server-computed policy_hash and expected_current_version_id; persisted draft CRUD is excluded pending a separately approved command/schema.
 - CMD-052/053 now share canonical safe_payload and worker lease fields lease_owner, lease_token_hash, lease_generation and lease_expires_at. Partial fan-out remains PROCESSING and resumes through unique arbiters.
 - CMD-053 callback ingress is INT-NOTIF-001, a provider-authenticated integration boundary rather than a new CMD ID or browser RPC. Provider-specific signature, durable event deduplication and capability remain open.
-- CMD-054 no longer accepts evaluation_time; one database UTC instant is captured per scheduler evaluation transaction. SLA start/pause/calendar/timezone semantics remain open.
+- CMD-054 no longer accepts evaluation_time; one database UTC instant is captured per scheduler evaluation transaction. POQ-02 approves per-policy elapsed/business-time semantics, ELAPSED_UTC initial default and quiet-hours delivery deferral without SLA pause; exact start event/calendar/pause semantics remain open.
 - Dismiss/archive is excluded from MVP by POQ-03; dismissed_at is dormant with no command, permission or browser mutation.
 
 Updated references: NLA-001 v0.1.3; CMD-049–054 Detailed Contract Review v0.1.2; Command Catalogue v0.4.5; Physical Schema v0.4.2; RLS Catalogue v0.2.3; API Contracts v0.2.2; QA Catalogue v0.3.6; Audit Event Catalogue; Lock Manifest v0.4.14; Concurrency Token Reconciliation v0.1.4; QA Catalogue v0.3.5; RTM NOTIF-007..012; RAID D-034..D-036/R-034..R-035.
