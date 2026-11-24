@@ -127,7 +127,7 @@ PO-approved T-16 option B: one normalized serial per instrument type across all 
 | `idempotency_records` | `id`, `actor_id`, `command_type`, `scope_key`, `idempotency_key`, `request_hash`, `result_reference`, `status`, `expires_at` | Unique `(actor_id, command_type, scope_key, idempotency_key)`; same key/different hash rejected; retention > maximum offline retry window |
 | `sync_batches` | `id`, `actor_id`, `device_id`, `batch_key`, `payload_hash`, `status`, `acknowledged_at` | Unique actor/device/batch key; replay safe; conflict records retained |
 
-INS-016 audit scope and retention remain subject to explicit approval. The table design above is a proposed implementation structure, not approval of the audit policy.
+T-15 / INS-016 audit event scope and append-only/atomicity direction are PO-approved. Institutional classification, retention, legal hold, disposition, network metadata and final audit-reader/export authority remain subject to external approval under T-10. The table design above is a proposed implementation structure, not an implemented schema.
 
 ## 4. Critical indexes and database constraints
 
@@ -153,7 +153,7 @@ Required before production migration:
 
 | Command | Lock / atomicity requirement | Invariant |
 |---|---|---|
-| Approve account / grant Inspector role | Lock project capacity row before counting and granting | Global cap cannot be exceeded; count predicate awaits PO confirmation |
+| Approve account / grant Inspector role | Lock project capacity row before counting and granting | T-14 PO-approved qualifying-account predicate is applied atomically; global combined cap cannot be exceeded |
 | Change capacity | Lock capacity row | New integer 1..100; reject below current count; never silently deactivate |
 | Publish instrument version | Lock instrument catalog row | Version number unique; immutable published version |
 | Bind assignment to instrument | Validate published version | Assignment cannot bind draft/retired version |
@@ -183,16 +183,16 @@ Immutable after transition:
 - reviewer decisions;
 - generated document outputs;
 - print events;
-- audit events once INS-016 is approved and its retention policy finalized.
+- audit events under PO-approved T-15 append-only controls; retention disposition remains governed by institutional T-10 policy.
 
 Corrections create a new version or append-only event. Do not update historical rows to make them appear current.
 
 ## 7. Unresolved Product Owner / institutional decisions
 
 These are not silently resolved by engineering:
-1. Validate the T-16 canonical unit + `unit_project_associations` + conflict workflow against source/institutional serial-normalization and exception policy; confirm composite FK implementation and project-scoped RLS before migration.
-2. Confirm exact Inspector capacity counting predicate (active Inspector role grant versus additionally assigned active project).
-3. Approve INS-016 audit event scope, access, retention, export, and legal hold.
+1. Complete technical review of the T-16 canonical unit + `unit_project_associations` + conflict workflow, composite FK implementation and project-scoped RLS; obtain institution-approved serial-normalization and exception policy before migration.
+2. Implement and verify the T-14 PO-approved qualifying Inspector predicate and atomic combined-cap enforcement; the PO decision itself is closed.
+3. Implement T-15-approved audit append/atomicity and least-privilege access; obtain institutional approval for retention, legal hold, disposition, network metadata and final audit-reader/export authority.
 4. Approve privacy classification, evidence retention/deletion, and institutional legal basis.
 5. Confirm official instrument source and version content before publishing production instrument versions.
 6. Approve exact session and assignment effective-time semantics.
@@ -218,7 +218,7 @@ Before production:
 ## 9. Package L disposition
 
 **Physical data model:** DRAFT COMPLETE FOR REVIEW.  
-**Resolved by this package:** schema catalogue, integrity boundaries, instrument extensibility primitives, serial normalization proposal, active-claim uniqueness, revision/evidence linkage, critical index/transaction requirements.  
+**Resolved by this package:** schema catalogue, integrity boundaries, instrument extensibility primitives, canonical serial identity and project-association design, active-claim uniqueness, revision/evidence linkage, critical index/transaction requirements.  
 **Still blocked:** Product Owner confirmation items in Section 7; detailed table-by-table RLS/grant catalogue and command-specific function review (T-18 architecture approved); evidence/privacy policy; backup/restore plan.  
 **Implementation authorization:** NOT GRANTED.  
 **Migrations/tests executed:** NONE.
