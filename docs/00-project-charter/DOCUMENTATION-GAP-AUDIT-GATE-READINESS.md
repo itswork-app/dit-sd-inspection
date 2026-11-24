@@ -189,7 +189,7 @@ The proposal maps:
 
 ## Global lock/concurrency graph update — 2026-11-24
 
-[LOCK-GRAPH-001 — Global Lock-Order and Concurrency Graph Reconciliation](../02-architecture/GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md) v0.2.0 records the cross-command lock-order disagreements and proposes a candidate resource hierarchy, command/race matrix, potential deadlock inversions, lock-manifest requirements and 30 planned concurrency tests.
+[LOCK-GRAPH-001 — Global Lock-Order and Concurrency Graph Reconciliation](../02-architecture/GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md) v0.3.0 records the cross-command lock-order disagreements and proposes a candidate resource hierarchy, command/race matrix, potential deadlock inversions, lock-manifest requirements and 41 planned concurrency tests, including explicit cross-project canonical-identity collisions, cross-project claim arbitration, T-14 eligibility writers, instrument publish/deactivation, safety withdrawal, parent-fenced async finalizers and immutable notification-policy fan-out.
 
 **Disposition:** DGA-B18 PARTIAL. PO product decisions LPR-02–LPR-06 are recorded; the proposal still does not prove an acyclic graph, resolve the complete CMD-026 and competing-command lock paths, alter canonical command contracts or authorize implementation. G3/G4/G5/G7 remain NOT READY/BLOCKED as recorded above; G9 remains NOT READY and G10 remains NOT AUTHORIZED. No tests or runtime lock inspection were executed.
 
