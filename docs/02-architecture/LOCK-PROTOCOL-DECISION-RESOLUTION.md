@@ -1,0 +1,200 @@
+# Lock Protocol Decision Resolution — LM-01–LM-09
+
+**Document ID:** LOCK-PROTOCOL-DECISION-RESOLUTION-001  
+**Version:** 0.1.0  
+**Status:** Engineering recommendation — PO / Engineering / Security review required; NOT approved for implementation  
+**Date:** 2026-11-24  
+**Scope:** Candidate global lock protocol for CMD-001–054 and asynchronous finalizers  
+**Parent:** LOCK-GRAPH-001; LOCK-MANIFEST-001  
+**Gate:** G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED
+
+## 1. Executive recommendation
+
+The source-level lock recipes are not safe to implement as currently written. They contain incompatible acquisition orders, incomplete resource sets and unverified implicit database lock paths. This document proposes one deterministic protocol for decision and security review; it does not declare the protocol approved, prove the graph acyclic, or authorize implementation.
+
+**Recommendation:** adopt a single monotonic resource order, require every command to publish a complete per-command lock manifest, and prohibit any transaction from acquiring a lower-ranked resource after a higher-ranked one. Where a command cannot obey that order, redesign its transaction boundary rather than adding an undocumented exception.
+
+No canonical command catalogue, physical schema, migration, function, grant, RLS policy or detailed command review is changed by this proposal.
+
+## 2. Evidence boundary and authority
+
+This proposal is based on static review of AGENTS.md v1.2.0, MIB-001, DGA-001, IRG-001, the Decision Register, PostgreSQL Command Contract Catalogue, Physical Database Schema and Integrity Specification, CONCURRENCY-001, LOCK-GRAPH-001, LOCK-MANIFEST-001 and detailed reviews for CMD-011–054.
+
+No live PostgreSQL/Supabase catalog, trigger/function call graph, deployed ACL, lock trace, transaction execution or concurrency test was inspected or run. All resource ranks and protocols below are logical design proposals; exact lock primitives, SQL and physical targets remain subject to approved schema and database review.
+
+Authority precedence remains unchanged: PO decisions govern product behavior; institutional authorities govern reserved legal/records/privacy/security/operations matters; Engineering and Security approve technical lock and privilege design within their authority. A PO decision cannot substitute for security or institutional approval.
+
+## 3. Candidate canonical resource order — decision required
+
+Use the following total order. A command acquires only the classes it needs, in ascending order. The rank is a logical ordering contract, not a prescription to lock every listed row.
+
+| Rank | Resource class | Examples / purpose | Required rule |
+|---:|---|---|---|
+| L00 | Idempotency arbitration | actor + command + scope + key | Claim or resolve the idempotency identity before domain locks; same-key/different-hash rejects |
+| L10 | Shared invariant serialization | T-14 capacity control row | Every operation that can change the qualifying Inspector population or capacity uses the same serialization point first |
+| L20 | Canonical identity arbitration | normalized serial/instrument identity and conflict key | All unit identity writers derive the same canonical key and acquire it before project/unit rows |
+| L30 | Project/session lifecycle parents | project, session | Parent lifecycle fence precedes child creation, mutation and finalization; multiple parents sorted by stable ID |
+| L40 | Instrument and immutable version references | instrument, instrument_version | Validate active/selectable status and pin immutable version; do not mutate historical versions |
+| L50 | Assignment and membership aggregates | operational assignment, assignment member, team/location membership | Deterministic ID order; assignment eligibility revalidated after parent and instrument checks |
+| L60 | Canonical unit | unit identity/lifecycle row | Acquire after identity arbitration and scoped parents |
+| L70 | Association episode | unit-project association | One active episode invariant; exact association is revalidated after lock |
+| L80 | Claim aggregate | unit claim | Claim lifecycle before inspection lifecycle; unique active claim is final database arbitration |
+| L90 | Inspection aggregate | inspection | Inspection state/version and current revision are revalidated after lock |
+| L100 | Dependent mutable aggregates | evidence upload intent, attendance record, document job, print batch | Exact per-command sub-order and source-version binding required; no external I/O while held |
+| L110 | Append-only facts | revisions, review decisions, domain events, audit events, delivery attempts | Insert after mutable aggregate validation; uniqueness constraints remain final arbitration |
+
+### 3.1 Deterministic same-rank ordering
+
+- Lock multiple rows within a rank by a stable, immutable key in ascending order (UUID byte ordering or another explicitly documented canonical comparator).
+- A command must declare the comparator; incidental query-plan order is not acceptable.
+- A foreign-key, unique-index, trigger or helper-function lock is part of the effective lock set even when it is not visible in the command's top-level SQL.
+- A command may not perform a late lookup that introduces a lower-ranked lock after a higher-ranked lock.
+- Revalidation of actor, permission, scope, status, expiry, revision, version and capacity must occur after the serialization rows governing those facts have been acquired.
+
+### 3.2 Idempotency and replay
+
+The L00 arbitration must be short and transactionally safe. The same semantic request hash returns the durable outcome only after the required current authorization checks. A different hash under the same idempotency identity rejects. Deadlock/serialization retries must reuse the same key and may not duplicate domain events, audit events or external effects.
+
+## 4. Conflict resolutions recommended
+
+### 4.1 CMD-022–027: canonical identity, association, conflict, claim
+
+**Recommended order:** L00 → L10 when T-14 eligibility is affected → L20 canonical identity → L30 project/session → L40 instrument/version → L50 assignment/membership → L60 unit → L70 association → L80 claim → L90 inspection → L110 append-only facts.
+
+- CMD-022 registration, CMD-023 association, CMD-024 end/revoke, CMD-025 conflict resolution, CMD-026 claim and CMD-027 release must use the same canonical identity derivation and lock order.
+- CMD-023/024/026 must not retain unit-first or association-first recipes that contradict this order.
+- CMD-025 conflict-first behavior may select a candidate but must not lock a conflict row before L20 if the operation subsequently needs canonical identity arbitration. Resolve the candidate identity, acquire L20, then lock scoped resources in order and revalidate conflict state.
+- CMD-026 catalogue row and detailed review must be reconciled to the same order. No separate special order for claim creation.
+- CMD-027 release uses the same L20–L80 chain when it must prove identity/association context; if it only mutates an already identified claim, the manifest may justify a narrower L00 → L30 → L50 → L60 → L70 → L80 path, but it must not acquire omitted lower ranks later.
+- Unique constraints for one active unit identity/association/claim remain necessary. Locks alone are not the integrity guarantee.
+
+**Decision required:** confirm the domain meaning of canonical identity (instrument/type + normalized serial and any approved scope dimensions) and whether conflict resolution may change identity or only resolve an existing conflict. Engineering/Security must approve the actual arbitration primitive and constraints.
+
+### 4.2 CMD-028–032 and CMD-035: claim/inspection/revision/review/sync
+
+**Recommended order:** L00 → L30 → L50 → L60 → L70 → L80 claim → L90 inspection → L100 evidence/document child (only where applicable) → L110 revision/review/event/audit.
+
+- Claim precedes inspection because inspection ownership and eligibility depend on a valid active claim/association.
+- CMD-028 save draft, CMD-029 submit, CMD-030 return, CMD-031 approve, CMD-032 reopen and CMD-035 sync must share the same parent/claim/inspection order.
+- Revisions and review decisions are append-only facts at L110; they do not become a reason to lock a revision before its inspection aggregate.
+- Exact expected_row_version, expected_revision_no and sync operation identity remain distinct tokens. Each command validates all relevant tokens after acquiring its aggregate locks.
+- CMD-035 must not lock an inspection through a different path than online commands; sync conflict records require their own documented child rank and idempotency identity.
+
+**Decision required:** approve whether a claim is mandatory for every in-scope inspection transition and define exceptions (e.g. administrative correction or migration). Any exception must be explicit and permission-bounded.
+
+### 4.3 CMD-009–016: project/session parent fence and T-14 capacity
+
+- Project/session state rows are the lifecycle fence. Every child writer/finalizer must lock and revalidate the applicable parent before touching child aggregates.
+- Closing a project/session must serialize against creation, assignment, claim, inspection, evidence finalization, attendance verification and any asynchronous job that can advance scoped work.
+- Preflight reads are advisory only; they cannot replace the parent lock and in-transaction revalidation.
+- T-14 capacity uses L10 before any user/role/membership row that contributes to the qualifying count. Every eligibility-changing path must participate: role grant/revoke/expiry, account disable/suspension, assignment membership activation/deactivation, and capacity changes.
+- A path that does not affect the T-14 qualifying population need not acquire L10, but that exclusion must be proven in its manifest.
+
+**PO decision required:** define the business event at which a project/session becomes closed and whether already-started work may finish after closure. Recommended default: no new child mutation or finalization after the closure transaction commits; explicit reopen or exception workflow is required to resume.  
+**PO decision required:** confirm the intended T-14 counting rule (which active/approved users and assignments count, and the effective-time boundary). Engineering/Security then formalize the predicate and serialization implementation.
+
+### 4.4 CMD-014/018–021: instrument/version/assignment interaction
+
+- Assignment publication follows L30 parent → L40 instrument/version → L50 assignment/membership. It pins an immutable instrument version.
+- Instrument publish/deactivation locks the L40 instrument row and revalidates current status/version. It must not, after holding L40, acquire L30 parent locks or L50 assignment locks in a reverse order.
+- To prevent a concurrent assignment from selecting an instrument being deactivated, both paths contend on the same L40 instrument row: assignment publication locks/revalidates it before publishing; deactivation changes status/version under L40. A waiting assignment must re-read and reject an inactive instrument.
+- If deactivation needs to enumerate or mutate assignments, redesign as a separate bounded workflow/outbox that follows L30 → L40 → L50; do not perform instrument-first then assignment mutation.
+- Historical session/assignment references remain pinned to immutable instrument versions; deactivation must not rewrite historical snapshots.
+
+**PO decision required:** confirm whether deactivation blocks only new assignments or also blocks in-progress sessions using a pinned historical version. Recommended default: block new assignment selection; preserve already-pinned historical versions unless an explicit safety withdrawal policy is approved. Security/Engineering must validate the concurrency and integrity mechanism.
+
+### 4.5 CMD-033–040: evidence, documents, attendance and print
+
+- Create durable upload/render/print intent under the applicable L30–L90 parent/aggregate locks; commit before Storage, malware scan, image processing, PDF rendering or printing.
+- External I/O MUST NOT occur while a database row lock is held.
+- Finalization starts a new short transaction, reacquires the full applicable parent and source aggregate chain in canonical order, validates the original source revision/version and job fencing token, then appends the result.
+- Attendance verification must bind to one immutable attendance document version. Institutional attendance authority remains blocked by DGA-B03.
+- Print sequence allocation must have one per-document serialization point. Do not use max(sequence)+1 without a serialization/unique constraint design.
+- Rendering completion is not physical print evidence; print events remain separate.
+
+### 4.6 CMD-049–054: notification workers and provider callbacks
+
+- Queue/outbox/delivery claims are short, independent transactions. A worker must not hold a queue-row lock while acquiring domain aggregate locks.
+- Worker lease ownership uses a monotonically increasing fencing generation/token plus expiry; it is not a user row_version.
+- External provider calls happen after the claim transaction commits. Persist attempt identity and outcome in separate short transactions.
+- A callback/webhook must enter through a separately authenticated provider boundary, validate provider authenticity/replay protection, and be idempotent on provider + event/attempt identity. It must not be treated as a browser command or ordinary user JWT.
+- If finalization changes a source aggregate, reacquire the entire relevant domain lock chain in ascending order and verify the fencing token before commit.
+- Scheduler ticks use a unique policy-version + escalation-step + target-window identity so duplicate ticks cannot create duplicate escalation events.
+- Worker principal, role, function owner, EXECUTE ACL, secret custody, provider capabilities and T-10 data policy remain separate approvals.
+
+## 5. Per-command manifest closure requirements
+
+A command is not lock-complete until its manifest records:
+
+1. Exact command ID and contract version.
+2. Ordered ranks and exact table/row/key predicates.
+3. Same-rank deterministic comparator.
+4. Shared invariants and every competing command/worker.
+5. Revalidation predicates performed after each relevant lock.
+6. Unique/check/FK/exclusion constraints, triggers and helper-function call graph.
+7. Isolation level, lock timeout, statement timeout and retryable SQLSTATE behavior.
+8. Idempotency identity/hash and atomic event/audit outcome.
+9. External intent, lease, fencing, finalization and reconciliation boundaries.
+10. Adversarial command-pair test IDs and evidence on the exact schema/commit.
+
+The inventory currently covers 54/54 command IDs but certifies 0/54 complete manifests. This proposal does not change that count.
+
+## 6. Required decisions and accountability
+
+| ID | Decision | Decision owner | Status |
+|---|---|---|---|
+| LPR-01 | Endorse/reject the candidate rank hierarchy as the basis for technical review | PO for product-impacting policy; Engineering + Security for technical approval | OPEN |
+| LPR-02 | Define canonical unit identity and conflict-resolution semantics | PO + domain owner; Engineering + Security for enforcement | OPEN |
+| LPR-03 | Confirm mandatory claim requirement and documented exceptions | PO | OPEN |
+| LPR-04 | Define project/session closure and treatment of in-flight work | PO + institutional operations owner where policy requires | OPEN |
+| LPR-05 | Confirm T-14 eligibility counting rule and effective-time semantics | PO + institutional operations owner; Security/Engineering implement | OPEN |
+| LPR-06 | Define instrument deactivation effect on already-pinned sessions | PO + instrument owner | OPEN |
+| LPR-07 | Approve exact lock primitives, function/trigger graph and effective privileges | Engineering + Security | OPEN |
+| LPR-08 | Approve worker identity, queue fencing, provider callback trust and ACL | Security + Operations + provider owner | OPEN |
+| LPR-09 | Reconcile all 54 command manifests and physical constraints/call graph | Engineering + Database/Security + QA | OPEN |
+| LPR-10 | Run adversarial concurrency suite in authorized isolated environment | Engineering + QA + Security | NOT EXECUTED |
+
+The user/PO is not asked to approve SQL, lock primitives, function owners, grants or RLS. Those are Engineering/Security decisions and require their own evidence and review.
+
+## 7. Explicit blockers that this proposal does not close
+
+- T-10 institutional data classification, legal basis, retention, deletion/disposition, legal hold, audit access/export and metadata.
+- T-12 actual provider/legal account ownership, billing owner, region, quota, budget and recovery entitlements.
+- DGA-B01/B02 authoritative instrument sources and completeness.
+- DGA-B03 BA signatory and attendance authority.
+- DGA-B06 backup/restore evidence; DGA-B07 device/offline security; DGA-B08 numeric SLOs.
+- DGA-B09 permission registry and grantor/SoD approval.
+- DGA-B10 exact executable contracts for CMD-001–054.
+- DGA-B11 live schema/RLS/constraints verification; DGA-B12 T-18 function owner/ACL/JWT evidence.
+- DGA-B13 notification worker/provider/T-10 approvals; DGA-B14 reporting/closure semantics; DGA-B15 CI/branch protection evidence.
+- DGA-B16 onward including version-token and lock graph/manifest closure (see DGA-001 current register).
+
+These require named authorities and source/runtime evidence; no document-only proposal can substitute for them.
+
+## 8. Verification plan — PLANNED / NOT EXECUTED
+
+Before any implementation, Engineering/QA/Security must:
+- Build the complete effective lock graph including row locks, unique-index arbitration, foreign-key checks, triggers, helper functions and worker paths.
+- Prove the proposed rank graph has no reverse edge or cycle for all commands.
+- Run each conflicting command pair in both start orders with deterministic barriers.
+- Capture final invariant state, SQLSTATE, lock wait/deadlock diagnostics and retry behavior.
+- Verify parent closure against every child writer/finalizer.
+- Verify T-14 count/capacity under concurrent eligibility changes.
+- Verify stale worker fencing after lease expiry/reclaim.
+- Verify audit/idempotency atomic rollback and no duplicate event after retry.
+- Tie all results to exact schema migration head, code commit, test run and isolated environment.
+
+No test, CI, SQL, migration, live database query, grant, deployment or runtime inspection was performed for this document.
+
+## 9. Gate disposition
+
+| Gate | Status | Reason |
+|---|---|---|
+| G3 data/transaction | NOT READY | Candidate ordering requires approval and physical lock graph/constraints are unverified |
+| G4 security | NOT READY | Worker and function identities/ACLs and effective privilege paths remain unverified |
+| G5 API/command | NOT READY | 54 manifests remain incomplete/unapproved |
+| G7 quality/evidence | NOT READY | Concurrency tests planned only |
+| G9 SSOT/scope freeze | NOT READY | Product, institutional and technical blockers remain |
+| G10 implementation | NOT AUTHORIZED | Separate written implementation authorization is absent |
+
+**Final disposition:** this is a consolidated recommendation to resolve LM-01–LM-09. It reduces ambiguity and assigns decision owners, but it does not approve the canonical lock protocol, close the blockers, certify deadlock freedom or authorize implementation.
