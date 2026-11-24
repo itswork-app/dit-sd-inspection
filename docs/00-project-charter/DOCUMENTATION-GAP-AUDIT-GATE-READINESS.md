@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.2.0  
+**Version:** 1.3.0  
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/t17-instrument-governance-t18-command-boundary`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -49,7 +49,7 @@ No application code, migrations, live Supabase database, deployed RLS/grants, Ve
 | DGA-B13 | Audit/INS-015 notifications | NLA-001 now specifies outbox, recipient inbox, channel delivery, append-only attempts, immutable policy versions and escalation history. Worker identity/ACL, role grants, exact recipient selector semantics, provider capability and T-10 retention/privacy remain open | PO/security review of NLA-001; worker security approval; provider evidence; institutional T-10 policy; cross-document and test review | PO + engineering + institution | DESIGN PROPOSAL RECORDED; APPROVALS OPEN |
 | DGA-B14 | Reports/project closure | T-05/T-06 metrics, BA/serial annex and closure graph remain open. T-13 print batch persistence is mapped to `print_batches` + append-only per-document `print_events`; eight dedicated print-batch cases are now specified, but projection, retry and concurrency tests remain unexecuted | Metric definitions, closure gates, print schema/command review and execution evidence | PO + engineering | PARTIAL; PRINT DESIGN AND TESTS SPECIFIED |
 | DGA-B15 | CI/repository governance | Required CI jobs, branch protection, review requirements, secrets scanning, migration checks and actual workflow run were not verified | Live GitHub ruleset/workflow evidence and successful required-check run | Repository administrator | NOT VERIFIED |
-| DGA-B16 | Scope/authority document freshness | Package T status was reconciled; Package S now has a current 9.15 addendum superseding historical 9.14 counts; RTM/RAID and remaining historical audit status still require crosswalk review | Controlled status addenda and reconciled decision/requirement/RAID crosswalk | Document owner + PO | PARTIAL; REMAINING CROSSWALK OPEN |
+| DGA-B16 | Scope/authority document freshness | Package T status was reconciled; Package S now has a current 9.15 addendum superseding historical 9.14 counts; RTM/RAID and remaining historical audit status still require crosswalk review | Controlled status addenda and reconciled decision/requirement/RAID crosswalk | Document owner + PO | PARTIAL; REMAINING CROSSWALK OPEN |\n| DGA-B17 | Concurrency/version token contract | `expected_version`, `expected_row_version`, business version, revision, hash, print sequence and worker lease semantics are not consistently mapped to physical aggregates; CMD-005/007/035/040/050 have field/target mismatches | PO/Security decisions on [Concurrency and Version Token Reconciliation](../02-architecture/CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md), followed by synchronized schema/catalogue/review/QA updates | PO + engineering + security; institution for attendance authority | OPEN — PROPOSAL DOCUMENTED, DECISIONS PENDING |
 
 ## 4. High-risk design quality gaps
 
@@ -81,9 +81,9 @@ Package T's document-level status must be updated from “Draft for Product Owne
 | G0 Governance/repository intent | PARTIAL | Repository purpose clarified; document freshness/crosswalk still open |
 | G1 Product closure | BLOCKED | IFP source, SB evidence rules, institutional BA authority |
 | G2 Workflow closure | PARTIAL/BLOCKED | PO decisions recorded; edge cases and exact transitions/authority need reconciliation |
-| G3 Data/transaction closure | BLOCKED | ERD-only entities, command details, constraints and external transaction patterns |
+| G3 Data/transaction closure | BLOCKED | ERD-only entities, concurrency token columns/increment semantics, lock-order conflicts, constraints and external transaction patterns |
 | G4 Security/privacy closure | BLOCKED | Permission matrix, live ACL/RLS, T-10 institutional approvals |
-| G5 API/integration closure | BLOCKED | 54 proposed operations have detailed review documents; exact approved schemas/routes/RPCs, permission mapping and runtime evidence remain open |
+| G5 API/integration closure | BLOCKED | 54 proposed operations have detailed reviews; exact approved schemas/routes/RPCs, consistent expected_row_version targets, permission mapping and runtime evidence remain open |
 | G6 UX/accessibility closure | PARTIAL | Responsive and offline/device acceptance evidence incomplete |
 | G7 QA strategy closure | PARTIAL | Test design extensive; traceability gaps and all relevant execution evidence pending |
 | G8 Production operations closure | BLOCKED | Provider, ownership, region, quotas, SLO, restore and incident owners unverified |
@@ -167,3 +167,17 @@ The cross-command synthesis is recorded in [CMD-001–054 Cross-Command Reconcil
 ### Gate disposition
 
 G5 remains BLOCKED. G9 remains NOT READY. G10 remains NOT AUTHORIZED. The completion of detailed documentation reviews does not close DGA-B10, authorize implementation or establish production readiness. Each DGA item may be closed only with accountable-owner acceptance and the required source/approval/runtime evidence.
+
+
+## Concurrency/version-token proposal update — 2026-11-24
+
+A dedicated decision-ready proposal is now available: [CONCURRENCY-001 — Concurrency and Version Token Reconciliation](../02-architecture/CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md) v0.1.0. The complete 54-command crosswalk links it from [CMD-001–054 Cross-Command Reconciliation](../02-architecture/CMD-001-054-CROSS-COMMAND-RECONCILIATION.md) v0.2.0.
+
+The proposal maps:
+- missing aggregate tokens for role/scope grants, projects, sessions, capacity settings, instruments, associations and attendance records;
+- existing \`inspections.row_version\` and \`unit_claims.row_version\` semantics;
+- target-plan/instrument business versions versus mutable-draft concurrency;
+- CMD-005/007/035/040/050 field and target mismatches;
+- immutable revision/hash, print sequence and worker lease/fencing domains.
+
+**Disposition:** DGA-B17 OPEN. No PO/Security decision has been inferred. G3/G5 remain BLOCKED, G9 remains NOT READY and G10 remains NOT AUTHORIZED. The proposal does not alter the canonical physical schema or command contracts and no tests were executed.
