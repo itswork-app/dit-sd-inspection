@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.15
+**Version:** 0.4.16
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -458,3 +458,8 @@ CMD-041 actual reporting and CMD-042 target reporting are bounded read paths, no
 CMD-045 retention/legal-hold, CMD-046 security incident review, CMD-047 provider configuration and CMD-048 production release remain deliberately outside the executable lock graph. Their authority/state models are blocked by institutional policy, schema/authority, provider ownership and release governance respectively. Do not assign candidate lock ranks to undefined privileged state machines and do not seed/grant their proposed permission labels.
 
 Command boundary coverage: 50/54 commands have documented candidate execution/transaction boundaries (CMD-001–044 and CMD-049–054); CMD-045–048 remain hard-gated; 0/54 technically approved/certified. This coverage is not a proven acyclic graph. Report snapshot semantics, audit purpose/RLS/ACL, export lifecycle, privileged state models, worker identity/ACL, implicit PostgreSQL edges, independent review and adversarial runtime tests remain open.
+
+
+## 25. Application lock-certification denominator reconciliation — 2026-11-24
+
+The graph covers 54 stable traceability IDs, but CMD-045–048 are external control-plane responsibilities and have no application transaction or lock set. Accordingly, the application denominator is **50 commands**. Current static documentation records candidate execution/transaction boundaries for all 50 application commands; this is not normalized-manifest certification. **0/50 application commands are technically approved or certified lock-complete.** LPR-01, LPR-07–LPR-09 and LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. The effective PostgreSQL lock graph is not proven acyclic because exact lock modes, implicit FK/index/trigger/function edges, privileges and competing writer paths remain unverified. LOCK-MANIFEST-001 is synchronized to v0.4.23. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT ACTIVE.
