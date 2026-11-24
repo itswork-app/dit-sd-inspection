@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.25  
+**Version:** 0.1.26  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -589,3 +589,9 @@ SES-001/WF-003 traceability is extended across the complete session lifecycle. T
 | INS-015 / POQ-01..03 | Notifications and delivery are separate from inspection/session completion | CMD-049–054; outbox and async delivery | Source/outbox atomicity and async retry; no close dependency absent approved rule | PO semantics approved; runtime and worker controls open |
 
 No row above proves implementation. All associated QA remains PLANNED / NOT EXECUTED; G9 NOT READY and G10 NOT ACTIVE.
+
+## SES-001 packed-unit ABORT — requirement trace clarification (2026-11-24)
+
+The approved product behavior is an exceptional Inspector-requested, Admin/Korlap-approved disposition after Reviewer return for an identified error when the physical unit is already packed/boxed and prepared for shipment, making correction/reinspection impracticable. If correction remains practically possible, same-Inspector/same-active-session correction and resubmission remains required.
+
+Trace this behavior through the session-bound inspection lifecycle, Reviewer return, terminal ABORTED state, audit/history preservation and session FINAL_CLOSE blocker. ABORTED is not approval, inspection completion, good/defective classification or print completion. Any later inspection is a new session-bound attempt. Exact command, permission/SoD, reason/evidence policy, persistence/lock/RLS and QA evidence remain OPEN; QA remains PLANNED / NOT EXECUTED.
