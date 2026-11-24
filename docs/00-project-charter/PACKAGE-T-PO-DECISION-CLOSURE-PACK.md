@@ -1,7 +1,7 @@
 # Package T — Product Owner Decision Closure Pack
 
 **Document status:** Historical decision pack — PO outcomes recorded; current decision authority is the Decision Register and dated reconciliation addenda  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Date:** 2026-11-23  
 **Repository branch:** `docs/phase-0-foundation`  
 **Purpose:** Convert the remaining Package S scope-freeze blockers and high-risk items into explicit, reviewable Product Owner decisions.
@@ -622,3 +622,26 @@ This document is retained as the historical decision pack and evidence of decisi
 - T-18 Option A is an approved execution-model selection, not approval of individual functions, signatures, grants, routes, RLS or implementation.
 
 **Current disposition:** documentation closure INCOMPLETE; scope freeze NOT READY; implementation NOT AUTHORIZED; production readiness NOT VERIFIED.
+
+
+## 11. Cross-document audit and open PO questions — 2026-11-24
+
+This addendum preserves the historical decision record above. It does not rewrite recommendation text or alter any recorded PO outcome.
+
+- The Decision Register remains the canonical index of current PO decisions.
+- Package S §9.16 is the current cross-document navigation snapshot; §9.15 and earlier sections remain dated historical records.
+- T-01 remains partially closed: Standing Bracket source confirmation is recorded; official IFP source and complete evidence/photo-slot/annex rules remain open.
+- T-02 remains PO-approved for configurable signatory blocks; actual institutional signatory authority and final template remain external.
+- T-10 option B and T-12 option C remain approvals of the review/ownership paths only. They do not constitute institutional policy or provider-account authorization.
+- T-05..T-18 and LPR-02..LPR-06 retain their recorded PO outcomes; technical and institutional dependencies are not converted to PO approvals.
+
+The current [POQ-001 — Product Owner Open Decision Packet](PRODUCT-OWNER-OPEN-DECISION-PACKET.md) requests decisions only on:
+1. Notification recipient eligibility snapshot timing (event-time, fan-out-time or hybrid with current revocation revalidation).
+2. Notification SLA clock semantics (elapsed time or approved business calendar/time zone).
+3. Whether a separate notification dismiss/archive action is excluded from the initial release or requires a new scoped design decision.
+
+No response to POQ-001 is implied by this addendum. Responses must be explicitly recorded in the Decision Register before dependent specifications are changed.
+
+The separate [AUTH-001 — Institutional and Technical Authority Approval Package](INSTITUTIONAL-AND-TECHNICAL-AUTHORITY-APPROVAL-PACKAGE.md) routes T-10, T-12, instrument source, BA/attendance authority, incident governance, permission/security, command/lock, CI/release and operations approvals to the appropriate authority roles.
+
+**Current disposition:** PO decision record preserved; documentation closure remains INCOMPLETE; G9 NOT READY; G10 NOT AUTHORIZED.
