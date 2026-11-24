@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.47
+**Version:** 0.8.48
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -665,3 +665,8 @@ CMD-013 owns the final transition of a session to CLOSED. `REQUEST_CLOSURE` is o
 CMD-027 currently releases a claim while preserving the draft. It is not abort and cannot satisfy the session-close gate. A dedicated abort command identity or an explicitly versioned CMD-027 contract requires canonical command-registry and PO/Engineering/Security approval; no command ID or event name is invented here. Abort preserves immutable revisions, return reasons and evidence history, but makes the active attempt/context terminal and non-editable. Aborted attempts remain non-completion in reports and cannot inflate inspected/approved/good/defective/printed counts. Later session creates a fresh attempt.
 
 The lock graph must include CMD-013 final close against abort, claim release, draft save, submit, evidence finalization, return/approval, document generation and print finalization. Complete child-writer inventory, compatible lock modes, post-fence blocker snapshot, audit/event/idempotency atomicity and concurrency evidence remain OPEN; global graph remains NOT PROVEN ACYCLIC.
+
+
+### SES-001 attempt identity reconciliation — 2026-11-24
+
+An `inspection_id` represents one session-bound inspection attempt. After ABORTED, CMD-026 in a later active session creates a new inspection aggregate with a distinct inspection_id and immutable new session_id; it never resumes or rewrites the old attempt. Return correction and authorized reopen within the original active session create a new draft context on the same inspection_id/session_id. The physical invariant must prevent concurrent nonterminal attempts and active claims for the same canonical unit while retaining historical ABORTED attempts. This resolves the logical distinction only; the physical uniqueness strategy and exact CMD-026 eligibility contract remain open.
