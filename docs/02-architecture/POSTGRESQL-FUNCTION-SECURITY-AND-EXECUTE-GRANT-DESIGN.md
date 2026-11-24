@@ -1,7 +1,7 @@
 # PostgreSQL Function Security & EXECUTE Grant Design
 
-**Status:** Security architecture proposal — critical privilege-model decision required; NOT approved for implementation  
-**Version:** 0.1.0 | **Date:** 2026-11-24  
+**Status:** Security architecture proposal — T-18 Option A approved; per-function privilege review required; NOT approved for implementation  
+**Version:** 0.2.0 | **Date:** 2026-11-24  
 **Depends on:** T-18 option A; PostgreSQL Command Contract Catalogue v0.1.0; physical schema and 48-table proposed RLS catalogue; canonical permission registry draft.
 
 ## 1. Purpose and strict boundary
