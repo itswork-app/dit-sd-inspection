@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.5.9
+Version: 0.6.0
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -964,3 +964,33 @@ These cases guard the unresolved mapping between account event-time candidate se
 | TC-NOTIF-094 | Concurrent CMD-032 reopen requests, or reopen races active claim/evidence/document finalization; prior approved revision has evidence/documents/print history | At most one active draft context exists once its model is approved; immutable approved revision and all historical artifacts remain unchanged; blockers serialize without lock inversion; one immutable event-time candidate snapshot is committed atomically | PLANNED / NOT EXECUTED |
 
 **Execution control:** TC-NOTIF-090..094 are specification-only. They require the physical Reviewer assignment and review-decision uniqueness model, approved reopen grant/SoD matrix, mutable draft representation, complete active-work/finalizer writer inventory, admitted source-event/outbox/snapshot identity and certified global lock protocol. Runtime execution requires verified G9, separate G10 activation and an authorized isolated environment. No test was executed.
+
+## Inspection draft-context and immutable revision lifecycle — 2026-11-24
+
+**Design source:** INSPECTION-DRAFT-001 v0.1.0.  
+**Status:** PLANNED / NOT EXECUTED. These cases are based on a candidate technical design; they do not approve its schema or authorize implementation.
+
+| Test ID | Scenario | Expected result |
+|---|---|---|
+| TC-INS-DRAFT-001 | Claim a new IFP unit online | Exactly one inspection and one active draft context are created with the pinned IFP version |
+| TC-INS-DRAFT-002 | Claim a new Standing Bracket unit | Exactly one inspection and one active context are created with the pinned Standing Bracket version; no instrument crossover |
+| TC-INS-DRAFT-003 | Concurrent claim of one canonical unit from two assignments/projects | One active claim and one inspection lifecycle only |
+| TC-INS-DRAFT-004 | Save partial checklist/specification draft | Strict typed patch updates only the active context; inspection row_version advances once for a semantic change |
+| TC-INS-DRAFT-005 | Continue offline after online claim | Only the already-claimed draft can be edited offline; no offline claim/submit/review/reopen |
+| TC-INS-DRAFT-006 | Replay a synchronized draft operation | Idempotent result; no duplicate response or evidence mutation |
+| TC-INS-DRAFT-007 | Sync conflicts with newer server draft | Both versions are preserved; explicit conflict; no last-write-wins |
+| TC-INS-DRAFT-008 | Submit with missing required applicable answer/evidence or unresolved sync conflict | Submission rejected; active draft remains editable; no immutable revision is created |
+| TC-INS-DRAFT-009 | Successful submit | One immutable revision, canonical snapshot/hash, normalized response rows, evidence binding, events, audit and idempotency result commit atomically |
+| TC-INS-DRAFT-010 | Reviewer returns a submitted revision with reason | Submitted revision remains unchanged; one new active correction context is created from the exact returned revision |
+| TC-INS-DRAFT-011 | Inspector corrects and resubmits | New immutable revision number; prior revision and return decision remain unchanged |
+| TC-INS-DRAFT-012 | Reviewer self-review | Denied when authenticated Reviewer equals the exact immutable revision author |
+| TC-INS-DRAFT-013 | Concurrent approve versus return on one revision | Exactly one terminal review decision commits |
+| TC-INS-DRAFT-014 | Authorized reopen of exact approved revision with reason | One new active reopen context; approved revision and all historical artifacts remain unchanged |
+| TC-INS-DRAFT-015 | Concurrent reopen with distinct idempotency keys | One context and one reopen event; other request receives a typed state conflict |
+| TC-INS-DRAFT-016 | Reopen races with document generation or print finalization | Deterministic serialization/blocker; no approved artifact is rewritten |
+| TC-INS-DRAFT-017 | Save with stale inspection row_version | STALE_VERSION; no draft answer or evidence metadata is lost |
+| TC-INS-DRAFT-018 | Evidence intent/finalization uses wrong draft context or instrument slot | Denied; evidence cannot cross inspection, assignment or instrument version |
+| TC-INS-DRAFT-019 | Browser attempts direct DML on draft payload, response rows or immutable revisions | Denied by database ACL/RLS; mutation only through approved command boundary |
+| TC-INS-DRAFT-020 | Required audit append fails during submit, return or reopen | Full transaction rollback; no partial lifecycle transition, context or revision remains |
+
+The evidence carry-forward decision across revisions, next Inspector/claim owner after return/reopen, claim release/resume/reassignment semantics, final state vocabulary, physical uniqueness/FK strategy, RLS/ACL and lock graph remain open. These cases must be refined after those decisions are approved. All 20 cases are PLANNED / NOT EXECUTED.
