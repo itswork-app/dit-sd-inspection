@@ -188,3 +188,11 @@ Errors must not disclose whether an unauthorized resource exists. Use a consiste
 **Service-role access:** NOT CONFIGURED.  
 **Security tests:** NOT EXECUTED.  
 **Implementation authorization:** NOT GRANTED.
+
+
+
+## 14. T-15 audit atomicity requirement — PO-approved (2026-11-24)
+
+Every critical command that changes business, security or governance state must write its canonical audit event in the same PostgreSQL transaction as the state mutation. The command must return failure and roll back the mutation if the audit insert or required audit validation fails. Do not emit a success response before both state and audit event commit. The event must bind the authenticated actor, active role, authorized scope, command/action, timestamp, correlation/idempotency reference and privacy-safe change context. Evidence access/export commands must also create audit events under the approved event catalogue.
+
+The command boundary must not expose audit update/delete operations to application callers. Audit read/export is separately permissioned. This extends the command transaction requirements; it does not waive caller-JWT authorization, RLS, least privilege, idempotency or server-side validation. T-10 retention/legal-hold and network metadata policy remain externally blocked. No implementation or tests are claimed.
