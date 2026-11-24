@@ -268,3 +268,8 @@ Before implementation, collect and review a read-only live database inventory co
 
 QA cases TC-LIVE-INV-026-001..010 define the evidence checks for target environment/version, role/membership, ownership/schema ACL, table ACL/RLS, function/EXECUTE inventory, SECURITY DEFINER owner hardening, default ACL/inheritance, views/triggers/sequences, Storage policies and Dashboard/provider controls. All 10 are PLANNED / NOT EXECUTED pending an approved read-only live database session. See the Supabase Live Database Security Inventory Runbook. This is a metadata audit only and does not authorize schema or privilege changes.
 
+
+
+## SEC-007 — Application repository runtime implementation evidence
+
+T-19 read-only tree audit on 2026-11-24 found 54 blobs on `docs/t17-instrument-governance-t18-command-boundary`, limited to `AGENTS.md`, `README.md` and `docs/`; zero source/configuration files were found in the scanned implementation extensions. The default branch `main` contained only `README.md` at the inspected ref. Therefore Vercel route handlers, Supabase client separation, caller-JWT propagation, migrations, PostgreSQL functions/grants/RLS, CI tests and deployment configuration cannot be verified in this repository. This is an absence-of-evidence finding, not a code defect or proof that no implementation exists elsewhere. Confirm the canonical application repository/branch before implementation or further runtime claims. See [T-19 Repository Runtime Architecture Audit](../02-architecture/T19-REPOSITORY-RUNTIME-ARCHITECTURE-AUDIT.md). QA cases TC-REPO-AUDIT-028-001..008 are BLOCKED / NOT EXECUTED. Scope freeze remains NOT READY; implementation remains NOT AUTHORIZED.
