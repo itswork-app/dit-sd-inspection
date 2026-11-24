@@ -40,7 +40,7 @@ Candidate relation: `inspection_draft_contexts` (new, candidate-only).
 - One inspection aggregate may have multiple historical draft contexts over its lifecycle.
 - At most one context may be ACTIVE for an inspection at a time.
 - Every inspection attempt is immutably bound to exactly one session (`session_id`); no context, claim, draft, evidence workflow or returned correction may be resumed in another session.
-- An unfinished attempt must be explicitly aborted before its session can be finally closed. ABORTED is terminal; a later session creates a new inspection attempt and context rather than reviving the old one.
+- An attempt must reach an allowed terminal outcome before session close. ABORTED is available only for the SES-001 packed-unit exception after Inspector request and Admin/Korlap approval; generic unfinished work is not abort-eligible. ABORTED is terminal; a later session creates a new inspection attempt and context rather than reviving the old one.
 - An ACTIVE context is the only writable working copy.
 - On successful submission, the context is sealed as SUBMITTED and is bound to exactly one new immutable `inspection_revisions` row.
 - A later return or authorized reopen creates a new ACTIVE context. It never reactivates or overwrites an old context.
@@ -268,7 +268,7 @@ The Product Owner approved SES-001 in the canonical Decision Register. This sect
 - Abort must atomically terminate the active draft context, close/release the attempt's active claim, append the required event/audit record and store the idempotency result. If any required write fails, the abort and session-close progression fail closed.
 - A unit in ABORTED state cannot be edited, submitted, reopened or resumed. A subsequent session creates a new inspection attempt bound to that new session; it does not mutate the old attempt.
 - Evidence from an aborted attempt remains historical and is not automatically carried into the new attempt. Any future evidence reuse requires a separately approved provenance/policy model.
-- Final session closure is blocked while any unit attempt remains unresolved; each must first reach an allowed terminal state or be explicitly aborted.
+- Final session closure is blocked while any unit attempt remains unresolved or an ABORT request is pending. Returned work follows WF-001 unless the SES-001 packed-unit exception is approved by Admin/Korlap.
 
 ### 11.3 Command and model implications (candidate only)
 - Add immutable session_id to the inspection aggregate and enforce same-session consistency across claim, draft context, evidence, revisions and assignment scope.
@@ -281,7 +281,7 @@ The Product Owner approved SES-001 in the canonical Decision Register. This sect
 An inspection aggregate is one session-bound attempt, not a permanent row for the physical unit. Once that attempt is ABORTED, a later session must create a new inspection aggregate with a distinct inspection_id and immutable session_id. The old aggregate remains ABORTED and immutable. This does not permit two concurrent nonterminal attempts or active claims for the same canonical unit. Returns and authorized reopens within the original session continue to create new draft contexts on the same inspection aggregate; they do not create a new inspection_id. The physical one-active-inspection invariant must therefore be refined to mean at most one nonterminal attempt per canonical unit, with historical ABORTED attempts retained.
 
 ### 11.5 Explicit boundary still requiring resolution
-SES-001 clearly prohibits cross-session continuation and requires abort of unfinished attempts before session close. The precise disposition of a revision returned by a Reviewer but not corrected before session closure must be encoded as an abort of the overall attempt, preserving the returned immutable revision and reason. A later session must start a new attempt; it must not reopen the prior correction context. The same Inspector restriction applies to correction while the original session remains active.
+SES-001 prohibits cross-session continuation. A returned revision that remains correctable must follow WF-001 correction/resubmission; it is not automatically aborted at session close. ABORT is available only for the narrow packed-unit exception after Inspector request and Admin/Korlap approval, preserving the returned immutable revision and decision. A later session must start a new attempt; it must not reopen the prior correction context. The same Inspector restriction applies to correction while the original session remains active.
 
 **Disposition:** SES-001 product semantics are PO APPROVED. Session FK, abort state machine, CMD-027 versus dedicated abort command, claim-release atomicity, session-close writer/lock graph, RLS/ACL, event registry, physical constraints and QA remain NOT CERTIFIED / OPEN. No schema or implementation is approved by this proposal.
 
