@@ -284,3 +284,12 @@ Created [T-18 Execution Model Security Review](../02-architecture/T18-EXECUTION-
 QA added 12 unique planned cases (TC-EXEC-MODEL-027-001..012) covering owner attributes and ownership, search_path, exact EXECUTE ACL, caller-JWT path, actor spoofing, browser DML denial, RLS interaction, authorization freshness, audit rollback, idempotency/concurrency and read-path separation. These are PLANNED / NOT EXECUTED.
 
 **Decision status:** T-18 execution-model selection PO APPROVED Option A. **Verification status:** actual repository runtime route/client implementation, live Supabase role/function/ACL inventory, exact function signatures/owners/grants and runtime tests remain OPEN / NOT EXECUTED. Option B is not selected. Scope freeze remains NOT READY; implementation remains NOT AUTHORIZED.
+
+
+## 9.13 T-19 repository runtime architecture audit (2026-11-24)
+
+Created [T-19 Repository Runtime Architecture Audit](../02-architecture/T19-REPOSITORY-RUNTIME-ARCHITECTURE-AUDIT.md) from a read-only recursive Git tree inspection. The audited documentation branch contains 54 blobs limited to `AGENTS.md`, `README.md` and `docs/`; the source/configuration extension scan returned zero implementation files. The default branch `main` contains only `README.md` at the inspected ref. No Vercel routes, Supabase clients, caller-JWT forwarding implementation, SQL migrations/functions, RLS/grants, test suites or deployment configuration can be inspected in this repository.
+
+This finding does not assert that code does not exist in another repository or local workspace. The canonical application repository/branch must be confirmed before runtime implementation review. QA allocated 8 cases (TC-REPO-AUDIT-028-001..008), all BLOCKED / NOT EXECUTED. T-18 Option A remains PO APPROVED as a design decision; implementation conformance is NOT VERIFIED.
+
+**Disposition:** repository tree audit COMPLETE for inspected refs; application implementation absent from inspected refs; live Supabase inventory NOT EXECUTED; scope freeze NOT READY; implementation, migrations, grants, deployment and merge NOT AUTHORIZED.
