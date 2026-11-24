@@ -90,7 +90,44 @@ Before implementation, split each family into individual commands and fill every
 | Audit | Exact event schema, atomicity, fail-closed validation and privacy-safe payload |
 | Tests | Positive, wrong-role/scope, spoofing, direct DML, audit rollback, replay/hash mismatch and concurrency as applicable |
 
-## 5. Database/RLS reconciliation rules
+
+## 5. Crosswalk to the current 41-table RLS catalogue
+
+The authoritative current proposed inventory is [Table-by-Table RLS Policy Catalogue](TABLE-BY-TABLE-RLS-POLICY-CATALOGUE.md), section 4. The following crosswalk maps command families to its exact listed table names. It does not imply that every listed table is read/write-accessible to the command; the catalogue's R-self/R-scope/R-admin/CMD/NONE rules remain controlling design constraints.
+
+| Command families | Exact tables in current RLS inventory |
+|---|---|
+| CA-01 / CA-02 Account access and decision | app_users, account_decisions |
+| CA-03 Role/permission grant | roles, permissions, role_permissions, user_roles, project_capacity_settings |
+| CA-04 Scope grant | user_scope_grants, assignment_members |
+| CA-05 Project lifecycle | projects, locations, sessions, operational_assignments, inspections, documents, target_plans, target_allocations, attendance_records (closure dependency reads; exact gate query still TBD) |
+| CA-06 Session lifecycle | sessions, projects |
+| CA-07 Assignment/staffing | teams, locations, sessions, operational_assignments, assignment_members, instruments, instrument_versions |
+| CA-08 Inspector capacity | project_capacity_settings, user_roles, assignment_members |
+| CA-09 Target planning | target_plans, target_allocations |
+| CA-10 Instrument governance | instruments, instrument_versions, checklist_sections, checklist_items, specification_fields, evidence_slot_definitions, instrument_version_publications |
+| CA-11 Canonical unit identity | units |
+| CA-12 Unit project association | unit_project_associations, units |
+| CA-13 Identity conflict | unit_identity_conflicts, units, unit_project_associations |
+| CA-14 Claim/release | units, unit_project_associations, unit_claims, inspections, operational_assignments, assignment_members |
+| CA-15 Inspection draft | inspections, checklist_responses, specification_responses, unit_claims, unit_project_associations |
+| CA-16 Submit/review/reopen | inspections, inspection_revisions, checklist_responses, specification_responses, review_events, inspection_events, evidence_assets, unit_claims |
+| CA-17 / CA-18 Evidence upload/read/export | evidence_assets plus private Storage bucket/object policies |
+| CA-19 Offline sync | sync_batches, idempotency_records, inspections, checklist_responses, specification_responses, evidence_assets |
+| CA-20 Document generation | documents, inspection_revisions, attendance_records plus private Storage |
+| CA-21 Print | documents, print_events |
+| CA-22 Attendance | attendance_records, attendance_documents |
+| CA-23 Report read | inspections, target_plans, target_allocations |
+| CA-24 Audit read/export | audit_events; export artifact storage/table is not yet in the 41-table inventory |
+| CA-25 Retention/legal hold | audit_events, evidence_assets and private Storage; retention/hold records are not in the current 41-table inventory |
+| CA-26 Security case review | No dedicated security-case table is in the current inventory |
+| CA-27 Provider/release administration | No provider-configuration or release-record table is in the current inventory |
+
+**Inventory gap:** the current catalogue has 41 tables and three additional command domains (retention/legal-hold records, security cases, provider/release records) are referenced by the registry but do not have corresponding tables in that inventory. They must remain unimplemented/unexposed until data ownership, schema and RLS/EXECUTE design are approved and the catalogue is updated. Export artifacts also need a deliberate decision on whether they use an existing documents/storage model or a new table; do not assume either.
+
+The physical schema specification and ERD remain authoritative for actual table existence. A table's presence in the RLS catalogue is a proposed policy entry, not evidence of a deployed table or policy.
+
+## 6. Database/RLS reconciliation rules
 
 1. Build the authoritative physical table inventory from ERD and physical schema specification; do not infer names from UI or command labels.
 2. For every table, separately record SELECT/INSERT/UPDATE/DELETE for anon, authenticated, command caller, trusted server-only operations and migration owner. Default deny.
@@ -102,7 +139,7 @@ Before implementation, split each family into individual commands and fill every
 8. Mutation and audit append commit together. Ordinary application roles cannot update/delete audit.
 9. API success, green CI or documentation checks do not prove deployed RLS/grants are correct.
 
-## 6. Open decisions and dependencies
+## 7. Open decisions and dependencies
 
 - PO/security approval of permission semantics and all legacy mappings in registry v0.1.0.
 - Role-to-permission matrix, grant/revoke authority, role ceilings and exact SoD.
@@ -116,7 +153,7 @@ Before implementation, split each family into individual commands and fill every
 - Offline maximum retry window and idempotency retention.
 - Typed API outcome/error alignment and complete audit-event mapping.
 
-## 7. Verification status
+## 8. Verification status
 
 - Logical command families mapped: 27.
 - Complete command-specific contracts: **0**; exact schemas, physical object mappings, grants and detailed predicates remain incomplete.
@@ -127,6 +164,6 @@ Before implementation, split each family into individual commands and fill every
 - Scope freeze: **NOT READY**.
 - Implementation authorization: **NOT GRANTED**.
 
-## 8. Change control
+## 9. Change control
 
 Changes to permission codes, command mappings, role grants, scope predicates, RLS, function grants, audit events or test expectations must update this matrix, the Canonical Permission Registry, RBAC, RLS, command boundary, test catalogue and RTM/Package S as applicable. Do not silently alias legacy permissions or infer grants from job titles.
