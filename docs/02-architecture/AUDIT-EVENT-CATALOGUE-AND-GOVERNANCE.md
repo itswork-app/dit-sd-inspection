@@ -190,3 +190,23 @@ Tests are specified only; none have been executed.
 ## 12. Scope and implementation gate
 
 This package is a governance and architecture specification only. It does not authorize migrations, triggers, application code, external archive procurement, or production configuration. Implementation may begin only after the audit policy, privacy/records obligations, Package L schema, Package M RLS, and Package N command boundary are approved and reconciled.
+
+
+
+## 13. Product Owner decision — INS-016 approved direction (T-15, 2026-11-24)
+
+**PO APPROVED option A.** The controls in this catalogue are approved as the required product/technical direction:
+
+- Append-only audit records; ordinary application roles have no update/delete path.
+- Critical state mutation and corresponding audit event are one atomic database transaction. Audit insertion failure aborts the critical mutation (fail closed).
+- Event context includes actor identity, active role, scope, event/action, timestamp, correlation/idempotency references and privacy-safe change context.
+- Sensitive evidence access and export generate auditable events.
+- Audit read/export permissions are least-privilege and independently granted; never put secrets, credentials, raw evidence or unnecessary personal data into event payloads.
+
+**Remaining external and technical gates:** T-10 institutional records/privacy/legal approval still controls classification, retention duration, deletion/disposition, legal hold and any network metadata collection. No duration, IP/network metadata policy, independent WORM archive or provider capability is approved here. Final schema/index/partition and deletion-linkage decisions, RLS grants, privileged command transaction implementation, provider verification and tests remain pending.
+
+### Superseded status for section 11, item 1
+
+The earlier statement that INS-016 awaits Product Owner approval is superseded by the T-15 decision dated 2026-11-24. INS-016 is **PO APPROVED (A)**; institutional records/privacy/security approvals and implementation evidence remain OPEN/BLOCKED as specified above.
+
+This remains a design/governance document. No migrations, triggers, application code, archive procurement, or production configuration are authorized or claimed.
