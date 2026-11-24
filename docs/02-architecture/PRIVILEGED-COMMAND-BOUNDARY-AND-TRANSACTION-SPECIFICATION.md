@@ -261,3 +261,7 @@ The proposed single permission vocabulary, legacy-code disposition, command-to-p
 ## Individual PostgreSQL command contract dependency
 
 See [PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) for 48 proposed command/read contracts. It does not replace the approved T-18 architecture or authorize implementation. Function signatures are deliberately not fabricated because deployed types/functions have not been inspected; exact route paths, database role grants, RLS predicates, SECURITY DEFINER review and staging verification remain open.
+
+## PostgreSQL function security and EXECUTE grant design
+
+See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md) for the caller-role/function-class/EXECUTE ACL proposal and the critical compatibility finding: SECURITY INVOKER under the browser's authenticated role cannot both perform protected table writes and lack direct table DML privileges without a separate execution boundary. T-18 requires PO/security resolution of hardened narrow SECURITY DEFINER wrappers (candidate) versus a proven separate command-executor principal. No broad authenticated DML or service-role substitution is authorized.
