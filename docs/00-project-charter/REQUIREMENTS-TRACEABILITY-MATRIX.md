@@ -226,3 +226,9 @@ Trace the canonical predicate across UI, server commands, PostgreSQL transaction
 ## Registration and Super Admin staffing traceability
 
 Trace registration → pending account → Super Admin approval → role/permission/scope grant → Super Admin team membership and operational assignment. Registration alone grants no access and no capacity eligibility. Super Admin controls team count and team staffing; self-assignment is prohibited. Verification must cover UI, API, database constraints, RLS/privileged commands and audit events. Inspector cap eligibility remains the T-14 distinct enabled account + active Inspector role + effective operational assignment predicate.
+
+
+
+## T-15 traceability — approved INS-016 audit policy (2026-11-24)
+
+Trace critical business/security/governance commands to an append-only audit event committed atomically with the state mutation. Audit-write failure must fail closed and roll back the mutation. Trace actor, active role, scope, action/event, timestamp, correlation/idempotency reference and privacy-safe change context through command contract, database schema, RLS/grants and QA. Sensitive evidence access/export must be auditable; ordinary application roles cannot alter or delete audit events; audit read/export is least-privilege. T-10 institutional decisions still govern classification, retention, deletion/disposition, legal hold and network metadata. PO approval is recorded; implementation, institutional approvals and test execution remain pending.
