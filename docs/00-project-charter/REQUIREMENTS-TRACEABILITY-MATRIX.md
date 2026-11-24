@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.23  
+**Version:** 0.1.24  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -573,4 +573,4 @@ These rows are candidate traceability entries only. They do not amend the approv
 
 | Requirement ID | Requirement / invariant | Authority | Design reference | Verification | Status |
 |---|---|---|---|---|---|
-| INS-022 | Each unit inspection attempt is immutably bound to exactly one session; no cross-session draft/claim/evidence/correction/reopen continuation; unresolved attempts must be explicitly aborted before final session closure; later session starts a new attempt | PO-approved SES-001; session lifecycle; T-09; WF-001/WF-002 | Decision Register SES-001; INSPECTION-DRAFT-001 v0.1.1 §11; CMD-021–030 §SES-001; CMD-031–040 §SES-001 | TC-INS-DRAFT-021..026; session binding, cross-session denial, abort atomicity, claim release, immutable history, fresh later-session attempt | PRODUCT SEMANTICS PO APPROVED; PHYSICAL / COMMAND / SECURITY / QA CERTIFICATION OPEN |
+| INS-022 | Each unit inspection attempt is immutably bound to exactly one session; no cross-session draft/claim/evidence/correction/reopen continuation; unresolved attempts must be explicitly aborted before final session closure; later session starts a new inspection aggregate with a distinct inspection_id | PO-approved SES-001; session lifecycle; T-09; WF-001/WF-002 | Decision Register SES-001; INSPECTION-DRAFT-001 v0.1.1 §11; CMD-021–030 §SES-001; CMD-031–040 §SES-001 | TC-INS-DRAFT-021..027; session binding, cross-session denial, abort atomicity, claim release, immutable history, distinct inspection_id for a later-session attempt, same inspection_id for in-session return/reopen | PRODUCT SEMANTICS PO APPROVED; PHYSICAL / COMMAND / SECURITY / QA CERTIFICATION OPEN |
