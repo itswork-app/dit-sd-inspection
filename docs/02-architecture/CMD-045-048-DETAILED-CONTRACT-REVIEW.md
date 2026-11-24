@@ -1,12 +1,16 @@
 # CMD-045–048 Detailed Contract Review
 
 **Document ID:** CMD-REVIEW-045-048  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Status:** Engineering boundary review — BLOCKED; institutional/operational authority and schema approval required  
 **Date:** 2026-11-24  
 **Scope:** CMD-045 through CMD-048  
 **Repository phase:** Documentation / SSOT maturation  
 **Controls:** T-10 institutional records/privacy; T-12 provider ownership; T-15 append-only audit; T-18 command boundary; DGA-B04, DGA-B05, DGA-B10, DGA-B12, DGA-B15; G9 NOT READY; G10 NOT AUTHORIZED.
+
+**Current gate clarification (2026-11-24):** the historical G10 NOT AUTHORIZED wording above predates the Product Owner's conditional implementation authorization. Current state: conditional PO authorization received; G9 NOT READY; G10 NOT ACTIVE. No implementation is permitted until G9 passes and a separate G10 activation record is approved.
+
+**Resolution proposal:** [CMD-045–048 Control-Plane Resolution Proposal](CMD-045-048-RESOLUTION-PROPOSAL.md) v0.1.0 recommends retaining the stable IDs while deferring/removing these operations from the application command surface. It is a recommendation only; the current blocked dispositions remain unchanged until PO acceptance and external evidence.
 
 ## 1. Purpose and non-authority
 
