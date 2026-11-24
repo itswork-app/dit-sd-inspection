@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.6.0
+**Version:** 1.7.0
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/t17-instrument-governance-t18-command-boundary`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -52,7 +52,7 @@ No application code, migrations, live Supabase database, deployed RLS/grants, Ve
 | DGA-B16 | Scope/authority document freshness | Package T status was reconciled; Package S now has a current 9.15 addendum superseding historical 9.14 counts; RTM/RAID and remaining historical audit status still require crosswalk review | Controlled status addenda and reconciled decision/requirement/RAID crosswalk | Document owner + PO | PARTIAL; REMAINING CROSSWALK OPEN |\n| DGA-B17 | Concurrency/version token contract | `expected_version`, `expected_row_version`, business version, revision, hash, print sequence and worker lease semantics are not consistently mapped to physical aggregates; CMD-005/007/035/040/050 have field/target mismatches | PO/Security decisions on [Concurrency and Version Token Reconciliation](../02-architecture/CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md), followed by synchronized schema/catalogue/review/QA updates | PO + engineering + security; institution for attendance authority | OPEN — PROPOSAL DOCUMENTED, DECISIONS PENDING |
 | DGA-B18 | Global lock order and concurrency graph | Catalogue and detailed reviews disagree on CMD-026 and unit/association ordering; instrument/assignment, capacity eligibility, closure fencing, claim/inspection and worker lease boundaries lack a complete reviewed acyclic graph | Decisions LGD-01–10 in [LOCK-GRAPH-001](../02-architecture/GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md), normalized lock manifests for all commands/workers, then adversarial concurrency/deadlock evidence | Engineering + Security + PO; Operations/Institution where applicable | OPEN — PROPOSAL DOCUMENTED, DECISIONS PENDING |
 | DGA-B19 | Command-level lock manifest coverage | 54 command IDs have source-stated lock/read/write notes but no complete, normalized lock manifest; lock targets, deterministic ordering, competing paths, implicit constraints, external boundaries and certification are incomplete | Review [LOCK-MANIFEST-001](../02-architecture/COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md), resolve LM-01–LM-10, update canonical contracts only after approval, then execute adversarial concurrency evidence | Engineering + Security + PO; Operations/Institution where applicable | OPEN — 54/54 INVENTORIED, 0/54 LOCK-COMPLETE |
-| DGA-B20 | Global lock protocol decision resolution | Candidate global rank order and source-order conflicts are consolidated, but no PO/domain decisions, technical Security/Engineering approvals or complete effective lock graph are accepted | Review [LOCK-PROTOCOL-DECISION-RESOLUTION-001](../02-architecture/LOCK-PROTOCOL-DECISION-RESOLUTION.md); obtain LPR-01–LPR-10 decisions/evidence, reconcile all command manifests and validate the effective graph | PO/domain owner; Engineering + Security; Operations/Institution where applicable | OPEN — PROPOSAL ONLY; NO LOCK PROTOCOL APPROVED |
+| DGA-B20 | Global lock protocol decision resolution | PO product decisions LPR-02–LPR-06 are recorded; candidate rank order, technical approvals and complete effective lock graph remain unaccepted | Review [LOCK-PROTOCOL-DECISION-RESOLUTION-001](../02-architecture/LOCK-PROTOCOL-DECISION-RESOLUTION.md); resolve LPR-01 and LPR-07–LPR-10, reconcile all command manifests and validate the effective graph | PO/domain owner; Engineering + Security; Operations/Institution where applicable | PARTIAL — PO DECISIONS RECORDED; TECHNICAL/GRAPH CLOSURE OPEN |
 
 ## 4. High-risk design quality gaps
 
@@ -203,3 +203,8 @@ The proposal maps:
 [DGA-B20 — Global lock protocol decision resolution](../02-architecture/LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.1.0 consolidates the candidate hierarchy and resolves source conflicts as recommendations only. PO decisions are separated from Engineering/Security technical approvals and institutional/Operations evidence.
 
 **Disposition:** DGA-B20 OPEN. This proposal does not amend canonical command contracts, prove deadlock freedom or authorize implementation. G3/G4/G5/G7/G9 remain NOT READY; G10 NOT AUTHORIZED. No tests or runtime/database inspection were executed.
+
+
+## Lock protocol PO decision update — 2026-11-24
+
+The Product Owner has approved LPR-02–LPR-06 and the Decision Register records the exact semantics. This partially closes the PO decision portion of DGA-B20 only. LPR-01 and LPR-07–LPR-10, 54-command lock-manifest normalization/certification, live effective lock graph and adversarial concurrency evidence remain open. DGA-B18 and DGA-B19 remain open; G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED. No tests or runtime/database inspection were executed.
