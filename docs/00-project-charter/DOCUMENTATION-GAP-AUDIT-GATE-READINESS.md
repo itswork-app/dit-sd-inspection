@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.79
+**Version:** 1.11.80
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -806,3 +806,10 @@ RTM-001 v0.1.16 adds NOTIF-028..030; QA Catalogue v0.5.6 adds TC-NOTIF-079..081,
 NLA-EVENT-TECH-RECON-001 v0.1.3 partially reviews NREG-006 `assignment.created` and NREG-007 `assignment.changed`. The source transactions and proposed assignment/member writes are identified, but CMD-014's new-member event-participant semantics under pre-mutation snapshot rules, CMD-015's added/ended/retained event cardinality, active-claim/in-progress-work handling, physical membership uniqueness/interval constraints, and complete L05/L10/T-14 writer order remain unresolved.
 
 RTM-001 v0.1.17 adds NOTIF-031..034; QA Catalogue v0.5.7 adds TC-NOTIF-082..085, all PLANNED / NOT EXECUTED. Assignment and capacity writer coverage remains partial; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; F-05/F-04/F-03/F-07 OPEN; G9 NOT READY; G10 NOT ACTIVE.
+
+
+### CMD-029/030 inspection event reconciliation — 2026-11-24
+
+NLA-EVENT-TECH-RECON-001 v0.1.4 partially reviews NREG-008 `inspection.submitted` and NREG-009 `inspection.returned_for_correction`. CMD-029's dual source facts are distinguished: only `inspection.submitted` is the PO-approved notice candidate; `inspection_revision.created` is related provenance, not a second notice. The assigned Reviewer source is not physicalized. CMD-030's responsible Inspector mapping from revision author/current assignment is not approved, and review decision round/uniqueness plus reviewer != author SoD remain unresolved. Both source paths also retain inspection-first vs parent/claim/assignment lock-order conflicts.
+
+RTM-001 v0.1.18 adds NOTIF-035..038; QA Catalogue v0.5.8 adds TC-NOTIF-086..089, all PLANNED / NOT EXECUTED. F-05/F-04/F-03/F-07 remain OPEN; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
