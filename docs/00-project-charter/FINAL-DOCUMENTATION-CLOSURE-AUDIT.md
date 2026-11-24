@@ -1,13 +1,13 @@
 # Final Documentation Closure Audit — Dit. SD Inspection
 
 **Document ID:** DOC-AUDIT-001  
-**Version:** 0.1.8  
+**Version:** 0.1.9  
 **Status:** STATIC DOCUMENTATION AUDIT COMPLETED — IMPLEMENTATION READINESS NOT ESTABLISHED  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
 **Pull request:** #3 — Draft / Open  
-**Authority:** AGENTS.md v1.2.0; MIB-001 v1.0.7; IRG-001 v1.0.1; DGA-001 v1.11.26  
+**Authority:** AGENTS.md v1.2.1; MIB-001 v1.0.8; IRG-001 v1.0.2; DGA-001 v1.11.27  
 **Gate:** G9 NOT READY; G10 NOT AUTHORIZED
 
 ---
@@ -140,3 +140,22 @@ The cross-document review confirmed 125 unique RTM requirement IDs, 65 unique RA
 No PO decision was changed. T-10/T-12 institutional/provider approvals remain outstanding. DGA-B04/B05/B09/B10/B11/B12/B13/B14/B15/B16/B17/B18/B19/B20/B21 remain open/partial. Lock progress remains 10/54 candidate-normalized and 0/54 technically approved/certified. No tests, CI, live database/provider inspection, restore drill, UAT, merge or implementation were performed.
 
 **Disposition:** documentation crosswalk improved; documentation closure remains PARTIAL; G9 NOT READY; G10 NOT AUTHORIZED.
+
+
+## 11. Current controlled-source and agent-policy update — 2026-11-24
+
+This addendum updates current navigation only; §§1–10 remain historical evidence snapshots and are not retroactively rewritten.
+
+**Current authority and status:**
+- Root AGENTS.md v1.2.1; MIB-001 v1.0.8; IRG-001 v1.0.2.
+- DGA-001 v1.11.27; SSOT-AUDIT-001 v0.1.4; RTM-001 v0.1.3; RAID-001 v0.1.1.
+- NLA-001 v0.1.3; CMD-049–054 Detailed Contract Review v0.1.2.
+- PostgreSQL Command Contract Catalogue v0.4.5; Physical Database Schema v0.4.2; RLS Catalogue v0.2.3; API Contracts v0.2.2.
+- QA Catalogue v0.3.6: 413 unique planned test definitions, including TC-NOTIF-001..029; all remain PLANNED / NOT EXECUTED.
+- POQ-001 decision packet v0.1.1; AUTH-001 v0.1.0; Decision Register is the canonical PO decision index.
+
+**POQ closure:** POQ-01 Option C, POQ-02 Option C and POQ-03 Option A were explicitly approved on 2026-11-24. They close product semantics only: hybrid event-time candidate audience with non-widening dispatch revalidation; per-policy SLA with ELAPSED_UTC initial default and quiet-hours delivery deferral only; dismiss/archive excluded from MVP. Technical implementation, institutional authority and runtime verification remain open.
+
+**Remaining gate blockers:** DGA-B01..B21 remain in their individual states; notably instrument source/evidence authority (B01–B03), T-10 institutional data governance (B04), provider ownership/recovery (B05–B06), device/offline and SLO (B07–B08), permission/command/database/function security (B09–B12), notification worker/snapshot/provider/T-10 (B13), project closure/print (B14), CI/rulesets (B15), independent crosswalk review (B16), token and global lock graph/manifest/identity fencing (B17–B21). Lock progress remains 10/54 candidate-normalized and 0/54 technically approved/certified. AUTH-01..09 responses remain pending; no institutional or technical approval is recorded.
+
+No CI/workflow, application build, automated test, SQL, migration, live database/provider inspection, restore drill, UAT, deployment or merge was performed. PR #3 remains Draft/Open. G9 remains NOT READY and G10 remains NOT AUTHORIZED. The next valid step is evidence-backed closure by the accountable owners, then independent G9 review, followed by a separate explicit G10 authorization record.
