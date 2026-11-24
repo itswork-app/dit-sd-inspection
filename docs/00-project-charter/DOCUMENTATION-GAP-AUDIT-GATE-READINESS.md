@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.69
+**Version:** 1.11.70
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -747,3 +747,12 @@ RTM-001 v0.1.11 now traces NOTIF-016..020 to F05-T1..T5 and TC-NOTIF-060..064. R
 TDR v0.1.8 adds a bounded candidate grammar (ROLE_SCOPE and EVENT_PARTICIPANT) and an event-specific dispatch matrix. NLA-001 v0.1.14 records the registry/profile contract; writer matrix v0.1.4 records dependency intake; QA v0.5.0 adds TC-NOTIF-065..070; L05 review v0.1.7 remains REQUEST CHANGES. RTM-001 v0.1.12 adds NOTIF-021/022; RAID-001 v0.1.11 records D-026/R-037 impacts.
 
 This is a specification candidate, not an approval. Exact canonical role/scope registry identifiers, complete exact event registry, participant mappings, selector-to-column dependency map, dispatch profile sign-off, candidate scope serialization and physical writer inventory remain open. The eight-clause cap is provisional. F-05 remains OPEN; F-04 remains OPEN. TC-NOTIF-055..070 PLANNED / NOT EXECUTED; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+### PRD-to-notification domain scope reconciliation — 2026-11-24
+
+SCOPE-RECON-001 v0.1.0 records a static reconciliation against PRD §§3–7, 10 and 13, the canonical permission registry, the CMD-001–040 source-event inventory and NLA-001. The initial product rollout remains IFP and Standing Bracket. PRD actors are Project Sponsor, Product Owner, Super Admin, Admin/Korlap, Inspector, Reviewer, Print Officer and proposed Attendance Verifier (authority OPEN). The role/grant matrix remains NOT APPROVED.
+
+The PRD does not define Principal/Kepala Sekolah, teacher, student, parent or school-customer as application roles or default notification recipients. They must not be introduced through selector/event design or inferred from institution metadata; any such expansion requires formal PRD change control and PO approval. The 40 CMD declarations remain source producer inventory only, not an enabled notification allowlist. CMD-041–044 read-side notification effects are not implied; CMD-045–048 require separate control-plane review; CMD-049–054 remain excluded from ordinary matching by default. No event is enabled by this reconciliation.
+
+NLA-001 v0.1.16 adds the domain guardrail; QA v0.5.1 adds TC-NOTIF-071, PLANNED / NOT EXECUTED. This closes only the bounded static scope-reconciliation checkpoint, not product scope freeze or technical certification. F-05 remains OPEN; F-04 remains OPEN; F-03 and F-07 remain OPEN; resolver certification 0/40; application lock certification 0/50; global lock graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; all relevant QA remains PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE. No code, SQL, migration, grant, RLS, live DB change, runtime test, deployment or merge occurred.
