@@ -181,7 +181,7 @@ If a writer is outside this repository's application boundary, its participation
 | NRL-T07 | Two source events with overlapping candidate sets | Stable principal/grant/scope lock ordering; no deadlock |
 | NRL-T08 | CMD-052 fan-out vs grant revocation and parent deletion/closure | Immutable candidate set is consumed; FK behavior is safe; stale workers cannot finalize |
 | NRL-T09 | CMD-054 duplicate scheduler ticks vs CMD-051 policy publish and recipient revoke | One escalation event; pinned policy; immutable snapshot; no reverse-rank edge |
-| NRL-T10 | Inject FK violation, unique conflict, deadlock and serialization failure | Atomic rollback, typed retry outcome, idempotent replay and observable SQLSTATE/lock graph |
+| NRL-T10 | Inject FK violation, unique conflict, deadlock and serialization failure | Atomic rollback, typed retry outcome, idempotent replay and observable SQLSTATE/lock graph |\n| NRL-T11 | Source RPC waits for L05 while an eligibility writer commits; wrapper executes lock and resolver as separate internal SQL commands | VOLATILE wrapper's post-wait resolver sees the committed eligibility change under READ COMMITTED; STABLE/IMMUTABLE or combined-statement control demonstrates the stale-snapshot failure mode |\n| NRL-T12 | Source transaction waits across a role/assignment/policy effective-time boundary before acquiring L05 | One `clock_timestamp()` instant is captured after lock acquisition and used consistently; expired/future eligibility is evaluated at that instant, not transaction start |
 
 All tests are PLANNED / NOT EXECUTED. Execution requires G10 activation and an approved isolated database environment.
 
@@ -198,7 +198,7 @@ All tests are PLANNED / NOT EXECUTED. Execution requires G10 activation and an a
 | NRL-D07 | Prove all eligibility-changing writers and non-command mutation paths participate | Engineering + Security + Operations | OPEN |
 | NRL-D08 | Prove worker transaction separation and CMD-054 lock order | Engineering + Security | OPEN |
 | NRL-D09 | Complete effective graph and static cycle analysis including FK/index/trigger/function/advisory edges | Engineering + Database | OPEN |
-| NRL-D10 | Execute NRL-T01..T10 on authorized isolated PostgreSQL and attach reproducible traces | Engineering + QA + Security | NOT EXECUTED |
+| NRL-D10 | Execute NRL-T01..T12 on authorized isolated PostgreSQL and attach reproducible traces | Engineering + QA + Security | NOT EXECUTED |
 
 ## 10. Gate and certification disposition
 
@@ -242,9 +242,14 @@ This document advances static analysis only. It does not close RAID R-037 or RTM
 
 ## 12. L05 technical decision record — 2026-11-24
 
-[NLA-L05-TDR-001](NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) v0.1.0 now records the concrete candidate PostgreSQL protocol for Engineering/Database/Security review: transaction-scoped `pg_advisory_xact_lock(int,int)`, one reserved global key pair (numeric values TBD), READ COMMITTED with lock acquisition and resolver read in separate SQL statements, full writer participation, bounded timeout/retry, FK/unique/trigger/helper graph and NRL-T01..T10. The key pair, isolation configuration, command writer matrix, timeouts, audience cap and performance SLO are deliberately not invented or approved. The TDR is PROPOSED only; L05 remains unadmitted, 0/40 resolver paths certified, 0/50 application locks certified, G9 NOT READY and G10 NOT ACTIVE.
+[NLA-L05-TDR-001](NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) v0.1.2 now records the concrete candidate PostgreSQL protocol for Engineering/Database/Security review: transaction-scoped `pg_advisory_xact_lock(int,int)`, one reserved global key pair (numeric values TBD), READ COMMITTED with lock acquisition and resolver read in separate SQL statements, full writer participation, bounded timeout/retry, FK/unique/trigger/helper graph and NRL-T01..T10. The key pair, isolation configuration, command writer matrix, timeouts, audience cap and performance SLO are deliberately not invented or approved. The TDR is PROPOSED only; L05 remains unadmitted, 0/40 resolver paths certified, 0/50 application locks certified, G9 NOT READY and G10 NOT ACTIVE.
 
 
 ## 13. Product Owner disposition — 2026-11-24
 
 The Product Owner approved [NLA-L05-TDR-001 v0.1.1](NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) as the preferred technical candidate and baseline for Engineering, Database and Security review. This approves the design direction only. L05 is not yet admitted to the canonical graph; exact key values, deployed isolation, complete writer mapping, helper ACL, FK topology, numeric budgets and performance evidence remain open. Technical certification, G9 readiness and G10 activation are not implied.
+
+
+## 14. Reviewer response tracking — 2026-11-24
+
+Internal review L05-REVIEW-001 v0.1.0 raised F-01 (function volatility/fresh snapshot) and F-02 (post-lock event-time instant) as correctness blockers. TDR v0.1.2 now specifies a VOLATILE RPC wrapper with distinct internal SQL commands and one `clock_timestamp()` capture immediately after L05; NRL-T11 and NRL-T12 define the required adversarial schedules. These are design amendments only. Function metadata, authenticated RPC behavior, exact isolation, half-open interval semantics approval and runtime traces remain unverified. F-01/F-02 therefore remain OPEN pending evidence and required approvals.
