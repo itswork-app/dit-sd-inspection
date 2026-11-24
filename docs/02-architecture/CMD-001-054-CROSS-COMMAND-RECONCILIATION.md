@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.1
+**Version:** 0.8.2
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -49,7 +49,7 @@ The detailed review documents are engineering proposals. Their presence does not
 - Root AGENTS.md v1.2.0.
 - MIB-001 and IRG-001.
 - DGA-001 and Decision Register.
-- PostgreSQL Command Contract Catalogue v0.3.0.
+- PostgreSQL Command Contract Catalogue v0.3.1.
 - Canonical Permission Registry and Command Authorization Matrix v0.2.0.
 - Command Authorization Verification Matrix.
 - Physical Database Schema and Integrity Specification v0.3.0.
@@ -340,7 +340,7 @@ This reconciliation does not close any DGA, RTM or RAID item. A status change re
 
 ## 10. Concurrency/version-token reconciliation update — 2026-11-24
 
-The systemic version-token mismatch has a dedicated decision-ready proposal: [Concurrency and Version Token Reconciliation](CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md) v0.1.0.
+The systemic version-token mismatch has a dedicated decision-ready proposal: [Concurrency and Version Token Reconciliation](CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md) v0.1.2.
 
 The proposal maps command request fields to their intended aggregate/token, separates row versions from business versions, inspection revision numbers, content hashes, print sequences and worker lease/fencing tokens, and identifies catalogue-versus-review mismatches for CMD-005, CMD-007, CMD-035, CMD-040 and CMD-050.
 
@@ -357,7 +357,7 @@ Key dispositions:
 
 ## 11. Global lock-order and concurrency graph update — 2026-11-24
 
-A dedicated proposal is recorded in [LOCK-GRAPH-001 — Global Lock-Order and Concurrency Graph Reconciliation](GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md) v0.3.1. It reconciles the currently documented lock recipes, records the CMD-026 and CMD-023 ordering conflicts, proposes candidate resource ranks, maps cross-command race intersections, identifies potential deadlock inversions, and specifies per-command lock manifests plus 41 planned concurrency tests.
+A dedicated proposal is recorded in [LOCK-GRAPH-001 — Global Lock-Order and Concurrency Graph Reconciliation](GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md) v0.3.2. It reconciles the currently documented lock recipes, records the CMD-026 and CMD-023 ordering conflicts, proposes candidate resource ranks, maps cross-command race intersections, identifies potential deadlock inversions, and specifies per-command lock manifests plus 41 planned concurrency tests.
 
 Key findings:
 - The catalogue's current global sequence and the CMD-011–020 expanded sequence do not fully align on instrument/version placement.
@@ -370,7 +370,7 @@ Key findings:
 
 ## 12. Command-level lock manifest inventory — 2026-11-24
 
-[LOCK-MANIFEST-001 — Command-Level Lock Manifest Reconciliation CMD-001–054](COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.3.1 records a source-evidence inventory for every proposed command. Coverage is 54/54 IDs; lock-complete certification is 0/54. This is not a pass result: source order conflicts and incomplete lock targets remain explicit.
+[LOCK-MANIFEST-001 — Command-Level Lock Manifest Reconciliation CMD-001–054](COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.3.2 records a source-evidence inventory for every proposed command. Coverage is 54/54 IDs; lock-complete certification is 0/54. This is not a pass result: source order conflicts and incomplete lock targets remain explicit.
 
 The manifest does not change the canonical command catalogue, physical schema or detailed command reviews. It adds X-17 and requires approved global order, per-command lock targets, deterministic multi-row ordering, implicit constraint/trigger review, worker fencing and adversarial test evidence. No test was executed. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT AUTHORIZED.
 
