@@ -526,7 +526,7 @@ This PO decision approves the alternative-arrangement path only. It does not est
 ## Package T — T-13 Product Owner decision (2026-11-23)
 
 
-This is PO product direction only. Detailed batch limits, UI behavior, browser print behavior, and test evidence remain to be finalized and validated. No implementation or tests are claimed. T-14 through T-18 remain open; scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
+This is PO product direction only. Detailed batch limits, UI behavior, browser print behavior, and test evidence remain to be finalized and validated. No implementation or tests are claimed. T-14 through T-18 have PO direction approved; design reconciliation and implementation evidence remain open. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
 
 
 **State after PO response (2026-11-23): PO APPROVED option B.** Initial release supports individual and batch printing. Batch size must be bounded/configurable; every document receives an independent outcome (success recorded, failed, or cancelled). Retry is limited to failed documents and must not duplicate successful print events. Reprint sequence allocation is atomic. The application records an authorized print action; it does not prove physical paper output. Direct printer integration is not included.
