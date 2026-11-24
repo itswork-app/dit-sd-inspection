@@ -427,3 +427,8 @@ All related notification and concurrency tests remain PLANNED / NOT EXECUTED. Th
 ### NOTIF-015 resolver lock-set evidence pointer — 2026-11-24
 
 [NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001](../02-architecture/NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) v0.1.0 classifies the complete 40-command source inventory and identifies 0/40 resolver paths with certified complete audience locks. Candidate options are a global transaction-scoped L05 guard or a fully participating SERIALIZABLE predicate protocol; neither is approved. NOTIF-015 remains OPEN — CRITICAL pending PO event-time semantics, Engineering/Database/Security mechanism approval, complete writer participation, exact FK/index/trigger/function graph, acyclicity proof and NRL-T01..T10 runtime evidence. Related QA remains PLANNED / NOT EXECUTED; application lock certification 0/50.
+
+
+### NOTIF-015 resolver test mapping — 2026-11-24
+
+QA v0.4.4 maps recipient-resolver lock-set verification to TC-NOTIF-042..051. These cases complement TC-NOTIF-036..040 (LG-41..45) and remain PLANNED / NOT EXECUTED. NOTIF-015 remains OPEN — CRITICAL; no resolver mechanism, new lock rank, candidate relation or command lock path is certified.
