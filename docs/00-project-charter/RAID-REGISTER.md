@@ -215,3 +215,6 @@ The PO decisions recorded in LPR-02–LPR-06 are product direction only. They do
 ## CMD-001–010 lock normalization checkpoint — 2026-11-24
 
 D-030 remains OPEN/BLOCKING. The first ten command manifests now have a candidate resource order, lock-mode proposal where applicable, actor/target/grantor revalidation, T-14 capacity conditionality, competing-command map and planned test anchors. This reduces documentation ambiguity but does not approve the technical graph, close DGA-B18/B19/B21, or provide execution evidence. Continue with CMD-011–020 after reviewing this baseline; keep 0/54 certified until authority review and evidence exist.
+
+
+**Current normalization references:** CMD-001–010 Detailed Contract Review v0.3.4; LOCK-MANIFEST-001 v0.4.10; LOCK-GRAPH-001 v0.4.8; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.6; QA Catalogue v0.3.2; DGA-001 v1.11.12. All remain proposals / planned evidence except the documentation normalization itself.
