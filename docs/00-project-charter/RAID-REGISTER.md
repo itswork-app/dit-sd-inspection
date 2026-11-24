@@ -144,3 +144,9 @@ PO approved individual and bounded batch printing. Risk R-015 remains OPEN until
 ### R-016 — Inspector capacity predicate drift
 
 **Risk:** UI, API and database may calculate qualifying Inspector accounts differently, allowing over-capacity or incorrect rejection. **Control:** T-14 PO-approved canonical predicate: distinct enabled login accounts with an active Inspector role grant and at least one currently effective operational Inspector assignment within governed project/session scope; deduplicate assignments/roles and exclude pending, rejected, suspended, disabled and expired-role accounts. Enforce atomically against combined cap 1–100 (default 50). **Status:** Open until design consistency, implementation and concurrency tests are verified.
+
+
+
+## T-15 — audit policy decision update (2026-11-24)
+
+Product Owner approved T-15 option A: INS-016 append-only audit events, atomic audit + critical mutation, fail-closed rollback on audit failure, actor/role/scope/action/time/correlation/idempotency/privacy-safe context, auditable sensitive evidence access/export and least-privilege audit access. Update R-013 mitigation and D-008 dependency accordingly: Product Owner policy approval is no longer pending, but D-008 remains BLOCKED until command/schema/RLS implementation design is reconciled and verified. I-010 remains OPEN for institutional retention/legal-hold/classification, audit-reader/export authority and network metadata policy under T-10. This decision does not close the risk or authorize implementation; no code/tests are claimed.
