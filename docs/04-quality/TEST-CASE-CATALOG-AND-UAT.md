@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.6.0
+Version: 0.6.1
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -994,3 +994,19 @@ These cases guard the unresolved mapping between account event-time candidate se
 | TC-INS-DRAFT-020 | Required audit append fails during submit, return or reopen | Full transaction rollback; no partial lifecycle transition, context or revision remains |
 
 The evidence carry-forward decision across revisions, next Inspector/claim owner after return/reopen, claim release/resume/reassignment semantics, final state vocabulary, physical uniqueness/FK strategy, RLS/ACL and lock graph remain open. These cases must be refined after those decisions are approved. All 20 cases are PLANNED / NOT EXECUTED.
+
+
+## SES-001 session-bound inspection and abort verification — 2026-11-24
+
+**Authority:** PO-approved SES-001. **Status:** PLANNED / NOT EXECUTED. These cases verify approved product semantics only; physical schema, command contracts and implementation remain unapproved.
+
+| Test ID | Scenario | Expected result |
+|---|---|---|
+| TC-INS-DRAFT-021 | Attempt to claim or create an inspection attempt under a closed, inactive or out-of-scope session | Denied; no inspection, draft context, claim or evidence intent is created |
+| TC-INS-DRAFT-022 | Attempt to resume an ACTIVE draft, claim or evidence workflow from a different session | Denied; original session_id remains immutable; no data is copied or mutated |
+| TC-INS-DRAFT-023 | Session close requested while a unit attempt remains incomplete or a returned correction remains unresolved | Final session close is blocked until that unit attempt is explicitly aborted or reaches an allowed terminal outcome |
+| TC-INS-DRAFT-024 | Abort an incomplete unit attempt at session end, including retry with same idempotency key | One terminal ABORTED outcome; active draft is sealed against writes; claim is released; audit/event/idempotency commit atomically; retries do not duplicate effects |
+| TC-INS-DRAFT-025 | Abort fails during audit/event/claim-release write or races with submit/evidence finalization/session close | Entire abort transaction rolls back or one legal serialized outcome wins; no partially aborted attempt or falsely closed session |
+| TC-INS-DRAFT-026 | Start inspection of the same canonical unit in a later session after prior attempt was ABORTED | A new inspection attempt is created with the new session_id; old attempt, revisions and evidence remain immutable; old evidence is not automatically reused |
+
+Returned correction and authorized reopen must additionally remain within the original session and, for correction, the original Inspector. All cases remain PLANNED / NOT EXECUTED.
