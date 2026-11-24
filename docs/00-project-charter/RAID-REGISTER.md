@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.6  
+**Version:** 0.1.7  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -305,3 +305,10 @@ PO has selected candidate L05 (global transaction-scoped audience guard) as the 
 ### R-037 PO decision — 2026-11-24
 
 The Product Owner approved NLA-L05-TDR-001 v0.1.1 as the preferred technical candidate for Engineering/Database/Security review. This is candidate-direction approval only. L05 remains unadmitted; R-037 remains OPEN — CRITICAL until technical approvals, complete 40-source resolver lock coverage, FK/trigger graph, acyclicity proof and concurrency evidence are complete. No implementation authorization is created.
+
+
+## R-037 current L05 technical baseline — 2026-11-24
+
+Current candidate sources: NLA-001 v0.1.8; NLA-RESOLVER-LOCK-001 v0.1.9; NLA-L05-TDR-001 v0.1.2; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; source map v0.1.0; writer matrix v0.1.1; QA Catalogue v0.4.5; DGA-001 v1.11.60.
+
+CMD-031–040 candidate lock overlay is partial and does not close R-037. Resolver paths remain 0/40 certified, application lock certification 0/50, graph acyclicity NOT PROVEN, candidate snapshot relation/header NOT ADMITTED, NRL tests PLANNED / NOT EXECUTED. Exact writer participation, selector dependency set, FK/trigger/helper graph, worker/lease rank, attendance aggregate/version and numeric contention SLOs remain open. R-037 remains OPEN — CRITICAL; G9 NOT READY; G10 NOT ACTIVE.
