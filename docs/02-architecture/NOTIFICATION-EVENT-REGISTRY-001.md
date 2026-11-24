@@ -77,7 +77,7 @@ Each row must remain NOT ENABLED until all applicable evidence is supplied and a
 
 Missing evidence leaves the relevant field UNRESOLVED and the row NOT ENABLED. No partial row may be published.
 
-## 5. Explicitly outside this registry
+## 6. Explicitly outside this registry
 
 - `account.requested` (CMD-001): secondary P-class candidate, deferred; neither approved nor rejected.
 - `session.close_requested`: excluded as a notification event in this batch; only final `session.closed` is a candidate.
@@ -85,7 +85,7 @@ Missing evidence leaves the relevant field UNRESOLVED and the row NOT ENABLED. N
 - All remaining CMD-001..040 declarations not listed above.
 - CMD-041..044 read-side operations; CMD-045..048 separate control-plane review; CMD-049..054 excluded from ordinary matching by default.
 
-## 6. Governance and gate status
+## 7. Governance and gate status
 
 - PO candidate intent: APPROVED for specification/review only.
 - Event registry rows: 11 recorded; 0 technically admitted; 0 enabled.
