@@ -197,3 +197,23 @@ POQ-01 requires a durable event-time candidate-audience snapshot/checkpoint boun
 POQ-02 requires immutable policy documents to encode an explicit elapsed/business-time mode and requires the initial-release policy default to ELAPSED_UTC. Exact typed fields, enum/check constraints and validation rules remain to be reconciled in the physical specification. Quiet hours must not pause/reset the SLA clock.
 
 POQ-03 excludes dismissal from MVP. If dismissed_at remains in the proposed schema for compatibility, it is dormant and must not be exposed or mutated. These decisions do not establish live schema/RLS/grants or authorize migration.
+
+
+## Candidate object admission boundary — 2026-11-24
+
+The CMD-035/036/038/039/040 durable-operation proposal identified eight candidate object families. A candidate-only annex has now been added to the physical schema, RLS catalogue, permission registry and ERD. These additions are explicitly outside the canonical inventory and do not change the 48/48 exact name-parity result for the current proposed tables.
+
+| Candidate family | Schema annex | RLS annex | Permission registry | ERD annex | Admission |
+|---|---|---|---|---|---|
+| sync_batch_operations | Added | Added | Existing sync.apply mapped; operation ledger read scope open | Added | NOT ADMITTED |
+| device_bindings | Added; exact name TBD | Added | Enrollment/revocation permission TBD | Added | NOT ADMITTED |
+| document_template_versions | Added | Added | Template publication permission/command TBD | Added | NOT ADMITTED |
+| document_generation_jobs | Added | Added | document.generate request vs internal renderer identity separated | Added | NOT ADMITTED |
+| document_generation_attempts | Added | Added | Internal renderer only | Added | NOT ADMITTED |
+| print_batch_items | Added | Added | document.print.batch mapped | Added | NOT ADMITTED |
+| print_batch_item_results | Added | Added | document.print.batch mapped; read projection open | Added | NOT ADMITTED |
+| attendance_verification_events | Added | Added | attendance.verify mapped; institutional authority/SoD open | Added | NOT ADMITTED |
+
+The canonical permission registry addendum makes no new permission effective. It explicitly prohibits deriving device enrollment/revocation from sync.apply, template publication from document.generate, or worker execution from user-role permissions/service_role. The candidate ERD annex is excluded from the Mermaid graph and 48-table count.
+
+**Important:** This is a documentation completeness improvement, not physical parity for the candidate objects. The existing 48/48 parity applies only to the canonical proposed inventory. The eight candidate object families have not been admitted, modeled as approved ERD relationships, validated against deployed PostgreSQL, or assigned executable RLS/ACL. No gate or command certification advances.
