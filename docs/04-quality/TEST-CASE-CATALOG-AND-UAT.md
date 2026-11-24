@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.4.6
+Version: 0.4.7
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -808,3 +808,19 @@ TC-NOTIF-052 and TC-NOTIF-053 extend the planned QA set for F-01/F-02 from L05-R
 ### L05 transition-semantics and contention evidence — 2026-11-24
 
 TC-NOTIF-054 specifies the mixed-load benchmark for the global audience guard. It remains PLANNED / NOT EXECUTED until PO/Operations approve audience/workload limits and numeric SLOs, Engineering/Database approve the final lock design, and G10 activates an isolated PostgreSQL test environment. Pre-/post-transition recipient outcomes remain PO decision inputs and must be added as explicit assertions before these tests can pass.
+
+
+### F-05 proposed transition-semantics acceptance cases — POQ-04 pending approval (2026-11-24)
+
+The following cases translate the proposed matrix into explicit assertions. They remain PLANNED / NOT EXECUTED and must be revised if PO changes any POQ-04 row. They are not evidence of approval or runtime behavior.
+
+| Test ID | Scenario | Expected result / invariant | Status |
+|---|---|---|---|
+| TC-NOTIF-055 | Role revoke races source-event audience resolution; target and actor are separately selected/not selected by policy | Candidate snapshot reflects pre-revoke serialized state and exact selector only; no implicit actor/target append; post-commit current-scope revalidation suppresses revoked target when required; no widening | PLANNED / NOT EXECUTED |
+| TC-NOTIF-056 | Account is rejected/disabled/suspended after event-time snapshot; later reactivated before retry | Original candidate snapshot remains unchanged; send is suppressed while account is not enabled; later retry may send only to the same original candidate after reactivation and all current checks; no candidate is added | PLANNED / NOT EXECUTED |
+| TC-NOTIF-057 | Assignment member ends concurrently with source event | Snapshot uses the serialized pre-end membership at one captured instant; after end, current-scope revalidation may suppress that candidate; no substitute member is added | PLANNED / NOT EXECUTED |
+| TC-NOTIF-058 | Project/session closes concurrently with source event | Snapshot is evaluated against pre-close parent state and commits atomically with the closure event; dispatch applies approved current active-scope rule; no post-close recipient is added | PLANNED / NOT EXECUTED |
+| TC-NOTIF-059 | Actor revokes own role while an event policy may or may not select actor | Actor appears only if exact selector selects actor under pre-revoke eligibility; post-revoke current-scope check may suppress delivery; no implicit inclusion/exclusion or audience widening | PLANNED / NOT EXECUTED |
+
+**Execution control:** TC-NOTIF-055..059 require explicit POQ-04 approval, final selector grammar and dispatch-suppression semantics, approved technical design, G10 activation and an authorized isolated PostgreSQL environment. Until then they remain specification-only.
+
