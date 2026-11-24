@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.1.0  
+**Version:** 0.2.0  
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -283,7 +283,7 @@ This reconciliation does not close any DGA, RTM or RAID item. A status change re
 | ID | Priority | Scope | Required action | Accountable authority | Gate |
 |---|---|---|---|---|---|
 | X-01 | Critical | CMD-001–054 | Approve canonical permission registry, role/grantor matrix, scope and SoD | PO + Security | G2/G4 |
-| X-02 | Critical | CMD-001–054 | Reconcile all expected_version fields to physical version tokens and compare-and-swap semantics | Engineering + PO | G3/G5 |
+| X-02 | Critical | CMD-001–054 | Reconcile all expected_version fields to physical version tokens and compare-and-swap semantics; see [Concurrency and Version Token Reconciliation](CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md) | Engineering + PO + Security | G3/G5 |
 | X-03 | Critical | CMD-026 and all multi-row writers | Resolve global lock order and prove cross-command lock graph | Engineering + Security | G3/G7 |
 | X-04 | Critical | CMD-001–054 | Complete route/RPC/request/response/function signature mapping; no candidate name promoted by assumption | Engineering + Security | G5 |
 | X-05 | Critical | CMD-001–054 | Per-function owner, SECURITY mode, search_path, exact EXECUTE ACL, table ACL and caller-JWT proof | Engineering + Security | G4/G5 |
@@ -333,3 +333,20 @@ This reconciliation does not close any DGA, RTM or RAID item. A status change re
 4. Reassess G9 only after closure evidence is accepted. G10 remains a separate explicit authorization.
 
 **Final boundary:** This is a documentation reconciliation. It does not close scope, approve executable contracts, authorize implementation or establish production readiness.
+
+
+## 10. Concurrency/version-token reconciliation update — 2026-11-24
+
+The systemic version-token mismatch has a dedicated decision-ready proposal: [Concurrency and Version Token Reconciliation](CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md) v0.1.0.
+
+The proposal maps command request fields to their intended aggregate/token, separates row versions from business versions, inspection revision numbers, content hashes, print sequences and worker lease/fencing tokens, and identifies catalogue-versus-review mismatches for CMD-005, CMD-007, CMD-035, CMD-040 and CMD-050.
+
+Key dispositions:
+- Existing physical \`row_version\` fields on \`inspections\` and \`unit_claims\` are retained as design references; their exact initialization/increment semantics still require approval.
+- Proposed missing tokens include \`user_roles\`, \`user_scope_grants\`, \`projects\`, \`sessions\`, \`project_capacity_settings\`, \`instruments\`, \`unit_project_associations\` and \`attendance_records\`.
+- \`target_plans.version\` and \`instrument_versions.version_number\` are business sequence identifiers, not draft compare-and-swap tokens.
+- CMD-050 is proposed to use an idempotent set-once \`read_at\` update rather than adding a version column to every notification.
+- CMD-052/053 lease fencing is distinct from user-facing row versioning.
+- All proposed fields and API changes remain OPEN pending PO/Security decisions. No physical schema, command catalogue or detailed review is silently amended by this proposal.
+
+**Gate effect:** X-02 remains OPEN; G3/G5/G9 remain NOT READY and G10 remains NOT AUTHORIZED. This update improves traceability but does not close the finding.
