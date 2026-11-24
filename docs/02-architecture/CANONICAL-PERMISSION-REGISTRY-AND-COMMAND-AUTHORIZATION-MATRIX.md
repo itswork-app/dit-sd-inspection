@@ -147,7 +147,7 @@ No role-to-permission grant is approved. PO and institutional security must conf
 
 For every exposed table, view, Storage bucket and RPC, record object name, data classification, SELECT policy, INSERT/UPDATE/DELETE policy, RLS helper, permission, scope derivation and negative test. Protected-table browser writes are denied, including draft response tables. Command functions receive exact EXECUTE grants; no generic command executor or PUBLIC execute. Audit and immutable history have no application UPDATE/DELETE path. Idempotency and internal sync payloads have no browser access. Private Storage access is never authorized by object-key possession. View/function security modes are reviewed. SECURITY DEFINER requires pinned search_path, schema-qualified references, safe owner and minimal grants. Migration owner, service role and runtime caller are separate trust principals. Every command derives actor from auth.uid() and rechecks permission/scope/state inside PostgreSQL.
 
-The existing RLS catalogue contains 41 table entries; that is not evidence RLS or grants exist or are correct. Reconcile all tables, views, functions, buckets and future objects before implementation.
+The current proposed RLS catalogue contains 48 table entries; that is not evidence RLS or grants exist or are correct. Reconcile all tables, views, functions, buckets and future objects before implementation.
 
 ## 7. Audit contract
 
