@@ -166,3 +166,34 @@ Before scope freeze: convert each blocker into a tracked decision/issue with an 
 **Production readiness:** NOT ASSESSED / NOT ESTABLISHED.
 
 No code, migrations, live RLS, application routes, deployed infrastructure, security tests, restore drills, load tests, or UAT were executed as part of Package S.
+
+## 9. Follow-up reconciliation after T-15 through T-18 (2026-11-24)
+
+This follow-up preserves Package S as the historical pre-decision audit and supersedes only status statements affected by later approved decisions.
+
+### 9.1 Reconciled decisions
+
+- **S-08 / T-16:** The Product Owner approved canonical serial uniqueness across projects by instrument type. The physical design now specifies project-independent `units`, durable `unit_project_associations`, controlled duplicate conflicts, composite association/project/assignment integrity and a global active claim per canonical unit. The association model is documented for technical review; institutional serial normalization/exception policy and implementation remain open.
+- **S-08 / T-18:** The Product Owner approved the Vercel route → PostgreSQL command function pattern with caller JWT. Protected browser-facing business/governance table DML is denied by design; PostgreSQL derives actor identity and performs permission/scope/state/separation checks with mutation and audit atomically. RLS/grants and command-specific function review are not deployed or verified.
+- **S-09 / T-15:** INS-016 is now PO APPROVED option A. Atomic append-only audit and fail-closed critical writes are the approved direction. Institutional retention, legal hold, classification, network metadata and archive requirements remain open.
+- **Capacity / T-14:** The distinct enabled-account + active Inspector grant + effective assignment predicate is PO-approved and must be enforced atomically across both locations.
+- **Instrument governance / T-17:** Super Admin direct publication through explicit `instrument.publish`, declarative server-side validation, atomic audit and immutable published versions is PO-approved.
+
+### 9.2 Current cross-document findings
+
+1. Package K and this Package S remain historical audit records; their original pre-decision findings must be read with this addendum and the Decision Register.
+2. Package L/M/N design artifacts now contain the T-16/T-17/T-18 direction, but still require technical review, command/grant completeness, and executable verification before migration or release.
+3. API contracts, RTM, system architecture and RLS catalogue require consistent status language for the approved command boundary and direct-DML prohibition.
+4. T-01 source completeness (official IFP source and evidence-slot rules), T-02 institutional signatory authority, T-10 institutional privacy/records approval, T-11 measurable SLO/device validation, and T-12 provider/ownership/recovery verification remain unresolved.
+5. CI/repository protections and release evidence must be inspected separately; a clean documentation diff or green CI alone does not establish scope-freeze or production readiness.
+
+### 9.3 Updated disposition
+
+**Product Owner decision closure:** T-14 through T-18 are approved at PO level as recorded in the Decision Register.  
+**Technical design:** materially advanced; Package L/M/N cross-document and implementation-level review remains open.  
+**Institutional/provider evidence:** BLOCKED for the items listed above.  
+**Scope freeze:** NOT READY.  
+**Feature implementation:** NOT AUTHORIZED.  
+**Implementation, migration, deployment, security tests, restore drills, load tests and UAT:** NOT EXECUTED / NOT CLAIMED.
+
+The original S-01..S-12 checklist is still a useful gate inventory, but decision items closed by T-14..T-18 must not be represented as awaiting Product Owner approval. External institutional and technical verification gates remain active.
