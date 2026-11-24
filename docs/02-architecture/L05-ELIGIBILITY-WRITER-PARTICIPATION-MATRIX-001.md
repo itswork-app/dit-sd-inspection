@@ -1,10 +1,10 @@
 # L05 Eligibility-Writer Participation Matrix
 
 **Document ID:** NLA-L05-WRITER-MATRIX-001  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Status:** STATIC INVENTORY — INCOMPLETE; NOT CERTIFIED  
 **Date:** 2026-11-24  
-**Inputs:** NLA-L05-TDR-001 v0.1.2; LOCK-MANIFEST-001 v0.4.29; PostgreSQL Command Contract Catalogue v0.4.8; Function Security & EXECUTE Grant Design v0.3.3; physical schema proposal v0.4.4
+**Inputs:** NLA-L05-TDR-001 v0.1.2; LOCK-MANIFEST-001 v0.4.30; PostgreSQL Command Contract Catalogue v0.4.8; Function Security & EXECUTE Grant Design v0.3.3; physical schema proposal v0.4.4
 
 ## 1. Purpose and decision boundary
 
@@ -66,3 +66,8 @@ No direct table write, alternate RPC, SECURITY DEFINER helper, trigger, cascade,
 | G9 / G10 | NOT READY / NOT ACTIVE |
 
 This matrix does not authorize implementation, SQL, migration, grants/revokes, RLS changes, live database inspection, runtime tests, deployment or merge.
+
+
+## 6. Source baseline refresh — 2026-11-24
+
+The current candidate lock-manifest baseline is LOCK-MANIFEST-001 v0.4.30, including the CMD-031–040 candidate overlay in §7.13. This refresh does not expand the physical writer inventory or change its certification state. Exact deployed RPC/helper/trigger/job names, selector dependency universe, ownership/ACL, direct-DML bypass proof and admin/import/repair/expiry paths remain unavailable. The matrix remains INCOMPLETE; no writer is certified to participate in L05.
