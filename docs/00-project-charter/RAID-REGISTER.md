@@ -150,3 +150,8 @@ PO approved individual and bounded batch printing. Risk R-015 remains OPEN until
 ## T-15 — audit policy decision update (2026-11-24)
 
 Product Owner approved T-15 option A: INS-016 append-only audit events, atomic audit + critical mutation, fail-closed rollback on audit failure, actor/role/scope/action/time/correlation/idempotency/privacy-safe context, auditable sensitive evidence access/export and least-privilege audit access. Update R-013 mitigation and D-008 dependency accordingly: Product Owner policy approval is no longer pending, but D-008 remains BLOCKED until command/schema/RLS implementation design is reconciled and verified. I-010 remains OPEN for institutional retention/legal-hold/classification, audit-reader/export authority and network metadata policy under T-10. This decision does not close the risk or authorize implementation; no code/tests are claimed.
+
+
+### T-16 — Cross-project serial collision and evidence lineage risk (2026-11-24)
+
+**Risk:** A project-local unit model may create duplicate physical identities across projects, while a global serial rule may incorrectly reject a serial reused by another instrument type. Evidence may also become detached from the exact revision/version or be overwritten. **Control:** PO-approved key `(instrument_id, serial_normalized)` across projects; preserve project-scoped authorization via explicit project associations; permit reuse across different instrument types; route same-type conflicts to authorized, reasoned and audited resolution; bind immutable evidence to exact revision/version and prohibit in-place replacement. **Status:** Design reconciliation, institution-approved exception policy, implementation and tests remain OPEN.
