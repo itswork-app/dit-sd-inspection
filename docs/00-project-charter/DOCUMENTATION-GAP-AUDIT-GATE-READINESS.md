@@ -123,7 +123,7 @@ No source code, migration, SQL, grants, live database mutation, deployment, secu
 
 ## NLA-001 / T-13 closure evidence update — 2026-11-24
 
-- NLA-001 v0.1.0 records the INS-015 lifecycle, proposed six-table persistence model, recipient and channel rules, retry/UNKNOWN semantics, audit/privacy boundary, worker contract, CMD-049..054 and TC-NOTIF-001..018.
+- NLA-001 v0.1.1 records the INS-015 lifecycle, proposed six-table persistence model, recipient and channel rules, retry/UNKNOWN semantics, audit/privacy boundary, worker contract, CMD-049..054 and TC-NOTIF-001..018.
 - T-13 is reconciled by adding `print_batches` to physical schema/RLS and linking per-document attempt outcomes in `print_events`.
 - Proposed physical/RLS inventory: 48 tables each; static document parity only.
 - DGA-B10, B11, B13 and B14 remain open/partial. No PO/security sign-off, live database inspection, migration, grant, provider setup or test execution is claimed.
@@ -175,7 +175,7 @@ G5 remains BLOCKED. G9 remains NOT READY. G10 remains NOT AUTHORIZED. The comple
 
 ## Concurrency/version-token proposal update — 2026-11-24
 
-A dedicated decision-ready proposal is now available: [CONCURRENCY-001 — Concurrency and Version Token Reconciliation](../02-architecture/CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md) v0.1.0. The complete 54-command crosswalk links it from [CMD-001–054 Cross-Command Reconciliation](../02-architecture/CMD-001-054-CROSS-COMMAND-RECONCILIATION.md) v0.2.0.
+A dedicated decision-ready proposal is now available: [CONCURRENCY-001 — Concurrency and Version Token Reconciliation](../02-architecture/CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md) v0.1.0. The complete 54-command crosswalk links it from [CMD-001–054 Cross-Command Reconciliation](../02-architecture/CMD-001-054-CROSS-COMMAND-RECONCILIATION.md) v0.8.0.
 
 The proposal maps:
 - missing aggregate tokens for role/scope grants, projects, sessions, capacity settings, instruments, associations and attendance records;
