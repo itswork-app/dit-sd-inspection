@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.71
+**Version:** 1.11.72
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -760,8 +760,11 @@ NLA-001 v0.1.16 adds the domain guardrail; QA v0.5.1 adds TC-NOTIF-071, PLANNED 
 
 ### CMD-001–040 notification event candidate triage — 2026-11-24
 
-NLA-EVENT-TRIAGE-001 v0.1.0 audits all 40 source command declarations against PRD workflows and separates PO discussion candidates, operational/control events and unresolved composite/conditional declarations. It is explicitly not an enabled event allowlist. The shortlist is limited to user-visible account outcomes, role revocation, project/session closure, assignment creation/change, and inspection submission/return/approval/reopen. No event, recipient, channel or template is approved by this audit.
+NLA-EVENT-TRIAGE-001 v0.1.1 audits all 40 source command declarations against PRD workflows and separates PO discussion candidates, operational/control events and unresolved composite/conditional declarations. It is explicitly not an enabled event allowlist. The shortlist is limited to user-visible account outcomes, role revocation, project/session closure, assignment creation/change, and inspection submission/return/approval/reopen. No event, recipient, channel or template is approved by this audit.
 
 The triage preserves important distinctions: `session.close_requested` is not the final `session.closed`; inspection submission and revision creation are related facts requiring deduplication; batch envelope outcomes are not per-operation/per-document events; upload intent is not uploaded evidence; print audit is not a user notice; Attendance Verifier remains authority OPEN. Composite/conditional CMD declarations remain UNRESOLVED — NOT ENABLED until exact event tokens and producer boundaries are documented.
 
 NLA-001 v0.1.17 references the triage; QA v0.5.2 adds TC-NOTIF-072 to ensure triage-only or unapproved events cannot be published. TC-NOTIF-001..072 remain PLANNED / NOT EXECUTED. This closes only the static event-relevance review checkpoint; PO event allowlist approval and technical registry admission remain outstanding. F-05/F-04/F-03/F-07 remain OPEN; resolver 0/40; application lock 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE. No code, SQL, migration, grants, RLS, DB mutation, runtime test, deployment or merge.
+
+
+**Triage clarification:** The shortlist in NLA-EVENT-TRIAGE-001 §5 is the first PO discussion batch, not an exhaustive list of all rows classified P. Secondary P candidates (including account.requested) remain deferred and neither approved nor rejected. This preserves the distinction between product relevance classification and PO allowlist decision.
