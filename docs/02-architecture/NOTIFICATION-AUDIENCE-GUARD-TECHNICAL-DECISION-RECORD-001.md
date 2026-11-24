@@ -88,7 +88,7 @@ For each command that can emit an allowlisted notification event:
 1. Begin transaction under the verified isolation contract.
 2. Perform only the approved L00 idempotency arbitration; no principal, role, scope, project, assignment, notification or other domain aggregate row lock may be taken yet.
 3. Acquire L05 in a dedicated SQL command using the fixed internal key pair.
-4. Immediately after the L05 lock call returns, capture exactly one database wall-clock instant as `audience_evaluated_at := clock_timestamp()`. This is the audience eligibility linearization instant for this transaction.
+4. Immediately after the L05 lock call returns, capture exactly one database wall-clock instant into a `timestamptz` variable as `audience_evaluated_at := clock_timestamp()`. This is the audience eligibility linearization instant for this transaction.
 5. In a subsequent SQL command, read the immutable effective notification policy version and resolve the bounded event-time recipient/scope candidate set using that captured instant for every time-dependent predicate. Do not use `now()`, `CURRENT_TIMESTAMP`, `transaction_timestamp()` or `statement_timestamp()` as the post-wait audience evaluation instant.
 6. Acquire the union of actor, target and candidate principal rows in stable UUID order (L15), then applicable role rows (L16), scope-grant rows (L17), and conditional catalogue rows (L18).
 7. Acquire every required FK parent in the approved canonical order (L20 and L30–L55 classes as applicable); then acquire remaining source-specific domain locks in the admitted global order.
@@ -205,7 +205,7 @@ CMD-052 must claim an outbox row in a short transaction, commit, then perform fa
 
 1. Read due candidate IDs and pinned policy metadata as preflight only; no mutable policy/notification row lock is taken. Any preflight timestamp is advisory only and must not decide effective eligibility.
 2. For each bounded work unit, begin a READ COMMITTED transaction and acquire L05 before mutable recipient/policy/escalation locks.
-3. Immediately after L05 returns, capture one `audience_evaluated_at := clock_timestamp()` for that work unit.
+3. Immediately after L05 returns, capture one `timestamptz audience_evaluated_at := clock_timestamp()` for that work unit.
 4. In a subsequent SQL command, re-read due state, current policy validity and event-time candidate eligibility using that exact captured instant.
 5. Acquire all principal/scope/FK parents and remaining notification/escalation rows in the approved order.
 6. Insert the unique escalation fact, outbox intent and immutable candidate snapshot, persisting the same evaluation instant atomically.
@@ -253,7 +253,7 @@ All tests are PLANNED / NOT EXECUTED. Run only after G10 activation in an isolat
 | NRL-T07 | Two overlapping source events plus policy publish | Policy version and audience snapshots are deterministic; no duplicate logical outbox |
 | NRL-T08 | CMD-052 fan-out vs revoke/closure after source commit | Fan-out consumes only immutable snapshot; no re-resolution/widening; FK safety |
 | NRL-T09 | Duplicate CMD-054 ticks vs CMD-051 policy publish | One escalation key; deterministic policy snapshot; no deadlock |
-| NRL-T10 | FK/unique conflict, lock timeout, deadlock and forced transaction abort | Entire atomic unit rolls back; bounded retry replays same idempotency key; no orphan snapshot/outbox |
+| NRL-T10 | FK/unique conflict, lock timeout, deadlock and forced transaction abort | Entire atomic unit rolls back; bounded retry replays same idempotency key; no orphan snapshot/outbox |\n| NRL-T11 | Authenticated PostgREST RPC waits for L05 while an eligibility writer commits | VOLATILE wrapper executes lock and resolver as distinct internal SQL commands; post-wait resolver sees the committed change under READ COMMITTED; combined-statement negative control demonstrates stale snapshot |\n| NRL-T12 | Source transaction waits on L05 across a role/assignment/policy effective-time boundary | One post-lock `clock_timestamp()` instant drives all temporal predicates and the persisted snapshot; transaction-start timestamp is not used |\n| NRL-T13 | Mixed source-event and eligibility-writer workload at the PO/Operations-approved maximum audience cardinality | Record p50/p95/p99 L05 wait/hold/transaction latency, throughput, timeout/deadlock/retry rates, queue age, audience cardinality and database I/O; meet approved SLO without partial audiences or starvation |
 
 Additional assertions:
 - demonstrate the stale-snapshot hazard when lock and resolver read are combined into one statement, then verify the separate-statement READ COMMITTED protocol;
