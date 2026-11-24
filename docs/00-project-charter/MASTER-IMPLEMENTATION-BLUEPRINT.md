@@ -207,7 +207,7 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 1. Treat [Documentation Gap Audit — Gate Implementation Readiness](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) as the active evidence-backed closure queue; do not claim readiness while any blocking row remains open.
 2. Reconcile historical status language in Package T, Package S, Decision Register, RTM and RAID without changing approved decision meaning.
 3. Close instrument source/evidence-slot and BA/template authority dependencies with controlled source evidence.
-4. Complete INS-015 notification persistence and decide the ERD-only `notification_events` entity; decide `print_batches` disposition.
+4. Obtain PO/security review of NLA-001, approve notification recipient/policy/worker authority and T-10/provider dependencies, and complete independent technical review of the six notification tables plus T-13 `print_batches` constraints, locks and tests.
 5. Complete the 48-command review: exact permissions, role/grantor/SoD, schemas, physical read/write sets, route/RPC mapping, transaction boundaries, idempotency, audit and command-specific tests.
 6. Reconcile physical schema, RLS, views, functions, triggers, sequences, Storage policies and exact grants.
 7. Close offline/device/local-data, evidence lifecycle, report reproducibility, account recovery, provider, backup/restore and measurable SLO specifications.
