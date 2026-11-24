@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.60
+**Version:** 1.11.61
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -680,7 +680,7 @@ The Product Owner approved NLA-L05-TDR-001 v0.1.3 as the preferred candidate for
 
 ### L05 internal technical review response — 2026-11-24
 
-Internal review [L05-TECHNICAL-REVIEW-001](../04-quality/L05-TECHNICAL-REVIEW-001.md) v0.1.0 returned REQUEST CHANGES for TDR v0.1.1. F-01 and F-02 are addressed at the design-specification level in NLA-L05-TDR-001 v0.1.2: participating PostgREST RPC wrappers are required to be VOLATILE with separate internal SQL commands, and one `clock_timestamp()` audience-evaluation instant is captured immediately after L05. NRL-T11/T12 and TC-NOTIF-052/053 specify adversarial verification; all remain PLANNED / NOT EXECUTED. Function metadata, actual authenticated RPC snapshot behavior, exact effective-time domain approval and runtime evidence are still absent, so F-01/F-02 remain OPEN pending evidence. F-03/F-04 (complete source-path and eligibility-writer matrices), F-05 (post-transition audience semantics), F-06 (remaining traceability synchronization) and F-07 (measured performance envelope) remain open. L05 remains a candidate only; resolver certification 0/40, application lock certification 0/50, global graph NOT PROVEN acyclic, candidate snapshot relation NOT ADMITTED, G9 NOT READY and G10 NOT ACTIVE. No implementation, SQL, migration, grant, RLS or runtime test was performed or authorized.
+Internal review [L05-TECHNICAL-REVIEW-001](../04-quality/L05-TECHNICAL-REVIEW-001.md) v0.1.0 returned REQUEST CHANGES for TDR v0.1.1. F-01 and F-02 are addressed at the design-specification level in NLA-L05-TDR-001 v0.1.4: participating PostgREST RPC wrappers are required to be VOLATILE with separate internal SQL commands, and one `clock_timestamp()` audience-evaluation instant is captured immediately after L05. NRL-T11/T12 and TC-NOTIF-052/053 specify adversarial verification; all remain PLANNED / NOT EXECUTED. Function metadata, actual authenticated RPC snapshot behavior, exact effective-time domain approval and runtime evidence are still absent, so F-01/F-02 remain OPEN pending evidence. F-03/F-04 (complete source-path and eligibility-writer matrices), F-05 (post-transition audience semantics), F-06 (remaining traceability synchronization) and F-07 (measured performance envelope) remain open. L05 remains a candidate only; resolver certification 0/40, application lock certification 0/50, global graph NOT PROVEN acyclic, candidate snapshot relation NOT ADMITTED, G9 NOT READY and G10 NOT ACTIVE. No implementation, SQL, migration, grant, RLS or runtime test was performed or authorized.
 
 
 ### L05 source-event path mapping — 2026-11-24
@@ -700,7 +700,7 @@ NLA-L05-TDR-001 v0.1.2 now records a reviewer proposal to interpret event-time e
 
 ### L05 cross-reference audit and CMD-031–040 lock-order checkpoint — 2026-11-24
 
-A scoped cross-reference audit was performed across the 14-file L05 review PR. The current controlled pointer set is synchronized as follows: NLA-001 v0.1.8; NLA-RESOLVER-LOCK-001 v0.1.9; NLA-L05-TDR-001 v0.1.2; L05 source-event map v0.1.0; L05 eligibility-writer matrix v0.1.1; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.8; RAID-001 v0.1.6; QA Catalogue v0.4.5; CMD-CROSSWALK-001-054 v0.8.26. Earlier dated version references are retained as historical source snapshots and must not be mistaken for current pointers.
+A scoped cross-reference audit was performed across the 14-file L05 review PR. The current controlled pointer set is synchronized as follows: NLA-001 v0.1.10; NLA-RESOLVER-LOCK-001 v0.1.10; NLA-L05-TDR-001 v0.1.2; L05 source-event map v0.1.0; L05 eligibility-writer matrix v0.1.2; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.10; RAID-001 v0.1.9; QA Catalogue v0.4.6; CMD-CROSSWALK-001-054 v0.8.28. Earlier dated version references are retained as historical source snapshots and must not be mistaken for current pointers.
 
 LOCK-MANIFEST-001 §7.13 and LOCK-GRAPH-001 §30 provide a partial CMD-031–040 candidate lock-order overlay. CMD-031/032/033/034/037 have partial candidate ordering proposals; CMD-035/036/038/039/040 remain blocked on exact transaction/event boundaries, worker/lease identity and rank, per-item event cardinality, attendance aggregate/version physicalization and institutional authority. This is static design progress only.
 
