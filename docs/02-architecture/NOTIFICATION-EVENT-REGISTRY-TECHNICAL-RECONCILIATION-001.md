@@ -14,7 +14,7 @@ This document records a static, evidence-bounded technical pass over the first t
 
 The following remain prohibited until G10 activation: source code, SQL, migrations, grants/revokes, RLS changes, live database operations, provider setup, deployment and production/staging mutation. No event is enabled by this document.
 
-The registry's seven status dimensions remain controlling. Both rows remain:
+The registry's seven status dimensions remain controlling. All three reviewed rows remain:
 
 - PO intent: `APPROVED_FOR_SPECIFICATION_ONLY`
 - Canonical contract: `UNRESOLVED`
