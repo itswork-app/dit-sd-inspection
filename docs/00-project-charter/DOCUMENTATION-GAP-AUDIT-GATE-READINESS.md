@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.64
+**Version:** 1.11.65
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -712,3 +712,10 @@ F-06 is PARTIALLY CLOSED: canonical decision and core L05 parent/TDR/manifest/gr
 A final scoped cross-reference pass was completed for the 14-file L05 review set in this branch. The authoritative current-pointer set is: NLA-001 v0.1.11; NLA-RESOLVER-LOCK-001 v0.1.10; NLA-L05-TDR-001 v0.1.4; L05 source-event map v0.1.0; L05 eligibility-writer matrix v0.1.2; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.10; RAID-001 v0.1.9; QA Catalogue v0.4.6; CMD-CROSSWALK-001-054 v0.8.30; L05-REVIEW-001 v0.1.3. NLA-001 §17 and the cross-command reconciliation current-pointer section were checked against these document headers. Earlier dated references (including TDR v0.1.2/v0.1.3, RTM v0.1.9, RAID v0.1.8 and DGA v1.11.61) remain historical checkpoint snapshots and are not current pointers.
 
 **F-06 disposition:** CLOSED for the defined 14-file L05 review set: canonical PO decision, parent/TDR references, source map, writer matrix, lock manifest/graph, QA, RTM/RAID and cross-command pointers are reconciled to the current controlled versions. This is a bounded cross-reference closure, not a repository-wide link/version audit and not proof of technical correctness or runtime behavior. F-03 remains OPEN (source lock paths not fully normalized/certified); F-04 remains OPEN (complete physical writer/bypass inventory absent); F-05 remains OPEN (recipient transition semantics require PO decision); F-07 remains OPEN (numeric performance envelope/evidence absent). Resolver certification remains 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; NRL-T01..T13 and TC-NOTIF-001..054 PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE. No source code, SQL, migration, grant, RLS, live DB, runtime test, deployment or merge was performed.
+
+
+### F-05 PO decision package prepared — 2026-11-24
+
+POQ-04 has been added to the canonical Decision Register as **PROPOSED — NOT APPROVED**. It defines the recommended pre-mutation event-time snapshot and explicit dispatch-time suppression outcomes for role revoke, account reject/disable/suspend, assignment-member end, project/session closure and self-revoke. TDR v0.1.5 contains the same proposal; QA Catalogue v0.4.7 adds TC-NOTIF-055..059, all PLANNED / NOT EXECUTED; L05-REVIEW-001 v0.1.4 records the bounded follow-up.
+
+**F-05 remains OPEN pending explicit PO approval or correction and subsequent Security/Engineering validation.** This is a prepared decision package, not an approved behavior or implementation. F-03, F-04 and F-07 remain OPEN. Resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE. No code, SQL, migration, grants, RLS, live DB inspection, runtime test or deployment occurred.
