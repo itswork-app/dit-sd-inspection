@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.6
+**Version:** 1.11.7
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -304,7 +304,7 @@ The CMD-011–015 detailed review was statically compared with CMD-010 closure:
 
 ## CMD-011–020 Product Owner approval synchronization — 2026-11-24
 
-The Product Owner explicitly approved the product-semantic recommendations for CMD-011–020. The Decision Register contains the dated decision record; decision package v0.2.2 records the approved interpretation and response matrix. This closes the PO decision-response dependency for these ten commands only.
+The Product Owner explicitly approved the product-semantic recommendations for CMD-011–020. The Decision Register contains the dated decision record; decision package v0.2.3 records the approved interpretation and response matrix. This closes the PO decision-response dependency for these ten commands only.
 
 The following controlled documents have been reconciled to the approved semantics:
 - CMD-011–020 Detailed Contract Review v0.3.2: product semantics marked PO APPROVED; engineering/security contract findings remain open.
@@ -343,3 +343,6 @@ These changes do not alter any technical lock recommendation or certify a comman
 The CMD-011–020 decision package is v0.2.2 and explicitly corrects its older candidate state wording to controlling T-07: DRAFT/ACTIVE/PAUSED/CLOSED only; CLOSE_REQUESTED is action/event only. RTM adds LOCK-ORDER-001, AUTH-LOCK-001, PARENT-FENCE-001, WORKER-FENCE-001, LOCK-MANIFEST-001 and CONCURRENCY-TEST-001. RAID adds D-030/R-030/R-031. No technical approval or test evidence is inferred.
 
 **Disposition unchanged:** DGA-B14 PARTIAL; DGA-B17 OPEN; DGA-B18 PARTIAL; DGA-B19 OPEN; DGA-B21 OPEN; 54/54 inventoried, 0/54 certified; G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED. No code, SQL, migration, grant, CI, test, live database inspection, deployment or merge occurred.
+
+
+**T-07 correction verification:** CMD-011–020 decision package v0.2.3 now replaces the stale `PLANNED` and persisted `CLOSE_REQUESTED` proposal rows directly with T-07's `DRAFT/ACTIVE/PAUSED/CLOSED` state set and action/event semantics. This is a documentation correction only; no state-machine implementation or test is claimed.
