@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.39
+**Version:** 0.8.40
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -603,3 +603,10 @@ The physical `user_roles` proposal has no `row_version`, while the CMD-005 draft
 NLA-EVENT-TECH-RECON-001 v0.1.2 partially reviews NREG-004 `project.closed` and NREG-005 exact final `session.closed`. The candidate source transaction is the committed project/session CLOSED transition; `session.close_requested` is an action/event and is excluded from the approved final-session event. POQ-04 requires the candidate set to be evaluated against pre-close state and committed atomically with the final closure event.
 
 The closure blocker graph, project/session physical row-version/CAS fields, exact child writer/finalizer set, parent-first lock compatibility, trusted participant/scope projection, closure dispatch profile and source/outbox/snapshot uniqueness remain unresolved. CMD-011/012/014/015 lock order and CMD-015 parent-fence omissions remain material closure race blockers. RTM-001 v0.1.16 adds NOTIF-028..030; QA Catalogue v0.5.6 adds TC-NOTIF-079..081, all PLANNED / NOT EXECUTED. No event or implementation is admitted.
+
+
+## CMD-014/015 assignment-event registry checkpoint — 2026-11-24
+
+NLA-EVENT-TECH-RECON-001 v0.1.3 partially reviews NREG-006 `assignment.created` and NREG-007 `assignment.changed`. CMD-014 is a create-only assignment + complete initial-roster transaction; the inserted member rows do not exist in pre-mutation assignment state, so trusted event-participant semantics must be explicitly admitted. CMD-015 is an atomic member add/end transaction; POQ-04 requires pre-end membership evaluation at one captured instant and no replacement member, while added/retained member selection and aggregate/per-member event cardinality remain unresolved.
+
+Active claim/in-progress inspection behavior, physical assignment/member constraints, exact L05/L10/T-14 lock order, membership expiry/import/repair writers and complete event/outbox/snapshot dedup remain open. RTM-001 v0.1.17 adds NOTIF-031..034; QA Catalogue v0.5.7 adds TC-NOTIF-082..085, all PLANNED / NOT EXECUTED. No event or implementation is admitted.
