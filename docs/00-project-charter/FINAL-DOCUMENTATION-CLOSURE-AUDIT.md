@@ -1,13 +1,13 @@
 # Final Documentation Closure Audit — Dit. SD Inspection
 
 **Document ID:** DOC-AUDIT-001  
-**Version:** 0.2.5  
+**Version:** 0.2.6  
 **Status:** STATIC DOCUMENTATION AUDIT COMPLETED — IMPLEMENTATION READINESS NOT ESTABLISHED  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
 **Pull request:** #3 — Draft / Open  
-**Authority:** AGENTS.md v1.2.2; MIB-001 v1.0.11; IRG-001 v1.0.4; DGA-001 v1.11.44  
+**Authority:** AGENTS.md v1.2.2; MIB-001 v1.0.11; IRG-001 v1.0.4; DGA-001 v1.11.46  
 **Gate:** G9 NOT READY; G10 NOT ACTIVE
 
 ---
@@ -163,7 +163,7 @@ No CI/workflow, application build, automated test, SQL, migration, live database
 
 ## 12. Current documentation and certification status — 2026-11-24
 
-This addendum supersedes prior current-source navigation and lock-progress statements where they conflict with the latest inspected branch state. Current baseline: AGENTS.md v1.2.2; MIB-001 v1.0.11; IRG-001 v1.0.4; DGA-001 v1.11.41; SSOT-AUDIT-001 v0.1.5; CMD-CROSSWALK-001-054 v0.8.20; CONCURRENCY-001 v0.1.7; LOCK-MANIFEST-001 v0.4.24; LOCK-GRAPH-001 v0.4.18; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.12; TECH-RESOLUTION-LPR-001 v0.1.9; CERT-001 v0.1.2.
+This addendum supersedes prior current-source navigation and lock-progress statements where they conflict with the latest inspected branch state. Current baseline: AGENTS.md v1.2.2; MIB-001 v1.0.11; IRG-001 v1.0.4; DGA-001 v1.11.41; SSOT-AUDIT-001 v0.1.5; CMD-CROSSWALK-001-054 v0.8.21; CONCURRENCY-001 v0.1.7; LOCK-MANIFEST-001 v0.4.25; LOCK-GRAPH-001 v0.4.20; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.12; TECH-RESOLUTION-LPR-001 v0.1.10; CERT-001 v0.1.2.
 
 The stable traceability inventory remains 54 IDs. CMD-045–048 are external control-plane responsibilities, not executable application commands. The application lock denominator is 50: 50/50 candidate execution/transaction boundaries are documented, but **0/50 are technically approved/certified lock-complete**. LPR-01 and LPR-07–LPR-09/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. This does not prove the global lock graph acyclic.
 
@@ -174,6 +174,6 @@ PR #3 remains Draft/Open. Current inspected head at reassessment: `133af5c000b7d
 
 ## 13. Normalized application command manifest audit — 2026-11-24
 
-LOCK-NORMALIZATION-001 v0.1.0 consolidates 50 unique application command IDs into six groups: CMD-001–010, CMD-011–020, CMD-021–030, CMD-031–040, CMD-041–044 and CMD-049–054. Static inventory validation found 50 rows, 50 unique IDs, no duplicate IDs and no missing in-scope application IDs. CMD-045–048 are intentionally excluded external control-plane IDs. The normalized register standardizes boundary, ordered resources, revalidation/invariants and unresolved evidence while preserving source conflicts. This is a static documentation check only: it does not prove every field is technically complete, validate physical database objects or certify PostgreSQL lock behavior.
+LOCK-NORMALIZATION-001 v0.1.1 consolidates 50 unique application command IDs into six groups: CMD-001–010, CMD-011–020, CMD-021–030, CMD-031–040, CMD-041–044 and CMD-049–054. Static inventory validation found 50 rows, 50 unique IDs, no duplicate IDs and no missing in-scope application IDs. CMD-045–048 are intentionally excluded external control-plane IDs. The normalized register standardizes boundary, ordered resources, revalidation/invariants and unresolved evidence while preserving source conflicts. CMD-PHYSICAL-CROSSWALK-001 v0.1.0 records 50 command-specific physical read/write entries. Four report/audit commands (CMD-041–044) are explicit OPEN/BLOCKED entries because their detailed review does not enumerate complete physical sets. This is a static source extraction only: it does not prove every field is technically complete, validate deployed physical database objects or certify PostgreSQL lock behavior.
 
 Current lock baseline: LOCK-MANIFEST-001 v0.4.24; LOCK-GRAPH-001 v0.4.17; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.12; TECH-RESOLUTION-LPR-001 v0.1.7; CMD-CROSSWALK-001-054 v0.8.19; DGA-001 v1.11.42; LOCK-NORMALIZATION-001 v0.1.0. LPR-09 remains OPEN; LPR-10 remains NOT EXECUTED; application lock certification remains 0/50. G9 NOT READY; G10 NOT ACTIVE; technical certification NOT CERTIFIED.
