@@ -1,7 +1,7 @@
 # Lock Protocol Decision Resolution — LPR-01–LPR-10
 
 **Document ID:** LOCK-PROTOCOL-DECISION-RESOLUTION-001  
-**Version:** 0.2.2  
+**Version:** 0.2.3  
 **Status:** PO product decisions LPR-02–LPR-06 APPROVED; technical lock protocol remains OPEN / NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** Candidate global lock protocol for CMD-001–054 and asynchronous finalizers  
@@ -59,7 +59,7 @@ The L00 arbitration must be short and transactionally safe. The same semantic re
 
 ### 4.1 CMD-022–027: canonical identity, association, conflict, claim
 
-**Recommended order:** L00 → L10 when T-14 eligibility is affected → L20 canonical identity → L30 project/session → L40 instrument/version → L50 assignment/membership → L60 unit → L70 association → L80 claim → L90 inspection → L110 append-only facts.
+**Recommended order:** L00 → L10 when T-14 eligibility is affected → L20 canonical identity → L30 project/session → L40 instrument/version → L50 assignment/membership → L60 unit → L70 association → L80 claim → L90 inspection → L100 dependent mutable aggregates where applicable → L110 append-only facts.
 
 - CMD-022 registration, CMD-023 association, CMD-024 end/revoke, CMD-025 conflict resolution, CMD-026 claim and CMD-027 release must use the same canonical identity derivation and lock order.
 - CMD-023/024/026 must not retain unit-first or association-first recipes that contradict this order.
@@ -245,3 +245,4 @@ This checkpoint records contradictions and incomplete paths that are visible fro
 ## 12. Change history
 
 - **0.2.2 — 2026-11-24:** Aligned the L100/L110 resource examples with mutable notification policy/inbox/delivery state and append-only notification escalation/access facts; added per-command logical mappings for CMD-049–054 and explicitly retained queue isolation, callback-boundary and worker-security gaps. No technical lock decision was approved and no implementation authority changed.
+- **0.2.3 — 2026-11-24:** Corrected the recommended-order summary to include L100 dependent mutable aggregates between L90 inspection and L110 append-only facts, matching the rank table. Candidate order remains unapproved.
