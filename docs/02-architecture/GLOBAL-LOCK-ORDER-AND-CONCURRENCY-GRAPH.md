@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.2
+**Version:** 0.4.3
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -278,13 +278,13 @@ The manifest confirms the CMD-023/024/025/026/027/028 ordering issues, parent/ch
 
 ## 13. Lock protocol decision-resolution proposal — 2026-11-24
 
-[LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.3.1 consolidates a candidate monotonic resource order and explicit recommendations for CMD-022–027, CMD-028–032/035, project/session closure, T-14 capacity, instrument/assignment interaction, evidence/document/attendance/print, and notification worker/callback boundaries. It assigns PO, Engineering, Security, institutional and Operations decision ownership.
+[LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.3.2 consolidates a candidate monotonic resource order and explicit recommendations for CMD-022–027, CMD-028–032/035, project/session closure, T-14 capacity, instrument/assignment interaction, evidence/document/attendance/print, and notification worker/callback boundaries. It assigns PO, Engineering, Security, institutional and Operations decision ownership.
 
 **Disposition:** proposal only; not an approved lock protocol and not proof of an acyclic graph. Canonical command contracts and physical schema remain unchanged. 54/54 commands remain inventoried and 0/54 certified lock-complete. All tests remain PLANNED / NOT EXECUTED. G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED.
 
 ## 14. Candidate-rank and notification boundary reconciliation — 2026-11-24
 
-The rank table in §4 is now aligned with the candidate L00–L110 vocabulary in LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.1. This corrects the prior graph's compressed 0–90 model, which combined instrument with assignment, claim with inspection, and omitted the dependent-mutable versus append-only distinction. The candidate order remains unapproved; the change is a documentation reconciliation, not Engineering/Security approval.
+The rank table in §4 is now aligned with the candidate L00–L110 vocabulary in LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.2. This corrects the prior graph's compressed 0–90 model, which combined instrument with assignment, claim with inspection, and omitted the dependent-mutable versus append-only distinction. The candidate order remains unapproved; the change is a documentation reconciliation, not Engineering/Security approval.
 
 CMD-049–054 must be interpreted as follows:
 - CMD-049: recipient-owned read only; MVCC/read consistency and actor/filter-bound cursor, no mutation lock.
@@ -310,3 +310,23 @@ Key conclusions:
 - CMD-010's blocker inventory, parent lock mode, child-writer coverage and physical project row-version token remain unresolved.
 
 LPR-11 is added to LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.1 to define and approve identity/account/authorization lock classes and their order relative to T-14 capacity, project/session parents and assignment membership. Until it is resolved, CMD-001–007 cannot be marked rank-normalized. This does not close DGA-B18/B19, prove an acyclic graph, certify deadlock freedom or authorize implementation.
+
+## 16. Project/session parent-fence lock-mode reconciliation — CMD-010–015 — 2026-11-24
+
+Static review of CMD-011–015 detailed contracts identifies four different parent-fence patterns:
+- CMD-011 proposes locking the project FOR KEY SHARE before session insertion.
+- CMD-012 locks the session row before resolving the parent project.
+- CMD-013 locks the session row before closure dependencies and does not specify a project-parent lock first.
+- CMD-014 lists project/session/assignment reference locks after the T-14 capacity row, while CMD-015 locks capacity, assignment, members and users without explicitly listing project/session parent locks.
+
+This is not one consistent parent-first protocol. In addition, PostgreSQL's row-level lock matrix matters: FOR KEY SHARE is compatible with FOR NO KEY UPDATE; an UPDATE that does not modify key columns normally acquires FOR NO KEY UPDATE. Therefore CMD-011's proposed FOR KEY SHARE does not, by itself, prove serialization against CMD-010's ordinary non-key project status UPDATE. See PostgreSQL Explicit Locking §13.3.2 and Table 13.3: https://www.postgresql.org/docs/current/explicit-locking.html#LOCKING-ROWS.
+
+Required design closure:
+1. Select a project/session parent-fence lock mode or other serialization primitive that demonstrably conflicts between closure and every child writer.
+2. Acquire parents before child aggregates in every path; redesign CMD-012/013 session-first sequences.
+3. Ensure CMD-014/015 explicitly lock required parent rows, not merely read them.
+4. Revalidate parent lifecycle after waits and before child mutation.
+5. Have CMD-010 acquire the parent fence before child blocker rows and re-evaluate blockers under a transactionally consistent policy.
+6. Verify the exact behavior against the deployed PostgreSQL major version and physical schema before certification.
+
+The source evidence establishes a design gap, not the deployed lock graph. No PostgreSQL catalog, SQL, lock trace or concurrency test was executed. LPR-01 and LPR-07–LPR-11 remain open; G3/G7/G9 NOT READY and G10 NOT AUTHORIZED.
