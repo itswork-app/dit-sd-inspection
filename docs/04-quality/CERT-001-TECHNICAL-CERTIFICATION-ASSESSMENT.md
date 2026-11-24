@@ -1,7 +1,7 @@
 # CERT-001 — Technical Certification Assessment
 
 **Document ID:** CERT-001  
-**Version:** 0.1.7
+**Version:** 0.1.8
 **Assessment date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
@@ -216,3 +216,10 @@ POQ-01 event-time recipient/scope semantics are approved. The candidate physical
 The candidate introduces potential implicit FK KEY SHARE edges to account and scope rows. Exact source command lock sets, recipient eligibility linearization, FK topology, worker transaction order and full competing-writer inventory remain OPEN. RAID R-037 and RTM NOTIF-015 track the critical lock-order risk. LG-41..45 and TC-NOTIF-036..040 are PLANNED / NOT EXECUTED.
 
 No certification gate advances. Global lock graph is not proven acyclic; LPR-01/LPR-07–LPR-09/LPR-11 remain OPEN; LPR-10 NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE; application lock certification remains 0/50.
+
+
+## Notification source-producer lock coverage assessment — 2026-11-24
+
+LOCK-MANIFEST-001 v0.4.27 §7.7 maps 40/40 source command event declarations (CMD-001–040) to current candidate lock paths. NLA-001 v0.1.5 §17 and LOCK-GRAPH-001 v0.4.20 §28 document command versus asynchronous finalizer transaction boundaries. QA v0.4.3 TC-NOTIF-041 remains PLANNED / NOT EXECUTED.
+
+The remaining critical gap is not event producer enumeration; it is recipient-resolver lock integration. L15/L16/L17 authorization and applicable L30/L50 scope locks are not reconciled against each producer's already-held lock set. The resulting graph is not proven acyclic. No source producer or notification worker is certified lock-complete. Candidate snapshot relation/header remain NOT ADMITTED; 0/50 application lock-certified; G9 NOT READY; G10 NOT ACTIVE.
