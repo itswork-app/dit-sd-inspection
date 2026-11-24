@@ -1,13 +1,13 @@
 # Final Documentation Closure Audit — Dit. SD Inspection
 
 **Document ID:** DOC-AUDIT-001  
-**Version:** 0.2.4  
+**Version:** 0.2.5  
 **Status:** STATIC DOCUMENTATION AUDIT COMPLETED — IMPLEMENTATION READINESS NOT ESTABLISHED  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
 **Pull request:** #3 — Draft / Open  
-**Authority:** AGENTS.md v1.2.2; MIB-001 v1.0.11; IRG-001 v1.0.4; DGA-001 v1.11.43  
+**Authority:** AGENTS.md v1.2.2; MIB-001 v1.0.11; IRG-001 v1.0.4; DGA-001 v1.11.44  
 **Gate:** G9 NOT READY; G10 NOT ACTIVE
 
 ---
@@ -163,7 +163,7 @@ No CI/workflow, application build, automated test, SQL, migration, live database
 
 ## 12. Current documentation and certification status — 2026-11-24
 
-This addendum supersedes prior current-source navigation and lock-progress statements where they conflict with the latest inspected branch state. Current baseline: AGENTS.md v1.2.2; MIB-001 v1.0.11; IRG-001 v1.0.4; DGA-001 v1.11.41; SSOT-AUDIT-001 v0.1.5; CMD-CROSSWALK-001-054 v0.8.19; CONCURRENCY-001 v0.1.7; LOCK-MANIFEST-001 v0.4.24; LOCK-GRAPH-001 v0.4.18; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.12; TECH-RESOLUTION-LPR-001 v0.1.7; CERT-001 v0.1.2.
+This addendum supersedes prior current-source navigation and lock-progress statements where they conflict with the latest inspected branch state. Current baseline: AGENTS.md v1.2.2; MIB-001 v1.0.11; IRG-001 v1.0.4; DGA-001 v1.11.41; SSOT-AUDIT-001 v0.1.5; CMD-CROSSWALK-001-054 v0.8.20; CONCURRENCY-001 v0.1.7; LOCK-MANIFEST-001 v0.4.24; LOCK-GRAPH-001 v0.4.18; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.12; TECH-RESOLUTION-LPR-001 v0.1.9; CERT-001 v0.1.2.
 
 The stable traceability inventory remains 54 IDs. CMD-045–048 are external control-plane responsibilities, not executable application commands. The application lock denominator is 50: 50/50 candidate execution/transaction boundaries are documented, but **0/50 are technically approved/certified lock-complete**. LPR-01 and LPR-07–LPR-09/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. This does not prove the global lock graph acyclic.
 
