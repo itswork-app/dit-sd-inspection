@@ -1,7 +1,7 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.14  
+**Version:** 0.1.15  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
@@ -477,13 +477,13 @@ PO selected the global transaction-scoped audience guard (candidate L05) as the 
 
 Current controlled L05 references are:
 - Resolver review NLA-RESOLVER-LOCK-001 v0.1.10.
-- Technical decision record NLA-L05-TDR-001 v0.1.6; parent resolver review v0.1.11.
+- Technical decision record NLA-L05-TDR-001 v0.1.8; parent resolver review v0.1.11.
 - Source-event path map NLA-L05-SOURCE-MAP-001 v0.1.0.
-- Eligibility-writer matrix NLA-L05-WRITER-MATRIX-001 v0.1.2.
+- Eligibility-writer matrix NLA-L05-WRITER-MATRIX-001 v0.1.4.
 - LOCK-MANIFEST-001 v0.4.30 §7.7 and §7.13; LOCK-GRAPH-001 v0.4.23 §§28–30.
-- RTM-001 v0.1.10; QA Catalogue v0.4.8; L05-REVIEW-001 v0.1.5; DGA-001 v1.11.66; POQ-04 PO APPROVED.
+- RTM-001 v0.1.12; RAID-001 v0.1.11; QA Catalogue v0.5.0; L05-REVIEW-001 v0.1.7; DGA-001 v1.11.69; POQ-04 PO APPROVED.
 
-Earlier dated sections retain the versions that were actually reviewed at those checkpoints and are historical, not current pointers. The CMD-031–040 overlay remains candidate-only; 0/40 resolver paths and 0/50 application commands are certified. Candidate snapshot relation/header remain NOT ADMITTED. NRL-T01..T13 and TC-NOTIF-001..054 remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE.
+Earlier dated sections retain the versions that were actually reviewed at those checkpoints and are historical, not current pointers. The CMD-031–040 overlay remains candidate-only; 0/40 resolver paths and 0/50 application commands are certified. Candidate snapshot relation/header remain NOT ADMITTED. NRL-T01..T13 and TC-NOTIF-001..070 remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE.
 
 
 ## 20. POQ-04 event-transition recipient semantics — PO APPROVED (2026-11-24)
@@ -505,7 +505,7 @@ Suppression requires stable reason codes and a deterministic state transition. T
 
 Every suppression and retry attempt must be auditable through append-only outcome evidence bound to the source event, outbox, immutable candidate, pinned policy and attempt/checkpoint. The exact reason-code catalog, correlation fields, identity provenance, retention and data-minimization rules remain to be reviewed by Security and the applicable Records/Privacy authority.
 
-See NLA-L05-TDR-001 v0.1.7 §4.2.4 for F05-T1..T5 and the technical exit criteria. Until these are approved and evidenced, F-05 remains OPEN; the candidate snapshot relation/header remains NOT ADMITTED; G9 NOT READY and G10 NOT ACTIVE.
+See NLA-L05-TDR-001 v0.1.8 §4.2.4–4.2.6 for F05-T1..T5, candidate selector grammar and event-specific dispatch profiles. Until these are approved and evidenced, F-05 remains OPEN; the candidate snapshot relation/header remains NOT ADMITTED; G9 NOT READY and G10 NOT ACTIVE.
 
 
 ## 22. Selector registry and event-specific dispatch profiles — F-05 candidate
