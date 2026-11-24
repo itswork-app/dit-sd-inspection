@@ -329,8 +329,8 @@ This addendum supersedes §9.15 only for current navigation and inventory counts
 ### Current controlled sources
 
 - AGENTS.md v1.2.0 — mandatory repository policy.
-- MIB-001 v1.0.3 — governance control plane.
-- DGA-001 v1.11.25 — active gap register; 21 DGA-B IDs.
+- MIB-001 v1.0.7 — governance control plane.
+- DGA-001 v1.11.26 — active gap register; 21 DGA-B IDs.
 - IRG-001 v1.0.1 — pre-implementation roadmap; not authorization.
 - Decision Register — canonical current Product Owner decision index.
 - Package T v0.1.1 — historical decision pack; PO outcomes are recorded, current authority remains the Decision Register and dated addenda.
