@@ -1,8 +1,8 @@
 # Notification Event Registry — Technical Reconciliation
 
 **Document ID:** NLA-EVENT-TECH-RECON-001  
-**Version:** 0.1.1  
-**Status:** STATIC TECHNICAL RECONCILIATION — PARTIAL; CMD-002/003/005 REVIEWED, ALL PARTIAL / UNRESOLVED / NOT ENABLED  
+**Version:** 0.1.2  
+**Status:** STATIC TECHNICAL RECONCILIATION — PARTIAL; CMD-002/003/005/010/013 REVIEWED, ALL PARTIAL / UNRESOLVED / NOT ENABLED  
 **Date:** 2026-11-24  
 **Branch:** `docs/notification-resolver-lock-closure`  
 **Scope:** First technical pass for NREG-001 (`account.approved`) and NREG-002 (`account.rejected`)  
@@ -14,7 +14,7 @@ This document records a static, evidence-bounded technical pass over the first t
 
 The following remain prohibited until G10 activation: source code, SQL, migrations, grants/revokes, RLS changes, live database operations, provider setup, deployment and production/staging mutation. No event is enabled by this document.
 
-The registry's seven status dimensions remain controlling. All three reviewed rows remain:
+The registry's seven status dimensions remain controlling. All five reviewed rows remain:
 
 - PO intent: `APPROVED_FOR_SPECIFICATION_ONLY`
 - Canonical contract: `UNRESOLVED`
@@ -264,3 +264,115 @@ Unresolved: exact revocation representation/effective timestamp; whether expired
 - Tests: PLANNED / NOT EXECUTED. G9 NOT READY. G10 NOT ACTIVE.
 
 **Disposition:** Continue with CMD-010 and exact final CMD-013 `session.closed` next. CMD-004 remains an unresolved composite notification declaration and is not a PO-approved candidate; it must not be silently added to the event registry.
+
+
+## 12. Reconciliation findings — CMD-010 / NREG-004
+
+### 12.1 Producer and transaction boundary
+
+**Static candidate:** CMD-010 `close-project` is the source command path for `project.closed`. The event must represent the committed transition of the project to CLOSED, not a preflight, close request, audit-only attempt or partial dependency check. The L05 source-event path map records a source command transaction in which project state, canonical event/audit, idempotency and (only after future event admission and physical model approval) outbox plus immutable candidate snapshot commit atomically.
+
+The actual producer/function, canonical event envelope/schema version, event identity and deployed transaction are not proven. The command contract itself says no notification side effect exists unless separately modeled through a transactional outbox.
+
+### 12.2 Candidate mutation, closure gates and physical concurrency
+
+Proposed write set: `projects.status/closed_at/version`, `idempotency_records`, `audit_events`. The proposed read set spans project-scoped sessions, assignments/members, inspections/revisions/review events, evidence finalization, documents, print batches/events, target/actual reconciliation, sync conflicts, actor authorization and any approved legal/institutional hold model. The exact dependency tables and predicates are not enumerated or approved.
+
+The closure dependency graph is open. Candidate blockers in the detailed review include non-closed sessions, active assignments/claims, in-flight inspections, pending evidence/document finalizers, unresolved print batches, required document issuance/signature, actual-vs-target reconciliation, pending sync conflicts and legal/institutional holds. These are review candidates, not a final closure checklist. Closure must not cascade-delete history or imply records disposition.
+
+The physical project summary lacks a proven row-version/CAS field although CMD-010 carries `expected_version`. The exact version token, increment rule, lock mode and blocker predicate are unresolved.
+
+### 12.3 Candidate lock path and competing writers
+
+Candidate source order from the normalized manifest is L00 → candidate L05 → conditional L10 if closure changes T-14 eligibility → L15 actor → L16/L17 project-close authority → conditional L18 catalogue → L30 project parent fence (candidate `FOR NO KEY UPDATE`) → evaluate the complete closure dependency set while the fence is held → project transition + append-only event/audit facts.
+
+This is not certified. The closure check is only safe if every child writer/finalizer acquires a compatible project parent fence before child locks and revalidates after waiting. The current command reviews identify a parent/child inconsistency: CMD-011's candidate `FOR KEY SHARE` may not conflict with a non-key project status update; CMD-012/013 have session-first order; CMD-015 omits explicit project/session parent locks. CMD-014/015 and asynchronous finalizers also need complete parent-fence treatment. L05 insertion cannot repair those existing inversions.
+
+### 12.4 Recipient, selector and POQ-04 dispatch semantics
+
+The PO-approved purpose is a scoped closure notice to operational participants selected by the exact approved event policy. No blanket project-wide or role-wide broadcast is inferred. The selector must evaluate against the pre-close project state at the one captured `audience_evaluated_at`; actor/target/participants are included only when the exact selector selects them. No role ID, membership table, participant field or scope projection is admitted by this review.
+
+POQ-04 requires the immutable candidate snapshot and final closure event to commit atomically. Dispatch-time current-scope policy may suppress a captured candidate when closure makes the required scope invalid, but must not widen or replace the audience. A blanket “parent must currently be active” predicate can suppress every closure notice and is not an approved universal rule. The event-specific dispatch profile must explicitly resolve this behavior while preserving source-resource authorization independently.
+
+### 12.5 Deduplication and race handling
+
+The command uses actor + command + project scope + opaque idempotency key in the proposal. Concurrent close attempts must yield one committed state transition. Only the successful final transition may create the canonical `project.closed` fact and one immutable candidate snapshot. Retries must reuse the original source-event/snapshot checkpoint.
+
+Unresolved: exact project version token; final closure gate set; canonical event identity; source/outbox/snapshot uniqueness; treatment of pending async finalizers; child-writer fence compatibility; and whether the T-14 qualifying population changes on project closure.
+
+### 12.6 Admission decision
+
+| Registry ID | Event | Producer path evidence | Participant / selector | Dedup / transaction | Technical disposition |
+|---|---|---|---|---|---|
+| NREG-004 | `project.closed` | CMD-010 final project transition transaction identified statically; deployed producer/event envelope not proven | Scoped operational participant intent only; no physical mapping or selector admitted | Candidate atomic closure/audit/idempotency boundary; closure version, blockers and outbox/snapshot uniqueness unresolved | **PARTIAL STATIC REVIEW — UNRESOLVED / NOT ENABLED** |
+
+## 13. Reconciliation findings — CMD-013 / NREG-005
+
+### 13.1 Exact event and producer boundary
+
+**Static candidate:** CMD-013 `transition-session` may produce the approved exact event `session.closed` only for the final committed transition of the session to CLOSED. `session.close_requested` is a distinct action/event and is not interchangeable with the final state event; it is not part of NREG-005's approved candidate token.
+
+The final close command transaction must atomically persist the session state transition, exact `session.closed` event/audit, idempotency and (only after future event admission and physical model approval) outbox plus immutable candidate snapshot. The actual producer/function, canonical event envelope/schema version and deployed transaction are not proven.
+
+### 13.2 State machine, write set and concurrency token
+
+PO-approved T-07 semantics preserve session states DRAFT/ACTIVE/PAUSED/CLOSED; CLOSED is terminal in ordinary flow. A closure request is an action/event, not a persisted intermediate state. Korlap may request closure only within assigned scope and explicit permission; Super Admin is the final-close authority after the approved closure gates. Reopen is exceptional, separately privileged, reasoned and audited; it is not implied by this candidate.
+
+Proposed read/write objects include `sessions`, `projects`, `operational_assignments`, `assignment_members`, closure dependencies, `idempotency_records` and `audit_events`. The physical session proposal lacks a defined row-version field although CMD-013 carries `expected_row_version`; no CAS contract is proven. The exact transition-to-permission map, closure evidence and institutional gates remain open.
+
+### 13.3 Candidate lock path and parent/child conflict
+
+The source path map records a source command transaction and identifies the existing candidate sequence as session row → closure dependencies, with an explicit finding that session-before-project order conflicts with the parent-first global hierarchy. The normalized global candidate order requires project parent before session parent, then dependent closure aggregates in deterministic order. The exact compatible lock modes and all child writer/finalizer participation remain unresolved.
+
+L05, if this exact final event is admitted, must be acquired after L00 and before the first mutable lock. That prefix does not solve the project/session parent inversion. CMD-010 closure and CMD-011/012/014/015 child paths must share one proven parent-fence protocol so a child cannot slip past final closure and no transaction acquires a lower-ranked parent after a child.
+
+### 13.4 Recipient, selector and dispatch
+
+The PO-approved intent is a scoped notice for the final session closure, not the closure request. Exact operational participants, source event scope, role IDs and membership projection are not approved. Resolve candidates from pre-close session/project scope under the exact selector only. Do not infer all assignment members or every project participant.
+
+POQ-04 requires snapshot and final `session.closed` transition to commit atomically. Dispatch-time current-scope revalidation may suppress but never widen. A blanket active-parent check may suppress the very closure notice being announced; event-specific dispatch semantics must be explicit and must not grant access to the closed session or related resources.
+
+### 13.5 Deduplication and race handling
+
+One final state transition must emit one exact `session.closed` fact. A preceding `session.close_requested` action, repeated request, duplicate transition, or replay must not create a second final-closure notice. The command's idempotency and guarded session transition are candidate arbiters, but the missing physical session version token, exact event identity and outbox/snapshot uniqueness prevent certification.
+
+### 13.6 Admission decision
+
+| Registry ID | Event | Producer path evidence | Participant / selector | Dedup / transaction | Technical disposition |
+|---|---|---|---|---|---|
+| NREG-005 | `session.closed` | CMD-013 final CLOSED transition identified statically; deployed producer/event envelope not proven | Scoped operational participant intent only; exact participant/scope projection and selector unresolved | Request vs final-close distinction is explicit; session CAS token, parent-fence protocol and outbox/snapshot uniqueness unresolved | **PARTIAL STATIC REVIEW — UNRESOLVED / NOT ENABLED** |
+
+## 14. Closure-event cross-command blockers
+
+| ID | Finding | Impact | Required evidence / owner |
+|---|---|---|---|
+| NER-TR-16 | CMD-010 project closure blocker graph and child-writer inventory are not approved | Project close may race with new child work or omit pending finalizers | PO + Engineering + Security + institutional owner: approved blocker set and parent-fence matrix |
+| NER-TR-17 | Project row-version/CAS representation is absent from the physical summary while CMD-010 carries `expected_version` | Stale/concurrent close protection is not specified | Engineering + Database: approved physical token/increment or controlled request-contract change |
+| NER-TR-18 | CMD-011–015 parent/child lock order is inconsistent; CMD-015 omits explicit parent fences | Closure and child operations may race or deadlock | Engineering + Database + Security: one compatible project→session→assignment/member order, exact lock modes and opposing-transaction proof |
+| NER-TR-19 | CMD-013 session row-version/CAS field is absent and transition permission mapping/closure evidence remain open | Final `session.closed` transaction cannot be certified | Engineering + Database + Security + PO/institution: physical token, transition matrix and final-close authority/evidence |
+| NER-TR-20 | Final `session.closed` must be distinguished from `session.close_requested` in producer and dedup contract | Request event could be incorrectly notified as final closure or duplicate final notice | Engineering: exact event schema, final transition identity and negative event-token contract |
+| NER-TR-21 | Dispatch-time current-scope/parent checks can suppress closure notice if treated as universal active-parent predicate | Closure event becomes invisible to intended candidates | Security + Engineering: event-specific dispatch profile with independent resource authorization |
+| NER-TR-22 | Closure's effect on T-14 eligibility and L05/L10 order is not proven | Missing or inverted capacity/audience lock path | Engineering + Database: predicate impact analysis and approved global lock order |
+
+## 15. Evidence required to close CMD-010/013
+
+1. Approved project/session closure state machines, exact final-close actor/permission map, closure blocker inventory, institutional closure evidence and reopen boundary.
+2. Complete project/session child writer/finalizer inventory for CMD-011–040, including assignment changes, inspections, evidence, document/print/attendance finalizers, sync, imports, repair and scheduled jobs.
+3. Approved physical project/session concurrency tokens and compare-and-swap predicates/increment rules, or controlled removal/replacement of expected-version fields.
+4. Compatible project-parent/session-parent/child lock modes and deterministic order, including CMD-014/015; proof that every child writer acquires parent fences before child locks and revalidates after waits.
+5. Exact event producer schema/version and event identity for `project.closed` and final `session.closed`; prove `session.close_requested` is excluded from NREG-005.
+6. Exact trusted participant/scope projection, approved selector dependencies and event-specific closure dispatch profile under POQ-04.
+7. Prove final source mutation, event, audit, idempotency, outbox and complete immutable candidate snapshot commit atomically at one captured `audience_evaluated_at` after G10 activation.
+8. Exact closure/retry dedup keys and planned tests for child-writer races, duplicate close, request-vs-final-close, dispatch suppression and audit rollback. Execution only after G10 activation.
+
+## 16. Updated gate and work status
+
+- CMD-002/003/005/010/013: partial static producer/transaction review completed; technical admission remains OPEN.
+- NREG-001..005: PARTIAL STATIC REVIEW; canonical contract, recipient mapping, selector and dispatch profile UNRESOLVED; NOT ENABLED.
+- L05/L10 and project/session parent fences: candidate proposals only; not technically approved.
+- Eligibility/source writer coverage: PARTIAL; non-command writers and child finalizers incomplete; 0 writers certified.
+- Resolver certification: 0/40. Application lock certification: 0/50.
+- Global lock graph: NOT PROVEN ACYCLIC. Candidate snapshot relation/header: NOT ADMITTED.
+- Tests: PLANNED / NOT EXECUTED. G9 NOT READY. G10 NOT ACTIVE.
+
+**Disposition:** Continue with CMD-014 and CMD-015 next. Both are PO-approved candidates, but CMD-014 is create-only with complete initial roster, and CMD-015 requires explicit added/ended/retained-member treatment under POQ-04. Preserve their exact membership transition boundaries; do not infer recipients.
