@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.14  
+**Version:** 0.1.15  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -351,3 +351,10 @@ NLA-EVENT-TECH-RECON-001 v0.1.0 partially reconciles `account.approved` and `acc
 
 
 **Verification trace:** NOTIF-024/025 and TC-NOTIF-075/076 now explicitly track account event participant/state predicates and terminal decision/atomicity/writer proof. All remain OPEN / PLANNED / NOT EXECUTED as applicable; D-026 remains OPEN — BLOCKING and R-037 OPEN — CRITICAL.
+
+
+## D-026 / R-037 CMD-005 role-revocation event update — 2026-11-24
+
+NLA-EVENT-TECH-RECON-001 v0.1.1 partially reconciles NREG-003 `role.revoked`. POQ-04 pre-revoke snapshot and post-revoke suppression semantics are explicit, but exact participant projection, role state/effective-time representation, physical CAS token, last-admin/recovery and delegation authority, conditional Inspector-cap effect and complete L05/L10 writer coverage remain open.
+
+RTM-001 v0.1.15 adds NOTIF-026/027; QA Catalogue v0.5.5 adds TC-NOTIF-077/078, all PLANNED / NOT EXECUTED. D-026 remains OPEN — BLOCKING; R-037 remains OPEN — CRITICAL; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; no writer certified; G9 NOT READY; G10 NOT ACTIVE.
