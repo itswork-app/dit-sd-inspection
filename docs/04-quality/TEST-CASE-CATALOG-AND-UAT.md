@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.4.2
+Version: 0.4.3
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -755,3 +755,12 @@ These cases are mapped to LOCK-GRAPH-001 LG-41..LG-45. They are deterministic co
 | TC-NOTIF-040 | LG-45 | CMD-052 lease expires and is reclaimed while stale and current worker generations attempt fan-out finalization | Only current owner/token-hash/generation/expiry can finalize; immutable candidate rows unchanged; inbox creation remains idempotent | PLANNED / NOT EXECUTED |
 
 **Evidence required when authorized:** exact migration/schema SHA, PostgreSQL major, deterministic transaction barriers, lock wait graph/deadlock diagnostics, SQLSTATE/typed outcomes, final invariant queries and test-runner evidence. Do not mark PASS from mocks or static reasoning.
+
+
+## Source-event producer completeness and transaction-boundary case
+
+| Test ID | Scope | Scenario | Expected result / invariant | Status |
+|---|---|---|---|---|
+| TC-NOTIF-041 | CMD-001..040 / LOCK-MANIFEST-001 §7.7 | Reconcile every enabled notification event type against exactly one canonical source command or explicitly identified asynchronous finalizer; exercise event cardinality for CMD-035 sync operations and CMD-036/038/039 finalizers | No enabled policy event type is orphaned, duplicated or mapped to a projection instead of its source fact; every source event, audit, outbox and immutable audience snapshot share the required transaction boundary; CMD-041..044 read-side events are excluded absent a separately approved access-event boundary; CMD-049..054 cannot recursively trigger notification fan-out by default | PLANNED / NOT EXECUTED |
+
+**Evidence required:** approved policy event-type allowlist; producer/event crosswalk; transaction/finalizer sequence diagrams; source-event and outbox correlation keys; durable operation/finalizer idempotency; rollback/partial-failure evidence; recipient snapshot lock-set and FK-edge analysis. Static 40/40 producer mapping is documentation coverage only and is not a passing execution result.
