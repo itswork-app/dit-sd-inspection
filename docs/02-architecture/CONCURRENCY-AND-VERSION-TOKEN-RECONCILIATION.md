@@ -1,11 +1,11 @@
 | CV-06 | CMD-050 previously listed optional expected_version despite no physical row-version field | RESOLVED AT REQUEST-CONTRACT LEVEL: current catalogue and detailed review accept notification_id only; guarded set-once read_at is the state arbiter; PO/Security approval and runtime evidence remain open |
 
 **Document ID:** CONCURRENCY-001  
-**Version:** 0.1.6  
+**Version:** 0.1.7  
 **Status:** Engineering proposal — PO/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054, physical schema, command catalogue, transaction/lock contracts, audit and QA traceability  
-**Gate:** G3 NOT READY; G5 NOT READY; G7 NOT READY; G9 NOT READY; G10 NOT AUTHORIZED.
+**Gate:** G3 NOT READY; G5 NOT READY; G7 NOT READY; G9 NOT READY; G10 NOT ACTIVE.
 
 ## 1. Executive decision summary
 
@@ -321,3 +321,8 @@ It does **not** approve the physical session_id column/FK design, target quantit
 ## Final audit correction — CMD-050 token disposition (2026-11-24)
 
 CMD-050 no longer has an unresolved catalogue-versus-request mismatch: the current command catalogue and detailed review both specify notification_id only. The historical CV-06 finding is retained as a resolved finding with an explicit boundary. This does not approve the command's physical RLS, audit atomicity implementation or runtime behavior.
+
+
+## Conditional Product Owner authorization status synchronization — 2026-11-24
+
+The Product Owner's explicit conditional implementation authorization is recorded in the canonical Decision Register. It permits transition toward implementation from zero using the SSOT baseline, subject to G9 closure and a separate G10 activation record. **Current status: G9 NOT READY; G10 NOT ACTIVE.** This status synchronization does not approve this technical proposal, any lock mode, permission, function ACL, migration or runtime behavior. Technical and institutional approval boundaries stated in this document remain unchanged.
