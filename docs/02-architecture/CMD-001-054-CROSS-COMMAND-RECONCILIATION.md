@@ -553,8 +553,15 @@ PO selected Option A, the global transaction-scoped audience guard (candidate L0
 
 ## Current L05 and CMD-031–040 lock-order baseline — 2026-11-24
 
-The current controlled references for the L05 notification resolver are NLA-001 v0.1.11; NLA-RESOLVER-LOCK-001 v0.1.10; NLA-L05-TDR-001 v0.1.5; source-event path map v0.1.0; eligibility-writer matrix v0.1.2; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.10; RAID-001 v0.1.9; DGA-001 v1.11.65; QA Catalogue v0.4.7; L05-REVIEW-001 v0.1.4; POQ-04 PROPOSED / NOT APPROVED.
+The current controlled references for the L05 notification resolver are NLA-001 v0.1.11; NLA-RESOLVER-LOCK-001 v0.1.10; NLA-L05-TDR-001 v0.1.6; source-event path map v0.1.0; eligibility-writer matrix v0.1.2; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.10; RAID-001 v0.1.9; DGA-001 v1.11.66; QA Catalogue v0.4.8; L05-REVIEW-001 v0.1.5; POQ-04 PO APPROVED.
 
 LOCK-MANIFEST-001 §7.13 and LOCK-GRAPH-001 §30 add a candidate CMD-031–040 overlay. CMD-031/032/033/034/037 have partial candidate ordering only. CMD-035/036/038/039/040 remain blocked on unresolved transaction/event boundaries, worker/lease fencing, per-item events, attendance physical rank/version and institutional authority. No command is technically certified; application lock certification remains 0/50, resolver certification 0/40, global graph NOT PROVEN ACYCLIC, tests PLANNED / NOT EXECUTED, G9 NOT READY and G10 NOT ACTIVE.
 
 Historical addenda above intentionally preserve the source versions reviewed at their original checkpoints. The list above is the current pointer set for this branch.
+
+
+## POQ-04 approval and F-05 reconciliation — 2026-11-24
+
+Current POQ-04 status is **PO APPROVED** (all five recommendations accepted without changes). Current controlled pointers: NLA-001 v0.1.12; NLA-RESOLVER-LOCK-001 v0.1.11; NLA-L05-TDR-001 v0.1.6; L05 source-event path map v0.1.0; L05 eligibility-writer matrix v0.1.2; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.10; RAID-001 v0.1.9; DGA-001 v1.11.66; QA Catalogue v0.4.8; L05-REVIEW-001 v0.1.5; this cross-command reconciliation v0.8.31.
+
+POQ-04 resolves the product-decision dependency only. F-05 remains technically OPEN pending Security/Engineering validation. CMD-031/032/033/034/037 still have partial candidate ordering; CMD-035/036/038/039/040 remain blocked. No command is technically certified; resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; tests PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE.
