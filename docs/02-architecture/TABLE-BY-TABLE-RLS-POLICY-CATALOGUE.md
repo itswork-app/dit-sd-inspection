@@ -5,6 +5,11 @@
 **Package:** M — RLS and Authorization Policy Catalogue  
 **Date:** 2026-11-23
 
+
+## Physical schema reconciliation reference
+
+See [Physical Schema ↔ RLS ↔ Command Reconciliation](PHYSICAL-SCHEMA-RLS-COMMAND-RECONCILIATION.md) for the exact 41-table name-parity check, table key-column crosswalk, T-18 privilege interpretation and ERD-only entities `print_batches` / `notification_events`. The 41 rows are proposed policy design only; no live RLS or grants are verified.
+
 ## 1. Purpose and security boundary
 
 This catalogue defines the intended access posture for every application table identified in Package L. It is a policy design artifact, not executable SQL, not a deployed Supabase policy set, and not evidence that RLS has been tested.
