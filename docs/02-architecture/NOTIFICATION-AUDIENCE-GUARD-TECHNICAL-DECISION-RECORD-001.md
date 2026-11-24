@@ -1,7 +1,7 @@
 # Notification Audience Guard — Technical Decision Record
 
 **Document ID:** NLA-L05-TDR-001  
-**Version:** 0.1.5  
+**Version:** 0.1.6  
 **Status:** PO-APPROVED CANDIDATE — technical approval pending Engineering, Database and Security  
 **Date:** 2026-11-24  
 **Decision authority:** Product Owner candidate selection recorded in NLA-RESOLVER-LOCK-001 §11  
@@ -326,9 +326,9 @@ This is a documentation-only technical proposal. It authorizes no source code, S
 
 
 
-## 4.2.2 Proposed explicit transition outcomes — POQ-04 (NOT APPROVED)
+## 4.2.2 Approved explicit transition outcomes — POQ-04 (PO APPROVED)
 
-This section records a concrete recommendation for Product Owner review of L05-REVIEW-001 F-05. It is not an approved product decision and must not be implemented as executable behavior until POQ-04 is approved in DECISION-REGISTER.md.
+This section records the complete five-row product decision approved by the Product Owner on 2026-11-24 and canonicalized in DECISION-REGISTER.md. These are approved product semantics, not a technical certification or implementation authorization.
 
 | Transition | Event-time snapshot (pre-mutation) | Dispatch-time behavior |
 |---|---|---|
@@ -340,5 +340,10 @@ This section records a concrete recommendation for Product Owner review of L05-R
 
 **Common invariant:** event-time candidate membership is immutable. Dispatch-time suppression is a distinct, auditable delivery decision and may not rewrite the snapshot or add recipients. Candidate retries reuse the same event-time set/checkpoint. Any retry after account reactivation remains limited to a candidate already present in that set.
 
-**PO approval is required** for all five rows, especially current-scope suppression after revoke/closure and retry eligibility after reactivation. Security/Engineering review is also required before technical admission. No implementation, DDL, grants, RLS, live DB or runtime test is authorized by this proposal.
+**PO status: APPROVED (2026-11-24).** Security/Engineering review remains mandatory before technical admission, particularly for current-scope suppression after revoke/closure, retry eligibility after reactivation, selector determinism and audit evidence. No implementation, DDL, grants, RLS, live DB or runtime test is authorized by this product decision.
 
+
+
+## 4.2.3 POQ-04 approval and remaining technical disposition — 2026-11-24
+
+The Product Owner approved all five transition outcomes in §4.2.2 without changes. POQ-04 is therefore closed as a product decision. F-05 remains OPEN pending Security/Engineering validation of the exact selector grammar, current-scope suppression rules, retry-after-reactivation behavior, parent-state semantics, auditability and consistency with the selected L05 protocol. This approval does not admit a physical snapshot relation/header, lock rank, PostgreSQL primitive, function contract or runtime behavior. Resolver certification remains 0/40; application lock certification remains 0/50; G9 NOT READY; G10 NOT ACTIVE.
