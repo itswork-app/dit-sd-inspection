@@ -574,3 +574,16 @@ The read-only repository audit found no application implementation or runtime/co
 - TC-NOTIF-018: cursor pagination cannot cross recipient identity or filter scope.
 
 These cases are test specifications only. No notification tests have been executed.
+
+## Print batch lifecycle verification — T-13 (planned, not executed)
+
+- TC-PRINT-BATCH-001: reject a batch exceeding the configured maximum before creating any per-document print event.
+- TC-PRINT-BATCH-002: persist one durable batch ID and one current outcome per requested document; aggregate counts reconcile to per-document outcomes.
+- TC-PRINT-BATCH-003: each document is independently authorized for exact project/session/location scope and immutable PDF version.
+- TC-PRINT-BATCH-004: mixed success/failure/cancelled results remain partial; no batch-wide success is inferred.
+- TC-PRINT-BATCH-005: retry accepts failed documents only; successful/cancelled documents are rejected and prior events remain immutable.
+- TC-PRINT-BATCH-006: concurrent print/reprint attempts allocate unique monotonic per-document sequence numbers without duplicate success outcomes.
+- TC-PRINT-BATCH-007: duplicate request replay is idempotent; same key/different semantic payload returns IDEMPOTENCY_KEY_REUSED.
+- TC-PRINT-BATCH-008: application print initiation/confirmation is not represented as proof of physical paper output or printer-device success.
+
+These cases are test specifications only; they are not executed.
