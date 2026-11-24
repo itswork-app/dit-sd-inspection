@@ -59,18 +59,15 @@ Every exposed RPC must have a command specification containing:
 
 No generic update-any-row or arbitrary SQL RPC is permitted.
 
-### SECURITY DEFINER restrictions
+### SECURITY DEFINER execution model — PO APPROVED Option A
 
-Use SECURITY INVOKER by default. SECURITY DEFINER is allowed only where RLS recursion or narrowly justified internal access makes it necessary, and only if:
-- function owner is a dedicated non-login owner with minimal grants;
-- fixed trusted search_path (prefer empty path and fully qualified object names);
-- PUBLIC execute is revoked;
-- execute is granted only to required database roles;
-- actor identity is derived from `auth.uid()`;
-- permission/scope/state checks occur inside the function;
-- no client-supplied actor or role is accepted;
-- function body is reviewed and covered by unauthorized-caller tests;
-- function does not return rows outside caller scope.
+For protected writes, use individually reviewed, narrow SECURITY DEFINER command functions owned by a dedicated least-privileged NOLOGIN role. SECURITY INVOKER remains preferred for read-only/scoped queries and helpers that do not require privilege elevation.
+
+Each definer function must have a fixed `SET search_path = ''`, fully schema-qualified references, exact-signature EXECUTE grants, PUBLIC/anon denial, no client-controlled dynamic SQL, and only minimum owner privileges. The owner must not be SUPERUSER, BYPASSRLS, LOGIN, protected-table owner, or inherit table-owner/migration/service-role privileges. Any exception requires a separate explicit PO/security approval, FORCE ROW LEVEL SECURITY and an updated threat model.
+
+The caller's authenticated Supabase JWT must be forwarded through the Vercel route to the PostgreSQL function; the database derives the actor from `auth.uid()`. Never accept client-supplied actor/role/permission/scope as authoritative, never grant browser table DML as a workaround, and never replace the caller with service_role for ordinary user commands. Each command checks account state, permission, project/session/assignment scope, resource state, SoD and invariants internally. Mutation, canonical event, audit and idempotency result are atomic; audit failure rolls back.
+
+The Product Owner approved this hybrid execution model on 2026-11-24. This approves the model, not exact functions, roles, signatures, grants, RLS, routes, migrations or implementation. See [T-18 Execution Model Security Review](T18-EXECUTION-MODEL-SECURITY-REVIEW.md). Live inventory and runtime tests remain unexecuted.
 
 ## 5. Direct table access policy
 
