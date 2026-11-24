@@ -1,7 +1,7 @@
 # Notification Audience Guard — Technical Decision Record
 
 **Document ID:** NLA-L05-TDR-001  
-**Version:** 0.1.7  
+**Version:** 0.1.8  
 **Status:** PO-APPROVED CANDIDATE — technical approval pending Engineering, Database and Security  
 **Date:** 2026-11-24  
 **Decision authority:** Product Owner candidate selection recorded in NLA-RESOLVER-LOCK-001 §11  
@@ -380,3 +380,74 @@ POQ-04 is approved at Product Owner level. The following technical items are man
 - No unresolved conflict remains between POQ-01, POQ-04, NLA-001, TDR, worker state machine, RLS/ACL and QA.
 
 Until all criteria are met, F-05 remains OPEN. No lock rank, physical relation, function, SQL, migration, grants, RLS, runtime behavior or G10 activation is approved by this addendum.
+
+
+## 4.2.5 F05-T1 — candidate selector grammar v1 (for Engineering/Security/PO approval)
+
+**Status: REVIEW CANDIDATE — NOT APPROVED FOR POLICY PUBLICATION OR IMPLEMENTATION.** This grammar deliberately supports only the two selector families already described by NLA-001 §5: (a) role plus effective scope membership and (b) explicitly named event participant. It is not arbitrary query language and does not define physical columns or SQL.
+
+### A. Abstract grammar
+
+PolicySelectorV1 is an object with:
+- grammar_version: integer exactly 1
+- match: exactly ANY
+- selectors: array containing 1 to 8 SelectorClause entries
+
+SelectorClause is exactly one of:
+
+1. RoleScopeClause:
+   - kind: ROLE_SCOPE
+   - role_ref: canonical role key from the approved role registry
+   - scope.kind: PROJECT, SESSION, LOCATION or ASSIGNMENT
+   - scope.binding: SOURCE_EVENT_SCOPE
+
+2. EventParticipantClause:
+   - kind: EVENT_PARTICIPANT
+   - participant: ACTOR, TARGET or AFFECTED_MEMBER
+
+Semantics:
+- ANY means OR across the top-level selector clauses. There is no nested expression tree.
+- A ROLE_SCOPE clause is conjunctive: the principal has the canonical role and the corresponding membership/grant is effective at the one captured audience_evaluated_at instant for the scope resolved from the canonical source event.
+- An EVENT_PARTICIPANT clause selects only the server-resolved principal reference mapped to that named participant in the event contract. ACTOR is derived from the authenticated command/worker identity; TARGET and AFFECTED_MEMBER must be explicit event-contract fields. A missing or ambiguous participant mapping is a publication-time validation error, not a reason to guess.
+- Every clause evaluates against the serialized pre-mutation state and the same captured instant. Effective intervals are half-open [valid_from, valid_until).
+- The selector list is canonicalized by clause kind and canonical reference values; duplicate clauses are removed before policy hashing. Candidate principals are deduplicated by the approved candidate identity key; authorized scope evidence must be the deterministic union of only the scopes actually selected by matching clauses. No scope may be inferred from a role label.
+- Maximum eight clauses and one OR level are a conservative v1 review proposal. Engineering must validate resource bounds; Security and PO must approve or change the limit before it becomes normative.
+
+### B. Explicitly prohibited constructs
+
+No nested AND/OR/NOT, negation, wildcard, free-form role label, arbitrary JSON path, SQL/expression string, regex, caller-supplied user ID, caller-supplied scope ID, dynamic table/column name, time function, subquery, recursive group, or implicit actor/target append. No selector may reference a field absent from the event-to-selector registry. Unknown keys, duplicate JSON keys, unknown enum values, malformed identifiers, unresolved participant bindings, excessive clauses or unsupported grammar versions fail closed at policy publication. Runtime evaluation must not reinterpret or silently downgrade an invalid policy.
+
+### C. Required event-to-selector registry
+
+Before any event type is enabled, a versioned registry row must define: exact canonical event_type; source CMD/worker and transaction boundary; selector grammar version; permitted selector clause kinds; event-scope binding (including its source and cardinality); ACTOR/TARGET/AFFECTED_MEMBER field mappings; role/scope dependency references; dispatch profile; and policy-effective interval. Wildcards and prefix matching are forbidden.
+
+The source map v0.1.0 is an inventory, not this registry. Composite declarations (for example, alternative or conditional events in a single CMD row) must be split into exact canonical event tokens before any token is enabled. In particular, CMD-004, CMD-017, CMD-019, CMD-022, CMD-026, CMD-029, CMD-035..040 contain composite/conditional event declarations whose exact event token and participant/scope mapping must be resolved. A CMD being listed in the source map does not imply every event it can emit is notification-enabled.
+
+### D. Fail-closed and deterministic evaluation
+
+1. Resolve the pinned immutable policy version and exact event registry entry after L05, in a fresh SQL command.
+2. Validate the complete selector document against the registered grammar version and event-specific clause allowlist.
+3. Resolve all symbolic participant and scope bindings from trusted canonical event/source state; never from client claims.
+4. Evaluate every clause against the same pre-mutation snapshot and captured instant.
+5. Canonicalize and deduplicate candidates and selected scope evidence; calculate snapshot digest/count only over the canonical representation approved by the physical snapshot contract.
+6. If the event token, policy version, selector, participant mapping, scope binding or dependency registration is unknown or ambiguous, fail the source transaction atomically. Do not emit a partial outbox or fallback audience.
+
+### E. Dependency mapping required for F-04
+
+Each registry entry must produce a machine-reviewable dependency list of every principal, role, grant, assignment/member, scope-parent and time-validity object consulted. The list must be reconciled to command and non-command writers, including direct DML, SECURITY DEFINER helpers, triggers, cascades, imports, repair, expiry and scheduled jobs. This mapping is a mandatory input to the writer matrix and lock graph. No selector may be published if its dependencies are not registered.
+
+## 4.2.6 F05-T2 — event-specific dispatch authorization matrix (candidate)
+
+The table below distinguishes event-time recipient qualification from dispatch-time delivery eligibility. It is a review candidate implementing the POQ-04 outcomes; Security/Engineering must approve each row. The source resource remains independently authorized when a user opens it.
+
+| Transition/event family | Immutable event-time candidate rule | Dispatch-time checks | Explicit non-rule / anti-suppression guard |
+|---|---|---|---|
+| CMD-005 role revoke; self-revoke | Pre-revoke role/scope state; actor/target only when the exact registered selector clause selects that participant | Account enabled; current channel capability and consent; mandatory security restrictions; apply current-scope check only where the event registry's approved dispatch profile requires it | Do not require the revoked role to remain effective merely to deliver the revocation notice. Notice delivery grants no access to the revoked resource. |
+| CMD-002/003 account approve/reject and approved disable/suspend lifecycle events | Pre-mutation eligibility; target is not implicit and must be selected by a registered clause | Suppress while account is disabled/suspended/expired; reactivation may reconsider only the same original snapshot candidate; re-check consent, channel, current scope where applicable and mandatory security | Reactivation never rebuilds/widens the snapshot, resets the checkpoint, or clears unrelated suppression reasons. |
+| CMD-015 assignment-member end | Pre-end membership and effective interval at captured instant; affected member only when explicitly selected | Account/channel/consent/security checks; current scope checks follow the event-specific dispatch profile | Do not require current membership in the just-ended assignment as a universal delivery prerequisite; no substitute member. |
+| CMD-010 project close; CMD-013 session close | Pre-close parent/scope state and selected event-time audience, committed atomically with closure | Account/channel/consent/security checks; evaluate only the explicit closure-event dispatch profile | Do not apply a blanket parent.status = ACTIVE predicate after the close event. Closure notice does not grant access to the closed resource. |
+| Ordinary non-transition event | Pre-mutation selector evaluation under the exact event registry entry | Account/channel/consent/security plus only the event-specific current role/scope checks explicitly declared in the pinned dispatch profile | No generic inference from current role labels or current parent status; no widening or substitute recipients. |
+
+**Mandatory dispatch-profile fields:** account eligibility predicate; channel capability predicate; consent/revocation predicate; mandatory security predicate; current role/scope predicate (including whether it is intentionally omitted for a transition notice); parent-state predicate (including whether it is intentionally omitted for closure notices); retry classification; and suppression reason mapping. Each predicate must be versioned and auditable.
+
+**Decision boundary:** this matrix does not override the NLA baseline that disabled, suspended or expired accounts are ineligible for dispatch. The precise account-reactivation reschedule rule, terminal/retryable reason catalog and scope/security exceptions remain approval inputs. A conflict between mandatory security and delivery of a transition notice must fail closed and be escalated for explicit Security/PO resolution, not silently bypassed.
