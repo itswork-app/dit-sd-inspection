@@ -1,7 +1,7 @@
 # Table-by-Table RLS Policy Catalogue
 
 **Status:** Security policy design draft — security review and implementation approval required  
-**Version:** 0.1.0  
+**Version:** 0.2.0  
 **Package:** M — RLS and Authorization Policy Catalogue  
 **Date:** 2026-11-23
 
