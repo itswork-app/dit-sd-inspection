@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.18
+**Version:** 0.4.19
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -98,7 +98,7 @@ Unresolved rank questions:
 - CMD-011–020 adds instrument/version locks but does not consistently place them relative to assignment and unit resources.
 - Capacity rank 10 is required for T-14 Inspector eligibility changes. CMD-005 revoke must lock capacity first when revoking Inspector eligibility; CMD-004 grant, CMD-014/015 membership changes and CMD-016 cap changes must share the same row and predicate.
 - Claim-versus-inspection order, and evidence-versus-document/attendance/print order, are not fully defined.
-- Notification and worker queue rows should not be pulled into a domain aggregate lock chain unless explicitly required. Source notification intent is inserted transactionally after source locks; workers claim queue rows in separate short transactions.
+- Notification and worker queue rows should not be pulled into a domain aggregate lock chain unless explicitly required. Source notification intent remains atomic with the source event, but POQ-01 candidate recipient/scope snapshot introduces potential lower-rank eligibility and implicit FK KEY SHARE edges; its lock order is not yet proven. Workers claim queue rows in separate short transactions.
 
 No command may be implemented using this candidate table until owners approve each unresolved relative ordering and the complete graph is rechecked.
 
@@ -119,9 +119,9 @@ No command may be implemented using this candidate table until owners approve ea
 | CMD-039/040 | attendance records/documents | Upload/replacement and verification serialize on attendance aggregate and immutable document version | Physical relationship/upload intent/verification history incomplete; institutional authority blocked |
 | CMD-049/050 | recipient notification row | Concurrent mark-read yields one set-once timestamp; pagination is read consistency, not write locking | Conditional idempotent update proposed; audit semantics open |
 | CMD-051 | notification policy draft/version | Concurrent edits and publish compare exact draft version/hash; published snapshot immutable | Draft/hash lifecycle open |
-| CMD-052 | notification outbox/fan-out | Bounded worker claims; uniqueness prevents duplicate inbox rows; lease reclaim fences stale worker | Worker principal/lease/ACL and checkpointing open |
+| CMD-052 | notification outbox/fan-out | Bounded worker claims; immutable POQ-01 event-time recipient/scope candidate set; uniqueness prevents duplicate inbox rows; lease reclaim fences stale worker | Candidate relation/header not admitted; source-event snapshot may introduce implicit FK KEY SHARE edges against L15/L30/L50/L55 resources; worker principal/lease/ACL open |
 | CMD-053 | delivery/provider callback | Dispatch, UNKNOWN, callback and retry idempotent per attempt identity; provider I/O outside transaction | Callback command boundary/provider capability unresolved |
-| CMD-054 | escalation event/policy version | Concurrent scheduler ticks create one version-pinned event per policy step; no source state mutation | Scheduler identity, server clock and unique key open |
+| CMD-054 | escalation event/policy version | Concurrent scheduler ticks create one version-pinned event per policy step and its own event-time candidate/scope snapshot; no source state mutation | Candidate snapshot lock order/implicit FK edges, scheduler identity, server clock and unique key open |
 | CMD-045–048 | retention, incident, provider/release | No lock design until institutional authority, physical schema and operational ownership supplied | Authority-blocked |
 
 ## 6. Static deadlock-cycle analysis — incomplete
@@ -292,9 +292,9 @@ CMD-049–054 must be interpreted as follows:
 - CMD-049: recipient-owned read only; MVCC/read consistency and actor/filter-bound cursor, no mutation lock.
 - CMD-050: one recipient-owned read-state projection in a short guarded transaction; delivery state remains separate; expected_version remains unresolved against the physical schema.
 - CMD-051: policy draft/version and effective-scope serialization in one short policy transaction; immutable published version and append-only audit fact; exact draft/hash/interval arbitration remains open.
-- CMD-052: isolated bounded outbox claim transaction with lease/fencing generation, committed before fan-out; separate fan-out transaction creates recipient inbox/delivery projections with unique arbiters; no provider I/O.
+- CMD-052: isolated bounded outbox claim transaction with lease/fencing generation, committed before fan-out; separate fan-out transaction consumes immutable POQ-01 event-time recipient/scope candidates and creates inbox/delivery projections with unique arbiters; no provider I/O. Candidate relation is NOT ADMITTED.
 - CMD-053: exact delivery claim/outcome transactions and append-only attempt facts; provider I/O outside transactions; callback authentication and logical command mapping remain open.
-- CMD-054: server-UTC due evaluation against pinned policy version; unique escalation fact and outbox intent committed atomically; no source business-state mutation.
+- CMD-054: server-UTC due evaluation against pinned policy version; unique escalation fact, outbox intent and its own event-time recipient/scope snapshot committed atomically; no source business-state mutation.
 
 The notification queue is not a license to acquire queue locks and then domain aggregate locks. If any future worker operation must mutate a source aggregate, it must release its queue claim transaction, start a new transaction, acquire the full approved L30–L100 source chain in ascending order and validate the fencing generation. Physical queue tables, unique/FK indexes, triggers, helper calls, worker identity, function owner, EXECUTE ACL and provider callback runtime remain NOT VERIFIED.
 
@@ -468,3 +468,41 @@ The graph covers 54 stable traceability IDs, but CMD-045–048 are external cont
 ## 26. Normalized application command register integration — 2026-11-24
 
 [LOCK-NORMALIZATION-001](COMMAND-LOCK-MANIFEST-NORMALIZATION-REGISTER-001.md) v0.1.1 consolidates 50 application command boundaries across mutation, bounded-read and notification/worker paths. The register is linked to CMD-PHYSICAL-CROSSWALK-001 v0.1.0 for proposed physical read/write sets. Both are source-normalization aids, not an approved lock protocol. It preserves the unresolved CMD-011–015 parent-fence modes, CMD-023/025 ordering conflicts, CMD-026 canonical-key order, CMD-028–031 inspection/review serialization, CMD-033–040 evidence/document/attendance dependencies, and CMD-049–054 worker/provider dependencies. Exact PostgreSQL modes and implicit edges remain unverified; the graph is not certified acyclic. LPR-09 OPEN; LPR-10 NOT EXECUTED; 0/50 certified; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 27. POQ-01 notification audience snapshot lock-graph review — 2026-11-24
+
+POQ-01 approves the product rule: resolve and durably persist event-time candidate recipients and their authorized source scope; retries reuse the same set; dispatch-time revalidation may suppress only. NLA-001 v0.1.4 proposes candidate relation `notification_outbox_recipients` plus candidate snapshot version/hash/count/completion fields on the outbox header. These are NOT ADMITTED and have no approved lock rank.
+
+### 27.1 New potential lock edges
+
+The proposed recipient relation may carry FKs to `app_users`, projects, sessions, locations and assignments. PostgreSQL FK validation may acquire implicit KEY SHARE locks on referenced rows. This creates a potential conflict with the existing candidate hierarchy:
+
+- A source domain command may already hold L30 project/session and L50/L55 assignment/membership locks before appending the outbox recipient snapshot. Candidate FK validation can then touch L15 recipient accounts or other lower-ranked authorization resources.
+- Account/role/scope revocation commands may acquire L15/L16/L17 before L30/L50/L55. If the source event snapshot path takes the reverse order, a cycle may be possible.
+- CMD-052 may claim an outbox row before inserting inbox rows whose FKs touch recipient/scope references. The exact FK topology could therefore create a lower-rank-after-queue edge.
+- CMD-054 may hold notification/policy/escalation rows before persisting a new candidate snapshot that references recipient and scope resources.
+- CMD-053 provider callback deduplication has a separate unresolved provider-event identity/storage edge; it must not be conflated with the candidate recipient relation.
+
+These are potential edges, not observed runtime deadlocks. No cycle is claimed proven; no acyclicity is claimed.
+
+### 27.2 Required resolution before candidate admission
+
+1. Inventory every source command/event that can create notification_outbox and map its complete already-held source locks.
+2. Inventory all account, role, scope, assignment and parent lifecycle writers that can change candidate eligibility.
+3. Define the event-time eligibility linearization point. A preflight SELECT alone is insufficient.
+4. Specify whether recipient/grant/scope rows are locked in sorted L15/L16/L17 and applicable L30/L50/L55 order before source aggregate locks, or whether a temporal snapshot model provides equivalent consistency without conflicting row locks.
+5. Include every implicit FK KEY SHARE, unique-index, trigger and helper-function edge for recipient snapshot and inbox inserts.
+6. Prove that CMD-052 and CMD-054 do not acquire lower-ranked domain resources after queue/policy/notification locks.
+7. Add deterministic opposing-transaction tests for grant revocation, assignment end, project/session closure, event snapshot, worker reclaim and duplicate fan-out.
+8. Recompute the full effective graph and prove acyclicity only after the physical model and all source/worker paths are approved.
+
+### 27.3 Candidate test intersections
+
+- LG-41: event-time recipient snapshot vs concurrent role/scope revocation — one deterministic winner; no audience widening.
+- LG-42: event-time snapshot vs assignment end and project/session closure — no stale or cross-scope recipient.
+- LG-43: CMD-052 outbox claim/fan-out vs notification/source-scope FK checks — no reverse-rank acquisition or duplicate inbox rows.
+- LG-44: CMD-054 scheduler tick vs recipient grant revocation and duplicate tick — one immutable candidate set and one escalation event.
+- LG-45: stale CMD-052 lease generation vs concurrent fan-out retry — stale worker cannot finalize or alter candidate snapshot.
+
+**Disposition:** POQ-01 product semantics APPROVED; physical snapshot representation NOT ADMITTED; candidate lock order OPEN; worker identity/ACL OPEN; provider callback dedup OPEN; global graph remains NOT CERTIFIED ACYCLIC. Application lock certification remains 0/50; G9 NOT READY; G10 NOT ACTIVE.
