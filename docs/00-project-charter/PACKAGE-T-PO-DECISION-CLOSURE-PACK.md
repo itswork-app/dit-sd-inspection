@@ -374,9 +374,11 @@ The enforcement must be atomic. Reject 0 and values above 100. If reducing the c
 
 **Risk if deferred:** “Configurable” may become unsafe or ambiguous, and historical results may change meaning.
 
-**Decision required:** Confirm whether Super Admin may publish instrument versions directly or whether a second approval is required.
+**Product Owner decision (2026-11-24): APPROVED OPTION A.** Super Admin may directly publish an instrument version after the server validates the complete declarative configuration against the supported schema and validation primitives. A second-person publication approval is not required for this product workflow. The publisher must hold the explicit `instrument.publish` permission as a Super Admin capability; the command must derive actor identity from the trusted session, validate authorization and scope, atomically publish the immutable version and append the publication/audit records. Draft editing alone does not confer publish authority. Deactivation is a separately authorized, audited lifecycle action and never mutates or deletes a published version.
 
-**State:** APPROVED DIRECTION; detailed publication governance OPEN.
+**Binding controls:** checklist section/item ordering, applicability, expected values, typed specification fields, and evidence-slot definitions are versioned together. Published versions are immutable; active sessions/assignments pin a specific published version; historical inspection revisions retain the exact version and configuration snapshot/hash. New publication affects only future session/assignment configuration unless an explicit, separately authorized migration/rebind workflow is later approved. Unsupported field types, validation primitives, arbitrary scripts, SQL, executable expressions and uploaded code are rejected.
+
+**State:** PO APPROVED (A); design reconciliation, schema/RLS/command/test specifications and implementation evidence remain OPEN. No migration, code or test execution is claimed.
 
 ### T-18 — Privileged command boundary
 
