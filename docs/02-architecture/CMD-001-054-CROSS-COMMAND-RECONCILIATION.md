@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.48
+**Version:** 0.8.49
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -670,3 +670,8 @@ The lock graph must include CMD-013 final close against abort, claim release, dr
 ### SES-001 attempt identity reconciliation — 2026-11-24
 
 An `inspection_id` represents one session-bound inspection attempt. After ABORTED, CMD-026 in a later active session creates a new inspection aggregate with a distinct inspection_id and immutable new session_id; it never resumes or rewrites the old attempt. Return correction and authorized reopen within the original active session create a new draft context on the same inspection_id/session_id. The physical invariant must prevent concurrent nonterminal attempts and active claims for the same canonical unit while retaining historical ABORTED attempts. This resolves the logical distinction only; the physical uniqueness strategy and exact CMD-026 eligibility contract remain open.
+
+
+### Privileged session reopen after an aborted unit — open policy edge
+
+T-07 permits a privileged, reasoned and audited reopening of a CLOSED session. SES-001 does not permit reactivation of an ABORTED inspection attempt. It remains unresolved whether a privilegedly reopened session may accept a brand-new inspection aggregate under the same session_id or whether new work must wait for a distinct new session. Until PO/operational policy decides, CMD-013/CMD-026 must fail closed for new inspection work after session reopen where the outcome would depend on this ambiguity. This question does not weaken the immutable ABORTED terminal state.
