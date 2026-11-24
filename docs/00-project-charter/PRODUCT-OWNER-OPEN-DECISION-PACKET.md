@@ -2,7 +2,7 @@
 
 **Document ID:** POQ-001  
 **Version:** 0.1.0  
-**Status:** PROPOSED QUESTIONS — NO NEW DECISIONS APPROVED  
+**Status:** DECISIONS RECORDED — POQ-01..03 APPROVED 2026-11-24  
 **Date:** 2026-11-24  
 **Authority:** Decision Register; Package T historical decision pack; MIB-001; DGA-001  
 **Purpose:** Request only unresolved product-semantic decisions within Product Owner authority.
@@ -93,11 +93,11 @@ No responses are recorded in this document yet.
 
 | Question | PO response | Rationale / amendment | Effective date | Decision Register reference |
 |---|---|---|---|---|
-| POQ-01 | OPEN | — | — | Pending |
-| POQ-02 | OPEN | — | — | Pending |
-| POQ-03 | OPEN | — | — | Pending |
+| POQ-01 | **Option C — APPROVED** | Hybrid event-time candidate audience; dispatch-time revalidation can suppress but never widen recipients | 2026-11-24 | Decision Register — POQ-01 |
+| POQ-02 | **Option C — APPROVED** | Versioned per-policy elapsed/business-time semantics; initial default `ELAPSED_UTC`; quiet hours defer delivery only and do not pause SLA | 2026-11-24 | Decision Register — POQ-02 |
+| POQ-03 | **Option A — APPROVED** | Dismiss/archive excluded from MVP; set-once recipient-owned `read_at` only | 2026-11-24 | Decision Register — POQ-03 |
 
-A PO response must be dated and recorded in the Decision Register before dependent design documents are changed. No implied approval is permitted.
+PO responses were explicitly approved and recorded in the Decision Register on 2026-11-24. Dependent design documents must now be reconciled to those decisions; no technical, institutional or implementation approval is implied.
 
 ---
 This packet is a request for product decisions only. It does not approve institutional policy, technical design, implementation or release.
