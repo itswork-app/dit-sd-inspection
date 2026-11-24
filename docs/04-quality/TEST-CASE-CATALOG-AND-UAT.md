@@ -796,7 +796,7 @@ PO has selected candidate L05 as the primary mechanism for technical approval re
 
 ### NRL-T01..T12 execution controls — 2026-11-24
 
-[NLA-L05-TDR-001 v0.1.2](../02-architecture/NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) defines the concurrency schedules and required outcomes for NRL-T01..T12, including a READ COMMITTED stale-snapshot control and `pg_locks` inspection. These tests remain PLANNED / NOT EXECUTED until G10 is activated, exact DDL/functions/grants and deployed isolation are approved, and an isolated PostgreSQL environment is available. Do not claim runtime or concurrency certification from this document.
+[NLA-L05-TDR-001 v0.1.2](../02-architecture/NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) defines the concurrency schedules and required outcomes for NRL-T01..T12, including VOLATILE wrapper snapshot behavior, post-lock time capture, a READ COMMITTED stale-snapshot control and `pg_locks` inspection. These tests remain PLANNED / NOT EXECUTED until G10 is activated, exact DDL/functions/grants and deployed isolation are approved, and an isolated PostgreSQL environment is available. Do not claim runtime or concurrency certification from this document.
 
 
 ### L05 review response — snapshot and time linearization cases — 2026-11-24
