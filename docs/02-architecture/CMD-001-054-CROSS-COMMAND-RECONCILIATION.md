@@ -418,6 +418,10 @@ CMD-001–010 Detailed Contract Review v0.3.4 §9, LOCK-MANIFEST-001 v0.4.13, LO
 QA Catalogue v0.3.3 aligns TC-CMD-CONTRACT-024-001..010 concurrency assertions. All remain PLANNED / NOT EXECUTED. **10/54 command manifests are candidate-normalized at documentation level; 0/54 are technically approved or lock-complete certified.** LPR-01/LPR-07/LPR-11 remain OPEN; LPR-10 NOT EXECUTED; the graph is not proven acyclic; G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED.
 
 
+## CMD-045–048 control-plane resolution proposal — 2026-11-24
+
+[CMD-045–048 Control-Plane Resolution Proposal](CMD-045-048-RESOLUTION-PROPOSAL.md) v0.1.0 recommends keeping the stable command IDs for traceability while moving retention/legal-hold, security incident response, provider configuration and production release authority to their respective institutional/provider/release control planes. This is an engineering recommendation only; no Product Owner disposition is recorded. CMD-045..048 remain blocked/non-executable. T-10, T-12, incident-response RACI and repository/release governance remain independent gate dependencies. Current gate state is G9 NOT READY and G10 NOT ACTIVE; historical G10 NOT AUTHORIZED statements below are dated snapshots.
+
 ## CMD-045–048 blocked-command synchronization — 2026-11-24
 
 [CMD-045–048 Detailed Contract Review](CMD-045-048-DETAILED-CONTRACT-REVIEW.md) v0.1.0 is the detailed boundary source for the four blocked commands. The canonical catalogue is now v0.4.2 and explicitly links the review; QA Catalogue v0.3.4 adds 12 planned review subcases; RTM RET-001 / INC-001 / PROV-001 / REL-001 and RAID D-031..D-033/R-032..R-033 record the authority, security and operational dependencies.
