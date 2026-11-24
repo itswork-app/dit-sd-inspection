@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.0
+**Version:** 1.11.1
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -307,7 +307,7 @@ The CMD-011–015 detailed review was statically compared with CMD-010 closure:
 The Product Owner explicitly approved the product-semantic recommendations for CMD-011–020. The Decision Register contains the dated decision record; decision package v0.2.0 records the approved interpretation and response matrix. This closes the PO decision-response dependency for these ten commands only.
 
 The following controlled documents have been reconciled to the approved semantics:
-- CMD-011–020 Detailed Contract Review v0.3.0: product semantics marked PO APPROVED; engineering/security contract findings remain open.
+- CMD-011–020 Detailed Contract Review v0.3.2: product semantics marked PO APPROVED; engineering/security contract findings remain open.
 - PostgreSQL Command Contract Catalogue v0.4.0: command rows now reflect approved product behavior and identify unresolved technical fields/order.
 - Project/Session/Assignment Model v0.3.0: T-07 lifecycle, session, assignment, membership and target-plan semantics synchronized.
 - Physical Database Schema v0.4.0 and Data Model/ERD v0.3.0: semantic implications mapped without inventing DDL, columns or constraints.
