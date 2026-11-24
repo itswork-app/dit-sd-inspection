@@ -182,4 +182,4 @@ Changes to permission codes, command mappings, role grants, scope predicates, RL
 
 ## PostgreSQL function security and caller ACL dependency
 
-See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md) for the function class matrix, exact-signature ACL rules and 62 planned QA cases. No role/ACL inventory has been captured from live Supabase. The SECURITY INVOKER/direct-DML conflict remains an explicit PO/security blocker.
+See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md) for the function class matrix, exact-signature ACL rules and 62 planned QA cases. No role/ACL inventory has been captured from live Supabase. T-18 Option A resolves the architecture selection; individual function owners, effective privileges, RLS interaction, exact EXECUTE ACLs and caller-JWT route-path evidence remain explicit PO/security implementation blockers.
