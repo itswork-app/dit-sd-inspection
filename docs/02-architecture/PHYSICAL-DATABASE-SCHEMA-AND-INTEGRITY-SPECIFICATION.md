@@ -1,7 +1,7 @@
 # Physical Database Schema and Integrity Specification
 
 **Status:** Engineering specification draft — approval required before migrations  
-**Version:** 0.4.6  
+**Version:** 0.4.7  
 **Package:** L — Physical Data Model and Integrity  
 **Date:** 2026-11-23
 
@@ -410,3 +410,8 @@ Candidate inspection aggregate additions/invariants:
 - later session may create a distinct new attempt for the same canonical unit, while concurrent active-claim uniqueness and global canonical identity remain enforced.
 
 Database must resolve the historical-attempt key/uniqueness strategy, FK graph, abort writer and lock participation, CMD-027 reuse versus dedicated abort command, same-session composite constraints and RLS/ACL. Do not infer a concrete enum/table/index or alter the canonical inventory until the design is approved and G9/G10 gates permit it. SES-001 does not authorize DDL, migration, grants, RLS or implementation.
+
+
+### SES-001 historical attempt identity clarification (candidate only)
+
+An `inspections` row represents one inspection attempt and is immutably bound to one session_id. After an attempt reaches ABORTED, a later session must create a new `inspections.id` for the same canonical unit; it must not update the old row's session_id or reactivate its draft. The previous ABORTED inspection, revisions, evidence and events remain historical. Return correction and authorized reopen within the same originating session remain new draft contexts on the same inspection aggregate. The existing phrase “one active inspection lifecycle per canonical unit” must be interpreted as at most one nonterminal inspection attempt per canonical unit, while allowing multiple historical terminal attempts. Exact partial unique/exclusion constraints and terminal-state vocabulary require Database/Engineering/Security approval; canonical 48-table inventory remains unchanged and no DDL is admitted.
