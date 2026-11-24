@@ -1,7 +1,7 @@
 # Engineering & Security Technical Resolution Package — LPR-01 and LPR-07–LPR-11
 
 **Document ID:** TECH-RESOLUTION-LPR-001  
-**Version:** 0.1.5  
+**Version:** 0.1.6  
 **Status:** TECHNICAL RECOMMENDATION FOR ENGINEERING / DATABASE / SECURITY REVIEW — NOT APPROVED FOR IMPLEMENTATION  
 **Date:** 2026-11-24  
 **Repository / branch:** `itswork-app/dit-sd-inspection` / `docs/audit-lock-and-identity-reconciliation`  
@@ -366,3 +366,8 @@ CMD-045–048 are Product Owner-approved external control-plane traceability IDs
 ## 15. Current cross-document lock baseline — 2026-11-24
 
 Current linked document versions are DGA-001 v1.11.40, LOCK-MANIFEST-001 v0.4.23, LOCK-GRAPH-001 v0.4.16, LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.10, CMD-CROSSWALK-001-054 v0.8.17 and CONCURRENCY-001 v0.1.7. The traceability inventory is 54 IDs, comprising 50 application commands and 4 external control-plane IDs. LPR-09 and LPR-10 apply to the 50 application commands only. Candidate transaction/resource boundaries are documented for 50/50 application commands, but full normalized-manifest completion and technical certification remain OPEN; certified lock-complete is 0/50. LPR-01 and LPR-07–LPR-09/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. This addendum is a static source-version/denominator reconciliation, not technical approval or runtime evidence.
+
+
+## 16. Normalized manifest register and LPR-09 scope — 2026-11-24
+
+[LOCK-NORMALIZATION-001](COMMAND-LOCK-MANIFEST-NORMALIZATION-REGISTER-001.md) v0.1.0 now provides a single structured register for all 50 in-scope application commands, preserving candidate resource order, revalidation/invariants and unresolved evidence. It is not an approved physical lock manifest. LPR-09 remains OPEN until all 50 records are reconciled to exact physical objects, implicit FK/index/trigger/function edges, privileges and competing writers and receive accountable Engineering/Database/Security/QA approval. LPR-10 remains NOT EXECUTED; no concurrency certification is claimed. CMD-045–048 remain excluded external IDs.
