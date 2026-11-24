@@ -420,7 +420,7 @@ QA Catalogue v0.3.3 aligns TC-CMD-CONTRACT-024-001..010 concurrency assertions. 
 
 ## CMD-045–048 blocked-command synchronization — 2026-11-24
 
-[CMD-045–048 Detailed Contract Review](CMD-045-048-DETAILED-CONTRACT-REVIEW.md) v0.1.0 is the detailed boundary source for the four blocked commands. The canonical catalogue is now v0.4.2 and explicitly links the review; QA Catalogue v0.3.4 adds 12 planned review subcases; RTM OPS-003..005 and RAID D-031..D-033/R-032..R-033 record the authority, security and operational dependencies.
+[CMD-045–048 Detailed Contract Review](CMD-045-048-DETAILED-CONTRACT-REVIEW.md) v0.1.0 is the detailed boundary source for the four blocked commands. The canonical catalogue is now v0.4.2 and explicitly links the review; QA Catalogue v0.3.4 adds 12 planned review subcases; RTM RET-001 / INC-001 / PROV-001 / REL-001 and RAID D-031..D-033/R-032..R-033 record the authority, security and operational dependencies.
 
 Disposition remains unchanged:
 - CMD-045 BLOCKED_BY_POLICY pending T-10 institutional records/legal/privacy/security approval.
