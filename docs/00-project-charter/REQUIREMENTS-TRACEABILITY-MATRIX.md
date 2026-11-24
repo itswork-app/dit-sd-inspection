@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.4  
+**Version:** 0.1.5  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -412,3 +412,13 @@ POQ-01 Option C, POQ-02 Option C and POQ-03 Option A were explicitly approved by
 - **Dismissal (POQ-03):** dismiss/archive is excluded from MVP. Only recipient-owned set-once `read_at` is exposed; no dismiss command, permission, browser write or UX action exists. Any `dismissed_at` field retained in a proposal is dormant.
 
 The following technical details remain open: exact selector grammar and snapshot/checkpoint representation; partial fan-out fencing; policy schema and worker authorization; provider capability/callback security; exact schema constraints/indexes/RLS; institutional T-10 retention/privacy; test execution and live evidence. G9 remains NOT READY and G10 NOT AUTHORIZED.
+
+
+## NOTIF-014/015 — audience snapshot physicalization and lock-order evidence
+
+| Requirement ID | Requirement | Authority | Design reference | Verification | Status |
+|---|---|---|---|---|---|
+| NOTIF-014 | For each notification-producing source event, persist a deduplicated immutable recipient and authorized source-scope candidate set bound to the event and policy version before the source transaction commits. CMD-052/054 retries consume only that set; dispatch-time account/channel/consent/security checks may suppress but never add recipients. | POQ-01 APPROVED; INS-015 | NLA-001 v0.1.4 §15–17; physical schema v0.4.4 candidate annex; RLS v0.2.5; ERD v0.3.3; CMD-049–054 review v0.1.3 | TC-NOTIF-027/030–035; TC-RLS-024-049; source snapshot hash/count, duplicate selector, retry, revocation and scope integrity evidence | PO SEMANTICS APPROVED; PHYSICAL CANDIDATE NOT ADMITTED; ENGINEERING/DB/SECURITY REVIEW OPEN |
+| NOTIF-015 | Notification snapshot writers, CMD-052 fan-out, CMD-054 scheduler and CMD-053 callback ingress must include all source/recipient/scope/queue/policy locks and implicit FK KEY SHARE/unique-index/trigger/helper edges in the global resource order; no lower-rank resource may be acquired after a higher-rank lock. | LPR-09; T-18; Engineering/Database/Security | LOCK-MANIFEST-001 v0.4.26 §7.6; LOCK-GRAPH-001 v0.4.19 §27; CMD-049–054 review v0.1.3 §17; RAID R-037 | TC-NOTIF-036–040; LG-41–45; exact PostgreSQL lock traces, deterministic concurrency tests and full acyclic graph proof | OPEN — CRITICAL; 0/50 LOCK-CERTIFIED |
+
+All related notification and concurrency tests remain PLANNED / NOT EXECUTED. These requirements do not approve a new table, migration, index, RLS policy, worker identity, function, grant or implementation. G9 remains NOT READY; G10 remains NOT ACTIVE.
