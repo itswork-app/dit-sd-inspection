@@ -1,7 +1,7 @@
 # PRD Scope and Notification Domain Reconciliation — SCOPE-RECON-001
 
 **Document ID:** SCOPE-RECON-001  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Status:** REVIEW CANDIDATE — STATIC RECONCILIATION ONLY  
 **Date:** 2026-11-24  
 **Branch:** docs/notification-resolver-lock-closure  
@@ -119,7 +119,11 @@ These decisions do **not** approve:
 | CMD-049–054 recursive notification matching | EXCLUDED BY DEFAULT |
 | Exact IFP/Standing Bracket checklist/evidence requirements | Controlled instrument source reconciliation remains open; do not infer requirements from sample transcriptions |
 
-## 9. Required next work before an event registry can be approved
+## 9. Event-by-event triage result
+
+See [NLA-EVENT-TRIAGE-001](../02-architecture/NOTIFICATION-EVENT-CANDIDATE-TRIAGE-001.md) v0.1.0 for the CMD-001–040 review. It separates PO discussion candidates from operational/control events and unresolved composite declarations. No event is enabled. The PO discussion shortlist is limited to user-visible account outcomes, role revocation, project/session closure, assignment creation/change, and inspection submission/return/approval/reopen. The shortlist is not an allowlist; exact event identity, recipient mapping, deduplication and PO approval remain required.
+
+## 10. Required next work before an event registry can be approved
 
 1. Validate each candidate event against the approved PRD workflow and detailed CMD contract.
 2. For each candidate event, record whether it is operationally meaningful to Inspector, Reviewer, Korlap, Super Admin, Print Officer or another explicitly approved actor.
@@ -130,7 +134,7 @@ These decisions do **not** approve:
 
 Do not create a complete enabled registry by mechanically converting all 40 command declarations into notifications.
 
-## 10. Current gate and work boundary
+## 11. Current gate and work boundary
 
 - PRD remains the scope authority; no PRD change is made by this artifact.
 - Notification selector grammar and event-specific dispatch profiles remain review candidates.
@@ -146,13 +150,14 @@ Do not create a complete enabled registry by mechanically converting all 40 comm
 
 This work is documentation/static reconciliation only. No source code, SQL, migration, grant, RLS, live database change, runtime test, deployment, merge or G10 activation is performed or authorized by this document.
 
-## 11. Sources of truth reviewed
+## 12. Sources of truth reviewed
 
 - `docs/01-product-requirements/PRD.md` §§3–7, 10, 13 and Package T decisions.
 - `docs/01-product-requirements/IFP-INSTRUMENT-SPECIFICATION.md`.
 - `docs/01-product-requirements/STANDING-BRACKET-INSTRUMENT-SPECIFICATION.md`.
 - `docs/02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md` §5 (role/grant matrix NOT APPROVED).
 - `docs/02-architecture/L05-SOURCE-EVENT-PATH-MAPPING-001.md` §§3–6 (producer inventory, not enabled policy).
+- `docs/02-architecture/NOTIFICATION-EVENT-CANDIDATE-TRIAGE-001.md` §4 (CMD-001–040 event-by-event product triage; no event enabled).
 - `docs/02-architecture/NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md` §§5–8, 20–22.
 - `docs/02-architecture/NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md` §§4.2.4–4.2.6.
 - `docs/00-project-charter/DECISION-REGISTER.md` POQ-001 and POQ-04.
