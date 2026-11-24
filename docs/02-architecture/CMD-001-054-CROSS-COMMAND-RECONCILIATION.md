@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.21
+**Version:** 0.8.22
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -441,17 +441,17 @@ No route, RPC, table, permission grant, secret-manager resource, CI rule or depl
 
 | Artifact | Current proposal version | Reconciled concern |
 |---|---:|---|
-| NLA-001 Notification Lifecycle and Delivery Architecture | 0.1.2 | Domain lifecycle, six tables, worker lease fencing, integration callback and planned tests |
-| CMD-049–054 Detailed Contract Review | 0.1.1 | Per-command request, authorization, transaction, idempotency and blocker review |
-| PostgreSQL Command Contract Catalogue | 0.4.4 | CMD-001..054 logical request, transaction boundary and candidate-only lock-order wording |
-| Physical Database Schema | 0.4.1 | safe_payload, outbox/delivery lease fields, read_at set-once semantics |
-| Table-by-Table RLS Catalogue | 0.2.2 | Recipient-self inbox and default-deny worker/configuration tables; dismiss remains inactive |
+| NLA-001 Notification Lifecycle and Delivery Architecture | 0.1.4 | PO-approved lifecycle semantics; six canonical notification tables plus candidate-only event-time audience snapshot; worker lease fencing and callback boundary |
+| CMD-049–054 Detailed Contract Review | 0.1.3 | Per-command request, authorization, transaction, idempotency, POQ-01 snapshot and lock-order blocker review |
+| PostgreSQL Command Contract Catalogue | 0.4.8 | CMD-001..054 logical request, transaction boundary and candidate-only notification snapshot references |
+| Physical Database Schema | 0.4.4 | safe_payload, outbox/delivery lease fields, read_at set-once semantics and candidate-only audience relation/header |
+| Table-by-Table RLS Catalogue | 0.2.5 | Recipient-self inbox, default-deny worker/configuration tables and candidate-only audience RLS boundary |
 | API and Transaction Contracts | 0.2.1 | User commands, internal worker boundary and INT-NOTIF-001 |
 | Audit Event Catalogue | Current NLA linkage addendum | First-read event, policy publication and escalation event semantics |
-| Command-Level Lock Manifest | 0.4.15 | Current LOCK-GRAPH-001 v0.4.10 parent pointer; candidate-only, 0/54 certified |
+| Command-Level Lock Manifest | 0.4.26 | POQ-01 audience snapshot potential FK/lock-order edges; 0/50 certified |
 | Concurrency and Version Token Reconciliation | 0.1.6 | CMD-050 notification_id-only request; CMD-052/053 lease fencing; CMD-054 DB time |
-| QA Catalogue | 0.3.5 | TC-NOTIF-001..026 and TC-FN-SEC-025-064..069 |
-| RTM / RAID / DGA | RTM-001 v0.1.0; RAID-001 v0.1.0; DGA-001 v1.11.21 | Unique requirement/risk IDs; NOTIF-007..012; D-034..D-036/R-034..R-035; gate blockers |
+| QA Catalogue | 0.4.2 | TC-NOTIF-001..040, TC-RLS-024-049 and TC-FN-SEC-025-064..071 |
+| RTM / RAID / DGA | RTM-001 v0.1.5; RAID-001 v0.1.3; DGA-001 v1.11.54 | NOTIF-007..015; D-026/D-034..D-036/R-034/R-035/R-037; gate blockers |
 
 ### 2. Command-to-domain crosswalk
 
@@ -460,9 +460,9 @@ No route, RPC, table, permission grant, secret-manager resource, CI rule or depl
 | CMD-049 list-own-notifications | notifications; stable actor/filter-bound cursor | authenticated recipient self via auth.uid(); scoped read/RLS; no global inbox | TC-NOTIF-005/006/018; TC-FN-SEC-025-064 | Proposal aligned; exact indexes/page cap/live RLS open |
 | CMD-050 mark-notification-read | notifications.read_at set-once; no row-version | recipient-self trusted command; direct browser DML denied | TC-NOTIF-005/007/019; TC-FN-SEC-025-065 | expected_version removed at documentation level; audit implementation open |
 | CMD-051 publish-notification-policy | notification_policy_versions + audit_events | notification.policy.manage; explicit scope/grantor/SoD not approved | TC-NOTIF-012/020; TC-FN-SEC-025-066 | Publish-only boundary aligned; permission and policy-schema approval open |
-| CMD-052 fanout-notification-outbox | notification_outbox → notifications + notification_deliveries | internal workload only; no browser RPC; lease fencing | TC-NOTIF-002/003/011/021/022; TC-FN-SEC-025-067 | Field vocabulary aligned; worker identity and recipient eligibility semantics open |
+| CMD-052 fanout-notification-outbox | notification_outbox → candidate-only notification_outbox_recipients → notifications + notification_deliveries | internal workload only; no browser RPC; lease fencing; consumes immutable event-time candidate set | TC-NOTIF-002/003/011/021/022/027/030–040; TC-FN-SEC-025-067/070/071 | POQ-01 semantics approved; candidate relation/header NOT ADMITTED; worker identity/ACL and implicit FK lock edges open |
 | CMD-053 dispatch-notification-delivery | notification_deliveries + append-only notification_delivery_attempts | internal delivery worker; provider I/O outside DB transaction | TC-NOTIF-007/009/010/015/016/023/024/026; TC-FN-SEC-025-068 | INT-NOTIF-001 boundary assigned; provider auth/dedup/capability open |
-| CMD-054 evaluate-notification-escalation | notification_escalation_events + notification_outbox | internal scheduler; one DB UTC instant; pinned policy | TC-NOTIF-013/014/025; TC-FN-SEC-025-069 | Caller evaluation_time removed; SLA semantics and scheduler ACL open |
+| CMD-054 evaluate-notification-escalation | notification_escalation_events + notification_outbox + candidate-only notification_outbox_recipients | internal scheduler; one DB UTC instant; pinned policy; own event-time audience snapshot | TC-NOTIF-013/014/025/030–040; TC-FN-SEC-025-069 | Caller evaluation_time removed; candidate relation not admitted; scheduler ACL and snapshot lock order open |
 
 ### 3. Resolved documentation mismatches
 
@@ -478,7 +478,7 @@ No route, RPC, table, permission grant, secret-manager resource, CI rule or depl
 
 | Blocker | Commands | Required owner decision/evidence | DGA / RAID |
 |---|---|---|---|
-| Recipient event-time vs fan-out-time eligibility and deterministic retry snapshot | 052, 054 | PO + Security approve the exact eligibility checkpoint and snapshot/revalidation semantics | DGA-B13; R-034 |
+| Event-time audience snapshot physicalization and lock order | source notification events, 052, 054 | POQ-01 semantics are approved; Engineering/Database/Security must admit immutable recipient/scope representation and prove source/worker FK lock ordering | DGA-B13; R-034/R-037 |
 | notification.policy.manage grant, scope, grantor ceiling, selector grammar and SoD | 051 | PO + Security approval; no role grant is inferred | DGA-B09/B13; D-036 |
 | Worker/scheduler principal, scheduler trust, database role, function owner, exact EXECUTE ACL, token custody and rate limits | 052–054 | Security + Operations evidence and exact function review | DGA-B12/B13; D-034 |
 | Provider selection, quotas/cost, secret custody, callback signature/freshness and durable event deduplication | 053 / INT-NOTIF-001 | T-12 provider owner + Security approval and capability evidence | DGA-B05/B13; D-035/R-035 |
@@ -491,12 +491,12 @@ No route, RPC, table, permission grant, secret-manager resource, CI rule or depl
 ### 5. Inventory and gate status
 
 - Logical command inventory: 54/54 IDs present; all six notification commands have a detailed review and a cross-document proposal mapping.
-- Candidate lock normalization: remains 10/54. CMD-049–054 transaction fields are clarified but are not counted as normalized or certified manifests.
-- Technical command approval/certification: 0/54.
+- Candidate lock-order overlays: 40/54 source command paths (CMD-001–040) are documented at manifest level; CMD-041–044 are bounded-read/external-authority paths and CMD-049–054 have separate transaction descriptions but are not lock-complete certified. The normalized 50-command register is a coverage index, not proof of an approved lock protocol.
+- Technical application command lock approval/certification: 0/50.
 - Physical schema/RLS: 48/48 proposed table-name parity only; no live database/RLS/grant evidence.
-- QA: 410 distinct test-case definitions by line-level ID scan; TC-NOTIF-001..026 and all notification function-security cases remain PLANNED / NOT EXECUTED.
+- QA: current notification suite TC-NOTIF-001..040, TC-RLS-024-049 and TC-FN-SEC-025-064..071 remain PLANNED / NOT EXECUTED.
 - CI, workflow checks, provider setup, database inspection and deployment: not executed in this documentation task.
-- G9: NOT READY. G10: NOT AUTHORIZED.
+- G9: NOT READY. G10: NOT ACTIVE.
 
 This crosswalk is static documentation evidence only. It does not approve a command, worker, provider, route, function, permission grant, table, policy, migration or production action.
 
@@ -508,9 +508,20 @@ The current source versions in §1 supersede older source-version references in 
 
 ## 15. Current lock-manifest scope and certification denominator — 2026-11-24
 
-The stable inventory remains **54/54 traceability IDs**. CMD-045–048 are PO-approved external control-plane responsibilities and are not executable application commands; they have no application route/RPC/permission/transaction/lock set. The correct application denominator for LPR-09 and LPR-10 is therefore **50 commands**. Static documentation currently records candidate execution/transaction boundaries for 50/50 application commands; this is coverage, not full normalized-manifest completion or technical certification. **Application lock certification remains 0/50.** LPR-01, LPR-07–LPR-09 and LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. The 54-ID inventory and historical 0/54 statements in earlier dated checkpoints are preserved as historical inventory snapshots, not current application certification denominators. Current sources: LOCK-MANIFEST-001 v0.4.24; LOCK-GRAPH-001 v0.4.18; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.12; TECH-RESOLUTION-LPR-001 v0.1.3; CONCURRENCY-001 v0.1.7. G9 remains NOT READY; G10 remains NOT ACTIVE.
+The stable inventory remains **54/54 traceability IDs**. CMD-045–048 are PO-approved external control-plane responsibilities and are not executable application commands; they have no application route/RPC/permission/transaction/lock set. The correct application denominator for LPR-09 and LPR-10 is therefore **50 commands**. Static documentation currently records candidate execution/transaction boundaries for 50/50 application commands; this is coverage, not full normalized-manifest completion or technical certification. **Application lock certification remains 0/50.** LPR-01, LPR-07–LPR-09 and LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. The 54-ID inventory and historical 0/54 statements in earlier dated checkpoints are preserved as historical inventory snapshots, not current application certification denominators. Current sources: LOCK-MANIFEST-001 v0.4.26; LOCK-GRAPH-001 v0.4.19; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.12; TECH-RESOLUTION-LPR-001 v0.1.3; CONCURRENCY-001 v0.1.7. G9 remains NOT READY; G10 remains NOT ACTIVE.
 
 
 ## 16. Uniform application lock-manifest register — 2026-11-24
 
 [LOCK-NORMALIZATION-001](COMMAND-LOCK-MANIFEST-NORMALIZATION-REGISTER-001.md) v0.1.1 is the consolidated 50-command candidate register. Static inventory check confirms 50 unique application command IDs across six groups (10 + 10 + 10 + 10 + 4 + 6), with no duplicates and no missing in-scope IDs. CMD-045–048 remain external control-plane IDs and are excluded. CMD-PHYSICAL-CROSSWALK-001 v0.1.0 records physical read/write proposals for all 50 application IDs, including explicit OPEN/BLOCKED entries for CMD-041–044. The register preserves source conflicts and unknown physical fields as OPEN; it does not approve a lock mode or certify an acyclic graph. LPR-09 OPEN; LPR-10 NOT EXECUTED; 0/50 certified. Current linked sources: LOCK-MANIFEST-001 v0.4.24; LOCK-GRAPH-001 v0.4.17; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.11; TECH-RESOLUTION-LPR-001 v0.1.10; DGA-001 v1.11.45.
+
+
+## 17. CMD-049–054 event-time audience snapshot and lock-order reconciliation — 2026-11-24
+
+NLA-001 v0.1.4 and CMD-049–054 Detailed Contract Review v0.1.3 now distinguish the approved POQ-01 product invariant from its unapproved physical implementation. The candidate relation `notification_outbox_recipients` and outbox snapshot header fields (version/hash/count/completion) are documented across physical schema v0.4.4, RLS v0.2.5, ERD v0.3.3, permission registry v0.2.5, command catalogue v0.4.8, physical crosswalk v0.1.2 and QA v0.4.2. They remain NOT ADMITTED and excluded from the canonical 48-table inventory.
+
+CMD-052 must consume only the immutable event-time candidate set; CMD-054 creates its own event-time candidate set; neither may re-resolve current role/assignment membership on retry. Dispatch-time revalidation may suppress external delivery only. Candidate snapshot rows and outbox header are proposed to be persisted atomically with the source event. Exact selector grammar, scope FKs, canonical serialization/hash, recipient bounds, transaction latency and RLS/ACL remain open.
+
+**New critical lock-graph finding:** candidate snapshot and inbox writes may trigger implicit FK KEY SHARE locks against app_users, project/session/location and assignment rows. If these occur after L30/L50/L55 source locks or after queue/policy locks, they may invert against L15/L16/L17 revocation paths. No candidate rank is approved. LOCK-MANIFEST-001 v0.4.26 §7.6 and LOCK-GRAPH-001 v0.4.19 §27 record the unresolved edges and LG-41..45 adversarial tests. RAID R-037 and RTM NOTIF-015 track this as OPEN — CRITICAL.
+
+QA v0.4.2 adds TC-NOTIF-030..040, TC-RLS-024-049 and TC-FN-SEC-025-070..071; all PLANNED / NOT EXECUTED. No lock mode, relation, grant, function, provider, migration or implementation is approved by this reconciliation. G9 NOT READY; G10 NOT ACTIVE; application lock certification remains 0/50.
