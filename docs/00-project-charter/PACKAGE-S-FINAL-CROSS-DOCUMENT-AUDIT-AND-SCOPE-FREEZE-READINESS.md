@@ -320,3 +320,50 @@ This addendum supersedes historical counts/status in sections 9.10 and 9.14 wher
 - DGA-B10, B11, B12 and B13 remain open; B14 remains partial; B16 is partially reconciled. Scope freeze remains NOT READY and implementation authorization remains NOT GRANTED.
 
 No SQL, migration, permission seed, grant/revoke, live database mutation, deployment, CI/runtime/security/load/restore test or UAT was performed by this documentation update.
+
+
+## 9.16 Current cross-document governance reconciliation — 2026-11-24
+
+This addendum supersedes §9.15 only for current navigation and inventory counts. Sections 9.10, 9.14 and 9.15 remain historical snapshots and are not rewritten as if they had been produced from later source versions.
+
+### Current controlled sources
+
+- AGENTS.md v1.2.0 — mandatory repository policy.
+- MIB-001 v1.0.3 — governance control plane.
+- DGA-001 v1.11.23 — active gap register; 21 DGA-B IDs.
+- IRG-001 v1.0.1 — pre-implementation roadmap; not authorization.
+- Decision Register — canonical current Product Owner decision index.
+- Package T v0.1.1 — historical decision pack; PO outcomes are recorded, current authority remains the Decision Register and dated addenda.
+- RTM-001 v0.1.1 — 125 unique requirement IDs.
+- RAID-001 v0.1.1 — 53 unique risk/assumption/issue/dependency IDs.
+- QA Catalogue v0.3.5 — 410 unique planned test-case definitions in the current DGA scan.
+
+### Current static inventory
+
+- Proposed command catalogue: 54/54 command IDs and QA anchors.
+- Command lock manifest: 54/54 inventoried; 10/54 candidate-normalized; 0/54 technically approved/certified.
+- Proposed physical schema/RLS inventory: 48/48 table-name parity by static document comparison only.
+- QA: 410 unique planned test definitions; no test execution is claimed.
+- Notification QA: TC-NOTIF-001..026 planned only.
+- Print batch QA: TC-PRINT-BATCH-001..008 planned only.
+
+The §9.15 value of 391 distinct test identifiers remains a valid historical text-level count for that checkpoint; it is superseded for current inventory navigation by the later DGA-001 scan of 410 unique test-case definitions. Neither count represents executed tests.
+
+### Decision and authority status
+
+- T-01: Standing Bracket source confirmed by PO; official IFP source and complete photo/evidence-slot/annex reconciliation remain open.
+- T-02: configurable BA signatory blocks are PO-approved; institutional signatory authority and final template remain open.
+- T-05..T-18 and LPR-02..LPR-06 retain their recorded PO outcomes; design, technical, institutional and verification dependencies remain open where specified.
+- T-10: PO-approved institutional review path only; written institutional records/legal/privacy policy remains blocked.
+- T-12: PO-approved alternative provider-ownership path only; actual owners, custodians, region, plan, budget and recovery evidence remain blocked.
+- No PO decision authorizes implementation, merge, production data use, SQL, migrations, grants or deployment.
+
+### Current cross-document audit and request packages
+
+- [SSOT-AUDIT-001 — Cross-Document Reconciliation Audit](SSOT-CROSS-DOCUMENT-RECONCILIATION-AUDIT.md) records the DGA/RTM/RAID/Decision Register/Package S/T reconciliation.
+- [POQ-001 — Product Owner Open Decision Packet](PRODUCT-OWNER-OPEN-DECISION-PACKET.md) contains only unresolved product-semantic questions.
+- [AUTH-001 — Institutional and Technical Authority Approval Package](INSTITUTIONAL-AND-TECHNICAL-AUTHORITY-APPROVAL-PACKAGE.md) routes institutional, Security, Database, repository and Operations evidence requests.
+
+### Gate disposition
+
+G1–G8 retain the current DGA dispositions; G9 remains NOT READY; G10 remains NOT AUTHORIZED; G11/G12 remain NOT STARTED. This addendum improves current cross-document navigation and traceability only. It does not close S-01..S-12, establish scope freeze, or replace independent G9 review.
