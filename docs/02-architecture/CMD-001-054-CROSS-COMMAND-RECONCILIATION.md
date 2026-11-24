@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.7.0
+**Version:** 0.8.0
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -107,7 +107,7 @@ T-18 Option A is the approved architecture pattern:
 - read-only paths prefer SECURITY INVOKER/RLS where feasible;
 - each SECURITY DEFINER function requires an individually reviewed least-privileged NOLOGIN owner, safe search_path, schema-qualified references and exact grants.
 
-T-18 does **not** approve every command, function signature, route, role, grant, RLS policy or SECURITY DEFINER exception. The live Supabase inventory and actual Vercel-to-PostgREST caller-JWT path remain unverified.
+T-18 approves the narrow SECURITY DEFINER wrapper model for protected writes and SECURITY INVOKER preference for scoped reads. It does **not** approve any individual command contract, function signature, route, role, grant, RLS policy, function owner or exact EXECUTE ACL. The live Supabase inventory and actual Vercel-to-PostgREST caller-JWT path remain unverified.
 
 ### 3.3 Atomicity, audit and external effects
 
