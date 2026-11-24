@@ -279,3 +279,23 @@ This clarification does not fabricate or substitute a third party's signed insti
 - SQL, migration, source code, grants/revokes, RLS changes, live database inspection, runtime tests, provider setup, deployment or production operations.
 
 **Authority and gate boundary:** This decision is Product Owner candidate-direction approval only. It does not substitute for Engineering, Database, Security, Operations or institutional approvals and evidence. F-01/F-02 remain open pending authenticated RPC/database evidence and adversarial tests. Resolver lock certification remains 0/40; application lock certification remains 0/50; global graph acyclicity is NOT PROVEN; candidate snapshot relation remains NOT ADMITTED; G9 remains NOT READY and G10 remains NOT ACTIVE.
+
+
+## Product Owner decision proposal — POQ-04 event-transition recipient semantics (2026-11-24)
+
+**Status: PROPOSED — NOT APPROVED.** This proposal resolves L05-REVIEW-001 F-05. It does not alter POQ-01 through POQ-03 and is not executable until the Product Owner explicitly approves or revises it.
+
+**Recommended common rule:** the immutable candidate audience is evaluated against the serialized pre-mutation state at the single captured `audience_evaluated_at`. The source mutation, canonical event and candidate snapshot commit atomically. Actor, target and affected member are included only when the exact approved event selector selects them; no participant is silently appended. After commit, dispatch-time account, channel, consent/revocation, current-scope and mandatory security revalidation may suppress an existing candidate but may never add a recipient. A retry reuses the same candidate set and checkpoint.
+
+| Transition | Proposed event-time candidate result | Proposed dispatch/retry result |
+|---|---|---|
+| Role revoke (CMD-005) | Evaluate selectors before the revoke mutation. The revoked target is included only if eligible under the pre-mutation role/scope state and selected by policy; actor is not auto-added. | Current role/scope revalidation may suppress delivery after revocation. No new candidate is added. |
+| Account reject/disable/suspend (CMD-002/003) | Evaluate selectors before the account-state mutation. A selected account may exist in the immutable snapshot if eligible immediately before the transition. | Non-enabled account is suppressed before each send attempt. Re-enable may permit a later retry only for that same original candidate; it never creates a new candidate. |
+| Assignment-member end (CMD-015) | Evaluate membership and selectors before ending membership, using the captured instant and half-open effective intervals. | Current-scope revalidation may suppress delivery when the assignment/member scope is no longer effective. No replacement member is added. |
+| Project/session close (CMD-010/013) | Evaluate selectors against the pre-close parent state. Selected candidates are persisted atomically with the closure event. | Closed parent/current-scope policy may suppress delivery where the policy requires current active scope. No post-close recipient is added. |
+| Self-revoke by actor | Actor is included only if the exact event selector independently selects the actor under pre-mutation eligibility. No implicit actor inclusion or exclusion. | The actor's post-revoke role/scope state is revalidated; delivery is suppressed if no longer authorized by the applicable current-scope rule. |
+
+**Invariant:** snapshot membership is immutable and records the event-time decision; dispatch suppression is a separate outcome and cannot mutate or widen the snapshot. Suppression reasons and each attempt outcome must be auditable without storing unnecessary sensitive data.
+
+**Approval request:** PO must approve this complete matrix or specify corrections. Security/Engineering must then validate current-scope suppression, retry-after-reactivation, audit semantics and exact selector behavior. The proposal does not approve physical schema, lock ranks, SQL, implementation, runtime tests, G9 or G10.
+
