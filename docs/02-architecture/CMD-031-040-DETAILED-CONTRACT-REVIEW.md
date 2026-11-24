@@ -1,7 +1,7 @@
 # CMD-031–040 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security/institutional review required; NOT approved for implementation  
-**Document version:** 0.1.0  
+**Document version:** 0.2.0  
 **Date:** 2026-11-24  
 **Scope:** CMD-031 through CMD-040  
 **Repository phase:** Documentation / SSOT maturation  
