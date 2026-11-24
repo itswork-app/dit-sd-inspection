@@ -6,7 +6,7 @@ Version: 0.1.0
 
 ## Physical schema and RLS reconciliation status
 
-The logical ERD is reconciled against Package L and Package M in [Physical Schema ↔ RLS ↔ Command Reconciliation](PHYSICAL-SCHEMA-RLS-COMMAND-RECONCILIATION.md). The current physical schema and RLS catalogue each contain 41 tables with exact name parity. `print_batches` and `notification_events` are currently ERD-only entities; their retention/removal or physical design and RLS disposition remain open. Do not treat their ERD presence as authorization to create or expose them.
+The logical ERD is reconciled against the physical schema and RLS catalogue in [Physical Schema ↔ RLS ↔ Command Reconciliation](PHYSICAL-SCHEMA-RLS-COMMAND-RECONCILIATION.md). The documentation design now proposes 48 physical/RLS tables: the original 41 plus `print_batches` and six notification lifecycle tables. `notification_events` is removed as an ambiguous placeholder and replaced by explicit outbox, inbox, delivery, attempt, policy-version and escalation entities. This is a documentation proposal only; no live schema, deployed RLS or grants are verified.
 
 ## 1. Modeling rules
 
@@ -49,8 +49,15 @@ erDiagram
   INSPECTIONS ||--o{ REVIEW_EVENTS : reviewed
   PROJECTS ||--o{ TARGET_ALLOCATIONS : plans
   INSPECTIONS ||--o{ PRINT_EVENTS : printed
+  PRINT_BATCHES ||--o{ PRINT_EVENTS : contains
   PROJECTS ||--o{ DOCUMENTS : issues
   APP_USERS ||--o{ AUDIT_EVENTS : acts
+  NOTIFICATION_POLICY_VERSIONS ||--o{ NOTIFICATION_OUTBOX : selects
+  NOTIFICATION_OUTBOX ||--o{ NOTIFICATIONS : fans_out
+  APP_USERS ||--o{ NOTIFICATIONS : receives
+  NOTIFICATIONS ||--o{ NOTIFICATION_DELIVERIES : routes
+  NOTIFICATION_DELIVERIES ||--o{ NOTIFICATION_DELIVERY_ATTEMPTS : attempts
+  NOTIFICATIONS ||--o{ NOTIFICATION_ESCALATION_EVENTS : escalates
 ```
 
 ## 3. Proposed entity groups
@@ -85,15 +92,20 @@ erDiagram
 ### Evidence and documents
 - `evidence_assets`: private object key, checksum, size, MIME type, slot/item, uploader, upload state, capture metadata.
 - `documents`: generated PDF/BA/attendance document metadata, template version, source revision, checksum.
-- `print_batches`: batch identity, initiating actor, timestamp, requested document count, and lifecycle/status metadata; batch is an orchestration record, not proof of all-document success.
-- `print_events`: one append-only per-document event with actor, time, exact document version, atomic reprint ordinal, outcome (`SUCCESS_RECORDED`, `FAILED`, `CANCELLED`), batch reference when applicable, and safe client/application result metadata.
+- `print_batches`: durable batch identity, initiating actor, scope, requested count, idempotency hash, aggregate lifecycle/status and optional retry lineage; not proof of physical printer output.
+- `print_events`: append-only per-document attempt with actor, time, exact document version, atomic per-document sequence, outcome (`SUCCESS_RECORDED`, `FAILED`, `CANCELLED`), optional batch reference, safe result/error code and idempotency reference. Failed-only retry appends a new attempt and never overwrites history.
 - `attendance_records`, `attendance_documents`: generated roster and uploaded signed evidence lifecycle.
 
 ### Audit and operations
 - `audit_events`: append-only actor/action/target/scope/time/correlation metadata.
 - `idempotency_records`: command key, actor, request hash, result reference, expiry/retention.
 - `sync_batches`: client batch identity, acknowledgement, conflict references.
-- `notification_events`: durable in-app notification state if approved.
+- `notification_policy_versions`: immutable, validated, scope-bound notification policy snapshots.
+- `notification_outbox`: transactional source-event fan-out intents, pinned to a policy version.
+- `notifications`: recipient-specific in-app inbox records with independent read/dismiss timestamps.
+- `notification_deliveries`: current per-channel delivery projection, separate from inbox read state.
+- `notification_delivery_attempts`: append-only sanitized provider attempt history.
+- `notification_escalation_events`: append-only SLA/reminder/escalation decisions.
 
 ## 4. Key integrity constraints
 
@@ -106,8 +118,8 @@ erDiagram
 7. Revision numbers are unique per inspection; submitted revisions cannot be updated or deleted by application roles.
 8. Checklist response references an item in the exact instrument version snapshot used by the revision.
 9. Evidence metadata references a valid slot/item, exact immutable inspection revision and exact instrument version; preserve checksum, uploader, capture/upload timestamps and immutable object identity. Replacement creates a new evidence record and audit event; finalized objects are never overwritten in place.
-10. Print events are append-only; a reprint creates a new event. Each event references the exact immutable document version and has a concurrency-safe per-document sequence.
-11. Batch print outcomes are per-document; retry can reference failed documents only and cannot duplicate a previously successful event.
+10. Print batches persist a stable batch ID and requested count; each per-document attempt is appended to `print_events` with batch reference, immutable document version, outcome and concurrency-safe sequence. Batch status is derived/maintained from per-document outcomes; retry is failed-only and cannot duplicate a successful outcome.
+11. Notification source-event fan-out is durable through `notification_outbox`; one inbox row per recipient is unique per outbox, one delivery projection per channel is unique per notification/channel, attempts and escalations are append-only, and read state is independent.
 12. Target allocations are versioned and never mutate actual inspection timestamps.
 
 ## 5. State versus event
