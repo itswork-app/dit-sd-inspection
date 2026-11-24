@@ -335,7 +335,7 @@ This addendum supersedes §9.15 only for current navigation and inventory counts
 - Decision Register — canonical current Product Owner decision index.
 - Package T v0.1.1 — historical decision pack; PO outcomes are recorded, current authority remains the Decision Register and dated addenda.
 - RTM-001 v0.1.1 — 125 unique requirement IDs.
-- RAID-001 v0.1.1 — 53 unique risk/assumption/issue/dependency IDs.
+- RAID-001 v0.1.1 — 65 unique risk/assumption/issue/dependency IDs.
 - QA Catalogue v0.3.5 — 410 unique planned test-case definitions in the current DGA scan.
 
 ### Current static inventory
