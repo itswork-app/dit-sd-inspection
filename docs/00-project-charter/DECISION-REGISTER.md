@@ -17,7 +17,7 @@ Only explicitly approved decisions are marked APPROVED.
 | RBAC-002 | Multi-role accounts allowed with explicit operational assignment | APPROVED | Scope by session/location/instrument; no self-review |
 | WF-001 | Reviewer returns corrections to Inspector; Inspector resubmits | APPROVED | Immutable version history |
 | WF-002 | Reopening approved inspection requires authority, reason, and audit | APPROVED | Explicit permission required |
-| SES-001 | Each unit inspection attempt is bound to exactly one session; unfinished unit work is aborted at session end and cannot resume in another session | APPROVED | Same Inspector handles returned correction only within the original session; later session starts a new attempt |
+| SES-001 | Each unit inspection attempt is bound to exactly one session; a returned inspection may be ABORTED only when a detected error cannot be corrected/reinspected because the physical unit has already been packed and prepared for shipment; Inspector requests and Admin/Korlap approves | APPROVED | Normal returned corrections remain with the same Inspector in the original active session; ABORTED is terminal and is not approval/completion; a later session uses a new attempt |
 | WF-003 | Session closure requires every assigned unit attempt to reach an allowed terminal outcome; incomplete attempts must be aborted before final closure | APPROVED | Completed units follow approval/document/print requirements; aborted attempts remain explicit non-completion records |
 | RPT-001 | Actual and Target reports are separate | APPROVED | Daily, weekly, and final variants |
 | RPT-002 | Actual records retain true activity dates/times | APPROVED | Never rewrite actual activity to match target allocation |
@@ -343,3 +343,20 @@ This clarification does not fabricate or substitute a third party's signed insti
 **Scope:** IFP and Standing Bracket inspections by the Dit. SD inspection team only. This decision does not add school-side personas or workflows.
 
 **Technical constraints still requiring review:** exact abort command/API mapping and permission; whether existing CMD-027 release semantics can be reused or a dedicated abort command is required; atomic abort + claim release + audit/event/idempotency; handling of a returned correction that remains unresolved at session close; and physical uniqueness allowing a new session-bound attempt while preserving canonical unit identity. These are not silently inferred as implementation-ready. No DDL, RLS, grants, code or tests are approved by this decision.
+
+## SES-001 PO clarification — exceptional abort for packed shipment unit (2026-11-24)
+
+**Status: PO APPROVED.** This clarification supersedes any broader interpretation that all unfinished, hanging, or returned attempts may be aborted as routine session cleanup.
+
+ABORT is an exceptional disposition for this specific path:
+1. Inspector submits an inspection attempt.
+2. Reviewer returns it because an error was found.
+3. The physical unit has already been packed/boxed and prepared for shipment, so the Inspector cannot practically correct or reinspect that unit.
+4. Inspector submits an ABORT request with the reason.
+5. Admin/Korlap reviews and explicitly approves or rejects the request. Only an approved request may transition the attempt to ABORTED.
+
+If the unit remains practically accessible for correction/reinspection, the normal WF-001 path applies: the same Inspector corrects and resubmits in the original active session. Packing alone is not a substitute for Reviewer return, and ABORT is not a way to avoid an available correction.
+
+ABORTED is terminal and is not a good/defective classification, inspection approval, inspection completion, or print completion. Preserve the submitted revision, Reviewer return decision, evidence and audit history. A later inspection, if required, is a new attempt with a new inspection_id and its own session binding; the ABORTED attempt is never reactivated. CMD-013 FINAL_CLOSE cannot create, approve or bulk-apply aborts and cannot use ABORT to bypass unrelated evidence, document, print or attendance requirements.
+
+The exact command identity, permission/grant and SoD matrix, reason taxonomy, evidence requirements for proving packed/shipment-ready state, atomic state/claim/audit/event/idempotency write set, lock order, schema/RLS and QA execution remain technical design work. This PO clarification does not invent a command ID or authorize implementation.
