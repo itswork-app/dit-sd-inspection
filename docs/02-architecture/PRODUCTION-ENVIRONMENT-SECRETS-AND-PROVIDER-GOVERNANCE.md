@@ -1,7 +1,7 @@
 # Production Environment, Secrets and Provider Governance
 
 **Status:** Production operations design draft — sponsor and security approval required  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Package:** Q  
 **Date:** 2026-11-23
 
@@ -201,3 +201,12 @@ The Product Owner approved option C on 2026-11-23: an alternative provider-owner
 Before production account creation/use or production data deployment, record institutional written approval for: legal/account owner for Supabase and Vercel; billing owner/payment method/budget authority; named primary and secondary custodians and recovery contacts; MFA and least-privilege access; offboarding and break-glass; ownership and transfer/exit rights for projects/data; region/data-residency approver; and incident/backup/restore/escalation responsibility. Ensure service continuity if an individual developer or custodian leaves.
 
 **Status:** PO option C APPROVED; actual ownership arrangement and institutional authorization remain BLOCKED. Provider plan, quotas, region, billing, backup/PITR, Storage object recovery and restore-drill evidence remain unverified. No production deployment or production-data use is authorized by this PO decision.
+
+
+## Notification provider and callback governance — 2026-11-24
+
+NLA-001 v0.1.2 and INT-NOTIF-001 define a proposed provider callback ingress for CMD-053. No email/push provider is selected or configured by this document. Before provider onboarding, the accountable provider owner and Security must document account/billing ownership, region/data residency, plan/quota/cost, support/recovery ownership, credential custody, rotation/revocation, provider idempotency and delivery callback capability.
+
+INT-NOTIF-001 must validate provider-specific signature/authentication and timestamp freshness, resolve only an existing provider_message_ref, deduplicate stable provider event IDs durably, and apply only allowlisted monotonic delivery-state transitions. Raw webhook bodies, signature secrets, tokens and full provider responses must not enter application logs or general audit metadata. Callback replay, stale worker completion and ambiguous provider acceptance must have explicit recovery behavior.
+
+The exact provider, signature algorithm, secret manager, callback event identity/deduplication persistence, region and retry/alert thresholds remain OPEN. No provider credentials, webhook endpoint, environment variable, role or production setting is authorized by this design addendum.
