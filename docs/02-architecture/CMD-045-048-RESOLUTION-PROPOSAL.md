@@ -1,10 +1,14 @@
 # CMD-045–048 — Control-Plane Resolution Proposal
 
 **Document ID:** CMD-RESOLUTION-045-048  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Date:** 2026-11-24  
-**Status:** Engineering recommendation — Product Owner disposition required; NOT approved for implementation  
+**Status:** PO APPROVED application-scope disposition (approval of v0.1.0 recorded 2026-11-24); external evidence gates remain OPEN; no implementation authorization  
 **Related:** CMD-REVIEW-045-048 v0.1.0; T-10; T-12; T-15; T-18; DGA-B04/B05/B10/B12/B15; D-031..D-033; R-032/R-033.
+
+## Approval record
+
+The Product Owner approved version 0.1.0 of this proposal on 2026-11-24. Version 0.1.1 records that disposition and preserves the accepted scope unchanged. Approval applies only to the application-surface treatment and traceability status of CMD-045–048. It does not approve institutional T-10 policy, T-12 provider ownership, incident-response authority, release governance, implementation, tests, deployment or production operation. G9 remains NOT READY; G10 remains NOT ACTIVE.
 
 ## 1. Executive recommendation
 
