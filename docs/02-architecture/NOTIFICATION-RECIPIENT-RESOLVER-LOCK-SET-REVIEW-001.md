@@ -5,7 +5,7 @@
 **Status:** Engineering design proposal — NOT APPROVED; no lock rank or physical mechanism is admitted  
 **Date:** 2026-11-24  
 **Repository baseline:** docs/audit-lock-and-identity-reconciliation at 7d722a77ac37a4c82a026daeddd1b00df4a4f713  
-**Inputs:** AGENTS.md v1.2.2; NLA-001 v0.1.8; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.7 NOTIF-014/015; RAID-001 v0.1.6 R-037; DGA-001 v1.11.59
+**Inputs:** AGENTS.md v1.2.2; NLA-001 v0.1.12; NLA-L05-TDR-001 v0.1.6; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.7 NOTIF-014/015; RAID-001 v0.1.6 R-037; DGA-001 v1.11.66
 
 ## 1. Executive result
 
