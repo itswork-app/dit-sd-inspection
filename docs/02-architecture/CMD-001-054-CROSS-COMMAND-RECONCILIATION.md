@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.36
+**Version:** 0.8.37
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -586,6 +586,6 @@ TDR v0.1.8 defines a review-candidate selector grammar and dispatch matrix; NLA-
 
 NLA-EVENT-TECH-RECON-001 v0.1.0 records the first partial technical pass for NREG-001 `account.approved` and NREG-002 `account.rejected`. The CMD-002/003 source command transaction and proposed `app_users`, `account_decisions`, `idempotency_records` and `audit_events` source objects are identified in static command documents. L05-SOURCE-MAP-001 v0.1.0 confirms the candidate source transaction boundary and places L05 after L00 but before the first mutable lock; this is not an admitted lock order or source-code proof.
 
-Open items: exact canonical event envelope/version and participant projection; pending-applicant event-time selection versus dispatch-time enabled-account suppression under POQ-04; terminal decision uniqueness/CAS; complete account eligibility writers including non-command admin/support, disable/suspend/reactivate and Auth reconciliation; conditional T-14 capacity effect and L05/L10 order; exact event/outbox/snapshot identity and dedup; complete FK/trigger/helper/ACL evidence. Both registry rows remain PARTIAL STATIC REVIEW — UNRESOLVED / NOT ENABLED. No event, recipient, selector, channel, physical snapshot relation or implementation is admitted.
+Open items: exact canonical event envelope/version and participant projection; pending-applicant event-time selection versus dispatch-time enabled-account suppression under POQ-04; terminal decision uniqueness/CAS; complete account eligibility writers including non-command admin/support, disable/suspend/reactivate and Auth reconciliation; conditional T-14 capacity effect and L05/L10 order; exact event/outbox/snapshot identity and dedup; complete FK/trigger/helper/ACL evidence. Both registry rows remain PARTIAL STATIC REVIEW — UNRESOLVED / NOT ENABLED. No event, recipient, selector, channel, physical snapshot relation or implementation is admitted. RTM-001 v0.1.14 traces NOTIF-024/025; QA Catalogue v0.5.4 adds TC-NOTIF-075/076, all PLANNED / NOT EXECUTED.
 
 The update does not change resolver certification 0/40, application lock certification 0/50, global graph NOT PROVEN ACYCLIC, candidate snapshot relation/header NOT ADMITTED, tests PLANNED / NOT EXECUTED, F-05/F-04/F-03/F-07 OPEN, G9 NOT READY or G10 NOT ACTIVE.
