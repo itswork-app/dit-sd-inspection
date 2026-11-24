@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.54
+**Version:** 1.11.55
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -630,6 +630,15 @@ QA v0.3.8 adds 18 CMD-041–044 cases; all PLANNED / NOT EXECUTED. This closes t
 
 CMD-045–048 Control-Plane Resolution Proposal v0.1.2 and Detailed Contract Review v0.1.4 now consistently record the PO-approved non-executable application disposition. QA v0.4.1 removes the false application permission/route framing from their traceability anchors. This closes application-surface ambiguity only; T-10, T-12, incident-response RACI and DGA-B15 release governance remain external blockers. Live platform absence is not verified.
 
-For notification commands, NLA-001 v0.1.4 reconciles POQ-01 event-time recipient semantics into a candidate relational snapshot model. Candidate relation `notification_outbox_recipients` is documented across physical schema v0.4.4, RLS v0.2.5, ERD v0.3.3, permission registry v0.2.5, command catalogue v0.4.8, physical crosswalk v0.1.2 and QA v0.4.1. It is NOT ADMITTED and excluded from canonical 48-table inventory. CMD-052/054 must not reconstruct recipients from current role/assignment membership; candidate snapshot and scope must be persisted at source-event time. Exact selector grammar, scope FKs, canonical hash, source-transaction fan-out bounds, RLS/ACL, workload identity and runtime evidence remain OPEN.
+For notification commands, NLA-001 v0.1.4 reconciles POQ-01 event-time recipient semantics into a candidate relational snapshot model. Candidate relation `notification_outbox_recipients` is documented across physical schema v0.4.4, RLS v0.2.5, ERD v0.3.3, permission registry v0.2.5, command catalogue v0.4.8, physical crosswalk v0.1.2 and QA v0.4.2. It is NOT ADMITTED and excluded from canonical 48-table inventory. CMD-052/054 must not reconstruct recipients from current role/assignment membership; candidate snapshot and scope must be persisted at source-event time. Exact selector grammar, scope FKs, canonical hash, source-transaction fan-out bounds, RLS/ACL, workload identity and runtime evidence remain OPEN.
 
 QA adds TC-NOTIF-030..035 and TC-RLS-024-049, all PLANNED / NOT EXECUTED. The six existing notification tables remain the admitted proposal; the seventh relation is a candidate only. No migration, code, grants, RLS deployment, CI, test execution, provider callback integration or runtime inspection occurred. G9 NOT READY; G10 NOT ACTIVE; application lock certification remains 0/50.
+
+
+## CMD-049–054 audience snapshot lock-order blocker — 2026-11-24
+
+NLA-001 v0.1.4, CMD-049–054 Detailed Contract Review v0.1.3, Command-Level Lock Manifest v0.4.26 and Global Lock Graph v0.4.19 now record the POQ-01 event-time audience invariant and its physical/lock-order gap. Candidate relation `notification_outbox_recipients` and outbox snapshot header fields are NOT ADMITTED and excluded from the canonical 48-table inventory.
+
+A new critical risk is recorded as RAID R-037: recipient/scope snapshot and inbox inserts may cause implicit FK KEY SHARE locks against L15/L30/L50/L55 resources after source aggregate, queue or policy locks, potentially inverting the global candidate order. This is a potential edge, not an observed deadlock. The source command/event inventory, temporal eligibility linearization, exact FKs, worker paths and all implicit edges must be proven before candidate admission.
+
+RTM NOTIF-014/015 records the durable snapshot requirement and lock-order proof requirement. QA v0.4.2 adds TC-NOTIF-036..040 mapped to LG-41..45. All snapshot and concurrency cases remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE; 0/50 application lock-certified. No implementation or live database test occurred.
