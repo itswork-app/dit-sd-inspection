@@ -1,7 +1,7 @@
 # Privileged Command Boundary and Transaction Specification
 
 **Status:** Architecture direction PO APPROVED (T-18 option A, 2026-11-24); command-specific design and implementation gates remain open  
-**Version:** 0.1.0  
+**Version:** 0.2.0  
 **Package:** N — Trusted Command Boundary  
 **Date:** 2026-11-23
 
@@ -181,7 +181,7 @@ Errors must not disclose whether an unauthorized resource exists. Use a consiste
 
 1. Expand every command-family row into a complete command contract: request/response schema, actor/permission/scope predicate, state transition, lock set/order, idempotency key/hash/retention, domain and audit event, typed outcomes, retry semantics and positive/negative/concurrency test IDs. Use the proposed Canonical Permission Registry and Command Authorization Matrix as the single vocabulary baseline; it remains subject to PO/security approval.
 2. Reconcile the command inventory against T-18: instrument deactivation, evidence access/export, project closure, audit read/export and bounded batch-print orchestration must have explicit authority and per-command contracts.
-3. Complete function-by-function review of any SECURITY DEFINER exception; pin search_path and minimize owner/grants.
+3. Complete function-by-function approval under the already selected T-18 Option A model; pin empty search_path, schema-qualify references and minimize owner privileges/grants.
 4. Complete the table-by-table RLS and direct-DML denial catalogue and exact command EXECUTE grant matrix.
 5. Confirm offline maximum retry window and idempotency retention; align with the approved T-09 offline boundary and device safeguards.
 6. Complete technical review of the documented T-16 canonical unit/project association, composite foreign keys and claim scope; obtain institution-approved serial normalization/exception policy before migration.
@@ -223,7 +223,7 @@ T-18 is PO APPROVED option A (2026-11-24): this Vercel route + caller-JWT Postgr
 3. PostgreSQL derives the actor from the JWT subject (auth.uid()), resolves the application account and checks enabled/approved state, explicit permission, active role, project/session/assignment scope, target state and separation of duties. Database checks are authoritative; route checks are defense in depth.
 4. Command validates transition and inputs, takes required row/advisory locks, enforces idempotency and performs the business mutation plus required domain event and INS-016 audit insert in one transaction. Audit failure or invariant failure rolls back the entire command. Return success only after commit.
 5. Protected business, membership, assignment, instrument configuration/publication, audit and idempotency tables deny browser direct INSERT/UPDATE/DELETE through grants and RLS. Read access remains RLS-controlled. A command function is narrowly scoped to one business capability, not a generic DML proxy.
-6. Prefer SECURITY INVOKER. Any SECURITY DEFINER function requires an explicit function-level ADR/review, pinned search_path, schema-qualified references, strict input validation, safe ownership, and minimal EXECUTE grants. Revoke default PUBLIC execution where applicable.
+6. Protected writes use narrow SECURITY DEFINER wrappers under T-18 Option A; scoped reads use SECURITY INVOKER where feasible. Every function requires individual threat review, pinned empty search_path, schema-qualified references, strict input validation, safe NOLOGIN ownership and exact minimal EXECUTE grants. Revoke default PUBLIC execution where applicable.
 7. Never expose service-role credentials to the browser. Caller JWT is the default command identity. Any server-only service-role exception must be isolated, explicitly approved, least-privileged, audited and threat-modelled.
 8. Use stable typed outcomes for success, unauthenticated, forbidden, invalid input/transition, conflict/stale version, idempotency mismatch and retryable infrastructure failure. Do not disclose protected resource existence or sensitive policy detail to unauthorized callers.
 
@@ -233,12 +233,12 @@ Apply this contract to account approval/role and assignment changes, team staffi
 
 ### Approval boundary and remaining gates
 
-T-18 approves the architecture pattern only. It does not approve every command's detailed contract, any SECURITY DEFINER exception, a deployed RLS policy, or production service-role use. Complete command-by-command permission and transaction catalogue, table-level RLS/grant matrix, T-16 association/FK technical review and institutional serial policy, T-10 institutional policy and T-12 provider/recovery verification before implementation. No route/RPC/migration has been created and no tests have been executed.
+T-18 approves the narrow SECURITY DEFINER wrapper model for protected writes and SECURITY INVOKER preference for scoped reads. It does not approve every command contract, any specific function owner/signature/ACL, deployed RLS policy, or production service-role use. Complete command-by-command permission and transaction catalogue, table-level RLS/grant matrix, T-16 association/FK technical review and institutional serial policy, T-10 institutional policy and T-12 provider/recovery verification before implementation. No route/RPC/migration has been created and no tests have been executed.
 
 
 ## T-16 — Canonical unit commands and association enforcement
 
-All unit lifecycle commands use the T-18 Vercel route + caller-JWT PostgreSQL function pattern. `register-canonical-unit` normalizes a serial using the instrument's published policy and arbitrates the unique `(instrument_id, serial_normalized)` key. A collision creates a controlled `unit_identity_conflicts` record and returns a typed conflict; it never creates a second canonical unit. `associate-unit-to-project` creates a durable association episode only after authorized verification and records actor, project, unit, reason and audit event atomically. `end-unit-project-association` ends operational membership without deleting association or inspection history. `resolve-unit-identity-conflict` may attach the proposed project to the verified existing unit or reject/close the conflict with reason; no silent merge or historical row rewrite.
+All unit lifecycle commands use the T-18 Vercel route + caller-JWT PostgreSQL function pattern. `register-canonical-unit` normalizes a serial using the instrument's published policy and arbitrates the canonical unique `(instrument_type, serial_normalized)` key; the selected assignment/catalog row must resolve to the same immutable instrument type. A collision creates a controlled `unit_identity_conflicts` record and returns a typed conflict; it never creates a second canonical unit. `associate-unit-to-project` creates a durable association episode only after authorized verification and records actor, project, unit, reason and audit event atomically. `end-unit-project-association` ends operational membership without deleting association or inspection history. `resolve-unit-identity-conflict` may attach the proposed project to the verified existing unit or reject/close the conflict with reason; no silent merge or historical row rewrite.
 
 `claim-unit` locks the canonical unit row before association/assignment checks, verifies the association is ACTIVE and belongs to the same project as the assignment, verifies assignment instrument equals unit instrument and caller is an effective assignment member, then checks the global active claim. A partial unique index on active `unit_claims.unit_id` is the final race guard across projects. The claim row stores association ID and project ID. `save-draft`, submit, review, evidence, document and export commands derive scope through the inspection's immutable association/project binding and re-check effective session/assignment/permission. The unit ID alone never grants scope.
 
@@ -261,4 +261,4 @@ See [PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGU
 
 ## PostgreSQL function security and EXECUTE grant design
 
-See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md) for the caller-role/function-class/EXECUTE ACL proposal and the critical compatibility finding: SECURITY INVOKER under the browser's authenticated role cannot both perform protected table writes and lack direct table DML privileges without a separate execution boundary. T-18 requires PO/security resolution of hardened narrow SECURITY DEFINER wrappers (candidate) versus a proven separate command-executor principal. No broad authenticated DML or service-role substitution is authorized.
+See [T-18 Execution Model Security Review](T18-EXECUTION-MODEL-SECURITY-REVIEW.md) and [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md). The PO has selected narrow SECURITY DEFINER wrappers for protected writes. The remaining gate is per-function security approval and evidence: dedicated NOLOGIN owner, no SUPERUSER/BYPASSRLS or broad inherited grants, fixed empty search_path, schema-qualified SQL, exact EXECUTE ACL, caller-JWT propagation, database-derived actor, RLS/effective privilege analysis and negative/positive HTTP-path tests. This model selection does not authorize function creation, grants or migrations.
