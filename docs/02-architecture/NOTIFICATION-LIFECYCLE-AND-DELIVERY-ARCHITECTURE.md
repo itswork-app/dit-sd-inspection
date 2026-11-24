@@ -465,3 +465,8 @@ QA v0.4.4 adds TC-NOTIF-042..051 for source-event recipient resolution versus ro
 ## 18.1 PO selection of resolver serialization candidate — 2026-11-24
 
 PO selected the global transaction-scoped audience guard (candidate L05) as the primary mechanism for technical approval review. Option B SERIALIZABLE remains a contingency alternative only; do not combine the mechanisms without a separately reviewed design. See [NLA-RESOLVER-LOCK-001 v0.1.6](NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) §11. This is not final technical approval: exact PostgreSQL primitive/key, canonical rank, every eligibility-writer path including CMD-051, FK parent order, timeout/retry, throughput bounds and full acyclicity remain under Engineering/Database/Security review. No schema, lock rank, SQL or implementation is admitted. Candidate snapshot relation/header remain NOT ADMITTED; QA remains PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 18.2 L05 technical protocol proposal — 2026-11-24
+
+[NLA-L05-TDR-001 v0.1.0](NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) specifies the proposed transaction-level audience guard primitive, key registry requirements, READ COMMITTED snapshot rule, CMD-051 participation, CMD-052/CMD-054 boundaries, FK edge review and adversarial tests. This remains a technical proposal pending Engineering/Database/Security approval. No exact key constants, timeout/retry values, audience cap, performance SLO, schema or function is admitted. Candidate snapshot relation/header remain NOT ADMITTED; QA remains PLANNED / NOT EXECUTED.
