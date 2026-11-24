@@ -75,7 +75,7 @@ A phase is complete only when its exit evidence is recorded and reviewed. A docu
 | G7 | Quality strategy closure | Full RTM, acceptance criteria, test cases, risk-based coverage and test data strategy | NOT READY |
 | G8 | Production operations closure | Environments, ownership, region, quotas, backups, restore, monitoring, incident response, cost envelope | NOT READY |
 | G9 | Final SSOT and scope-freeze review | Cross-document consistency, no unresolved critical ambiguity, signed scope freeze | NOT READY |
-| G10 | Implementation authorization | Explicit PO/user authorization for code and migrations, approved implementation plan and branch | NOT AUTHORIZED |
+| G10 | Implementation authorization | Verified G9, approved scope-freeze record, and separate G10 activation record; conditional PO authorization has been received but is not activation | NOT ACTIVE |
 | G11 | Build and verification | CI evidence, functional/security/performance/accessibility/recovery test results | NOT STARTED |
 | G12 | Production release approval | Deployment, restore/rollback proof, operational ownership, UAT and go-live acceptance | NOT STARTED |
 
