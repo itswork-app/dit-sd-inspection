@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.11  
+**Version:** 0.1.12  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -332,3 +332,10 @@ TDR v0.1.8 proposes a constrained selector grammar and event-specific dispatch m
 The eight-clause maximum is provisional and requires Engineering/Operations resource validation plus Security/PO approval. Role-key and scope-binding references are not yet reconciled to canonical SSOT registries. Transition dispatch exceptions for role revoke, assignment-member end and project/session close require explicit Security approval and reconciliation with inbox/source-resource RLS.
 
 D-026 remains OPEN — BLOCKING. R-037 remains OPEN — CRITICAL. Selector dependency universe and complete writer inventory remain unproven; resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED. TC-NOTIF-055..070 remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE.
+
+
+## D-026 / R-037 event-candidate PO decision update — 2026-11-24
+
+The Product Owner approved eleven first-batch notification event intents for specification and technical review only. NLA-EVENT-REGISTRY-001 v0.1.0 records these candidates; no row is technically admitted or enabled. This resolves the PO decision dependency for the first batch but does not close selector grammar/dependency, source contract, dispatch, retry, audit, atomicity, lock certification or writer-inventory risks. 
+
+D-026 remains OPEN — BLOCKING. R-037 remains OPEN — CRITICAL. F-05/F-04/F-03/F-07 remain OPEN; resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED. TC-NOTIF-073/074 PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE.
