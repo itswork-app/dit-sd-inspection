@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.3  
+**Version:** 0.1.4  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -285,3 +285,8 @@ No RAID owner has been replaced with an invented person or institution. No new r
 | ID | Type | Description | Impact | Mitigation / response | Accountable role | Status |
 |---|---|---|---|---|---|---|
 | R-037 | Risk | POQ-01 event-time audience snapshot persistence may introduce implicit FK KEY SHARE locks to app_users and project/session/location/assignment rows after a source command, CMD-052 or CMD-054 already holds higher-ranked aggregate/queue/policy locks; this may invert L15/L16/L17/L30/L50/L55 order and create deadlocks or inconsistent eligibility snapshots | Critical | Keep notification_outbox_recipients candidate-only until every source event/worker path, competing account/scope writer and implicit FK/index/trigger/helper edge is mapped; define one event-time linearization and canonical order; prove the full graph acyclic and execute deterministic opposing-transaction tests before G9 | Engineering / Database / Security / QA | OPEN — CRITICAL |
+
+
+### R-037 resolver lock-set refinement — 2026-11-24
+
+The source event declaration inventory is complete at 40/40 in LOCK-MANIFEST-001 §7.7. The remaining gap is complete recipient-resolver lock-set coverage: 0/40 source paths certified. [NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001](../02-architecture/NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) proposes a global L05 audience guard or a SERIALIZABLE predicate snapshot and records required writer participation, FK pre-acquisition and adversarial tests. These are alternatives for review, not approved controls. R-037 remains OPEN — CRITICAL until the event-time linearization, selected mechanism, exact FK graph, every eligibility-changing writer, acyclicity and authorized runtime evidence are closed. 0/50 application lock-certified; G9 NOT READY; G10 NOT ACTIVE.
