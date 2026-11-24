@@ -1,11 +1,11 @@
 # Engineering & Security Technical Resolution Package — LPR-01 and LPR-07–LPR-11
 
 **Document ID:** TECH-RESOLUTION-LPR-001  
-**Version:** 0.1.2  
+**Version:** 0.1.3  
 **Status:** TECHNICAL RECOMMENDATION FOR ENGINEERING / DATABASE / SECURITY REVIEW — NOT APPROVED FOR IMPLEMENTATION  
 **Date:** 2026-11-24  
 **Repository / branch:** `itswork-app/dit-sd-inspection` / `docs/audit-lock-and-identity-reconciliation`  
-**Authority:** AGENTS.md v1.2.2; MIB-001 v1.0.10; IRG-001 v1.0.4; DGA-001 v1.11.30; SSOT-AUDIT-001 v0.1.5; Decision Register; T-07, T-14, T-16, T-17, T-18; LOCK-PROTOCOL-DECISION-RESOLUTION-001; LOCK-GRAPH-001; LOCK-MANIFEST-001  
+**Authority:** AGENTS.md v1.2.2; MIB-001 v1.0.11; IRG-001 v1.0.4; DGA-001 v1.11.39; SSOT-AUDIT-001 v0.1.5; Decision Register; T-07, T-14, T-16, T-17, T-18; LOCK-PROTOCOL-DECISION-RESOLUTION-001; LOCK-GRAPH-001; LOCK-MANIFEST-001  
 **Scope:** LPR-01, LPR-07, LPR-08, LPR-09, LPR-10, LPR-11; cross-command project/session fences; CMD-001–054 and asynchronous finalizers  
 **Gate:** G3/G4/G5/G7/G9 NOT READY; G10 NOT ACTIVE
 
@@ -317,7 +317,7 @@ Before any technical approval is recorded:
 
 ## 11. Current verification and gate status
 
-Static documentation review only. The root AGENTS.md v1.2.2, MIB-001 v1.0.9, IRG-001 v1.0.3, DGA-001 v1.11.28, SSOT-AUDIT-001 v0.1.5, Decision Register, lock resolution, global graph, 54-command manifest, command catalogue, detailed command reviews, physical schema and privileged transaction specification were inspected.
+Static documentation review only. The root AGENTS.md v1.2.2, MIB-001 v1.0.11, IRG-001 v1.0.4, DGA-001 v1.11.39, SSOT-AUDIT-001 v0.1.5, Decision Register, lock resolution, global graph, 54-command manifest, command catalogue, detailed command reviews, physical schema and privileged transaction specification were inspected.
 
 Not performed: source-code changes, SQL, migrations, grants/revokes, live database catalog/lock inspection, CI, automated tests, adversarial concurrency tests, deployment, merge or production changes.
 
@@ -336,16 +336,23 @@ Not performed: source-code changes, SQL, migrations, grants/revokes, live databa
 | DGA-B21 | OPEN |
 | Lock manifest | 54/54 inventoried; 0/54 certified |
 | G3/G4/G5/G7/G9 | NOT READY |
-| G10 | NOT AUTHORIZED |
+| G10 | NOT ACTIVE — pending verified G9 and separate activation record |
 
 **Final disposition:** this package makes the technical decisions concrete and reviewable; it does not approve them on behalf of Engineering, Database, Security, QA, Operations or the institution. Do not merge this PR or begin implementation based on this package alone.
 
 
 ## 12. Authority and evidence freshness addendum — 2026-11-24
 
-This revision corrects the stale root-policy reference from AGENTS.md v1.2.0 to v1.2.1 and records the current governance source versions. It does not change any technical recommendation or approval status. AUTH-06/AUTH-07 remain pending; LPR-01 and LPR-07–LPR-09/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED; lock certification remains 0/54. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT AUTHORIZED. No implementation, SQL, migration, grants/revokes, CI, live database inspection or test execution is claimed.
+This revision corrects the stale root-policy reference from AGENTS.md v1.2.0 to v1.2.1 and records the current governance source versions. It does not change any technical recommendation or approval status. AUTH-06/AUTH-07 remain pending; LPR-01 and LPR-07–LPR-09/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED; lock certification remains 0/54. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT ACTIVE pending verified G9 and a separate approved activation record. No implementation, SQL, migration, grants/revokes, CI, live database inspection or test execution is claimed.
 
 
 ## Conditional Product Owner authorization status synchronization — 2026-11-24
 
 The Product Owner's explicit conditional implementation authorization is recorded in the canonical Decision Register. It permits transition toward implementation from zero using the SSOT baseline, subject to G9 closure and a separate G10 activation record. **Current status: G9 NOT READY; G10 NOT ACTIVE.** This status synchronization does not approve this technical proposal, any lock mode, permission, function ACL, migration or runtime behavior. Technical and institutional approval boundaries stated in this document remain unchanged.
+
+
+## 13. Current gate and source-baseline synchronization — 2026-11-24
+
+This version synchronizes the current authority pointers to root AGENTS.md v1.2.2, MIB-001 v1.0.11, IRG-001 v1.0.4 and DGA-001 v1.11.39. The controlling authorization state is conditional Product Owner implementation authorization received; G9 NOT READY; G10 NOT ACTIVE pending verified G9 and a separate approved G10 activation record. Any earlier “G10 NOT AUTHORIZED” statement in this document is a historical snapshot, not the current state.
+
+This correction changes no technical approval, lock primitive, worker identity, ACL, manifest certification or test status. LPR-01 and LPR-07–LPR-09/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED; lock certification remains 0/50 application commands. G3/G4/G5/G7/G9 remain NOT READY. No implementation, SQL, migration, grants/revokes, CI, live database inspection, concurrency test, deployment or merge is claimed.
