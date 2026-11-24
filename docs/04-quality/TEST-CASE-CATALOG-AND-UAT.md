@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.5.5
+Version: 0.5.6
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -916,3 +916,14 @@ These cases guard the unresolved mapping between account event-time candidate se
 | TC-NOTIF-078 | Concurrent role grant/revoke, duplicate revoke replay, stale expected_version, and revoke of an already expired/revoked grant | At most one valid role transition and canonical `role.revoked` event commit; replay/no-op does not create duplicate event/outbox/snapshot; stale version is rejected only when backed by an approved physical CAS token; L05/L10 serialization covers all qualifying Inspector writers | PLANNED / NOT EXECUTED |
 
 **Execution control:** TC-NOTIF-077/078 require the approved role lifecycle, exact target participant mapping, selector/dispatch profile, physical version strategy, last-admin/SoD policy and complete L05/L10 writer proof. Runtime execution requires G10 activation and an authorized isolated environment. No test result is implied.
+
+
+### Project/session closure event candidate safety — 2026-11-24
+
+| Test ID | Scenario | Expected result / invariant | Status |
+|---|---|---|---|
+| TC-NOTIF-079 | CMD-013 emits `session.close_requested` and later performs the final CLOSED transition | `session.close_requested` never matches NREG-005; only the exact final committed `session.closed` event can be considered, with one final transition identity and no duplicate notice on request/replay | PLANNED / NOT EXECUTED |
+| TC-NOTIF-080 | CMD-010 project closure or CMD-013 final session closure resolves an audience and dispatches after the parent is closed | Candidate snapshot is evaluated against pre-close state and commits atomically with the final closure event; event-specific dispatch may suppress only under the approved rule, never by an accidental universal active-parent predicate; no recipient is added or substituted | PLANNED / NOT EXECUTED |
+| TC-NOTIF-081 | Project/session closure races with child creation, assignment/member changes, inspection/evidence/document finalization or duplicate closure requests | Every child writer is serialized by the approved parent-fence protocol; one terminal close and one event/snapshot commit; no child mutation slips past closure; stale version and audit failure fail closed | PLANNED / NOT EXECUTED |
+
+**Execution control:** TC-NOTIF-079..081 require approved closure state machines, exact event tokens, trusted participant mapping, event-specific dispatch profile, physical version/CAS, complete child-writer inventory and compatible parent-fence lock proof. Runtime execution requires G10 activation and an authorized isolated environment. No test result is implied.
