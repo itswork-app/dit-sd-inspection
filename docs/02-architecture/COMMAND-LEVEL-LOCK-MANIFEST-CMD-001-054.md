@@ -207,7 +207,7 @@ All tests are PLANNED / NOT EXECUTED. No CI, local test, SQL, migration or datab
 
 [LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.2.3 provides a candidate global rank hierarchy and proposed resolutions for the source-order conflicts. It defines the required per-command manifest evidence, identifies PO-owned product-policy decisions separately from Engineering/Security technical approvals, and preserves the 54/54 inventory with 0/54 certified lock-complete.
 
-The proposal does not amend command recipes, physical schema, constraints or runtime behavior. No tests or database inspection were performed. LM-01–LM-10 remain open/not executed; G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED.
+The proposal does not amend command recipes, physical schema, constraints or runtime behavior. No tests or database inspection were performed. LM-01–LM-10 remain open/not executed; G3/G4/G5/G7/G9 remain NOT READY and G10 NOT ACTIVE.
 
 ## 4.1 Historical CMD-001–010 source-order overlay — superseded by §7
 
@@ -471,7 +471,7 @@ These commands are read-oriented and do not acquire write locks in the proposed 
 
 ### CMD-045–048 — external control-plane traceability IDs (PO APPROVED)
 
-The Product Owner approved CMD-045–048 Control-Plane Resolution Proposal v0.1.1 (PO accepted v0.1.0) on 2026-11-24. These four IDs remain in the 54-ID traceability inventory but are not application commands and have no application transaction/lock set. They are excluded from the application lock-certification denominator:
+The Product Owner approved CMD-045–048 Control-Plane Resolution Proposal v0.1.2 (PO accepted v0.1.0) on 2026-11-24. These four IDs remain in the 54-ID traceability inventory but are not application commands and have no application transaction/lock set. They are excluded from the application lock-certification denominator:
 
 | Command | Application lock disposition | External evidence dependency |
 |---|---|---|
@@ -489,12 +489,12 @@ CMD-041–044 now have candidate read-boundary normalization. CMD-045–048 are 
 
 ## 10. Application certification denominator and current cross-document baseline — 2026-11-24
 
-The inventory retains **54/54 stable traceability IDs** for historical continuity. CMD-045–048 are external control-plane responsibilities and are not executable application commands; they have no application lock manifest, route, RPC, worker or transaction. The application lock-certification denominator is therefore **50**, not 54. Current static coverage is **50/50 application commands with candidate execution/transaction boundaries documented; 0/50 technically approved or certified lock-complete**. Candidate boundaries do not mean the full normalized manifest schema is complete, the global graph is acyclic, or PostgreSQL behavior is proven. LPR-09 remains OPEN; LPR-10 remains NOT EXECUTED. Current parent graph: LOCK-GRAPH-001 v0.4.16. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT ACTIVE.
+The inventory retains **54/54 stable traceability IDs** for historical continuity. CMD-045–048 are external control-plane responsibilities and are not executable application commands; they have no application lock manifest, route, RPC, worker or transaction. The application lock-certification denominator is therefore **50**, not 54. Current static coverage is **50/50 application commands with candidate execution/transaction boundaries documented; 0/50 technically approved or certified lock-complete**. Candidate boundaries do not mean the full normalized manifest schema is complete, the global graph is acyclic, or PostgreSQL behavior is proven. LPR-09 remains OPEN; LPR-10 remains NOT EXECUTED. Current parent graph: LOCK-GRAPH-001 v0.4.19. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT ACTIVE.
 
 
 ## 11. Canonical normalized register pointer — 2026-11-24
 
-[LOCK-NORMALIZATION-001](COMMAND-LOCK-MANIFEST-NORMALIZATION-REGISTER-001.md) v0.1.0 consolidates the 50 in-scope application command boundaries into a uniform review register. It preserves the source-specific unresolved fields and conflicts. The 54-ID traceability inventory remains 50 application commands plus 4 external control-plane IDs. CMD-PHYSICAL-CROSSWALK-001 v0.1.0 records proposed physical read/write sets for 50 IDs, with CMD-041–044 explicitly OPEN. Candidate boundary coverage is 50/50; technical approval/certification remains 0/50. LPR-09 remains OPEN; LPR-10 remains NOT EXECUTED. This pointer does not authorize implementation or certify the global graph.
+[LOCK-NORMALIZATION-001](COMMAND-LOCK-MANIFEST-NORMALIZATION-REGISTER-001.md) v0.1.0 consolidates the 50 in-scope application command boundaries into a uniform review register. It preserves the source-specific unresolved fields and conflicts. The 54-ID traceability inventory remains 50 application commands plus 4 external control-plane IDs. CMD-PHYSICAL-CROSSWALK-001 v0.1.2 records proposed physical read/write sets for 50 IDs, with CMD-041–044 explicitly OPEN. Candidate boundary coverage is 50/50; technical approval/certification remains 0/50. LPR-09 remains OPEN; LPR-10 remains NOT EXECUTED. This pointer does not authorize implementation or certify the global graph.
 
 
 ## 7.6 CMD-049–054 POQ-01 audience snapshot and implicit lock-edge reconciliation — 2026-11-24
