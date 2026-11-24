@@ -183,7 +183,7 @@ If a writer is outside this repository's application boundary, its participation
 | NRL-T09 | CMD-054 duplicate scheduler ticks vs CMD-051 policy publish and recipient revoke | One escalation event; pinned policy; immutable snapshot; no reverse-rank edge |
 | NRL-T10 | Inject FK violation, unique conflict, deadlock and serialization failure | Atomic rollback, typed retry outcome, idempotent replay and observable SQLSTATE/lock graph |
 | NRL-T11 | Source RPC waits for L05 while an eligibility writer commits; wrapper executes lock and resolver as separate internal SQL commands | VOLATILE wrapper's post-wait resolver sees the committed eligibility change under READ COMMITTED; STABLE/IMMUTABLE or combined-statement control demonstrates the stale-snapshot failure mode |
-| NRL-T12 | Source transaction waits across a role/assignment/policy effective-time boundary before acquiring L05 | One `clock_timestamp()` instant is captured after lock acquisition and used consistently; expired/future eligibility is evaluated at that instant, not transaction start |
+| NRL-T12 | Source transaction waits across a role/assignment/policy effective-time boundary before acquiring L05 | One `clock_timestamp()` instant is captured after lock acquisition and used consistently; expired/future eligibility is evaluated at that instant, not transaction start |\n| NRL-T13 | Mixed source-event and eligibility-writer load at the approved maximum audience cardinality | Record p50/p95/p99 guard wait/hold/transaction latency, throughput, timeout/deadlock/retry rates, queue age, snapshot cardinality and database I/O; meet approved SLO without partial audiences or starvation |
 
 All tests are PLANNED / NOT EXECUTED. Execution requires G10 activation and an approved isolated database environment.
 
@@ -200,7 +200,7 @@ All tests are PLANNED / NOT EXECUTED. Execution requires G10 activation and an a
 | NRL-D07 | Prove all eligibility-changing writers and non-command mutation paths participate | Engineering + Security + Operations | OPEN |
 | NRL-D08 | Prove worker transaction separation and CMD-054 lock order | Engineering + Security | OPEN |
 | NRL-D09 | Complete effective graph and static cycle analysis including FK/index/trigger/function/advisory edges | Engineering + Database | OPEN |
-| NRL-D10 | Execute NRL-T01..T12 on authorized isolated PostgreSQL and attach reproducible traces | Engineering + QA + Security | NOT EXECUTED |
+| NRL-D10 | Execute NRL-T01..T13 on authorized isolated PostgreSQL and attach reproducible traces | Engineering + QA + Security | NOT EXECUTED |
 
 ## 10. Gate and certification disposition
 
@@ -265,3 +265,10 @@ Internal review L05-REVIEW-001 v0.1.0 raised F-01 (function volatility/fresh sna
 ## 16. Eligibility-writer inventory artifact — 2026-11-24
 
 [NLA-L05-WRITER-MATRIX-001](L05-ELIGIBILITY-WRITER-PARTICIPATION-MATRIX-001.md) v0.1.0 inventories known command-level writer classes and non-command classes including direct DML, SECURITY DEFINER helpers, triggers/cascades, imports, sync, repair, scheduled expiry and emergency mutation. The inventory is deliberately marked PARTIAL: exact deployed RPC/function/trigger/job names, selector dependency universe, ownership, ACL and bypass-prevention evidence are not available in this documentation-only review. No writer is certified to acquire L05; the all-writer proof remains OPEN.
+
+
+## 17. Post-transition semantics and contention evidence — 2026-11-24
+
+TDR v0.1.2 proposes pre-transition eligibility as the default linearization interpretation because audience resolution occurs after L05 and before the source mutation. This is not yet a PO decision. Explicit outcomes for role revoke, account rejection/suspension, assignment-member end, project/session close and self-revoke remain required; NRL-T01/T02/T04/T05 must assert those exact outcomes after PO disposition.
+
+NRL-T13 adds the mixed-load contention benchmark at the approved maximum audience cardinality. Numeric workload limits and p50/p95/p99 SLO thresholds remain TBD; no performance claim or benchmark pass is recorded.
