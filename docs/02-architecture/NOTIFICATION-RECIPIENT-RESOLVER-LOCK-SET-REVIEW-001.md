@@ -1,7 +1,7 @@
 # Notification Recipient-Resolver Lock-Set Review
 
 **Document ID:** NLA-RESOLVER-LOCK-001  
-**Version:** 0.1.2  
+**Version:** 0.1.3  
 **Status:** Engineering design proposal — NOT APPROVED; no lock rank or physical mechanism is admitted  
 **Date:** 2026-11-24  
 **Repository baseline:** docs/audit-lock-and-identity-reconciliation at 7d722a77ac37a4c82a026daeddd1b00df4a4f713  
@@ -211,7 +211,7 @@ All tests are PLANNED / NOT EXECUTED. Execution requires G10 activation and an a
 | Candidate FK topology / exact lock modes | OPEN; relation NOT ADMITTED |
 | Global lock graph acyclic | NOT PROVEN |
 | Application lock certification | 0/50 |
-| QA TC-NOTIF-001..041 and related RLS/function-security cases | PLANNED / NOT EXECUTED |
+| QA TC-NOTIF-001..051 and related RLS/function-security cases | PLANNED / NOT EXECUTED |
 | G9 | NOT READY |
 | G10 | NOT ACTIVE |
 
