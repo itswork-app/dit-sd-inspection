@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.33
+**Version:** 0.8.34
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -553,7 +553,7 @@ PO selected Option A, the global transaction-scoped audience guard (candidate L0
 
 ## Current L05 and CMD-031–040 lock-order baseline — 2026-11-24
 
-The current controlled references for the L05 notification resolver are NLA-001 v0.1.11; NLA-RESOLVER-LOCK-001 v0.1.10; NLA-L05-TDR-001 v0.1.6; source-event path map v0.1.0; eligibility-writer matrix v0.1.2; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.10; RAID-001 v0.1.9; DGA-001 v1.11.66; QA Catalogue v0.4.8; L05-REVIEW-001 v0.1.5; POQ-04 PO APPROVED.
+The current controlled references for the L05 notification resolver are NLA-001 v0.1.11; NLA-RESOLVER-LOCK-001 v0.1.10; NLA-L05-TDR-001 v0.1.6; source-event path map v0.1.0; eligibility-writer matrix v0.1.2; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.11; RAID-001 v0.1.10; DGA-001 v1.11.66; QA Catalogue v0.4.8; L05-REVIEW-001 v0.1.5; POQ-04 PO APPROVED.
 
 LOCK-MANIFEST-001 §7.13 and LOCK-GRAPH-001 §30 add a candidate CMD-031–040 overlay. CMD-031/032/033/034/037 have partial candidate ordering only. CMD-035/036/038/039/040 remain blocked on unresolved transaction/event boundaries, worker/lease fencing, per-item events, attendance physical rank/version and institutional authority. No command is technically certified; application lock certification remains 0/50, resolver certification 0/40, global graph NOT PROVEN ACYCLIC, tests PLANNED / NOT EXECUTED, G9 NOT READY and G10 NOT ACTIVE.
 
@@ -570,3 +570,8 @@ POQ-04 resolves the product-decision dependency only. F-05 remains technically O
 ## F-05 technical validation findings — current controlled pointers (2026-11-24)
 
 POQ-04 remains PO APPROVED. The technical review now tracks F05-T1..T5 in NLA-L05-TDR-001 v0.1.7 §4.2.4: selector grammar/dependency universe, event-specific dispatch authorization, suppression/retry state machine, append-only audit contract and snapshot atomicity/binding. NLA-001 v0.1.13 and writer matrix v0.1.3 record the architecture and F-04 dependency; QA v0.4.9 adds TC-NOTIF-060..064; L05-REVIEW-001 v0.1.6 records REQUEST CHANGES. F-05 remains technically OPEN. F-03/F-04/F-07 remain OPEN; resolver certification 0/40; application lock certification 0/50; graph NOT PROVEN ACYCLIC; snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## F-05 requirement/risk traceability synchronization — 2026-11-24
+
+RTM-001 v0.1.11 adds NOTIF-016..020 for selector grammar/dependency mapping, event-specific dispatch authorization, suppression/retry state, append-only audit and atomic snapshot binding. RAID-001 v0.1.10 updates D-026/R-037 with these technical risks and the F-04 writer-inventory dependency. TC-NOTIF-060..064 are linked to the new requirements and remain PLANNED / NOT EXECUTED. F-05 remains OPEN; no implementation or runtime evidence is implied.
