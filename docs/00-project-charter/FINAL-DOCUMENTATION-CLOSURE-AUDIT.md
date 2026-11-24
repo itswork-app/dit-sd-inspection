@@ -1,7 +1,7 @@
 # Final Documentation Closure Audit — Dit. SD Inspection
 
 **Document ID:** DOC-AUDIT-001  
-**Version:** 0.3.3
+**Version:** 0.3.4
 **Status:** STATIC DOCUMENTATION AUDIT COMPLETED — IMPLEMENTATION READINESS NOT ESTABLISHED  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
@@ -220,3 +220,12 @@ CMD-043's proposed read boundary is restricted to audit_events plus minimum scop
 CMD-044 now has candidate-only audit_export_jobs, audit_export_manifests and audit_export_artifacts mapped in physical schema, RLS and ERD annexes. All are NOT ADMITTED and excluded from the 48-table canonical inventory. No export route, worker, bucket, permission, grant or artifact is authorized. T-10 remains BLOCKED.
 
 TEST-CASE-CATALOG-AND-UAT v0.3.8 adds 18 planned report/audit/export verification cases, all PLANNED / NOT EXECUTED. This is static documentation reconciliation only. No code, SQL, migration, RLS, grant, live database, export, runtime test or deployment was performed. G9 NOT READY; G10 NOT ACTIVE; 0/50 lock-certified.
+
+
+## CMD-045–048 / CMD-049–054 static consistency pass — 2026-11-24
+
+The CMD-045–048 resolution and detailed review now align with the Decision Register's PO-approved application-scope disposition. Their four IDs remain traceability-only, with NONE application permissions and no app route/RPC/function/table/worker/lock set. QA anchors are reframed as external control-plane evidence checks. Residual T-10/T-12/incident RACI/release governance remain OPEN; no live absence of external/app controls is asserted.
+
+NLA-001 v0.1.4 makes the POQ-01 implementation gap explicit: the six-table proposal does not persist a durable event-time candidate audience and per-recipient scope snapshot. A candidate-only relation `notification_outbox_recipients` is specified across physical schema, RLS, ERD, permission, command catalogue and QA documents. It is NOT ADMITTED and excluded from the 48-table inventory. CMD-052 consumes the immutable event-time set; CMD-054 persists its own event-time candidate set; retries may not query current memberships to widen recipients. Dispatch-time revalidation may suppress external delivery only.
+
+The candidate physical representation remains subject to Engineering/Database/Security approval, exact selector and temporal semantics, transaction/fan-out bounds, scope FKs, hash format, worker identity/ACL and provider callback security. QA v0.4.0 adds six planned notification snapshot cases plus one candidate RLS case; all are PLANNED / NOT EXECUTED. No runtime, CI, code, SQL, migration, grant, provider or deployment work was performed. G9 NOT READY; G10 NOT ACTIVE; 0/50 certified.
