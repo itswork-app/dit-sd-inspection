@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.3.3
+**Version:** 0.3.4
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -267,6 +267,6 @@ The manifest confirms the CMD-023/024/025/026/027/028 ordering issues, parent/ch
 
 ## 13. Lock protocol decision-resolution proposal — 2026-11-24
 
-[LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.2.0 consolidates a candidate monotonic resource order and explicit recommendations for CMD-022–027, CMD-028–032/035, project/session closure, T-14 capacity, instrument/assignment interaction, evidence/document/attendance/print, and notification worker/callback boundaries. It assigns PO, Engineering, Security, institutional and Operations decision ownership.
+[LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.2.1 consolidates a candidate monotonic resource order and explicit recommendations for CMD-022–027, CMD-028–032/035, project/session closure, T-14 capacity, instrument/assignment interaction, evidence/document/attendance/print, and notification worker/callback boundaries. It assigns PO, Engineering, Security, institutional and Operations decision ownership.
 
 **Disposition:** proposal only; not an approved lock protocol and not proof of an acyclic graph. Canonical command contracts and physical schema remain unchanged. 54/54 commands remain inventoried and 0/54 certified lock-complete. All tests remain PLANNED / NOT EXECUTED. G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED.
