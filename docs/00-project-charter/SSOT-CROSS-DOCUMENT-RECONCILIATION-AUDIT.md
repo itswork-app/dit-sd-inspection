@@ -43,7 +43,7 @@ This was a read-only content review followed by documentation-only corrections o
 | AGENTS.md v1.2.1 | Mandatory repository work policy, approved POQ notification semantics and G10 boundary | Read before this task; documentation-only scope retained |
 | MIB-001 v1.0.8 | Governance and gate control plane | Current-source pointers reconciled; G9/G10 unchanged |
 | DGA-001 v1.11.27 | Active evidence-backed gap register | Remains the controlling closure queue; 21 gap IDs |
-| IRG-001 v1.0.1 | Pre-implementation and release roadmap | Plan only; no implementation authorization |
+| IRG-001 v1.0.2 | Pre-implementation and release roadmap | Plan only; no implementation authorization |
 | Decision Register | Canonical index of current PO decisions | Current authority; approved decisions are not reopened by historical recommendation text |
 | Package S | Historical cross-document audit with dated current-state addenda | §9.15 remains historical; §9.16 is added as current snapshot |
 | Package T v0.1.1 | Historical decision instrument | Header and §10 correctly state that current PO authority is the Decision Register and dated addenda |
