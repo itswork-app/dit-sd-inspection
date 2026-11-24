@@ -1,7 +1,7 @@
 # CMD-021–030 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security review required; NOT approved for implementation  
-**Version:** 0.3.4  
+**Version:** 0.3.5  
 **Date:** 2026-11-24  
 **Scope:** CMD-021 through CMD-030  
 **Controls:** T-15 append-only audit direction; T-16 canonical unit identity and association model; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
@@ -1262,3 +1262,75 @@ A returned-but-unresolved revision is eligible for attempt abort before its orig
 ### CMD-026 new-session attempt identity clarification — SES-001
 
 For a canonical unit whose prior session-bound inspection attempt is terminal ABORTED, CMD-026 in a later active session must create a **new inspection aggregate with a new inspection_id** and bind it immutably to the new session. It must not resume the old claim, draft context, inspection_id or evidence. The old ABORTED attempt remains in history. Within one still-active originating session, an allowed return correction or approved reopen continues on the existing inspection aggregate using a new draft context; it does not create another inspection_id. The final database invariant must prevent more than one nonterminal inspection attempt and more than one ACTIVE claim for the same canonical unit globally, while retaining historical terminal attempts. Exact partial uniqueness/exclusion strategy and reinspection eligibility after ABORTED remain Database/Engineering review items. This is a candidate contract clarification only; CMD-026 remains NOT CERTIFIED.
+
+## SES-001 — packed-unit ABORT command contract candidate (2026-11-24)
+
+**Disposition:** Engineering/Security/Database proposal only. PO business semantics are approved; this section does not assign a CMD number, permission key, route, RPC name, physical table or grant. G9 remains NOT READY and G10 NOT ACTIVE.
+
+### A. Separate request from decision
+
+Model two distinct logical actions, with exact command identities reserved for command-catalogue governance:
+
+1. **Inspector ABORT request.** Allowed only for the exact current inspection after a Reviewer RETURN decision for an identified error, while the physical unit is already packed/boxed and prepared for shipment such that correction/reinspection is impracticable. Actor identity, responsible Inspector, inspection, session, assignment, revision and Reviewer return are derived from trusted database state. The request carries a bounded reason and references to already-finalized private evidence; the client cannot assert that evidence is verified.
+2. **Admin/Korlap ABORT decision.** A separately authorized scoped actor approves or rejects one pending request. The decision must include a mandatory reason. No approval is inferred from a role label, UI visibility, or generic Super Admin status.
+
+Do not implement this as CMD-027. CMD-027 remains release-unit-claim: it may release a claim while preserving the draft and does not transition the inspection to ABORTED.
+
+### B. Candidate state and transition rules
+
+Keep the inspection aggregate in its existing RETURNED_FOR_CORRECTION state while an abort request is pending; represent request lifecycle separately with candidate PENDING, APPROVED, and REJECTED outcomes. These are proposal vocabulary, not admitted enums.
+
+- Request precondition: exact inspection is session-bound to the caller's active authorized session; latest submitted revision has an exact Reviewer RETURN decision; the attempt is not approved, already aborted, reopened into another context, or superseded by a correction submission.
+- While a request is pending, candidate rule is to block correction draft mutation/submission for that same inspection to prevent approval racing with a new correction. FINAL_CLOSE is blocked.
+- Approval revalidates the exact same inspection, returned revision, Reviewer decision, session, assignment scope and pending request under the serialization boundary. Only then may the inspection transition terminally to ABORTED.
+- Rejection records the decision but does not change the inspection state, release a claim, or erase evidence. The inspection remains returned for correction; correction can proceed under WF-001 once operationally possible.
+- If a correction submission or other valid lifecycle transition wins before the request is accepted/persisted, the request is stale and must be rejected as a conflict. No old revision can be aborted after a newer revision becomes current.
+- An approved ABORT is terminal. It preserves the submitted revision, Reviewer return decision, evidence and audit history. A later session creates a distinct inspection_id; no old draft, claim or evidence is revived or automatically reused.
+
+### C. Authorization and separation of duties
+
+Candidate controls for Security review:
+- Requester must be the responsible Inspector for the exact inspection and active assignment, authenticated from auth.uid() and database-backed membership/scope.
+- Approver must hold an explicit Admin/Korlap approval authority for the exact project/session/location/instrument scope and be enabled/effective at decision time.
+- Requester and approver must be different principals. The requester cannot approve their own request, including through a second role on the same account.
+- No generic role-name check, client-supplied actor/role/scope, or Super Admin title alone grants approval.
+- Request and approval are distinct protected writes under T-18 Option A. Exact permission registry keys, grant/delegation ceiling, role mapping, approver eligibility and any additional SoD against Reviewer remain OPEN; no grant is implied.
+
+### D. Reason and packed-state evidence
+
+Candidate request payload contains only:
+- inspection_id;
+- exact current revision_id and Reviewer return-decision reference, verified server-side;
+- mandatory bounded reason;
+- references to private, finalized evidence objects proving packed/shipment-preparation state;
+- the approved concurrency token for the inspection/request, once the physical schema defines it.
+
+Do not accept raw evidence bytes, arbitrary object paths, signed URLs, client-declared verification flags or client actor IDs in the command. Evidence references must resolve to authorized, finalized objects in the same inspection/session scope and be immutable once the request is decided.
+
+**Evidence-policy gap:** a photograph showing the packed unit and a legible serial/identity label, plus a packing/shipment reference where one exists, are candidate evidence examples only. Minimum count, accepted media/document types, whether a shipping manifest/reference is mandatory, capture provenance, privacy/retention and who verifies sufficiency require Operational/Institutional and Security approval. Do not mark these examples as approved mandatory policy.
+
+### E. Atomicity and outcomes
+
+- Request transaction: validate caller and exact returned revision; persist one pending request; append the request audit/domain fact; persist idempotency outcome. All commit or roll back together.
+- Approval transaction: atomically change the request decision, transition the inspection to ABORTED, release the exact active claim if one exists, append inspection/domain and audit facts, and persist idempotency outcome. Any required audit/event/claim/state write failure rolls back the entire operation.
+- Rejection transaction: atomically persist the rejection decision, mandatory decision reason, audit fact and idempotency outcome; do not transition inspection or release claim.
+- Same idempotency key and same semantic request returns the same durable result; same key with a different hash rejects. Concurrent decisions yield one winner.
+- Do not create a synthetic inspection revision, approval, defect/good result, PDF, print event or evidence finalization from ABORT.
+
+### F. Lock and FINAL_CLOSE integration
+
+The candidate path must conform to the approved global order only after its effective graph is certified: idempotency arbitration; trusted actor/role/scope authorization rows; canonical identity where required; session/project parent fence; assignment/membership; unit; association; claim; inspection; pending request/other dependent mutable records; append-only review/domain/audit/idempotency facts in their approved order. Exact resource inclusion, rank, FK/trigger/helper edges and same-rank comparator remain unverified; this is not an executable lock recipe.
+
+Request and approval must serialize with CMD-029 submit, CMD-030 return, CMD-031 approval, CMD-032 reopen, CMD-027 claim release, evidence finalization and CMD-013 FINAL_CLOSE. FINAL_CLOSE blocks on a pending request and on any returned correction not resolved by correction/resubmission or approved ABORT. CMD-013 never requests or approves ABORT.
+
+### G. Open technical admission checklist
+
+1. Reserve command-catalogue identities for request and decision; do not reuse CMD-027.
+2. Approve exact permission/grant/delegation and SoD matrix.
+3. Approve reason bounds and packed-state evidence policy with Operational/Institutional/Security owners.
+4. Admit the request/decision persistence model and exact FK/unique/CAS constraints.
+5. Reconcile transaction write sets, claim state behavior, RLS, T-18 function owner/EXECUTE ACL and caller-JWT checks.
+6. Prove lock order/parent-child fence and request/approval/FINAL_CLOSE race outcomes.
+7. Map stable QA IDs and execute only after G10 activation.
+
+Until these are closed, this is a candidate contract only; no schema, permission, command or implementation is admitted.
