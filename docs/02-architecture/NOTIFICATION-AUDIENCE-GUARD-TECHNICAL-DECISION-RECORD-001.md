@@ -1,7 +1,7 @@
 # Notification Audience Guard — Technical Decision Record
 
 **Document ID:** NLA-L05-TDR-001  
-**Version:** 0.1.4  
+**Version:** 0.1.5  
 **Status:** PO-APPROVED CANDIDATE — technical approval pending Engineering, Database and Security  
 **Date:** 2026-11-24  
 **Decision authority:** Product Owner candidate selection recorded in NLA-RESOLVER-LOCK-001 §11  
@@ -323,4 +323,22 @@ This is a documentation-only technical proposal. It authorizes no source code, S
 **Revision 0.1.2 review note:** F-01 and F-02 have been translated into explicit proposed requirements: VOLATILE RPC wrapper with separate internal SQL statements; and one `clock_timestamp()` capture immediately after L05 for all effective-time predicates. These amendments do not prove deployed function metadata, isolation or runtime behavior and do not close the review findings until independent evidence is supplied.
 
 **Authority separation:** This is Product Owner approval of the candidate design direction, not Engineering, Database or Security technical certification. Those approvals and their evidence remain mandatory. G9 remains NOT READY and G10 remains NOT ACTIVE until the repository's gate requirements are independently satisfied and recorded.
+
+
+
+## 4.2.2 Proposed explicit transition outcomes — POQ-04 (NOT APPROVED)
+
+This section records a concrete recommendation for Product Owner review of L05-REVIEW-001 F-05. It is not an approved product decision and must not be implemented as executable behavior until POQ-04 is approved in DECISION-REGISTER.md.
+
+| Transition | Event-time snapshot (pre-mutation) | Dispatch-time behavior |
+|---|---|---|
+| Role revoke (CMD-005) | Evaluate the exact policy selector against pre-revoke role/scope state. Include the target only if selected and eligible; never auto-append actor or target. | Revalidate current role/scope. Suppress a candidate whose required role/scope is no longer effective. Never widen. |
+| Account reject/disable/suspend (CMD-002/003) | Evaluate against pre-transition account state; a selected account may be persisted as a candidate. | Suppress while account is not enabled. A later retry after reactivation may proceed only for that same immutable candidate, subject to all other current checks. |
+| Assignment-member end (CMD-015) | Evaluate pre-end membership at the one captured instant and the approved half-open interval rule. | Suppress if required current assignment/member scope is no longer effective. Never substitute another member. |
+| Project/session close (CMD-010/013) | Evaluate against pre-close parent state; snapshot and closure event commit atomically. | Apply current active-scope policy; suppress when closure makes the required scope invalid. Never add a post-close recipient. |
+| Self-revoke by actor | Include actor only when the exact selector selects the actor under pre-revoke eligibility. No implicit inclusion/exclusion. | Revalidate the actor's current role/scope; suppress if no longer eligible under the applicable current-scope policy. |
+
+**Common invariant:** event-time candidate membership is immutable. Dispatch-time suppression is a distinct, auditable delivery decision and may not rewrite the snapshot or add recipients. Candidate retries reuse the same event-time set/checkpoint. Any retry after account reactivation remains limited to a candidate already present in that set.
+
+**PO approval is required** for all five rows, especially current-scope suppression after revoke/closure and retry eligibility after reactivation. Security/Engineering review is also required before technical admission. No implementation, DDL, grants, RLS, live DB or runtime test is authorized by this proposal.
 
