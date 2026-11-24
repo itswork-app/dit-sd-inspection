@@ -248,6 +248,12 @@ All unit lifecycle commands use the T-18 Vercel route + caller-JWT PostgreSQL fu
 Each command requires explicit request/response schema, permission, actor-derived audit envelope, idempotency scope, lock order, typed outcomes and positive/negative/concurrency cases. This is a command-contract design, not implementation.
 
 
+
+
+## Command authorization verification matrix dependency
+
+Use COMMAND-AUTHORIZATION-VERIFICATION-MATRIX.md as the companion crosswalk for the 27 logical command families. It adds a current 41-table RLS inventory crosswalk and allocates TC-CMD-AUTHZ-024-001..036 as planned design cases. It does not complete individual command contracts: exact request/response schemas, per-command predicates, function signatures, EXECUTE grants, lock sets, idempotency retention, audit event payloads and typed outcomes remain open. The three additional registry domains for retention/legal-hold, security cases and provider/release do not yet have corresponding tables in the current RLS inventory and must not be exposed before that gap is resolved.
+
 ## 15. Canonical permission registry dependency
 
 The proposed single permission vocabulary, legacy-code disposition, command-to-permission/scope/RLS/audit/test matrix and role-class constraints are maintained in ../02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md. Do not add permission strings ad hoc in route or SQL design. Until PO/security approval and exact grant/test reconciliation, the registry is a design proposal only; no seed, EXECUTE grant, RLS mutation policy or implementation is authorized.
