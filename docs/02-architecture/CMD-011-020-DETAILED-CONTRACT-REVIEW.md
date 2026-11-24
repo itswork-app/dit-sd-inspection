@@ -32,7 +32,7 @@ Where sources conflict or omit a required field, this review records a gap. It d
 - PostgreSQL derives actor identity from \`auth.uid()\`, resolves exactly one approved/enabled \`app_users\` identity and evaluates permission, scope, resource state, validity and SoD inside the mutation transaction.
 - Client-supplied actor ID, role, permission, project authority, approval state, published state or effective scope is never authoritative.
 - Browser roles receive no direct INSERT/UPDATE/DELETE on protected business/governance tables. RLS remains an independent read boundary.
-- Command functions default to SECURITY INVOKER. Any SECURITY DEFINER exception requires separate security approval, non-login least-privileged owner, pinned safe search_path, schema-qualified references, revoked PUBLIC EXECUTE and exact caller grants.
+- Protected writes follow PO-approved T-18 Option A through narrow SECURITY DEFINER wrappers. Each function requires individual security approval, a dedicated least-privileged NOLOGIN owner, fixed empty search_path, schema-qualified references, PUBLIC/anon denial and exact-signature EXECUTE grants. SECURITY INVOKER remains preferred for scoped reads and non-elevated helpers.
 - Actual function owner, security mode, search_path, role grants and EXECUTE ACL have not been verified against the live database.
 
 ### 2.2 Proposed common request envelope
