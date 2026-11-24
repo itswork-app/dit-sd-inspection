@@ -2,7 +2,7 @@
 
 **Document ID:** MIB-001  
 **Status:** CONTROLLED BASELINE — DOCUMENTATION PHASE  
-**Version:** 1.0.0  
+**Version:** 1.0.1  
 **Last reviewed:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Implementation authorization:** NOT GRANTED  
@@ -208,7 +208,7 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 2. Reconcile historical status language in Package T, Package S, Decision Register, RTM and RAID without changing approved decision meaning.
 3. Close instrument source/evidence-slot and BA/template authority dependencies with controlled source evidence.
 4. Obtain PO/security review of NLA-001, approve notification recipient/policy/worker authority and T-10/provider dependencies, and complete independent technical review of the six notification tables plus T-13 `print_batches` constraints, locks and tests.
-5. Complete the 48-command review: exact permissions, role/grantor/SoD, schemas, physical read/write sets, route/RPC mapping, transaction boundaries, idempotency, audit and command-specific tests.
+5. Complete the 54-operation command review: exact permissions, role/grantor/SoD, schemas, physical read/write sets, route/RPC mapping, transaction boundaries, idempotency, audit and command-specific tests.
 6. Reconcile physical schema, RLS, views, functions, triggers, sequences, Storage policies and exact grants.
 7. Close offline/device/local-data, evidence lifecycle, report reproducibility, account recovery, provider, backup/restore and measurable SLO specifications.
 8. Obtain written institutional T-10/T-12 approvals and current provider capability evidence.
