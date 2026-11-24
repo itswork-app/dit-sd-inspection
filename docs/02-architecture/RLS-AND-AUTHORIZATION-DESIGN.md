@@ -115,3 +115,16 @@ These are authorization design requirements, not deployed policies or test resul
 - RLS/grant tests must attempt direct DML through anon/authenticated clients and verify denial, then verify authorized command success and wrong-role/wrong-project/wrong-session/wrong-assignment denial. Also test revoked/expired JWT, pending/disabled account, self-review, replay, idempotency hash mismatch and audit rollback.
 
 T-18 is an approved architecture decision only. This document is not evidence that RLS or grants have been deployed or tested. T-16 project-association reconciliation remains a pre-migration dependency.
+
+
+## T-16 — Unit association RLS and project isolation contract
+
+- `units` is a canonical identity table, not a project membership table. A raw `unit_id` or serial lookup is never sufficient authorization to read an inspection, claim, evidence object or project activity.
+- Project-scoped unit visibility is granted only through an ACTIVE `unit_project_associations` row joined to the caller's effective project/session/assignment membership and permission. Historical inspection/revision access is allowed only through the exact stored association/project and the separately approved historical-read rule; ending an association does not erase history or grant access to former project members automatically.
+- For every inspection/claim row, verify association ID + unit ID + project ID and assignment ID + project ID. The assignment's instrument must equal the canonical unit's instrument. Reject mismatched tuples even if each individual ID exists.
+- `unit_project_associations` reads are project-scoped. Create/end operations are command-only, reasoned and audited. Browser direct DML is denied under T-18.
+- `unit_identity_conflicts` is visible only to authorized duplicate-resolution reviewers and relevant project-scoped actors under a privacy-safe conflict workflow. Candidate canonical unit IDs must not disclose other project's inspection details.
+- A global Super Admin catalog permission does not imply project association, unit operational access or cross-project evidence access.
+- Claim and inspection commands lock the canonical unit and validate the exact active association plus same-project assignment. A unique ACTIVE claim on `unit_id` prevents a second project from concurrently claiming the same physical unit.
+
+Required RLS/grant matrix cases: associated project member allowed only within assignment/session scope; another project member denied absent their own association; former association member denied current operational access; historical access follows explicit approved history permission; conflict reviewer sees minimum necessary metadata; unaffiliated caller cannot enumerate canonical serials or candidate project membership. These are design requirements, not deployed policies or executed tests.
