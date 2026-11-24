@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.41
+**Version:** 0.8.42
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -617,3 +617,12 @@ Active claim/in-progress inspection behavior, physical assignment/member constra
 NLA-EVENT-TECH-RECON-001 v0.1.4 partially reviews NREG-008 `inspection.submitted` and NREG-009 `inspection.returned_for_correction`. CMD-029 emits both submission and immutable revision facts, but only `inspection.submitted` is the approved notice candidate; exact source-event identity and one-notice dedup remain open. The authoritative Reviewer assignment source is not physicalized. CMD-030's responsible Inspector mapping cannot be inferred from revision author or generic assignment membership without an approved rule; reviewer != author SoD and one terminal decision per revision remain mandatory.
 
 The source command manifests still contain inspection-first paths that conflict with normalized project/session/assignment/unit/association/claim ordering. Reviewer/Inspector dependency writers, FK/trigger edges and event-time candidate snapshot integration remain unproven. RTM-001 v0.1.18 adds NOTIF-035..038; QA Catalogue v0.5.8 adds TC-NOTIF-086..089, all PLANNED / NOT EXECUTED. No event or implementation is admitted.
+
+
+## CMD-031/032 inspection approval/reopen event registry checkpoint — 2026-11-24
+
+NLA-EVENT-TECH-RECON-001 v0.1.6 partially reviews NREG-010 `inspection.approved` and NREG-011 `inspection.reopened`. CMD-031 approval is bound to one exact current immutable submitted revision; persisted Reviewer assignment, exact scope and reviewer != author SoD are required. The responsible Inspector participant cannot be inferred from approval actor, reviewer, revision author or generic assignment membership. CMD-030 return and CMD-031 approval must share one inspection-aggregate serialization point and one terminal-decision-per-revision arbiter.
+
+CMD-032 reopen requires explicit `inspection.reopen` authority, exact scope and mandatory reason. The role/grant/SoD matrix, next-action owner, mutable draft storage/state vocabulary and one-active-draft invariant remain unresolved. Reopen must preserve approved revision, evidence, generated documents and print history. Active claim/association/assignment and evidence/document finalizer blocker graph remains incomplete.
+
+LOCK-MANIFEST-001 §7.13 and LOCK-GRAPH-001 §30 contain candidate ordering only. Source command paths, physical reviewer assignment, decision uniqueness, complete L05 writer set, implicit FK/trigger/helper edges, atomic event/outbox/snapshot identity and global acyclicity are not proven. RTM-001 v0.1.19 adds NOTIF-039..043; QA Catalogue v0.5.9 adds TC-NOTIF-090..094, all PLANNED / NOT EXECUTED. NREG-001..011 are PARTIAL_STATIC_REVIEW only and remain UNRESOLVED / NOT ENABLED. Resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
