@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.13  
+**Version:** 0.1.14  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -347,4 +347,7 @@ NLA-EVENT-TECH-RECON-001 v0.1.0 partially reconciles `account.approved` and `acc
 
 **D-026:** registry technical admission remains blocked; both rows remain NOT ENABLED. The candidate event participant cannot be inferred from `target_user_id` or `account_decisions.user_id` without an approved event contract and selector.
 
-**R-037:** account writer coverage remains partial; L05 is a candidate only; 0 writers certified, resolver 0/40, application lock 0/50, graph NOT PROVEN ACYCLIC, candidate snapshot relation/header NOT ADMITTED. TC-NOTIF-073/074 remain PLANNED / NOT EXECUTED. D-026 remains OPEN — BLOCKING; R-037 remains OPEN — CRITICAL; G9 NOT READY; G10 NOT ACTIVE.
+**R-037:** account writer coverage remains partial; L05 is a candidate only; 0 writers certified, resolver 0/40, application lock 0/50, graph NOT PROVEN ACYCLIC, candidate snapshot relation/header NOT ADMITTED. RTM-001 v0.1.14 adds NOTIF-024/025; QA Catalogue v0.5.4 adds TC-NOTIF-075/076, all PLANNED / NOT EXECUTED. TC-NOTIF-073/074 remain PLANNED / NOT EXECUTED. D-026 remains OPEN — BLOCKING; R-037 remains OPEN — CRITICAL; G9 NOT READY; G10 NOT ACTIVE.
+
+
+**Verification trace:** NOTIF-024/025 and TC-NOTIF-075/076 now explicitly track account event participant/state predicates and terminal decision/atomicity/writer proof. All remain OPEN / PLANNED / NOT EXECUTED as applicable; D-026 remains OPEN — BLOCKING and R-037 OPEN — CRITICAL.
