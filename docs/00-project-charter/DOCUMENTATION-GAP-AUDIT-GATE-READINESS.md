@@ -661,3 +661,8 @@ Candidate relation/header remain NOT ADMITTED and outside the 48-table inventory
 ### Recipient-resolver QA synchronization — 2026-11-24
 
 QA v0.4.4 adds TC-NOTIF-042..051 to cover the 0/40 resolver lock-set certification gap documented in NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001. These cases are PLANNED / NOT EXECUTED and require the PO-approved event-time linearization, an Engineering/Database/Security-approved serialization mechanism, exact FK/trigger/function evidence and G10 activation before execution. TC-NOTIF-001..051 and related RLS/function-security cases remain unexecuted. DGA notification and lock-order blockers remain OPEN; R-037 remains OPEN — CRITICAL; NOTIF-015 remains OPEN — CRITICAL; application lock certification 0/50; G9 NOT READY; G10 NOT ACTIVE.
+
+
+### L05 candidate selection checkpoint — 2026-11-24
+
+PO selected the global transaction-scoped audience guard (candidate L05) as the primary mechanism for technical approval review. Option B SERIALIZABLE is retained as contingency-only. The decision is recorded in [NLA-RESOLVER-LOCK-001 v0.1.6](../02-architecture/NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) §11. This selection does not close DGA notification/lock blockers: Engineering/Database/Security must still approve the concrete primitive/key, canonical order, all eligibility-changing writers including CMD-051, FK/index/trigger/helper edges, timeout/retry, contention bounds and acyclicity. L05 is not an admitted rank; no code/SQL/migration is authorized. Candidate snapshot relation/header remain NOT ADMITTED; resolver certification 0/40; application lock certification 0/50; G9 NOT READY; G10 NOT ACTIVE.
