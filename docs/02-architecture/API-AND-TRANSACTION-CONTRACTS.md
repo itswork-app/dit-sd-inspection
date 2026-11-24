@@ -132,7 +132,7 @@ For validation or conflict errors, return a stable code, safe message, and relev
 
 ## 8. Open decisions
 
-- Exact transport: server route, database RPC, or hybrid per command.
+- **T-18 PO APPROVED option A (2026-11-24):** all protected browser-facing state-changing commands use a Vercel server route that verifies the Supabase caller session and forwards the caller JWT to a narrowly scoped PostgreSQL command function. PostgreSQL derives actor identity with auth.uid() and performs permission, role, project association, session, assignment, state and separation-of-duties checks inside the transaction. Protected-table browser INSERT/UPDATE/DELETE is denied; exact command-specific EXECUTE grants and RLS policies remain design/review gates.
 - REST path naming and API versioning.
 - Authentication/session refresh strategy.
 - Idempotency retention and conflict resolution UX.
@@ -157,3 +157,16 @@ All commands that create/enable an Inspector role grant, establish an effective 
 `claim-unit` must resolve the canonical unit using `(instrument_id, serial_normalized)` across all projects; project ID is not part of the uniqueness key. Different instrument types may reuse the same serial. Before creating a unit, the command must atomically check/lock the canonical key and route a same-type cross-project collision to controlled conflict resolution rather than create a duplicate or silently merge records. Authorization remains project/session/assignment scoped even when the canonical unit is shared across projects. Conflict resolution requires an authorized actor, explicit reason, deterministic outcome and append-only audit.
 
 Evidence commands must bind each evidence record to the exact immutable inspection revision and instrument version. Preserve checksum, uploader, capture/upload timestamps and immutable storage object identity. Finalized evidence cannot be overwritten in place; replacement creates a new evidence record/object and audit event while retaining the original history. All checks and writes must be transactional/idempotent as applicable. This contract is not implemented or tested yet.
+
+
+## T-18 — Approved transport and privilege boundary reconciliation
+
+The former open transport choice is closed at Product Owner level. The selected flow is Browser/PWA → Vercel server route → PostgreSQL command function with the authenticated caller JWT. The route validates request/session and forwards caller identity; it must not replace the caller JWT with a service-role identity for user-initiated commands. PostgreSQL derives the actor from `auth.uid()`, resolves the approved/enabled application account, and validates permission, role, project association, session, assignment, resource state and separation of duties before mutation.
+
+Browser-facing anon/authenticated roles receive no direct INSERT/UPDATE/DELETE on protected business or governance tables. Reads remain independently RLS-scoped. Only narrow, explicitly granted command functions may mutate protected state. Every critical mutation and its required audit event commit atomically; audit failure rolls back the mutation. SECURITY DEFINER exceptions require pinned search_path, schema-qualified references, strict input validation, least-privileged ownership and minimal EXECUTE grants.
+
+## T-16 — Canonical unit association command context
+
+A canonical unit is resolved by `(instrument_id, serial_normalized)` across projects. The project is not part of the uniqueness key. `register-canonical-unit` creates or resolves the canonical identity; `associate-unit-to-project` and `end-unit-project-association` manage durable project-membership episodes; `resolve-unit-identity-conflict` handles same-instrument serial collisions without cloning or silently merging canonical units. Claim, draft, submit, review, evidence and document commands must bind to the exact association + project + same-project assignment and must not infer authorization from unit ID alone. The global active-claim invariant serializes claims across projects.
+
+These decisions are design-only. Exact endpoint payloads, grant matrix, institutional serial normalization/exception policy, migrations and tests remain open; no implementation is claimed.
