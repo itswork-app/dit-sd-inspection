@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.1  
+**Version:** 0.1.2  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -223,10 +223,7 @@ T-01 through T-08 are partial decision closures, not blanket closure of Package 
 
 ### T-13 — Print workflow decision (PO approved 2026-11-23)
 
-T-13 option B is PO APPROVED. Traceable acceptance requirements AC-DOC-008 through AC-DOC-012 and test cases TC-PRINT-001 through TC-PRINT-007 cover permissioned individual/batch print, per-document outcomes, failed-only retry, atomic reprint sequence, exact document-version linkage, and the boundary that application print events do not prove physical paper output. Detailed implementation and test execution remain pending.
-
-
-T-13 option B is PO APPROVED. The general print workflow maps to acceptance requirements AC-DOC-008 through AC-DOC-012 and TC-PRINT-001 through TC-PRINT-007. The dedicated durable batch lifecycle maps to TC-PRINT-BATCH-001 through TC-PRINT-BATCH-008. TC-DOC-009..011 remain document/instrument annex cases and are not the print-batch test range. Detailed implementation and test execution remain pending.
+T-13 option B is PO APPROVED. The general print workflow maps to acceptance requirements AC-DOC-008 through AC-DOC-012 and TC-PRINT-001 through TC-PRINT-007. The dedicated durable batch lifecycle maps to TC-PRINT-BATCH-001 through TC-PRINT-BATCH-008. TC-DOC-009..011 remain document/instrument cases and are not the print-batch test range. Detailed implementation and test execution remain pending.
 
 
 ## T-14 traceability — Inspector capacity predicate (PO-approved 2026-11-24)
