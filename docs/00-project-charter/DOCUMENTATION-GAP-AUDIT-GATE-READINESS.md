@@ -675,7 +675,7 @@ PO selected the global transaction-scoped audience guard (candidate L05) as the 
 
 ### PO approval of L05 candidate — 2026-11-24
 
-The Product Owner approved NLA-L05-TDR-001 v0.1.2 as the preferred candidate for formal Engineering/Database/Security review. This does not constitute technical certification or admit L05 into the global lock graph. Exact key registry, deployed isolation, all writer paths, helper ACL, FK/unique/trigger graph, numeric budgets, audience/performance limits and NRL-T01..T10 evidence remain open. G9 NOT READY; G10 NOT ACTIVE.
+The Product Owner approved NLA-L05-TDR-001 v0.1.3 as the preferred candidate for formal Engineering/Database/Security review. This does not constitute technical certification or admit L05 into the global lock graph. Exact key registry, deployed isolation, all writer paths, helper ACL, FK/unique/trigger graph, numeric budgets, audience/performance limits and NRL-T01..T10 evidence remain open. G9 NOT READY; G10 NOT ACTIVE.
 
 
 ### L05 internal technical review response — 2026-11-24
