@@ -1,8 +1,8 @@
 # Notification Event Candidate Triage — Product Workflow Audit
 
 **Document ID:** NLA-EVENT-TRIAGE-001  
-**Version:** 0.1.1  
-**Status:** STATIC AUDIT — NO EVENT ENABLED; PRODUCT OWNER ALLOWLIST DECISION REQUIRED  
+**Version:** 0.1.2  
+**Status:** STATIC TRIAGE — 11 FIRST-BATCH CANDIDATES PO-APPROVED FOR SPECIFICATION/REVIEW ONLY; NO EVENT ENABLED  
 **Date:** 2026-11-24  
 **Branch:** `docs/notification-resolver-lock-closure`  
 **Authority:** PRD-001, approved Decision Register, CMD contracts and controlled instrument sources. This document does not supersede them.
@@ -90,9 +90,9 @@ Recipient language in this document is conceptual only (e.g. “requesting user�
 | CMD-039 | `attendance.uploaded/replaced` | U | Upload/replacement are different states; Attendance Verifier authority remains open. | Split exact tokens; no verifier notification until role/authority approved |
 | CMD-040 | `attendance.verified` | O | Verification is a business record; PRD does not specify who should receive a notification. | No recipient implied; Attendance Verifier authority and sign-off rules remain open |
 
-## 5. First-batch PO discussion shortlist — not an allowlist
+## 5. First-batch PO-approved specification candidates — not an enabled allowlist
 
-The following is the first PO review batch, prioritized for direct operational impact on the PRD's inspection workflow. It is not exhaustive. Other rows classified P remain secondary candidates and must not be silently treated as rejected or approved; for example, account.requested (CMD-001) is a secondary acknowledgement candidate but is not included in this first batch.
+The Product Owner approved the following eleven exact candidate intents on 2026-11-24 for registry specification and Security/Engineering/Database review only. This approval is not event enablement, recipient/channel approval or technical admission. Other rows classified P remain secondary candidates and must not be silently treated as rejected or approved; for example, account.requested (CMD-001) remains deferred.
 
 | Priority | Exact event candidate / unresolved source | Why PO review is justified | Required PO decision |
 |---|---|---|---|
@@ -106,7 +106,7 @@ The following is the first PO review batch, prioritized for direct operational i
 | 8 | `role.revoked` (CMD-005) | Affected user may lose operational authority | Is a notice required, and how does it coexist with access revocation? POQ-04 semantics remain binding |
 | 9 | `project.closed` / exact `session.closed` (CMD-010/013) | Closure affects assigned operations | Should scoped assigned members receive a closure notice? Which closure events and recipients? |
 
-This shortlist is intentionally narrow. It does not mean the nine candidates are approved, enabled, or technically publishable. Other U events require exact source-contract decomposition before product review; O/X events are not notification candidates under current evidence.
+This approved batch is intentionally narrow. It authorizes only draft registry specification and technical review. All eleven rows remain UNRESOLVED — NOT ENABLED until exact source contracts, participant mappings, selectors, dispatch profiles, deduplication, atomicity and required approvals are evidenced. Other U events require exact source-contract decomposition before product review; O/X events are not notification candidates under current evidence.
 
 ## 6. Hard exclusions and anti-noise rules
 
@@ -148,18 +148,18 @@ If any required field is unknown, the registry row remains `UNRESOLVED — NOT E
 4. CMD-041–044 read-side activity is not a notification source by inference. CMD-045–048 require separate control-plane review. CMD-049–054 remain excluded from ordinary domain matching by default.
 5. Attendance Verifier authority remains open; attendance notifications cannot target that role.
 6. The IFP instrument specification remains draft and the ten photo slots' mandatory status is open. Standing Bracket's official 19-row checklist is PO-confirmed, but evidence/photo requirements remain open. These content gaps do not block documenting event triage, but they prohibit notification rules that assume checklist/evidence completion semantics.
-7. Next action: Product Owner reviews the first-batch shortlist in §5 and explicitly approves/rejects each notification intent. Secondary P candidates (including account.requested) remain deferred for a later PO decision. After that, Engineering/Security/Database can complete exact registry rows for approved events. Do not expand to a full enabled registry before the PO decision.
+7. Next action: prepare and review the eleven candidate rows in NLA-EVENT-REGISTRY-001 v0.1.0. Engineering/Security/Database must resolve source contracts, trusted participant mappings, selector dependencies and dispatch profiles. Secondary P candidates (including account.requested) remain deferred for a later PO decision. Do not enable any event or expand this batch without explicit change control and required approvals.
 
 ## 9. Current status and gate boundary
 
 - This document is a static audit; no notification event is enabled.
-- Event registry: NOT CREATED / NOT APPROVED.
+- NLA-EVENT-REGISTRY-001 v0.1.0: draft candidate inventory exists; 11 PO intents approved for specification/review only; 0 technically admitted; 0 enabled.
 - Selector grammar and dispatch profiles: REVIEW CANDIDATES ONLY.
 - F-05: OPEN. F-04: OPEN. F-03/F-07: OPEN.
 - Resolver certification 0/40; application lock certification 0/50.
 - Global lock graph NOT PROVEN ACYCLIC.
 - Candidate snapshot relation/header NOT ADMITTED.
-- TC-NOTIF-001..071 remain PLANNED / NOT EXECUTED.
+- TC-NOTIF-001..072 remain PLANNED / NOT EXECUTED.
 - G9 NOT READY; G10 NOT ACTIVE.
 
 No source code, SQL, migration, grant/revoke, RLS, live DB, runtime test, deployment, merge or implementation activation was performed or authorized.
@@ -175,3 +175,8 @@ No source code, SQL, migration, grant/revoke, RLS, live DB, runtime test, deploy
 - `docs/02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md` §5 (role/grant matrix NOT APPROVED).
 - `docs/00-project-charter/DECISION-REGISTER.md` POQ-001 and POQ-04.
 - Root `AGENTS.md` v1.2.2.
+
+
+## 11. PO decision update — 2026-11-24
+
+The Product Owner approved all eleven first-batch candidates listed in §5 for specification and technical review only. The canonical decision is recorded in `docs/00-project-charter/DECISION-REGISTER.md`; the controlled draft registry is `NLA-EVENT-REGISTRY-001 v0.1.0`. This does not enable any event or approve recipients, channels, physical fields, role grants, selectors, dispatch profiles, implementation or tests. All registry rows remain UNRESOLVED — NOT ENABLED. `account.requested` remains deferred, neither approved nor rejected. F-05/F-04/F-03/F-07 remain OPEN; G9 NOT READY; G10 NOT ACTIVE.
