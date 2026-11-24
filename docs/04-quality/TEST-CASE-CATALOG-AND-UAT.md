@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.2.0
+Version: 0.3.0
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -597,3 +597,23 @@ These cases are test specifications only. No notification tests have been execut
 - TC-PRINT-BATCH-008: application print initiation/confirmation is not represented as proof of physical paper output or printer-device success.
 
 These cases are test specifications only; they are not executed.
+
+
+## CMD-011–020 PO decision verification traceability — 2026-11-24
+
+The following product semantics are approved; the referenced cases remain **PLANNED / NOT EXECUTED**. Extend the detailed case steps/fixtures before implementation so each semantic invariant has a positive, negative and concurrency case where applicable.
+
+| Command / requirement | Required assertions | Existing case anchor | Execution |
+|---|---|---|---|
+| CMD-011 session creation | Server-selected DRAFT; project lifecycle gate; UTC/timezone conversion; DST gap/fold rejection; overlap permitted by default; immutable unique project/code | TC-CMD-CONTRACT-024-011 | PLANNED / NOT EXECUTED |
+| CMD-012 session metadata | Code immutable; allowlist only; non-empty reason; schedule change rejected after dependent work; stale row version rejected once token contract approved | TC-CMD-CONTRACT-024-012 | PLANNED / NOT EXECUTED |
+| CMD-013 session lifecycle | Exact T-07 state set; legal transitions; CLOSE_REQUESTED action/event only; Korlap scoped request/action limits; Super Admin final closure; CLOSED terminal; privileged audited reopen | TC-CMD-CONTRACT-024-013 | PLANNED / NOT EXECUTED |
+| CMD-014 assignment publication | Atomic complete roster; server-selected published state; half-open interval boundary; eligibility overlap predicate; T-14 cap under concurrent writers | TC-CMD-CONTRACT-024-014 | PLANNED / NOT EXECUTED |
+| CMD-015 membership changes | Per-member effective_at; reason required; end-date not delete; submitted inspection remains unchanged; active claim/workflow edge behavior explicitly tested after operational decision | TC-CMD-CONTRACT-024-015 | PLANNED / NOT EXECUTED |
+| CMD-016 capacity | T-14 qualifying account predicate, default 50 and range 1–100; reject below count; no silent revocation; concurrent role/assignment/cap changes | TC-CMD-CONTRACT-024-016 | PLANNED / NOT EXECUTED |
+| CMD-017 target plans | Session scope default; explicit action enum; uniqueness triple; duplicate and zero quantity rejected; published immutable/new version for correction | TC-CMD-CONTRACT-024-017 | PLANNED / NOT EXECUTED |
+| CMD-018 instrument creation | Draft/inactive not selectable; normalization test vectors (NFKC, surrounding trim, case, internal whitespace/control); uniqueness; permitted alphabet pending security decision | TC-CMD-CONTRACT-024-018 | PLANNED / NOT EXECUTED |
+| CMD-019 draft configuration | Atomic full replacement; omitted draft children removed only; published snapshot untouched; change summary required; executable/dynamic constructs and unbounded input rejected | TC-CMD-CONTRACT-024-019 | PLANNED / NOT EXECUTED |
+| CMD-020 publication | Explicit instrument.publish; instrument.manage alone denied; server validation; immutable version/children; pinning; correction new version; same-key replay and distinct-key no-duplicate behavior | TC-CMD-CONTRACT-024-020 | PLANNED / NOT EXECUTED |
+
+**QA boundary:** Product acceptance semantics are approved; test design completeness, security review, concurrency strategy, test fixtures, execution and evidence remain open. No test has been run by this documentation update.
