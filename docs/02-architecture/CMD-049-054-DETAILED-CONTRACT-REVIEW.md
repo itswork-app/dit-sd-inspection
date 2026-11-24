@@ -558,7 +558,7 @@ POQ-01 Option C, POQ-02 Option C and POQ-03 Option A were explicitly approved by
 - **SLA (POQ-02):** immutable policy versions declare elapsed or business-time semantics; initial default is `ELAPSED_UTC`. Quiet hours defer delivery only and do not pause/stop/reset the SLA clock. Business calendars, time zones and pause/reset conditions need explicit policy specification before activation.
 - **Dismissal (POQ-03):** dismiss/archive is excluded from MVP. Only recipient-owned set-once `read_at` is exposed; no dismiss command, permission, browser write or UX action exists. Any `dismissed_at` field retained in a proposal is dormant.
 
-The following technical details remain open: exact selector grammar and snapshot/checkpoint representation; partial fan-out fencing; policy schema and worker authorization; provider capability/callback security; exact schema constraints/indexes/RLS; institutional T-10 retention/privacy; test execution and live evidence. G9 remains NOT READY and G10 NOT AUTHORIZED.
+The following technical details remain open: exact selector grammar and snapshot/checkpoint representation; partial fan-out fencing; policy schema and worker authorization; provider capability/callback security; exact schema constraints/indexes/RLS; institutional T-10 retention/privacy; test execution and live evidence. G9 remains NOT READY and G10 NOT ACTIVE.
 
 
 ## 17. POQ-01 event-time audience snapshot and lock-order addendum — 2026-11-24
