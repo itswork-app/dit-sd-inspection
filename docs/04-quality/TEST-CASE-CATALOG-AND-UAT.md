@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.5.6
+Version: 0.5.7
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -927,3 +927,15 @@ These cases guard the unresolved mapping between account event-time candidate se
 | TC-NOTIF-081 | Project/session closure races with child creation, assignment/member changes, inspection/evidence/document finalization or duplicate closure requests | Every child writer is serialized by the approved parent-fence protocol; one terminal close and one event/snapshot commit; no child mutation slips past closure; stale version and audit failure fail closed | PLANNED / NOT EXECUTED |
 
 **Execution control:** TC-NOTIF-079..081 require approved closure state machines, exact event tokens, trusted participant mapping, event-specific dispatch profile, physical version/CAS, complete child-writer inventory and compatible parent-fence lock proof. Runtime execution requires G10 activation and an authorized isolated environment. No test result is implied.
+
+
+### Assignment event candidate safety — 2026-11-24
+
+| Test ID | Scenario | Expected result / invariant | Status |
+|---|---|---|---|
+| TC-NOTIF-082 | CMD-014 creates an assignment with a complete initial roster; attempt to select newly inserted members through a pre-mutation event-time selector | Publication/admission fails closed until the trusted event-participant projection explicitly defines new-member selection consistent with POQ-01/04; no client-supplied member ID is trusted and no inserted member is implicitly appended | PLANNED / NOT EXECUTED |
+| TC-NOTIF-083 | CMD-015 adds, ends and retains members in one atomic change; event policy attempts to select each category | Exact added/ended/retained semantics are enforced; ended members are evaluated against pre-end membership at one captured instant; dispatch may suppress but never widen or substitute; retained-member inclusion is not inferred | PLANNED / NOT EXECUTED |
+| TC-NOTIF-084 | CMD-015 ends a member who owns an active claim or in-progress inspection | The approved operational rule (block, future-effective end or grandfathered work) is applied; no silent reassignment/deletion occurs; no event is enabled while the active-work policy is unresolved | PLANNED / NOT EXECUTED |
+| TC-NOTIF-085 | Concurrent CMD-014/015 membership changes, CMD-004/005 role eligibility changes and CMD-016 capacity updates; duplicate command replay | One shared approved T-14/L05 serialization protocol preserves the distinct enabled-Inspector cap; command/event/snapshot is atomic and idempotent; no partial roster/member change or duplicate notification is produced | PLANNED / NOT EXECUTED |
+
+**Execution control:** TC-NOTIF-082..085 require approved event/participant contract, member-delta semantics, active-work policy, physical membership constraints and complete L05/L10 writer/lock proof. Runtime execution requires G10 activation and an authorized isolated environment. No test result is implied.
