@@ -1,12 +1,12 @@
 # CMD-049–054 Detailed Contract Review
 
 **Document ID:** CMD-REVIEW-049-054  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Status:** Engineering contract review — proposal only; PO/security/institutional review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-049 through CMD-054  
 **Repository phase:** Documentation / SSOT maturation  
-**Controls:** INS-015; INS-016 / T-15; T-10; T-18; NLA-001 v0.1.1; DGA-B09, DGA-B10, DGA-B11, DGA-B12, DGA-B13; G9 NOT READY; G10 NOT AUTHORIZED.
+**Controls:** INS-015; INS-016 / T-15; T-10; T-18; NLA-001 v0.1.2; DGA-B09, DGA-B10, DGA-B11, DGA-B12, DGA-B13; G9 NOT READY; G10 NOT AUTHORIZED.
 
 ## 1. Purpose and authority boundary
 
@@ -166,11 +166,10 @@ Set the read state for one notification owned by the authenticated recipient. It
 
 ### 6.2 Proposed request and response
 
-Catalogue request:
-- notification_id;
-- optional expected_version.
+Canonical request after documentation reconciliation:
+- notification_id only.
 
-The physical notifications proposal has read_at but does not currently list a version column. This is a contract mismatch: expected_version must not be relied upon until the physical model defines and constrains a version field. Either remove it from the eventual approved request contract or approve an explicit concurrency/version model. Do not invent a column during implementation.
+The physical notifications proposal has no version column. CMD-050 is a recipient-owned set-once read_at transition, so an expected_version field is removed rather than adding an unnecessary high-volume inbox version column. The guarded read_at IS NULL update is the state arbiter.
 
 Successful response should contain a typed MARKED_READ result, notification identifier and server-generated read timestamp, with a stable idempotent replay indication if supported. It must not return or modify delivery state.
 
@@ -188,7 +187,7 @@ Successful response should contain a typed MARKED_READ result, notification iden
 
 Proposed read/write set: one notifications row. Use a guarded recipient-owned update and ensure RLS independently enforces recipient ownership. The update should be monotonic and idempotent. Do not update notification_deliveries, notification_delivery_attempts, outbox, escalation history or source business tables.
 
-The catalogue includes an actor + notification + key audit mapping. Reconcile whether the read transition is a general audit event, a dedicated low-sensitivity event, or a privacy-safe operational event. If a required audit write is specified, it must be atomic with the read-state update; avoid recursive audit behavior.
+The canonical audit event is notification.read, emitted once only when the first set-once transition changes read_at from NULL. The event and state transition commit atomically; a required audit failure rolls back the read transition. Repeated/no-op acknowledgements emit no duplicate event. Inbox page access is not a general audit event; use only privacy-safe aggregate telemetry if operationally needed. This is a design reconciliation, not a deployed audit control.
 
 ### 6.5 Required tests — planned only
 
@@ -200,7 +199,7 @@ The catalogue includes an actor + notification + key audit mapping. Reconcile wh
 - source business state remains unchanged;
 - concurrent duplicate requests produce one stable read timestamp;
 - audit failure follows the approved fail-closed policy;
-- expected_version mismatch behavior is not enabled until a version model is approved.
+- no client-supplied actor, recipient or read timestamp is accepted; no row-version token is required.
 
 Existing mapping: TC-NOTIF-005/007/016. **PLANNED / NOT EXECUTED**.
 
@@ -212,31 +211,24 @@ Publish a new immutable, scope-bound notification policy version. This is a priv
 
 ### 7.2 Proposed request
 
-Catalogue fields:
+Canonical publish-only candidate request:
 - policy_key;
 - scope_type and scope_id;
 - schema_version;
 - policy_document;
-- expected_draft_hash.
+- optional expected_current_version_id for compare-and-publish against the current published version.
+
+The server canonicalizes and hashes the validated document; callers do not supply policy_hash or version_no.
 
 These are proposals, not an approved API schema. The request must be validated against a versioned allowlist schema. Reject unknown fields, executable content, SQL, code templates, arbitrary routing instructions, secrets and unbounded recipient selectors. The exact selector grammar, allowed event types, priority/channel values, quiet-hours/time-zone rules, reminder schedule, SLA thresholds, escalation steps and expiry/display metadata remain PO/security decisions.
 
 ### 7.3 Draft/publish lifecycle gap
 
-NLA-001 describes mutable draft creation/update followed by immutable published versions, but the proposed physical table is notification_policy_versions and its listed status values are DRAFT, PUBLISHED and RETIRED. The exact draft-edit concurrency model, whether drafts share this table, and whether draft history is retained are not fully defined.
+CMD-051 is explicitly scoped to publish-only: it accepts a validated candidate policy document and creates a new immutable published version. It does not persist or edit a mutable draft. The DRAFT status remains reserved in the physical proposal and is not written by CMD-051. If product UX requires persisted draft CRUD or multi-stage review, that is a separate command/workflow and schema change requiring PO/security approval before this command set is expanded.
 
-Before implementation, specify:
-- draft identity and ownership;
-- whether one or multiple drafts may exist per policy/scope;
-- expected_draft_hash calculation and canonicalization;
-- version allocation and concurrent publish locking;
-- validation and approval state;
-- effective_from/effective_until overlap rules;
-- retirement/supersession behavior;
-- whether a second approver is required;
-- whether published policies can ever be withdrawn and how queued outbox items remain pinned.
+Version allocation is serialized by the exact policy/scope aggregate boundary (the concrete lock implementation remains subject to lock review). expected_current_version_id prevents a stale publisher from silently overwriting a newer current version. The server canonicalizes the allowlisted document, computes policy_hash, assigns the next version and validates effective interval overlap. The unique policy/scope/version constraint and approved exclusion/locking mechanism remain physical-design requirements.
 
-A published policy must be immutable. A change creates a new version; queued outbox records retain the exact policy version selected at source-event time.
+A published policy document/hash/version is immutable. Retirement/supersession may change only explicitly approved lifecycle metadata and must be audited; queued outbox records retain their exact pinned policy version.
 
 ### 7.4 Authorization, scope and SoD
 
@@ -258,7 +250,7 @@ The schema proposes unique policy/scope/version and one effective published vers
 
 - unauthorized role, wrong scope and grantor-ceiling denial;
 - invalid schema, unknown key and executable/secret content rejection;
-- stale expected_draft_hash and concurrent publish race;
+- stale expected_current_version_id and concurrent publish race;
 - unique version allocation and effective-interval overlap prevention;
 - published version cannot be edited/deleted;
 - queued outbox retains its original policy version after a later publish;
@@ -301,9 +293,7 @@ No worker identity, scheduler trust model, database role, function owner or exac
 
 Proposed objects: notification_outbox, notifications and notification_deliveries. Claim using a bounded lease and row-locking strategy equivalent to SKIP LOCKED; never hold a transaction across provider I/O. Create one inbox row per outbox/recipient and one external delivery row per selected notification/channel, with uniqueness preventing duplicates.
 
-NLA-001 proposes unique source_event_id/policy_version_id on the outbox, unique outbox_id/recipient_user_id on notifications, and unique notification_id/channel on notification_deliveries. The exact conflict behavior, partial fan-out status, batch checkpointing, lease expiry, retry/dead-letter transitions and recovery after partial commit require a reviewed physical contract.
-
-The physical model and catalogue differ in payload naming/detail: NLA-001 describes payload_ref or minimized payload and lease fields; the schema inventory uses safe_payload and generic lease fields. Reconcile field names, nullability, retention, indexes and constraints before implementation.
+NLA-001 proposes unique source_event_id/policy_version_id on the outbox, unique outbox_id/recipient_user_id on notifications, and unique notification_id/channel on notification_deliveries. Partial fan-out remains PROCESSING; retries resume idempotently through these unique arbiters. The outbox and delivery lease tuple is lease_owner, server-issued token hash, monotonic lease_generation and lease_expires_at; every finalizer checks the current tuple. safe_payload is the canonical minimized payload field. Exact nullability, indexes, constraints and recipient eligibility timing still require approval.
 
 ### 8.5 Side-effect boundary
 
@@ -363,7 +353,7 @@ Retry policy must be bounded by approved maximum attempts, retry horizon, backof
 
 Proposed objects: notification_deliveries and append-only notification_delivery_attempts. Delivery projection tracks current status; attempts preserve each sanitized try. Provider callback/webhook processing is an untrusted inbound boundary and must authenticate signatures, validate provider reference and legal state transition, deduplicate callbacks and remain idempotent.
 
-**Contract gap:** NLA-001 identifies recording provider result/webhook as an internal-only operation, but CMD-049–054 do not clearly identify a separate logical callback-ingestion command or define whether that behavior is included in CMD-053. Resolve this explicitly in the command catalogue and API/provider integration contract before implementation; do not silently expose a generic callback mutation path.
+**Callback integration boundary:** provider callbacks are assigned to INT-NOTIF-001, a separately authenticated integration ingress, not a new CMD ID and not a browser-callable RPC. It validates provider signature/freshness, maps a known provider message reference to one delivery, uses a durable provider-event deduplication mechanism, and applies only allowlisted monotonic status transitions. Provider-specific authentication, event-ID persistence and dedup retention remain open until a provider is selected; no generic callback mutation path is permitted.
 
 Never persist provider credentials, full provider response bodies, message bodies, access tokens or signed URLs in attempt history. Keep safe provider reference and error codes only.
 
@@ -398,13 +388,12 @@ Worker identity, scheduler authentication, SLA semantics, recipient selector rul
 
 ### 10.2 Proposed request and trusted time
 
-Catalogue fields:
+Canonical request:
 - notification_id;
 - policy_version_id;
-- step_no;
-- evaluation_time.
+- step_no.
 
-The supplied evaluation_time must not be trusted as the authoritative clock. Use server-controlled UTC time. If a scheduler passes a tick/correlation value, it is a hint only; the worker must derive actual due-ness from server time and approved SLA clock semantics. Validate notification/policy/step references against persisted state. The worker must not choose an arbitrary policy version or step to force escalation.
+There is no client-supplied evaluation_time. The worker captures one database-controlled UTC instant for the evaluation transaction and derives due-ness from persisted due timestamps and the pinned policy version. The worker cannot choose an arbitrary policy version or step to force escalation.
 
 ### 10.3 Due-time and policy semantics
 
@@ -440,7 +429,7 @@ Escalation events are append-only. Audit mapping is notification.escalation_eval
 
 - not-due evaluation produces no escalation;
 - due step enqueues once across repeated scheduler ticks;
-- caller-supplied future/past evaluation_time cannot manipulate due-ness;
+- request schema rejects caller-supplied evaluation_time; future/past client clocks cannot manipulate due-ness;
 - policy version cannot be substituted or widened;
 - no eligible recipient records a terminal safe outcome without scope widening;
 - account/assignment revocation is revalidated;
@@ -456,19 +445,19 @@ Existing mapping: TC-NOTIF-013/014. **PLANNED / NOT EXECUTED**.
 
 | Finding | Commands | Gap / impact | Required closure |
 |---|---|---|---|
-| N49-01 | 049 | Self-only read and RLS predicates are proposed but exact indexes, query consistency and cursor encoding are not specified | Approve recipient predicate, cursor contract, stable order, page-size limits and indexes |
-| N50-01 | 050 | Catalogue has optional expected_version but notifications schema lists no version field | Remove expected_version or approve a physical version model and concurrency semantics |
-| N50-02 | 050 | Read audit event mapping may create high-volume/recursive audit behavior | Approve whether read transitions use general audit, dedicated event or safe telemetry |
-| N51-01 | 051 | Policy draft lifecycle is not fully represented by the single proposed policy_versions table | Define draft identity, edit history, hash canonicalization, concurrent publish and immutable version rules |
+| N49-01 | 049 | Self-only read is specified; exact index plan, maximum page size and live RLS evidence remain open | Cursor is actor/filter-bound and integrity-protected; stable (created_at, id) order; no snapshot claim; approve exact indexes/page cap and verify RLS |
+| N50-01 | 050 | Previous optional expected_version conflicted with no physical row-version field | RESOLVED AT DOCUMENTATION BOUNDARY: remove expected_version; guarded set-once read_at is the concurrency/idempotency arbiter |
+| N50-02 | 050 | Inbox page reads could create high-volume audit noise | RESOLVED AT DOCUMENTATION BOUNDARY: no inbox-access audit; emit notification.read once on first read-state transition only; no duplicate event on retry |
+| N51-01 | 051 | Persisted mutable draft lifecycle was conflated with publish command | RESOLVED AT COMMAND SCOPE: CMD-051 is publish-only; draft CRUD is excluded and requires a separate approved command/schema if later needed |
 | N51-02 | 051 | notification.policy.manage role/grantor/scope/SoD is not approved | Approve canonical permission registry and policy-administrator matrix |
 | N51-03 | 051 | Exact recipient selector grammar and policy JSON schema remain open | PO/security approve versioned allowlist and validation |
 | N52-01 | 052 | Worker identity, scheduler trust, database role, owner and exact EXECUTE ACL unresolved | Security-approved worker principal and least-privilege execution design |
 | N52-02 | 052 | Event-time eligibility versus dispatch-time eligibility semantics not finalized | Approve resolution checkpoints and current eligibility revalidation |
-| N52-03 | 052 | NLA/schema/catalogue payload and lease field descriptions differ | Reconcile safe_payload/payload_ref, lease owner/token/expiry, retry and status fields |
+| N52-03 | 052 | NLA/schema/catalogue payload and lease field descriptions differed | RESOLVED AT DOCUMENTATION BOUNDARY: safe_payload; lease_owner, lease_token_hash, lease_generation, lease_expires_at; partial work remains PROCESSING and resumes through uniqueness arbiters |
 | N53-01 | 053 | Provider selection, capability, quota, cost and secret custody unverified | Provider decision and evidence; approved adapter/credential boundary |
-| N53-02 | 053 | Provider callback/webhook operation lacks a clearly assigned logical command | Define callback ingestion boundary, authentication, idempotency and catalogue mapping |
+| N53-02 | 053 | Provider callback/webhook operation was not assigned a boundary | RESOLVED AT INTEGRATION BOUNDARY: INT-NOTIF-001 is a separate provider-authenticated ingress, not a CMD ID or browser RPC; provider-specific signature and durable dedup remain open |
 | N53-03 | 053 | UNKNOWN and bounded retry are described but numeric retry horizon/attempt policy remains open | Approve retry/UNKNOWN reconciliation policy and operations alerts |
-| N54-01 | 054 | evaluation_time appears as request input but authoritative clock semantics are undefined | Server UTC only; approve SLA clock, timezone, pause/close and due-time rules |
+| N54-01 | 054 | Caller-supplied evaluation_time could conflict with trusted time | RESOLVED AT REQUEST BOUNDARY: remove evaluation_time; capture one DB UTC instant. SLA start, calendar/timezone and pause/close semantics remain open |
 | N54-02 | 054 | Worker/scheduler identity and ACL remain unresolved | Approve scheduler principal, lease, exact owner/EXECUTE ACL |
 | N54-03 | 054 | T-10 retention/legal-hold applies to notification content and history | Written institutional classification, retention and disposition decisions |
 | N49-54-01 | 049–054 | Six-table design, exact composite FKs, indexes, enums/checks and RLS remain proposed | Complete physical/RLS review and reconcile all six tables |
@@ -491,7 +480,7 @@ Before CMD-049–054 can be considered implementation-ready:
 9. Add or explicitly map provider callback/webhook ingestion for CMD-053.
 10. Define server-clock SLA semantics and scheduler behavior for CMD-054.
 11. Reconcile event names and audit payloads with T-15 and the audit event catalogue.
-12. Update RTM, QA, DGA and RAID only after accountable owners accept the findings and their evidence.
+12. Synchronize RTM, QA, DGA, RAID, lock manifest, audit and physical/RLS crosswalk to this proposal; accountable approvals and runtime evidence remain separate gates.
 
 Do not treat a notification command as a substitute for any domain command or as authority to mutate the underlying workflow.
 
@@ -519,13 +508,13 @@ Existing QA references include TC-NOTIF-001 through TC-NOTIF-018. They remain **
 | Item | Status | Evidence boundary |
 |---|---|---|
 | CMD-049 detailed review | DOCUMENTED — PROPOSAL | Static review of catalogue, NLA-001 and schema proposal |
-| CMD-050 detailed review | DOCUMENTED — PROPOSAL; VERSION GAP OPEN | Static review; expected_version mismatch identified |
+| CMD-050 detailed review | DOCUMENTED — PROPOSAL; VERSION FIELD REMOVED | Static review; set-once read_at contract aligned to physical proposal |
 | CMD-051 detailed review | DOCUMENTED — PROPOSAL; AUTHORITY OPEN | Policy lifecycle and permission/SoD approval outstanding |
 | CMD-052 detailed review | DOCUMENTED — PROPOSAL; WORKER SECURITY OPEN | No worker principal or ACL verified |
-| CMD-053 detailed review | DOCUMENTED — PROPOSAL; PROVIDER/CALLBACK GAP OPEN | No provider or callback runtime verified |
+| CMD-053 detailed review | DOCUMENTED — PROPOSAL; INT-NOTIF-001 BOUNDARY DEFINED; PROVIDER OPEN | No provider, signature scheme or callback runtime verified |
 | CMD-054 detailed review | DOCUMENTED — PROPOSAL; SLA/WORKER GAP OPEN | No scheduler identity or SLA clock approval |
 | Physical schema / RLS | PROPOSED; NOT LIVE-VERIFIED | No live catalog or policy query |
-| Routes / RPCs / functions | NOT APPROVED OR VERIFIED | No route/function inventory asserted |
+| Routes / RPCs / functions | NOT APPROVED OR VERIFIED | No route/function inventory asserted; INT-NOTIF-001 is a logical integration contract only |
 | Permission grants / worker ACL | NOT APPROVED OR VERIFIED | No grants or roles changed |
 | Provider setup | NOT PERFORMED | No provider selected/configured |
 | Tests | PLANNED / NOT EXECUTED | No test execution |
@@ -542,3 +531,20 @@ Existing QA references include TC-NOTIF-001 through TC-NOTIF-018. They remain **
 4. Reassess G9 only when objective closure evidence exists. G10 remains a separate explicit authorization.
 
 **Final boundary:** This review changes documentation only. No source code, SQL, migration, grant/revoke, RLS, Storage policy, worker, provider configuration, live database, deployment, CI execution or merge was performed.
+
+
+## 16. Notification engineering reconciliation addendum — 2026-11-24
+
+This addendum records the static contract decisions and remaining approval boundary after reconciliation with NLA-001 v0.1.2. It does not change the proposal status or authorize implementation.
+
+| Area | Documentation-level disposition | Remaining blocker |
+|---|---|---|
+| CMD-049 cursor/read boundary | Self-only, actor/filter-bound integrity-protected cursor; stable (created_at, id) order; no snapshot guarantee | Exact indexes, page-size cap and live RLS evidence |
+| CMD-050 read state | expected_version removed; set-once read_at; one notification.read event on first transition only | T-15 implementation verification and audit test |
+| CMD-051 policy | Publish-only; server canonical hash and expected current published version; no persisted draft CRUD | Permission/grantor/SoD authority, selector schema and effective interval constraints |
+| CMD-052 fan-out | Canonical safe_payload; explicit lease owner/token hash/generation/expiry; PROCESSING + unique arbiters for partial retry | Worker identity/ACL and recipient event-time vs fan-out-time decision |
+| CMD-053 delivery | External I/O outside transactions; UNKNOWN on ambiguous acceptance; INT-NOTIF-001 callback ingress | Provider choice/capability, callback signature and durable event deduplication |
+| CMD-054 escalation | No caller evaluation_time; one database UTC instant per transaction | SLA start event, elapsed/calendar semantics, timezone and paused/closed behavior |
+| Dismissal | dismissed_at reserved only | PO/UX approval; no command or browser mutation |
+
+The six notification tables remain a proposed subset of the 48-table physical/RLS inventory. INT-NOTIF-001 is an integration contract, not a new CMD ID or table. TC-NOTIF-001..026 and TC-FN-SEC-025-064..069 remain PLANNED / NOT EXECUTED. Worker identities, exact function owners/EXECUTE ACLs, live RLS/grants, provider capability and T-10 institutional retention/privacy remain open. G9 NOT READY; G10 NOT AUTHORIZED.
