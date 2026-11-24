@@ -202,3 +202,30 @@ In particular:
 - notification.policy.manage remains a proposed scoped permission with no approved role assignment, grantor ceiling or SoD matrix. CMD-051 publishes a validated immutable policy version only; it does not create/edit persisted drafts.
 - CMD-052, CMD-053 and CMD-054 remain internal worker/scheduler operations. They do not receive user-role permissions, authenticated-browser EXECUTE or service_role impersonation.
 - INT-NOTIF-001 is a provider callback integration ingress with provider-specific authentication and durable deduplication still pending provider selection/security approval.
+
+
+## Durable artifact candidate authorization reconciliation — 2026-11-24
+
+**Status:** Registry draft addendum for traceability only. No new permission is approved, seeded, granted or executable.
+
+The durable-object proposal is reconciled to the existing permission vocabulary as follows:
+
+| Candidate operation/object | Existing permission / command | Authorization boundary |
+|---|---|---|
+| Sync operation manifest/results | CMD-035 / sync.apply | Existing permission covers applying the bounded offline operation batch for the user's own bound device and previously claimed drafts. It does not authorize device enrollment, device-key rotation, revocation administration or reading another user's device/batch. |
+| Device binding registry | No existing permission | Enrollment, re-binding, attestation recovery and revocation require a separately specified command and narrow permission. Do not infer these powers from sync.apply. |
+| Template version publication | No existing permission explicitly identified | document.generate authorizes generation against an already approved template; it does not authorize template authoring/publication. A candidate document.template.manage permission and command require Product/Security approval before use. |
+| Document generation jobs/attempts | CMD-036 / document.generate for request acceptance; internal renderer principal for execution | User permission authorizes the scoped generation request only. Queue claim, render, retry and finalization require a separately approved workload identity and exact function/table ACL; no user-role permission or service_role impersonation. |
+| Print batch items/results | CMD-038 / document.print.batch | Existing permission applies per document and scope. It does not grant direct browser DML on manifest or result rows. |
+| Attendance verification events | CMD-040 / attendance.verify | Existing permission applies only after institutional location/assignment authority and uploader/verifier SoD are approved. |
+| Report queries | CMD-041/042 / report.read | Existing read permission; bounded scope, filters, cursor and snapshot/watermark remain command-level obligations. |
+| Audit export artifacts | CMD-044 / audit.export | Existing separate export permission remains blocked by T-10 institutional records authority and approved export model. |
+
+### Explicit non-decisions
+
+- No role-to-permission mapping is approved.
+- No device-enrollment or template-publication permission is added to the canonical registry.
+- No worker receives an authenticated-user permission.
+- Internal renderer and notification workers remain distinct workload trust principals; exact owner, non-login role, caller identity, secret source and EXECUTE ACL require T-18 approval.
+- Candidate objects must be added to the canonical schema, RLS, ERD, function security, audit catalogue and QA inventory together only after design approval.
+- The current registry remains DRAFT / NOT APPROVED; no permission seed, GRANT/REVOKE or live authorization behavior is claimed.
