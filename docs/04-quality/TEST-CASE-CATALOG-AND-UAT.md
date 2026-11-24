@@ -621,4 +621,4 @@ The following product semantics are approved; the referenced cases remain **PLAN
 
 ## CMD-001–010 candidate lock/concurrency coverage — 2026-11-24
 
-The concurrency expectations in TC-CMD-CONTRACT-024-001..009 have been aligned with CMD-001–010 Detailed Contract Review v0.3.3 §9. They remain **PLANNED / NOT EXECUTED**. The test design must use deterministic transaction barriers, assert final database invariants and typed loser outcomes, capture relevant SQLSTATE/lock diagnostics, and run against the exact approved schema and PostgreSQL major. This documentation update is not execution evidence and does not close LPR-10.
+The concurrency expectations in TC-CMD-CONTRACT-024-001..009 have been aligned with CMD-001–010 Detailed Contract Review v0.3.4 §9. They remain **PLANNED / NOT EXECUTED**. The test design must use deterministic transaction barriers, assert final database invariants and typed loser outcomes, capture relevant SQLSTATE/lock diagnostics, and run against the exact approved schema and PostgreSQL major. This documentation update is not execution evidence and does not close LPR-10.
