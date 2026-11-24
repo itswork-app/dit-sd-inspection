@@ -290,3 +290,8 @@ No RAID owner has been replaced with an invented person or institution. No new r
 ### R-037 resolver lock-set refinement — 2026-11-24
 
 The source event declaration inventory is complete at 40/40 in LOCK-MANIFEST-001 §7.7. The remaining gap is complete recipient-resolver lock-set coverage: 0/40 source paths certified. [NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001](../02-architecture/NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) v0.1.5 proposes a global L05 audience guard or a SERIALIZABLE predicate snapshot and records required writer participation, FK pre-acquisition and adversarial tests. These are alternatives for review, not approved controls. R-037 remains OPEN — CRITICAL until the event-time linearization, selected mechanism, exact FK graph, every eligibility-changing writer, acyclicity and authorized runtime evidence are closed. 0/50 application lock-certified; G9 NOT READY; G10 NOT ACTIVE.
+
+
+### R-037 decision update — 2026-11-24
+
+PO has selected candidate L05 (global transaction-scoped audience guard) as the primary mechanism for technical approval review; Option B SERIALIZABLE remains contingency-only. See [NLA-RESOLVER-LOCK-001 v0.1.6](../02-architecture/NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) §11. R-037 remains OPEN — CRITICAL pending Engineering/Database/Security approval of the exact PostgreSQL primitive/key, rank/order, complete eligibility-writer participation, FK/trigger/helper edges, timeout/retry, contention bounds and graph acyclicity. This PO selection does not authorize implementation or admit L05 as a canonical rank. Resolver certification 0/40; application lock certification 0/50; G9 NOT READY; G10 NOT ACTIVE.
