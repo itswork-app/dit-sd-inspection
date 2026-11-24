@@ -1,13 +1,13 @@
 # SSOT Cross-Document Reconciliation Audit — Dit. SD Inspection
 
 **Document ID:** SSOT-AUDIT-001  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Status:** STATIC CROSS-DOCUMENT AUDIT COMPLETED — CLOSURE PARTIAL  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
 **PR:** #3 — Draft / Open  
-**Authority:** AGENTS.md v1.2.0; MIB-001 v1.0.3; DGA-001 v1.11.22; IRG-001 v1.0.1  
+**Authority:** AGENTS.md v1.2.0; MIB-001 v1.0.5; DGA-001 v1.11.24; IRG-001 v1.0.1  
 **Implementation authorization:** NOT GRANTED
 
 ## 1. Executive result
@@ -26,11 +26,11 @@ This audit does not grant approval, close institutional dependencies, certify te
 
 Reviewed on the target branch:
 - Root AGENTS.md v1.2.0.
-- MIB-001 v1.0.3; DGA-001 v1.11.22; IRG-001 v1.0.1.
+- MIB-001 v1.0.5; DGA-001 v1.11.24; IRG-001 v1.0.1.
 - Decision Register and its T-01..T-18, T-14 clarification, T-15..T-18, and LPR-02..LPR-06 decision addenda.
 - Package S — Final Cross-Document Audit and Scope-Freeze Readiness, including §9.15.
-- Package T — Product Owner Decision Closure Pack v0.1.0, including its historical-status reconciliation.
-- RTM-001 v0.1.0 and RAID-001 v0.1.0.
+- Package T — Product Owner Decision Closure Pack v0.1.1, including its historical-status reconciliation.
+- RTM-001 v0.1.2 and RAID-001 v0.1.1.
 - QA Catalogue v0.3.5, including TC-PRINT-001..007, TC-DOC-001..011 and TC-PRINT-BATCH-001..008.
 - DGA command, lock, notification and institutional blocker summaries.
 
@@ -41,13 +41,13 @@ This was a read-only content review followed by documentation-only corrections o
 | Source | Current role | Audit disposition |
 |---|---|---|
 | AGENTS.md v1.2.0 | Mandatory repository work policy and G10 boundary | Read before this task; documentation-only scope retained |
-| MIB-001 v1.0.3 | Governance and gate control plane | Current-source pointers reconciled; G9/G10 unchanged |
-| DGA-001 v1.11.22 | Active evidence-backed gap register | Remains the controlling closure queue; 21 gap IDs |
+| MIB-001 v1.0.5 | Governance and gate control plane | Current-source pointers reconciled; G9/G10 unchanged |
+| DGA-001 v1.11.24 | Active evidence-backed gap register | Remains the controlling closure queue; 21 gap IDs |
 | IRG-001 v1.0.1 | Pre-implementation and release roadmap | Plan only; no implementation authorization |
 | Decision Register | Canonical index of current PO decisions | Current authority; approved decisions are not reopened by historical recommendation text |
 | Package S | Historical cross-document audit with dated current-state addenda | §9.15 remains historical; §9.16 is added as current snapshot |
-| Package T v0.1.0 | Historical decision instrument | Header and §10 correctly state that current PO authority is the Decision Register and dated addenda |
-| RTM-001 v0.1.0 | Requirement-to-design-to-verification index | 125 unique requirement IDs; T-13 test mapping correction recorded |
+| Package T v0.1.1 | Historical decision instrument | Header and §10 correctly state that current PO authority is the Decision Register and dated addenda |
+| RTM-001 v0.1.2 | Requirement-to-design-to-verification index | 125 unique requirement IDs; T-13 test mapping correction recorded |
 | RAID-001 v0.1.1 | Risks, assumptions, issues and dependencies | 65 unique RAID IDs; D-031..D-036 and R-032..R-036 remain open/blocked as stated |
 | QA Catalogue v0.3.5 | Planned verification catalogue | 410 unique test definitions in DGA's current scan; all are planned, not execution evidence |
 
