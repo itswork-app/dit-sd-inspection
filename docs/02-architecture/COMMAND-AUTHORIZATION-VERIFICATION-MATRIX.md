@@ -178,3 +178,7 @@ Changes to permission codes, command mappings, role grants, scope predicates, RL
 ## Individual command contract catalogue dependency
 
 [PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) now expands the 27 families into 48 logical operations (CMD-001..048) and links 48 planned QA cases (TC-CMD-CONTRACT-024-001..048). This is a detailed proposal, not 48 approved/executable contracts: exact physical PostgreSQL signatures, API routes, role grants, deployed RLS, EXECUTE grants, approved schemas and runtime evidence remain absent. CMD-045..048 are explicitly blocked pending institutional authority/schema.
+
+## PostgreSQL function security and caller ACL dependency
+
+See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md) for the function class matrix, exact-signature ACL rules and 62 planned QA cases. No role/ACL inventory has been captured from live Supabase. The SECURITY INVOKER/direct-DML conflict remains an explicit PO/security blocker.
