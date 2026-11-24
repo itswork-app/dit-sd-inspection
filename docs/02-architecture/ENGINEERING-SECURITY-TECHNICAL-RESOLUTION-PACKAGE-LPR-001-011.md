@@ -326,7 +326,7 @@ Not performed: source-code changes, SQL, migrations, grants/revokes, live databa
 | LPR-01 | OPEN — technical approval required |
 | LPR-07 | OPEN — exact primitives/effective graph approval required |
 | LPR-08 | OPEN — worker/provider security approval required |
-| LPR-09 | OPEN — 54 manifest normalization/review required |
+| LPR-09 | OPEN — 50 application manifest normalization/review required; CMD-045–048 are external traceability IDs |
 | LPR-10 | NOT EXECUTED |
 | LPR-11 | OPEN — identity/authorization rank approval required |
 | DGA-B14 | PARTIAL |
