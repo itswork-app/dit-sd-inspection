@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.6.4
+Version: 0.6.5
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -1032,3 +1032,20 @@ These cases extend TC-SESSION-001 and TC-INS-DRAFT-021..027. They do not establi
 
 
 **Attempt identity invariant:** each inspection_id represents one session-bound attempt. A new session after ABORTED creates a new inspection_id; return/reopen within the same session keeps the original inspection_id. TC-INS-DRAFT-027 is PLANNED / NOT EXECUTED.
+
+
+## CMD-013 FINAL_CLOSE cross-lifecycle QA assertions — 2026-11-24
+
+**Status: specification only; all cases remain PLANNED / NOT EXECUTED.** Retain the existing stable test IDs; this addendum clarifies their required assertions and does not create an execution result.
+
+Extend the existing CMD-013 / TC-SESSION-002..008 coverage to prove:
+- FINAL_CLOSE rejects any nonterminal assigned inspection attempt, active claim, active draft context, pending review, returned correction or unresolved authorized reopen.
+- A hanging unit can be resolved only by its explicit authorized per-unit abort; CMD-027 claim release alone does not satisfy the gate.
+- Abort is terminal, preserves attempt/revision/evidence/audit history, and does not count as inspected, approved, good, defective or printed.
+- A pending evidence upload intent, unverified object or required evidence finalizer blocks closure; client-declared metadata cannot satisfy finalization.
+- Required completed-unit document generation and print work must reach a reconciled terminal success before closure; queued/processing/failed/uncertain required outcomes block.
+- Attendance remains fail-closed until the institutional evidence/verifier predicate is approved; tests must not encode an invented verifier role or signatory.
+- Notification provider delivery does not block closure under the current approved product semantics; source/outbox atomicity remains separately tested.
+- Race tests cover FINAL_CLOSE against every writer/finalizer family listed in CMD-001–054 Cross-Command Reconciliation. A test pass is not valid until the canonical lock order, parent/child fences and lock graph are approved and executable.
+
+Extend TC-INS-DRAFT-021..027 / TC-SESSION-002..008 traceability as applicable; do not mark any case executed. Required future evidence includes database concurrency runs, rollback/audit atomicity, Storage finalization, renderer/print reconciliation, attendance authority evidence and post-close async notification behavior.
