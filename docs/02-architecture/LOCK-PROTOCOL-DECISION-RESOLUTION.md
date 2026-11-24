@@ -208,7 +208,7 @@ No test, CI, SQL, migration, live database query, grant, deployment or runtime i
 | G9 SSOT/scope freeze | NOT READY | Product, institutional and technical blockers remain |
 | G10 implementation | NOT AUTHORIZED | Separate written implementation authorization is absent |
 
-**Final disposition:** PO product semantics LPR-02–LPR-06 are approved and recorded in the Decision Register. LPR-01 (candidate rank hierarchy) and LPR-07–LPR-11 remain open for technical review, manifest reconciliation and authorized concurrency evidence. This does not approve the canonical lock protocol, close DGA-B18/B19/B20, certify deadlock freedom or authorize implementation.
+**Final disposition:** PO product semantics LPR-02–LPR-06 are approved and recorded in the Decision Register. LPR-01 (candidate rank hierarchy) and LPR-07–LPR-11 remain open for technical review, manifest reconciliation and authorized concurrency evidence. This does not approve the canonical lock protocol, close DGA-B18/B19/B20/B21, certify deadlock freedom or authorize implementation.
 
 
 ## 10. Decision update — 2026-11-24
@@ -233,7 +233,17 @@ This checkpoint records contradictions and incomplete paths that are visible fro
 | Implicit database edges — CMD-001–054 | Documentation does not establish actual FK checks, unique-index arbitration, triggers, helper-function calls, row-lock modes or effective privilege/RLS behavior. | Inspect the authorized target schema and deployed function/trigger/ACL inventory; produce a complete effective lock/call graph tied to the exact schema head. | NOT VERIFIED |
 | Adversarial evidence — CMD-001–054 and workers | LG-01–LG-41 are planned scenarios only. No deterministic concurrency execution or deadlock diagnostics are recorded. | Run the approved suite in an authorized isolated environment; retain fixtures, barriers, isolation level, SQLSTATE/lock diagnostics and invariant snapshots. | NOT EXECUTED |
 
-## 11.2 Identity and authorization aggregate rank gap — CMD-001–007
+### 11.1 Reconciliation rules
+
+1. Do not resolve a contradiction by silently preferring the candidate rank table; it remains subject to LPR-01 and technical approval.
+2. Do not infer physical lock behavior from logical labels such as L20/L30/L50 or from a proposed unique constraint.
+3. A unique index, foreign-key check, trigger, helper function or worker can add an effective lock edge; each must be represented after physical inspection.
+4. A command is not lock-complete merely because its logical operation appears in the 54-row inventory.
+5. Keep institutional blockers distinct from technical blockers. Engineering cannot approve attendance authority, retention/legal hold or provider ownership on behalf of the institution.
+6. Update the canonical command catalogue, detailed review, lock manifest, global graph, QA plan and DGA register together only after the relevant authority has approved the decision.
+7. No row in this checkpoint is certified complete; all tests remain PLANNED / NOT EXECUTED unless a separate reproducible evidence record is attached.
+
+### 11.2 Identity and authorization aggregate rank gap — CMD-001–007
 
 A row-by-row review of CMD-001–007 found mutable or authorization-bearing resources that are not represented by a named class in the current L00–L110 candidate hierarchy:
 
@@ -251,16 +261,6 @@ The candidate protocol must explicitly resolve:
 5. Whether commands need to lock actor authorization rows or use a separately approved authorization-epoch/snapshot contract to prevent revocation races.
 
 Until LPR-11 is resolved, CMD-001–007 cannot receive normalized candidate-rank sequences. Their row-level overlays in LOCK-MANIFEST-001 are resource inventories only, not approved acquisition orders.
-
-### 11.1 Reconciliation rules
-
-1. Do not resolve a contradiction by silently preferring the candidate rank table; it remains subject to LPR-01 and technical approval.
-2. Do not infer physical lock behavior from logical labels such as L20/L30/L50 or from a proposed unique constraint.
-3. A unique index, foreign-key check, trigger, helper function or worker can add an effective lock edge; each must be represented after physical inspection.
-4. A command is not lock-complete merely because its logical operation appears in the 54-row inventory.
-5. Keep institutional blockers distinct from technical blockers. Engineering cannot approve attendance authority, retention/legal hold or provider ownership on behalf of the institution.
-6. Update the canonical command catalogue, detailed review, lock manifest, global graph, QA plan and DGA register together only after the relevant authority has approved the decision.
-7. No row in this checkpoint is certified complete; all tests remain PLANNED / NOT EXECUTED unless a separate reproducible evidence record is attached.
 
 ## 12. Change history
 
