@@ -63,6 +63,8 @@ All codes are proposed unless explicitly identified as T-17 decisions. Immutable
 | security.review | Review restricted security incidents | SECURITY_CASE | Designated security reviewer; minimum necessary access | security incident commands | security.incident_* |
 | provider.manage | Change provider/environment configuration | PLATFORM_GOVERNANCE | Named platform custodian; institutional ownership approval under T-12 | provider configuration commands | provider.configuration_changed |
 | release.manage | Deploy/rollback production release | PLATFORM_GOVERNANCE | Named release operator and approved release process | deployment/rollback commands | production.release_* |
+| notification.read | Read/mark-read own inbox notifications | SELF | Recipient identity must equal auth.uid(); notification does not grant source-resource access | list-own-notifications/mark-notification-read | notification.read |
+| notification.policy.manage | Draft/publish scoped notification policy versions | NOTIFICATION_CONFIG_SCOPE | Explicit config scope, grantor ceiling and SoD; role grants NOT APPROVED | publish-notification-policy | notification.policy_published |
 
 ### 2.1 Scope class meanings
 
@@ -111,7 +113,10 @@ New command vocabulary includes account.request, account.approve, project.manage
 | Evidence read/export | evidence.read / evidence.export | History authority; export separately granted | evidence_assets and private Storage | evidence.accessed/downloaded/exported | EVID-ACCESS |
 | Offline sync | sync.apply | Own bound device; previously claimed draft; server reauthorization | sync_batches, inspections, responses, evidence_assets | sync.batch_* and domain events | SYNC-CMD |
 | Document generate | document.generate | Exact approved revision/template; immutable artifact | documents, inspection_revisions, attendance_records | pdf/ba/attendance.generated | DOC-GEN |
-| Individual/batch print | document.print / document.print.batch | Per-document authority/idempotency; partial batch outcomes | documents, print_events | document.printed/reprinted | DOC-PRINT |
+| Individual/batch print | document.print / document.print.batch | Per-document authority/idempotency; durable batch aggregate and partial outcomes | print_batches, documents, print_events | document.printed/reprinted; batch lifecycle | DOC-PRINT |
+| Notification inbox | notification.read | Recipient-self only; source resource re-authorized on navigation | notifications | notification.read | NOTIF-INBOX |
+| Notification policy | notification.policy.manage | Explicit policy scope; immutable versions; role/grantor matrix pending approval | notification_policy_versions, audit_events | notification.policy_published | NOTIF-POLICY |
+| Notification workers | Internal worker principals only; no user permission | Outbox lease, idempotent fan-out/delivery/escalation; worker ACL review required | notification_outbox, notifications, notification_deliveries, notification_delivery_attempts, notification_escalation_events | Dedicated operational telemetry/escalation events | NOTIF-WORKER |
 | Attendance upload/verify | attendance.upload / attendance.verify | Korlap assigned location; distinct permissions | attendance_records, attendance_documents | attendance.uploaded/replaced/verified | ATT-CMD |
 | Actual/target report read | report.read | Project/session row scope; no actual mutation | inspections, target_plans, target_allocations | report.accessed where policy requires | RPT-CMD |
 | Audit read/export | audit.read / audit.export | Purpose/scope; export separate | audit_events and export artifacts | audit.accessed/search_performed/exported | AUD-CMD |
@@ -173,3 +178,7 @@ The [PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGU
 ## Function ACL and caller execution model
 
 See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md). Permission grants and PostgreSQL EXECUTE grants are different: the former authorize a business action; the latter permit function invocation. Neither implies the other. Registry v0.1.0 remains a PO/security draft; no role mapping or EXECUTE grant is approved.
+
+## NLA-001 permission extension
+
+`notification.read` is self-scoped and never grants access to the referenced project/inspection/evidence. `notification.policy.manage` is a proposed scoped configuration permission; no role-to-permission assignment or grantor authority is approved. CMD-052..054 are internal worker operations and must not be represented as user-role permissions. Add exact scope predicates, grants, negative tests and SoD review before implementation.
