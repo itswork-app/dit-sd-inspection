@@ -129,3 +129,9 @@ PO APPROVED option B — individual and batch printing. Initial release includes
 ### T-14 clarification — registration, roles, teams and staffing (2026-11-24)
 
 A user must register/authenticate before Super Admin can approve the account and configure roles, permissions, scope, team membership and operational assignment. Registration by itself does not grant access and is not sufficient to count toward Inspector capacity. Super Admin exclusively determines the number of teams and the personnel assigned to each team, within the approved capacity and project/session plan. Self-assignment of roles, teams or operational assignments is prohibited.
+
+
+
+### T-15 — Audit event policy INS-016 (2026-11-24)
+
+**Status: PO APPROVED — option A.** Approve the proposed append-only audit event catalogue and mandatory atomicity for critical mutations: the state change and audit event must commit in the same database transaction; audit-write failure rolls back/fails closed the critical mutation. Events must capture actor, active role, applicable scope, action/event type, timestamp, correlation/idempotency references and privacy-safe change context. Sensitive evidence access and export must be audited. Audit access is least-privilege; ordinary application roles cannot update/delete recorded events. T-10 institutional approval remains required for classification, retention, deletion/disposition, legal hold and network metadata; no retention duration or metadata collection is approved by T-15. Implementation, schema/RLS reconciliation and tests remain pending; this PO decision does not authorize implementation or production activation.
