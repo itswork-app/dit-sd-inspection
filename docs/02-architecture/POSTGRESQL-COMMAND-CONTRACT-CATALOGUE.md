@@ -6,7 +6,7 @@
 
 ## 1. Purpose and boundary
 
-This catalogue expands the 27 logical authorization families into individual command/read contracts. It is a design artifact. It does not create PostgreSQL functions, Vercel routes, migrations, grants, RLS policies or role assignments.
+This catalogue expands the 28 logical authorization families into individual command/read contracts. It is a design artifact. It does not create PostgreSQL functions, Vercel routes, migrations, grants, RLS policies or role assignments.
 
 **Naming rule:** `CMD-001..048` are stable proposed catalogue IDs. Command names are logical names. No physical PostgreSQL function name or REST route is approved by this document. If implementation later uses `cmd_<name>_v1`, that is a candidate naming convention only and must be checked against the actual schema/function inventory before adoption.
 
