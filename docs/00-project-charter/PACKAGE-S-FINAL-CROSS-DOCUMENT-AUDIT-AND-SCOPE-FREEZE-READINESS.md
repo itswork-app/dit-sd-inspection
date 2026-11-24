@@ -91,7 +91,7 @@ Required action: complete provider capability and cost review, approve region an
 ### S-08 — Physical schema, RLS, and privileged command boundary require technical closure
 **Severity:** BLOCKER
 
-PO direction is approved for T-16 canonical serial identity, T-17 instrument publication governance and T-18 caller-JWT command architecture/direct-DML denial. The project-independent canonical unit + durable project-association model is documented. However, physical constraints/composite FKs, institutional serial normalization/exception policy, exact table/function grants, RLS helper implementation, SECURITY DEFINER review, command-by-command contracts and executable security/concurrency evidence remain OPEN. No policy or command is deployed.
+PO direction is approved for T-16 canonical serial identity, T-17 instrument publication governance and T-18 caller-JWT command architecture plus Option A narrow SECURITY DEFINER protected-write wrappers. The project-independent canonical unit + durable project-association model is documented. However, physical constraints/composite FKs, institutional serial normalization/exception policy, exact table/function grants, RLS helper implementation, per-function SECURITY DEFINER review, command-by-command contracts and executable security/concurrency evidence remain OPEN. No policy or command is deployed.
 
 Required action: complete technical review of schema/association constraints; publish the canonical permission registry; reconcile every table/view/RPC/Storage object with exact grants; complete command contracts and dedicated negative/concurrency tests before any implementation authorization.
 
@@ -138,7 +138,7 @@ Required action: verify actual GitHub rules and CI workflows and record a succes
 
 ## 6. Decision Register and RAID updates required
 
-Before scope freeze: convert each remaining blocker into a tracked decision/issue with an accountable institutional role; retain T-15 as PO APPROVED while keeping T-10 institutional records/privacy controls OPEN; keep source checklist/photo requirements OPEN until controlled source approval; keep provider/region/backup and privacy/retention dependencies OPEN until verified; implement and verify the T-14 qualifying Inspector predicate; complete T-16 technical review and T-18 command/permission closure; decide session creation and closed-session reopening; and resolve report count/delivery/closure semantics.
+Before scope freeze: convert each remaining blocker into a tracked decision/issue with an accountable institutional role; retain T-15 as PO APPROVED while keeping T-10 institutional records/privacy controls OPEN; keep source checklist/photo requirements OPEN until controlled source approval; keep provider/region/backup and privacy/retention dependencies OPEN until verified; implement and verify the T-14 qualifying Inspector predicate; complete T-16 technical review and T-18 per-function/permission/ACL verification; decide session creation and closed-session reopening; and resolve report count/delivery/closure semantics.
 
 ## 7. Scope-freeze gate
 
@@ -275,3 +275,12 @@ QA added 10 unique planned cases (TC-LIVE-INV-026-001..010) for live inventory e
 
 **Disposition unchanged:** live role/ACL/RLS/function inventory OPEN; T-18 Option A selection PO APPROVED but deployed conformance unverified; T-10 institutional records/privacy and T-12 provider/backup/ownership evidence remain blockers; scope freeze NOT READY; implementation NOT AUTHORIZED.
 
+
+
+## 9.12 T-18 execution-model security review (2026-11-24)
+
+Created [T-18 Execution Model Security Review](../02-architecture/T18-EXECUTION-MODEL-SECURITY-REVIEW.md) following explicit PO approval of Option A. The approved hybrid model uses narrow SECURITY DEFINER PostgreSQL command wrappers for protected writes and SECURITY INVOKER/RLS for read-only paths where feasible. It defines dedicated NOLOGIN owner isolation, fixed empty search_path, schema-qualified references, exact EXECUTE ACLs, caller-JWT preservation, internal database authorization, direct browser DML denial, and atomic audit/idempotency requirements.
+
+QA added 12 unique planned cases (TC-EXEC-MODEL-027-001..012) covering owner attributes and ownership, search_path, exact EXECUTE ACL, caller-JWT path, actor spoofing, browser DML denial, RLS interaction, authorization freshness, audit rollback, idempotency/concurrency and read-path separation. These are PLANNED / NOT EXECUTED.
+
+**Decision status:** T-18 execution-model selection PO APPROVED Option A. **Verification status:** actual repository runtime route/client implementation, live Supabase role/function/ACL inventory, exact function signatures/owners/grants and runtime tests remain OPEN / NOT EXECUTED. Option B is not selected. Scope freeze remains NOT READY; implementation remains NOT AUTHORIZED.
