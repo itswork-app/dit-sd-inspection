@@ -545,3 +545,25 @@ The read-only repository audit found no application implementation or runtime/co
 | TC-REPO-AUDIT-028-007 | Automated quality/security coverage | Verify unit, integration, authorization, tenant/project isolation, audit rollback, idempotency and concurrency tests are present and runnable. | CI workflow inventory, test reports and reproducible local/CI execution. | BLOCKED / NOT EXECUTED |
 | TC-REPO-AUDIT-028-008 | Build and deployment provenance | Verify lockfile, pinned runtime/toolchain, reproducible build, deployment commit provenance and environment protection. | Build logs, artifact provenance and Vercel/GitHub environment configuration evidence. | BLOCKED / NOT EXECUTED |
 
+## Notification lifecycle verification — NLA-001 (planned, not executed)
+
+- TC-NOTIF-001: source event and outbox intent commit atomically; audit/outbox failure rolls back the business mutation.
+- TC-NOTIF-002: duplicate outbox processing creates one inbox row per recipient.
+- TC-NOTIF-003: multiple selectors resolving the same user produce one recipient notification.
+- TC-NOTIF-004: role membership without matching assignment scope cannot receive or read scoped notification.
+- TC-NOTIF-005: recipient A cannot list/read/mark-read recipient B's notification.
+- TC-NOTIF-006: notification link does not bypass authorization on the referenced resource.
+- TC-NOTIF-007: delivery state and read state remain independent under all transitions.
+- TC-NOTIF-008: quiet hours suppress/defer only channels allowed by the pinned policy and correct time zone.
+- TC-NOTIF-009: provider retry is idempotent; duplicate webhook/result does not create duplicate state transitions.
+- TC-NOTIF-010: provider accepted + worker crash yields safe UNKNOWN/reconciliation behavior, not false exactly-once claims.
+- TC-NOTIF-011: expired worker lease is reclaimable without duplicate fan-out.
+- TC-NOTIF-012: policy publish creates immutable version/hash; old outbox retains old policy version.
+- TC-NOTIF-013: escalation step runs once; no eligible recipient does not widen scope.
+- TC-NOTIF-014: failed notification delivery never changes inspection/project/session status.
+- TC-NOTIF-015: revoked/disabled account or push subscription is excluded at dispatch.
+- TC-NOTIF-016: sensitive payloads, tokens and provider secrets are absent from logs/audit/attempt records.
+- TC-NOTIF-017: outbox backlog, dead-letter, retry age and provider failure metrics/alerts are observable.
+- TC-NOTIF-018: cursor pagination cannot cross recipient identity or filter scope.
+
+These cases are test specifications only. No notification tests have been executed.
