@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.21  
+**Version:** 0.1.22  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -393,3 +393,27 @@ RTM-001 v0.1.19 adds NOTIF-039..043; QA Catalogue v0.5.9 adds TC-NOTIF-090..094,
 ## D-026 / R-037 technical source cross-check — 2026-11-24
 
 Physical schema v0.4.4 states the one-terminal-decision-per-revision invariant in the `review_events` description but does not name a concrete unique index/constraint or review-round sequence. The invariant is therefore not yet physically enforced by evidenced schema. Source-event path map v0.1.0 and CMD lock manifest v0.4.30 retain inspection-first candidate recipes, while global graph §30 proposes authorization/parent/assignment/optional-claim before inspection; this ordering conflict remains unresolved. No lock certification or event admission follows from the documentation update.
+
+## Inspection draft-context lifecycle risks and dependencies — 2026-11-24
+
+### New risk
+
+| ID | Type | Description | Impact | Likelihood | Mitigation / response | Accountable role | Status |
+|---|---|---|---|---|---|---|---|
+| R-016 | Risk | Mutable draft state, immutable submitted revisions, correction/reopen, evidence linkage and claim ownership are conflated or implemented inconsistently, causing lost field work or mutation of approved history | Critical | Medium | Review INSPECTION-DRAFT-001 with PO, operational owner, Engineering, Database and Security; admit one active draft-context invariant; define claim ownership and evidence carry-forward; prove atomic submit/return/reopen, lock graph and adversarial recovery tests before G9 | Product Owner / Operational Owner / CTO / Database / Security | OPEN — BLOCKING |
+
+### New issue
+
+| ID | Issue | Required resolution | Accountable role | Status |
+|---|---|---|---|---|
+| I-010 | The command and physical schema do not yet define a single durable mutable draft context across initial claim, correction and approved reopen | Review candidate INSPECTION-DRAFT-001; decide active-context lifecycle, context owner/claim resume, evidence carry-forward, physical constraints and command write sets; then synchronize PRD/Decision Register, schema, RLS, lock manifest, RTM and QA | Product Owner / Operational Owner / Engineering / Database / Security | OPEN — BLOCKING |
+
+### New dependency
+
+| ID | Dependency | Needed for | Accountable role | Status |
+|---|---|---|---|---|
+| D-008 | Approved inspection draft-context, claim-resume and evidence carry-forward decisions | Freeze CMD-026/028/029/030/032/033/034 contracts and G9 scope review | Product Owner / Operational Owner / Database / Security | OPEN — BLOCKING |
+
+### Verification trace
+
+INS-021, REV-003, REV-004 and EVD-004 are added to RTM-001 v0.1.22 as candidate/baselined-product-direction trace rows with physical approval still open. INSPECTION-DRAFT-001 v0.1.0 contains IDC-01..20 design acceptance scenarios; these are not yet formal executed tests. R-016, I-010 and D-008 remain OPEN — BLOCKING. No PO decision, institutional evidence policy, claim ownership, evidence reuse, schema admission, implementation authority or gate status is inferred.
