@@ -1,7 +1,7 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.4.23
+**Version:** 0.4.24
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Parent:** LOCK-GRAPH-001 v0.4.16  
@@ -490,3 +490,8 @@ CMD-041–044 now have candidate read-boundary normalization. CMD-045–048 are 
 ## 10. Application certification denominator and current cross-document baseline — 2026-11-24
 
 The inventory retains **54/54 stable traceability IDs** for historical continuity. CMD-045–048 are external control-plane responsibilities and are not executable application commands; they have no application lock manifest, route, RPC, worker or transaction. The application lock-certification denominator is therefore **50**, not 54. Current static coverage is **50/50 application commands with candidate execution/transaction boundaries documented; 0/50 technically approved or certified lock-complete**. Candidate boundaries do not mean the full normalized manifest schema is complete, the global graph is acyclic, or PostgreSQL behavior is proven. LPR-09 remains OPEN; LPR-10 remains NOT EXECUTED. Current parent graph: LOCK-GRAPH-001 v0.4.16. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT ACTIVE.
+
+
+## 11. Canonical normalized register pointer — 2026-11-24
+
+[LOCK-NORMALIZATION-001](COMMAND-LOCK-MANIFEST-NORMALIZATION-REGISTER-001.md) v0.1.0 consolidates the 50 in-scope application command boundaries into a uniform review register. It preserves the source-specific unresolved fields and conflicts. The 54-ID traceability inventory remains 50 application commands plus 4 external control-plane IDs. Candidate boundary coverage is 50/50; technical approval/certification remains 0/50. LPR-09 remains OPEN; LPR-10 remains NOT EXECUTED. This pointer does not authorize implementation or certify the global graph.
