@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.37
+**Version:** 0.8.38
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -589,3 +589,10 @@ NLA-EVENT-TECH-RECON-001 v0.1.0 records the first partial technical pass for NRE
 Open items: exact canonical event envelope/version and participant projection; pending-applicant event-time selection versus dispatch-time enabled-account suppression under POQ-04; terminal decision uniqueness/CAS; complete account eligibility writers including non-command admin/support, disable/suspend/reactivate and Auth reconciliation; conditional T-14 capacity effect and L05/L10 order; exact event/outbox/snapshot identity and dedup; complete FK/trigger/helper/ACL evidence. Both registry rows remain PARTIAL STATIC REVIEW — UNRESOLVED / NOT ENABLED. No event, recipient, selector, channel, physical snapshot relation or implementation is admitted. RTM-001 v0.1.14 traces NOTIF-024/025; QA Catalogue v0.5.4 adds TC-NOTIF-075/076, all PLANNED / NOT EXECUTED.
 
 The update does not change resolver certification 0/40, application lock certification 0/50, global graph NOT PROVEN ACYCLIC, candidate snapshot relation/header NOT ADMITTED, tests PLANNED / NOT EXECUTED, F-05/F-04/F-03/F-07 OPEN, G9 NOT READY or G10 NOT ACTIVE.
+
+
+## CMD-005 role-revocation event registry checkpoint — 2026-11-24
+
+NLA-EVENT-TECH-RECON-001 v0.1.1 records a partial static review of NREG-003 `role.revoked`. The candidate producer is CMD-005's source command transaction; its proposed mutation is the target `user_roles` grant transition with idempotency and append-only audit. POQ-04 requires exact-selector-only pre-revoke candidate selection, no implicit actor inclusion, and dispatch-time current role/scope suppression without widening.
+
+The physical `user_roles` proposal has no `row_version`, while the CMD-005 draft request contains `expected_version`; revocation representation, effective-time semantics, last-admin/recovery, grantor ceiling, T-14 capacity effect and L05/L10 order remain unresolved. Non-command role expiry/renewal/delegation, import/sync, repair and bypass writers remain incomplete. NREG-003 remains PARTIAL STATIC REVIEW — UNRESOLVED / NOT ENABLED. RTM-001 v0.1.15 adds NOTIF-026/027; QA Catalogue v0.5.5 adds TC-NOTIF-077/078, all PLANNED / NOT EXECUTED. No event or implementation is admitted.
