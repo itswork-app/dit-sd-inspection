@@ -1,7 +1,7 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.4.24
+**Version:** 0.4.25
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Parent:** LOCK-GRAPH-001 v0.4.16  
@@ -494,4 +494,4 @@ The inventory retains **54/54 stable traceability IDs** for historical continuit
 
 ## 11. Canonical normalized register pointer — 2026-11-24
 
-[LOCK-NORMALIZATION-001](COMMAND-LOCK-MANIFEST-NORMALIZATION-REGISTER-001.md) v0.1.0 consolidates the 50 in-scope application command boundaries into a uniform review register. It preserves the source-specific unresolved fields and conflicts. The 54-ID traceability inventory remains 50 application commands plus 4 external control-plane IDs. Candidate boundary coverage is 50/50; technical approval/certification remains 0/50. LPR-09 remains OPEN; LPR-10 remains NOT EXECUTED. This pointer does not authorize implementation or certify the global graph.
+[LOCK-NORMALIZATION-001](COMMAND-LOCK-MANIFEST-NORMALIZATION-REGISTER-001.md) v0.1.0 consolidates the 50 in-scope application command boundaries into a uniform review register. It preserves the source-specific unresolved fields and conflicts. The 54-ID traceability inventory remains 50 application commands plus 4 external control-plane IDs. CMD-PHYSICAL-CROSSWALK-001 v0.1.0 records proposed physical read/write sets for 50 IDs, with CMD-041–044 explicitly OPEN. Candidate boundary coverage is 50/50; technical approval/certification remains 0/50. LPR-09 remains OPEN; LPR-10 remains NOT EXECUTED. This pointer does not authorize implementation or certify the global graph.
