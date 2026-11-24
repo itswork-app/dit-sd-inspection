@@ -375,7 +375,9 @@ Use the existing `notification_outbox` row as the snapshot header and consider o
 
 **Candidate table:** `notification_outbox_recipients` (NOT ADMITTED).
 
-Candidate fields:
+Candidate fields on the existing outbox header (NOT ADMITTED additions): `audience_snapshot_version`, `audience_snapshot_hash`, `audience_snapshot_count`, and `audience_snapshot_completed_at`. These identify the canonical serialization version, digest, expected unique recipient count and completion instant for the frozen audience.
+
+Candidate fields on `notification_outbox_recipients`:
 - `outbox_id` — FK to the immutable outbox intent;
 - `recipient_user_id` — FK to the application identity selected at source-event time;
 - `project_id`, `session_id`, `location_id`, `assignment_id` — nullable typed scope references recording the recipient's authorized source scope at that event;
