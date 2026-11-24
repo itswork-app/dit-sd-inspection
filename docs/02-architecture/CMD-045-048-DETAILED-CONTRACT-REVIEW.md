@@ -1,7 +1,7 @@
 # CMD-045–048 Detailed Contract Review
 
 **Document ID:** CMD-REVIEW-045-048  
-**Version:** 0.1.3  
+**Version:** 0.1.4  
 **Status:** Historical engineering boundary analysis; PO-approved external control-plane disposition; residual external dependencies OPEN  
 **Date:** 2026-11-24  
 **Scope:** CMD-045 through CMD-048  
@@ -10,7 +10,7 @@
 
 **Current gate clarification (2026-11-24):** the historical G10 NOT AUTHORIZED wording above predates the Product Owner's conditional implementation authorization. Current state: conditional PO authorization received; G9 NOT READY; G10 NOT ACTIVE. No implementation is permitted until G9 passes and a separate G10 activation record is approved.
 
-**Resolution proposal:** [CMD-045–048 Control-Plane Resolution Proposal](CMD-045-048-RESOLUTION-PROPOSAL.md) v0.1.0 recommends retaining the stable IDs while deferring/removing these operations from the application command surface. It is a recommendation only; the current blocked dispositions remain unchanged until PO acceptance and external evidence.
+**Approved resolution:** [CMD-045–048 Control-Plane Resolution Proposal](CMD-045-048-RESOLUTION-PROPOSAL.md) v0.1.2 records PO acceptance of v0.1.0. The application-scope disposition is approved; external authority/evidence remains open.
 
 ## Current disposition after Product Owner approval — 2026-11-24
 
@@ -32,14 +32,14 @@ This is a documentation-only review. It does not approve institutional policy, d
 
 The canonical catalogue remains authoritative for stable logical IDs and current blocked dispositions:
 
-| ID | Logical command | Proposed permission label | Current disposition |
-|---|---|---|---|
-| CMD-045 | retention/legal-hold | retention.manage | BLOCKED_BY_POLICY |
-| CMD-046 | review-security-incident | security.review | BLOCKED_BY_SCHEMA_AUTHORITY |
-| CMD-047 | manage-provider-configuration | provider.manage | BLOCKED_BY_T12 |
-| CMD-048 | manage-production-release | release.manage | BLOCKED_BY_AUTHORITY |
+| ID | Logical responsibility | Application permission | Canonical disposition | Residual external dependency |
+|---|---|---|---|---|
+| CMD-045 | retention/legal-hold | NONE | DEFERRED_EXTERNAL_CONTROL_PLANE | T-10 institutional policy BLOCKED |
+| CMD-046 | security incident response | NONE | DEFERRED_EXTERNAL_CONTROL_PLANE | Incident-response RACI OPEN |
+| CMD-047 | provider configuration | NONE | OUT_OF_APPLICATION_SCOPE_EXTERNAL_PROVIDER_CONTROL | T-12 provider ownership/recovery BLOCKED |
+| CMD-048 | production release | NONE | OUT_OF_APPLICATION_SCOPE_EXTERNAL_RELEASE_CONTROL | Repository/release governance OPEN/BLOCKING |
 
-Permission labels are proposed catalogue values, not approved role grants. These names do not imply that database functions, REST routes, tables, workers or permissions exist.
+These four IDs are traceability-only. No application permission label, role grant, function, route, table, worker or application lock set is defined or permitted for them.
 
 ## 2. Authority and source reconciliation
 
@@ -57,7 +57,7 @@ The review follows this precedence:
 - **T-12:** PO approval selects an alternative provider-ownership arrangement as a direction only. It does not establish the actual legal/account owner, billing owner, custodians, region, provider plan, quotas, budget or recovery entitlements. Those require formal institutional definition and evidence.
 - **T-15 / INS-016:** PO-approved direction is append-only audit, atomicity between critical mutation and audit, fail-closed behavior on audit failure, and least-privilege read/export. It does not settle T-10 retention, deletion/disposition, legal hold, classification or network metadata.
 - **T-18:** PO-approved execution direction does not waive per-function review, caller identity propagation, least-privilege ownership, exact EXECUTE ACL, search_path, RLS or runtime evidence.
-- **G9/G10:** G9 remains NOT READY. G10 remains NOT AUTHORIZED. Neither this review nor a command-level proposal is implementation authorization.
+- **G9/G10:** G9 remains NOT READY. G10 remains NOT ACTIVE pending independent G9 verification and a separate G10 activation record. Neither this review nor the CMD-045–048 PO disposition is implementation authorization.
 
 ### 2.2 Evidence limitations
 
@@ -460,7 +460,7 @@ Before any of these commands is considered implementation-ready:
 7. Reconcile proposed permission labels with the canonical permission registry, role matrix, grantor ceiling, scope, SoD and revocation freshness.
 8. Reconcile future routes/RPCs/functions against actual schema and deployed inventory; candidate names must remain provisional.
 9. Update RTM, RAID, security test catalogue and operational runbooks after approved decisions, not before.
-10. Preserve G9 NOT READY and G10 NOT AUTHORIZED until their independent exit criteria and explicit authorization are evidenced.
+10. Preserve G9 NOT READY and G10 NOT ACTIVE until their independent exit criteria and explicit activation record are evidenced.
 
 ## 10. Consolidated verification plan
 
@@ -486,17 +486,17 @@ No tests were run for this document. No live database, Supabase, Storage, GitHub
 
 | Item | Status | Evidence boundary |
 |---|---|---|
-| CMD-045 detailed boundary | DOCUMENTED — BLOCKED_BY_POLICY | Static review of catalogue, T-10, T-15, DGA and physical schema proposal |
-| CMD-046 detailed boundary | DOCUMENTED — BLOCKED_BY_SCHEMA_AUTHORITY | Static review of catalogue, threat model and schema inventory |
-| CMD-047 detailed boundary | DOCUMENTED — BLOCKED_BY_T12 | Static review of catalogue, T-12 and DGA-B05 |
-| CMD-048 detailed boundary | DOCUMENTED — BLOCKED_BY_AUTHORITY | Static review of catalogue, AGENTS, IRG and DGA |
+| CMD-045 application boundary | PO-APPROVED — DEFERRED_EXTERNAL_CONTROL_PLANE | Stable traceability ID; no app command/permission/physical object; T-10 remains BLOCKED |
+| CMD-046 application boundary | PO-APPROVED — DEFERRED_EXTERNAL_CONTROL_PLANE | Stable traceability ID; incident-response RACI remains OPEN |
+| CMD-047 application boundary | PO-APPROVED — OUT_OF_APPLICATION_SCOPE_EXTERNAL_PROVIDER_CONTROL | Stable traceability ID; T-12 remains BLOCKED |
+| CMD-048 application boundary | PO-APPROVED — OUT_OF_APPLICATION_SCOPE_EXTERNAL_RELEASE_CONTROL | Stable traceability ID; repository/release governance remains OPEN/BLOCKING |
 | Request/response schemas | NOT APPROVED | Catalogue fields are placeholders only |
 | Physical schema / routes / RPCs | NOT DEFINED OR VERIFIED | No new objects or candidate signatures asserted |
 | Permission grants / SoD | NOT APPROVED | Proposed labels only |
 | Provider and release runtime controls | NOT VERIFIED | No live provider/platform inspection |
 | Tests | PLANNED / NOT EXECUTED | No test execution |
 | G9 | NOT READY | Institutional and operational blockers remain |
-| G10 | NOT AUTHORIZED | No implementation authorization |
+| G10 | NOT ACTIVE | Separate activation record required after independent G9 verification |
 | Source code / SQL / migrations / grants / RLS | NOT PERFORMED | Outside authorized scope |
 | Live database / Storage / deployment / CI / merge | NOT PERFORMED | Outside authorized scope |
 
