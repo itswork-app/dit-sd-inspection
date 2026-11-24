@@ -207,7 +207,7 @@ All tests are PLANNED / NOT EXECUTED. No CI, local test, SQL, migration or datab
 
 [LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.2.3 provides a candidate global rank hierarchy and proposed resolutions for the source-order conflicts. It defines the required per-command manifest evidence, identifies PO-owned product-policy decisions separately from Engineering/Security technical approvals, and preserves the 54/54 inventory with 0/54 certified lock-complete.
 
-The proposal does not amend command recipes, physical schema, constraints or runtime behavior. No tests or database inspection were performed. LM-01–LM-10 remain open/not executed; G3/G4/G5/G7/G9 remain NOT READY and G10 NOT ACTIVE.
+The proposal does not amend command recipes, physical schema, constraints or runtime behavior. No tests or database inspection were performed. LM-01–LM-10 remain open/not executed; G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED.
 
 ## 4.1 Historical CMD-001–010 source-order overlay — superseded by §7
 
