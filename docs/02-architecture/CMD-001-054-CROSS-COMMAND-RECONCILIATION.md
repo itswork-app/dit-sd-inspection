@@ -299,6 +299,7 @@ This reconciliation does not close any DGA, RTM or RAID item. A status change re
 | X-15 | High | All | Reconcile DGA/RAID/RTM with accepted evidence; no status-only closure | Document owner + PO | G9 |
 | X-16 | Critical | CMD-001–054 | Reconcile global lock ranks, CMD-023/024/026 order, T-14 eligibility serialization, parent closure fences, claim/inspection ordering and worker lease boundaries; add lock manifests and execute adversarial concurrency tests | Engineering + Security + PO; Operations/Institution where applicable | G3/G4/G5/G7/G9 |\n
 | X-17 | Critical | CMD-001–054 | Review LOCK-MANIFEST-001 54-command resource/lock inventory; resolve all source-order contradictions, missing lock targets, implicit constraints and competing worker paths; certify manifests and execute concurrency evidence | Engineering + Security + PO; Operations/Institution where applicable | G3/G4/G5/G7/G9 |
+| X-18 | Critical | CMD-001–054 | Review LOCK-PROTOCOL-DECISION-RESOLUTION-001; obtain PO/domain policy decisions, Engineering/Security approval of the effective lock graph, reconcile all command manifests and retain adversarial concurrency evidence | PO/domain owner; Engineering + Security; Operations/Institution where applicable | G3/G4/G5/G7/G9 |
 
 ## 7. Gate disposition
 
@@ -372,4 +373,10 @@ Key findings:
 [LOCK-MANIFEST-001 — Command-Level Lock Manifest Reconciliation CMD-001–054](COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.1.0 records a source-evidence inventory for every proposed command. Coverage is 54/54 IDs; lock-complete certification is 0/54. This is not a pass result: source order conflicts and incomplete lock targets remain explicit.
 
 The manifest does not change the canonical command catalogue, physical schema or detailed command reviews. It adds X-17 and requires approved global order, per-command lock targets, deterministic multi-row ordering, implicit constraint/trigger review, worker fencing and adversarial test evidence. No test was executed. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT AUTHORIZED.
-\n\n## 13. Lock protocol decision-resolution proposal — 2026-11-24\n\n[LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.1.0 consolidates a candidate resource hierarchy and decision-ready recommendations for the 54-command lock protocol. It separates four PO/domain decisions (canonical identity/conflict semantics; claim requirement/exceptions; project/session closure and in-flight work; T-14 eligibility semantics; instrument deactivation effect) from technical approvals reserved to Engineering/Security and institutional/Operations authorities.\n\n**Disposition:** X-18 OPEN; DGA-B20 OPEN. The proposal does not approve a global lock order, alter canonical contracts or prove deadlock freedom. G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED; tests remain planned/not executed.\n
+
+
+## 13. Lock protocol decision-resolution proposal — 2026-11-24
+
+[LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.1.0 consolidates a candidate resource hierarchy and decision-ready recommendations for the 54-command lock protocol. It separates five PO/domain decisions (canonical identity/conflict semantics; claim requirement/exceptions; project/session closure and in-flight work; T-14 eligibility semantics; instrument deactivation effect) from technical approvals reserved to Engineering/Security and institutional/Operations authorities.
+
+**Disposition:** X-18 OPEN; DGA-B20 OPEN. The proposal does not approve a global lock order, alter canonical contracts or prove deadlock freedom. G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED; tests remain planned/not executed.
