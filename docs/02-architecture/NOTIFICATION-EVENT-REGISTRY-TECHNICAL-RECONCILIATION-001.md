@@ -1,16 +1,16 @@
 # Notification Event Registry — Technical Reconciliation
 
 **Document ID:** NLA-EVENT-TECH-RECON-001  
-**Version:** 0.1.5  
-**Status:** STATIC TECHNICAL RECONCILIATION — PARTIAL; NREG-001..009 (CMD-002/003/005/010/013/014/015/029/030) REVIEWED, ALL PARTIAL / UNRESOLVED / NOT ENABLED  
+**Version:** 0.1.6  
+**Status:** STATIC TECHNICAL RECONCILIATION — PARTIAL; NREG-001..011 (CMD-002/003/005/010/013/014/015/029/030/031/032) REVIEWED, ALL PARTIAL / UNRESOLVED / NOT ENABLED  
 **Date:** 2026-11-24  
 **Branch:** `docs/notification-resolver-lock-closure`  
-**Scope:** Static technical reconciliation of the nine first-batch registry rows NREG-001..009; all remaining first-batch rows are not yet reviewed  
+**Scope:** Static technical reconciliation of all eleven first-batch registry rows NREG-001..011; all rows remain partial and unresolved  
 **Authority:** AGENTS.md v1.2.2; Decision Register; CMD-001–054 Cross-Command Reconciliation; CMD-001–010 Detailed Contract Review; PostgreSQL Command Contract Catalogue; Command Physical Object Crosswalk; LOCK-NORMALIZATION-001; NLA-001; NLA-L05-TDR-001; L05 Eligibility-Writer Participation Matrix; POQ-04.
 
 ## 1. Purpose and boundary
 
-This document records a static, evidence-bounded technical pass over nine of the eleven PO-approved event candidates: CMD-002/003, CMD-005, CMD-010/013, CMD-014/015 and CMD-029/030. It is not an executable event contract, source-code inspection, live database inspection, or technical approval. CMD-001 `account.requested` remains deferred and is not among the approved first-batch candidates; CMD-031/032 remain to be reconciled.
+This document records a static, evidence-bounded technical pass over all eleven PO-approved event candidates: CMD-002/003, CMD-005, CMD-010/013, CMD-014/015 and CMD-029/030. It is not an executable event contract, source-code inspection, live database inspection, or technical approval. CMD-001 `account.requested` remains deferred and is not among the approved first-batch candidates; CMD-031/032 are reviewed below; all eleven rows remain partial.
 
 The following remain prohibited until G10 activation: source code, SQL, migrations, grants/revokes, RLS changes, live database operations, provider setup, deployment and production/staging mutation. No event is enabled by this document.
 
@@ -582,3 +582,90 @@ One successful RETURN decision for the exact current revision may produce one `i
 - Candidate snapshot relation/header NOT ADMITTED. Tests PLANNED / NOT EXECUTED. G9 NOT READY. G10 NOT ACTIVE.
 
 **Disposition:** Continue with CMD-031/032 next. Their event candidates are PO-approved, but review-decision and reopen semantics must be reconciled against exact current revision, SoD, active work and immutable event boundaries.
+
+
+## 27. Reconciliation findings — CMD-031 / NREG-010
+
+### 27.1 Exact source event and transaction boundary
+
+**Static candidate:** CMD-031 `approve-inspection` is the source command for the exact `inspection.approved` candidate. The detailed contract defines approval as a decision on one exact immutable submitted revision, not an edit to Inspector answers. The approved revision must still be the current reviewable revision at commit time.
+
+The candidate source transaction includes the inspection aggregate transition and row-version update, one terminal APPROVE review decision for the exact revision, the inspection transition event, audit event, idempotency result, and—only after future technical admission—outbox plus immutable candidate snapshot. These facts must commit atomically. The proposed source event is not a PDF-generation, print, or unit-completion event.
+
+**Not proven:** deployed producer/function, physical canonical event storage and envelope/version, source-event primary identity, exact event-to-audit/outbox correlation key, and deployed transaction semantics. `audit_events` metadata naming `inspection.approved` is a candidate fact, not proof that the audit row itself is the canonical notification event.
+
+### 27.2 Revision and terminal-decision identity
+
+The request contract supplies `inspection_id`, `revision_id`, and `expected_revision_no`. Server-side validation must prove the revision belongs to the inspection, is submitted, remains current, and is the exact revision approved at commit. The immutable revision and its evidence/answers are not updated.
+
+CMD-030 return and CMD-031 approve must serialize on the same inspection aggregate and one terminal-decision-per-revision invariant. The physical design names append-only `review_events`, but the exact unique arbiter, review-round model, terminal-decision key and database constraint are not admitted. Two approvals or approve-vs-return cannot both commit for the same revision.
+
+### 27.3 Reviewer authority and participant mapping
+
+The command contract requires an active authenticated account, explicit `inspection.review` authority, persisted reviewer assignment for the exact project/session/location/assignment scope, and reviewer != revision author. A generic Super Admin label, project membership, title or client-supplied reviewer ID is insufficient. The current catalogue does not require dual review; do not introduce it by inference.
+
+The physical reviewer-assignment relation and eligibility predicate remain unphysicalized/unapproved. NREG-010's conceptual responsible-Inspector notification question is not a recipient mapping: approval actor, reviewer, revision author and responsible Inspector are distinct identities unless an approved contract explicitly equates them. No principal is selected by this reconciliation.
+
+### 27.4 Lock, writer and event-time snapshot
+
+The source command text is inspection-aggregate-first. LOCK-MANIFEST-001 §7.13 proposes the candidate order L00 → L05 → reviewer/target principals → role grants → scope grants → project/session parents → assignment/member scope → inspection aggregate → append-only facts. This is only a proposal; the exact reviewer-assignment object, membership lock requirements, review-decision arbiter, FK/trigger/helper edges and complete eligibility-writer participation are unresolved. The candidate order must be reconciled with the shared CMD-028–032 inspection/revision serialization and the global graph.
+
+The future source transaction must evaluate the immutable notification candidate set against the approved pre-mutation state at one captured `audience_evaluated_at`, and atomically commit source transition, canonical event, audit, idempotency, outbox and complete snapshot. Dispatch may suppress existing candidates but never add recipients. No selector, recipient, scope tuple or physical snapshot relation is admitted.
+
+### 27.5 NREG-010 disposition
+
+NREG-010 is now `PARTIAL_STATIC_REVIEW` only. Canonical contract, recipient mapping, selector and dispatch profile remain `UNRESOLVED`; publication remains `NOT_ENABLED`.
+
+## 28. Reconciliation findings — CMD-032 / NREG-011
+
+### 28.1 Exact source event and transaction boundary
+
+**Static candidate:** CMD-032 `reopen-inspection` is the source command for the exact `inspection.reopened` candidate. Reopen is a privileged lifecycle transition from APPROVED state, requires an explicit authority and mandatory reason, and preserves the approved revision and all historical evidence, generated documents and print events. It is not a return-for-correction event and does not itself approve a new revision.
+
+The candidate transaction includes the inspection lifecycle/version transition, append-only inspection event and audit event, idempotency result, and—only after future technical admission—outbox plus immutable candidate snapshot. All must commit atomically. A replay must return the original result after reauthorization; concurrent requests cannot create multiple active draft contexts.
+
+**Not proven:** deployed producer/function, canonical event envelope/version and physical event identity, exact event-to-audit/outbox correlation key, and deployed transaction semantics.
+
+### 28.2 Reopen authority, next-action owner and participant mapping
+
+The command review proposes permission `inspection.reopen` and an explicit grant, with project/inspection scope and active account/grant checks. The permission registry's suggested Super Admin or separately authorized Admin authority is still draft; the exact role/grantor/SoD matrix is not approved. A generic Super Admin label does not grant reopen authority.
+
+The new next-action owner is unresolved. The Inspector who authored the prior revision, current assignment member, reviewer who approved it, and actor who reopens it must not be treated as interchangeable. NREG-011's conceptual operational-participant question is not an approved recipient selector. No role, recipient or substitute participant is admitted.
+
+### 28.3 Draft context and active-work blockers
+
+The physical specification does not define a sufficiently explicit mutable draft representation after reopen. Do not insert an immutable `inspection_revisions` row prematurely, invent a draft revision ID, or mutate the approved revision. The state vocabulary (including whether REOPENED is a durable state or a projection into a separately modeled draft state), draft response storage, pointer/version semantics and one-active-draft uniqueness are unresolved.
+
+The exact blocker inventory and lock dependencies for active claims, unit/project association, assignment membership, evidence finalizers, document generation and print history also remain unresolved. Reopen must preserve prior artifacts and serialize against CMD-028/029/030 and relevant finalizers; no active-work policy or blanket blocker is inferred.
+
+### 28.4 Lock, writer and event-time snapshot
+
+LOCK-MANIFEST-001 §7.13 proposes L00 → candidate L05 → principal/role/scope authority → project/session → assignment/member → active claim only where required → inspection aggregate → mutable draft context only if physically modeled → append-only event/audit. This is a candidate order, not an admitted physical lock set. The blocker dependency universe, association/claim rank, draft-context entity, FK/trigger/helper edges and complete writer participation are not proven. The source review's inspection-first sequence must not be treated as certified.
+
+The future source transaction must persist the immutable event-time candidate snapshot with the committed reopen event and mutation at one captured `audience_evaluated_at`. Retries reuse that snapshot. Dispatch-time checks may suppress but never widen it. No selector, recipient, scope tuple or physical snapshot relation is admitted.
+
+### 28.5 NREG-011 disposition
+
+NREG-011 is now `PARTIAL_STATIC_REVIEW` only. Canonical contract, recipient mapping, selector and dispatch profile remain `UNRESOLVED`; publication remains `NOT_ENABLED`.
+
+## 29. Consolidated CMD-031/032 closure requirements
+
+1. Admit the exact canonical source-event identity, schema/version, producer transaction and outbox/snapshot dedup keys.
+2. Physicalize and approve reviewer assignment, exact scope binding, reviewer eligibility, reviewer != author SoD, and one terminal review decision per revision/round.
+3. Define and approve the explicit `inspection.reopen` grant/role/authority/SoD matrix and the next-action owner without identity substitution.
+4. Define mutable draft persistence, state vocabulary, revision pointer/version behavior and one-active-draft uniqueness without mutating immutable approved history.
+5. Enumerate active claim/association/assignment/evidence/document finalizer blockers and every command/non-command writer; reconcile all implicit FK/trigger/helper edges.
+6. Independently validate the complete L05/global lock order, event-time linearization, atomic source-event/audit/idempotency/outbox/snapshot transaction and post-event suppression.
+7. Execute deterministic approve-vs-return, approve-vs-reopen, duplicate approval, duplicate reopen, stale revision, SoD, authorization, audit rollback, snapshot retry and lock-cycle tests only after G10 activation.
+
+## 30. Updated gate and work status
+
+- CMD-002/003/005/010/013/014/015/029/030/031/032: partial static producer/transaction review completed; technical admission remains OPEN.
+- NREG-001..011: PARTIAL STATIC REVIEW; canonical contract, recipient mapping, selector and dispatch profile UNRESOLVED; NOT ENABLED.
+- Reviewer assignment, responsible Inspector and reopen next-action owner mappings: NOT ADMITTED.
+- Reopen permission/grant matrix and mutable draft persistence: NOT ADMITTED.
+- L05, parent/claim/assignment/inspection lock order: candidate proposals only; not technically approved.
+- Resolver certification: 0/40. Application lock certification: 0/50. Global lock graph NOT PROVEN ACYCLIC.
+- Candidate snapshot relation/header NOT ADMITTED. Tests PLANNED / NOT EXECUTED. G9 NOT READY. G10 NOT ACTIVE.
+
+**Disposition:** All eleven PO-approved candidates have now received a partial static technical pass. This does not admit any canonical event contract, recipient, selector, dispatch profile, physical schema or event publication.
