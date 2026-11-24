@@ -1,8 +1,8 @@
 # Notification Event Registry — PO-Approved Specification Candidates
 
 **Document ID:** NLA-EVENT-REGISTRY-001  
-**Version:** 0.1.7  
-**Status:** DRAFT — PO INTENT APPROVED FOR SPECIFICATION/REVIEW ONLY; ALL ROWS UNRESOLVED / NOT ENABLED; NREG-001..009 PARTIAL STATIC REVIEW ONLY  
+**Version:** 0.1.8  
+**Status:** DRAFT — PO INTENT APPROVED FOR SPECIFICATION/REVIEW ONLY; ALL ROWS UNRESOLVED / NOT ENABLED; NREG-001..011 PARTIAL STATIC REVIEW ONLY  
 **Date:** 2026-11-24  
 **Branch:** `docs/notification-resolver-lock-closure`  
 **Authority:** PRD-001, Decision Register PO event-candidate decision (2026-11-24), NLA-EVENT-TRIAGE-001 v0.1.1, CMD source-event map. This document does not supersede them.
@@ -23,11 +23,11 @@ All rows are deliberately initialized as:
 
 No physical event field, participant ID, role ID, scope column, selector expression, channel or dispatch predicate is inferred here. Conceptual workflow actors below are review questions only, not recipient mappings.
 
-## 2. CMD-002/003/005/010/013/014/015/029/030 technical review checkpoint
+## 2. CMD-002/003/005/010/013/014/015/029/030/031/032 technical review checkpoint
 
-NREG-001 (`account.approved`), NREG-002 (`account.rejected`), NREG-003 (`role.revoked`), NREG-004 (`project.closed`), NREG-005 (`session.closed`), NREG-006 (`assignment.created`), NREG-007 (`assignment.changed`), NREG-008 (`inspection.submitted`) and NREG-009 (`inspection.returned_for_correction`) received a partial static technical reconciliation in [NLA-EVENT-TECH-RECON-001 v0.1.5](NOTIFICATION-EVENT-REGISTRY-TECHNICAL-RECONCILIATION-001.md). The command-level candidate producer transactions and proposed source objects are identified, but the deployed producer, canonical event envelope/version, participant projection, account-state predicate split, decision uniqueness, complete account-writer inventory, L05/L10 order, and event/outbox/snapshot deduplication remain unresolved. This is not technical approval. All nine reviewed rows remain `UNRESOLVED / NOT ENABLED`; no selector, recipient, channel, dispatch profile, schema or implementation is admitted.
+NREG-001 (`account.approved`), NREG-002 (`account.rejected`), NREG-003 (`role.revoked`), NREG-004 (`project.closed`), NREG-005 (`session.closed`), NREG-006 (`assignment.created`), NREG-007 (`assignment.changed`), NREG-008 (`inspection.submitted`) and NREG-009 (`inspection.returned_for_correction`) received a partial static technical reconciliation in [NLA-EVENT-TECH-RECON-001 v0.1.6](NOTIFICATION-EVENT-REGISTRY-TECHNICAL-RECONCILIATION-001.md). The command-level candidate producer transactions and proposed source objects are identified, but the deployed producer, canonical event envelope/version, participant projection, account-state predicate split, decision uniqueness, complete account-writer inventory, L05/L10 order, and event/outbox/snapshot deduplication remain unresolved. This is not technical approval. All nine reviewed rows remain `UNRESOLVED / NOT ENABLED`; no selector, recipient, channel, dispatch profile, schema or implementation is admitted.
 
-For NREG-001 through NREG-009 only, `technical_review_status = PARTIAL_STATIC_REVIEW`; all other registry rows remain `NOT_REVIEWED`. The registry's publication status remains `NOT_ENABLED` for all eleven rows.
+For NREG-001 through NREG-011, `technical_review_status = PARTIAL_STATIC_REVIEW`; this means a bounded static pass only, not technical approval. All eleven rows still have `canonical_contract_status`, `recipient_mapping_status`, `selector_status`, and `dispatch_profile_status = UNRESOLVED`. The registry's publication status remains `NOT_ENABLED` for all eleven rows.
 
 ## 3. Approved candidate inventory
 
@@ -100,3 +100,16 @@ Missing evidence leaves the relevant field UNRESOLVED and the row NOT ENABLED. N
 - G9: NOT READY. G10: NOT ACTIVE.
 
 This is a documentation artifact only. No source code, SQL, migration, grants/revokes, RLS, live database changes, runtime tests, provider setup, deployment, merge or implementation activation is authorized or performed.
+
+
+## 8. CMD-031/032 static review checkpoint — 2026-11-24
+
+NREG-010 `inspection.approved` and NREG-011 `inspection.reopened` received a partial static technical reconciliation in NLA-EVENT-TECH-RECON-001 v0.1.6.
+
+- NREG-010: approval is tied to one exact current immutable submitted revision. Explicit persisted Reviewer assignment and reviewer != revision author are required. The terminal-decision arbiter must serialize CMD-030 return against CMD-031 approval. The responsible Inspector recipient mapping is not established by the approval actor, reviewer, author or generic assignment membership.
+- NREG-011: reopen requires explicit `inspection.reopen` authority, scope, mandatory reason and preservation of approved revision/evidence/documents/print history. The role/grant matrix, next-action owner and mutable draft representation are unresolved. Do not infer that the prior Inspector, reviewer or reopening actor owns the next action.
+- Both source paths require atomic source mutation + canonical event + audit + idempotency + immutable event-time candidate snapshot. L05 and parent/assignment/inspection lock ordering remain candidate proposals, not certified.
+- All eleven rows are now `technical_review_status = PARTIAL_STATIC_REVIEW` only. All eleven remain canonical-contract, recipient-mapping, selector and dispatch-profile `UNRESOLVED`, and publication `NOT_ENABLED`.
+- Resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; tests PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE.
+
+This checkpoint does not approve any recipient, role, permission grant, event schema, selector, dispatch profile, physical column, channel or implementation.
