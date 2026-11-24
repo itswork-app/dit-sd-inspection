@@ -1,6 +1,6 @@
 # T-19 Repository Runtime Architecture Audit
 
-**Status:** AUDIT COMPLETE — IMPLEMENTATION ABSENT FROM AUDITED REPOSITORY REFS  
+**Status:** AUDIT COMPLETE — DOCUMENTATION-PHASE BASELINE CONFIRMED  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Audited branch:** `docs/t17-instrument-governance-t18-command-boundary`  
@@ -10,11 +10,11 @@
 
 ## 1. Executive finding
 
-The audited repository currently contains **project documentation, not an application implementation**.
+The audited repository currently contains **project documentation, not an application implementation**. Following the Product Owner clarification on 2026-11-24, this is intentional: the repository is the single home for both authoritative documentation and the future application, but the current authorized phase is documentation/SSOT maturation. The absence of application source code is therefore not a defect or a request to scaffold code now.
 
 The recursive Git tree for the audited branch returned 54 blob files, with only `AGENTS.md`, `README.md`, and the `docs/` hierarchy. A static extension/path inventory found **zero** files with implementation/configuration extensions in the searched set (`.ts`, `.tsx`, `.js`, `.jsx`, `.sql`, `.prisma`, `.json`, `.yaml`, `.yml`, `.toml`, `.kt`, `.go`, `.rs`, `.py`). No source-code directories were present in the tree.
 
-The repository default branch `main` was separately inspected: its recursive tree contained only one blob, `README.md`. Therefore this is not merely a limitation of the active documentation branch; the default branch is also not an application implementation at the audited HEAD.
+The repository default branch `main` was separately inspected: its recursive tree contained only one blob, `README.md`. Therefore this is not merely a limitation of the active documentation branch; the default branch is also not an application implementation at the audited HEAD. This confirms the repository's current documentation-first state; it does not establish a defect against the agreed delivery sequence.
 
 ## 2. Evidence
 
@@ -43,17 +43,17 @@ Because no application source or configuration exists in the audited refs, none 
 
 **Important:** The T-18 Option A execution model remains PO APPROVED as a design decision. Its implementation and conformance are **NOT VERIFIED**, not PASS.
 
-## 4. Architecture risk and required next action
+## 4. Architecture evidence boundary and required next action
 
-The immediate blocker is not a code defect identified by this audit; it is the absence of implementation artifacts in the audited repository. Do not create placeholder route handlers, migrations, credentials, or a speculative scaffold merely to make this audit pass.
+The audit does not identify a current implementation defect because implementation is intentionally not started. The risk is premature implementation before the SSOT and scope-freeze gates are closed. Do not create placeholder route handlers, migrations, credentials, or a speculative scaffold merely to make this audit pass.
 
 Before implementation begins:
 
-1. Confirm whether this repository is intentionally documentation-only through Phase 0 and whether a separate application repository is planned.
-2. If a separate application repository already exists, identify its exact repository and branch; audit that repository before implementation.
-3. If this is the intended application repository, obtain explicit scope-freeze approval and then create the implementation baseline in a dedicated implementation branch, following `AGENTS.md`.
-4. Add the Vercel app, server-only Supabase client, caller-session propagation, migration directory and automated checks only after the approved design and prerequisites are reconciled.
-5. Re-run T-19 against actual source and configuration. Prove JWT propagation via the real HTTP path; static documentation or SQL Editor evidence is insufficient.
+1. Repository intent is now confirmed: this repository will contain both the documentation SSOT and the future application.
+2. Continue documentation-only work under `docs/00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md` and the documented gate sequence.
+3. Complete cross-document reconciliation, requirement traceability, institutional approvals and technical contract closure before requesting scope freeze.
+4. Obtain a separate explicit implementation authorization before creating application source, migrations, routes or deployment configuration.
+5. Once implementation is authorized and artifacts exist, re-run the runtime audit against actual source and configuration. Prove caller JWT propagation through the real HTTP path; static documentation or SQL Editor evidence is insufficient.
 
 No secrets, access tokens, service-role keys, database URLs or personal data should be committed or pasted into chat.
 
@@ -74,11 +74,13 @@ All eight cases are **BLOCKED / NOT EXECUTED** because the corresponding impleme
 ## 6. Status
 
 - Repository tree audit: **COMPLETE** for the inspected refs.
-- Application implementation in audited repository refs: **NOT PRESENT**.
+- Application implementation in audited repository refs: **INTENTIONALLY NOT STARTED IN CURRENT PHASE**.
 - T-18 Option A architecture decision: **PO APPROVED**.
 - T-18 implementation conformance: **NOT VERIFIED**.
 - Live Supabase inventory: **NOT EXECUTED**.
 - Runtime/CI/deployment tests: **NOT EXECUTED**.
+- Documentation/SSOT maturation: **IN PROGRESS**.
 - Scope freeze: **NOT READY**.
-- Feature implementation, migrations, grants, deployment and merge: **NOT AUTHORIZED**.
+- Feature implementation, migrations, grants and deployment: **NOT AUTHORIZED**.
+- Repository purpose (documentation and future application in one repository): **CONFIRMED BY PRODUCT OWNER, 2026-11-24**.
 
