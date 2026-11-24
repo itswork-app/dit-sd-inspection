@@ -183,13 +183,13 @@ Tests are specified only; none have been executed.
 3. Security owner must approve whether IP/network metadata is collected and its retention.
 4. Project Sponsor must decide whether independent immutable/WORM archive is required and fund it if selected.
 5. Database schema review must finalize indexes, partitioning, event payload schema, foreign-key/deletion strategy, and event sequencing.
-6. Package N must approve the trusted command boundary and transactional audit-write implementation.
+6. T-18 has PO-approved the trusted caller-JWT command architecture; command-by-command contracts, RLS/EXECUTE grants, transactional audit implementation and security verification remain open.
 7. Provider operational audit capabilities and retention must be verified against the actual plan.
 8. Named accountable operational roles and incident escalation must be confirmed.
 
 ## 12. Scope and implementation gate
 
-This package is a governance and architecture specification only. It does not authorize migrations, triggers, application code, external archive procurement, or production configuration. Implementation may begin only after the audit policy, privacy/records obligations, Package L schema, Package M RLS, and Package N command boundary are approved and reconciled.
+This package is a governance and architecture specification only. It does not authorize migrations, triggers, application code, external archive procurement, or production configuration. Implementation may begin only after the PO-approved T-15 audit direction is reconciled with institutional T-10 privacy/records obligations, Package L schema technical review, Package M RLS/grants, and the detailed T-18 Package N command contracts are approved and reconciled.
 
 
 
