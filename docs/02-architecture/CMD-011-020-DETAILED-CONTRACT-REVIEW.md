@@ -1,7 +1,7 @@
 # CMD-011–020 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security review required; NOT approved for implementation  
-**Version:** 0.1.0  
+**Version:** 0.2.0  
 **Date:** 2026-11-24  
 **Scope:** CMD-011 through CMD-020  
 **Controls:** T-14 Inspector capacity; T-15 append-only audit direction; T-17 instrument governance; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
