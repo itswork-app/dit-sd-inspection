@@ -207,3 +207,25 @@ These are test specifications only; no test execution is claimed.
 | TC-CFG-001-008 | Attempt to use canonical unit identity from another project without association/assignment | Denied; canonical identity does not grant operational access |
 
 Test cases are specifications only; no test execution, migration or code change is claimed.
+
+
+## T-18 — Privileged command boundary security test specifications
+
+| Test ID | Scenario | Expected result |
+|---|---|---|
+| TC-CMD-018-001 | Browser attempts direct INSERT/UPDATE/DELETE against each protected table | Denied by database grants/RLS; no state or audit row changes |
+| TC-CMD-018-002 | Valid caller JWT invokes an authorized command through its Vercel route | Route verifies session; PostgreSQL derives the same actor from auth.uid(); command succeeds only when all scope/state checks pass |
+| TC-CMD-018-003 | Client spoofs actor ID, role, project, session or assignment in payload | Spoofed fields are ignored/rejected; database-derived identity and grants determine authorization |
+| TC-CMD-018-004 | Missing, expired, revoked JWT or pending/disabled application account | Command is rejected; no mutation or success response |
+| TC-CMD-018-005 | Authenticated caller has wrong permission, role, project, session or assignment | Forbidden; no protected mutation; no cross-scope data disclosure |
+| TC-CMD-018-006 | Caller attempts self-review or violates separation-of-duties | Rejected inside the command transaction |
+| TC-CMD-018-007 | Concurrent commands race on capacity, serial uniqueness, active claim or state transition | Locks/constraints serialize the invariant; no over-capacity, duplicate canonical unit, double claim or invalid transition |
+| TC-CMD-018-008 | Same idempotency key and same request is replayed | One business effect; stable prior outcome returned |
+| TC-CMD-018-009 | Same idempotency key is reused with a different request hash | Rejected as idempotency conflict; no second mutation |
+| TC-CMD-018-010 | Required audit/event insert fails | Entire business transaction rolls back; no success response is returned |
+| TC-CMD-018-011 | SECURITY DEFINER function is reviewed/deployed | search_path is pinned, references are schema-qualified, inputs validated, owner/grants minimal, unintended PUBLIC execution revoked |
+| TC-CMD-018-012 | Inspect deployed frontend bundle and browser network/configuration | No service-role credential is present or exposed |
+| TC-CMD-018-013 | Authorized caller invokes command for resource outside assigned scope | Denied even if caller has global catalog/admin permission; canonical unit identity does not widen operational access |
+| TC-CMD-018-014 | Command returns typed validation/forbidden/conflict/retryable outcomes | Stable typed response; no stack trace, secret, sensitive policy detail or unauthorized resource-existence disclosure |
+
+These are acceptance specifications only. No implementation, migration, security test or deployment is claimed.
