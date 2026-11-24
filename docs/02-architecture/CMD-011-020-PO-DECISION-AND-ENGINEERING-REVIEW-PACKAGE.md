@@ -1,7 +1,7 @@
 # CMD-011–020 Product Decision and Engineering Review Package
 
 **Document ID:** CMD-011-020-DECISION-PACKAGE-001  
-**Version:** 0.2.1  
+**Version:** 0.2.2  
 **Status:** PO PRODUCT DECISIONS APPROVED; ENGINEERING / SECURITY REVIEW OPEN  
 **Date:** 2026-11-24  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
@@ -235,3 +235,8 @@ Record each response in the Decision Register; this table is a working response 
 - Source code / SQL / migrations / CI / automated tests / concurrency tests / live database inspection / deployment: NOT EXECUTED.
 
 **Next authorized action:** reconcile approved product semantics across canonical command/state/schema/permission/QA documents, while routing LPR-01 and LPR-07–LPR-11 to Engineering/Security/Database/QA/Operations. Obtain institutional approvals where required, then re-run static consistency review. Do not start implementation.
+
+
+## 10. T-07 state compatibility correction — 2026-11-24
+
+The earlier recommended PO response rows for PO-CMD011-01 and PO-CMD013-01 contained candidate terms `PLANNED` and `CLOSE_REQUESTED` as if they could be persisted states. Those terms are superseded by the controlling T-07 decision and the reconciled Decision Register: the only session states are `DRAFT`, `ACTIVE`, `PAUSED`, `CLOSED`; `CLOSE_REQUESTED` is an action/event, not a state. Session creation therefore selects `DRAFT`. Korlap may request closure within scope; Super Admin performs final closure after gates. This is a documentation correction to preserve the already-approved PO decision, not a new state-machine approval. Any implementation or test using `PLANNED` or persisted `CLOSE_REQUESTED` is non-conforming.
