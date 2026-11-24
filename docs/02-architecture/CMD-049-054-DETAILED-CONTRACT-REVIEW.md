@@ -51,7 +51,7 @@ The following are mandatory safety boundaries:
 |---|---|---|
 | INS-015 | APPROVED at PO level | Product behavior is binding within PO authority |
 | INS-016 / T-15 | PO-approved audit direction | Append-only audit and critical mutation/audit atomicity direction; T-10 details remain blocked |
-| NLA-001 v0.1.2 | Engineering design proposal | Lifecycle and six-table model require PO/security review |
+| NLA-001 v0.1.3 | Engineering design proposal | Lifecycle and six-table model require PO/security review |
 | Command catalogue v0.2.0 | Proposed logical contracts | IDs are stable proposals; permissions and transport mappings are not approved |
 | Physical schema v0.2.0 | Proposed physical inventory | Six notification tables are design inventory only, not live objects |
 | DGA-B13 | DESIGN PROPOSAL RECORDED; APPROVALS OPEN | Worker, selectors, providers, T-10 and cross-document approvals remain open |
@@ -547,7 +547,7 @@ This addendum records the static contract decisions and remaining approval bound
 | CMD-054 escalation | No caller evaluation_time; one database UTC instant per transaction | named SLA start event, per-policy elapsed/business-time mode, ELAPSED_UTC initial default, quiet-hours delivery deferral without SLA pause, and unapproved calendar/pause semantics |
 | Dismissal | dismissed_at reserved only | POQ-03 approval; no dismiss command, permission or browser mutation is in MVP |
 
-The six notification tables remain a proposed subset of the 48-table physical/RLS inventory. INT-NOTIF-001 is an integration contract, not a new CMD ID or table. TC-NOTIF-001..026 and TC-FN-SEC-025-064..069 remain PLANNED / NOT EXECUTED. Worker identities, exact function owners/EXECUTE ACLs, live RLS/grants, provider capability and T-10 institutional retention/privacy remain open. G9 NOT READY; G10 NOT AUTHORIZED.
+The six notification tables remain a proposed subset of the 48-table physical/RLS inventory. INT-NOTIF-001 is an integration contract, not a new CMD ID or table. TC-NOTIF-001..029 and TC-FN-SEC-025-064..069 remain PLANNED / NOT EXECUTED. Worker identities, exact function owners/EXECUTE ACLs, live RLS/grants, provider capability and T-10 institutional retention/privacy remain open. G9 NOT READY; G10 NOT AUTHORIZED.
 
 
 ## Product Owner notification decisions — POQ-001 (2026-11-24)
