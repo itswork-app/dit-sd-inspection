@@ -1,12 +1,12 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.13
+**Version:** 0.8.14
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
 **Authority:** AGENTS.md, MIB-001, DGA-001, IRG-001, T-10, T-14–T-18 and the approved Decision Register  
-**Controls:** G2–G10; DGA-B04–B21; G9 NOT READY; G10 NOT AUTHORIZED.
+**Controls:** G2–G10; DGA-B04–B21; G9 NOT READY; G10 NOT ACTIVE.
 
 ## 1. Purpose and conclusion
 
