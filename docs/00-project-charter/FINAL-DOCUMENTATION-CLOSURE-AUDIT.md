@@ -1,7 +1,7 @@
 # Final Documentation Closure Audit — Dit. SD Inspection
 
 **Document ID:** DOC-AUDIT-001  
-**Version:** 0.3.1  
+**Version:** 0.3.2  
 **Status:** STATIC DOCUMENTATION AUDIT COMPLETED — IMPLEMENTATION READINESS NOT ESTABLISHED  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
@@ -206,3 +206,6 @@ This closes a documentation cross-reference gap only. It does not close candidat
 ## 18. Candidate durable-object QA traceability — 2026-11-24
 
 TEST-CASE-CATALOG-AND-UAT v0.3.7 adds 14 candidate-only planned cases TC-CANDIDATE-LEDGER-001..014. Coverage includes durable sync replay and partial outcomes, device trust, renderer lease fencing and immutable provenance, print manifest/retry, attendance document version/verification/SoD, candidate RLS/ACL and permission non-inheritance. All cases are PLANNED / NOT EXECUTED, excluded from executed/passing denominators and conditional on approved schema admission and G10. This is traceability only; no runtime test or certification was performed.
+
+
+The canonical permission registry is now v0.2.3 with explicit candidate-object authorization boundaries. Existing command permissions are reused only within their stated scope; no new device enrollment, template publication or worker permission is approved. The registry remains draft and does not authorize seeds, grants or EXECUTE ACL.
