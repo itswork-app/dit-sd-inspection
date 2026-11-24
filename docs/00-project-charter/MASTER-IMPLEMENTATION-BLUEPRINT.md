@@ -2,12 +2,14 @@
 
 **Document ID:** MIB-001  
 **Status:** CONTROLLED BASELINE — DOCUMENTATION PHASE  
-**Version:** 1.0.10  
+**Version:** 1.0.11  
 **Last reviewed:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
 **G10 implementation activation:** NOT ACTIVE — pending verified G9 and the required G10 activation record  
 **Scope-freeze status:** NOT READY
+
+**Current gate interpretation (2026-11-24):** Any dated historical section below that records “G10 NOT AUTHORIZED” predates the Product Owner's conditional implementation authorization. The current controlling state is conditional PO authorization received, G9 NOT READY, and G10 NOT ACTIVE. This does not authorize implementation before verified G9 and a separate approved G10 activation record.
 
 ## 1. Purpose and authority
 
