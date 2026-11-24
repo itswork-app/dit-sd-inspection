@@ -106,7 +106,7 @@ Use SECURITY INVOKER by default. SECURITY DEFINER is allowed only where RLS recu
 | `sync-batch` | sync.apply | Actor/device scope; batch idempotency; partial result and conflict records durable |
 | `generate-approved-pdf` | document.generate | Exact approved revision/template snapshot; immutable artifact metadata |
 | `record-print` | document.print | Authorized print scope; monotonic per-document sequence; append-only |
-| `upload-attendance-document` / `verify-attendance` | attendance.upload / attendance.verify | Session scope; authority pending PO confirmation; append replacement versions |
+| `upload-attendance-document` / `verify-attendance` | attendance.upload / attendance.verify | T-08 PO APPROVED: Korlap verifies within assigned location/scope; upload and verify are separate permissions; upload never auto-verifies; append replacement versions |
 | `get-actual-report` / `get-target-report` | report.read | Actual/target separated; row scope; no actual timestamp rewrite |
 
 The command names are logical. REST route names and exact payload schemas remain a later API implementation artifact.
@@ -181,7 +181,7 @@ Errors must not disclose whether an unauthorized resource exists. Use a consiste
 2. Complete the table-by-table RLS and direct-DML denial catalogue.
 3. Finalize command-specific permission codes, attendance/audit authorities and typed outcomes.
 4. Confirm offline maximum retry window and idempotency retention.
-5. Reconcile T-16 canonical unit/project association, foreign keys and claim scope before migration.
+5. Complete technical review of the documented T-16 canonical unit/project association, composite foreign keys and claim scope; obtain institution-approved serial normalization/exception policy before migration.
 6. Implement only after Package K blockers and required institutional decisions are resolved; T-18 approval is not implementation authorization.
 
 ## 13. Disposition
@@ -229,7 +229,7 @@ Apply this contract to account approval/role and assignment changes, team staffi
 
 ### Approval boundary and remaining gates
 
-T-18 approves the architecture pattern only. It does not approve every command's detailed contract, any SECURITY DEFINER exception, a deployed RLS policy, or production service-role use. Complete command-by-command permission and transaction catalogue, table-level RLS/grant matrix, T-16 unit/project association reconciliation, T-10 institutional policy and T-12 provider/recovery verification before implementation. No route/RPC/migration has been created and no tests have been executed.
+T-18 approves the architecture pattern only. It does not approve every command's detailed contract, any SECURITY DEFINER exception, a deployed RLS policy, or production service-role use. Complete command-by-command permission and transaction catalogue, table-level RLS/grant matrix, T-16 association/FK technical review and institutional serial policy, T-10 institutional policy and T-12 provider/recovery verification before implementation. No route/RPC/migration has been created and no tests have been executed.
 
 
 ## T-16 — Canonical unit commands and association enforcement
