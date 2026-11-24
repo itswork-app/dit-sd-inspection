@@ -56,8 +56,8 @@ No application code, migrations, live Supabase database, deployed RLS/grants, Ve
 These items may be closable through documentation work but remain implementation blockers until complete:
 
 1. **Command completeness:** CMD-045..048 are intentionally blocked pending institutional/operational authority and missing schemas; CMD-001..044 also require detailed review. A one-row command matrix is not a full API/database contract.
-2. **Notification persistence:** INS-015 requires a complete recipient, priority, channel, quiet-hour, reminder, SLA/escalation, retry, delivery/read and audit/versioning design. Resolve whether a durable `notification_events` table or another explicit model is required; do not leave an ERD-only entity.
-3. **Print batch persistence:** decide whether independent per-document `print_events` plus idempotency is sufficient or a durable batch aggregate is needed. Do not implement an unapproved `print_batches` table.
+2. **Notification approval and verification:** NLA-001 v0.1.0 now proposes recipient, priority, channel, quiet-hour, reminder, SLA/escalation, retry, delivery/read, outbox, policy versioning, audit and worker lifecycle. Remaining blockers are PO/security approval, exact recipient-selector/role authority, worker identity/ACL, provider capability and T-10 retention/privacy; `notification_events` has been removed as an ambiguous placeholder.
+3. **Print batch technical review:** T-13 requires durable batch identity and per-document outcomes; `print_batches` and batch-linked append-only `print_events` are now specified. Review aggregate projection, retry, lock/idempotency and failure/concurrency tests; do not treat the design as implementation evidence.
 4. **Permission authority:** distinguish role assignment, permission grant, scope grant, grantor ceiling, emergency access, break-glass and revocation freshness. A Super Admin label is not a substitute for a specific permission.
 5. **Evidence lifecycle:** specify upload-intent reservation, object verification, orphan cleanup, immutable original, replacement, malware/content validation if required, signed URL lifetime, export audit and retention/disposition.
 6. **Transaction boundaries:** specify which commands are one atomic transaction, which external operations use outbox/saga/compensation, and how partial outcomes are reconciled. In particular upload confirmation, PDF generation, batch print and offline sync cannot be described as one database transaction across external services.
@@ -96,7 +96,7 @@ Package T's document-level status must be updated from “Draft for Product Owne
 
 1. Reconcile historical status language in Package T, Package S, Decision Register, RTM and RAID without changing approved decision meaning.
 2. Close instrument source/evidence-slot and BA/template authority evidence.
-3. Complete INS-015 notification model and decide `notification_events`; decide `print_batches` disposition.
+3. Obtain PO/security review of NLA-001, close worker/provider/T-10 dependencies, and technically review the six notification tables plus T-13 `print_batches`/`print_events` transaction and RLS contracts.
 4. Complete the 48-command contract review with exact permissions, request/response schemas, physical objects, transaction boundaries, API route/RPC mapping and command-specific tests.
 5. Complete canonical permission/role/grantor/SoD matrix and exact object privilege/RLS/Storage matrix.
 6. Complete offline/device, report reproducibility, evidence lifecycle, account recovery and operational SLO specifications.
