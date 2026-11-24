@@ -104,10 +104,11 @@ For validation or conflict errors, return a stable code, safe message, and relev
 - Never mutate submitted revision payload.
 
 ### Change Inspector capacity
-- Lock the global capacity settings row.
+- Lock the governed project's capacity settings row; this single row serializes the combined two-location cap.
 - Validate new capacity as an integer in [1, 100]; default is 50.
-- Count distinct active Inspector accounts across both locations.
-- Reject a reduction below current active count.
+- Count distinct enabled login accounts that have an active Inspector role grant and at least one currently effective operational Inspector assignment in the governed project/session scope; count each account once across both locations and multiple assignments/roles.
+- Exclude pending, rejected, suspended, disabled and expired-role accounts.
+- Reject a reduction below the current qualifying count; never silently deactivate accounts.
 - Update capacity and append audit event in the same transaction.
 
 ### Print and batch-print transaction (PO-approved T-13 option B)
@@ -126,9 +127,11 @@ For validation or conflict errors, return a stable code, safe message, and relev
 
 - `AUTH_REQUIRED`, `ACCOUNT_NOT_APPROVED`, `PERMISSION_DENIED`, `SCOPE_DENIED`
 - `RESOURCE_NOT_FOUND`, `INVALID_STATE_TRANSITION`, `STALE_VERSION`
-- `ACTIVE_CLAIM_EXISTS`, `ASSIGNMENT_OVERLAP`, `INSPECTOR_CAPACITY_EXCEEDED`
-- `VALIDATION_FAILED`, `EVIDENCE_NOT_READY`, `SYNC_CONFLICT`
-- `IDEMPOTENCY_KEY_REUSED`, `RATE_LIMITED`, `INTERNAL_ERROR`
+- `ACTIVE_CLAIM_EXISTS`, `ASSIGNMENT_OVERLAP`, `INSPECTOR_CAPACITY_EXCEEDED`, `CANONICAL_UNIT_CONFLICT`, `UNIT_ASSOCIATION_REQUIRED`, `INSTRUMENT_MISMATCH`
+- `VALIDATION_FAILED`, `EVIDENCE_NOT_READY`, `EVIDENCE_INVALID`, `AUDIT_WRITE_FAILED`, `SYNC_CONFLICT`
+- `IDEMPOTENCY_KEY_REUSED`, `RATE_LIMITED`, `RETRYABLE_FAILURE`, `INTERNAL_ERROR`
+
+These codes are a proposed stable baseline to reconcile with every PostgreSQL function and route response; they are not yet an approved exhaustive enum. Unauthorized callers must not receive resource-existence details.
 
 ## 8. Open decisions
 
@@ -170,3 +173,12 @@ Browser-facing anon/authenticated roles receive no direct INSERT/UPDATE/DELETE o
 A canonical unit is resolved by `(instrument_id, serial_normalized)` across projects. The project is not part of the uniqueness key. `register-canonical-unit` creates or resolves the canonical identity; `associate-unit-to-project` and `end-unit-project-association` manage durable project-membership episodes; `resolve-unit-identity-conflict` handles same-instrument serial collisions without cloning or silently merging canonical units. Claim, draft, submit, review, evidence and document commands must bind to the exact association + project + same-project assignment and must not infer authorization from unit ID alone. The global active-claim invariant serializes claims across projects.
 
 These decisions are design-only. Exact endpoint payloads, grant matrix, institutional serial normalization/exception policy, migrations and tests remain open; no implementation is claimed.
+
+
+## Command-by-command closure requirements (T-18)
+
+The command list in this document is a capability inventory, not yet a complete route/RPC contract. Before implementation, each logical command must have its own versioned request and response schema, permission code, server-derived actor rule, project/session/assignment scope predicate, state-transition guard, lock set/order, idempotency scope and request hash, audit event type, typed outcome/error mapping, retry semantics and positive/negative/concurrency test references.
+
+The inventory must include, in addition to the currently enumerated commands: instrument deactivation; evidence access and export; project closure; audit read and export; and bounded batch-print orchestration. Batch print remains a per-document sequence of independently authorized/idempotent print commands, not an atomic all-or-nothing mutation. Permission codes for the additional privileged operations must be explicitly confirmed in the permission catalogue rather than inferred from broad Super Admin status.
+
+T-14 capacity commands use the exact approved qualifying-account predicate and the project capacity-settings row lock across both locations. T-16 unit commands require canonical serial-key arbitration, durable project association and global active-claim serialization. No command may infer operational authorization from global catalog authority or canonical unit identity alone.
