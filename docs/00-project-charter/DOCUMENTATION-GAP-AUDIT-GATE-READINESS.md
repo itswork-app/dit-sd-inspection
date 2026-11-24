@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.88
+**Version:** 1.11.89
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -875,3 +875,21 @@ Static review confirms CMD-013 is the final session-close command; REQUEST_CLOSU
 ### Privileged session reopen after ABORTED inspection — policy dependency
 
 T-07 permits privileged, reasoned and audited reopening of a CLOSED session, while SES-001 makes an ABORTED unit attempt terminal and non-resumable. Whether a reopened session may accept a brand-new inspection aggregate under the same session_id remains an explicit PO/operational policy question (IDC-O10; TC-SESSION-008). Until resolved, no command may reactivate an aborted attempt or infer that new work is allowed in the reopened session. This is an additional G2/G5 workflow edge; G9 remains NOT READY and G10 NOT ACTIVE.
+
+
+## CMD-013 FINAL_CLOSE cross-lifecycle audit — 2026-11-24
+
+**Disposition: G9 remains NOT READY; G10 remains NOT ACTIVE.** This static audit is limited to the IFP and Standing Bracket inspection workflow and does not authorize implementation.
+
+CMD-013 FINAL_CLOSE cannot be certified from inspection status alone. The closure predicate must account for the full session work lifecycle:
+
+1. **Inspection work — blocking:** every assigned unit attempt must be terminal. Active claims, active draft contexts, pending submissions/reviews, returned corrections and unresolved authorized reopen work block closure. An unfinished unit attempt may be explicitly aborted under SES-001; CMD-027 release-only is not abort.
+2. **Evidence — blocking when required or unresolved:** pending upload intents, unverified Storage objects and evidence finalizers cannot satisfy required evidence. CMD-033 intent creation is not upload verification; CMD-034 finalization remains a separate step.
+3. **Documents and reports — required completion before close:** completed units must meet DOC-002/WF-003 approval, final PDF generation and print-action requirements. A queued/processing/failed/uncertain required generation or print operation is not completion. Print action is recorded, but physical printer success is not inferred.
+4. **Attendance — institutional blocker:** T-08/CMD-039/040 direction exists, but accepted attendance evidence, verifier authority and the exact close predicate remain unresolved. Do not waive attendance or invent authority.
+5. **Notifications — asynchronous/non-blocking by default:** no approved rule makes provider delivery a prerequisite for closing a session. Keep source mutation/outbox intent atomic where required; dispatch may continue asynchronously.
+6. **Concurrent writers/finalizers — blocking design gap:** CMD-012–016, CMD-026–040 and any approved reopen/admin writer that changes session/child eligibility must be included in the serialization/fencing analysis. External Storage, renderer and printer calls must not run while DB locks are held.
+
+The explicit per-unit abort is not a generic session cleanup operation. It cannot bypass review, required evidence, document/print, or attendance obligations. It must preserve the aborted attempt and history. A later session creates a new attempt rather than reactivating the aborted one.
+
+**Critical unresolved evidence:** no complete writer/finalizer-to-resource lock matrix, certified parent/child fence protocol, global acyclicity proof, attendance closure authority, or runtime concurrency evidence is available. The existing CMD-026 lock-order contradiction and X-17 full 54-command lock inventory review remain open. The global lock graph is NOT PROVEN ACYCLIC. Existing relevant QA cases remain PLANNED / NOT EXECUTED. No code, SQL, migration, grant, RLS, live database, test, deployment or merge was performed.
