@@ -240,3 +240,7 @@ RLS and privileged capacity commands must consistently recognize a qualifying In
 The former open question about direct draft writes is CLOSED by T-18 option A. No browser-facing anon/authenticated role may INSERT, UPDATE or DELETE protected business/governance tables, including draft response tables, membership, assignments, instrument configuration/publication, evidence metadata, revisions, claims, audit or idempotency records. Draft writes use the trusted command boundary; ordinary reads remain independently scoped by RLS.
 
 The catalogue still requires a table-by-table privilege review, exact command-function EXECUTE grants, review of views/triggers/functions and any SECURITY DEFINER exceptions, plus positive/negative authorization tests. This document remains a policy design artifact; no executable policies or grants are deployed or verified.
+
+## Function ACL and caller-role dependency
+
+See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md) for the independent function EXECUTE and table ACL posture. CMD means command-only mutation, not table DML for the caller role. RLS policies do not grant SQL privileges. Exact ACL and caller-role verification remains open; no grants are deployed.
