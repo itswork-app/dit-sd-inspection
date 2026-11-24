@@ -10,25 +10,29 @@ This document defines the intended PostgreSQL function privilege model and maps 
 
 **Important:** PostgreSQL function EXECUTE permission is not the same as business authorization. An EXECUTE grant only permits invocation. Every exposed function must still authenticate the caller, derive actor from `auth.uid()`, check account status, approved permission, scope, resource state and SoD, and enforce invariants transactionally.
 
-## 2. Critical compatibility finding — INVOKER versus no direct browser DML
+## 2. T-18 execution-model decision — PO APPROVED Option A
 
-T-18 requires both:
-- browser-facing `anon`/`authenticated` roles must not directly INSERT/UPDATE/DELETE protected tables; and
-- command functions should prefer `SECURITY INVOKER`.
+The Product Owner approved **Option A: narrow SECURITY DEFINER command wrappers** on 2026-11-24. This resolves the prior compatibility blocker between (a) denying direct browser DML on protected tables and (b) executing protected writes through the caller's authenticated database role.
 
-These two requirements are **not automatically compatible** for a function invoked under the caller's `authenticated` database role. A SECURITY INVOKER function executes with caller privileges. If the caller has no table DML privileges, the function cannot perform the protected writes. If the caller is granted table DML, the same role may also perform direct table DML through PostgREST/SQL unless a separate privilege boundary prevents it. RLS alone is not a substitute for the missing SQL table privilege boundary.
+Approved hybrid model:
+- Protected state-changing commands use individually reviewed, narrow SECURITY DEFINER functions owned by a dedicated least-privileged NOLOGIN role.
+- Read-only functions/queries use SECURITY INVOKER where feasible, with RLS and least-privilege SELECT.
+- Internal helpers are not exposed through PostgREST and receive only exact internal EXECUTE privileges.
+- Browser roles retain no direct INSERT/UPDATE/DELETE on protected business/governance tables.
+- Caller JWT is forwarded through the approved Vercel → Supabase/PostgREST path; PostgreSQL derives actor using auth.uid().
+- No user command is executed as service_role.
 
-This is an architecture blocker, not a grant-script detail. Do not resolve it by casually granting table DML to `authenticated`, using a service-role key for user commands, or marking every function SECURITY DEFINER without review.
+This approval selects the execution model only. It does **not** approve any exact function, owner role, signature, grant, table ACL, RLS policy, route mapping, migration, or implementation. Option B is not selected. Option C remains incompatible with T-18.
 
-### Decision options for PO/security review
+### Mandatory SECURITY DEFINER owner and function controls
 
-| Option | Execution model | Direct browser DML posture | Security properties / trade-off | Status |
-|---|---|---|---|---|
-| A | Narrow SECURITY DEFINER command wrappers, invoked with caller JWT; owner is dedicated non-login least-privileged role | Revoke browser table DML; only exact RPC EXECUTE | Compatible with T-18 if each wrapper performs complete authorization and has hardened owner/search_path/ACL; larger code-review burden | Candidate preferred for protected mutations where required |
-| B | Separate non-browser command-executor DB role/connection with controlled JWT context propagation and no browser access | Browser role has no DML; executor grants scoped DML | Requires verified Supabase/Vercel connection and JWT-context design; must prove caller identity cannot be forged and RLS semantics remain effective | Requires platform feasibility/security review |
-| C | SECURITY INVOKER with authenticated table DML | Cannot guarantee direct browser DML denial for the same role | Conflicts with T-18; reject unless PO explicitly changes T-18 | NOT ACCEPTABLE under current decision |
+Every protected-write definer function must be reviewed individually. Its dedicated NOLOGIN owner must not be SUPERUSER, BYPASSRLS, CREATEROLE, LOGIN, protected-table owner, or inherit table-owner/migration/service-role privileges. Grant only minimum required object privileges. A table-owner exception is outside the baseline and requires a separate explicit security/PO exception, FORCE ROW LEVEL SECURITY and updated threat-model review.
 
-**Recommendation:** retain SECURITY INVOKER for read-only functions and helpers that need no privilege elevation. For protected writes, use Option A only where necessary, with one function per command, strict caller-JWT checks, no dynamic SQL, exact row-level authorization, and dedicated security review. Before implementation, PO/security must explicitly accept this interpretation of T-18 or approve a proven Option B. This document does not itself approve Option A.
+Every function must use fixed `SET search_path = ''`, fully schema-qualified references, no client-controlled dynamic SQL, exact-signature EXECUTE grants, PUBLIC/anon denial, strict input allowlists, caller-JWT actor derivation, database-backed permission/scope/state/SoD checks, deterministic locking, idempotency, atomic mutation+event+audit, and rollback on audit failure. Do not accept caller-supplied actor, role, permission or scope as trusted. Never grant browser authenticated table DML to make SECURITY INVOKER writes work; never substitute service_role.
+
+SECURITY INVOKER remains preferred for scoped reads and non-privileged helpers. SECURITY DEFINER does not automatically preserve RLS: verify effective owner privileges, table ownership, FORCE RLS, memberships and ACLs. SQL Editor checks alone do not prove the real HTTP caller-JWT path.
+
+See [T-18 Execution Model Security Review](T18-EXECUTION-MODEL-SECURITY-REVIEW.md) for the approved model, threat controls, acceptance evidence and remaining gates.
 
 ## 3. Supabase/PostgreSQL trust principals
 
