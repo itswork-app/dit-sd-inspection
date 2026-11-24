@@ -1,6 +1,6 @@
 # Privileged Command Boundary and Transaction Specification
 
-**Status:** Architecture decision draft — approval required before implementation  
+**Status:** Architecture direction PO APPROVED (T-18 option A, 2026-11-24); command-specific design and implementation gates remain open  
 **Version:** 0.1.0  
 **Package:** N — Trusted Command Boundary  
 **Date:** 2026-11-23
@@ -172,17 +172,16 @@ Errors must not disclose whether an unauthorized resource exists. Use a consiste
 
 ## 12. Open approvals and implementation gates
 
-1. Approve this Vercel route + caller-JWT PostgreSQL command-function pattern as the standard boundary.
-2. Approve exact SECURITY DEFINER exceptions after function-by-function review.
-3. Confirm Inspector capacity counting predicate.
+1. Complete function-by-function review of any SECURITY DEFINER exception; pin search_path and minimize owner/grants.
+2. Complete the table-by-table RLS and direct-DML denial catalogue.
+3. Finalize command-specific permission codes, attendance/audit authorities and typed outcomes.
 4. Confirm offline maximum retry window and idempotency retention.
-5. Approve final permission codes and attendance/audit authorities.
-6. Complete the table-by-table RLS catalogue review.
-7. Implement only after Package K blockers and required PO/institutional decisions are resolved.
+5. Reconcile T-16 canonical unit/project association, foreign keys and claim scope before migration.
+6. Implement only after Package K blockers and required institutional decisions are resolved; T-18 approval is not implementation authorization.
 
 ## 13. Disposition
 
-**Command boundary:** DESIGN DRAFT COMPLETE FOR REVIEW.  
+**Command boundary:** ARCHITECTURE DIRECTION PO APPROVED (T-18 option A); detailed command/RLS/grant design remains reviewable.  
 **Transport implementation:** NOT IMPLEMENTED.  
 **RPCs/functions:** NONE CREATED.  
 **Service-role access:** NOT CONFIGURED.  
@@ -202,4 +201,27 @@ The command boundary must not expose audit update/delete operations to applicati
 
 `publish-instrument-version` is a privileged command. It must authenticate the caller, derive actor identity server-side, require explicit `instrument.publish`, verify the caller is an authorized Super Admin, validate supported declarative field types/validation primitives, checklist ordering/applicability, expected values and evidence-slot rules, and reject arbitrary scripts/SQL/executable expressions. It atomically transitions the draft to PUBLISHED and writes the publication record plus required audit event; failure of either write rolls back the entire transaction. No second-person approval is required under PO-approved T-17 option A. The published version and children are immutable; a correction requires a new version. Deactivation is a separate reasoned/audited command. Existing assignments and historical revisions remain pinned to their selected version.
 
-T-18 (command architecture and direct-DML denial) is still awaiting Product Owner approval; this document currently describes the proposed design, not an approved implementation authorization.
+T-18 is PO APPROVED option A (2026-11-24): this Vercel route + caller-JWT PostgreSQL command-function pattern is the selected standard architecture, including direct browser DML denial. Approval does not authorize implementation; command-specific design, RLS/grants and residual gates remain open.
+
+
+## T-18 — Approved command architecture and mandatory controls (2026-11-24)
+
+**Decision:** Product Owner approved option A. The Vercel server route + caller-JWT PostgreSQL command-function pattern is the standard boundary for privileged and state-changing business commands.
+
+### Required execution contract
+1. Browser/PWA authenticates through Supabase Auth and submits a typed command envelope to a narrowly scoped Vercel route. The client cannot select an arbitrary table/function or supply an authoritative actor, role or scope.
+2. Route validates HTTP method, content type, payload size, schema/version and command input; verifies the Supabase session and forwards the caller's JWT to the matching PostgreSQL function.
+3. PostgreSQL derives the actor from the JWT subject (auth.uid()), resolves the application account and checks enabled/approved state, explicit permission, active role, project/session/assignment scope, target state and separation of duties. Database checks are authoritative; route checks are defense in depth.
+4. Command validates transition and inputs, takes required row/advisory locks, enforces idempotency and performs the business mutation plus required domain event and INS-016 audit insert in one transaction. Audit failure or invariant failure rolls back the entire command. Return success only after commit.
+5. Protected business, membership, assignment, instrument configuration/publication, audit and idempotency tables deny browser direct INSERT/UPDATE/DELETE through grants and RLS. Read access remains RLS-controlled. A command function is narrowly scoped to one business capability, not a generic DML proxy.
+6. Prefer SECURITY INVOKER. Any SECURITY DEFINER function requires an explicit function-level ADR/review, pinned search_path, schema-qualified references, strict input validation, safe ownership, and minimal EXECUTE grants. Revoke default PUBLIC execution where applicable.
+7. Never expose service-role credentials to the browser. Caller JWT is the default command identity. Any server-only service-role exception must be isolated, explicitly approved, least-privileged, audited and threat-modelled.
+8. Use stable typed outcomes for success, unauthenticated, forbidden, invalid input/transition, conflict/stale version, idempotency mismatch and retryable infrastructure failure. Do not disclose protected resource existence or sensitive policy detail to unauthorized callers.
+
+### Command catalogue and cross-decision consistency
+
+Apply this contract to account approval/role and assignment changes, team staffing, session/project lifecycle, instrument draft/publish/deactivate, unit creation/duplicate resolution/claim, inspection draft/submit/review, evidence finalize/replace/access/export, document generation/print, attendance verification, project closure, audit access/export and offline sync reconciliation. Each command needs a separate request/response schema, permission, scope rule, lock/idempotency key, state invariant, audit event and positive/negative/concurrency test. T-14 capacity count and T-16 canonical serial uniqueness must be checked inside the same serialized transaction as the affected mutation. T-17 publish-instrument-version uses the same boundary and atomic audit rule.
+
+### Approval boundary and remaining gates
+
+T-18 approves the architecture pattern only. It does not approve every command's detailed contract, any SECURITY DEFINER exception, a deployed RLS policy, or production service-role use. Complete command-by-command permission and transaction catalogue, table-level RLS/grant matrix, T-16 unit/project association reconciliation, T-10 institutional policy and T-12 provider/recovery verification before implementation. No route/RPC/migration has been created and no tests have been executed.
