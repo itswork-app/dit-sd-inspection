@@ -432,3 +432,8 @@ All related notification and concurrency tests remain PLANNED / NOT EXECUTED. Th
 ### NOTIF-015 resolver test mapping — 2026-11-24
 
 QA v0.4.4 maps recipient-resolver lock-set verification to TC-NOTIF-042..051. These cases complement TC-NOTIF-036..040 (LG-41..45) and remain PLANNED / NOT EXECUTED. NOTIF-015 remains OPEN — CRITICAL; no resolver mechanism, new lock rank, candidate relation or command lock path is certified.
+
+
+### NOTIF-015 resolver mechanism selection — 2026-11-24
+
+PO selected Option A (global transaction-scoped audience guard, candidate L05) as the primary mechanism to submit for technical approval; Option B SERIALIZABLE remains contingency-only. See [NLA-RESOLVER-LOCK-001 v0.1.6](../02-architecture/NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) §11. NOTIF-015 remains OPEN — CRITICAL until Engineering/Database/Security approve the primitive/key, canonical order, full writer participation, FK/trigger/helper graph, timeout/retry, contention limits and acyclicity evidence. No L05 rank or implementation is approved; resolver certification 0/40 and application lock certification 0/50.
