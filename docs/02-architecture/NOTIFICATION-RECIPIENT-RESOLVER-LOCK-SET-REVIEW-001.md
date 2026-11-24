@@ -1,7 +1,7 @@
 # Notification Recipient-Resolver Lock-Set Review
 
 **Document ID:** NLA-RESOLVER-LOCK-001  
-**Version:** 0.1.6  
+**Version:** 0.1.7  
 **Status:** Engineering design proposal — NOT APPROVED; no lock rank or physical mechanism is admitted  
 **Date:** 2026-11-24  
 **Repository baseline:** docs/audit-lock-and-identity-reconciliation at 7d722a77ac37a4c82a026daeddd1b00df4a4f713  
