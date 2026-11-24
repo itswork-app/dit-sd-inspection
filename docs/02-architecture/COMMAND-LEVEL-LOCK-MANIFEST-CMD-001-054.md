@@ -1,7 +1,7 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.4.21
+**Version:** 0.4.22
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Parent:** LOCK-GRAPH-001 v0.4.12  
@@ -471,9 +471,9 @@ These commands are read-oriented and do not acquire write locks in the proposed 
 
 ### CMD-045–048 — external control-plane traceability IDs (PO APPROVED)
 
-The Product Owner approved CMD-045–048 Control-Plane Resolution Proposal v0.1.0 on 2026-11-24. These four IDs remain in the 54-ID traceability inventory but are not application commands and have no application transaction/lock set. They are excluded from the application lock-certification denominator:
+The Product Owner approved CMD-045–048 Control-Plane Resolution Proposal v0.1.1 (PO accepted v0.1.0) on 2026-11-24. These four IDs remain in the 54-ID traceability inventory but are not application commands and have no application transaction/lock set. They are excluded from the application lock-certification denominator:
 
-| Command | Status | Required precondition before lock design |
+| Command | Application lock disposition | External evidence dependency |
 |---|---|---|
 | CMD-045 retention/legal-hold | DEFERRED_EXTERNAL_CONTROL_PLANE — no application transaction/lock set | T-10 institutional records/legal/privacy policy and external records/storage lifecycle evidence |
 | CMD-046 review-security-incident | DEFERRED_EXTERNAL_CONTROL_PLANE — no application transaction/lock set | Designated institutional incident-response owner, RACI, case/evidence handling and escalation |
