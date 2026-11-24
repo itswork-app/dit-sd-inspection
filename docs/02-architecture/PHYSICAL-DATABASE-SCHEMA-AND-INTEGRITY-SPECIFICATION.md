@@ -369,6 +369,8 @@ The six notification tables remain the current canonical proposal. POQ-01 requir
 |---|---|---|
 | `notification_outbox_recipients` | `outbox_id`, `recipient_user_id`, `project_id?`, `session_id?`, `location_id?`, `assignment_id?`, `scope_snapshot_hash`, `resolved_at` | Unique/PK `(outbox_id, recipient_user_id)`; FK to outbox and app user; composite FK or trusted assertion for scope hierarchy; immutable after audience snapshot finalization; canonical sorted snapshot hash/count reconciled to outbox header |
 
+Candidate outbox-header fields (NOT ADMITTED additions): `audience_snapshot_version`, `audience_snapshot_hash`, `audience_snapshot_count`, and `audience_snapshot_completed_at`. These are required to reconcile candidate-row count and canonical digest before an outbox is claimable; exact types/checks and hash serialization remain open.
+
 Candidate transaction requirements:
 - Recipient identity and scope are resolved against source-event-time authorization state, not current membership at retry time.
 - Candidate rows and the snapshot completion marker/hash/count are persisted in the same transaction as the source event and outbox intent, or through another formally approved immutable event-time snapshot mechanism that cannot widen the audience.
