@@ -188,9 +188,9 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 ## 10. Current project status
 
 - Repository intent: **DOCUMENTATION AND APPLICATION IN ONE REPOSITORY — CONFIRMED BY PRODUCT OWNER**
-- Documentation gap audit: **DGA-001 v1.0.0 RECORDED; closure IN PROGRESS**
+- Documentation gap audit: **DGA-001 v1.1.0 RECORDED; closure IN PROGRESS**
 - Mandatory agent instructions: **AGENTS.md v1.1.0 — READ BEFORE EVERY WORK SESSION/TASK**
-- Implementation roadmap: **IRG-001 v1.0.0 — CONTROLLED PLAN, NOT AUTHORIZATION**
+- Implementation roadmap: **IRG-001 v1.0.1 — CONTROLLED PLAN, NOT AUTHORIZATION**
 - SemVer policy: **2.0.0 adopted; application version not assigned before release**
 - Active implementation gate: **NOT READY — see DGA-001**
 - Current phase: **DOCUMENTATION / SSOT MATURATION**
@@ -220,7 +220,7 @@ This blueprint is a governance/navigation artifact. It does not authorize code, 
 
 ## 12. Notification and batch-print design reconciliation — 2026-11-24
 
-- INS-015 design proposal is documented in [Notification Lifecycle and Delivery Architecture](../02-architecture/NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md) (NLA-001 v0.1.0). It defines six notification persistence entities, independent inbox/delivery states, transactional outbox, internal workers, versioned policy, escalation, audit and 18 planned tests.
+- INS-015 design proposal is documented in [Notification Lifecycle and Delivery Architecture](../02-architecture/NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md) (NLA-001 v0.1.1). It defines six notification persistence entities, independent inbox/delivery states, transactional outbox, internal workers, versioned policy, escalation, audit and 18 planned tests.
 - T-13 PO-approved batch printing is represented by `print_batches` plus append-only per-document `print_events`; no new product decision is inferred beyond T-13.
 - Proposed physical schema/RLS inventory is 48/48 by static document comparison. This is not live database verification.
 - DGA-B10/B11/B13/B14 remain open or partial pending independent technical review, permission/worker approval, institutional T-10 decisions, provider evidence and test traceability.
