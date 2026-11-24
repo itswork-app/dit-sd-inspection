@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.4.7
+Version: 0.4.8
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -810,9 +810,9 @@ TC-NOTIF-052 and TC-NOTIF-053 extend the planned QA set for F-01/F-02 from L05-R
 TC-NOTIF-054 specifies the mixed-load benchmark for the global audience guard. It remains PLANNED / NOT EXECUTED until PO/Operations approve audience/workload limits and numeric SLOs, Engineering/Database approve the final lock design, and G10 activates an isolated PostgreSQL test environment. Pre-/post-transition recipient outcomes remain PO decision inputs and must be added as explicit assertions before these tests can pass.
 
 
-### F-05 proposed transition-semantics acceptance cases — POQ-04 pending approval (2026-11-24)
+### F-05 approved transition-semantics acceptance cases — POQ-04 (2026-11-24)
 
-The following cases translate the proposed matrix into explicit assertions. They remain PLANNED / NOT EXECUTED and must be revised if PO changes any POQ-04 row. They are not evidence of approval or runtime behavior.
+The following cases translate the PO-approved matrix into explicit assertions. They remain PLANNED / NOT EXECUTED; this catalog update is not evidence of runtime behavior.
 
 | Test ID | Scenario | Expected result / invariant | Status |
 |---|---|---|---|
@@ -822,5 +822,10 @@ The following cases translate the proposed matrix into explicit assertions. They
 | TC-NOTIF-058 | Project/session closes concurrently with source event | Snapshot is evaluated against pre-close parent state and commits atomically with the closure event; dispatch applies approved current active-scope rule; no post-close recipient is added | PLANNED / NOT EXECUTED |
 | TC-NOTIF-059 | Actor revokes own role while an event policy may or may not select actor | Actor appears only if exact selector selects actor under pre-revoke eligibility; post-revoke current-scope check may suppress delivery; no implicit inclusion/exclusion or audience widening | PLANNED / NOT EXECUTED |
 
-**Execution control:** TC-NOTIF-055..059 require explicit POQ-04 approval, final selector grammar and dispatch-suppression semantics, approved technical design, G10 activation and an authorized isolated PostgreSQL environment. Until then they remain specification-only.
+**Execution control:** POQ-04 approval is satisfied. TC-NOTIF-055..059 still require finalized selector grammar and dispatch-suppression semantics validated by Security/Engineering, approved technical design, G10 activation and an authorized isolated PostgreSQL environment. They remain specification-only and PLANNED / NOT EXECUTED.
 
+
+
+### POQ-04 approval synchronization — 2026-11-24
+
+POQ-04 is PO APPROVED in full. TC-NOTIF-055..059 now trace to approved product semantics; all five remain PLANNED / NOT EXECUTED pending Security/Engineering validation, final technical design, G10 activation and authorized isolated PostgreSQL execution. No test result is implied.
