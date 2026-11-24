@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.3.9
+**Version:** 0.4.0
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -79,6 +79,15 @@ This is a candidate ordering to reconcile current sources, not an approved imple
 | L90 | Inspection aggregate | `inspections` | Inspection state/version and current revision revalidated after lock |
 | L100 | Dependent mutable aggregates | evidence intents, attendance records, document jobs, print batches, notification policy/inbox/delivery projections | Exact per-command sub-order and source-version binding; no external I/O while held |
 | L110 | Append-only facts | revisions, review decisions, domain/audit events, delivery attempts, escalation/access events | Insert after mutable-state validation; uniqueness constraints remain final arbitration |
+
+### 4.1 Unclassified identity and authorization resources — OPEN
+
+The candidate L00–L110 table does not currently assign a resource class to mutable identity/authorization aggregates:
+- app_users (account request, approval/rejection, account eligibility);
+- user_roles (role grant/revocation and Inspector eligibility);
+- user_scope_grants (scope grant/revocation).
+
+These are not append-only facts and must not be folded into L50 assignment/membership without an explicit Engineering/Security decision. CMD-001–007 therefore remain unranked at the domain-resource layer even where L00, L10 or L110 are known. LPR-11 tracks the missing class/order decision. No rank is introduced by this note.
 
 Unresolved rank questions:
 
@@ -262,20 +271,20 @@ Do not update canonical lock recipes to the candidate hierarchy before approval.
 
 ## 12. Command-level manifest inventory update — 2026-11-24
 
-[LOCK-MANIFEST-001 — Command-Level Lock Manifest Reconciliation CMD-001–054](COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.3.10 now inventories source-stated lock/resource sequences for all 54 logical command IDs. It records 54/54 inventory coverage and 0/54 certified lock-complete based on the current static evidence. It explicitly preserves unresolved ordering rather than normalizing conflicting source contracts.
+[LOCK-MANIFEST-001 — Command-Level Lock Manifest Reconciliation CMD-001–054](COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.4.0 now inventories source-stated lock/resource sequences for all 54 logical command IDs. It records 54/54 inventory coverage and 0/54 certified lock-complete based on the current static evidence. It explicitly preserves unresolved ordering rather than normalizing conflicting source contracts.
 
 The manifest confirms the CMD-023/024/025/026/027/028 ordering issues, parent/child closure conflicts, T-14 eligibility path gaps, instrument/assignment rank gap, evidence/document/attendance finalization gaps, print sequence allocator gaps and notification worker fencing gaps. It is an evidence inventory, not an approved lock plan or proof of deadlock freedom. All new tests remain planned/not executed; G9 remains NOT READY and G10 NOT AUTHORIZED.
 
 
 ## 13. Lock protocol decision-resolution proposal — 2026-11-24
 
-[LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.2.3 consolidates a candidate monotonic resource order and explicit recommendations for CMD-022–027, CMD-028–032/035, project/session closure, T-14 capacity, instrument/assignment interaction, evidence/document/attendance/print, and notification worker/callback boundaries. It assigns PO, Engineering, Security, institutional and Operations decision ownership.
+[LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.3.0 consolidates a candidate monotonic resource order and explicit recommendations for CMD-022–027, CMD-028–032/035, project/session closure, T-14 capacity, instrument/assignment interaction, evidence/document/attendance/print, and notification worker/callback boundaries. It assigns PO, Engineering, Security, institutional and Operations decision ownership.
 
 **Disposition:** proposal only; not an approved lock protocol and not proof of an acyclic graph. Canonical command contracts and physical schema remain unchanged. 54/54 commands remain inventoried and 0/54 certified lock-complete. All tests remain PLANNED / NOT EXECUTED. G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED.
 
 ## 14. Candidate-rank and notification boundary reconciliation — 2026-11-24
 
-The rank table in §4 is now aligned with the candidate L00–L110 vocabulary in LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.2.3. This corrects the prior graph's compressed 0–90 model, which combined instrument with assignment, claim with inspection, and omitted the dependent-mutable versus append-only distinction. The candidate order remains unapproved; the change is a documentation reconciliation, not Engineering/Security approval.
+The rank table in §4 is now aligned with the candidate L00–L110 vocabulary in LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.0. This corrects the prior graph's compressed 0–90 model, which combined instrument with assignment, claim with inspection, and omitted the dependent-mutable versus append-only distinction. The candidate order remains unapproved; the change is a documentation reconciliation, not Engineering/Security approval.
 
 CMD-049–054 must be interpreted as follows:
 - CMD-049: recipient-owned read only; MVCC/read consistency and actor/filter-bound cursor, no mutation lock.
@@ -286,3 +295,18 @@ CMD-049–054 must be interpreted as follows:
 - CMD-054: server-UTC due evaluation against pinned policy version; unique escalation fact and outbox intent committed atomically; no source business-state mutation.
 
 The notification queue is not a license to acquire queue locks and then domain aggregate locks. If any future worker operation must mutate a source aggregate, it must release its queue claim transaction, start a new transaction, acquire the full approved L30–L100 source chain in ascending order and validate the fencing generation. Physical queue tables, unique/FK indexes, triggers, helper calls, worker identity, function owner, EXECUTE ACL and provider callback runtime remain NOT VERIFIED.
+
+## 15. CMD-001–010 normalization overlay and identity/authorization rank gap — 2026-11-24
+
+LOCK-MANIFEST-001 v0.4.0 adds a row-level overlay for CMD-001–010. It separates mutable resource rows, unique-key arbiters, append-only facts, competing command paths and unresolved physical evidence.
+
+Key conclusions:
+- CMD-001 uses own-identity upsert/unique auth_user_id arbitration; a missing app_users row cannot be treated as an already-lockable row.
+- CMD-002/003 share one target-account transition protocol. Their actor authorization freshness, terminal-decision uniqueness and account row-version semantics remain open.
+- CMD-004/005 must acquire the same T-14 project capacity serialization row before any row whose mutation changes the qualifying Inspector population. The current rank table does not classify app_users/user_roles, so capacity-first is only a partial order, not a complete normalized path.
+- CMD-006/007 need an explicit order among target principal, grantor authority, scope parent and user_scope_grants, plus a revocation-freshness contract.
+- CMD-008 relies on unique normalized project-code arbitration, not a preflight row lock.
+- CMD-009/010 use the project parent candidate rank L30. All project-scoped child writers must acquire the parent fence before child resources, then revalidate project state after any wait. Child-first writers can deadlock against closure or commit stale work after closure.
+- CMD-010's blocker inventory, parent lock mode, child-writer coverage and physical project row-version token remain unresolved.
+
+LPR-11 is added to LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.0 to define and approve identity/account/authorization lock classes and their order relative to T-14 capacity, project/session parents and assignment membership. Until it is resolved, CMD-001–007 cannot be marked rank-normalized. This does not close DGA-B18/B19, prove an acyclic graph, certify deadlock freedom or authorize implementation.
