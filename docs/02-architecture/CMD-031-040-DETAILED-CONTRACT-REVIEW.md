@@ -1,11 +1,11 @@
 # CMD-031–040 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security/institutional review required; NOT approved for implementation  
-**Document version:** 0.2.2  
+**Document version:** 0.2.3  
 **Date:** 2026-11-24  
 **Scope:** CMD-031 through CMD-040  
 **Repository phase:** Documentation / SSOT maturation  
-**Controls:** T-08 attendance authority; T-09 limited offline direction; T-10 institutional records/privacy gate; T-13 print batch; T-15 append-only audit; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
+**Controls:** T-08 attendance authority; T-09 limited offline direction; T-10 institutional records/privacy gate; T-13 print batch; T-15 append-only audit; T-18 Option A command boundary; G9 NOT READY; G10 NOT ACTIVE pending verified G9 and the required separate G10 activation record.
 
 ## 1. Purpose, authority and non-authority
 
@@ -1285,7 +1285,7 @@ Existing catalogue mappings:
 | RLS and Storage policy | NOT VERIFIED | No deployed policy inspection performed |
 | Tests | PLANNED / NOT EXECUTED | No unit, integration, security, concurrency or UAT test run |
 | G9 | NOT READY | DGA-001 blockers and contract/design gaps remain |
-| G10 | NOT AUTHORIZED | No implementation authorization record |
+| G10 | NOT ACTIVE | Conditional Product Owner authorization received; G9 is NOT READY and the separate G10 activation record is not approved |
 | Source code / SQL / migration / grants | NOT PERFORMED | Outside permitted scope |
 | Live database / deployment / merge | NOT PERFORMED | Outside permitted scope |
 
@@ -1311,4 +1311,8 @@ This is documentation-only candidate design. The proposal does not approve the r
 
 ## SES-001 session-bound correction and reopen guardrail — 2026-11-24
 
-PO decision SES-001 is APPROVED. CMD-030 return does not authorize cross-session correction: only the exact original revision author/Inspector may correct, and only within the inspection attempt's originating active session. CMD-032 approved reopen is likewise constrained to that same originating session while it remains active; if the session is already finally closed, CMD-032 must fail closed and must not create a new draft context under the old inspection attempt. A later session must create a new inspection attempt instead. Any incomplete or returned-but-unresolved unit attempt must be explicitly aborted before final session closure, preserving the returned revision and reason as history. These constraints do not resolve the CMD-032 explicit authority, claim, finalizer, lock graph, RLS/ACL or physical schema blockers. No implementation or schema admission is implied.
+PO decision SES-001 is APPROVED. CMD-030 return does not authorize cross-session correction: only the exact original revision author/Inspector may correct, and only within the inspection attempt's originating active session. CMD-032 approved reopen is likewise constrained to that same originating session while it remains active; if the session is already finally closed, CMD-032 must fail closed and must not create a new draft context under the old inspection attempt. A later session must create a new inspection attempt instead.
+
+ABORT is not a general cleanup path for incomplete or hanging work. It is eligible only after a Reviewer has returned the exact submitted revision for an identified error and the physical unit is already packed/boxed and prepared for shipment such that correction/reinspection is impracticable. The responsible Inspector must submit an ABORT request with a reason; Admin/Korlap must explicitly approve or reject it. Only an approved request may transition the attempt to terminal ABORTED. If the unit remains practically accessible, the same Inspector must correct and resubmit through WF-001 in the original active session. An incomplete/hanging attempt without the qualifying Reviewer-returned packed-unit facts remains unresolved and blocks FINAL_CLOSE.
+
+ABORTED preserves the submitted revision, Reviewer return decision, evidence and audit history; it is not approval, inspection completion, a good/defective classification or print completion. A later session must create a new inspection attempt with a distinct inspection_id. CMD-013 cannot initiate, approve or bulk-apply ABORT and cannot use it to bypass unrelated closure gates. These constraints do not resolve the CMD-032 explicit authority, claim, finalizer, lock graph, RLS/ACL or physical schema blockers. No implementation or schema admission is implied.
