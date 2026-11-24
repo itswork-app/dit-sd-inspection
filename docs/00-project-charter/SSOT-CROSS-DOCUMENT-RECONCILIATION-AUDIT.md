@@ -7,7 +7,7 @@
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
 **PR:** #3 — Draft / Open  
-**Authority snapshot reviewed:** AGENTS.md v1.2.0; MIB-001 v1.0.5; DGA-001 v1.11.24; IRG-001 v1.0.1  
+**Authority snapshot reviewed:** AGENTS.md v1.2.0; MIB-001 v1.0.5; DGA-001 v1.11.27; IRG-001 v1.0.1  
 **Implementation authorization:** NOT GRANTED
 
 ## 1. Executive result
@@ -31,7 +31,7 @@ Reviewed on the target branch:
 - Package S — Final Cross-Document Audit and Scope-Freeze Readiness, including §9.15.
 - Package T — Product Owner Decision Closure Pack v0.1.1, including its historical-status reconciliation.
 - RTM-001 v0.1.3 and RAID-001 v0.1.1.
-- QA Catalogue v0.3.5, including TC-PRINT-001..007, TC-DOC-001..011 and TC-PRINT-BATCH-001..008.
+- QA Catalogue v0.3.6, including TC-PRINT-001..007, TC-DOC-001..011 and TC-PRINT-BATCH-001..008.
 - DGA command, lock, notification and institutional blocker summaries.
 
 This was a read-only content review followed by documentation-only corrections on the authorized branch. No live database, provider account, GitHub ruleset, Vercel environment, secret store, CI workflow, application build, automated test, security test, concurrency test, load test, backup/restore drill or UAT was executed.
@@ -47,15 +47,15 @@ This was a read-only content review followed by documentation-only corrections o
 | Decision Register | Canonical index of current PO decisions | Current authority; approved decisions are not reopened by historical recommendation text |
 | Package S | Historical cross-document audit with dated current-state addenda | §9.15 remains historical; §9.16 is added as current snapshot |
 | Package T v0.1.1 | Historical decision instrument | Header and §10 correctly state that current PO authority is the Decision Register and dated addenda |
-| RTM-001 v0.1.2 | Requirement-to-design-to-verification index | 125 unique requirement IDs; T-13 test mapping correction recorded |
+| RTM-001 v0.1.3 | Requirement-to-design-to-verification index | 125 unique requirement IDs; T-13 test mapping correction recorded |
 | RAID-001 v0.1.1 | Risks, assumptions, issues and dependencies | 65 unique RAID IDs; D-031..D-036 and R-032..R-036 remain open/blocked as stated |
-| QA Catalogue v0.3.5 | Planned verification catalogue | 410 unique test definitions in DGA's current scan; all are planned, not execution evidence |
+| QA Catalogue v0.3.5 | Planned verification catalogue | 413 unique test definitions in DGA's current scan; all are planned, not execution evidence |
 
 ### 3.1 Package S reconciliation
 
 Package S §9.15 records a 2026-11-24 snapshot with 391 distinct test identifiers, 54 proposed commands and 48/48 proposed physical-schema/RLS table-name parity. That section is a dated snapshot and must not be rewritten as though its earlier scan used the later QA catalogue.
 
-The current DGA-001 audit records 410 unique test-case definitions, 54/54 command IDs and QA anchors, 48/48 proposed table-name parity, 10/54 candidate-normalized lock manifests and 0/54 technically approved/certified manifests. Package S §9.16 is added to point readers to that newer snapshot while preserving §9.15 as history.
+The current DGA-001 audit records 413 unique test-case definitions, 54/54 command IDs and QA anchors, 48/48 proposed table-name parity, 10/54 candidate-normalized lock manifests and 0/54 technically approved/certified manifests. Package S §9.16 is added to point readers to that newer snapshot while preserving §9.15 as history.
 
 Package S scope-freeze disposition remains NOT READY. Its S-01..S-12 closure requirements are not considered satisfied merely because the crosswalk inventory is extensive.
 
@@ -164,3 +164,8 @@ POQ-01 Option C, POQ-02 Option C and POQ-03 Option A were explicitly approved by
 - **Dismissal (POQ-03):** dismiss/archive is excluded from MVP. Only recipient-owned set-once `read_at` is exposed; no dismiss command, permission, browser write or UX action exists. Any `dismissed_at` field retained in a proposal is dormant.
 
 The following technical details remain open: exact selector grammar and snapshot/checkpoint representation; partial fan-out fencing; policy schema and worker authorization; provider capability/callback security; exact schema constraints/indexes/RLS; institutional T-10 retention/privacy; test execution and live evidence. G9 remains NOT READY and G10 NOT AUTHORIZED.
+
+
+## POQ closure and notification QA inventory update — 2026-11-24
+
+POQ-01..03 are explicitly approved and recorded in the Decision Register. NLA-001 v0.1.3, CMD-049–054 review v0.1.2, RTM-001 v0.1.3, DGA-001 v1.11.27 and QA Catalogue v0.3.6 now reflect the approved hybrid audience, per-policy SLA and MVP dismissal exclusion. QA inventory now contains 413 unique planned test definitions, including TC-NOTIF-001..029; all remain PLANNED / NOT EXECUTED. The physical audience snapshot representation/checkpoint, worker security, provider, T-10 and runtime evidence remain open. G9 NOT READY; G10 NOT AUTHORIZED.
