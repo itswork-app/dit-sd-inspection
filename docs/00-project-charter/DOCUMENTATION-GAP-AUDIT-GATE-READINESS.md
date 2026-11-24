@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.24
+**Version:** 1.11.25
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -447,7 +447,7 @@ Verification boundary: these edits correct document-version navigation only. The
 
 ## 14. Package S/T and governance cross-document reconciliation — 2026-11-24
 
-The static cross-document audit is recorded in [SSOT-AUDIT-001](SSOT-CROSS-DOCUMENT-RECONCILIATION-AUDIT.md) v0.1.0. Decision requests are separated into [POQ-001 — Product Owner Open Decision Packet](PRODUCT-OWNER-OPEN-DECISION-PACKET.md) v0.1.0 and [AUTH-001 — Institutional and Technical Authority Approval Package](INSTITUTIONAL-AND-TECHNICAL-AUTHORITY-APPROVAL-PACKAGE.md) v0.1.0.
+The static cross-document audit is recorded in [SSOT-AUDIT-001](SSOT-CROSS-DOCUMENT-RECONCILIATION-AUDIT.md) v0.1.1. Decision requests are separated into [POQ-001 — Product Owner Open Decision Packet](PRODUCT-OWNER-OPEN-DECISION-PACKET.md) v0.1.0 and [AUTH-001 — Institutional and Technical Authority Approval Package](INSTITUTIONAL-AND-TECHNICAL-AUTHORITY-APPROVAL-PACKAGE.md) v0.1.0.
 
 Reconciliation results:
 - Package S §9.15 remains an immutable historical checkpoint (391 distinct test identifiers in its scan). New §9.16 points to the current DGA/QA snapshot (410 unique test-case definitions); old counts are not rewritten.
