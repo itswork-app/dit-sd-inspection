@@ -1,7 +1,7 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.1  
+**Version:** 0.1.2  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
@@ -216,7 +216,7 @@ Proposed policy administration operation:
 Internal-only operations:
 - Claim/fan-out outbox work.
 - Claim/send channel delivery.
-- Record provider result/webhook.
+- Record provider result/webhook through the separately authenticated integration boundary INT-NOTIF-001.
 - Evaluate reminders/SLA/escalations.
 
 Internal worker operations must not be exposed as browser-callable RPCs. Their authentication principal, Vercel scheduler trust, database execution role, function owner, exact EXECUTE grants, rate limits and secret custody require a separate T-18 security review. Do not use a browser-held service-role key or treat an ordinary user JWT as a worker credential.
@@ -259,6 +259,19 @@ Allocate these stable test IDs in the QA catalogue; they are planned, not execut
 - TC-NOTIF-017: outbox backlog, dead-letter, retry age and provider failure metrics/alerts are observable.
 - TC-NOTIF-018: cursor pagination cannot cross recipient identity or filter scope.
 
+### 11.1 Additional verification cases — planned only
+
+- TC-NOTIF-019: CMD-050 set-once read emits one notification.read event on the first transition; duplicate requests do not create another event.
+- TC-NOTIF-020: concurrent CMD-051 publications serialize against the expected current published version; stale publication is rejected and published policy content remains immutable.
+- TC-NOTIF-021: a reclaimed CMD-052 outbox lease increments the fencing generation; the stale worker cannot finalize or overwrite the newer result.
+- TC-NOTIF-022: partial CMD-052 fan-out retry uses uniqueness arbiters to avoid duplicate inbox/delivery rows and never loses the durable outbox intent.
+- TC-NOTIF-023: INT-NOTIF-001 rejects invalid provider signatures, stale timestamps, replayed event identifiers and unknown provider references without changing delivery state.
+- TC-NOTIF-024: accepted provider callback transitions are monotonic and cannot change inbox read state or source business state.
+- TC-NOTIF-025: CMD-054 derives one server UTC evaluation instant; client-supplied time cannot force or suppress due escalation.
+- TC-NOTIF-026: ambiguous provider acceptance remains UNKNOWN until safe reconciliation; no blind duplicate dispatch is inferred.
+
+All cases are PLANNED / NOT EXECUTED.
+
 ## 12. Open approvals and dependencies
 
 1. PO/security approval of the exact notification recipient-selector grammar and event-time versus dispatch-time eligibility semantics.
@@ -267,7 +280,7 @@ Allocate these stable test IDs in the QA catalogue; they are planned, not execut
 4. Institutional T-10 approval for classification, content minimization, retention, deletion, legal hold, audit access/export and time-zone/network metadata.
 5. Provider decision and verified capabilities/quotas for email and optional browser/device push; cost envelope and failure behavior.
 6. Numeric retry horizon, maximum attempts, SLA clock semantics, quiet-hour exception policy and operational alert thresholds.
-7. UX decision on dismiss/archive behavior and unread/read retention.
+7. UX decision on dismiss/archive behavior and unread/read retention; dismissed_at remains dormant until approved.
 8. Exact physical composite FKs, indexes, enum/check definitions and RLS predicates reviewed across all six proposed tables.
 
 ## 13. Gate disposition
@@ -283,3 +296,30 @@ Allocate these stable test IDs in the QA catalogue; they are planned, not execut
 - Implementation / G10: **NOT AUTHORIZED**.
 
 ---
+
+
+## 14. Engineering reconciliation addendum — 2026-11-24
+
+This addendum aligns NLA-001 with CMD-049–054 Detailed Contract Review v0.1.1, the canonical command catalogue, physical schema, RLS, audit, API, lock and QA documents. It remains an engineering proposal; no PO/security/institutional/provider approval is implied.
+
+### 14.1 Canonical command boundaries
+
+- **CMD-049:** recipient-self inbox query only. Cursor is server-issued, opaque or integrity-protected, and bound to auth.uid(), normalized filters, sort order and cursor format version. Use stable (created_at, id) ordering; do not claim cross-page snapshot isolation. Server-side page maximum and exact indexes remain to be approved. No provider delivery state or unrestricted source data is returned.
+- **CMD-050:** request contains notification_id only. Remove expected_version; notifications has no version column and a monotonic set-once read_at update does not require one. The first successful transition emits one notification.read event atomically with the read change; repeated/no-op requests emit no duplicate event. Inbox page reads do not emit a general audit event. Foreign/unknown IDs have a non-enumerating result.
+- **CMD-051:** publish-only in this command set. It validates a submitted candidate policy document, computes the canonical hash server-side and publishes a new immutable version using the expected current published-version reference as the concurrency guard. CMD-051 does not create or edit persisted drafts. If draft CRUD or a separate approval workflow is required, it needs a separately approved command/schema; no hidden draft lifecycle is inferred. notification.policy.manage grants, scope and SoD remain unapproved.
+- **CMD-052:** canonical payload field is safe_payload. Outbox lease fields are lease_owner, lease_token_hash, monotonic lease_generation and lease_expires_at; the same fencing contract applies to delivery claims in CMD-053. Claim transactions commit before fan-out work. Partial retries rely on unique source-event/policy, outbox/recipient and notification/channel arbiters. Recipient eligibility timing remains an explicit PO/security decision: a policy-version pin is not itself a recipient snapshot.
+- **CMD-053:** provider I/O remains outside database transactions. Ambiguous provider acceptance is UNKNOWN, not success. Inbound provider status notifications are a distinct integration ingress, INT-NOTIF-001, not a browser command or a seventh CMD ID. The ingress must authenticate provider-specific signatures, validate freshness and provider/delivery references, deduplicate provider event IDs through an approved durable mechanism, apply only allowlisted monotonic delivery transitions and never mutate read_at or business state. Provider-specific auth/dedup details remain blocked until a provider is selected.
+- **CMD-054:** request contains notification_id, policy_version_id and step_no; remove caller-supplied evaluation_time. Capture one database-controlled UTC instant per evaluation transaction and use it for due checks. SLA start event, elapsed/business-time rules, pause/close semantics, timezone and escalation policy remain PO/security decisions.
+- **Dismissal:** dismissed_at is a reserved schema field only. No dismiss command, browser write or UX behavior is authorized until PO/UX approval.
+
+### 14.2 Durable worker lease/fencing contract
+
+Outbox and delivery workers use the same logical lease tuple: workload owner identity, server-issued opaque token (persist only its hash), monotonic generation and expiry. Every completion, failure, retry or dead-letter finalizer must prove the current owner/token/generation and unexpired lease. A reclaimed lease advances generation; a stale worker cannot commit after reclaim. Queue locks are released before recipient fan-out continuation or provider network I/O. Exact DB constraints, owner identity, EXECUTE ACL and scheduler authentication remain T-18 security blockers.
+
+### 14.3 Audit and privacy boundary
+
+notification.read is emitted once on the first set-once read transition, not on every inbox page request or duplicate acknowledgement. Routine provider attempts and callbacks stay in dedicated delivery/attempt state and privacy-safe operational telemetry; do not emit one general audit event per retry. Policy publication and escalation decisions use the canonical audit events already listed in the Audit Event Catalogue. No message body, evidence, token, provider credential, full provider response or signed URL enters general audit metadata.
+
+### 14.4 Approval and gate status
+
+The six notification tables remain a proposed subset of the 48-table physical/RLS inventory. INT-NOTIF-001 is an integration contract, not a new CMD ID or table. Physical constraints, indexes, RLS, role grants, worker identity, provider capability, retry horizons, recipient-selector semantics and T-10 retention/privacy still require approval and/or live evidence. QA TC-NOTIF-001..026 and TC-FN-SEC-025-064..069 remain PLANNED / NOT EXECUTED. G9 remains NOT READY; G10 remains NOT AUTHORIZED.
