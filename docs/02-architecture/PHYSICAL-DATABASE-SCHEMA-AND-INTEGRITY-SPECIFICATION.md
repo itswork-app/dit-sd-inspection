@@ -1,7 +1,7 @@
 # Physical Database Schema and Integrity Specification
 
 **Status:** Engineering specification draft — approval required before migrations  
-**Version:** 0.4.1  
+**Version:** 0.4.2  
 **Package:** L — Physical Data Model and Integrity  
 **Date:** 2026-11-23
 
@@ -134,7 +134,7 @@ PO-approved T-16 option B: one normalized serial per canonical `instrument_type`
 | `sync_batches` | `id`, `actor_id`, `device_id`, `batch_key`, `payload_hash`, `status`, `acknowledged_at` | Unique actor/device/batch key; replay safe; conflict records retained |
 | `notification_policy_versions` | `id`, `policy_key`, `version_no`, `scope_type`, `scope_id`, `schema_version`, `policy_document`, `policy_hash`, `status`, `effective_from`, `effective_until`, `created_by`, `published_by`, timestamps | Unique policy/scope/version; strict versioned allowlist validation; published immutable; one effective version per scope/time; DRAFT reserved for a separately approved workflow and not written by CMD-051 |
 | `notification_outbox` | `id`, `source_event_id`, `event_type`, `scope_type`, `scope_id`, `policy_version_id`, `safe_payload`, `status`, `attempt_count`, `next_attempt_at`, `lease_owner`, `lease_token_hash`, `lease_generation`, `lease_expires_at`, `last_error_code`, `created_at`, `processed_at` | Unique source-event/policy; server-issued token hash + monotonic fencing generation; short `SKIP LOCKED` claim; bounded retry/dead-letter; no provider I/O in transaction |
-| `notifications` | `id`, `outbox_id`, `recipient_user_id`, project/session/location/assignment scope, `event_type`, `priority`, `title_key`, `body_key`, `safe_payload`, `created_at`, `expires_at`, `read_at`, `dismissed_at` (reserved) | Unique `(outbox_id, recipient_user_id)`; self-only read; set-once `read_at` with no row-version token; dismissal inactive until PO/UX approval; safe minimal payload; source resource re-authorized on navigation |
+| `notifications` | `id`, `outbox_id`, `recipient_user_id`, project/session/location/assignment scope, `event_type`, `priority`, `title_key`, `body_key`, `safe_payload`, `created_at`, `expires_at`, `read_at`, `dismissed_at` (reserved) | Unique `(outbox_id, recipient_user_id)`; self-only read; set-once `read_at` with no row-version token; dismissal excluded from MVP by POQ-03; dismissed_at dormant with no command or browser mutation; safe minimal payload; source resource re-authorized on navigation |
 | `notification_deliveries` | `id`, `notification_id`, `channel`, `status`, `attempt_count`, `next_attempt_at`, `last_attempt_at`, `sent_at`, `delivered_at`, `lease_owner`, `lease_token_hash`, `lease_generation`, `lease_expires_at`, `provider_message_ref`, `last_error_code`, timestamps | Unique `(notification_id, channel)`; delivery state independent of inbox read state; lease fencing on every finalizer; provider callback transitions validated/idempotent |
 | `notification_delivery_attempts` | `id`, `delivery_id`, `attempt_no`, `idempotency_key`, `started_at`, `finished_at`, `outcome`, `provider_message_ref`, `safe_error_code`, `retryable`, `worker_correlation_id` | Unique delivery/attempt and idempotency key; append-only; sanitized provider metadata only |
 | `notification_escalation_events` | `id`, `notification_id`, `policy_version_id`, `step_no`, `event_type`, `due_at`, `evaluated_at`, `recipient_resolution_ref`, `outbox_id`, `outcome`, `reason_code` | Unique notification/policy/step/event; append-only; no business-state mutation |
@@ -317,6 +317,11 @@ The Product Owner has approved the product-semantic invariants in the Decision R
 
 The notification physical proposal uses one canonical minimized payload field, safe_payload, for outbox and inbox records. The outbox and delivery queue projections carry the same logical lease tuple: lease_owner, lease_token_hash, monotonic lease_generation and lease_expires_at. The opaque lease token is returned only to the authenticated internal worker; raw tokens are never persisted or logged. Completion, failure, retry and dead-letter transitions validate the current owner, token hash, generation and expiry.
 
-The notifications table intentionally has no row_version for CMD-050. Its read_at field is set once by a recipient-owned guarded update. dismissed_at remains reserved and is not exposed to browser writes until PO/UX approval. The provider callback ingress INT-NOTIF-001 uses the existing delivery projection and an approved durable deduplication mechanism; this addendum does not create a seventh notification table or claim live schema verification.
+The notifications table intentionally has no row_version for CMD-050. Its read_at field is set once by a recipient-owned guarded update. dismissed_at remains dormant and is not exposed or mutated because POQ-03 excludes dismiss/archive from MVP. The provider callback ingress INT-NOTIF-001 uses the existing delivery projection and an approved durable deduplication mechanism; this addendum does not create a seventh notification table or claim live schema verification.
 
 All columns, constraints, indexes, policies and functions remain proposed until Engineering/Database/Security review and separate G10 authorization.
+
+
+## POQ-01..03 schema reconciliation — 2026-11-24
+
+The Product Owner approved: (1) a durable event-time candidate-audience snapshot/checkpoint, with dispatch-time revalidation permitted only to suppress candidates and never to widen the audience; (2) versioned per-policy elapsed/business-time SLA semantics with ELAPSED_UTC as the initial-release default and quiet hours that defer delivery only; and (3) exclusion of dismiss/archive from MVP. The physical schema must still define and review the exact snapshot/checkpoint representation, policy mode fields and constraints. A dormant dismissed_at column is not an MVP capability. All remain proposed pending Engineering/Database/Security review and G10.
