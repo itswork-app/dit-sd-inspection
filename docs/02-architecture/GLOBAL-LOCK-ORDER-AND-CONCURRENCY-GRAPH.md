@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.23
+**Version:** 0.4.24
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -584,3 +584,12 @@ LOCK-MANIFEST-001 v0.4.30 §7.13 adds a command-specific candidate overlay for C
 
 CMD-031/032/033/034/037 now have partial candidate ordering proposals; CMD-035/036/038/039/040 remain blocked on transaction boundary, worker/lease, per-item event, attendance physical model or institutional authority. This does not increase the certified denominator: CMD-031–040 0/10 certified, all application commands 0/50 certified, resolver paths 0/40 certified. The effective graph remains NOT PROVEN ACYCLIC. NRL-T01..T13 and related QA remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE.
 
+
+
+## 30.4 Shared review-decision arbiter — CMD-030/031/032
+
+[REVIEW-ARBITER-001 v0.1.0](REVIEW-DECISION-ARBITER-TECHNICAL-PROPOSAL-001.md) proposes one physical terminal-decision uniqueness arbiter for CMD-030 RETURN and CMD-031 APPROVE, with the inspection aggregate as their shared logical serialization point. Preferred physical candidate is UNIQUE(review_events.inspection_revision_id) only if the table stores terminal decisions exclusively; otherwise a partial unique index requires Database approval of the exact terminal decision vocabulary. Neither DDL option is approved or deployed.
+
+CMD-032 reopen remains serialized through the same inspection aggregate but its one-active-draft arbiter is BLOCKED because the physical mutable draft-context representation is not defined. Do not infer a draft table, revision identifier or unique key.
+
+This pointer does not resolve the reviewer assignment/SoD matrix or the differing candidate parent/assignment/claim/inspection lock orders. Exact lock modes, FK/unique/trigger/helper edges, worker participation and acyclicity remain unverified. No graph edge is certified by the proposal. Resolver 0/40; application lock 0/50; global graph NOT PROVEN ACYCLIC; G9 NOT READY; G10 NOT ACTIVE.
