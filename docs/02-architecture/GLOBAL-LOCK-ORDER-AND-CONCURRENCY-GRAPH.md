@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.4
+**Version:** 0.4.5
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -69,10 +69,15 @@ This is a candidate ordering to reconcile current sources, not an approved imple
 |---:|---|---|---|
 | L00 | Idempotency arbitration | `idempotency_records`, actor + command + scope + key | Atomic claim before domain locks; same-key/different-hash rejects |
 | L10 | Shared invariant serialization | `project_capacity_settings` and other approved cross-row serialization rows | Must precede all eligibility-changing role/assignment paths for T-14 |
+| L15 | Principal/account aggregate | `app_users` | Stable user UUID order; account eligibility and target-principal state |
+| L16 | User-role grant aggregate | `user_roles` | Stable (user_id, role_id, grant_id) order |
+| L17 | User-scope grant aggregate | `user_scope_grants` | Stable (user_id, scope_type, scope_id, grant_id) order |
+| L18 | Mutable authorization catalog (conditional) | `roles`, `permissions`, `role_permissions` | Freeze during normal operations or approve a separate rank/change protocol; do not assume immutable without evidence |
 | L20 | Canonical identity arbitration | `(instrument_type, serial_normalized)` and conflict identity | All unit writers derive and arbitrate the same canonical key |
 | L30 | Project/session lifecycle parents | `projects`, `sessions` | Parent fence before child work; multiple parents in stable ID order |
 | L40 | Instrument and immutable version references | `instruments`, `instrument_versions` | Validate active/selectable status and pin immutable version |
-| L50 | Assignment and membership aggregates | `operational_assignments`, `assignment_members`, team/location membership | Deterministic ID order; revalidate eligibility after parent/instrument checks |
+| L50 | Assignment and operational grouping | `operational_assignments`, teams, locations | Deterministic UUID order; revalidate eligibility after parent/instrument checks |
+| L55 | Assignment membership | `assignment_members` | Stable (assignment_id, user_id, membership_id) order |
 | L60 | Canonical unit | `units` | Unit identity/lifecycle after canonical identity and scoped parents |
 | L70 | Association episode | `unit_project_associations` | Exact active association revalidated after lock |
 | L80 | Claim aggregate | `unit_claims` | Claim lifecycle before inspection lifecycle; unique active claim is final arbitration |
@@ -80,14 +85,9 @@ This is a candidate ordering to reconcile current sources, not an approved imple
 | L100 | Dependent mutable aggregates | evidence intents, attendance records, document jobs, print batches, notification policy/inbox/delivery projections | Exact per-command sub-order and source-version binding; no external I/O while held |
 | L110 | Append-only facts | revisions, review decisions, domain/audit events, delivery attempts, escalation/access events | Insert after mutable-state validation; uniqueness constraints remain final arbitration |
 
-### 4.1 Unclassified identity and authorization resources — OPEN
+### 4.1 Identity and authorization rank proposal — APPROVAL OPEN
 
-The candidate L00–L110 table does not currently assign a resource class to mutable identity/authorization aggregates:
-- app_users (account request, approval/rejection, account eligibility);
-- user_roles (role grant/revocation and Inspector eligibility);
-- user_scope_grants (scope grant/revocation).
-
-These are not append-only facts and must not be folded into L50 assignment/membership without an explicit Engineering/Security decision. CMD-001–007 therefore remain unranked at the domain-resource layer even where L00, L10 or L110 are known. LPR-11 tracks the missing class/order decision. No rank is introduced by this note.
+The refined candidate table now proposes L15 for app_users, L16 for user_roles, L17 for user_scope_grants and conditional L18 for mutable roles/permissions/role_permissions. These rows are mutable authorization-bearing aggregates, not append-only facts and not L50 assignment membership. LPR-11 remains OPEN because Engineering/Security have not approved the ranks, actor/target lock strategy, grantor-authority freshness or the relation to L10/L20/L30/L50/L55. No rank is approved by this proposal.
 
 Unresolved rank questions:
 
@@ -335,3 +335,8 @@ The source evidence establishes a design gap, not the deployed lock graph. No Po
 ## 17. Refined candidate order and parent-fence review proposal — 2026-11-24
 
 [TECH-RESOLUTION-LPR-001](ENGINEERING-SECURITY-TECHNICAL-RESOLUTION-PACKAGE-LPR-001-011.md) §3–§4 proposes additional L15 app_users, L16 user_roles, L17 user_scope_grants and conditional L18 authorization-catalog ranks. It also proposes project-before-session ordering and compatible child FOR SHARE / parent mutation FOR NO KEY UPDATE modes, subject to Engineering/Database/Security approval and deployed PostgreSQL verification. The graph remains a proposal: no effective function/trigger/FK/index graph or acyclic proof exists. LPR-01/LPR-07/LPR-11 remain OPEN; no rank certification changes.
+
+
+## 17.1 Rank-table synchronization — 2026-11-24
+
+The candidate rank table now includes L15–L18 and L55 as proposed in TECH-RESOLUTION-LPR-001 v0.1.0. The table is a proposal only. LPR-01/LPR-11 remain OPEN; no acyclic proof or command certification is claimed.
