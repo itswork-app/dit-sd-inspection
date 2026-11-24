@@ -1,7 +1,7 @@
 # Notification Event Candidate Triage — Product Workflow Audit
 
 **Document ID:** NLA-EVENT-TRIAGE-001  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Status:** STATIC AUDIT — NO EVENT ENABLED; PRODUCT OWNER ALLOWLIST DECISION REQUIRED  
 **Date:** 2026-11-24  
 **Branch:** `docs/notification-resolver-lock-closure`  
@@ -90,9 +90,9 @@ Recipient language in this document is conceptual only (e.g. “requesting user�
 | CMD-039 | `attendance.uploaded/replaced` | U | Upload/replacement are different states; Attendance Verifier authority remains open. | Split exact tokens; no verifier notification until role/authority approved |
 | CMD-040 | `attendance.verified` | O | Verification is a business record; PRD does not specify who should receive a notification. | No recipient implied; Attendance Verifier authority and sign-off rules remain open |
 
-## 5. Provisional product-review shortlist — not an allowlist
+## 5. First-batch PO discussion shortlist — not an allowlist
 
-The following are the only source declarations currently worth taking to the Product Owner for an explicit “does a human need to be notified?” decision, based on the PRD's named workflows:
+The following is the first PO review batch, prioritized for direct operational impact on the PRD's inspection workflow. It is not exhaustive. Other rows classified P remain secondary candidates and must not be silently treated as rejected or approved; for example, account.requested (CMD-001) is a secondary acknowledgement candidate but is not included in this first batch.
 
 | Priority | Exact event candidate / unresolved source | Why PO review is justified | Required PO decision |
 |---|---|---|---|
@@ -148,7 +148,7 @@ If any required field is unknown, the registry row remains `UNRESOLVED — NOT E
 4. CMD-041–044 read-side activity is not a notification source by inference. CMD-045–048 require separate control-plane review. CMD-049–054 remain excluded from ordinary domain matching by default.
 5. Attendance Verifier authority remains open; attendance notifications cannot target that role.
 6. The IFP instrument specification remains draft and the ten photo slots' mandatory status is open. Standing Bracket's official 19-row checklist is PO-confirmed, but evidence/photo requirements remain open. These content gaps do not block documenting event triage, but they prohibit notification rules that assume checklist/evidence completion semantics.
-7. Next action: Product Owner reviews only the shortlist in §5 and explicitly approves/rejects each notification intent. After that, Engineering/Security/Database can complete exact registry rows for approved events. Do not expand to a full enabled registry before the PO decision.
+7. Next action: Product Owner reviews the first-batch shortlist in §5 and explicitly approves/rejects each notification intent. Secondary P candidates (including account.requested) remain deferred for a later PO decision. After that, Engineering/Security/Database can complete exact registry rows for approved events. Do not expand to a full enabled registry before the PO decision.
 
 ## 9. Current status and gate boundary
 
