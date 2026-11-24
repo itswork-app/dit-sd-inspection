@@ -1,11 +1,11 @@
 # CERT-001 — Technical Certification Assessment
 
 **Document ID:** CERT-001  
-**Version:** 0.1.1  
+**Version:** 0.1.2  
 **Assessment date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
-**Assessment baseline:** `3dc6d30e43651b343c8b0b0cd1f28ea516374384`  
+**Assessment baseline:** `133af5c000b7d00ec34afddcfccf8fcf4d6d91b0`  
 **Pull request:** [PR #3 — docs: final governance and command-contract reconciliation](https://github.com/itswork-app/dit-sd-inspection/pull/3)  
 **Overall result:** **NOT CERTIFIED**  
 **G9:** NOT READY  
@@ -168,7 +168,7 @@ This report is an internal assessment artifact and does not represent external a
 
 ## 10. Current-head reassessment addendum — 2026-11-24
 
-This addendum supersedes the assessment baseline and repository-state observations in §§1, 6 and 8 only where they refer to the latest inspected branch state. The current PR #3 head is `3dc6d30e43651b343c8b0b0cd1f28ea516374384` on `docs/audit-lock-and-identity-reconciliation`; PR #3 remains Draft/Open. The current PR review query returned zero review submissions; the combined commit-status query returned no status entries; the PR-triggered workflow-run query returned no runs. These are endpoint observations, not proof that organization-wide checks or policies do not exist.
+This addendum supersedes the assessment baseline and repository-state observations in §§1, 6 and 8 only where they refer to the latest inspected branch state. The current PR #3 head at reassessment is `133af5c000b7d00ec34afddcfccf8fcf4d6d91b0` on `docs/audit-lock-and-identity-reconciliation`; PR #3 remains Draft/Open. The current PR review query returned zero review submissions; the combined commit-status query returned no status entries; the PR-triggered workflow-run query returned no runs. These are endpoint observations, not proof that organization-wide checks or policies do not exist.
 
 The lock inventory is now explicitly reconciled as 54 traceability IDs: 50 application commands plus 4 external control-plane IDs (CMD-045–048). All 50 application commands have candidate execution/transaction boundaries documented; full normalized-manifest review and independent technical approval remain open. Application lock certification is **0/50**. LPR-01 and LPR-07–LPR-09/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. The effective PostgreSQL lock graph is not certified acyclic.
 
