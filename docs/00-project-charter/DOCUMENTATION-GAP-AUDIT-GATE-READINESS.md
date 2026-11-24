@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.4.0  
+**Version:** 1.5.0  
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/t17-instrument-governance-t18-command-boundary`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -51,6 +51,7 @@ No application code, migrations, live Supabase database, deployed RLS/grants, Ve
 | DGA-B15 | CI/repository governance | Required CI jobs, branch protection, review requirements, secrets scanning, migration checks and actual workflow run were not verified | Live GitHub ruleset/workflow evidence and successful required-check run | Repository administrator | NOT VERIFIED |
 | DGA-B16 | Scope/authority document freshness | Package T status was reconciled; Package S now has a current 9.15 addendum superseding historical 9.14 counts; RTM/RAID and remaining historical audit status still require crosswalk review | Controlled status addenda and reconciled decision/requirement/RAID crosswalk | Document owner + PO | PARTIAL; REMAINING CROSSWALK OPEN |\n| DGA-B17 | Concurrency/version token contract | `expected_version`, `expected_row_version`, business version, revision, hash, print sequence and worker lease semantics are not consistently mapped to physical aggregates; CMD-005/007/035/040/050 have field/target mismatches | PO/Security decisions on [Concurrency and Version Token Reconciliation](../02-architecture/CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md), followed by synchronized schema/catalogue/review/QA updates | PO + engineering + security; institution for attendance authority | OPEN — PROPOSAL DOCUMENTED, DECISIONS PENDING |
 | DGA-B18 | Global lock order and concurrency graph | Catalogue and detailed reviews disagree on CMD-026 and unit/association ordering; instrument/assignment, capacity eligibility, closure fencing, claim/inspection and worker lease boundaries lack a complete reviewed acyclic graph | Decisions LGD-01–10 in [LOCK-GRAPH-001](../02-architecture/GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md), normalized lock manifests for all commands/workers, then adversarial concurrency/deadlock evidence | Engineering + Security + PO; Operations/Institution where applicable | OPEN — PROPOSAL DOCUMENTED, DECISIONS PENDING |
+| DGA-B19 | Command-level lock manifest coverage | 54 command IDs have source-stated lock/read/write notes but no complete, normalized lock manifest; lock targets, deterministic ordering, competing paths, implicit constraints, external boundaries and certification are incomplete | Review [LOCK-MANIFEST-001](../02-architecture/COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md), resolve LM-01–LM-10, update canonical contracts only after approval, then execute adversarial concurrency evidence | Engineering + Security + PO; Operations/Institution where applicable | OPEN — 54/54 INVENTORIED, 0/54 LOCK-COMPLETE |
 
 ## 4. High-risk design quality gaps
 
@@ -189,3 +190,8 @@ The proposal maps:
 [LOCK-GRAPH-001 — Global Lock-Order and Concurrency Graph Reconciliation](../02-architecture/GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md) v0.1.0 records the cross-command lock-order disagreements and proposes a candidate resource hierarchy, command/race matrix, potential deadlock inversions, lock-manifest requirements and 30 planned concurrency tests.
 
 **Disposition:** DGA-B18 OPEN. The proposal does not prove an acyclic graph, does not resolve CMD-026, does not alter canonical command contracts and does not authorize implementation. G3/G4/G5/G7 remain NOT READY/BLOCKED as recorded above; G9 remains NOT READY and G10 remains NOT AUTHORIZED. No tests or runtime lock inspection were executed.
+
+
+## Command-level lock manifest update — 2026-11-24
+
+[LOCK-MANIFEST-001](../02-architecture/COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.1.0 inventories all 54 command IDs, with source-stated resource/lock sequence, shared invariant, competing command paths, stated constraints and unresolved decisions. Static inventory coverage is 54/54; lock-complete certification is 0/54. DGA-B19 remains OPEN. This does not imply any command is approved, executable or deadlock-free. G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED; no tests or runtime inspection were performed.
