@@ -182,7 +182,7 @@ Errors must not disclose whether an unauthorized resource exists. Use a consiste
 
 ## 12. Open approvals and implementation gates
 
-1. Expand every command-family row into a complete command contract: request/response schema, actor/permission/scope predicate, state transition, lock set/order, idempotency key/hash/retention, domain and audit event, typed outcomes, retry semantics and positive/negative/concurrency test IDs.
+1. Expand every command-family row into a complete command contract: request/response schema, actor/permission/scope predicate, state transition, lock set/order, idempotency key/hash/retention, domain and audit event, typed outcomes, retry semantics and positive/negative/concurrency test IDs. Use the proposed Canonical Permission Registry and Command Authorization Matrix as the single vocabulary baseline; it remains subject to PO/security approval.
 2. Reconcile the command inventory against T-18: instrument deactivation, evidence access/export, project closure, audit read/export and bounded batch-print orchestration must have explicit authority and per-command contracts.
 3. Complete function-by-function review of any SECURITY DEFINER exception; pin search_path and minimize owner/grants.
 4. Complete the table-by-table RLS and direct-DML denial catalogue and exact command EXECUTE grant matrix.
@@ -246,3 +246,8 @@ All unit lifecycle commands use the T-18 Vercel route + caller-JWT PostgreSQL fu
 `claim-unit` locks the canonical unit row before association/assignment checks, verifies the association is ACTIVE and belongs to the same project as the assignment, verifies assignment instrument equals unit instrument and caller is an effective assignment member, then checks the global active claim. A partial unique index on active `unit_claims.unit_id` is the final race guard across projects. The claim row stores association ID and project ID. `save-draft`, submit, review, evidence, document and export commands derive scope through the inspection's immutable association/project binding and re-check effective session/assignment/permission. The unit ID alone never grants scope.
 
 Each command requires explicit request/response schema, permission, actor-derived audit envelope, idempotency scope, lock order, typed outcomes and positive/negative/concurrency cases. This is a command-contract design, not implementation.
+
+
+## 15. Canonical permission registry dependency
+
+The proposed single permission vocabulary, legacy-code disposition, command-to-permission/scope/RLS/audit/test matrix and role-class constraints are maintained in ../02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md. Do not add permission strings ad hoc in route or SQL design. Until PO/security approval and exact grant/test reconciliation, the registry is a design proposal only; no seed, EXECUTE grant, RLS mutation policy or implementation is authorized.
