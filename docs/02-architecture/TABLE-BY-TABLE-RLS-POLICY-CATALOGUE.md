@@ -194,7 +194,7 @@ For each test, record actor fixture, grants, resource fixture, request, expected
 1. Final permission catalogue and which roles may read audit data.
 2. Whether Super Admin global operational read is unrestricted or permission-segmented.
 3. Exact RLS helper implementation and reviewed SECURITY DEFINER exceptions.
-4. Direct draft-write strategy: trusted command only versus narrowly scoped client writes protected by RLS.
+4. **Superseded by T-18 PO APPROVED option A (2026-11-24):** browser-facing direct DML is denied on protected business/governance tables, including draft answer/response tables. Draft persistence uses the trusted Vercel route → caller-JWT PostgreSQL command function. The remaining work is the exact table grants, command EXECUTE grants and executable verification.
 5. Evidence retention/deletion and legal-hold policy.
 6. Audit event policy INS-016 approval, access, retention, and export.
 7. Institutional data classification and privacy/legal basis.
@@ -220,3 +220,10 @@ Before production:
 ## T-14 — Capacity predicate and authorization consistency (PO-approved 2026-11-24)
 
 RLS and privileged capacity commands must consistently recognize a qualifying Inspector account as a distinct enabled login account with an active Inspector role grant and at least one currently effective operational Inspector assignment within the governed project/session scope. Do not count pending, rejected, suspended, disabled or expired-role accounts; do not count one account more than once for multiple roles/assignments. The global combined cap remains 1–100 (default 50) and must be enforced atomically by the privileged transaction, not by client-side/RLS count-then-write logic. No executable policy is implied by this design note.
+
+
+## T-18 — Direct-DML and command grant decision reconciliation
+
+The former open question about direct draft writes is CLOSED by T-18 option A. No browser-facing anon/authenticated role may INSERT, UPDATE or DELETE protected business/governance tables, including draft response tables, membership, assignments, instrument configuration/publication, evidence metadata, revisions, claims, audit or idempotency records. Draft writes use the trusted command boundary; ordinary reads remain independently scoped by RLS.
+
+The catalogue still requires a table-by-table privilege review, exact command-function EXECUTE grants, review of views/triggers/functions and any SECURITY DEFINER exceptions, plus positive/negative authorization tests. This document remains a policy design artifact; no executable policies or grants are deployed or verified.
