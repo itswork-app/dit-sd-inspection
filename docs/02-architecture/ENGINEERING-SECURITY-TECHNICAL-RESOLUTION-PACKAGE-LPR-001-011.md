@@ -1,10 +1,10 @@
 # Engineering & Security Technical Resolution Package — LPR-01 and LPR-07–LPR-11
 
 **Document ID:** TECH-RESOLUTION-LPR-001  
-**Version:** 0.1.10  
+**Version:** 0.1.11  
 **Status:** TECHNICAL RECOMMENDATION FOR ENGINEERING / DATABASE / SECURITY REVIEW — NOT APPROVED FOR IMPLEMENTATION  
 **Date:** 2026-11-24  
-**Repository / branch:** `itswork-app/dit-sd-inspection` / `docs/audit-lock-and-identity-reconciliation`  
+**Repository / branch:** `itswork-app/dit-sd-inspection` / `docs/notification-resolver-lock-closure`  
 **Authority:** AGENTS.md v1.2.2; MIB-001 v1.0.11; IRG-001 v1.0.4; DGA-001 v1.11.45; SSOT-AUDIT-001 v0.1.5; Decision Register; T-07, T-14, T-16, T-17, T-18; LOCK-PROTOCOL-DECISION-RESOLUTION-001; LOCK-GRAPH-001; LOCK-MANIFEST-001  
 **Scope:** LPR-01, LPR-07, LPR-08, LPR-09, LPR-10, LPR-11; cross-command project/session fences; CMD-001–054 and asynchronous finalizers  
 **Gate:** G3/G4/G5/G7/G9 NOT READY; G10 NOT ACTIVE
@@ -376,3 +376,50 @@ Current linked document versions are DGA-001 v1.11.40, LOCK-MANIFEST-001 v0.4.25
 ## 17. Normalized register inventory verification — 2026-11-24
 
 The new LOCK-NORMALIZATION-001 v0.1.0 contains exactly 50 unique in-scope application command rows: CMD-001–044 and CMD-049–054. CMD-045–048 are excluded external control-plane IDs. This verifies row inventory and traceability only. It does not close LPR-09: exact physical objects, PostgreSQL implicit edges, privileges, complete competing writers, and named technical approvals remain outstanding. LPR-10 remains NOT EXECUTED; certified lock-complete remains 0/50; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 18. CMD-031/032 inspection approval and reopen — targeted technical closure matrix (2026-11-24)
+
+This section translates the current partial static reconciliation of NREG-010/011 into accountable closure evidence. It does not approve a product rule, physical schema, lock mode, permission grant or implementation.
+
+### 18.1 CMD-031 — approval of one immutable revision
+
+| Closure item | Required authoritative evidence | Accountable review | Current disposition |
+|---|---|---|---|
+| Exact revision binding | Physical FK/ownership proof for (inspection, revision); submitted/current state predicate; expected_revision_no and aggregate CAS behavior; deployed producer transaction | Engineering + Database | OPEN |
+| Reviewer assignment | Approved persisted assignment relation and exact project/session/location/assignment scope; effective interval and revoke/expiry behavior; no generic-role/title inference | PO for business eligibility; Engineering + Database + Security for enforcement | NOT ADMITTED |
+| Reviewer SoD | Exact author identity comparison, assignment authority and negative tests; no client-supplied actor/reviewer/scope | Security + PO/institution if qualification rules apply | OPEN |
+| Terminal decision arbiter | Exact review-round model and named unique constraint/index or equivalent final arbiter; approve/return/two-approve serialization; immutable revision | Engineering + Database + Security | OPEN |
+| Atomic source evidence | Inspection transition + review decision + inspection event + audit + idempotency + canonical event/outbox + immutable candidate snapshot commit/rollback evidence | Engineering + Database + Security | OPEN |
+| Lock and writer completeness | Normalized L00/L05/L10/principal/grant/parent/assignment/association/claim/inspection/review order; all FK/index/trigger/helper edges; every command and non-command writer | Engineering + Database + Security | OPEN |
+
+### 18.2 CMD-032 — authorized reopen and mutable draft context
+
+| Closure item | Required authoritative evidence | Accountable review | Current disposition |
+|---|---|---|---|
+| Reopen authority | Explicit permission code, eligible role/grantor matrix, project/inspection scope, active interval, revoke freshness and SoD; generic Super Admin label is insufficient | PO for product authority; Security for grant/SoD; institution where authority is reserved | OPEN |
+| Reopen state semantics | Approved transition from APPROVED, mandatory reason policy, exact next-action owner and operational handoff; do not infer owner from prior author/reviewer/reopen actor | PO + operational owner; institution if reserved | OPEN |
+| Draft persistence | Approved mutable draft representation, state vocabulary, pointer/version rules, stable identity and one-active-draft uniqueness; no fabricated revision ID and no mutation of approved revision | PO for workflow semantics; Engineering + Database for physical model | NOT ADMITTED |
+| Active-work blockers | Exact policy for active claim, association, assignment membership, reinspection and in-flight evidence/document finalizers; deterministic block/allow behavior with no orphaned work | PO + operational owner; Engineering/Database/Security for enforcement | OPEN |
+| Historical artifact preservation | Physical immutability and reference proof for approved revision, review events, finalized evidence, generated documents and print events | Engineering + Database + Security | OPEN |
+| Atomic source evidence | Reopen state/version + inspection event + audit + idempotency + canonical event/outbox + immutable candidate snapshot; failure rollback and replay evidence | Engineering + Database + Security | OPEN |
+| Lock and writer completeness | One shared inspection serialization point with CMD-028–031, claim/association and CMD-033/034/036 finalizers; all implicit edges and competing writers | Engineering + Database + Security | OPEN |
+
+### 18.3 Shared notification and gate requirements
+
+1. NREG-010 `inspection.approved` and NREG-011 `inspection.reopened` remain `PARTIAL_STATIC_REVIEW` only. Canonical event contract, recipient mapping, selector and dispatch profile remain `UNRESOLVED`; publication remains `NOT_ENABLED`.
+2. The exact participant mapping must be approved separately for each event. Approval actor, Reviewer, revision author, responsible Inspector and reopen actor are not interchangeable by inference.
+3. POQ-04 remains binding: immutable candidates are evaluated against serialized pre-mutation state at one captured `audience_evaluated_at`; source mutation, canonical event and snapshot commit atomically; dispatch can suppress but never widen; retry reuses the same candidate checkpoint.
+4. Candidate CMD-031/032 lock sequences in LOCK-MANIFEST-001 §7.13 and LOCK-GRAPH-001 §30 are proposals only. LPR-01, LPR-07, LPR-09 and LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED.
+5. Current proof counts remain resolver 0/40 and application lock 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
+
+### 18.4 Required closure order
+
+1. PO/operational owner resolves only product-semantic questions: reopen authority boundary, next-action ownership, draft workflow state, and active-work disposition.
+2. Security approves reviewer/reopen grant and SoD matrix, scope semantics and trust boundaries.
+3. Engineering/Database approve physical revision/review/draft identities, constraints, CAS, transaction boundaries and effective lock graph.
+4. Engineering/Database/Security reconcile every source and non-command writer, including FK/index/trigger/helper edges and L05 participation.
+5. QA reviews deterministic negative, replay, rollback and opposing-transaction tests; execution remains prohibited until G10 activation and authorized isolated environment.
+6. Reconcile NLA registry, physical schema, command catalogue, lock manifest, global graph, RTM, RAID, DGA and QA from the approved evidence. Do not mark any status closed merely because this checklist exists.
+
+**Disposition:** This matrix makes the missing decisions and evidence reviewable; it does not close any LPR, DGA blocker, G9 prerequisite or technical approval.
