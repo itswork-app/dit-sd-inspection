@@ -23,15 +23,15 @@ Root `AGENTS.md` v1.2.0 was re-read from the target branch at the start of this 
 | Source | Reviewed snapshot version / identity | Use in this reconciliation |
 |---|---|---|
 | MIB-001 | v1.0.1 | Authority, gates and documentation-phase boundary |
-| DGA-001 | v1.9.5 | Active evidence-backed gap queue and gate disposition |
+| DGA-001 | v1.9.10 | Active evidence-backed gap queue and gate disposition |
 | IRG-001 | v1.0.1 | Phase and authorization governance |
 | Decision Register | Current branch revision | Approved PO decisions and institutional dependencies |
 | PostgreSQL Command Contract Catalogue | v0.3.1 | Canonical logical CMD-001–054 operation inventory and proposed contracts |
 | Physical Database Schema and Integrity Specification | v0.3.0 | Proposed entities, constraints, indexes and transaction invariants |
-| LOCK-GRAPH-001 | v0.3.4 | Candidate resource ranks, cross-command conflicts and planned race scenarios |
+| LOCK-GRAPH-001 | v0.3.9 | Candidate resource ranks, cross-command conflicts and planned race scenarios |
 | CONCURRENCY-001 | v0.1.2 | Aggregate token, idempotency and worker-fencing mismatches |
-| LOCK-PROTOCOL-DECISION-RESOLUTION-001 | v0.2.1 | LPR decision state and static reconciliation checkpoint |
-| Detailed command reviews | Seven current command-range documents | Per-command source-stated operations and dependencies |
+| LOCK-PROTOCOL-DECISION-RESOLUTION-001 | v0.2.3 | LPR decision state and static reconciliation checkpoint |
+| Detailed command reviews | Seven current command-range documents; CMD-001–010 review v0.2.0 at snapshot time | Per-command source-stated operations and dependencies |
 
 This replaces the stale historical snapshot labels in the original v0.3.2 review method (including DGA v1.4.0, catalogue/physical schema v0.2.0 and lock graph v0.1.0). Version refresh is a traceability correction only; it does not imply those sources or any command lock manifest are approved.
 
