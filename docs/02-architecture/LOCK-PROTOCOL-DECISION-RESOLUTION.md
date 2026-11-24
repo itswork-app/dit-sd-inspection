@@ -1,12 +1,12 @@
 # Lock Protocol Decision Resolution — LPR-01–LPR-11
 
 **Document ID:** LOCK-PROTOCOL-DECISION-RESOLUTION-001  
-**Version:** 0.3.8  
+**Version:** 0.3.9  
 **Status:** PO product decisions LPR-02–LPR-06 APPROVED; technical lock protocol remains OPEN / NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** Candidate global lock protocol for CMD-001–054 and asynchronous finalizers  
 **Parent:** LOCK-GRAPH-001; LOCK-MANIFEST-001  
-**Gate:** G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED
+**Gate:** G3/G4/G5/G7/G9 NOT READY; G10 NOT ACTIVE
 
 ## 1. Executive recommendation
 
@@ -328,3 +328,8 @@ CMD-010 takes the project `FOR NO KEY UPDATE` candidate fence before evaluating 
 | Closure blocker graph | Evaluate after project fence | PO/institution define blocker classes, Operations define pending-work policy, Engineering maps physical predicates |
 
 CMD-001–010 are candidate-normalized at documentation level only. LPR-01 and LPR-07–LPR-11 remain OPEN; LPR-10 NOT EXECUTED; 0/54 commands are certified lock-complete.
+
+
+## Conditional Product Owner authorization status synchronization — 2026-11-24
+
+The Product Owner's explicit conditional implementation authorization is recorded in the canonical Decision Register. It permits transition toward implementation from zero using the SSOT baseline, subject to G9 closure and a separate G10 activation record. **Current status: G9 NOT READY; G10 NOT ACTIVE.** This status synchronization does not approve this technical proposal, any lock mode, permission, function ACL, migration or runtime behavior. Technical and institutional approval boundaries stated in this document remain unchanged.
