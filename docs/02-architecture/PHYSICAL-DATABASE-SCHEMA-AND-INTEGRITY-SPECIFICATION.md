@@ -8,7 +8,7 @@
 
 ## Schema/RLS reconciliation reference
 
-The exact 41-table physical inventory has been reconciled by name against the Package M RLS catalogue in [Physical Schema ↔ RLS ↔ Command Reconciliation](PHYSICAL-SCHEMA-RLS-COMMAND-RECONCILIATION.md). The two inventories have exact 41/41 parity. The logical ERD additionally names `print_batches` and `notification_events`, which are not physical tables or RLS entries; their disposition is open. This reconciliation does not establish live schema existence, deployed RLS or grants.
+The proposed physical schema and RLS catalogues are reconciled at 48/48 table names: the original 41 plus `print_batches` and six explicit notification lifecycle tables. The ambiguous ERD-only `notification_events` placeholder is removed. This is a documentation design inventory only; it does not establish live schema existence, deployed RLS or grants.
 
 ## 1. Purpose and implementation boundary
 
@@ -125,12 +125,19 @@ PO-approved T-16 option B: one normalized serial per instrument type across all 
 |---|---|---|
 | `evidence_assets` | `id`, `inspection_id`, `inspection_revision_id`, `slot_definition_id`, `object_key`, `sha256`, `byte_size`, `mime_type`, `upload_status`, `uploaded_by` | Unique object key; checksum format; nonnegative size; slot belongs to exact instrument version; immutable finalized object identity |
 | `documents` | `id`, `project_id`, `inspection_revision_id`, `document_type`, `template_version`, `source_hash`, `output_hash`, `object_key`, `status` | Unique generation key per source revision/template/type where appropriate; immutable generated artifact |
-| `print_events` | `id`, `document_id`, `actor_id`, `sequence_no`, `client_print_signal`, `created_at` | Unique `(document_id, sequence_no)`; append-only; signal does not claim physical printer confirmation |
+| `print_batches` | `id`, `actor_id`, `project_id`, `session_id`, `location_id`, `requested_count`, `status`, `request_hash`, `retry_of_batch_id`, `created_at`, `completed_at` | Positive bounded count; unique actor/idempotency scope; batch status reconciled from per-document outcomes; no claim of physical printer confirmation |
+| `print_events` | `id`, `batch_id`, `document_id`, `actor_id`, `sequence_no`, `attempt_no`, `outcome`, `failure_code`, `client_print_signal`, `idempotency_key`, `created_at` | Unique `(document_id, sequence_no)`; append-only; batch reference nullable for individual print; outcome required; failed-only retry appends new attempt; signal does not claim physical printer confirmation |
 | `attendance_records` | `id`, `project_id`, `session_id`, `status` | One logical attendance record per defined session/scope |
 | `attendance_documents` | `id`, `attendance_record_id`, `object_key`, `sha256`, `uploaded_by`, `status` | Append-only replacement versions; replacement reason required |
 | `audit_events` | `id`, `actor_id`, `action`, `target_type`, `target_id`, `scope`, `correlation_id`, `created_at`, `metadata` | Append-only at DB privilege level; indexes by actor/time, target/time, correlation ID |
 | `idempotency_records` | `id`, `actor_id`, `command_type`, `scope_key`, `idempotency_key`, `request_hash`, `result_reference`, `status`, `expires_at` | Unique `(actor_id, command_type, scope_key, idempotency_key)`; same key/different hash rejected; retention > maximum offline retry window |
 | `sync_batches` | `id`, `actor_id`, `device_id`, `batch_key`, `payload_hash`, `status`, `acknowledged_at` | Unique actor/device/batch key; replay safe; conflict records retained |
+| `notification_policy_versions` | `id`, `policy_key`, `version_no`, `scope_type`, `scope_id`, `schema_version`, `policy_document`, `policy_hash`, `status`, `effective_from`, `effective_until`, `created_by`, `published_by`, timestamps | Unique policy/scope/version; strict versioned allowlist validation; published immutable; one effective version per scope/time |
+| `notification_outbox` | `id`, `source_event_id`, `event_type`, `scope_type`, `scope_id`, `policy_version_id`, `safe_payload`, `status`, `attempt_count`, `next_attempt_at`, lease fields, timestamps | Unique source-event/policy; short lease; `SKIP LOCKED` claim; bounded retry/dead-letter; no provider I/O in transaction |
+| `notifications` | `id`, `outbox_id`, `recipient_user_id`, project/session/location/assignment scope, `event_type`, `priority`, `title_key`, `body_key`, `safe_payload`, `created_at`, `expires_at`, `read_at`, `dismissed_at` | Unique `(outbox_id, recipient_user_id)`; self-only read/dismiss; safe minimal payload; source resource re-authorized on navigation |
+| `notification_deliveries` | `id`, `notification_id`, `channel`, `status`, `attempt_count`, `next_attempt_at`, `last_attempt_at`, `sent_at`, `delivered_at`, `provider_message_ref`, `last_error_code`, timestamps | Unique `(notification_id, channel)`; delivery state independent of inbox read state; provider callback transitions validated/idempotent |
+| `notification_delivery_attempts` | `id`, `delivery_id`, `attempt_no`, `idempotency_key`, `started_at`, `finished_at`, `outcome`, `provider_message_ref`, `safe_error_code`, `retryable`, `worker_correlation_id` | Unique delivery/attempt and idempotency key; append-only; sanitized provider metadata only |
+| `notification_escalation_events` | `id`, `notification_id`, `policy_version_id`, `step_no`, `event_type`, `due_at`, `evaluated_at`, `recipient_resolution_ref`, `outbox_id`, `outcome`, `reason_code` | Unique notification/policy/step/event; append-only; no business-state mutation |
 
 T-15 / INS-016 audit event scope and append-only/atomicity direction are PO-approved. Institutional classification, retention, legal hold, disposition, network metadata and final audit-reader/export authority remain subject to external approval under T-10. The table design above is a proposed implementation structure, not an implemented schema.
 
@@ -276,3 +283,11 @@ The canonical `units` table is project-independent. Its candidate key is `(instr
 ## PostgreSQL function privilege compatibility gate
 
 See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md). The T-18 design requires no direct browser DML while command functions default to INVOKER. Under the same authenticated database role these requirements conflict for protected writes unless an independently approved execution boundary exists. This must be resolved before defining function owners, grants or migrations; no broad table DML is permitted as a shortcut.
+
+## Notification and print persistence design addendum — NLA-001 / T-13
+
+The six notification tables above are proposed by [Notification Lifecycle and Delivery Architecture](NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md). `notification_events` is not a physical entity and must not be added. Source mutation + domain event + audit + outbox intent are atomic; fan-out and provider delivery are asynchronous. Delivery attempts and escalation history are append-only. Read state is stored only on recipient-owned `notifications` rows.
+
+T-13 requires durable batch identity and per-document outcomes. `print_batches` stores batch lifecycle and request identity; `print_events` stores every per-document attempt/outcome and optional batch reference. Batch status/counts are reconciled from latest per-document outcomes. Retry is failed-only and appends attempts; it never overwrites prior outcomes or claims physical printer success.
+
+All constraints, exact composite FKs, partial indexes, enum/check definitions and transaction/locking details remain subject to technical review before any migration. T-10 retention/disposition remains institutionally blocked.
