@@ -1,7 +1,7 @@
 # Lock Protocol Decision Resolution — LPR-01–LPR-11
 
 **Document ID:** LOCK-PROTOCOL-DECISION-RESOLUTION-001  
-**Version:** 0.3.3  
+**Version:** 0.3.4  
 **Status:** PO product decisions LPR-02–LPR-06 APPROVED; technical lock protocol remains OPEN / NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** Candidate global lock protocol for CMD-001–054 and asynchronous finalizers  
@@ -32,10 +32,15 @@ Use the following total order. A command acquires only the classes it needs, in 
 |---:|---|---|---|
 | L00 | Idempotency arbitration | actor + command + scope + key | Claim or resolve the idempotency identity before domain locks; same-key/different-hash rejects |
 | L10 | Shared invariant serialization | T-14 capacity control row | Every operation that can change the qualifying Inspector population or capacity uses the same serialization point first |
+| L15 | Principal/account aggregate | `app_users` | Stable user UUID order; account eligibility and target-principal state |
+| L16 | User-role grant aggregate | `user_roles` | Stable (user_id, role_id, grant_id) order; role validity and Inspector eligibility |
+| L17 | User-scope grant aggregate | `user_scope_grants` | Stable (user_id, scope_type, scope_id, grant_id) order |
+| L18 | Mutable authorization catalog (conditional) | `roles`, `permissions`, `role_permissions` | Freeze during normal operations or approve a separate rank/change protocol; do not assume immutable without evidence |
 | L20 | Canonical identity arbitration | normalized serial/instrument identity and conflict key | All unit identity writers derive the same canonical key and acquire it before project/unit rows |
 | L30 | Project/session lifecycle parents | project, session | Parent lifecycle fence precedes child creation, mutation and finalization; multiple parents sorted by stable ID |
 | L40 | Instrument and immutable version references | instrument, instrument_version | Validate active/selectable status and pin immutable version; do not mutate historical versions |
-| L50 | Assignment and membership aggregates | operational assignment, assignment member, team/location membership | Deterministic ID order; assignment eligibility revalidated after parent and instrument checks |
+| L50 | Assignment and operational grouping | operational assignment, team, location | Deterministic UUID order; assignment eligibility revalidated after parent and instrument checks |
+| L55 | Assignment membership | assignment_members | Stable (assignment_id, user_id, membership_id) order |
 | L60 | Canonical unit | unit identity/lifecycle row | Acquire after identity arbitration and scoped parents |
 | L70 | Association episode | unit-project association | One active episode invariant; exact association is revalidated after lock |
 | L80 | Claim aggregate | unit claim | Claim lifecycle before inspection lifecycle; unique active claim is final database arbitration |
@@ -252,9 +257,9 @@ A row-by-row review of CMD-001–007 found mutable or authorization-bearing reso
 - `user_roles`: grant/revoke lifecycle and Inspector eligibility (CMD-004/005).
 - `user_scope_grants`: scope grant/revoke lifecycle (CMD-006/007).
 
-These resources must not be silently mapped to L50 assignment/membership, L30 project/session, or L110 append-only facts. L110 applies only to append-only decision/audit facts, not mutable account or grant state. The exact lock class and ordering are not decided in this document.
+These resources must not be silently mapped to L50 assignment/membership, L30 project/session, or L110 append-only facts. L110 applies only to append-only decision/audit facts, not mutable account or grant state. A candidate class assignment is now proposed in §3 and TECH-RESOLUTION-LPR-001 §3.1: app_users at L15, user_roles at L16 and user_scope_grants at L17; mutable roles/permissions/role_permissions require L18 or a frozen-catalogue control. Engineering/Security approval of these ranks and the actor/target grant lock strategy remains OPEN.
 
-The candidate protocol must explicitly resolve:
+The candidate protocol must obtain explicit approval for:
 1. Whether account, role-grant and scope-grant rows form one rank or separate ordered ranks, including stable same-rank table/key ordering.
 2. How CMD-004/005 Inspector eligibility mutations acquire the L10 capacity serialization row before any row whose change can alter the T-14 qualifying population.
 3. How account approval/disable/suspension and role/scope revocation serialize with permission revalidation and any active-work policy.
@@ -275,3 +280,8 @@ Until LPR-11 is resolved, CMD-001–007 cannot receive normalized candidate-rank
 ## 13. Engineering/Security technical resolution package — 2026-11-24
 
 [TECH-RESOLUTION-LPR-001](ENGINEERING-SECURITY-TECHNICAL-RESOLUTION-PACKAGE-LPR-001-011.md) v0.1.0 provides a concrete review proposal for LPR-01 and LPR-07–LPR-11. It proposes L15/L16/L17 identity and authorization ranks (with L18 policy-catalogue treatment), a project-before-session parent fence using child FOR SHARE and parent mutation FOR NO KEY UPDATE, T-14 capacity-first participation, worker lease fencing/callback boundaries, a normalized 54-row manifest schema and an adversarial test plan. All technical items remain OPEN; LPR-10 remains NOT EXECUTED. This addendum does not approve any lock primitive, rank, function, trigger, ACL, worker principal, migration or test result. It also records the required T-07 correction: session states remain DRAFT/ACTIVE/PAUSED/CLOSED and CLOSE_REQUESTED is an action/event only.
+
+
+## 14. Refined identity/authorization rank proposal — 2026-11-24
+
+The main candidate rank table now includes L15–L18 and separates assignment rows at L50 from assignment membership at L55, matching TECH-RESOLUTION-LPR-001 v0.1.0. This is a candidate hierarchy for Engineering/Security review, not an approved global lock order. LPR-01 and LPR-11 remain OPEN until the accountable reviewers record explicit approval or amendment.
