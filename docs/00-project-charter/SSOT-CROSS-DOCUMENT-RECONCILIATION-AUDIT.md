@@ -1,18 +1,18 @@
 # SSOT Cross-Document Reconciliation Audit — Dit. SD Inspection
 
 **Document ID:** SSOT-AUDIT-001  
-**Version:** 0.1.1  
+**Version:** 0.1.2  
 **Status:** STATIC CROSS-DOCUMENT AUDIT COMPLETED — CLOSURE PARTIAL  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
 **PR:** #3 — Draft / Open  
-**Authority:** AGENTS.md v1.2.0; MIB-001 v1.0.5; DGA-001 v1.11.24; IRG-001 v1.0.1  
+**Authority snapshot reviewed:** AGENTS.md v1.2.0; MIB-001 v1.0.5; DGA-001 v1.11.24; IRG-001 v1.0.1  
 **Implementation authorization:** NOT GRANTED
 
 ## 1. Executive result
 
-A static cross-document reconciliation was completed across the current governance baseline: DGA-001, RTM-001, RAID-001, Decision Register, Package S, Package T, MIB-001, IRG-001 and the QA catalogue.
+A static cross-document reconciliation was completed against the source versions listed in this audit's authority snapshot: DGA-001, RTM-001, RAID-001, Decision Register, Package S, Package T, MIB-001, IRG-001 and the QA catalogue.
 
 The audit confirms that the authority hierarchy and the current implementation boundary are consistent: Product Owner decisions govern product semantics within PO authority; institutional decisions remain with the authorized institutional owners; technical approvals and runtime evidence remain with Engineering, Database, Security, QA and Operations; G9 is NOT READY and G10 is NOT AUTHORIZED.
 
