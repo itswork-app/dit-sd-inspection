@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.5.8
+Version: 0.5.9
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -951,3 +951,16 @@ These cases guard the unresolved mapping between account event-time candidate se
 | TC-NOTIF-089 | Concurrent approve vs return, duplicate return replay, stale revision, and audit failure for the same submitted revision | Exactly one terminal review decision commits per revision; event, audit, idempotency and any admitted outbox/snapshot are atomic; duplicate decision creates no second event/notice; submitted revision/evidence remain immutable | PLANNED / NOT EXECUTED |
 
 **Execution control:** TC-NOTIF-086..089 require approved event cardinality, physical Reviewer assignment, responsible-Inspector mapping, review-round/decision uniqueness, SoD and canonical lock graph. Runtime execution requires G10 activation and an authorized isolated environment. No test result is implied.
+
+
+### CMD-031/032 approval and reopen event candidate safety — 2026-11-24
+
+| Test ID | Scenario | Expected result / invariant | Status |
+|---|---|---|---|
+| TC-NOTIF-090 | CMD-031 approval references a revision that is not the exact current submitted immutable revision, or the supplied revision/inspection pair does not match | Reject without event/outbox/snapshot; no revision or evidence mutation; no notice candidate is created | PLANNED / NOT EXECUTED |
+| TC-NOTIF-091 | CMD-031 attempts approval with no persisted Reviewer assignment, generic role/project membership only, wrong scope, inactive grant, or reviewer equal to revision author | Fail closed; no Reviewer or responsible Inspector is inferred; reviewer != author SoD and exact assignment scope are enforced | PLANNED / NOT EXECUTED |
+| TC-NOTIF-092 | CMD-030 return races CMD-031 approval, two approvals race, or stale revision races a terminal decision | Exactly one legal terminal decision commits for the exact revision; inspection transition, review event, audit, idempotency and any admitted outbox/snapshot are atomic | PLANNED / NOT EXECUTED |
+| TC-NOTIF-093 | CMD-032 reopen is attempted by generic Super Admin without explicit approved reopen grant, with wrong scope, inactive grant, missing reason or mismatched approved revision | Fail closed; no reopen event, candidate snapshot or draft context is created; authority is never inferred from role label | PLANNED / NOT EXECUTED |
+| TC-NOTIF-094 | Concurrent CMD-032 reopen requests, or reopen races active claim/evidence/document finalization; prior approved revision has evidence/documents/print history | At most one active draft context exists once its model is approved; immutable approved revision and all historical artifacts remain unchanged; blockers serialize without lock inversion; one immutable event-time candidate snapshot is committed atomically | PLANNED / NOT EXECUTED |
+
+**Execution control:** TC-NOTIF-090..094 are specification-only. They require the physical Reviewer assignment and review-decision uniqueness model, approved reopen grant/SoD matrix, mutable draft representation, complete active-work/finalizer writer inventory, admitted source-event/outbox/snapshot identity and certified global lock protocol. Runtime execution requires verified G9, separate G10 activation and an authorized isolated environment. No test was executed.
