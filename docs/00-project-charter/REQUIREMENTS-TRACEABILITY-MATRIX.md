@@ -17,6 +17,10 @@ Purpose: Link product intent to specifications, implementation units, and verifi
 - **RPT:** reporting and dashboards.
 - **AUD:** audit and notifications.
 - **OPS:** deployment and production operations.
+- **RET:** institutional records retention, legal hold and disposition.
+- **INC:** security incident governance and response.
+- **PROV:** provider ownership, configuration and secret custody.
+- **REL:** release governance and artifact provenance.
 
 ## Traceability baseline
 
@@ -354,9 +358,9 @@ T-13 requires a durable batch identifier and per-document outcomes. The physical
 
 | Requirement ID | Requirement | Authority | Design reference | Verification | Status |
 |---|---|---|---|---|---|
-| OPS-003 | Retention, legal hold and disposition require written institutional records/legal/privacy/security policy; no destructive action may be exposed before scope, authority, precedence and evidence lifecycle are approved | T-10; institutional records/legal/privacy/security authorities | CMD-045–048 Detailed Contract Review §4; Decision Register T-10; DGA-B04 | Policy/hold/disposition race, authorization, SoD, audit atomicity, backup/object lifecycle and legal-hold precedence tests | BLOCKED — INSTITUTIONAL APPROVAL REQUIRED |
-| SEC-003 | Security incident review requires an approved incident-response owner, case scope, lifecycle, evidence handling and product-vs-external-system boundary; incident access must not grant operational privileges | Institutional security authority; T-10 | CMD-045–048 Detailed Contract Review §5 | Need-to-know, cross-scope denial, break-glass expiry/review, evidence provenance and no-business-state-mutation tests | BLOCKED — AUTHORITY / SCOPE / SCHEMA OPEN |
-| OPS-004 | Provider configuration requires documented account/billing ownership, custodians, region, plan, least-privilege access and an approved secret manager; secret material is never accepted or persisted in application commands/logs | T-12; institution/provider custodians | CMD-045–048 Detailed Contract Review §6; NLA-001 v0.1.1; DGA-B05 | Ownership/custody, secret redaction, environment isolation, rotation/revocation, webhook trust and rollback tests | BLOCKED — T-12 EVIDENCE OPEN |
-| OPS-005 | Production release authority must be enforced by approved repository/provider control-plane protections, immutable artifact provenance, required checks, environment approvals and separation of duties; no product command may bypass them | MIB-001; repository administrator; Operations/Security | CMD-045–048 Detailed Contract Review §7; DGA-B15 | Protected branch/environment, required CI, artifact digest, approver/operator SoD, deployment and recovery evidence | BLOCKED — RELEASE GOVERNANCE NOT VERIFIED |
+| RET-001 | Retention, legal hold and disposition require written institutional records/legal/privacy/security policy; no destructive action may be exposed before scope, authority, precedence and evidence lifecycle are approved | T-10; institutional records/legal/privacy/security authorities | CMD-045–048 Detailed Contract Review §4; Decision Register T-10; DGA-B04 | Policy/hold/disposition race, authorization, SoD, audit atomicity, backup/object lifecycle and legal-hold precedence tests | BLOCKED — INSTITUTIONAL APPROVAL REQUIRED |
+| INC-001 | Security incident review requires an approved incident-response owner, case scope, lifecycle, evidence handling and product-vs-external-system boundary; incident access must not grant operational privileges | Institutional security authority; T-10 | CMD-045–048 Detailed Contract Review §5 | Need-to-know, cross-scope denial, break-glass expiry/review, evidence provenance and no-business-state-mutation tests | BLOCKED — AUTHORITY / SCOPE / SCHEMA OPEN |
+| PROV-001 | Provider configuration requires documented account/billing ownership, custodians, region, plan, least-privilege access and an approved secret manager; secret material is never accepted or persisted in application commands/logs | T-12; institution/provider custodians | CMD-045–048 Detailed Contract Review §6; NLA-001 v0.1.1; DGA-B05 | Ownership/custody, secret redaction, environment isolation, rotation/revocation, webhook trust and rollback tests | BLOCKED — T-12 EVIDENCE OPEN |
+| REL-001 | Production release authority must be enforced by approved repository/provider control-plane protections, immutable artifact provenance, required checks, environment approvals and separation of duties; no product command may bypass them | MIB-001; repository administrator; Operations/Security | CMD-045–048 Detailed Contract Review §7; DGA-B15 | Protected branch/environment, required CI, artifact digest, approver/operator SoD, deployment and recovery evidence | BLOCKED — RELEASE GOVERNANCE NOT VERIFIED |
 
 These requirements are governance/architecture traceability records, not implementation authorization. All related tests remain PLANNED / NOT EXECUTED.
