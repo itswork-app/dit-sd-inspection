@@ -1,7 +1,7 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.4  
+**Version:** 0.1.5  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
@@ -415,3 +415,38 @@ If same-transaction candidate materialization cannot meet the approved bound, En
 ### 16.5 Gate disposition
 
 POQ-01 recipient semantics: **APPROVED**. Durable relational representation: **CANDIDATE — ENGINEERING/DB/SECURITY REVIEW REQUIRED**. CMD-052 physical read/write set: **PARTIAL — candidate table not admitted**. Worker identity/ACL and runtime verification: **OPEN**. QA TC-NOTIF-001..040, TC-RLS-024-049 and TC-FN-SEC-025-064..071: **PLANNED / NOT EXECUTED**. G9 remains NOT READY; G10 remains NOT ACTIVE.
+
+
+## 17. Source-event producer lock inventory — 2026-11-24
+
+### 17.1 Producer universe and event allowlisting
+
+The current command catalogue defines 40 application domain command IDs (CMD-001–040) with canonical domain event declarations. Any of those event types may be considered for notification only when an immutable, enabled policy version explicitly allowlists the exact event type and selector grammar. This is not a default broadcast rule: no wildcard event matching, role-only audience, or implicit notification for every audit event is permitted.
+
+The complete producer-to-event-to-candidate-lock mapping is maintained in COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md §7.7 (v0.4.27). It covers all 40 source command declarations and preserves their current candidate lock paths/dispositions. This is a producer coverage inventory, not evidence that any path is safe for recipient resolution or snapshot insertion.
+
+### 17.2 Transactional source boundary
+
+- CMD-001–034: where the canonical domain event is committed by the command transaction, a matching notification outbox intent and complete immutable recipient/scope snapshot must be committed in that same transaction. Failure to persist required audit/outbox/snapshot state follows the source command's approved atomic rollback behavior; no post-commit current-membership reconstruction is allowed.
+- CMD-035: each operation-level domain event must be correlated to its durable operation result and its own notification intent/snapshot. The unresolved per-operation transaction versus savepoint decision means batch-level atomicity and snapshot completeness are not yet certifiable.
+- CMD-036: the renderer finalizer, not merely the request that reserves a generation job, is the source boundary for a generated-document event. It must validate source revision/template and current lease fencing before atomically appending finalization event, audit, outbox and event-time audience snapshot.
+- CMD-037: each recorded print/reprint event is its own source event after the document/version and print sequence arbiter are finalized.
+- CMD-038: each item-level print event is distinct from the batch aggregate projection event. The durable item outcome/finalizer is the source boundary; the implementation must not fan out a batch completion notification as if it were every per-document print event.
+- CMD-039: attendance upload/replacement is a source event only after private Storage verification and guarded database finalization of the exact document version.
+- CMD-040: attendance verification is a source event only after the exact immutable document version, verifier scope and institutional SoD checks are fenced and committed.
+- CMD-041/042 conditional report-access events and CMD-043/044 audit-access/export events are not part of this 40-command mutation producer set. They require a separately approved read-side access-event boundary; do not add notification side effects to a read query by assumption.
+- CMD-045–048 are external control-plane IDs. CMD-049–054 are notification lifecycle operations/events and are excluded from notification policy matching by default to prevent recursive notification chains. Any future exception requires a separately approved bounded non-recursive policy.
+
+### 17.3 Cross-command lock-order finding
+
+The source-producer matrix confirms that many existing command paths reach L30, L40, L50, L60, L70 or L90 before their terminal event/audit append. The POQ-01 recipient resolver may require L15 principal, L16 role-grant, L17 scope-grant and L30/L50 project/session/assignment resources. Appending those eligibility reads/locks after a higher-ranked aggregate lock may invert the candidate global order. CMD-036/038/039 additionally require finalizer lease/source-version fences to be reconciled with recipient/scope locks.
+
+No generic “append snapshot after source lock” sequence is approved. Before admitting the candidate relation:
+1. For every enabled event type, identify its exact producer command or asynchronous finalizer and event cardinality.
+2. Define the event-time eligibility linearization point and authoritative temporal source for each role, scope and assignment predicate.
+3. Choose a reviewed pre-lock order or an approved temporal snapshot mechanism that preserves the source event's transaction-time semantics.
+4. Include every implicit FK KEY SHARE, unique-index, trigger and helper-function edge.
+5. Prove CMD-052 and CMD-054 consume snapshots without acquiring lower-ranked domain resources after queue/policy/notification locks.
+6. Recompute the complete graph and execute deterministic opposing-transaction tests.
+
+**Current disposition:** 40/40 domain command event declarations mapped to candidate lock paths in LOCK-MANIFEST-001 v0.4.27. Recipient resolver lock-set coverage is incomplete; event allowlist/selector grammar and asynchronous finalizer event cardinality remain open. Candidate relation/header fields remain NOT ADMITTED and excluded from the canonical 48-table inventory. QA TC-NOTIF-001..041 and related RLS/function-security tests remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE; application lock certification 0/50.
