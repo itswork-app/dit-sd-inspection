@@ -1,7 +1,7 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.3.2
+**Version:** 0.3.3
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Parent:** LOCK-GRAPH-001 v0.3.2  
@@ -18,7 +18,22 @@ No command catalogue, physical schema, function, API, migration or runtime behav
 
 ## 2. Authority, source set and method
 
-Root AGENTS.md v1.2.0 was read first from the target branch. This review also inspected MIB-001 v1.0.1, DGA-001 v1.4.0, IRG-001 v1.0.1, Decision Register, PostgreSQL Command Contract Catalogue v0.2.0, Physical Database Schema and Integrity Specification v0.2.0, LOCK-GRAPH-001 v0.1.0, CONCURRENCY-001 v0.1.0 and the seven detailed command review documents.
+Root `AGENTS.md` v1.2.0 was re-read from the target branch at the start of this work session. The source baseline was refreshed against the current corrective branch on 2026-11-24:
+
+| Source | Current reviewed version / identity | Use in this reconciliation |
+|---|---|---|
+| MIB-001 | v1.0.1 | Authority, gates and documentation-phase boundary |
+| DGA-001 | v1.9.2 | Active evidence-backed gap queue and gate disposition |
+| IRG-001 | v1.0.1 | Phase and authorization governance |
+| Decision Register | Current branch revision | Approved PO decisions and institutional dependencies |
+| PostgreSQL Command Contract Catalogue | v0.3.1 | Canonical logical CMD-001–054 operation inventory and proposed contracts |
+| Physical Database Schema and Integrity Specification | v0.3.0 | Proposed entities, constraints, indexes and transaction invariants |
+| LOCK-GRAPH-001 | v0.3.2 | Candidate resource ranks, cross-command conflicts and planned race scenarios |
+| CONCURRENCY-001 | v0.1.2 | Aggregate token, idempotency and worker-fencing mismatches |
+| LOCK-PROTOCOL-DECISION-RESOLUTION-001 | v0.2.1 | LPR decision state and static reconciliation checkpoint |
+| Detailed command reviews | Seven current command-range documents | Per-command source-stated operations and dependencies |
+
+This replaces the stale historical snapshot labels in the original v0.3.2 review method (including DGA v1.4.0, catalogue/physical schema v0.2.0 and lock graph v0.1.0). Version refresh is a traceability correction only; it does not imply those sources or any command lock manifest are approved.
 
 Method:
 1. Extract the lock/transaction/read-write statements stated by each command review.
@@ -26,6 +41,7 @@ Method:
 3. Identify shared invariants and known competing commands from the cross-command review.
 4. Mark unknown resource order, implicit trigger/FK/index behavior, constraints, worker identity or authority as OPEN; do not infer them.
 5. Treat read-only commands as having no row-lock manifest unless the source explicitly defines one. Treat blocked commands as not designable for implementation.
+6. Reconcile every static finding against the current source versions above; preserve a distinction between documented design and physical/runtime evidence.
 
 Evidence is static documentation inspection only. No PostgreSQL catalog, query plan, lock graph, transaction trace, deployed function, RLS/grant, CI or concurrency test was executed.
 
