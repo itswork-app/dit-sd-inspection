@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.12  
+**Version:** 0.1.13  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -472,3 +472,12 @@ All TC-NOTIF-055..064 remain PLANNED / NOT EXECUTED. These requirements do not a
 | NOTIF-022 | Dispatch authorization is a versioned event-specific profile that separates event-time qualification from account/channel/consent/security/current-scope/parent-state checks; transition notices cannot be accidentally suppressed by revoked-role, ended-membership or active-parent predicates | POQ-04; INS-015; Security | NLA-L05-TDR-001 v0.1.8 §4.2.6; NLA-001 v0.1.14 §22 | TC-NOTIF-062/063/069; Security review of transition matrix and source-resource reauthorization | OPEN — SECURITY/ENGINEERING APPROVAL REQUIRED |
 
 TC-NOTIF-065..070 supplement TC-NOTIF-055..064. All TC-NOTIF-055..070 remain PLANNED / NOT EXECUTED. Grammar v1, eight-clause bound, event registry and dispatch profiles are review candidates only. No implementation, SQL, migration, grants, RLS, runtime testing or G10 activation is approved.
+
+
+## PO-approved event-candidate specification traceability — 2026-11-24
+
+| Requirement ID | Requirement / invariant | Authority | Design reference | Verification | Status |
+|---|---|---|---|---|---|
+| NOTIF-023 | The notification registry contains only the eleven PO-approved first-batch candidate intents for specification/review; each remains NOT ENABLED until exact canonical source contract, trusted participant mapping, selector dependencies, dispatch profile, deduplication, atomicity and required technical approvals are complete | INS-015; PO event-candidate decision (2026-11-24); POQ-01; POQ-04 | NLA-EVENT-TRIAGE-001 v0.1.2; NLA-EVENT-REGISTRY-001 v0.1.0; NLA-001 v0.1.21 | TC-NOTIF-073/074; row-by-row registry admission evidence and negative publication tests | OPEN — SPECIFICATION CANDIDATES ONLY; TECHNICAL ADMISSION PENDING |
+
+TC-NOTIF-073/074 remain PLANNED / NOT EXECUTED. PO approval does not authorize event publication, recipient/channel activation, implementation or G10. F-05/F-04/F-03/F-07 remain OPEN; G9 NOT READY; G10 NOT ACTIVE.
