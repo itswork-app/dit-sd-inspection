@@ -272,3 +272,7 @@ The canonical `units` table is project-independent. Its candidate key is `(instr
 `unit_identity_conflicts` captures same-instrument normalized-serial collisions. Conflict resolution either creates an association to the verified existing canonical unit or closes/rejects the report with reason; it cannot create a second canonical unit or silently merge/retarget historical records. No institution-specific duplicate exception is permitted until the external exception policy is approved.
 
 **Constraint correction:** the previous project-scoped unique index `units(project_id, instrument_id, serial_normalized)` is withdrawn. It contradicted T-16 option B and is replaced by the canonical instrument+serial unique key plus association constraints above. The schema remains design-only; no migration has been created or executed.
+
+## PostgreSQL function privilege compatibility gate
+
+See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md). The T-18 design requires no direct browser DML while command functions default to INVOKER. Under the same authenticated database role these requirements conflict for protected writes unless an independently approved execution boundary exists. This must be resolved before defining function owners, grants or migrations; no broad table DML is permitted as a shortcut.
