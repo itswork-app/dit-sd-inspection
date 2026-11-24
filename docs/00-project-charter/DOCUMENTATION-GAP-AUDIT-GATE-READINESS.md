@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.7.0
+**Version:** 1.8.0
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/t17-instrument-governance-t18-command-boundary`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -209,3 +209,8 @@ The proposal maps:
 ## Lock protocol PO decision update — 2026-11-24
 
 The Product Owner has approved LPR-02–LPR-06 and the Decision Register records the exact semantics. This partially closes the PO decision portion of DGA-B20 only. LPR-01 and LPR-07–LPR-10, 54-command lock-manifest normalization/certification, live effective lock graph and adversarial concurrency evidence remain open. DGA-B18 and DGA-B19 remain open; G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED. No tests or runtime/database inspection were executed.
+
+
+## PO lock protocol decision traceability synchronization — 2026-11-24
+
+LPR-02–LPR-06 are now reflected in PRD v0.2.0, Inspection Lifecycle and Claims v0.2.0, Project/Session/Assignment Model v0.2.0, RTM and RAID. RTM adds five stable requirements (UNIT-IDENTITY-001, CLAIM-001, LIFECYCLE-FENCE-001, CAP-002, INSTRUMENT-DEACTIVATION-001); RAID records D-028 and R-027/R-028 as unresolved technical dependencies/risks. The T-16 identity key mismatch in RAID was corrected to `(instrument_type, serial_normalized)`. This closes only documentation synchronization for the PO decisions. DGA-B18/B19/B20 remain partial/open for technical lock hierarchy, 54 command manifests, physical graph/constraints and concurrency evidence. G9 NOT READY; G10 NOT AUTHORIZED. No tests, CI, SQL, migration, live database inspection or deployment were performed.
