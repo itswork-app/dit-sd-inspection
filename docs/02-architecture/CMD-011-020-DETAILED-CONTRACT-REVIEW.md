@@ -1,7 +1,7 @@
 # CMD-011–020 Detailed Contract Review
 
 **Status:** PO product semantics APPROVED (2026-11-24); Engineering/Security contract review OPEN; NOT approved for implementation  
-**Version:** 0.3.8  
+**Version:** 0.3.9  
 **Date:** 2026-11-24  
 **Scope:** CMD-011 through CMD-020  
 **Controls:** T-14 Inspector capacity; T-15 append-only audit direction; T-17 instrument governance; T-18 Option A command boundary; G9 NOT READY; G10 NOT ACTIVE.
@@ -1239,3 +1239,8 @@ PO-approved SES-001 and WF-003 refine the CMD-013 closure precondition:
 6. An ABORTED attempt remains a non-completion in actual reports/recaps and must not be counted as inspected, approved, good, defective or printed. A later session starts a new attempt; the old attempt remains immutable.
 
 **Technical disposition:** CMD-013 session row_version/CAS, complete inspection/evidence/document/print/worker blocker inventory, parent/child lock protocol, event/audit atomicity and runtime tests remain OPEN. The ABORTED state/event and exact abort command contract are not yet physically admitted. No implementation or test execution is authorized by this addendum.
+
+
+### T-07 privileged session reopen × SES-001 abort boundary — open
+
+T-07 permits a CLOSED session to be reopened only through a privileged, reasoned and audited action. SES-001 makes every ABORTED inspection attempt terminal and non-resumable. It remains an explicit PO/operational decision whether the reopened session may accept a brand-new inspection aggregate under the same session_id. Until that rule is approved, CMD-013 session reopen may not reactivate any prior attempt, and CMD-026 must fail closed if accepting a new attempt would rely on the unresolved policy. This is traced as IDC-O10 / TC-SESSION-008; it does not relax final-close blocker checks or allow work to cross session IDs.
