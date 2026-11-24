@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.14
+**Version:** 0.8.15
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -26,7 +26,7 @@ The review is static and documentation-only. It does not inspect a live Supabase
 - CMD-045–048 remain intentionally blocked by authority/schema prerequisites.
 - Notification CMD-049–054 remain proposals; worker identity/ACL, policy authority, recipient selectors, provider capability and T-10 controls remain open.
 
-**Disposition: G9 NOT READY. G10 NOT AUTHORIZED.** No implementation, SQL, migration, grant/revoke, RLS change, live database operation, provider setup, deployment, CI execution or merge is authorized or claimed.
+**Disposition: G9 NOT READY. G10 NOT ACTIVE.** No implementation, SQL, migration, grant/revoke, RLS change, live database operation, provider setup, deployment, CI execution or merge is authorized or claimed.
 
 ## 2. Scope, sources and review method
 
