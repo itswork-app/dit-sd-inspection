@@ -152,3 +152,7 @@ Use ../02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-M
 ## PostgreSQL function execution privilege dependency
 
 See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md). RLS, SQL table ACL and function EXECUTE ACL are separate controls. The design identifies a critical unresolved interaction between SECURITY INVOKER and the T-18 prohibition on browser direct table DML; do not grant protected table DML to authenticated as a workaround. PO/security must approve the execution model before implementation.
+
+## Live database evidence prerequisite
+
+Use [Supabase Live Database Security Inventory Runbook](SUPABASE-LIVE-DATABASE-SECURITY-INVENTORY-RUNBOOK.md) to collect read-only catalog evidence for actual table ownership, RLS flags/policies, role/table/schema ACLs, function execution ACLs, default privileges and Storage policies. The proposed RLS catalogue is not deployed-state evidence. Live inventory and command-level negative tests remain outstanding; no RLS or grant deployment is authorized by the runbook.
