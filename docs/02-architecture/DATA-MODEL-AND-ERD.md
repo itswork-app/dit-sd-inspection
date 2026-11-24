@@ -199,3 +199,19 @@ This is a logical-model alignment note, not a physical schema approval. The ERD 
 ## Notification contract alignment — 2026-11-24
 
 CMD-050 uses a set-once read_at field and intentionally has no row-version column. CMD-052/053 lease fencing uses owner, token hash, monotonic generation and expiry; it is not a business row-version token. CMD-051 is publish-only in the current command set; no persisted draft CRUD is represented. Provider callback ingress INT-NOTIF-001 is an integration boundary and does not add a seventh notification entity. The proposed physical/RLS inventory remains 48 tables; no live schema is implied.
+
+
+## Candidate-only entity annex — durable command objects (2026-11-24)
+
+**Status:** Not part of the logical or physical 48-table ERD. Candidate entities below are deliberately excluded from the Mermaid ERD and canonical 48-table count until approved.
+
+The following candidate objects have been identified by the CMD-035/036/038/039/040 physicalization review:
+
+- CMD-035: sync operation result ledger and device-binding registry.
+- CMD-036: immutable document template versions, generation jobs and append-only generation attempts.
+- CMD-038: immutable print batch-item manifest and durable per-item results.
+- CMD-039/040: immutable attendance document version metadata and append-only verification events.
+
+The exact candidate names, attributes, relationships, PK/FK, cardinality, delete behavior, indexes and retention model are specified only as design proposals in DURABLE-OPERATION-LEDGER-AND-ARTIFACT-LIFECYCLE-PROPOSAL-001. They are not ERD-approved entities. No candidate is allowed to become an implementation table until the physical schema, permission registry, RLS catalogue, function security, audit catalogue, command contracts and QA test inventory are updated consistently and approved.
+
+Permission boundaries are cross-referenced in CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md. In particular, sync.apply does not authorize device enrollment/revocation, document.generate does not authorize template publication, and renderer workers do not inherit user permissions or service_role. Attendance scope authority and uploader/verifier SoD remain open.
