@@ -26,7 +26,7 @@ These states must not be collapsed.
 
 Reviewed the current documentation branch's Master Implementation Blueprint, README, T-19 audit, Package S, Package T, Decision Register, RTM, RAID, PRD, command contract catalogue, physical schema, RLS catalogue/reconciliation, QA catalogue, recovery plan, performance baseline and provider governance.
 
-The QA catalogue contains 410 distinct test-case definitions by line-level ID scan. TC-LOAD-001 and TC-NOTIF-001 each appear more than once as a cross-reference plus a test definition; this does not create additional unique cases. Major planned series include 48 original command-contract cases, 40 command-authorization cases, 48 table/RLS cases, 69 function-security cases, 12 T-18 execution-model cases, 10 live-inventory cases, 8 repository-audit cases, 26 notification lifecycle cases and 8 T-13 print-batch cases. They are specifications only unless an execution record explicitly proves otherwise.
+The QA catalogue contains 413 distinct test-case definitions by line-level ID scan. TC-LOAD-001 and TC-NOTIF-001 each appear more than once as a cross-reference plus a test definition; this does not create additional unique cases. Major planned series include 48 original command-contract cases, 40 command-authorization cases, 48 table/RLS cases, 69 function-security cases, 12 T-18 execution-model cases, 10 live-inventory cases, 8 repository-audit cases, 29 notification lifecycle cases and 8 T-13 print-batch cases. They are specifications only unless an execution record explicitly proves otherwise.
 
 No application code, migrations, live Supabase database, deployed RLS/grants, Vercel runtime, production provider account, CI workflow execution, backup restore, load test, security test or UAT was executed by this documentation audit.
 
@@ -395,11 +395,11 @@ The following documentation mismatches have been resolved at proposal level and 
 - CMD-052/053 now share canonical safe_payload and worker lease fields lease_owner, lease_token_hash, lease_generation and lease_expires_at. Partial fan-out remains PROCESSING and resumes through unique arbiters.
 - CMD-053 callback ingress is INT-NOTIF-001, a provider-authenticated integration boundary rather than a new CMD ID or browser RPC. Provider-specific signature, durable event deduplication and capability remain open.
 - CMD-054 no longer accepts evaluation_time; one database UTC instant is captured per scheduler evaluation transaction. SLA start/pause/calendar/timezone semantics remain open.
-- dismissed_at remains reserved and inactive pending PO/UX approval.
+- Dismiss/archive is excluded from MVP by POQ-03; dismissed_at is dormant with no command, permission or browser mutation.
 
-Updated references: NLA-001 v0.1.3; CMD-049–054 Detailed Contract Review v0.1.1; Command Catalogue v0.4.3; Physical Schema v0.4.1; RLS Catalogue v0.2.1; API Contracts v0.2.1; Audit Event Catalogue; Lock Manifest v0.4.14; Concurrency Token Reconciliation v0.1.4; QA Catalogue v0.3.5; RTM NOTIF-007..012; RAID D-034..D-036/R-034..R-035.
+Updated references: NLA-001 v0.1.3; CMD-049–054 Detailed Contract Review v0.1.2; Command Catalogue v0.4.5; Physical Schema v0.4.2; RLS Catalogue v0.2.3; API Contracts v0.2.2; QA Catalogue v0.3.6; Audit Event Catalogue; Lock Manifest v0.4.14; Concurrency Token Reconciliation v0.1.4; QA Catalogue v0.3.5; RTM NOTIF-007..012; RAID D-034..D-036/R-034..R-035.
 
-The 26 notification cases are PLANNED / NOT EXECUTED. DGA-B10 remains OPEN because approvals and exact executable contracts are incomplete. DGA-B11 remains design-reconciled/live-unverified. DGA-B13 remains approval/runtime-open. DGA-B17 remains OPEN for other command token mismatches. DGA-B19 remains 10/54 candidate-normalized and 0/54 technically approved/certified. G9 remains NOT READY and G10 NOT AUTHORIZED. No implementation, SQL, migration, grant, CI, test execution, live database inspection, provider setup, deployment or merge occurred.
+The 29 notification cases are PLANNED / NOT EXECUTED. DGA-B10 remains OPEN because approvals and exact executable contracts are incomplete. DGA-B11 remains design-reconciled/live-unverified. DGA-B13 remains approval/runtime-open. DGA-B17 remains OPEN for other command token mismatches. DGA-B19 remains 10/54 candidate-normalized and 0/54 technically approved/certified. G9 remains NOT READY and G10 NOT AUTHORIZED. No implementation, SQL, migration, grant, CI, test execution, live database inspection, provider setup, deployment or merge occurred.
 
 
 ## Final documentation closure audit checkpoint — 2026-11-24
@@ -412,7 +412,7 @@ The static closure audit reviewed the current root AGENTS.md v1.2.0, MIB-001 v1.
 - Command catalogue: 54/54 unique command IDs; every command row's planned test anchor is present in the QA catalogue.
 - Lock manifest: 54/54 unique command IDs in the primary inventory; 10/54 candidate-normalized at documentation level; 0/54 technically approved/certified. Extra command references in overlay tables are not additional primary manifest rows.
 - Physical schema and RLS catalogue: 48/48 table names with exact name-set parity by static comparison; no live schema, constraint, grant or RLS verification is implied.
-- QA catalogue: 410 unique test-case definitions; TC-NOTIF-001..026 all present; all relevant cases remain PLANNED / NOT EXECUTED.
+- QA catalogue: 413 unique test-case definitions; TC-NOTIF-001..029 all present; all relevant cases remain PLANNED / NOT EXECUTED.
 - Decision Register: 50 unique decision IDs; RTM-001: 125 unique requirement IDs; RAID-001: 53 unique risk/assumption/dependency IDs; DGA gap register: 21 unique DGA-B IDs.
 - Twenty reviewed core documents had their relative Markdown link targets checked against the current repository tree; no missing local file targets were found in that reviewed set. This is not a proof that every external URL or every link in every repository file is reachable.
 - All 34 files in PR #3's compared diff are Markdown documentation files; no source, SQL, migration, configuration or workflow file is in that diff.
@@ -450,7 +450,7 @@ Verification boundary: these edits correct document-version navigation only. The
 The static cross-document audit is recorded in [SSOT-AUDIT-001](SSOT-CROSS-DOCUMENT-RECONCILIATION-AUDIT.md) v0.1.2. Decision requests are separated into [POQ-001 — Product Owner Open Decision Packet](PRODUCT-OWNER-OPEN-DECISION-PACKET.md) v0.1.0 and [AUTH-001 — Institutional and Technical Authority Approval Package](INSTITUTIONAL-AND-TECHNICAL-AUTHORITY-APPROVAL-PACKAGE.md) v0.1.0.
 
 Reconciliation results:
-- Package S §9.15 remains an immutable historical checkpoint (391 distinct test identifiers in its scan). New §9.16 points to the current DGA/QA snapshot (410 unique test-case definitions); old counts are not rewritten.
+- Package S §9.15 remains an immutable historical checkpoint (391 distinct test identifiers in its scan). New §9.16 points to the current DGA/QA snapshot (413 unique test-case definitions); old counts are not rewritten.
 - Package T v0.1.1 remains a historical decision pack. The Decision Register remains the canonical index of PO decisions. T-10 and T-12 PO decisions approve review/ownership paths only; institutional/provider evidence remains blocked.
 - RTM-001 v0.1.2 consolidates the T-13 test mapping: general print TC-PRINT-001..007 and batch lifecycle TC-PRINT-BATCH-001..008; TC-DOC-009..011 remain instrument/document cases.
 - RAID-001 v0.1.1 has 65 unique current RAID identifiers (the earlier 53-ID count is a historical checkpoint); existing open/blocked dependencies remain open and this audit does not close risks or dependencies.
