@@ -2,7 +2,7 @@
 
 **Status:** Security architecture proposal — critical privilege-model decision required; NOT approved for implementation  
 **Version:** 0.1.0 | **Date:** 2026-11-24  
-**Depends on:** T-18 option A; PostgreSQL Command Contract Catalogue v0.1.0; physical schema and 41-table RLS catalogue; canonical permission registry draft.
+**Depends on:** T-18 option A; PostgreSQL Command Contract Catalogue v0.1.0; physical schema and 48-table proposed RLS catalogue; canonical permission registry draft.
 
 ## 1. Purpose and strict boundary
 
@@ -88,7 +88,7 @@ Names below are **logical candidate identifiers only**, not approved PostgreSQL 
 | Audit/immutability triggers | Exact trigger inventory not yet supplied | F4 | Trigger invocation only | No direct browser EXECUTE |
 | Storage/object verification and outbox callbacks | Separate contracts required | F5 | No user role by default | Not approved |
 
-**No one-to-one SQL function name or argument list is finalized.** The 48 command catalogue rows remain logical operation contracts. Before any grant, inspect actual function inventory and settle API route-to-RPC mapping, exact signatures, return types, schema exposure and owner.
+**No one-to-one SQL function name or argument list is finalized.** The 54 command catalogue rows remain logical operation contracts. Before any grant, inspect actual function inventory and settle API route-to-RPC mapping, exact signatures, return types, schema exposure and owner.
 
 ## 6. SECURITY DEFINER hardening requirements
 
