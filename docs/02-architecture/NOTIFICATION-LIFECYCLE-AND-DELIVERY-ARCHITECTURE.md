@@ -1,7 +1,7 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.5  
+**Version:** 0.1.6  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
@@ -450,3 +450,8 @@ No generic “append snapshot after source lock” sequence is approved. Before 
 6. Recompute the complete graph and execute deterministic opposing-transaction tests.
 
 **Current disposition:** 40/40 domain command event declarations mapped to candidate lock paths in LOCK-MANIFEST-001 v0.4.27. Recipient resolver lock-set coverage is incomplete; event allowlist/selector grammar and asynchronous finalizer event cardinality remain open. Candidate relation/header fields remain NOT ADMITTED and excluded from the canonical 48-table inventory. QA TC-NOTIF-001..041 and related RLS/function-security tests remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE; application lock certification 0/50.
+
+
+## 18. Recipient-resolver lock-set review — 2026-11-24
+
+[NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001](NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) v0.1.0 is the engineering review of the 40 source command resolver lock paths. It distinguishes existing actor/target authorization locks from the complete candidate recipient set and records 0/40 resolver paths certified. It proposes a candidate global L05 audience guard before source locks, or an approved SERIALIZABLE alternative, then deterministic FK parent pre-acquisition and post-lock predicate revalidation. This is not an approved lock recipe. The PO must approve event-time linearization and post-transition audience semantics; Engineering/Database/Security must select the serialization mechanism and prove every writer participates. CMD-052 remains a separate claim/commit then fan-out transaction; CMD-054 must acquire the approved audience serialization boundary before mutable notification/recipient locks; CMD-053 remains provider dispatch/callback and is not a recipient resolver. Candidate relation/header remain NOT ADMITTED. QA TC-NOTIF-001..041 and related RLS/function-security tests remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE; application lock certification 0/50.
