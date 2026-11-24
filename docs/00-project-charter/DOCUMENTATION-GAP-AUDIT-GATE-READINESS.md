@@ -691,3 +691,8 @@ Internal review [L05-TECHNICAL-REVIEW-001](../04-quality/L05-TECHNICAL-REVIEW-00
 ### L05 eligibility-writer participation inventory — 2026-11-24
 
 [NLA-L05-WRITER-MATRIX-001](../02-architecture/L05-ELIGIBILITY-WRITER-PARTICIPATION-MATRIX-001.md) v0.1.0 identifies known CMD-level eligibility writers and non-command writer classes. This advances the inventory, not certification: the selector dependency universe, exact deployed RPC/helper/trigger/job inventory, owner/ACL, direct-DML bypass controls, admin/import/repair/expiry paths and actual L05 participation evidence remain incomplete. All-writer certification remains 0; F-04 remains OPEN. No live database inspection or implementation occurred.
+
+
+### L05 transition semantics and contention evidence — 2026-11-24
+
+NLA-L05-TDR-001 v0.1.2 now records a reviewer proposal to interpret event-time eligibility as pre-transition state at the captured `audience_evaluated_at`, because audience resolution precedes the source mutation. This is not a PO decision. Explicit recipient outcomes for role revoke, account rejection/suspension, assignment-member end, project/session closure and self-revoke remain OPEN. NRL-T13 / TC-NOTIF-054 specify mixed-load guard benchmarking, but maximum audience/workload limits and numeric p50/p95/p99 SLOs remain TBD. These cases are PLANNED / NOT EXECUTED; no performance evidence exists. G9 NOT READY; G10 NOT ACTIVE.
