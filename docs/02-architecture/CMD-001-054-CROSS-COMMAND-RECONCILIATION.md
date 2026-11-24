@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.6.0
+**Version:** 0.7.0
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -385,3 +385,8 @@ The manifest does not change the canonical command catalogue, physical schema or
 ## 14. Product Owner lock-protocol decision update — 2026-11-24
 
 The Decision Register records PO approval of LPR-02–LPR-06: canonical unit identity `(instrument_type, serial_normalized)` across projects; mandatory active claim for normal inspection; closed project/session mutation/finalization fence with explicit audited reopen; T-14 eligibility using the already approved T-14 predicate and shared serialization point; and instrument deactivation preserving pinned historical versions except for explicit safety withdrawal. These approvals settle product semantics only. LPR-01 and LPR-07–LPR-10, command manifest certification, physical constraints/trigger/function graph and adversarial concurrency evidence remain open. X-18/DGA-B20 are therefore still OPEN; G9 remains NOT READY and G10 NOT AUTHORIZED.
+
+
+## 15. PO decision traceability synchronization — 2026-11-24
+
+The approved LPR-02–LPR-06 product semantics are now traced into the Decision Register, PRD v0.2.0, Inspection Lifecycle and Claims v0.2.0, Project/Session/Assignment Model v0.2.0, RTM and RAID. The RTM adds UNIT-IDENTITY-001, CLAIM-001, LIFECYCLE-FENCE-001, CAP-002 and INSTRUMENT-DEACTIVATION-001. RAID records D-028 and R-027/R-028 as open technical dependencies/risks. The prior T-16 RAID identity key has been normalized to `(instrument_type, serial_normalized)` to match the controlling Decision Register. These updates establish documentation traceability only; command catalogue, physical schema, RLS, permissions, locks and QA execution remain open. G9 NOT READY; G10 NOT AUTHORIZED.
