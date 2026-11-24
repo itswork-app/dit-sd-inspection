@@ -1,7 +1,7 @@
 # Table-by-Table RLS Policy Catalogue
 
 **Status:** Security policy design draft — security review and implementation approval required  
-**Version:** 0.2.1  
+**Version:** 0.2.2  
 **Package:** M — RLS and Authorization Policy Catalogue  
 **Date:** 2026-11-23
 
@@ -254,7 +254,7 @@ See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SE
 
 ## NLA-001 notification security notes
 
-- Browser callers can read only their own `notifications` rows and can mutate only their own `read_at`/approved dismiss field through commands; direct DML remains denied.
+- Browser callers can read only their own `notifications` rows and can mutate only their own `read_at` through the trusted CMD-050 command; `dismissed_at` remains reserved and inactive pending explicit PO/UX approval. Direct browser DML remains denied.
 - No browser role reads or mutates outbox, delivery queue, provider attempt or escalation worker tables.
 - Policy versions require explicit config scope and `notification.policy.manage`; no role-to-permission grant is implied by title.
 - Internal worker role, owner, JWT/scheduler trust, exact EXECUTE ACL and effective privileges are a separate T-18 security blocker.
@@ -268,3 +268,8 @@ See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SE
 - notification_outbox, notification_deliveries, notification_delivery_attempts and notification_escalation_events are not browser-readable or browser-mutable. Internal workers require a separately approved workload identity and exact function ACL; service_role is not an assumed worker identity.
 - INT-NOTIF-001 is a server-side provider integration ingress, not a browser RPC and not a table grant.
 - Exact policies, grants, function owners, worker identity and live RLS tests remain unverified. These are design-only dispositions.
+
+
+## Final audit correction — notification mutation boundary (2026-11-24)
+
+The earlier summary phrase “approved dismiss field” was inconsistent with the canonical CMD-049–054 contract and the table-level rule that dismissed_at is dormant. It is corrected: only recipient-owned read_at is currently exposed through CMD-050; no dismiss command or browser mutation is approved.
