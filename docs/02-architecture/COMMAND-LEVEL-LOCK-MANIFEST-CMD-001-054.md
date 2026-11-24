@@ -1,10 +1,10 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.4.1
+**Version:** 0.4.3
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
-**Parent:** LOCK-GRAPH-001 v0.4.1  
+**Parent:** LOCK-GRAPH-001 v0.4.2  
 **Scope:** Per-command resource inventory, source-stated lock sequence, shared invariants, competing commands, constraints and unresolved ordering  
 **Gate:** G3 NOT READY; G4 NOT READY; G5 NOT READY; G7 NOT READY; G9 NOT READY; G10 NOT AUTHORIZED.
 
@@ -47,7 +47,7 @@ Evidence is static documentation inspection only. No PostgreSQL catalog, query p
 
 ## 3. Legacy manifest notation and candidate-rank crosswalk
 
-The CMD-001–048 rows below retain the compact rank labels used by the earlier LOCK-GRAPH-001 v0.3.2 extraction. Those labels are **legacy inventory notation**, not the current candidate ranks in LOCK-GRAPH-001 v0.4.0 / LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.1. They preserve source-order observations for audit traceability and must not be used as executable lock instructions.
+The CMD-001–048 rows below retain the compact rank labels used by the earlier LOCK-GRAPH-001 v0.3.2 extraction. Those labels are **legacy inventory notation**, not the current candidate ranks in LOCK-GRAPH-001 v0.4.2 / LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.1. They preserve source-order observations for audit traceability and must not be used as executable lock instructions.
 
 | Legacy label in CMD-001–048 rows | Legacy meaning | Current candidate rank mapping | Reconciliation rule |
 |---|---|---|---|
