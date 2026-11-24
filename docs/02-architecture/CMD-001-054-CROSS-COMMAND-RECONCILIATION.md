@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.32
+**Version:** 0.8.33
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -562,6 +562,11 @@ Historical addenda above intentionally preserve the source versions reviewed at 
 
 ## POQ-04 approval and F-05 reconciliation — 2026-11-24
 
-Current POQ-04 status is **PO APPROVED** (all five recommendations accepted without changes). Current controlled pointers: NLA-001 v0.1.12; NLA-RESOLVER-LOCK-001 v0.1.11; NLA-L05-TDR-001 v0.1.6; L05 source-event path map v0.1.0; L05 eligibility-writer matrix v0.1.2; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.10; RAID-001 v0.1.9; DGA-001 v1.11.66; QA Catalogue v0.4.8; L05-REVIEW-001 v0.1.5; this cross-command reconciliation v0.8.32.
+Current POQ-04 status is **PO APPROVED** (all five recommendations accepted without changes). Current controlled pointers: NLA-001 v0.1.13; NLA-RESOLVER-LOCK-001 v0.1.11; NLA-L05-TDR-001 v0.1.7; L05 source-event path map v0.1.0; L05 eligibility-writer matrix v0.1.3; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.10; RAID-001 v0.1.9; DGA-001 v1.11.67; QA Catalogue v0.4.9; L05-REVIEW-001 v0.1.6; this cross-command reconciliation v0.8.33.
 
 POQ-04 resolves the product-decision dependency only. F-05 remains technically OPEN pending Security/Engineering validation. CMD-031/032/033/034/037 still have partial candidate ordering; CMD-035/036/038/039/040 remain blocked. No command is technically certified; resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; tests PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## F-05 technical validation findings — current controlled pointers (2026-11-24)
+
+POQ-04 remains PO APPROVED. The technical review now tracks F05-T1..T5 in NLA-L05-TDR-001 v0.1.7 §4.2.4: selector grammar/dependency universe, event-specific dispatch authorization, suppression/retry state machine, append-only audit contract and snapshot atomicity/binding. NLA-001 v0.1.13 and writer matrix v0.1.3 record the architecture and F-04 dependency; QA v0.4.9 adds TC-NOTIF-060..064; L05-REVIEW-001 v0.1.6 records REQUEST CHANGES. F-05 remains technically OPEN. F-03/F-04/F-07 remain OPEN; resolver certification 0/40; application lock certification 0/50; graph NOT PROVEN ACYCLIC; snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
