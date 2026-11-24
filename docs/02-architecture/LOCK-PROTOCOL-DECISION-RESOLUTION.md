@@ -1,7 +1,7 @@
 # Lock Protocol Decision Resolution — LPR-01–LPR-11
 
 **Document ID:** LOCK-PROTOCOL-DECISION-RESOLUTION-001  
-**Version:** 0.3.0  
+**Version:** 0.3.1  
 **Status:** PO product decisions LPR-02–LPR-06 APPROVED; technical lock protocol remains OPEN / NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** Candidate global lock protocol for CMD-001–054 and asynchronous finalizers  
@@ -267,3 +267,4 @@ Until LPR-11 is resolved, CMD-001–007 cannot receive normalized candidate-rank
 - **0.2.2 — 2026-11-24:** Aligned the L100/L110 resource examples with mutable notification policy/inbox/delivery state and append-only notification escalation/access facts; added per-command logical mappings for CMD-049–054 and explicitly retained queue isolation, callback-boundary and worker-security gaps. No technical lock decision was approved and no implementation authority changed.
 - **0.2.3 — 2026-11-24:** Corrected the recommended-order summary to include L100 dependent mutable aggregates between L90 inspection and L110 append-only facts, matching the rank table. Candidate order remains unapproved.
 - **0.3.0 — 2026-11-24:** Added LPR-11 to resolve the previously unclassified `app_users`, `user_roles` and `user_scope_grants` lock classes and their ordering against T-14 capacity and project/session parent fences. Added an explicit static gap analysis for CMD-001–007. No rank or technical protocol was approved.
+- **0.3.1 — 2026-11-24:** Reordered §11.2 beneath the §11.1 reconciliation rules for correct document hierarchy and clarified the unresolved identity/authorization rank gap. No decision status changed.
