@@ -139,6 +139,12 @@ The role/action matrix above is descriptive only and does not grant permissions.
 The canonical permission registry, legacy-code mapping, role grants, command EXECUTE grants and table RLS remain open review items. No deployed authorization policy is claimed.
 
 
+
+
+## Command authorization verification matrix dependency
+
+Use ../02-architecture/COMMAND-AUTHORIZATION-VERIFICATION-MATRIX.md as the command-family verification crosswalk. It maps 27 logical families to proposed permissions, actor/scope/SoD rules, current RLS data classes, audit events and 36 planned design cases. The current Table-by-Table RLS Policy Catalogue remains the exact proposed 41-table inventory. Neither document establishes deployed RLS or grants. Command-level schemas, exact RPC EXECUTE grants, role/grantor approval and executable tests remain open.
+
 ## Canonical permission registry dependency
 
 Use ../02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md as the proposed canonical vocabulary and command mapping. The role/action matrix in this document is descriptive and does not grant authority. Final role-to-permission mapping, grant/revoke authority, exact scope predicates, per-object RLS and RPC EXECUTE grants remain open pending PO/security review. Evidence read/export and audit read/export are separate capabilities.
