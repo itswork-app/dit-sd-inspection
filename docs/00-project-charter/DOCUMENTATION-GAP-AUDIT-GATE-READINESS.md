@@ -175,7 +175,7 @@ G5 remains BLOCKED. G9 remains NOT READY. G10 remains NOT AUTHORIZED. The comple
 
 ## Concurrency/version-token proposal update — 2026-11-24
 
-A dedicated decision-ready proposal is now available: [CONCURRENCY-001 — Concurrency and Version Token Reconciliation](../02-architecture/CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md) v0.1.0. The complete 54-command crosswalk links it from [CMD-001–054 Cross-Command Reconciliation](../02-architecture/CMD-001-054-CROSS-COMMAND-RECONCILIATION.md) v0.8.0.
+A dedicated decision-ready proposal is now available: [CONCURRENCY-001 — Concurrency and Version Token Reconciliation](../02-architecture/CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md) v0.1.0. The complete 54-command crosswalk links it from [CMD-001–054 Cross-Command Reconciliation](../02-architecture/CMD-001-054-CROSS-COMMAND-RECONCILIATION.md) v0.8.1.
 
 The proposal maps:
 - missing aggregate tokens for role/scope grants, projects, sessions, capacity settings, instruments, associations and attendance records;
@@ -189,14 +189,14 @@ The proposal maps:
 
 ## Global lock/concurrency graph update — 2026-11-24
 
-[LOCK-GRAPH-001 — Global Lock-Order and Concurrency Graph Reconciliation](../02-architecture/GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md) v0.3.0 records the cross-command lock-order disagreements and proposes a candidate resource hierarchy, command/race matrix, potential deadlock inversions, lock-manifest requirements and 41 planned concurrency tests, including explicit cross-project canonical-identity collisions, cross-project claim arbitration, T-14 eligibility writers, instrument publish/deactivation, safety withdrawal, parent-fenced async finalizers and immutable notification-policy fan-out.
+[LOCK-GRAPH-001 — Global Lock-Order and Concurrency Graph Reconciliation](../02-architecture/GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md) v0.3.1 records the cross-command lock-order disagreements and proposes a candidate resource hierarchy, command/race matrix, potential deadlock inversions, lock-manifest requirements and 41 planned concurrency tests, including explicit cross-project canonical-identity collisions, cross-project claim arbitration, T-14 eligibility writers, instrument publish/deactivation, safety withdrawal, parent-fenced async finalizers and immutable notification-policy fan-out.
 
 **Disposition:** DGA-B18 PARTIAL. PO product decisions LPR-02–LPR-06 are recorded; the proposal still does not prove an acyclic graph, resolve the complete CMD-026 and competing-command lock paths, alter canonical command contracts or authorize implementation. G3/G4/G5/G7 remain NOT READY/BLOCKED as recorded above; G9 remains NOT READY and G10 remains NOT AUTHORIZED. No tests or runtime lock inspection were executed.
 
 
 ## Command-level lock manifest update — 2026-11-24
 
-[LOCK-MANIFEST-001](../02-architecture/COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.3.0 inventories all 54 command IDs, with source-stated resource/lock sequence, shared invariant, competing command paths, stated constraints and unresolved decisions. Static inventory coverage is 54/54; lock-complete certification is 0/54. DGA-B19 remains OPEN. This does not imply any command is approved, executable or deadlock-free. G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED; no tests or runtime inspection were performed.
+[LOCK-MANIFEST-001](../02-architecture/COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.3.1 inventories all 54 command IDs, with source-stated resource/lock sequence, shared invariant, competing command paths, stated constraints and unresolved decisions. Static inventory coverage is 54/54; lock-complete certification is 0/54. DGA-B19 remains OPEN. This does not imply any command is approved, executable or deadlock-free. G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED; no tests or runtime inspection were performed.
 
 
 ## Lock protocol decision-resolution update — 2026-11-24
