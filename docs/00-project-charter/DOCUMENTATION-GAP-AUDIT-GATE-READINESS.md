@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.5
+**Version:** 1.11.6
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -304,7 +304,7 @@ The CMD-011–015 detailed review was statically compared with CMD-010 closure:
 
 ## CMD-011–020 Product Owner approval synchronization — 2026-11-24
 
-The Product Owner explicitly approved the product-semantic recommendations for CMD-011–020. The Decision Register contains the dated decision record; decision package v0.2.1 records the approved interpretation and response matrix. This closes the PO decision-response dependency for these ten commands only.
+The Product Owner explicitly approved the product-semantic recommendations for CMD-011–020. The Decision Register contains the dated decision record; decision package v0.2.2 records the approved interpretation and response matrix. This closes the PO decision-response dependency for these ten commands only.
 
 The following controlled documents have been reconciled to the approved semantics:
 - CMD-011–020 Detailed Contract Review v0.3.2: product semantics marked PO APPROVED; engineering/security contract findings remain open.
@@ -334,3 +334,12 @@ These changes do not alter any technical lock recommendation or certify a comman
 ## Engineering/Security technical resolution proposal — 2026-11-24
 
 [TECH-RESOLUTION-LPR-001](../02-architecture/ENGINEERING-SECURITY-TECHNICAL-RESOLUTION-PACKAGE-LPR-001-011.md) v0.1.0 now defines proposed resolutions for LPR-01 and LPR-07–LPR-11, including identity/authorization rank classes, compatible project/session parent-fence modes, T-14 serialization participation, worker fencing/callback boundaries, 54-command manifest normalization criteria and an adversarial concurrency plan. This is a review package, not technical approval or evidence. LPR-01/LPR-07/LPR-08/LPR-09/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. DGA-B14 PARTIAL, DGA-B17 OPEN, DGA-B18 PARTIAL, DGA-B19 OPEN and DGA-B21 OPEN remain unchanged; 54/54 inventoried, 0/54 certified; G9 NOT READY; G10 NOT AUTHORIZED. No SQL, migration, CI, test, live database inspection, deployment or merge occurred.
+
+
+## LPR technical resolution and T-07 state correction — 2026-11-24
+
+[TECH-RESOLUTION-LPR-001](../02-architecture/ENGINEERING-SECURITY-TECHNICAL-RESOLUTION-PACKAGE-LPR-001-011.md) v0.1.0 is now cross-referenced by LOCK-PROTOCOL-DECISION-RESOLUTION v0.3.3, GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH v0.4.4 and COMMAND-LEVEL-LOCK-MANIFEST v0.4.6. It provides proposed L15/L16/L17 identity/authorization ranks, conditional L18 authorization-catalog handling, a project-before-session parent-fence recommendation, T-14 writer coverage, worker fencing/callback requirements, 54-manifest normalization schema and LPR-10 test plan. These are review proposals only; LPR-01/LPR-07/LPR-08/LPR-09/LPR-11 remain OPEN and LPR-10 NOT EXECUTED.
+
+The CMD-011–020 decision package is v0.2.2 and explicitly corrects its older candidate state wording to controlling T-07: DRAFT/ACTIVE/PAUSED/CLOSED only; CLOSE_REQUESTED is action/event only. RTM adds LOCK-ORDER-001, AUTH-LOCK-001, PARENT-FENCE-001, WORKER-FENCE-001, LOCK-MANIFEST-001 and CONCURRENCY-TEST-001. RAID adds D-030/R-030/R-031. No technical approval or test evidence is inferred.
+
+**Disposition unchanged:** DGA-B14 PARTIAL; DGA-B17 OPEN; DGA-B18 PARTIAL; DGA-B19 OPEN; DGA-B21 OPEN; 54/54 inventoried, 0/54 certified; G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED. No code, SQL, migration, grant, CI, test, live database inspection, deployment or merge occurred.
