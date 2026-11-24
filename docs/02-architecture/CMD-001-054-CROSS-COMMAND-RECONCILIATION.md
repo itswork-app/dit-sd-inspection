@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.20
+**Version:** 0.8.21
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -513,4 +513,4 @@ The stable inventory remains **54/54 traceability IDs**. CMD-045–048 are PO-ap
 
 ## 16. Uniform application lock-manifest register — 2026-11-24
 
-[LOCK-NORMALIZATION-001](COMMAND-LOCK-MANIFEST-NORMALIZATION-REGISTER-001.md) v0.1.0 is the consolidated 50-command candidate register. Static inventory check confirms 50 unique application command IDs across six groups (10 + 10 + 10 + 10 + 4 + 6), with no duplicates and no missing in-scope IDs. CMD-045–048 remain external control-plane IDs and are excluded. The register preserves source conflicts and unknown physical fields as OPEN; it does not approve a lock mode or certify an acyclic graph. LPR-09 OPEN; LPR-10 NOT EXECUTED; 0/50 certified. Current linked sources: LOCK-MANIFEST-001 v0.4.24; LOCK-GRAPH-001 v0.4.17; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.11; TECH-RESOLUTION-LPR-001 v0.1.9; DGA-001 v1.11.44.
+[LOCK-NORMALIZATION-001](COMMAND-LOCK-MANIFEST-NORMALIZATION-REGISTER-001.md) v0.1.1 is the consolidated 50-command candidate register. Static inventory check confirms 50 unique application command IDs across six groups (10 + 10 + 10 + 10 + 4 + 6), with no duplicates and no missing in-scope IDs. CMD-045–048 remain external control-plane IDs and are excluded. CMD-PHYSICAL-CROSSWALK-001 v0.1.0 records physical read/write proposals for all 50 application IDs, including explicit OPEN/BLOCKED entries for CMD-041–044. The register preserves source conflicts and unknown physical fields as OPEN; it does not approve a lock mode or certify an acyclic graph. LPR-09 OPEN; LPR-10 NOT EXECUTED; 0/50 certified. Current linked sources: LOCK-MANIFEST-001 v0.4.24; LOCK-GRAPH-001 v0.4.17; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.11; TECH-RESOLUTION-LPR-001 v0.1.10; DGA-001 v1.11.45.
