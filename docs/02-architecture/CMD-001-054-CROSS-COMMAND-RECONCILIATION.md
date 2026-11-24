@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.10
+**Version:** 0.8.11
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -439,15 +439,15 @@ No route, RPC, table, permission grant, secret-manager resource, CI rule or depl
 |---|---:|---|
 | NLA-001 Notification Lifecycle and Delivery Architecture | 0.1.2 | Domain lifecycle, six tables, worker lease fencing, integration callback and planned tests |
 | CMD-049–054 Detailed Contract Review | 0.1.1 | Per-command request, authorization, transaction, idempotency and blocker review |
-| PostgreSQL Command Contract Catalogue | 0.4.3 | CMD-049..054 logical request and transaction boundary |
+| PostgreSQL Command Contract Catalogue | 0.4.4 | CMD-001..054 logical request, transaction boundary and candidate-only lock-order wording |
 | Physical Database Schema | 0.4.1 | safe_payload, outbox/delivery lease fields, read_at set-once semantics |
-| Table-by-Table RLS Catalogue | 0.2.1 | Recipient-self inbox and default-deny worker/configuration tables |
+| Table-by-Table RLS Catalogue | 0.2.2 | Recipient-self inbox and default-deny worker/configuration tables; dismiss remains inactive |
 | API and Transaction Contracts | 0.2.1 | User commands, internal worker boundary and INT-NOTIF-001 |
 | Audit Event Catalogue | Current NLA linkage addendum | First-read event, policy publication and escalation event semantics |
-| Command-Level Lock Manifest | 0.4.14 | Worker lease generation and short claim/finalize transactions |
-| Concurrency and Version Token Reconciliation | 0.1.4 | CMD-050 no row-version; CMD-052/053 lease fencing; CMD-054 DB time |
+| Command-Level Lock Manifest | 0.4.15 | Current LOCK-GRAPH-001 v0.4.10 parent pointer; candidate-only, 0/54 certified |
+| Concurrency and Version Token Reconciliation | 0.1.5 | CMD-050 notification_id-only request; CMD-052/053 lease fencing; CMD-054 DB time |
 | QA Catalogue | 0.3.5 | TC-NOTIF-001..026 and TC-FN-SEC-025-064..069 |
-| RTM / RAID / DGA | Updated 2026-11-24 | NOTIF-007..012; D-034..D-036/R-034..R-035; gate blockers |
+| RTM / RAID / DGA | RTM-001 v0.1.0; RAID-001 v0.1.0; DGA-001 v1.11.18 | Unique requirement/risk IDs; NOTIF-007..012; D-034..D-036/R-034..R-035; gate blockers |
 
 ### 2. Command-to-domain crosswalk
 
@@ -495,3 +495,8 @@ No route, RPC, table, permission grant, secret-manager resource, CI rule or depl
 - G9: NOT READY. G10: NOT AUTHORIZED.
 
 This crosswalk is static documentation evidence only. It does not approve a command, worker, provider, route, function, permission grant, table, policy, migration or production action.
+
+
+## Final documentation consistency audit — current source snapshot (2026-11-24)
+
+The current source versions in §1 supersede older source-version references in this cross-command document only where those references are presented as current. Earlier checkpoint sections remain dated historical evidence. The canonical command catalogue now explicitly labels the global lock ranks as a candidate proposal, not an approved order. RTM-001 and RAID-001 have unique identifiers after the final audit correction. The local Markdown references in the current cross-command and linked core documents were checked against the repository tree; no missing local targets were found in the reviewed set.
