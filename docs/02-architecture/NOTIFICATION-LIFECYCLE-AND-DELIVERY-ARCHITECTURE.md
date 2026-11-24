@@ -1,7 +1,7 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.18  
+**Version:** 0.1.19  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
@@ -481,7 +481,7 @@ Current controlled L05 references are:
 - Source-event path map NLA-L05-SOURCE-MAP-001 v0.1.0.
 - Eligibility-writer matrix NLA-L05-WRITER-MATRIX-001 v0.1.4.
 - LOCK-MANIFEST-001 v0.4.30 §7.7 and §7.13; LOCK-GRAPH-001 v0.4.23 §§28–30.
-- RTM-001 v0.1.12; RAID-001 v0.1.11; QA Catalogue v0.5.2; L05-REVIEW-001 v0.1.7; DGA-001 v1.11.71; NLA-EVENT-TRIAGE-001 v0.1.0; SCOPE-RECON-001 v0.1.1; POQ-04 PO APPROVED.
+- RTM-001 v0.1.12; RAID-001 v0.1.11; QA Catalogue v0.5.2; L05-REVIEW-001 v0.1.7; DGA-001 v1.11.71; NLA-EVENT-TRIAGE-001 v0.1.1; SCOPE-RECON-001 v0.1.1; POQ-04 PO APPROVED.
 
 Earlier dated sections retain the versions that were actually reviewed at those checkpoints and are historical, not current pointers. The CMD-031–040 overlay remains candidate-only; 0/40 resolver paths and 0/50 application commands are certified. Candidate snapshot relation/header remain NOT ADMITTED. NRL-T01..T13 and TC-NOTIF-001..072 remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE.
 
@@ -538,7 +538,7 @@ SCOPE-RECON-001 is a scope-control review artifact, not a PRD amendment, PO appr
 
 ## 24. Product workflow event triage — NLA-EVENT-TRIAGE-001
 
-[NLA-EVENT-TRIAGE-001](NOTIFICATION-EVENT-CANDIDATE-TRIAGE-001.md) v0.1.0 audits each CMD-001–040 event declaration against the PRD's actual inspection workflows. It classifies source declarations as PO discussion candidates, operational/control events, excluded ordinary events or unresolved composite/conditional tokens. This is not an enabled event allowlist.
+[NLA-EVENT-TRIAGE-001](NOTIFICATION-EVENT-CANDIDATE-TRIAGE-001.md) v0.1.1 audits each CMD-001–040 event declaration against the PRD's actual inspection workflows. It classifies source declarations as PO discussion candidates, operational/control events, excluded ordinary events or unresolved composite/conditional tokens. This is not an enabled event allowlist.
 
 The Product Owner discussion shortlist is deliberately limited to: account.approved, account.rejected, role.revoked, project.closed, exact session.closed (not session.close_requested), assignment.created, assignment.changed, inspection.submitted (with inspection_revision.created treated as a related fact pending deduplication), inspection.returned_for_correction, inspection.approved and inspection.reopened. Inclusion in this shortlist means only that a human-facing notice may be useful; no event, recipient or channel is approved.
 
