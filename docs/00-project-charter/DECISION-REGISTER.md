@@ -49,6 +49,7 @@ Only explicitly approved decisions are marked APPROVED.
 - Detailed report metric implementation and acceptance-test evidence (T-05 direction approved).
 - Detailed project closure gate enforcement and reconciliation evidence (T-06 direction approved).
 - Detailed session pause/reopen command and permission tests (T-07 direction approved).
+- Whether a privilegedly reopened CLOSED session may accept a new inspection attempt under the same session_id; ABORTED attempts remain terminal and must never be reactivated (SES-001 technical/product edge case).
 - Detailed attendance evidence acceptance and verification tests (T-08 direction approved).
 - Offline package, conflict resolution, and device recovery details.
 - Evidence file limits, retention, deletion, privacy, and access policy.
