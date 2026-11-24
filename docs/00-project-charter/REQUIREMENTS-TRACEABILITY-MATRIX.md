@@ -422,3 +422,8 @@ The following technical details remain open: exact selector grammar and snapshot
 | NOTIF-015 | Notification snapshot writers, CMD-052 fan-out, CMD-054 scheduler and CMD-053 callback ingress must include all source/recipient/scope/queue/policy locks and implicit FK KEY SHARE/unique-index/trigger/helper edges in the global resource order; no lower-rank resource may be acquired after a higher-rank lock. | LPR-09; T-18; Engineering/Database/Security | LOCK-MANIFEST-001 v0.4.26 §7.6; LOCK-GRAPH-001 v0.4.19 §27; CMD-049–054 review v0.1.3 §17; RAID R-037 | TC-NOTIF-036–040; LG-41–45; exact PostgreSQL lock traces, deterministic concurrency tests and full acyclic graph proof | OPEN — CRITICAL; 0/50 LOCK-CERTIFIED |
 
 All related notification and concurrency tests remain PLANNED / NOT EXECUTED. These requirements do not approve a new table, migration, index, RLS policy, worker identity, function, grant or implementation. G9 remains NOT READY; G10 remains NOT ACTIVE.
+
+
+### NOTIF-015 evidence pointer update — 2026-11-24
+
+[NOTIFICATION-SOURCE-EVENT-AND-SNAPSHOT-LOCK-RECONCILIATION-001](../02-architecture/NOTIFICATION-SOURCE-EVENT-AND-SNAPSHOT-LOCK-RECONCILIATION-001.md) v0.1.0 supplies the static CMD-001–040 source-event search inventory, CMD-054 scheduler separation, candidate snapshot FK/implicit-lock crosswalk and NSL-T01..T10 test specifications. This adds a traceability pointer only. NOTIF-015 remains OPEN — CRITICAL until the event/policy allowlist, exact FK definitions, all source/recipient/scope/queue/policy lock edges, complete acyclic graph and authorized runtime concurrency evidence are approved and verified. TC-NOTIF-036..040 remain PLANNED / NOT EXECUTED; lock certification remains 0/50.
