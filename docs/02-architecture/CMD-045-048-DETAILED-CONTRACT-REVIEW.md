@@ -26,7 +26,7 @@ The four stable IDs remain for traceability only. They are not executable applic
 
 ## 1. Purpose and non-authority
 
-This document records the engineering boundary for four intentionally blocked logical commands in the PostgreSQL Command Contract Catalogue. It explains why no executable contract can responsibly be specified yet, identifies the minimum evidence and authority required to reopen each command, and defines prohibitions that prevent a draft from being mistaken for authorization.
+This document records the engineering boundary for four traceability IDs assigned to external institutional/provider/release control planes. It explains why no executable contract can responsibly be specified yet, identifies the minimum evidence and authority required to reopen each command, and defines prohibitions that prevent a draft from being mistaken for authorization.
 
 This is a documentation-only review. It does not approve institutional policy, designate an institutional officer, establish provider ownership, create a security-case or release-record system, approve a route/RPC/function, or authorize implementation.
 
@@ -82,7 +82,7 @@ Until the relevant authority and design gates close:
 
 ### 4.1 Intent and status
 
-The catalogue describes a logical governance operation for applying or managing retention and legal-hold controls over a defined record scope. The command is **BLOCKED_BY_POLICY** because T-10 institutional policy is not approved and the physical retention/legal-hold model is absent.
+CMD-045 is a PO-approved external control-plane deferral, not an application command. The institutional records/legal/privacy operation remains blocked by T-10 because policy, authority and the external lifecycle model are not established.
 
 The operation is not ordinary administrative CRUD. Retention, disposition and legal hold can affect institutional recordkeeping, legal obligations, evidence integrity and data-subject rights. A PO preference or engineering proposal cannot supply the missing institutional authority.
 
@@ -170,7 +170,7 @@ CMD-045 may be reopened only when DGA-B04 is supported by written institutional 
 
 ### 5.1 Intent and status
 
-The catalogue describes a restricted operation for a designated security reviewer to review and act on a security incident within a minimum-necessary case scope. It is **BLOCKED_BY_SCHEMA_AUTHORITY** because the designated institutional security authority and the security-case data model are not established.
+CMD-046 is a PO-approved external control-plane deferral, not an application command. The institution-designated incident-response process remains open because accountable security authority, RACI, case system and evidence-handling rules are not established.
 
 The current threat model lists security incidents and monitoring as concerns, but it does not create incident-response authority, an approved case lifecycle, evidence-handling policy, retention schedule or operational service-level agreement.
 
@@ -258,7 +258,7 @@ CMD-046 may be reopened only after the institutional security owner, incident-re
 
 ### 6.1 Intent and status
 
-The catalogue describes a controlled operation for changing provider configuration. It is **BLOCKED_BY_T12** because the T-12 provider-ownership arrangement has not been operationally established. Actual legal/account owner, billing owner, custodians, region, provider plan, quotas, budget and recovery entitlements remain unverified.
+CMD-047 is PO-approved out of application scope. Provider configuration remains under provider-native controls and approved secret management; T-12 provider ownership is still blocked because legal/account owner, billing owner, custodians, region, plan, quotas, budget and recovery entitlements remain unverified.
 
 The command must not be interpreted as permission to store provider secrets in PostgreSQL or expose a generic configuration editor to application administrators.
 
@@ -337,7 +337,7 @@ CMD-047 may be reopened only when DGA-B05 has signed ownership/RACI and provider
 
 ### 7.1 Intent and status
 
-The catalogue describes a controlled production release operation for deployment or rollback. It is **BLOCKED_BY_AUTHORITY** because named release ownership, approval, separation of duties, deployment audit model and operational acceptance are not established.
+CMD-048 is PO-approved out of application scope. Production release and rollback remain under protected source-control/deployment systems; named release ownership, approval, separation of duties, deployment evidence and operational acceptance remain open.
 
 Production deployment is not an ordinary application-domain database command. A PostgreSQL function or generic application endpoint must not become an alternate control plane for GitHub or Vercel deployment.
 
@@ -504,7 +504,7 @@ No tests were run for this document. No live database, Supabase, Storage, GitHub
 
 1. Review CMD-049–054 separately against NLA-001, INS-015 and notification worker identity/ACL blockers.
 2. Complete a command-level crosswalk for CMD-001–054 against physical schema, permission registry, RLS catalogue, audit catalogue, API/route design, RTM, QA and DGA.
-3. Keep CMD-045–048 blocked until the exact authority and evidence listed above are supplied and approved.
+3. Keep CMD-045–048 non-executable in the application; their external control-plane dependencies remain blocked/open until the exact authority and evidence listed above are supplied and approved.
 4. Reassess G9 only after the DGA closure queue has objective evidence; G10 remains a separate explicit authorization.
 
 **Final boundary:** This review changes documentation only. No source code, SQL, migration, grant/revoke, RLS, Storage policy, live database, provider configuration, production release, deployment, CI execution or merge was performed.
