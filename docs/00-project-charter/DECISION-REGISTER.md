@@ -38,7 +38,7 @@ Only explicitly approved decisions are marked APPROVED.
 | INS-013 | Scoped assignments and bulk print | APPROVED | Bulk print logs batch and per-document events |
 | INS-014 | Role-based operational dashboards | APPROVED | Data scope follows assignments |
 | INS-015 | Scoped notification and escalation management | APPROVED | SLA values configurable; examples are not fixed |
-| INS-016 | Audit trail and activity monitoring | PROPOSED | Not yet approved |
+| INS-016 | Audit trail and activity monitoring | PO APPROVED (T-15 option A) | Append-only audit policy; critical mutation + audit atomicity; fail-closed on audit failure; least-privilege read/export. Institutional classification, retention, deletion/disposition, legal hold and network-metadata decisions remain BLOCKED under T-10; implementation and tests are not authorized/verified. |
 | OPS-001 | Inspector capacity is configurable from minimum 1 to maximum 100, default 50, across both locations combined | APPROVED | User clarification, 2026-11-23; Super Admin controls the configured capacity and allocation between locations; the limit is global, not per location; values below 1 or above 100 are rejected |
 
 ## Open decisions
