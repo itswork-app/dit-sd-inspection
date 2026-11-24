@@ -1,10 +1,10 @@
 # CMD-011–020 Detailed Contract Review
 
 **Status:** PO product semantics APPROVED (2026-11-24); Engineering/Security contract review OPEN; NOT approved for implementation  
-**Version:** 0.3.6  
+**Version:** 0.3.7  
 **Date:** 2026-11-24  
 **Scope:** CMD-011 through CMD-020  
-**Controls:** T-14 Inspector capacity; T-15 append-only audit direction; T-17 instrument governance; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
+**Controls:** T-14 Inspector capacity; T-15 append-only audit direction; T-17 instrument governance; T-18 Option A command boundary; G9 NOT READY; G10 NOT ACTIVE.
 
 ## 1. Purpose, authority and source hierarchy
 
@@ -1219,4 +1219,9 @@ The Decision Register's CMD-011–020 approval addendum and decision package v0.
 
 ### Authority and status boundary
 
-Product-semantic review for CMD-011–020 is **PO APPROVED**. This does not close engineering findings F-011-01 through F-019/020-01, approve any candidate lock sequence, or close DGA-B14/B17/B18/B19/B21. T-14 and T-17 are reaffirmed, not reopened. All tests remain planned/not executed; G9 NOT READY; G10 NOT AUTHORIZED.
+Product-semantic review for CMD-011–020 is **PO APPROVED**. This does not close engineering findings F-011-01 through F-019/020-01, approve any candidate lock sequence, or close DGA-B14/B17/B18/B19/B21. T-14 and T-17 are reaffirmed, not reopened. All tests remain planned/not executed; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 10. Current gate status synchronization — 2026-11-24
+
+The current controlling authorization state is recorded in root `AGENTS.md` v1.2.2 and MIB-001: conditional Product Owner implementation authorization has been received; G9 remains NOT READY; G10 remains NOT ACTIVE pending verified G9 and a separate approved G10 activation record. Historical wording in prior snapshots is not current authorization. This status correction does not close any engineering/security finding, approve a command contract or lock protocol, or authorize implementation. All CMD-011–020 execution tests remain PLANNED / NOT EXECUTED.
