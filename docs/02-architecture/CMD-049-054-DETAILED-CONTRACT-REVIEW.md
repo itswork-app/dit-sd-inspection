@@ -6,7 +6,7 @@
 **Date:** 2026-11-24  
 **Scope:** CMD-049 through CMD-054  
 **Repository phase:** Documentation / SSOT maturation  
-**Controls:** INS-015; INS-016 / T-15; T-10; T-18; NLA-001 v0.1.4; POQ-01..03 approved 2026-11-24; DGA-B09, DGA-B10, DGA-B11, DGA-B12, DGA-B13; G9 NOT READY; G10 NOT ACTIVE.
+**Controls:** INS-015; INS-016 / T-15; T-10; T-18; NLA-001 v0.1.5; POQ-01..03 approved 2026-11-24; DGA-B09, DGA-B10, DGA-B11, DGA-B12, DGA-B13; G9 NOT READY; G10 NOT ACTIVE.
 
 ## 1. Purpose and authority boundary
 
@@ -547,7 +547,7 @@ This addendum records the static contract decisions and remaining approval bound
 | CMD-054 escalation | No caller evaluation_time; one database UTC instant per transaction | named SLA start event, per-policy elapsed/business-time mode, ELAPSED_UTC initial default, quiet-hours delivery deferral without SLA pause, and unapproved calendar/pause semantics |
 | Dismissal | dismissed_at reserved only | POQ-03 approval; no dismiss command, permission or browser mutation is in MVP |
 
-The six notification tables remain a proposed subset of the 48-table physical/RLS inventory. INT-NOTIF-001 is an integration contract, not a new CMD ID or table. TC-NOTIF-001..040, TC-RLS-024-049 and TC-FN-SEC-025-064..071 remain PLANNED / NOT EXECUTED. Worker identities, exact function owners/EXECUTE ACLs, live RLS/grants, provider capability and T-10 institutional retention/privacy remain open. G9 NOT READY; G10 NOT ACTIVE.
+The six notification tables remain a proposed subset of the 48-table physical/RLS inventory. INT-NOTIF-001 is an integration contract, not a new CMD ID or table. TC-NOTIF-001..041, TC-RLS-024-049 and TC-FN-SEC-025-064..071 remain PLANNED / NOT EXECUTED. Worker identities, exact function owners/EXECUTE ACLs, live RLS/grants, provider capability and T-10 institutional retention/privacy remain open. G9 NOT READY; G10 NOT ACTIVE.
 
 
 ## Product Owner notification decisions — POQ-001 (2026-11-24)
