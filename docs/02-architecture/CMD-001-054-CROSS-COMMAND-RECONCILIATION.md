@@ -6,7 +6,7 @@
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
 **Authority:** AGENTS.md, MIB-001, DGA-001, IRG-001, T-10, T-14–T-18 and the approved Decision Register  
-**Controls:** G2–G10; DGA-B04–B16; G9 NOT READY; G10 NOT AUTHORIZED.
+**Controls:** G2–G10; DGA-B04–B18; G9 NOT READY; G10 NOT AUTHORIZED.
 
 ## 1. Purpose and conclusion
 
@@ -296,7 +296,8 @@ This reconciliation does not close any DGA, RTM or RAID item. A status change re
 | X-12 | High | CMD-001–054 | Reconcile every command to RTM, QA case IDs, fixtures, expected outcomes and evidence artifacts | Engineering + QA + PO | G7 |
 | X-13 | High | All | Execute live read-only Supabase inventory and reconcile actual objects/ACL/RLS after authorized access | Security + authorized DB owner | G4/G9 |
 | X-14 | High | All | Verify GitHub rulesets, required CI checks, secrets scanning and release workflow | Repository administrator | G0/G8 |
-| X-15 | High | All | Reconcile DGA/RAID/RTM with accepted evidence; no status-only closure | Document owner + PO | G9 |\n| X-16 | Critical | CMD-001–054 | Reconcile global lock ranks, CMD-023/024/026 order, T-14 eligibility serialization, parent closure fences, claim/inspection ordering and worker lease boundaries; add lock manifests and execute adversarial concurrency tests | Engineering + Security + PO; Operations/Institution where applicable | G3/G4/G5/G7/G9 |
+| X-15 | High | All | Reconcile DGA/RAID/RTM with accepted evidence; no status-only closure | Document owner + PO | G9 |
+| X-16 | Critical | CMD-001–054 | Reconcile global lock ranks, CMD-023/024/026 order, T-14 eligibility serialization, parent closure fences, claim/inspection ordering and worker lease boundaries; add lock manifests and execute adversarial concurrency tests | Engineering + Security + PO; Operations/Institution where applicable | G3/G4/G5/G7/G9 |
 
 ## 7. Gate disposition
 
