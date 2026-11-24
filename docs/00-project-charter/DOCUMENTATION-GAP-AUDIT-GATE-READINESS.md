@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.66
+**Version:** 1.11.67
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -726,3 +726,12 @@ POQ-04 has been added to the canonical Decision Register as **PROPOSED — NOT A
 The Product Owner approved all five POQ-04 recommendations without changes. DECISION-REGISTER.md now records PO APPROVED; NLA-L05-TDR-001 v0.1.6 and NLA-001 v0.1.12 carry the approved event-transition semantics; NLA-RESOLVER-LOCK-001 v0.1.11 records the product-decision disposition; QA Catalogue v0.4.8 aligns TC-NOTIF-055..059 to the approved matrix; L05-REVIEW-001 v0.1.5 records the review outcome.
 
 **F-05 status:** PO decision dependency RESOLVED; technical finding OPEN pending Security/Engineering validation of exact selector grammar, current-scope and parent-state suppression, retry-after-reactivation, audit semantics and final L05 design consistency. Do not mark F-05 CLOSED until that validation is documented. F-03, F-04 and F-07 remain OPEN. Resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; NRL-T01..T13 and TC-NOTIF-001..059 remain PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE. Documentation/static reconciliation only; no code, SQL, migration, grant, RLS, live DB, runtime test, deployment or merge.
+
+
+### F-05 technical validation decomposition — 2026-11-24
+
+Static review after POQ-04 approval decomposes the remaining F-05 technical work into five controlled acceptance items in NLA-L05-TDR-001 v0.1.7 §4.2.4: F05-T1 selector grammar/dependency universe; F05-T2 event-specific dispatch authorization; F05-T3 suppression/retry state machine; F05-T4 append-only audit contract; and F05-T5 atomic snapshot/policy/event/outbox binding. Key hazard: a blanket current-active-parent dispatch check can suppress a project/session closure notice for all intended recipients; exact event-specific behavior must be reviewed, not inferred.
+
+NLA-001 v0.1.13 records the dispatch, retry and audit gaps. Writer matrix v0.1.3 records that selector dependency universe is not frozen and the physical writer inventory therefore remains incomplete. QA v0.4.9 adds TC-NOTIF-060..064, all PLANNED / NOT EXECUTED. L05-REVIEW-001 v0.1.6 remains REQUEST CHANGES — NOT TECHNICALLY APPROVED.
+
+**F-05:** PO decision dependency RESOLVED; technical finding OPEN until F05-T1..T5 are specified, approved by Security/Engineering (and Database/Records/Privacy where applicable), and supported by authorized evidence. F-04 remains OPEN because selector dependency/writer inventory is incomplete. F-03 and F-07 remain OPEN. Resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; NRL-T01..T13 and TC-NOTIF-001..064 PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE. Documentation/static analysis only; no code, SQL, migration, grant, RLS, live DB, runtime test, deployment or merge.
