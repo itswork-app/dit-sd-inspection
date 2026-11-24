@@ -1,7 +1,7 @@
 # Notification Event Registry — Technical Reconciliation
 
 **Document ID:** NLA-EVENT-TECH-RECON-001  
-**Version:** 0.1.7  
+**Version:** 0.1.8  
 **Status:** STATIC TECHNICAL RECONCILIATION — PARTIAL; NREG-001..011 (CMD-002/003/005/010/013/014/015/029/030/031/032) REVIEWED, ALL PARTIAL / UNRESOLVED / NOT ENABLED  
 **Date:** 2026-11-24  
 **Branch:** `docs/notification-resolver-lock-closure`  
@@ -679,3 +679,12 @@ NREG-011 is now `PARTIAL_STATIC_REVIEW` only. Canonical contract, recipient mapp
 The detailed approval/reopen acceptance matrix is maintained in [TECH-RESOLUTION-LPR-001 v0.1.11](ENGINEERING-SECURITY-TECHNICAL-RESOLUTION-PACKAGE-LPR-001-011.md) §18. It assigns product-semantic decisions to PO/operational authority, permission and SoD review to Security, physical identity/constraint/transaction/lock proof to Engineering and Database, and planned verification review to QA. The matrix is a review instrument only; it does not grant authority or close an item.
 
 The controlling lock decision status is [LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.13](LOCK-PROTOCOL-DECISION-RESOLUTION.md): LPR-01/LPR-07/LPR-09/LPR-11 OPEN and LPR-10 NOT EXECUTED. CMD-031/032 source order, candidate rank order, and complete writer/implicit-edge graph remain unreconciled and uncertified. No change to NREG row admission or publication status follows from this pointer.
+
+
+## 32. CMD-030/031/032 review-decision arbiter pointer — 2026-11-24
+
+[REVIEW-ARBITER-001 v0.1.0](REVIEW-DECISION-ARBITER-TECHNICAL-PROPOSAL-001.md) now records a bounded candidate for one terminal review decision per immutable revision. CMD-030 RETURN and CMD-031 APPROVE share the same inspection serialization point and proposed physical uniqueness arbiter. The preferred unique constraint depends on confirmation that `review_events` stores terminal decisions only; a partial index depends on Database approval of the terminal decision vocabulary. Neither is approved or implemented.
+
+CMD-032 remains blocked on the physical mutable draft-context representation and one-active-draft arbiter. Reviewer assignment/SoD, exact lock ordering and implicit lock edges remain unresolved. This proposal does not establish an event producer, recipient mapping, selector, dispatch profile or event enablement.
+
+NREG-010 `inspection.approved` and NREG-011 `inspection.reopened` remain PARTIAL / UNRESOLVED / NOT ENABLED. Resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; QA PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE.
