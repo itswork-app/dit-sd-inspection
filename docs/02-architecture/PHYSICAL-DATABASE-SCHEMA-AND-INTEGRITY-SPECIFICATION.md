@@ -1,7 +1,7 @@
 # Physical Database Schema and Integrity Specification
 
 **Status:** Engineering specification draft — approval required before migrations  
-**Version:** 0.3.0  
+**Version:** 0.4.0  
 **Package:** L — Physical Data Model and Integrity  
 **Date:** 2026-11-23
 
@@ -291,3 +291,23 @@ The six notification tables above are proposed by [Notification Lifecycle and De
 T-13 requires durable batch identity and per-document outcomes. `print_batches` stores batch lifecycle and request identity; `print_events` stores every per-document attempt/outcome and optional batch reference. Batch status/counts are reconciled from latest per-document outcomes. Retry is failed-only and appends attempts; it never overwrites prior outcomes or claims physical printer success.
 
 All constraints, exact composite FKs, partial indexes, enum/check definitions and transaction/locking details remain subject to technical review before any migration. T-10 retention/disposition remains institutionally blocked.
+
+
+## CMD-011–020 Product Owner semantics — physicalization boundary (2026-11-24)
+
+The Product Owner has approved the product-semantic invariants in the Decision Register for CMD-011–020. This physical specification must conform to those invariants, but this approval is not a physical schema approval and does not authorize migrations.
+
+| Approved semantic invariant | Physical implication to reconcile | Current boundary |
+|---|---|---|
+| Session initial state is T-07 `DRAFT`; states remain DRAFT/ACTIVE/PAUSED/CLOSED | Session state CHECK/enum and command transition validation must use the canonical state vocabulary; no `PLANNED` or `CLOSE_REQUESTED` persisted state | Exact DDL/constraint and transition function remain unapproved |
+| Session times are UTC instants interpreted from project IANA timezone; DST-invalid/ambiguous local inputs rejected | Define timestamp type/precision and preserve project timezone source; validate input before persistence | No new timezone column or conversion function is approved by this addendum |
+| Session code immutable; metadata changes reasoned; dependent-work schedule changes rejected | Immutable identity rule, reason/audit payload, dependent-work predicate | Exact trigger/command enforcement and `sessions.row_version` remain open |
+| CMD-014 roster creation atomic; half-open assignment intervals | Assignment/member constraints and transaction boundary | Parent fences, exclusion/unique constraints and lock order require Engineering/DB review |
+| CMD-015 per-member effective_at; end history not delete; preserve submitted inspections | Membership history fields and FK/delete behavior must support end-dating and historical references | Exact column names, retention and active-claim behavior remain unresolved |
+| T-14 capacity predicate unchanged | Same qualifying-account predicate and one serialization point across every eligibility-changing writer | Existing capacity row and version semantics require technical validation |
+| CMD-017 session-scoped plans; unique allocation key; reject zero quantity; immutable published plans | Unique key on (target_plan_id, assignment_id, target_date), quantity CHECK, immutable publication boundary | Quantity units/range, project-wide exception and draft CAS remain open |
+| CMD-018 normalized instrument code unique; draft/inactive until publication | Persist or deterministically compute normalized code; unique constraint and assignment-selectability rule | Permitted ASCII alphabet, collation and normalization implementation require Engineering/Security approval |
+| CMD-019 complete declarative draft replacement; published snapshots immutable | Child reconciliation and immutable snapshot/hash representation | Schema allowlist, bounds, stable child keys, hash and CAS remain open |
+| CMD-020 T-17 explicit publish permission and immutable version pinning | Publication row/event, immutable child snapshot and assignment/session version references | Existing T-17 design remains subject to exact function/ACL/constraint review |
+
+**No inferred DDL:** This table records semantic obligations and missing physical decisions. It deliberately does not invent column names, data types, indexes, constraints, triggers, lock modes or migration order. G3/G5/G9 remain NOT READY; G10 NOT AUTHORIZED.
