@@ -1,7 +1,7 @@
 # CMD-011–020 Detailed Contract Review
 
 **Status:** PO product semantics APPROVED (2026-11-24); Engineering/Security contract review OPEN; NOT approved for implementation  
-**Version:** 0.3.0  
+**Version:** 0.3.1  
 **Date:** 2026-11-24  
 **Scope:** CMD-011 through CMD-020  
 **Controls:** T-14 Inspector capacity; T-15 append-only audit direction; T-17 instrument governance; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
@@ -190,10 +190,9 @@ No initial status, actor, project scope, location, team, assignment or approval 
 
 ### Open decisions
 
-1. Approve initial session state and allowed project states for creation.
-2. Decide timezone semantics and whether schema needs a session timezone column.
-3. Define whether overlapping sessions are permitted; no overlap rule is currently established.
-4. Define exact timestamp precision and boundary inclusivity.
+**PO semantics resolved:** server-selected T-07 DRAFT; creation only in a project state that permits session creation; UTC instants interpreted through the project's canonical IANA timezone; reject DST gaps/folds; overlap is not prohibited by default.
+
+**Technical decisions still open:** exact project-state enum binding; timestamp precision and API parsing contract; whether a denormalized session timezone snapshot is needed (do not infer a column); project/code uniqueness and parent-fence enforcement.
 
 ## CMD-012 — update-session
 
@@ -368,10 +367,9 @@ Allowed target states are not free-form. The exact transition graph must be an a
 
 ### Open decisions
 
-1. Approve full session state enum and transition matrix.
-2. Specify Korlap-allowed transitions individually, not by broad role.
-3. Define close request vs final close, dependency gates and responsible authority.
-4. Add approved concurrency token to physical schema.
+**PO semantics resolved:** preserve T-07 states DRAFT/ACTIVE/PAUSED/CLOSED; CLOSED terminal in ordinary flow; CLOSE_REQUESTED is an action/event, not a state; Korlap may activate/pause/resume/request closure only within assigned scope and explicit permission; Super Admin is final closure authority after gates; reopening is privileged, reasoned and audited.
+
+**Technical/institutional decisions still open:** exact transition table and permission mapping; closure checklist and operational evidence; row-version/CAS physicalization; parent/child fence and lock order; any institution-reserved closure criteria.
 
 ## CMD-014 — publish-assignment
 
@@ -476,11 +474,9 @@ No status, actor, approval, effective project scope or publication bypass field 
 
 ### Open decisions
 
-1. Define overlap interval semantics (inclusive/exclusive endpoints) and exact overlap dimensions.
-2. Define allowed session states and initial assignment state.
-3. Define whether assignment creation can also update an existing assignment; preferred contract is create-only.
-4. Define member role enum and membership uniqueness across assignments/locations.
-5. Add assignment concurrency/version fields if later update commands need optimistic locking.
+**PO semantics resolved:** create-only command; one atomic assignment plus complete initial roster; server selects initial published state after validation; half-open [start,end) intervals; reject overlap only where it creates duplicate/conflicting effective Inspector eligibility in the same project/session scope.
+
+**Technical decisions still open:** exact eligible session states and persisted assignment enum; role/membership uniqueness constraints; T-14 capacity serialization and parent-fence order; version token only if a later update contract requires it.
 
 ## CMD-015 — change-assignment-members
 
@@ -582,10 +578,9 @@ The canonical catalogue lists \`effective_at\` at command level; this review pro
 
 ### Open decisions
 
-1. Approve exact request shape for per-member effective times and whether reason is mandatory.
-2. Define membership overlap policy across assignments, locations and sessions.
-3. Decide removal behavior for active claims/in-progress inspections and already submitted work.
-4. Define how future-effective membership end affects current authorization and cached scope freshness.
+**PO semantics resolved:** each membership end has its own effective_at; each accepted change requires a reason; membership is end-dated, not hard-deleted; submitted inspections are never deleted, reassigned or invalidated by member removal.
+
+**Technical/operational decisions still open:** active claim/in-progress workflow handling; authorization freshness for future-effective ends; exact overlap predicate where duplicate/conflicting Inspector eligibility may result; request schema and history enforcement.
 
 ## CMD-016 — change-inspector-capacity
 
@@ -779,11 +774,9 @@ Proposed actions: \`CREATE_DRAFT\`, \`REPLACE_DRAFT_ALLOCATIONS\`, \`PUBLISH\`. 
 
 ### Open decisions
 
-1. Approve action enum and whether plan creation can omit session_id.
-2. Decide if target plan is project-level, session-level, or both; add physical session binding if needed.
-3. Define allocation uniqueness dimensions and whether zero quantity is valid.
-4. Define plan version allocation, draft editing semantics, and immutable revision history.
-5. Define whether published plans can be superseded and how reports select the effective published version.
+**PO semantics resolved:** session-scoped plans by default; project-wide plans require separate justified PO change; actions CREATE_DRAFT/REPLACE_DRAFT_ALLOCATIONS/PUBLISH; published plans immutable and corrections create new versions; unique allocation key (target_plan_id, assignment_id, target_date); duplicate rows and zero quantity rejected.
+
+**Technical/product-detail decisions still open:** quantity units/range and reporting selection rules; draft row-version/hash CAS; version sequencing and supersession metadata; exact session binding and physical constraints.
 
 ## CMD-018 — create-instrument
 
@@ -866,9 +859,9 @@ No status, active flag, version number, published version, project scope or acto
 
 ### Open decisions
 
-1. Approve initial instrument status and whether a newly created instrument is selectable only after first version publication.
-2. Define code normalization and reserved-code policy.
-3. Define name/description length and Unicode normalization.
+**PO semantics resolved:** new instrument is draft/inactive and cannot be selected for assignment until a version is published; code normalization direction is Unicode NFKC, trim surrounding whitespace, invariant uppercase for approved ASCII alphabet, reject internal whitespace/control characters, unique normalized value.
+
+**Technical decisions still open:** exact permitted ASCII alphabet/reserved codes, Unicode test vectors, collation and unique enforcement; name/description bounds and normalization.
 
 ## CMD-019 — save-instrument-draft
 
@@ -1107,11 +1100,9 @@ No published_by, published_at, target status, approver ID, second-approver field
 
 ### Open decisions
 
-1. Add and define canonical configuration hash/snapshot storage in the physical schema.
-2. Define database-level immutability enforcement for all child tables after publication.
-3. Confirm publication record fields include change_summary and schema/config hash.
-4. Define exact behavior for a second distinct-key publish request against an already-published version.
-5. Define how new published versions are selected for future assignments; no automatic rebind.
+**PO semantics resolved/reaffirmed:** T-17 Super Admin requires explicit instrument.publish; instrument.manage alone is insufficient; publication is server-validated; published version/children immutable; corrections create a new version; assignments/sessions remain pinned; same-key replay returns original result and a distinct key cannot create duplicate publication.
+
+**Technical decisions still open:** canonical hash persistence/canonicalization; physical immutability enforcement; publication record schema; exact typed already-published outcome; function owner/ACL and atomic transaction proof.
 
 ## 4. Cross-command invariants and dependency map
 
@@ -1168,7 +1159,7 @@ CMD-004 Inspector role grants, CMD-014 assignment publication, CMD-015 membershi
 
 Closing a session must not strand assignments, targets or active work. The complete closure gate and serialization protocol must be approved before CMD-013 can close sessions.
 
-## 6. Required PO/security decisions before contract freeze
+## 6. PO decisions closed; technical/security decisions before contract freeze
 
 1. Approve session initial status, legal transition graph, Korlap transition subset, close-request/final-close semantics and closure dependency checklist.
 2. Approve timezone semantics, timestamp precision, interval endpoint rules and whether overlapping sessions/assignments are permitted.
@@ -1184,7 +1175,7 @@ Closing a session must not strand assignments, targets or active work. The compl
 | Area | Status |
 |---|---|
 | Canonical CMD-011–020 catalogue review | DOCUMENTED |
-| Proposed request/response contracts | DOCUMENTED; PO/API review required |
+| Proposed request/response contracts | DOCUMENTED; PO product semantics approved, API/schema review remains open |
 | Permission/scope/SoD review | DOCUMENTED; role grants not approved |
 | Physical read/write set | DOCUMENTED against proposed schema only |
 | Lock/transaction/idempotency design | DOCUMENTED; not implemented or runtime-verified |
@@ -1203,7 +1194,7 @@ No implementation readiness or production readiness is claimed by this review.
 
 ## 8. Change control
 
-- This document is a detailed engineering proposal, not a PO/security approval.
+- Product semantics for CMD-011–020 are PO APPROVED as recorded in the Decision Register; this document remains an engineering proposal and is not technical/security approval.
 - Do not implement any candidate route, RPC, SQL, index, trigger, grant or RLS policy solely from this document.
 - Update the canonical command catalogue, permission registry, physical schema, RLS catalogue, audit catalogue and test catalogue together when an issue is resolved.
 - Preserve immutable command IDs. Breaking contract changes require a new schema/API version and explicit compatibility plan.
