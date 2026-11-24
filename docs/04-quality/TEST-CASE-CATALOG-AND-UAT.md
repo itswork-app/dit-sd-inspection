@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.5.2
+Version: 0.5.3
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -882,3 +882,15 @@ This case validates that a producer event declaration does not become a notifica
 | TC-NOTIF-072 | Attempt to publish a notification policy for an event absent from the explicit PO-approved event allowlist, including an operational/control event, unresolved composite token, generic command token, or a triage-only PO discussion candidate | Publication fails closed; no outbox notification is created and no recipient is resolved. Only an exact canonical event token with explicit PO approval, complete participant/scope mapping, approved dispatch profile and technical sign-offs can be enabled. Triage classification alone never enables an event | PLANNED / NOT EXECUTED |
 
 **Execution control:** TC-NOTIF-072 requires the exact PO-approved event allowlist and complete technical registry. Runtime execution requires G10 activation and the authorized isolated environment. No test result is implied.
+
+
+### PO-approved event candidate registry admission guards — 2026-11-24
+
+These tests are planned controls for the eleven PO-approved specification candidates. They do not imply event enablement or technical approval.
+
+| Test ID | Scenario | Expected result / invariant | Status |
+|---|---|---|---|
+| TC-NOTIF-073 | Attempt to publish any of the eleven PO-approved candidate tokens before exact source contract, trusted participant mapping, selector dependency, dispatch profile, deduplication and required Security/Engineering/Database approvals are complete | Publication fails closed; PO approval for specification/review is not treated as publication authorization; all unresolved rows remain NOT ENABLED | PLANNED / NOT EXECUTED |
+| TC-NOTIF-074 | Attempt to publish an event outside the eleven approved candidate intents, including deferred `account.requested`, `session.close_requested`, or related `inspection_revision.created` as a second notification | Publication fails closed unless a separate explicit PO decision and complete technical admission record exists; no implied event, recipient or channel is created | PLANNED / NOT EXECUTED |
+
+**Execution control:** TC-NOTIF-073/074 require exact canonical registry contracts and Security/Engineering/Database sign-offs. Runtime execution requires G10 activation and an authorized isolated environment. No test result is implied.
