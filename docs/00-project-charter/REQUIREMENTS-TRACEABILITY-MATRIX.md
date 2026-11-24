@@ -259,3 +259,7 @@ Trace `units` as a project-independent canonical physical identity keyed by `(in
 ## RBAC-004 implementation boundary
 
 The proposed Canonical Permission Registry and Command Authorization Matrix v0.1.0 is the single draft vocabulary baseline. It does not approve code semantics, legacy mappings, role grants, grantor authority, scope, SoD, permission seed, RLS, PostgreSQL EXECUTE grants or implementation. Those approvals and evidence remain required before scope freeze.
+
+## SEC-006 — Live Supabase security inventory
+
+Before implementation, collect and review a read-only live database inventory covering project/environment identity, PostgreSQL version, roles/memberships, schema/table/routine/sequence ownership and ACLs, RLS flags/policies, function exact signatures/owners/security modes/search_path/EXECUTE ACLs, default privileges, views/triggers, Storage policies and Dashboard exposure/backup configuration. Evidence and acceptance criteria are defined in [Supabase Live Database Security Inventory Runbook](../02-architecture/SUPABASE-LIVE-DATABASE-SECURITY-INVENTORY-RUNBOOK.md). Status: NOT EXECUTED; no live database connector/session available in this workspace. Repository-only design review does not satisfy SEC-006. T-18 execution-model conflict remains OPEN; implementation remains NOT AUTHORIZED.
