@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.3.8
+Version: 0.3.9
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -412,16 +412,16 @@ See [PostgreSQL Command Contract Catalogue](../02-architecture/POSTGRESQL-COMMAN
 | TC-CMD-CONTRACT-024-042 | CMD-042 `get-target-report` | `report.read` | Forged actor/role/scope fields and wrong-scope caller are rejected; protected direct browser DML remains denied. | Concurrent duplicate/replay requests cannot duplicate the business result; same key/different semantic payload returns IDEMPOTENCY_KEY_REUSED. | OK | PLANNED / NOT EXECUTED |
 | TC-CMD-CONTRACT-024-043 | CMD-043 `read-audit` | `audit.read` | Forged actor/role/scope fields and wrong-scope caller are rejected; protected direct browser DML remains denied. | Purpose and scope are enforced; export permission is distinct; access/export events are audited without recursive sensitive payload leakage. | OK | PLANNED / NOT EXECUTED |
 | TC-CMD-CONTRACT-024-044 | CMD-044 `export-audit` | `audit.export` | Forged actor/role/scope fields and wrong-scope caller are rejected; protected direct browser DML remains denied. | Purpose and scope are enforced; export permission is distinct; access/export events are audited without recursive sensitive payload leakage. | ACCEPTED/EXPORTED | PLANNED / NOT EXECUTED |
-| TC-CMD-CONTRACT-024-045 | CMD-045 `retention/legal-hold` | `retention.manage` | Forged actor/role/scope fields and wrong-scope caller are rejected; protected direct browser DML remains denied. | Command remains unavailable until its institutional authority and physical schema are approved; no placeholder function/table is exposed. | BLOCKED_BY_POLICY | PLANNED / NOT EXECUTED |
-| TC-CMD-CONTRACT-024-046 | CMD-046 `review-security-incident` | `security.review` | Forged actor/role/scope fields and wrong-scope caller are rejected; protected direct browser DML remains denied. | Command remains unavailable until its institutional authority and physical schema are approved; no placeholder function/table is exposed. | BLOCKED_BY_SCHEMA_AUTHORITY | PLANNED / NOT EXECUTED |
-| TC-CMD-CONTRACT-024-047 | CMD-047 `manage-provider-configuration` | `provider.manage` | Forged actor/role/scope fields and wrong-scope caller are rejected; protected direct browser DML remains denied. | Command remains unavailable until its institutional authority and physical schema are approved; no placeholder function/table is exposed. | BLOCKED_BY_T12 | PLANNED / NOT EXECUTED |
-| TC-CMD-CONTRACT-024-048 | CMD-048 `manage-production-release` | `release.manage` | Forged actor/role/scope fields and wrong-scope caller are rejected; protected direct browser DML remains denied. | Command remains unavailable until its institutional authority and physical schema are approved; no placeholder function/table is exposed. | `production.release_deployed/rollback_performed` | PLANNED / NOT EXECUTED |
+| TC-CMD-CONTRACT-024-045 | CMD-045 (external traceability ID) | NONE — no app permission | No app route/RPC/function/table/worker or application retention authority exists in the approved design; external institutional records control plane is authoritative. | No app mutation. T-10 policy and institutional authority must be evidenced externally; no hold/release/disposition is inferred from application role. | DEFERRED_EXTERNAL_CONTROL_PLANE | PLANNED / NOT EXECUTED — external evidence only |
+| TC-CMD-CONTRACT-024-046 | CMD-046 (external traceability ID) | NONE — no app permission | No app security-case route/permission/table or implicit mitigation; only institution-designated incident-response process is authoritative. | No app case mutation or account/provider action; incident RACI and evidence chain remain external dependencies. | DEFERRED_EXTERNAL_CONTROL_PLANE | PLANNED / NOT EXECUTED — external evidence only |
+| TC-CMD-CONTRACT-024-047 | CMD-047 (external traceability ID) | NONE — no app permission | Provider-native console and approved secret manager only; no app provider CRUD, route, worker, secret reference or credential exposure. | No app configuration mutation; T-12 ownership, custodians, billing, region, quota and recovery evidence are verified externally. | OUT_OF_APPLICATION_SCOPE_EXTERNAL_PROVIDER_CONTROL | PLANNED / NOT EXECUTED — external evidence only |
+| TC-CMD-CONTRACT-024-048 | CMD-048 (external traceability ID) | NONE — no app permission | Protected GitHub/deployment control plane only; no app deploy/rollback route, function, worker or alternate production control path. | No application deployment event; immutable commit/artifact/schema/migration and deployment evidence remains in protected release systems. | OUT_OF_APPLICATION_SCOPE_EXTERNAL_RELEASE_CONTROL | PLANNED / NOT EXECUTED — external evidence only |
 
-**Execution gate:** all 48 cases remain PLANNED / NOT EXECUTED. Before execution, bind each case to the approved exact RPC signature, route schema, staging migration, caller database role, fixtures, expected SQLSTATE/domain mapping and captured result. For blocked CMD-045..048, the expected result is deny/not exposed until the prerequisite institutional authority/schema is approved.
+**Execution gate:** all 48 traceability anchors remain PLANNED / NOT EXECUTED. CMD-001–044 and CMD-049–054 application operations require exact approved signatures, staging migration, caller/workload identity, fixtures and captured results. CMD-045–048 are not application commands: their anchors are external control-plane evidence checks only, not RPC/route tests.
 
 ### CMD-045–048 blocked-command review subcases — design only
 
-The following subcases expand the existing TC-CMD-CONTRACT-024-045..048 anchors. They are planned assertions, not executed tests. Until the relevant authority and exact contract are approved, the expected behavior is that the command is not exposed and no placeholder mutation occurs.
+The following subcases expand the CMD-045–048 traceability anchors. They are external control-plane readiness/evidence checks, not tests of application commands. No app route, RPC, function, table, worker or permission exists or may be inferred. They are planned and not executed.
 
 | Test ID | Command | Scenario / assertion | Expected result | Status |
 |---|---|---|---|---|
@@ -438,7 +438,7 @@ The following subcases expand the existing TC-CMD-CONTRACT-024-045..048 anchors.
 | TC-CMD-045-048-011 | CMD-048 | Artifact digest/source commit mismatch or untrusted artifact | Promotion denied; immutable provenance retained | PLANNED / NOT EXECUTED |
 | TC-CMD-045-048-012 | CMD-048 | Rollback with incompatible/destructive schema reversal | Rollback blocked pending approved recovery/compatibility plan | PLANNED / NOT EXECUTED |
 
-Execution requires G10, approved exact command/control-plane contracts, isolated authorized staging, named test identities and reproducible evidence. These cases do not authorize test execution against production or real institutional data.
+Execution requires the relevant external authority and approved control-plane process, named accountable owners, and reproducible evidence. These cases do not authorize creation or invocation of application commands, nor testing against production or real institutional data.
 
 ## PostgreSQL function security and EXECUTE grant verification (2026-11-24)
 
