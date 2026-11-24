@@ -2,7 +2,7 @@
 
 **Document ID:** MIB-001  
 **Status:** CONTROLLED BASELINE — DOCUMENTATION PHASE  
-**Version:** 1.0.1  
+**Version:** 1.0.2  
 **Last reviewed:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Implementation authorization:** NOT GRANTED  
@@ -220,7 +220,7 @@ This blueprint is a governance/navigation artifact. It does not authorize code, 
 
 ## 12. Notification and batch-print design reconciliation — 2026-11-24
 
-- INS-015 design proposal is documented in [Notification Lifecycle and Delivery Architecture](../02-architecture/NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md) (NLA-001 v0.1.1). It defines six notification persistence entities, independent inbox/delivery states, transactional outbox, internal workers, versioned policy, escalation, audit and 18 planned tests.
+- INS-015 design proposal is documented in [Notification Lifecycle and Delivery Architecture](../02-architecture/NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md) (NLA-001 v0.1.2). It defines six notification persistence entities, independent inbox/delivery states, transactional outbox, internal workers with lease fencing, publish-only policy, INT-NOTIF-001 provider callback ingress, escalation, audit and 26 planned tests. CMD-049–054 review v0.1.1 and the cross-document mapping are recorded; approvals and runtime evidence remain open.
 - T-13 PO-approved batch printing is represented by `print_batches` plus append-only per-document `print_events`; no new product decision is inferred beyond T-13.
 - Proposed physical schema/RLS inventory is 48/48 by static document comparison. This is not live database verification.
 - DGA-B10/B11/B13/B14 remain open or partial pending independent technical review, permission/worker approval, institutional T-10 decisions, provider evidence and test traceability.
