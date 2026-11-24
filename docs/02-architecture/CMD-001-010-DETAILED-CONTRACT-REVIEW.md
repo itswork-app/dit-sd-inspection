@@ -22,7 +22,7 @@ The canonical command catalogue remains the ID and permission-code source. This 
 - Route forwards the caller JWT. It must not accept trusted actor ID, role, permission, approval state or effective scope from the client.
 - Database derives actor only from `auth.uid()`, resolves the active approved `app_users` identity and evaluates permission, validity, scope and SoD in the same transaction as the mutation.
 - Anonymous and PUBLIC execution are denied. Browser roles have no direct INSERT/UPDATE/DELETE on protected tables. The actual owner, security mode, search_path and EXECUTE ACL remain unverified and must be reviewed per function against Supabase catalog evidence.
-- No SECURITY DEFINER function is presumed. Any exception requires separate security approval, a non-login least-privileged owner, pinned safe search_path, schema-qualified references, revoked PUBLIC EXECUTE and exact grants.
+- Protected writes follow PO-approved T-18 Option A through narrow SECURITY DEFINER wrappers. Each function requires individual security approval, a dedicated least-privileged NOLOGIN owner, fixed empty search_path, schema-qualified references, PUBLIC/anon denial and exact-signature EXECUTE grants. SECURITY INVOKER remains preferred for scoped reads and non-elevated helpers.
 
 ### 2.2 Idempotency
 
