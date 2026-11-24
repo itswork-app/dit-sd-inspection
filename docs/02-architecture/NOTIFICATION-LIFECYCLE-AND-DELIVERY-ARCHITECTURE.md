@@ -1,7 +1,7 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.16  
+**Version:** 0.1.17  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
@@ -534,3 +534,18 @@ The CMD-001–040 source map is a producer/event declaration inventory, not a no
 Do not mechanically convert all 40 source commands into notification triggers. Prioritize review of actual IFP/Standing Bracket operational workflows (assignment, inspection submission, review/return/approval, and explicitly approved document/attendance workflows), but keep every event `UNRESOLVED — NOT ENABLED` until the exact event allowlist and recipient intent are approved. Notifications remain advisory delivery artifacts: they do not mutate inspection outcomes or grant access to underlying resources.
 
 SCOPE-RECON-001 is a scope-control review artifact, not a PRD amendment, PO approval, role grant, enabled event registry, technical sign-off or implementation authorization. F-05 and F-04 remain OPEN; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 24. Product workflow event triage — NLA-EVENT-TRIAGE-001
+
+[NLA-EVENT-TRIAGE-001](NOTIFICATION-EVENT-CANDIDATE-TRIAGE-001.md) v0.1.0 audits each CMD-001–040 event declaration against the PRD's actual inspection workflows. It classifies source declarations as PO discussion candidates, operational/control events, excluded ordinary events or unresolved composite/conditional tokens. This is not an enabled event allowlist.
+
+The Product Owner discussion shortlist is deliberately limited to: account.approved, account.rejected, role.revoked, project.closed, exact session.closed (not session.close_requested), assignment.created, assignment.changed, inspection.submitted (with inspection_revision.created treated as a related fact pending deduplication), inspection.returned_for_correction, inspection.approved and inspection.reopened. Inclusion in this shortlist means only that a human-facing notice may be useful; no event, recipient or channel is approved.
+
+No notification should be emitted for generic project/session updates, instrument draft/configuration edits, unit registration/association/claim mechanics, inspection draft saves, upload intents, evidence-upload confirmations, print audit events, or read-side operations unless a separate approved product requirement establishes a concrete human action. Batch envelopes and per-item domain events must remain distinct. Attendance Verifier remains proposed with authority OPEN and cannot be used as a recipient role.
+
+Composite/conditional source declarations are not policy keys. Exact token and transaction decomposition is required for CMD-004, CMD-006/007, CMD-013, CMD-017, CMD-019, CMD-022, CMD-024/025, CMD-026, CMD-029, CMD-035/036, CMD-038 and CMD-039. Unknown or ambiguous tokens remain `UNRESOLVED — NOT ENABLED`. No slash-alternative, wildcard, prefix or generic command-to-event mapping is permitted.
+
+The IFP instrument source remains draft; its photo-slot required status is OPEN. Standing Bracket's 19-row checklist baseline is PO-confirmed, but evidence/photo rules remain OPEN. Neither instrument checklist/evidence details nor a photo slot is a notification event. Notification payloads must not include evidence bytes or permanent evidence URLs.
+
+The next product action is a PO decision on the shortlist, not engineering creation of an enabled registry. After PO approval, Engineering/Security/Database must complete exact event contract, participant mapping, selector dependency and dispatch profile review. F-05/F-04 remain OPEN; no physical schema, SQL, migration or runtime behavior is admitted.
