@@ -108,21 +108,26 @@ Use SECURITY INVOKER by default. SECURITY DEFINER is allowed only where RLS recu
 | `record-print` | document.print | Authorized print scope; monotonic per-document sequence; append-only |
 | `upload-attendance-document` / `verify-attendance` | attendance.upload / attendance.verify | T-08 PO APPROVED: Korlap verifies within assigned location/scope; upload and verify are separate permissions; upload never auto-verifies; append replacement versions |
 | `get-actual-report` / `get-target-report` | report.read | Actual/target separated; row scope; no actual timestamp rewrite |
+| `deactivate-instrument` | Permission code and scope to be confirmed; reason required | Separate from publication; authorized Super Admin; reasoned status transition; audit same transaction; never rewrites pinned versions |
+| `access-evidence` / `export-evidence` | Read/export permissions to be confirmed separately | Re-check project/assignment/history authority; short-lived authorized access; audit each sensitive access/export; never expose object keys as authority |
+| `close-project` | Permission code and closure authority to be confirmed | Super Admin closure only after configured session, inspection, document and actual/target reconciliation gates; reason/confirmation and audit |
+| `read-audit` / `export-audit` | Explicit audit-read/export permissions to be confirmed | Least-privilege filters, reason/context where policy requires, access/export itself audited; retention/legal-hold policy remains institutional |
+| `record-print-batch` | Orchestrator only; per-document `document.print` remains authoritative | Bounded batch; each item independently authorized and idempotent; partial outcomes; no all-or-nothing claim; no duplicate successful print event |
 
-The command names are logical. REST route names and exact payload schemas remain a later API implementation artifact.
+The command names are logical. REST route names and exact payload schemas remain a later API implementation artifact. The table below is a command-family inventory, not yet a complete executable contract: each row must be expanded with request/response schema, full authorization predicate, lock set/order, idempotency scope, audit event type, typed outcomes and linked test cases before implementation.
 
 ## 7. Lock order and concurrency
 
 Use a documented global lock order to reduce deadlocks:
-1. project capacity/settings row when capacity is involved;
-2. canonical serial-key advisory/unique-key arbitration, if registering/resolving;
-3. project/session/assignment row(s);
-4. canonical unit row;
-5. unit-project association row;
-6. inspection aggregate row;
-5. idempotency record/key;
-6. evidence/document row(s);
-7. append-only event insert.
+1. idempotency key arbitration/record for the authenticated actor + command + resource scope;
+2. governed project's capacity/settings row when capacity is involved (one row serializes the combined two-location cap);
+3. canonical serial-key advisory/unique-key arbitration, if registering/resolving;
+4. project/session/assignment row(s), in deterministic UUID order;
+5. canonical unit row(s), in deterministic UUID order;
+6. unit-project association row(s), in deterministic UUID order;
+7. inspection aggregate row(s), in deterministic UUID order;
+8. evidence/document row(s), in deterministic UUID order;
+9. append-only domain/audit event inserts.
 
 A command locks only rows required for its invariant. Avoid holding database locks during Storage transfer, PDF rendering, or external network calls. If a command spans multiple units, lock in deterministic UUID order.
 
@@ -177,16 +182,18 @@ Errors must not disclose whether an unauthorized resource exists. Use a consiste
 
 ## 12. Open approvals and implementation gates
 
-1. Complete function-by-function review of any SECURITY DEFINER exception; pin search_path and minimize owner/grants.
-2. Complete the table-by-table RLS and direct-DML denial catalogue.
-3. Finalize command-specific permission codes, attendance/audit authorities and typed outcomes.
-4. Confirm offline maximum retry window and idempotency retention.
-5. Complete technical review of the documented T-16 canonical unit/project association, composite foreign keys and claim scope; obtain institution-approved serial normalization/exception policy before migration.
-6. Implement only after Package K blockers and required institutional decisions are resolved; T-18 approval is not implementation authorization.
+1. Expand every command-family row into a complete command contract: request/response schema, actor/permission/scope predicate, state transition, lock set/order, idempotency key/hash/retention, domain and audit event, typed outcomes, retry semantics and positive/negative/concurrency test IDs.
+2. Reconcile the command inventory against T-18: instrument deactivation, evidence access/export, project closure, audit read/export and bounded batch-print orchestration must have explicit authority and per-command contracts.
+3. Complete function-by-function review of any SECURITY DEFINER exception; pin search_path and minimize owner/grants.
+4. Complete the table-by-table RLS and direct-DML denial catalogue and exact command EXECUTE grant matrix.
+5. Confirm offline maximum retry window and idempotency retention; align with the approved T-09 offline boundary and device safeguards.
+6. Complete technical review of the documented T-16 canonical unit/project association, composite foreign keys and claim scope; obtain institution-approved serial normalization/exception policy before migration.
+7. Reconcile API error codes, typed outcomes and audit event catalogue; ensure every critical command has deterministic fail-closed audit behavior.
+8. Implement only after Package K blockers and required institutional decisions are resolved; T-18 approval is not implementation authorization.
 
 ## 13. Disposition
 
-**Command boundary:** ARCHITECTURE DIRECTION PO APPROVED (T-18 option A); detailed command/RLS/grant design remains reviewable.  
+**Command boundary:** ARCHITECTURE DIRECTION PO APPROVED (T-18 option A); command-family inventory exists, but command-by-command contracts and grant/test traceability remain INCOMPLETE.  
 **Transport implementation:** NOT IMPLEMENTED.  
 **RPCs/functions:** NONE CREATED.  
 **Service-role access:** NOT CONFIGURED.  
@@ -225,7 +232,7 @@ T-18 is PO APPROVED option A (2026-11-24): this Vercel route + caller-JWT Postgr
 
 ### Command catalogue and cross-decision consistency
 
-Apply this contract to account approval/role and assignment changes, team staffing, session/project lifecycle, instrument draft/publish/deactivate, unit creation/duplicate resolution/claim, inspection draft/submit/review, evidence finalize/replace/access/export, document generation/print, attendance verification, project closure, audit access/export and offline sync reconciliation. Each command needs a separate request/response schema, permission, scope rule, lock/idempotency key, state invariant, audit event and positive/negative/concurrency test. T-14 capacity count, T-16 canonical serial uniqueness, association authorization and global active-claim uniqueness must be checked inside the same serialized transaction as the affected mutation. T-17 publish-instrument-version uses the same boundary and atomic audit rule.
+Apply this contract to account approval/role and assignment changes, team staffing, session/project lifecycle, instrument draft/publish/deactivate, unit creation/duplicate resolution/claim, inspection draft/submit/review, evidence finalize/replace/access/export, document generation/print, attendance verification, project closure, audit access/export and offline sync reconciliation. Each command needs a separate request/response schema, permission, scope rule, lock/idempotency key, state invariant, audit event and positive/negative/concurrency test. T-14 capacity count, T-16 canonical serial uniqueness, association authorization and global active-claim uniqueness must be checked inside the same serialized transaction as the affected mutation. The capacity lock is the governed project's capacity-settings row and the predicate counts distinct qualifying accounts across both locations. T-17 publish-instrument-version uses the same boundary and atomic audit rule.
 
 ### Approval boundary and remaining gates
 
