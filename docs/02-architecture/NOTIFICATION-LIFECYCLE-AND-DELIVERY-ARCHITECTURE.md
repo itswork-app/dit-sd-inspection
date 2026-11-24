@@ -476,7 +476,7 @@ PO selected the global transaction-scoped audience guard (candidate L05) as the 
 
 Current controlled L05 references are:
 - Resolver review NLA-RESOLVER-LOCK-001 v0.1.9.
-- Technical decision record NLA-L05-TDR-001 v0.1.2; parent resolver review v0.1.9.
+- Technical decision record NLA-L05-TDR-001 v0.1.3; parent resolver review v0.1.9.
 - Source-event path map NLA-L05-SOURCE-MAP-001 v0.1.0.
 - Eligibility-writer matrix NLA-L05-WRITER-MATRIX-001 v0.1.1.
 - LOCK-MANIFEST-001 v0.4.30 §7.7 and §7.13; LOCK-GRAPH-001 v0.4.23 §§28–30.
