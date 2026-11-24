@@ -176,3 +176,18 @@ Add/retain tests proving:
 - T-10 retention, legal-hold and metadata rules are treated as configuration/policy gates, not guessed defaults.
 
 These are test requirements only. Test execution and implementation are not claimed.
+
+
+## T-16 — Required serial uniqueness and evidence-linkage tests (PO-approved option B)
+
+- TC-UNIT-016-001: Same normalized serial in the same instrument type is rejected as a second canonical unit even when the incoming record belongs to a different project.
+- TC-UNIT-016-002: Same normalized serial is permitted for a different instrument type.
+- TC-UNIT-016-003: Concurrent claims/creation for the same instrument-type + normalized-serial key serialize to one canonical unit; no duplicate unit rows are created.
+- TC-UNIT-016-004: Same-type cross-project collision enters controlled review and requires authorized actor, reason and audit; no silent merge or historical rewrite occurs.
+- TC-UNIT-016-005: Project/session/assignment authorization remains enforced when multiple projects reference the same canonical unit.
+- TC-EVD-016-001: Evidence references the exact immutable inspection revision and instrument version, and a mismatched version/slot is rejected.
+- TC-EVD-016-002: Original checksum, uploader, capture/upload timestamps and storage object identity remain preserved.
+- TC-EVD-016-003: Finalized evidence cannot be overwritten; replacement creates a new evidence record/object and audit event while the original remains linked to its historical revision.
+- TC-EVD-016-004: Failed audit write rolls back the critical evidence replacement/resolution transaction in accordance with T-15.
+
+These are test specifications only; no test execution is claimed.
