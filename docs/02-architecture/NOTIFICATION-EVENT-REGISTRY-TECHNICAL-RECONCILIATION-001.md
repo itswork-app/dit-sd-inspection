@@ -14,7 +14,7 @@ This document records a static, evidence-bounded technical pass over all eleven 
 
 The following remain prohibited until G10 activation: source code, SQL, migrations, grants/revokes, RLS changes, live database operations, provider setup, deployment and production/staging mutation. No event is enabled by this document.
 
-The registry's seven status dimensions remain controlling. All nine reviewed rows remain:
+The registry's seven status dimensions remain controlling. All eleven reviewed rows remain:
 
 - PO intent: `APPROVED_FOR_SPECIFICATION_ONLY`
 - Canonical contract: `UNRESOLVED`
@@ -30,9 +30,9 @@ The registry's seven status dimensions remain controlling. All nine reviewed row
 |---|---|---|
 | CMD-001–010 Detailed Contract Review v0.3.4 | CMD-002/003 candidate request, response, authorization, read/write sets, transaction and audit proposals | Engineering proposal; no approved executable route/RPC/function |
 | CMD-011–020 Detailed Contract Review | CMD-010/013/014/015 source command contracts, state/roster mutation boundaries, candidate read/write sets and unresolved concurrency/active-work rules | Candidate route/RPC and physical contracts remain unapproved |
-| L05 Source-Event Path Mapping | CMD-002/003/005/010/013/014/015/029/030 producer transaction and proposed event/outbox/snapshot atomicity, candidate source paths and lock-order conflicts | Static candidate map; no source-code/function call graph or deployed transaction proof |
+| L05 Source-Event Path Mapping | CMD-002/003/005/010/013/014/015/029/030/031/032 producer transaction and proposed event/outbox/snapshot atomicity, candidate source paths and lock-order conflicts | Static candidate map; no source-code/function call graph or deployed transaction proof |
 | L05 Eligibility-Writer Participation Matrix | Account, role, capacity, project/session, assignment/member and inspection/evidence writer families, including known non-command writer gaps | Incomplete writer inventory; no writer certified to participate |
-| Command Lock Manifest Normalization Register | Candidate normalized global lock sequences for CMD-002/003/005/010/013/014/015/029/030 | Candidate ordering only; no lock certification or acyclic graph proof |
+| Command Lock Manifest Normalization Register | Candidate normalized global lock sequences for CMD-002/003/005/010/013/014/015/029/030/031/032 | Candidate ordering only; no lock certification or acyclic graph proof |
 | Notification Recipient Resolver Lock-Set Review | Known CMD-014/015 resolver rank inversions and required reordering | Review findings only; no resolver or lock set admitted |
 | PostgreSQL Command Contract Catalogue v0.4.8 | CMD-002/003 logical event names, permission family, target-account scope and candidate transaction semantics | Permission registry and command contracts remain unapproved for execution |
 | Command Physical Object Crosswalk | CMD-002/003 proposed `app_users`, `account_decisions`, `idempotency_records`, `audit_events` dependencies | Proposed physical model, not live schema proof |
@@ -42,6 +42,9 @@ The registry's seven status dimensions remain controlling. All nine reviewed row
 | L05 Eligibility-Writer Participation Matrix | CMD-002/003 are known account/login-eligibility writer paths; admin, support, disable/suspend/reactivate, auth reconciliation and other non-command writers are incomplete | No complete physical writer inventory; zero writers certified to participate |
 | NLA-001 and NLA-L05-TDR-001 | POQ-01/04 snapshot and suppression invariants; proposed outbox and L05 protocol | Snapshot relation/header NOT ADMITTED; L05 and transaction isolation not technically approved |
 | Decision Register / POQ-04 | Approved pre-mutation candidate snapshot and post-mutation suppression semantics | Event-specific eligibility mapping for pending account transitions is not yet resolved |
+| CMD-031–040 Detailed Contract Review v0.2.0 | CMD-031 exact submitted revision, Reviewer assignment/SoD, terminal decision; CMD-032 explicit reopen authority, reason, immutable history and candidate transaction boundary | Proposal only; reviewer assignment, terminal-decision arbiter, reopen grant matrix and mutable draft context remain unresolved |
+| LOCK-MANIFEST-001 v0.4.30 §7.13 and LOCK-GRAPH-001 v0.4.23 §30 | Candidate CMD-031/032 resource order and shared approve/return/reopen serialization | Candidate order only; physical lock set, FK/trigger/helper edges and acyclic graph are not certified |
+| L05 source-event map v0.1.0 and writer matrix v0.1.4 | CMD-031/032 source-event candidate transactions and known eligibility writer families | No deployed call graph; writer inventory incomplete; no writer certified to participate |
 
 ## 3. Reconciliation findings — CMD-002 / NREG-001
 
