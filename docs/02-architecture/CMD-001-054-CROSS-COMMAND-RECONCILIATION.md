@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.9
+**Version:** 0.8.10
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -429,3 +429,69 @@ Disposition remains unchanged:
 - CMD-048 BLOCKED_BY_AUTHORITY pending release operator, CI/ruleset, protected environment, artifact provenance and separation-of-duties evidence.
 
 No route, RPC, table, permission grant, secret-manager resource, CI rule or deployment operation is authorized by this synchronization. The 54-command inventory remains 10/54 candidate-normalized and 0/54 technically approved/certified; all relevant QA cases remain PLANNED / NOT EXECUTED. G9 remains NOT READY and G10 NOT AUTHORIZED.
+
+
+## CMD-049–054 notification cross-document reconciliation — 2026-11-24
+
+### 1. Canonical source snapshot
+
+| Artifact | Current proposal version | Reconciled concern |
+|---|---:|---|
+| NLA-001 Notification Lifecycle and Delivery Architecture | 0.1.2 | Domain lifecycle, six tables, worker lease fencing, integration callback and planned tests |
+| CMD-049–054 Detailed Contract Review | 0.1.1 | Per-command request, authorization, transaction, idempotency and blocker review |
+| PostgreSQL Command Contract Catalogue | 0.4.3 | CMD-049..054 logical request and transaction boundary |
+| Physical Database Schema | 0.4.1 | safe_payload, outbox/delivery lease fields, read_at set-once semantics |
+| Table-by-Table RLS Catalogue | 0.2.1 | Recipient-self inbox and default-deny worker/configuration tables |
+| API and Transaction Contracts | 0.2.1 | User commands, internal worker boundary and INT-NOTIF-001 |
+| Audit Event Catalogue | Current NLA linkage addendum | First-read event, policy publication and escalation event semantics |
+| Command-Level Lock Manifest | 0.4.14 | Worker lease generation and short claim/finalize transactions |
+| Concurrency and Version Token Reconciliation | 0.1.4 | CMD-050 no row-version; CMD-052/053 lease fencing; CMD-054 DB time |
+| QA Catalogue | 0.3.5 | TC-NOTIF-001..026 and TC-FN-SEC-025-064..069 |
+| RTM / RAID / DGA | Updated 2026-11-24 | NOTIF-007..012; D-034..D-036/R-034..R-035; gate blockers |
+
+### 2. Command-to-domain crosswalk
+
+| Command | Domain/data boundary | Authorization / execution | Verification | Disposition |
+|---|---|---|---|---|
+| CMD-049 list-own-notifications | notifications; stable actor/filter-bound cursor | authenticated recipient self via auth.uid(); scoped read/RLS; no global inbox | TC-NOTIF-005/006/018; TC-FN-SEC-025-064 | Proposal aligned; exact indexes/page cap/live RLS open |
+| CMD-050 mark-notification-read | notifications.read_at set-once; no row-version | recipient-self trusted command; direct browser DML denied | TC-NOTIF-005/007/019; TC-FN-SEC-025-065 | expected_version removed at documentation level; audit implementation open |
+| CMD-051 publish-notification-policy | notification_policy_versions + audit_events | notification.policy.manage; explicit scope/grantor/SoD not approved | TC-NOTIF-012/020; TC-FN-SEC-025-066 | Publish-only boundary aligned; permission and policy-schema approval open |
+| CMD-052 fanout-notification-outbox | notification_outbox → notifications + notification_deliveries | internal workload only; no browser RPC; lease fencing | TC-NOTIF-002/003/011/021/022; TC-FN-SEC-025-067 | Field vocabulary aligned; worker identity and recipient eligibility semantics open |
+| CMD-053 dispatch-notification-delivery | notification_deliveries + append-only notification_delivery_attempts | internal delivery worker; provider I/O outside DB transaction | TC-NOTIF-007/009/010/015/016/023/024/026; TC-FN-SEC-025-068 | INT-NOTIF-001 boundary assigned; provider auth/dedup/capability open |
+| CMD-054 evaluate-notification-escalation | notification_escalation_events + notification_outbox | internal scheduler; one DB UTC instant; pinned policy | TC-NOTIF-013/014/025; TC-FN-SEC-025-069 | Caller evaluation_time removed; SLA semantics and scheduler ACL open |
+
+### 3. Resolved documentation mismatches
+
+1. CMD-050 no longer accepts expected_version. The physical notifications proposal has no row-version column; read_at is guarded and set once. The first transition emits one notification.read event atomically; duplicate/no-op requests emit no duplicate event.
+2. CMD-051 is publish-only. The server computes policy_hash and version_no and compares optional expected_current_version_id. Persisted draft CRUD is excluded; a future draft workflow requires a separate approved command/schema.
+3. CMD-052/053 use canonical safe_payload and the same logical lease tuple: lease_owner, lease_token_hash, monotonic lease_generation and lease_expires_at. Partial fan-out remains PROCESSING and resumes through unique arbiters.
+4. CMD-053 inbound provider callbacks use INT-NOTIF-001, a separately authenticated integration ingress. It is not a new CMD ID, browser RPC or seventh notification table.
+5. CMD-054 accepts no evaluation_time; one database-derived UTC instant is captured per evaluation transaction.
+6. dismissed_at remains reserved; no dismiss behavior or browser write is approved.
+7. Browser inbox visibility is recipient-self only; no R-admin/global inbox path is proposed. Worker queues, attempts and escalation history are not browser-readable.
+
+### 4. Remaining blockers and owner decisions
+
+| Blocker | Commands | Required owner decision/evidence | DGA / RAID |
+|---|---|---|---|
+| Recipient event-time vs fan-out-time eligibility and deterministic retry snapshot | 052, 054 | PO + Security approve the exact eligibility checkpoint and snapshot/revalidation semantics | DGA-B13; R-034 |
+| notification.policy.manage grant, scope, grantor ceiling, selector grammar and SoD | 051 | PO + Security approval; no role grant is inferred | DGA-B09/B13; D-036 |
+| Worker/scheduler principal, scheduler trust, database role, function owner, exact EXECUTE ACL, token custody and rate limits | 052–054 | Security + Operations evidence and exact function review | DGA-B12/B13; D-034 |
+| Provider selection, quotas/cost, secret custody, callback signature/freshness and durable event deduplication | 053 / INT-NOTIF-001 | T-12 provider owner + Security approval and capability evidence | DGA-B05/B13; D-035/R-035 |
+| Retry horizon, maximum attempts, UNKNOWN reconciliation and operational alert thresholds | 052–053 | PO + Operations approval; values must not be inferred from examples | DGA-B08/B13; R-026/R-035 |
+| SLA start event, elapsed vs business time, timezone/DST, paused/closed behavior and expiry | 054 | PO + Security/Operations approval | DGA-B13; NOTIF-010 |
+| Classification, purpose, retention, deletion/disposition, legal hold, audit export and network/time-zone metadata | 049–054 | Written institutional T-10 approval | DGA-B04/B13; NOTIF-011 |
+| Exact composite FKs, indexes, enums/checks, policy immutability, RLS, function owner and grants | 049–054 | Engineering/Database/Security design review plus later live evidence | DGA-B11/B12 |
+| Dismiss/archive UX and behavior | 049/050 | PO/UX decision | DGA-B13 |
+
+### 5. Inventory and gate status
+
+- Logical command inventory: 54/54 IDs present; all six notification commands have a detailed review and a cross-document proposal mapping.
+- Candidate lock normalization: remains 10/54. CMD-049–054 transaction fields are clarified but are not counted as normalized or certified manifests.
+- Technical command approval/certification: 0/54.
+- Physical schema/RLS: 48/48 proposed table-name parity only; no live database/RLS/grant evidence.
+- QA: 410 distinct test-case definitions by line-level ID scan; TC-NOTIF-001..026 and all notification function-security cases remain PLANNED / NOT EXECUTED.
+- CI, workflow checks, provider setup, database inspection and deployment: not executed in this documentation task.
+- G9: NOT READY. G10: NOT AUTHORIZED.
+
+This crosswalk is static documentation evidence only. It does not approve a command, worker, provider, route, function, permission grant, table, policy, migration or production action.
