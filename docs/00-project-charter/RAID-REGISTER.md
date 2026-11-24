@@ -429,11 +429,11 @@ INS-021, REV-003, REV-004 and EVD-004 are added to RTM-001 v0.1.22 as candidate/
 ### New issue
 | ID | Issue | Required resolution | Accountable role | Status |
 |---|---|---|---|---|
-| I-011 | CMD-026/027 and session-close contracts do not yet define a certified atomic abort lifecycle for an incomplete unit attempt | Decide whether CMD-027 can perform full abort or a dedicated command is required; define ABORTED state, immutable session binding, claim release, event/audit/idempotency, lock order, RLS/ACL and new-attempt uniqueness; synchronize PRD/schema/commands/QA | Product Owner / Operational Owner / Engineering / Database / Security | OPEN — BLOCKING |
+| I-013 | CMD-026/027 and session-close contracts do not yet define a certified atomic abort lifecycle for an incomplete unit attempt | Decide whether CMD-027 can perform full abort or a dedicated command is required; define ABORTED state, immutable session binding, claim release, event/audit/idempotency, lock order, RLS/ACL and new-attempt uniqueness; synchronize PRD/schema/commands/QA | Product Owner / Operational Owner / Engineering / Database / Security | OPEN — BLOCKING |
 
 ### Dependency
 | ID | Dependency | Needed for | Accountable role | Status |
 |---|---|---|---|---|
-| D-009 | Certified session-bound inspection and abort contract, including returned-but-unresolved work at session close | Freeze CMD-026/027/028/029/030/032 and session-close contract; G9 scope review | Operational Owner / Engineering / Database / Security / QA | OPEN — BLOCKING |
+| D-010 | Certified session-bound inspection and abort contract, including returned-but-unresolved work at session close | Freeze CMD-026/027/028/029/030/032 and session-close contract; G9 scope review | Operational Owner / Engineering / Database / Security / QA | OPEN — BLOCKING |
 
 SES-001 product semantics are PO APPROVED. R-017, I-011 and D-009 remain OPEN — BLOCKING until physical, command, lock, security and QA evidence is accepted. No implementation, test execution or gate transition is implied.
