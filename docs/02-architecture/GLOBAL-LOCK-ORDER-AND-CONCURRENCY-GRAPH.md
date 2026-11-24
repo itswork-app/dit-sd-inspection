@@ -506,3 +506,8 @@ These are potential edges, not observed runtime deadlocks. No cycle is claimed p
 - LG-45: stale CMD-052 lease generation vs concurrent fan-out retry — stale worker cannot finalize or alter candidate snapshot.
 
 **Disposition:** POQ-01 product semantics APPROVED; physical snapshot representation NOT ADMITTED; candidate lock order OPEN; worker identity/ACL OPEN; provider callback dedup OPEN; global graph remains NOT CERTIFIED ACYCLIC. Application lock certification remains 0/50; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 28. Notification source-event snapshot reconciliation — 2026-11-24
+
+[NOTIFICATION-SOURCE-EVENT-AND-SNAPSHOT-LOCK-RECONCILIATION-001](NOTIFICATION-SOURCE-EVENT-AND-SNAPSHOT-LOCK-RECONCILIATION-001.md) v0.1.0 inventories CMD-001–040 as the complete potential application source-event search surface, distinguishes CMD-054 as a scheduler-generated source, and classifies CMD-049–053 as read/configuration/worker consumers. It does not invent an event-to-policy allowlist. The annex records candidate FK references to app_users, projects, sessions, locations and operational_assignments and a candidate pre-acquisition/revalidation protocol. Location rank, selector grammar, FK DDL, source-specific normalized order and global acyclicity remain OPEN. No lock rank or physical relation is approved. Application lock certification remains 0/50; G9 NOT READY; G10 NOT ACTIVE.
