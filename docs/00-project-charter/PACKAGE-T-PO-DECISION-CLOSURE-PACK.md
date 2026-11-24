@@ -584,3 +584,27 @@ The architecture documents now specify a project-independent canonical `units` i
 ## 9.11 — Live Supabase database security inventory
 
 Added [Supabase Live Database Security Inventory Runbook](../02-architecture/SUPABASE-LIVE-DATABASE-SECURITY-INVENTORY-RUNBOOK.md) as a read-only evidence collection prerequisite. It covers actual environment/version, roles/memberships, schema/table/routine/sequence ACLs and ownership, RLS/policies, exact function signatures/security mode/owner/search_path/EXECUTE grants, default privileges, views/triggers, Storage policies and Supabase Dashboard checks. Repository inspection did not find supabase/config.toml or supabase/migrations/README.md at the inspected paths; this does not prove they do not exist elsewhere. No live Supabase connector/session is available, so inventory is NOT EXECUTED. No SQL mutations, grants/revokes, RLS changes, migrations or runtime tests were performed. The T-18 SECURITY INVOKER/direct-DML compatibility issue remains OPEN for PO/security resolution. Scope freeze remains NOT READY and implementation NOT AUTHORIZED.
+
+
+## T-18 execution-model decision closure — PO APPROVED Option A (2026-11-24)
+
+The Product Owner has explicitly selected **Option A: narrow SECURITY DEFINER command wrappers** for protected writes, with SECURITY INVOKER for read-only/scoped operations where feasible. This closes the T-18 execution-model selection only.
+
+### Binding controls
+
+1. Each protected-write function is individually reviewed and narrowly scoped to one command contract.
+2. Each function owner is a dedicated NOLOGIN least-privileged role; it is not SUPERUSER, BYPASSRLS, LOGIN, protected-table owner, and does not inherit table-owner, migration-owner or service-role privileges.
+3. Each function uses fixed `SET search_path = ''`, fully qualified object references, no client-controlled dynamic SQL, and exact function identity/signature grants only.
+4. PUBLIC and anon EXECUTE are denied; authenticated receives only individually approved exact signatures. No schema-wide/wildcard EXECUTE.
+5. The Vercel route verifies the Supabase session and forwards the caller JWT unchanged through the supported PostgREST path. PostgreSQL derives actor using `auth.uid()`; client-supplied actor/role/permission/scope are never trusted.
+6. Database-backed checks enforce account state, current permission, role, project/session/assignment scope, resource state, SoD and relational invariants.
+7. Browser direct INSERT/UPDATE/DELETE on protected tables remains denied. Do not grant browser DML to make SECURITY INVOKER writes work and do not substitute service_role for caller identity.
+8. Mutation, canonical event, audit event and idempotency result are atomic; audit failure rolls back the transaction.
+9. SECURITY DEFINER does not automatically preserve RLS. Verify owner effective privileges, table ownership, FORCE RLS, memberships and ACLs. Any owner/table-owner exception requires a separate explicit PO/security exception and updated threat model.
+10. Read-only operations remain SECURITY INVOKER/RLS by default; internal helpers are not exposed through PostgREST.
+
+### Closure evidence and remaining gates
+
+See [T-18 Execution Model Security Review](../02-architecture/T18-EXECUTION-MODEL-SECURITY-REVIEW.md), [PostgreSQL Function Security & EXECUTE Grant Design](../02-architecture/POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md), and [Privileged Command Boundary](../02-architecture/PRIVILEGED-COMMAND-BOUNDARY-AND-TRANSACTION-SPECIFICATION.md).
+
+The model decision is **PO APPROVED**. Exact route-to-function mappings, 48 command schemas/signatures, owner and ACL design, table-by-table RLS/grants, actual Vercel/Supabase implementation evidence, read-only live database inventory, per-function threat reviews and runtime acceptance tests remain OPEN. No SQL, migration, grant/revoke, deployment or runtime test is authorized or claimed. Scope freeze remains NOT READY; implementation remains NOT AUTHORIZED.
