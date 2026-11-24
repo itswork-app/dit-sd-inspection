@@ -197,3 +197,12 @@ This follow-up preserves Package S as the historical pre-decision audit and supe
 **Implementation, migration, deployment, security tests, restore drills, load tests and UAT:** NOT EXECUTED / NOT CLAIMED.
 
 The original S-01..S-12 checklist is still a useful gate inventory, but decision items closed by T-14..T-18 must not be represented as awaiting Product Owner approval. External institutional and technical verification gates remain active.
+
+
+## 9.4 Command-by-command audit follow-up (2026-11-24)
+
+The T-18 command boundary architecture is PO-approved, but the command inventory is not yet a complete implementation contract. The follow-up audit identified and corrected documentation-level issues: duplicate lock-order numbering, inconsistent capacity lock/predicate wording, duplicate QA test IDs for load and batch-print scenarios, and incomplete API error-code alignment. The lock order now places authenticated actor-scoped idempotency arbitration first, followed by capacity, canonical serial, project/assignment, unit, association, inspection, evidence/document and append-only event locks.
+
+The command inventory now explicitly records previously omitted families: instrument deactivation, evidence access/export, project closure, audit read/export and bounded batch-print orchestration. Their exact permission codes and detailed contracts remain OPEN and must not be inferred from broad Super Admin status. The test catalogue records that generic TC-CMD-018 security cases are boundary-level only; command-specific positive/negative, audit-failure, idempotency and concurrency cases are still missing for several command families.
+
+**Current Package N status:** architecture PO-approved; command-family inventory improved; command-by-command request/response schemas, permission/scope predicates, lock/idempotency/audit/error contracts, exact grants and dedicated test traceability remain INCOMPLETE. No implementation or test execution is claimed. Scope freeze remains NOT READY.
