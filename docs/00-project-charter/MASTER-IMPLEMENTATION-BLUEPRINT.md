@@ -2,7 +2,7 @@
 
 **Document ID:** MIB-001  
 **Status:** CONTROLLED BASELINE — DOCUMENTATION PHASE  
-**Version:** 1.0.8  
+**Version:** 1.0.9  
 **Last reviewed:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Implementation authorization:** NOT GRANTED  
@@ -188,9 +188,9 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 ## 10. Current project status
 
 - Repository intent: **DOCUMENTATION AND APPLICATION IN ONE REPOSITORY — CONFIRMED BY PRODUCT OWNER**
-- Documentation gap audit: **DGA-001 v1.11.27 RECORDED; blocking closure IN PROGRESS**
+- Documentation gap audit: **DGA-001 v1.11.28 RECORDED; blocking closure IN PROGRESS**
 - Mandatory agent instructions: **AGENTS.md v1.2.1 — READ BEFORE EVERY WORK SESSION/TASK**
-- Implementation roadmap: **IRG-001 v1.0.2 — CONTROLLED PLAN, NOT AUTHORIZATION**
+- Implementation roadmap: **IRG-001 v1.0.3 — CONTROLLED PLAN, NOT AUTHORIZATION**
 - SemVer policy: **2.0.0 adopted; application version not assigned before release**
 - Active implementation gate: **NOT READY — see DGA-001**
 - Current phase: **DOCUMENTATION / SSOT MATURATION**
@@ -244,6 +244,13 @@ Current gates remain G9 NOT READY and G10 NOT AUTHORIZED. This control-plane upd
 
 ## 14. Agent policy and notification decision baseline — 2026-11-24
 
-Root AGENTS.md is updated to v1.2.1. It records POQ-01..03 as approved product semantics and explicitly preserves the technical/institutional boundary. The active current sources are DGA-001 v1.11.27, IRG-001 v1.0.2, SSOT-AUDIT-001 v0.1.4, RTM-001 v0.1.3, QA Catalogue v0.3.6, NLA-001 v0.1.3 and CMD-049–054 review v0.1.2.
+Root AGENTS.md is updated to v1.2.1. It records POQ-01..03 as approved product semantics and explicitly preserves the technical/institutional boundary. The active current sources are DGA-001 v1.11.27, IRG-001 v1.0.2, SSOT-AUDIT-001 v0.1.5, RTM-001 v0.1.3, QA Catalogue v0.3.6, NLA-001 v0.1.3 and CMD-049–054 review v0.1.2.
 
 The static QA inventory contains 413 unique planned definitions, including TC-NOTIF-001..029; none is execution evidence. G9 remains NOT READY because source authority, institutional approvals, permission/command/database/lock closure, operational evidence and independent review remain incomplete. G10 remains NOT GRANTED. No implementation, SQL, migrations, grants/revokes, CI run, deployment or merge is authorized by this update.
+
+
+## 15. External inspection evidence baseline — 2026-11-24
+
+[EVID-EXT-001 — External Inspection Evidence Register](EXTERNAL-INSPECTION-EVIDENCE-REGISTER-001.md) v0.1.0 is the current index for the Product Owner-supplied inspection evidence. It records the 20 Nov SB batch BA (460/456/4), 23 Nov IFP visit BA (300/300/0, SB 0/0/0), 23 Nov SB form no. 469, 24 Nov IFP form no. 189, the 13-row serial-number example and the 23–25 Nov attendance sheet. Product Owner acceptance of these artifacts and clarification that the 3TB75B-prefixed examples are correct are recorded. These samples improve G1 evidence traceability but do not replace controlled-source provenance, institutional signatory/attendance authority or full annex verification.
+
+Current gate effect: DGA-B01..B03 evidence-receipt/PO subcomponents are updated; institutional/source closure remains open. G1 and G9 remain NOT READY. G10 remains NOT AUTHORIZED. The existing AGENTS.md authorization boundary is unchanged.
