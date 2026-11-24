@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.16  
+**Version:** 0.1.17  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -365,3 +365,10 @@ RTM-001 v0.1.15 adds NOTIF-026/027; QA Catalogue v0.5.5 adds TC-NOTIF-077/078, a
 NLA-EVENT-TECH-RECON-001 v0.1.2 partially reconciles NREG-004 `project.closed` and NREG-005 final `session.closed`. POQ-04 pre-close snapshot semantics are explicit, but the project/session closure blocker graph, physical CAS tokens, parent/child lock compatibility, complete child-writer/finalizer inventory, exact participant/scope projection and event-specific dispatch remain open. `session.close_requested` is not an approved event token.
 
 RTM-001 v0.1.16 adds NOTIF-028..030; QA Catalogue v0.5.6 adds TC-NOTIF-079..081, all PLANNED / NOT EXECUTED. D-026 remains OPEN — BLOCKING; R-037 remains OPEN — CRITICAL; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## D-026 / R-037 CMD-014/015 assignment-event update — 2026-11-24
+
+NLA-EVENT-TECH-RECON-001 v0.1.3 partially reviews `assignment.created` and `assignment.changed`. New-member snapshot selection, added/ended/retained event semantics, active-work orphaning policy, assignment/member constraints and full L05/L10/T-14 writer coverage remain open. No recipient is inferred from the initial roster or retained membership.
+
+RTM-001 v0.1.17 adds NOTIF-031..034; QA Catalogue v0.5.7 adds TC-NOTIF-082..085, all PLANNED / NOT EXECUTED. D-026 remains OPEN — BLOCKING; R-037 remains OPEN — CRITICAL; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; G9 NOT READY; G10 NOT ACTIVE.
