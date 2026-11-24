@@ -1,7 +1,7 @@
 # Notification Recipient-Resolver Lock-Set Review
 
 **Document ID:** NLA-RESOLVER-LOCK-001  
-**Version:** 0.1.1  
+**Version:** 0.1.2  
 **Status:** Engineering design proposal — NOT APPROVED; no lock rank or physical mechanism is admitted  
 **Date:** 2026-11-24  
 **Repository baseline:** docs/audit-lock-and-identity-reconciliation at 7d722a77ac37a4c82a026daeddd1b00df4a4f713  
@@ -163,7 +163,7 @@ The L05 candidate guard is only correct if every path that can change selector r
 - Inspector capacity change and every operation changing the qualifying population;
 - project/session close, reopen or scope transition that affects notification selectors;
 - any administrative/import/sync/worker path that mutates these records;
-- all triggers, RPCs, helper functions and direct database privileges capable of bypassing command-level participation.
+- notification policy publish/retire/effective-interval changes that alter the event allowlist or selector grammar; CMD-051 must participate before taking its mutable policy aggregate lock;\n- all triggers, RPCs, helper functions and direct database privileges capable of bypassing command-level participation.
 
 If a writer is outside this repository's application boundary, its participation must be enforced by database policy or the design must use an isolation model that safely handles it. A command inventory alone is not proof of complete writer coverage.
 
