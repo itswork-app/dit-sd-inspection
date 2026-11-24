@@ -158,3 +158,7 @@ No final role-to-permission matrix, SQL permission seed, RLS grant, command EXEC
 ## 13. Canonical permission registry reference
 
 The single proposed permission vocabulary and command mapping is maintained in [Canonical Permission Registry and Command Authorization Matrix](../02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md). Section 7 in this document remains a legacy vocabulary snapshot and is not authoritative for new command implementation. The registry's legacy mappings, code semantics, role-to-permission matrix, grant/revoke authority and SoD rules require explicit PO/security approval. Until then, no permission seed or new role grants are authorized.
+
+## Command authorization verification reference
+
+The proposed command-family mapping and planned verification cases are maintained in ../02-architecture/COMMAND-AUTHORIZATION-VERIFICATION-MATRIX.md. This matrix does not approve role-to-permission grants or legacy aliases. The role/grantor authority, SoD, exact scope predicates, per-table RLS and per-function EXECUTE grants remain subject to PO/security review.
