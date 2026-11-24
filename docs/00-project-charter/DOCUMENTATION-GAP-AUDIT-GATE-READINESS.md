@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.90
+**Version:** 1.11.91
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -899,3 +899,9 @@ The explicit per-unit abort is not a generic session cleanup operation. It canno
 The PO has approved a narrow exceptional ABORT path: after Reviewer returns an inspection for an identified error, Inspector may request ABORT only when the physical unit is already packed/boxed and prepared for shipment such that correction/reinspection is impracticable; Admin/Korlap must explicitly approve or reject. If the unit remains practically accessible, the normal same-Inspector, same-active-session correction/resubmission path applies. A pending request remains unresolved and blocks FINAL_CLOSE.
 
 This supersedes the generic “abort unfinished work” interpretation. ABORTED is terminal, preserves submitted revision/return/evidence/audit history, and is not approval, good/defective classification, inspection completion or print completion. A later inspection is a new session-bound attempt. CMD-013 cannot initiate or approve ABORT. Command identity, authorization/SoD, reason and packed-state evidence policy, atomicity, lock/RLS/schema and QA remain OPEN; G9 NOT READY, G10 NOT ACTIVE.
+
+## SES-001 — abort request/decision technical gap (2026-11-24)
+
+PO semantics are approved; technical design remains a G9 prerequisite. The candidate workflow separates Inspector request from Admin/Korlap decision, binds both to the exact returned revision/session, and permits ABORTED only after approval. Rejection leaves the attempt in RETURNED_FOR_CORRECTION for WF-001. CMD-027 remains release-only. Pending requests block FINAL_CLOSE; requester and approver must be different principals.
+
+Outstanding blockers: command IDs, explicit permissions/delegation/SoD, packed-state evidence acceptance and retention, request/decision persistence and constraints, atomic inspection + conditional claim + event + audit + idempotency, RLS/T-18 ACL, lock/fence proof, and QA execution. Do not mark G9 ready or G10 active.
