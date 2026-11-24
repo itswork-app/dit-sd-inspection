@@ -285,3 +285,8 @@ No RAID owner has been replaced with an invented person or institution. No new r
 | ID | Type | Description | Impact | Mitigation / response | Accountable role | Status |
 |---|---|---|---|---|---|---|
 | R-037 | Risk | POQ-01 event-time audience snapshot persistence may introduce implicit FK KEY SHARE locks to app_users and project/session/location/assignment rows after a source command, CMD-052 or CMD-054 already holds higher-ranked aggregate/queue/policy locks; this may invert L15/L16/L17/L30/L50/L55 order and create deadlocks or inconsistent eligibility snapshots | Critical | Keep notification_outbox_recipients candidate-only until every source event/worker path, competing account/scope writer and implicit FK/index/trigger/helper edge is mapped; define one event-time linearization and canonical order; prove the full graph acyclic and execute deterministic opposing-transaction tests before G9 | Engineering / Database / Security / QA | OPEN — CRITICAL |
+
+
+### R-037 engineering inventory update — 2026-11-24
+
+[NOTIFICATION-SOURCE-EVENT-AND-SNAPSHOT-LOCK-RECONCILIATION-001](../02-architecture/NOTIFICATION-SOURCE-EVENT-AND-SNAPSHOT-LOCK-RECONCILIATION-001.md) v0.1.0 now records the complete potential source-command search surface CMD-001–040, separates CMD-054 scheduler generation from CMD-052/053 consumers, and enumerates the candidate snapshot FK references and source-stated lock resources. This is static documentation coverage only. It does not approve the event-type/policy allowlist, selector grammar, FK DDL, location rank, candidate relation, lock order or acyclicity. R-037 remains OPEN — CRITICAL; 0/50 application lock-certified; G9 NOT READY; G10 NOT ACTIVE.
