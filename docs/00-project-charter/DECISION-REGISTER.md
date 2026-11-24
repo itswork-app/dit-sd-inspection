@@ -216,3 +216,17 @@ The Product Owner approved the following product/domain decisions in response to
 | POQ-03 | **APPROVED — Option A (dismiss/archive excluded from MVP).** Initial release exposes recipient-owned set-once `read_at` only. No dismiss/archive command, permission, browser write or UX action is in MVP scope. `dismissed_at`, if retained in a physical proposal, is dormant and has no behavior. | PO APPROVED | Remove dismissal from MVP command/API/permission/UX contracts; any future inclusion requires a separately scoped change request and review. |
 
 These decisions are effective 2026-11-24 for documentation and design reconciliation. They do not approve selector implementation, SLA worker execution, schema/RLS/grants, providers, institutional retention/privacy policy, G9 scope freeze, G10 implementation authorization, tests, deployment or merge.
+
+
+## Product Owner conditional implementation authorization — 2026-11-24
+
+**Approval source:** Explicit written Product Owner authorization supplied in the project conversation on 2026-11-24, titled “PRODUCT OWNER AUTHORIZATION — DIT SD INSPECTION”. The approval authorizes transition from documentation toward implementation of the application from zero in `itswork-app/dit-sd-inspection`, with the existing SSOT as the build baseline.
+
+**Authorized intent and conditions:**
+- The Product Owner authorizes closure of all G9 prerequisites and scope freeze after critical blockers are closed.
+- G10 Implementation Authorization is to be activated only after G9 verification and the required scope-freeze record.
+- After G10 activation, source code, database schema, migrations, API, frontend and automated testing may be implemented on a dedicated implementation branch.
+- Production changes, deployment and operations affecting real data require separate approval.
+- No gate may be reported PASS without the required evidence and approvals.
+
+**Status:** PO CONDITIONAL AUTHORIZATION RECEIVED; G9 NOT READY; G10 NOT ACTIVE. This record is not a waiver of institutional, security, database, operations or provider approvals and does not itself permit implementation before the G9/G10 conditions are satisfied. Root AGENTS.md remains controlling until formally updated through the authorized gate process.
