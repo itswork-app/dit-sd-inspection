@@ -89,6 +89,7 @@ Names below are **logical candidate identifiers only**, not approved PostgreSQL 
 A SECURITY DEFINER exception is permitted only after an individual threat model and reviewer sign-off. Minimum checklist:
 
 - Dedicated NOLOGIN owner with only required table/sequence privileges; never own broad schemas or unrelated functions.
+- The definer owner must not own protected application tables and must not inherit table-owner, SUPERUSER or BYPASSRLS capabilities. If a table-owner exception is unavoidable, FORCE ROW LEVEL SECURITY and explicit threat-model review are mandatory; command-level authorization remains mandatory regardless.
 - Function is schema-qualified and has a fixed safe search_path; prefer `SET search_path = ''` with all object references schema-qualified. If extension functions are needed, qualify their trusted schema explicitly.
 - No dynamic SQL from client input. If dynamic SQL is unavoidable, identifiers are selected from fixed allowlists and values are bound parameters.
 - PUBLIC and anon EXECUTE revoked; exact authenticated signature grant only after approval.
