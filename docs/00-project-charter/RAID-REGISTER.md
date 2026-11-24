@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.22  
+**Version:** 0.1.23  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -417,3 +417,23 @@ Physical schema v0.4.4 states the one-terminal-decision-per-revision invariant i
 ### Verification trace
 
 INS-021, REV-003, REV-004 and EVD-004 are added to RTM-001 v0.1.22 as candidate/baselined-product-direction trace rows with physical approval still open. INSPECTION-DRAFT-001 v0.1.0 contains IDC-01..20 design acceptance scenarios; these are not yet formal executed tests. R-016, I-010 and D-008 remain OPEN — BLOCKING. No PO decision, institutional evidence policy, claim ownership, evidence reuse, schema admission, implementation authority or gate status is inferred.
+
+
+## Session-bound unit inspection and abort — SES-001 (2026-11-24)
+
+### New risk
+| ID | Type | Description | Impact | Likelihood | Mitigation / response | Accountable role | Status |
+|---|---|---|---|---|---|---|---|
+| R-017 | Risk | Inspection drafts, claims, evidence or returned corrections cross session boundaries, or unfinished units remain hanging at session close, causing ambiguous operational ownership and contaminated session reporting | Critical | Medium | Enforce immutable inspection.session_id; prohibit cross-session resume/reassignment; require explicit terminal abort before final session close; atomically release claim and append audit; test retries, races and history preservation | Product Owner / Operational Owner / Engineering / Database / Security / QA | OPEN — BLOCKING |
+
+### New issue
+| ID | Issue | Required resolution | Accountable role | Status |
+|---|---|---|---|---|
+| I-011 | CMD-026/027 and session-close contracts do not yet define a certified atomic abort lifecycle for an incomplete unit attempt | Decide whether CMD-027 can perform full abort or a dedicated command is required; define ABORTED state, immutable session binding, claim release, event/audit/idempotency, lock order, RLS/ACL and new-attempt uniqueness; synchronize PRD/schema/commands/QA | Product Owner / Operational Owner / Engineering / Database / Security | OPEN — BLOCKING |
+
+### Dependency
+| ID | Dependency | Needed for | Accountable role | Status |
+|---|---|---|---|---|
+| D-009 | Certified session-bound inspection and abort contract, including returned-but-unresolved work at session close | Freeze CMD-026/027/028/029/030/032 and session-close contract; G9 scope review | Operational Owner / Engineering / Database / Security / QA | OPEN — BLOCKING |
+
+SES-001 product semantics are PO APPROVED. R-017, I-011 and D-009 remain OPEN — BLOCKING until physical, command, lock, security and QA evidence is accepted. No implementation, test execution or gate transition is implied.
