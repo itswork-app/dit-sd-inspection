@@ -1,13 +1,13 @@
 # Physical Schema ↔ RLS ↔ Command Reconciliation
 
 **Status:** Engineering/security reconciliation draft — review required; no implementation authority  
-**Version:** 0.1.0  
+**Version:** 0.2.0  
 **Date:** 2026-11-24  
 **Scope:** Package L physical table catalogue, Package M table-by-table RLS catalogue, logical ERD, T-18 command boundary and command authorization matrix.
 
 ## 1. Executive result
 
-A line-by-line name comparison of the current Package L physical table catalogue and Package M RLS catalogue finds **41 physical tables and 41 RLS entries with exact name parity**: no physical table is missing from the RLS catalogue and no RLS table is absent from the physical catalogue.
+A line-by-line name comparison of the current Package L physical table catalogue and Package M RLS catalogue finds **48 physical tables and 48 RLS entries with exact name parity**: no physical table is missing from the RLS catalogue and no RLS table is absent from the physical catalogue.
 
 This is a documentation inventory check only. It does not prove the tables exist in a live Supabase project, that RLS is enabled, that any policy is deployed, or that grants are correct.
 
