@@ -269,3 +269,28 @@ Production release must be blocked until:
 **Feature implementation:** NOT AUTHORIZED.
 
 No code, migrations, cloud settings, RLS policies, backup configuration, or tests were executed by this package.
+
+
+## 10. Post-decision reconciliation addendum (2026-11-24)
+
+This addendum supersedes only the decision-status statements below that were written before the Product Owner decisions T-15 through T-18. The original findings remain useful as an audit history; they must not be read as the current decision register.
+
+### 10.1 Decisions now closed at Product Owner level
+
+- **K-01 / T-16:** PO-approved option B establishes canonical serial uniqueness by (instrument_id, serial_normalized) across projects. The project-independent `units` + durable `unit_project_associations` + controlled `unit_identity_conflicts` model, composite project/association references, and global active-claim invariant are now specified in the ERD and physical schema. This closes the earlier product-direction ambiguity, not technical review, institutional normalization/exception policy, migration design or implementation verification.
+- **K-03 / T-18:** PO-approved option A selects Vercel server route → PostgreSQL command function with caller JWT. Database-derived actor, protected-table direct-DML denial, explicit EXECUTE grants and atomic authorization/mutation/audit are now specified. Exact grants, function-by-function review and executable verification remain open.
+- **K-04 / T-15:** INS-016 is PO APPROVED option A. Append-only audit events, atomic critical mutation + audit, fail-closed behavior and least-privilege audit access are the approved direction. Institutional retention, legal hold, classification, network metadata and independent archive decisions remain external blockers.
+- **K-08 / T-09:** Limited offline draft editing for already claimed units is PO-approved. Device/local-data safeguards, maximum retry window, idempotency retention and conflict-resolution implementation remain open.
+- **K-09 / T-14:** The qualifying Inspector predicate is PO-approved: distinct enabled account + active Inspector grant + at least one currently effective operational assignment, counted once and enforced atomically across both locations (cap 1–100; default 50).
+
+### 10.2 Remaining blockers after T-15 through T-18
+
+1. Complete and review every physical table constraint, composite FK, index, command lock order and null/unknown-serial workflow before migration.
+2. Complete the table-by-table RLS/grant matrix, including command-specific EXECUTE grants, SECURITY DEFINER exceptions and direct browser-DML denial coverage.
+3. Reconcile every command payload/outcome and idempotency retention with the approved offline window and T-18 caller-JWT boundary.
+4. Obtain institutional approval for evidence classification, lawful purpose, limits, retention, legal hold, deletion and recovery.
+5. Verify actual provider ownership, region, plans, quotas, backup/PITR and Storage-object recovery; execute and record an isolated restore drill.
+6. Approve measurable performance SLOs after provider and workload validation; execute load, security, offline, PDF/print and UAT verification.
+7. Close source-authority and operational policy gaps, including official IFP source, photo-slot rules, BA signatory authority and other institutional approvals tracked in Package T/RAID.
+
+**Current disposition remains unchanged:** documentation audit only; scope freeze NOT READY; feature implementation NOT AUTHORIZED; no migration, deployment, runtime/security test or restore drill is claimed.
