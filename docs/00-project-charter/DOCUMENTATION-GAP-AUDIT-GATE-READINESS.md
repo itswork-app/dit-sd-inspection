@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.58
+**Version:** 1.11.59
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -671,3 +671,8 @@ PO selected the global transaction-scoped audience guard (candidate L05) as the 
 ### L05 technical decision record checkpoint — 2026-11-24
 
 [NLA-L05-TDR-001 v0.1.0](../02-architecture/NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) is drafted for Engineering/Database/Security review. It defines the candidate PostgreSQL advisory transaction lock, isolation/snapshot protocol, writer participation, timeout/retry, FK graph and adversarial tests. It intentionally leaves key constants, deployed isolation, full command writer matrix, numeric budgets, audience cap and performance SLO open. Technical approval and test evidence remain absent. G9 NOT READY; G10 NOT ACTIVE; no implementation is authorized.
+
+
+### PO approval of L05 candidate — 2026-11-24
+
+The Product Owner approved NLA-L05-TDR-001 v0.1.1 as the preferred candidate for formal Engineering/Database/Security review. This does not constitute technical certification or admit L05 into the global lock graph. Exact key registry, deployed isolation, all writer paths, helper ACL, FK/unique/trigger graph, numeric budgets, audience/performance limits and NRL-T01..T10 evidence remain open. G9 NOT READY; G10 NOT ACTIVE.
