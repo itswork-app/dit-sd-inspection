@@ -1,11 +1,11 @@
 # CERT-001 — Technical Certification Assessment
 
 **Document ID:** CERT-001  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Assessment date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
-**Assessment baseline:** `f462ffcd10051228581fdbb42b62154bcfde1b83`  
+**Assessment baseline:** `3dc6d30e43651b343c8b0b0cd1f28ea516374384`  
 **Pull request:** [PR #3 — docs: final governance and command-contract reconciliation](https://github.com/itswork-app/dit-sd-inspection/pull/3)  
 **Overall result:** **NOT CERTIFIED**  
 **G9:** NOT READY  
@@ -164,3 +164,12 @@ The repository has a substantial specification baseline and the static 48-table 
 **Implementation recommendation:** do not activate G10 yet. Continue only the authorized G9 closure work. No implementation or production gate may be marked PASS until its own objective evidence and accountable approvals are recorded.
 
 This report is an internal assessment artifact and does not represent external accreditation or institutional certification.
+
+
+## 10. Current-head reassessment addendum — 2026-11-24
+
+This addendum supersedes the assessment baseline and repository-state observations in §§1, 6 and 8 only where they refer to the latest inspected branch state. The current PR #3 head is `3dc6d30e43651b343c8b0b0cd1f28ea516374384` on `docs/audit-lock-and-identity-reconciliation`; PR #3 remains Draft/Open. The current PR review query returned zero review submissions; the combined commit-status query returned no status entries; the PR-triggered workflow-run query returned no runs. These are endpoint observations, not proof that organization-wide checks or policies do not exist.
+
+The lock inventory is now explicitly reconciled as 54 traceability IDs: 50 application commands plus 4 external control-plane IDs (CMD-045–048). All 50 application commands have candidate execution/transaction boundaries documented; full normalized-manifest review and independent technical approval remain open. Application lock certification is **0/50**. LPR-01 and LPR-07–LPR-09/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. The effective PostgreSQL lock graph is not certified acyclic.
+
+The overall assessment remains **NOT CERTIFIED**. G9 remains NOT READY; G10 remains NOT ACTIVE. No application source, SQL, migration, grants/revokes, live database/provider inspection, CI execution, tests, deployment, merge or production data operation is claimed. This addendum is a static documentation/repository-state reassessment only and does not substitute for independent Engineering, Security, Database, Operations or institutional approval.
