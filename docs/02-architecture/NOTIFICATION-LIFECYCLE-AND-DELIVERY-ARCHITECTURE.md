@@ -326,7 +326,7 @@ notification.read is emitted once on the first set-once read transition, not on 
 
 ### 14.4 Approval and gate status
 
-The six notification tables remain a proposed subset of the 48-table physical/RLS inventory. INT-NOTIF-001 is an integration contract, not a new CMD ID or table. Physical constraints, indexes, RLS, role grants, worker identity, provider capability, retry horizons, recipient-selector semantics and T-10 retention/privacy still require approval and/or live evidence. QA TC-NOTIF-001..029 and TC-FN-SEC-025-064..069 remain PLANNED / NOT EXECUTED. G9 remains NOT READY; G10 remains NOT ACTIVE.
+The six notification tables remain a proposed subset of the 48-table physical/RLS inventory. INT-NOTIF-001 is an integration contract, not a new CMD ID or table. Physical constraints, indexes, RLS, role grants, worker identity, provider capability, retry horizons, recipient-selector semantics and T-10 retention/privacy still require approval and/or live evidence. QA TC-NOTIF-001..040, TC-RLS-024-049 and TC-FN-SEC-025-064..071 remain PLANNED / NOT EXECUTED. G9 remains NOT READY; G10 remains NOT ACTIVE.
 
 
 ## 15. Product Owner decision reconciliation — POQ-001 (2026-11-24)
@@ -414,4 +414,4 @@ If same-transaction candidate materialization cannot meet the approved bound, En
 
 ### 16.5 Gate disposition
 
-POQ-01 recipient semantics: **APPROVED**. Durable relational representation: **CANDIDATE — ENGINEERING/DB/SECURITY REVIEW REQUIRED**. CMD-052 physical read/write set: **PARTIAL — candidate table not admitted**. Worker identity/ACL and runtime verification: **OPEN**. QA TC-NOTIF-001..029: **PLANNED / NOT EXECUTED**. G9 remains NOT READY; G10 remains NOT ACTIVE.
+POQ-01 recipient semantics: **APPROVED**. Durable relational representation: **CANDIDATE — ENGINEERING/DB/SECURITY REVIEW REQUIRED**. CMD-052 physical read/write set: **PARTIAL — candidate table not admitted**. Worker identity/ACL and runtime verification: **OPEN**. QA TC-NOTIF-001..040, TC-RLS-024-049 and TC-FN-SEC-025-064..071: **PLANNED / NOT EXECUTED**. G9 remains NOT READY; G10 remains NOT ACTIVE.
