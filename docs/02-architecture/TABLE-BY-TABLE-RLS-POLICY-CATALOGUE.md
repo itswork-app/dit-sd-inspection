@@ -278,3 +278,25 @@ The earlier summary phrase “approved dismiss field” was inconsistent with th
 ## POQ-03 RLS disposition — 2026-11-24
 
 Dismiss/archive is excluded from MVP by explicit Product Owner decision. There is no dismiss command, permission, browser write or UX action. The only recipient mutation in MVP is the trusted CMD-050 set-once read_at transition. Any retained dismissed_at column is dormant and must not receive a browser UPDATE policy or trusted mutation path. Worker identity, exact ACLs and live RLS verification remain open.
+
+
+## Candidate-only RLS and authorization annex — CMD-035/036/038/039/040 (2026-11-24)
+
+**Status:** Review mapping only. The matrix below does NOT add tables to the canonical 48-table inventory, does NOT create permissions, and does NOT authorize policies or grants. Candidate objects remain unadmitted pending the approvals listed in DURABLE-OPERATION-LEDGER-AND-ARTIFACT-LIFECYCLE-PROPOSAL-001 v0.1.0.
+
+| Candidate object family | Existing command/permission mapping | Browser SELECT | Browser INSERT/UPDATE/DELETE | Trusted boundary / unresolved approval |
+|---|---|---|---|---|
+| sync_batch_operations | CMD-035 / sync.apply | Own batch outcomes only if a minimal read API is approved; no raw device proof or cross-user enumeration | NONE | CMD-035 only; operation result immutability, per-operation transaction boundary and exact RLS predicate open |
+| device_bindings | CMD-035 sync.apply is not enrollment authority | Self-owned minimal status only if separately approved | NONE | Enrollment/revocation command and permission are TBD; do not infer from sync.apply |
+| document_template_versions | No approved command/permission mapped | Published safe metadata only if separately approved | NONE | Template publication command, permission, grantor ceiling and SoD are TBD; no arbitrary template upload |
+| document_generation_jobs | CMD-036 / document.generate | NONE | NONE | Internal renderer workload identity + exact function/table ACL required; document.generate authorizes request, not worker execution |
+| document_generation_attempts | CMD-036 / document.generate | NONE | NONE | Internal renderer append-only writer; sanitized operations read only if separately approved |
+| print_batch_items | CMD-038 / document.print.batch | Actor/scope-limited result read through a trusted query | NONE | CMD-038 owns immutable manifest creation; no direct browser DML |
+| print_batch_item_results | CMD-038 / document.print.batch | Actor/scope-limited result read through a trusted query | NONE | Append-only trusted per-item result path; attempt identity and retries open |
+| attendance_verification_events | CMD-040 / attendance.verify | R-scope only for authorized attendance roles, if institutional authority approves | NONE | CMD-040 trusted append-only write; uploader/verifier SoD, location/assignment proof and T-10 retention open |
+
+### Permission registry reconciliation requirement
+
+The PostgreSQL Command Contract Catalogue references canonical permission registry v0.2.2, but this review did not establish the registry's exact repository path or retrieve its authoritative content. Therefore this annex does not claim the permission registry has been updated or that the listed mappings are registry-verified. Before any candidate object is admitted, retrieve the authoritative registry and reconcile exact permission codes, resource scopes, grantor ceilings, SoD, worker principals and EXECUTE/table ACL. In particular, device enrollment and template publication require explicit authorization design; they must not inherit sync.apply or document.generate by assumption.
+
+The existing 48-table policy matrix remains the canonical proposed table inventory. These candidate rows are not live RLS policies and no grant or policy has been deployed or verified.
