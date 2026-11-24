@@ -415,3 +415,8 @@ If same-transaction candidate materialization cannot meet the approved bound, En
 ### 16.5 Gate disposition
 
 POQ-01 recipient semantics: **APPROVED**. Durable relational representation: **CANDIDATE — ENGINEERING/DB/SECURITY REVIEW REQUIRED**. CMD-052 physical read/write set: **PARTIAL — candidate table not admitted**. Worker identity/ACL and runtime verification: **OPEN**. QA TC-NOTIF-001..040, TC-RLS-024-049 and TC-FN-SEC-025-064..071: **PLANNED / NOT EXECUTED**. G9 remains NOT READY; G10 remains NOT ACTIVE.
+
+
+## 17. Notification source-event and lock-order reconciliation — 2026-11-24
+
+See [NOTIFICATION-SOURCE-EVENT-AND-SNAPSHOT-LOCK-RECONCILIATION-001](NOTIFICATION-SOURCE-EVENT-AND-SNAPSHOT-LOCK-RECONCILIATION-001.md) v0.1.0 for the complete CMD-001–040 potential source-event search surface, separate CMD-054 scheduler path, candidate snapshot FK crosswalk, pre-acquisition/revalidation protocol, worker transaction isolation and NSL-T01..T10 adversarial test specifications. The document is a proposal only: selector grammar, event allowlist, FK definitions, location rank, per-command normalized lock order and runtime proof remain OPEN. The candidate relation is NOT ADMITTED; no migration or implementation is authorized.
