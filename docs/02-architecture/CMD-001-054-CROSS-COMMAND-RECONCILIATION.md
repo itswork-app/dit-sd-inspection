@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.2
+**Version:** 0.8.3
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -390,3 +390,10 @@ The Decision Register records PO approval of LPR-02–LPR-06: canonical unit ide
 ## 15. PO decision traceability synchronization — 2026-11-24
 
 The approved LPR-02–LPR-06 product semantics are now traced into the Decision Register, PRD v0.2.0, Inspection Lifecycle and Claims v0.2.0, Project/Session/Assignment Model v0.2.0, RTM and RAID. The RTM adds UNIT-IDENTITY-001, CLAIM-001, LIFECYCLE-FENCE-001, CAP-002 and INSTRUMENT-DEACTIVATION-001. RAID records D-028 and R-027/R-028 as open technical dependencies/risks. The prior T-16 RAID identity key has been normalized to `(instrument_type, serial_normalized)` to match the controlling Decision Register. These updates establish documentation traceability only; command catalogue, physical schema, RLS, permissions, locks and QA execution remain open. G9 NOT READY; G10 NOT AUTHORIZED.
+
+
+## CMD-011–020 Product Owner semantic approval synchronization — 2026-11-24
+
+Product semantics for CMD-011–020 are PO APPROVED and recorded in the Decision Register. The detailed review, command catalogue, Project/Session/Assignment Model, physical-schema semantic overlay, RTM and QA traceability now consume those decisions. This does not change this cross-command reconciliation's status: **engineering reconciliation OPEN; no executable command contract approved**.
+
+The approved semantics are not lock approvals. CMD-010–015 project/session parent-fence incompatibility, T-14 capacity serialization, row-version/CAS physicalization, identity/authorization rank gaps, function privilege/ACL evidence, and all 54 command manifests remain technical dependencies. DGA-B14/B17/B18/B19/B21 remain partial/open as recorded; lock certification remains 0/54; G9 NOT READY; G10 NOT AUTHORIZED.
