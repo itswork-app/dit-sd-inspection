@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.5
+**Version:** 0.4.6
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -26,12 +26,12 @@ The repository therefore cannot currently claim that all command lock paths are 
 Reviewed on branch `docs/audit-lock-and-identity-reconciliation` on 2026-11-24:
 
 - Root `AGENTS.md` v1.2.0.
-- PostgreSQL Command Contract Catalogue v0.3.1.
+- PostgreSQL Command Contract Catalogue v0.4.1.
 - Physical Database Schema and Integrity Specification v0.3.0.
 - Privileged Command Boundary and Transaction Specification v0.2.0.
 - CMD-001–010, CMD-011–020, CMD-021–030, CMD-031–040, CMD-041–044, CMD-045–048 and CMD-049–054 detailed reviews.
-- CONCURRENCY-001 v0.1.2 and CMD-001–054 Cross-Command Reconciliation v0.8.2.
-- DGA-001 v1.9.5 and NLA-001 / notification worker design references.
+- CONCURRENCY-001 v0.1.3 and CMD-001–054 Cross-Command Reconciliation v0.8.4.
+- DGA-001 v1.11.8 and NLA-001 / notification worker design references.
 
 Evidence is static document inspection only. No live Supabase catalog, PostgreSQL lock table, deployed function, query plan, transaction trace, RLS/grant, worker runtime, CI workflow or test result was inspected or executed. The catalogue's “approved global order” wording is not treated as proof that the complete hierarchy passed cross-command review; the detailed reviews themselves identify unresolved conflicts.
 
@@ -340,3 +340,8 @@ The source evidence establishes a design gap, not the deployed lock graph. No Po
 ## 17.1 Rank-table synchronization — 2026-11-24
 
 The candidate rank table now includes L15–L18 and L55 as proposed in TECH-RESOLUTION-LPR-001 v0.1.0. The table is a proposal only. LPR-01/LPR-11 remain OPEN; no acyclic proof or command certification is claimed.
+
+
+## 18. Current source-version refresh — 2026-11-24
+
+This graph now consumes the current candidate sources: PostgreSQL Command Contract Catalogue v0.4.1; CMD-011–020 Detailed Contract Review v0.3.6; CONCURRENCY-001 v0.1.3; CMD-001–054 Cross-Command Reconciliation v0.8.4; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.4; LOCK-MANIFEST-001 v0.4.7; TECH-RESOLUTION-LPR-001 v0.1.0; DGA-001 v1.11.8. Version synchronization is not technical approval. LPR-01/LPR-07–LPR-11 remain open; LPR-10 not executed; no lock graph is certified acyclic.
