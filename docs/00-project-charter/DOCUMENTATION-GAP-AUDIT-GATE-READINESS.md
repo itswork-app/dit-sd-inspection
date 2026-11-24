@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.73
+**Version:** 1.11.74
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -771,3 +771,10 @@ NLA-001 v0.1.17 references the triage; QA v0.5.2 adds TC-NOTIF-072 to ensure tri
 
 
 **Current pointer synchronization — 2026-11-24:** NLA-001 v0.1.20; NLA-EVENT-TRIAGE-001 v0.1.1; SCOPE-RECON-001 v0.1.2; QA v0.5.2; DGA-001 v1.11.73. First-batch PO review shortlist is not an exhaustive list of P-class candidates; secondary candidates remain deferred, not approved or rejected. Event registry remains NOT CREATED / NOT APPROVED.
+
+
+### PO-approved first-batch event candidate specification — 2026-11-24
+
+The Product Owner approved exactly eleven first-batch notification event candidate intents for registry specification and technical review only. DECISION-REGISTER.md records the decision; NLA-EVENT-REGISTRY-001 v0.1.0 contains eleven draft rows, all `UNRESOLVED — NOT ENABLED`. NLA-EVENT-TRIAGE-001 v0.1.2 and NLA-001 v0.1.21 synchronize the product and architecture interpretation. RTM-001 v0.1.13 adds NOTIF-023; QA Catalogue v0.5.3 adds TC-NOTIF-073/074, both PLANNED / NOT EXECUTED; RAID-001 v0.1.12 records the residual risks.
+
+This closes only the Product Owner decision dependency for the eleven candidate intents. It does not technically admit or enable any event. Exact producer/transaction contracts, trusted participant mapping, selector/dependency mapping, dispatch profiles, deduplication, atomic snapshot proof, Security/Engineering/Database approvals and authorized tests remain outstanding. Secondary `account.requested` remains deferred, neither approved nor rejected. F-05/F-04/F-03/F-07 remain OPEN; resolver 0/40; application lock 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE. Documentation/static inspection only; no code, SQL, migration, grant, RLS, live DB change, runtime test, deployment, merge or G10 activation.
