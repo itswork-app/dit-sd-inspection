@@ -2,7 +2,7 @@
 
 **Document ID:** MIB-001  
 **Status:** CONTROLLED BASELINE — DOCUMENTATION PHASE  
-**Version:** 1.0.5  
+**Version:** 1.0.6  
 **Last reviewed:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Implementation authorization:** NOT GRANTED  
@@ -188,7 +188,7 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 ## 10. Current project status
 
 - Repository intent: **DOCUMENTATION AND APPLICATION IN ONE REPOSITORY — CONFIRMED BY PRODUCT OWNER**
-- Documentation gap audit: **DGA-001 v1.11.24 RECORDED; closure IN PROGRESS**
+- Documentation gap audit: **DGA-001 v1.11.25 RECORDED; closure IN PROGRESS**
 - Mandatory agent instructions: **AGENTS.md v1.2.0 — READ BEFORE EVERY WORK SESSION/TASK**
 - Implementation roadmap: **IRG-001 v1.0.1 — CONTROLLED PLAN, NOT AUTHORIZATION**
 - SemVer policy: **2.0.0 adopted; application version not assigned before release**
@@ -230,7 +230,7 @@ This blueprint is a governance/navigation artifact. It does not authorize code, 
 ## 13. Cross-document audit and authority request control — 2026-11-24
 
 The current governance review is recorded in:
-- [SSOT-AUDIT-001 — Cross-Document Reconciliation Audit](SSOT-CROSS-DOCUMENT-RECONCILIATION-AUDIT.md) v0.1.0.
+- [SSOT-AUDIT-001 — Cross-Document Reconciliation Audit](SSOT-CROSS-DOCUMENT-RECONCILIATION-AUDIT.md) v0.1.1.
 - [POQ-001 — Product Owner Open Decision Packet](PRODUCT-OWNER-OPEN-DECISION-PACKET.md) v0.1.0.
 - [AUTH-001 — Institutional and Technical Authority Approval Package](INSTITUTIONAL-AND-TECHNICAL-AUTHORITY-APPROVAL-PACKAGE.md) v0.1.0.
 
