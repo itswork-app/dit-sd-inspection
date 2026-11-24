@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.46
+**Version:** 0.8.47
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -656,3 +656,12 @@ Open decisions remain: next Inspector/claim owner after return/reopen, claim rel
 ## SES-001 cross-command reconciliation — 2026-11-24
 
 PO-approved SES-001 establishes immutable session binding for each unit inspection attempt. CMD-026 claim, CMD-027 release/abort, CMD-028 draft edit, CMD-029 submit, CMD-030 return, CMD-032 reopen and CMD-033/034 evidence operations must all enforce the same originating session. Returned correction remains restricted to the original Inspector and original active session. CMD-032 reopen cannot create a draft after the originating session is finally closed. Session-close command must block on unresolved unit attempts; every hanging attempt must be explicitly aborted before final closure. Abort must preserve history, seal the draft, release claim and append audit/event/idempotency atomically. A later session creates a new inspection attempt for the canonical unit; no draft, claim, evidence or revision is resumed across sessions. Command identity, dedicated abort command versus CMD-027 reuse, physical constraints, lock graph, RLS/ACL and QA remain open; no certification is implied.
+
+
+## SES-001 / WF-003 — CMD-013 close gate and CMD-027 release-only boundary (2026-11-24)
+
+CMD-013 owns the final transition of a session to CLOSED. `REQUEST_CLOSURE` is only a request/action; it does not abort unit attempts. Before `FINAL_CLOSE`, every inspection attempt in the exact session must either satisfy the approved completed-inspection/review/document/print gates or have a separately committed terminal ABORTED outcome. CMD-013 must fail closed with CLOSURE_BLOCKED while any unit attempt, claim, draft, evidence finalizer, review or document/print work remains unresolved. CMD-013 must never bulk-abort or silently release claims. After explicit per-unit aborts and all other gates, Super Admin final close rechecks the blocker set under a proven parent/child fence and atomically commits session.closed + audit + idempotency.
+
+CMD-027 currently releases a claim while preserving the draft. It is not abort and cannot satisfy the session-close gate. A dedicated abort command identity or an explicitly versioned CMD-027 contract requires canonical command-registry and PO/Engineering/Security approval; no command ID or event name is invented here. Abort preserves immutable revisions, return reasons and evidence history, but makes the active attempt/context terminal and non-editable. Aborted attempts remain non-completion in reports and cannot inflate inspected/approved/good/defective/printed counts. Later session creates a fresh attempt.
+
+The lock graph must include CMD-013 final close against abort, claim release, draft save, submit, evidence finalization, return/approval, document generation and print finalization. Complete child-writer inventory, compatible lock modes, post-fence blocker snapshot, audit/event/idempotency atomicity and concurrency evidence remain OPEN; global graph remains NOT PROVEN ACYCLIC.
