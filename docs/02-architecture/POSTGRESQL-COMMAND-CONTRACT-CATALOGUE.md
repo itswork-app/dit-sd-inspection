@@ -169,3 +169,7 @@ A proposed row in this catalogue does not satisfy the gate by itself.
 ## 10. Change control
 
 Update this catalogue, API contracts, command boundary, permission registry, RBAC, RLS catalogue, audit catalogue, QA catalogue, RTM and Package S whenever a command field, permission, scope predicate, table, function, lock, idempotency, audit event or typed outcome changes. A command must not be implemented from a stale or partially approved row.
+
+## Function security and EXECUTE ACL dependency
+
+See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md). The 48 operations are assigned provisional F1/F2/F6 classes, not deployed function names or grants. The INVOKER/direct-DML compatibility blocker applies to protected mutation functions and must be resolved before any function is exposed.
