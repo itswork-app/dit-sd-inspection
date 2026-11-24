@@ -178,7 +178,7 @@ Changes to permission codes, command mappings, role grants, scope predicates, RL
 
 ## Individual command contract catalogue dependency
 
-[PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) now expands the 27 families into 48 logical operations (CMD-001..048) and links 48 planned QA cases (TC-CMD-CONTRACT-024-001..048). This is a detailed proposal, not 48 approved/executable contracts: exact physical PostgreSQL signatures, API routes, role grants, deployed RLS, EXECUTE grants, approved schemas and runtime evidence remain absent. CMD-045..048 are explicitly blocked pending institutional authority/schema. CMD-052..054 are internal-only workers and require dedicated non-browser identity/ACL review.
+[PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) expands the 28 authorization families into 54 proposed operations (CMD-001..054). The original 48 operations have TC-CMD-CONTRACT-024-001..048; NLA-001 notification operations have TC-NOTIF-001..018 and TC-CMD-AUTHZ-024-037..040. This is a detailed proposal, not 54 approved/executable contracts: exact physical PostgreSQL signatures, API routes, role grants, deployed RLS, EXECUTE grants, approved schemas and runtime evidence remain absent. CMD-045..048 are explicitly blocked pending institutional authority/schema. CMD-052..054 are internal-only workers and require dedicated non-browser identity/ACL review.
 
 ## PostgreSQL function security and caller ACL dependency
 
