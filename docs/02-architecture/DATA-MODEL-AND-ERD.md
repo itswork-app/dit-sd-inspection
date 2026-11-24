@@ -1,7 +1,7 @@
 # Data Model and ERD — Dit. SD Inspection
 
 Status: Logical data model draft — not a migration specification  
-Version: 0.2.0
+Version: 0.3.0
 
 
 ## Physical schema and RLS reconciliation status
@@ -187,3 +187,10 @@ The canonical `units` identity may be referenced by multiple project association
 **RLS and command rule:** all reads and writes resolve through the association's project and the caller's effective session/assignment/permission. Super Admin catalog permissions and canonical unit visibility do not grant project membership. Association creation/ending and conflict resolution are privileged commands through the T-18 caller-JWT boundary with atomic audit.
 
 This is the recommended relational resolution of T-16's approved uniqueness rule and existing project-scope requirements. It closes the ambiguity in the logical design; it is not a migration, runtime implementation, institutional exception approval or test result.
+
+
+## CMD-011–020 Product Owner semantic alignment (2026-11-24)
+
+The logical ERD must represent the PO-approved semantics recorded in the Decision Register: canonical T-07 session states (DRAFT/ACTIVE/PAUSED/CLOSED); closure request as an event/action rather than a persisted state; immutable session code; session-scoped target plans by default; per-membership effective end times; end-dated assignment history; normalized unique instrument code; complete draft configuration replacement; immutable published instrument versions and session/assignment version pinning.
+
+This is a logical-model alignment note, not a physical schema approval. The ERD must not imply that row-version fields, canonical config hashes, timestamp precision, uniqueness/exclusion constraints, trigger behavior, RLS or lock ordering have been finalized. Those remain explicit technical design dependencies in the physical schema, concurrency reconciliation and command reviews.
