@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.20  
+**Version:** 0.1.21  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -542,10 +542,17 @@ TC-NOTIF-086..089 remain PLANNED / NOT EXECUTED. NOTIF-035..038 do not authorize
 
 | Requirement ID | Requirement / invariant | Authority | Design reference | Verification | Status |
 |---|---|---|---|---|---|
-| NOTIF-039 | `inspection.approved` is emitted only for the exact current immutable submitted revision; approval actor/reviewer/revision author/responsible Inspector are not conflated | PO event-candidate decision; CMD-031; T-18 | NLA-EVENT-REGISTRY-001 v0.1.8; NLA-EVENT-TECH-RECON-001 v0.1.7 §27 | TC-NOTIF-090; exact revision and event identity/dedup evidence | OPEN — SOURCE EVENT / REVISION BINDING UNRESOLVED |
-| NOTIF-040 | Approval recipient selection requires an approved persisted Reviewer/participant mapping and exact scope; reviewer != revision author; no generic role/title inference | CMD-031; Security/PO | NLA-EVENT-TECH-RECON-001 v0.1.6 §27 | TC-NOTIF-091; assignment, scope and SoD negatives | OPEN — REVIEWER ASSIGNMENT / PARTICIPANT MAPPING NOT ADMITTED |
+| NOTIF-039 | `inspection.approved` is emitted only for the exact current immutable submitted revision; approval actor/reviewer/revision author/responsible Inspector are not conflated | PO event-candidate decision; CMD-031; T-18 | NLA-EVENT-REGISTRY-001 v0.1.10; NLA-EVENT-TECH-RECON-001 v0.1.7 §27 | TC-NOTIF-090; exact revision and event identity/dedup evidence | OPEN — SOURCE EVENT / REVISION BINDING UNRESOLVED |
+| NOTIF-040 | Approval recipient selection requires an approved persisted Reviewer/participant mapping and exact scope; reviewer != revision author; no generic role/title inference | CMD-031; Security/PO | NLA-EVENT-TECH-RECON-001 v0.1.7 §27 | TC-NOTIF-091; assignment, scope and SoD negatives | OPEN — REVIEWER ASSIGNMENT / PARTICIPANT MAPPING NOT ADMITTED |
 | NOTIF-041 | CMD-030 return and CMD-031 approval serialize on one inspection aggregate and one terminal-decision-per-revision arbiter | CMD-030/031; physical integrity proposal; T-18 | NLA-EVENT-TECH-RECON-001 v0.1.6 §§27/29; LOCK-MANIFEST-001 §7.13; LOCK-GRAPH-001 §30 | TC-NOTIF-092; concurrent terminal-decision, audit rollback and retry evidence | OPEN — UNIQUE ARBITER / GLOBAL LOCK PROOF MISSING |
 | NOTIF-042 | `inspection.reopened` requires explicit approved authority, exact scope and mandatory reason; next-action owner is explicitly mapped and not inferred | CMD-032; Decision Register; Security/PO | NLA-EVENT-TECH-RECON-001 v0.1.6 §28 | TC-NOTIF-093; role/grant/scope/reason negative cases | OPEN — REOPEN AUTHORITY / RECIPIENT MAPPING UNRESOLVED |
 | NOTIF-043 | Reopen preserves immutable approved revision and downstream artifacts, creates at most one well-defined mutable draft context, and atomically snapshots the exact event-time audience | CMD-032; T-15/T-18; POQ-01/04 | NLA-EVENT-TECH-RECON-001 v0.1.6 §§28–29; LOCK-MANIFEST-001 §7.13 | TC-NOTIF-094; draft uniqueness, active-work/finalizer race and snapshot evidence | OPEN — DRAFT PHYSICAL MODEL / ACTIVE-WORK LOCK PROOF MISSING |
 
 TC-NOTIF-090..094 remain PLANNED / NOT EXECUTED. NOTIF-039..043 do not approve event publication, recipient mapping, schema, implementation or G10 activation.
+
+
+## Current CMD-031/032 source and schema cross-check — 2026-11-24
+
+The physical schema v0.4.4 declares `review_events(id, inspection_revision_id, reviewer_id, decision, reason, created_at)`, append-only behavior, reviewer/author separation for approval and the invariant of one terminal decision per revision. It does **not** name a review-round/decision-sequence field or a concrete unique index/constraint that enforces the invariant. This is a documented invariant, not proof of an admitted database arbiter.
+
+The source-event path map v0.1.0 and command lock manifest v0.4.30 still express inspection-aggregate-first candidate paths for CMD-030/031/032, while the candidate global graph §30 proposes reviewer/authorization and project/session/assignment/optional-claim context before the inspection aggregate. This ordering conflict remains explicit and unresolved; no proposed sequence is certified. LPR-01/LPR-07/LPR-09/LPR-11 remain OPEN; LPR-10 NOT EXECUTED; 0/50 lock certified.
