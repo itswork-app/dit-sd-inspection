@@ -326,7 +326,7 @@ notification.read is emitted once on the first set-once read transition, not on 
 
 ### 14.4 Approval and gate status
 
-The six notification tables remain a proposed subset of the 48-table physical/RLS inventory. INT-NOTIF-001 is an integration contract, not a new CMD ID or table. Physical constraints, indexes, RLS, role grants, worker identity, provider capability, retry horizons, recipient-selector semantics and T-10 retention/privacy still require approval and/or live evidence. QA TC-NOTIF-001..026 and TC-FN-SEC-025-064..069 remain PLANNED / NOT EXECUTED. G9 remains NOT READY; G10 remains NOT AUTHORIZED.
+The six notification tables remain a proposed subset of the 48-table physical/RLS inventory. INT-NOTIF-001 is an integration contract, not a new CMD ID or table. Physical constraints, indexes, RLS, role grants, worker identity, provider capability, retry horizons, recipient-selector semantics and T-10 retention/privacy still require approval and/or live evidence. QA TC-NOTIF-001..029 and TC-FN-SEC-025-064..069 remain PLANNED / NOT EXECUTED. G9 remains NOT READY; G10 remains NOT AUTHORIZED.
 
 
 ## 15. Product Owner decision reconciliation — POQ-001 (2026-11-24)
