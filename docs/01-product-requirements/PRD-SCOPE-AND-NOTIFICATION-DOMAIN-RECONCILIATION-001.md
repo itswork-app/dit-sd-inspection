@@ -1,7 +1,7 @@
 # PRD Scope and Notification Domain Reconciliation — SCOPE-RECON-001
 
 **Document ID:** SCOPE-RECON-001  
-**Version:** 0.1.1  
+**Version:** 0.1.2  
 **Status:** REVIEW CANDIDATE — STATIC RECONCILIATION ONLY  
 **Date:** 2026-11-24  
 **Branch:** docs/notification-resolver-lock-closure  
@@ -121,7 +121,7 @@ These decisions do **not** approve:
 
 ## 9. Event-by-event triage result
 
-See [NLA-EVENT-TRIAGE-001](../02-architecture/NOTIFICATION-EVENT-CANDIDATE-TRIAGE-001.md) v0.1.0 for the CMD-001–040 review. It separates PO discussion candidates from operational/control events and unresolved composite declarations. No event is enabled. The PO discussion shortlist is limited to user-visible account outcomes, role revocation, project/session closure, assignment creation/change, and inspection submission/return/approval/reopen. The shortlist is not an allowlist; exact event identity, recipient mapping, deduplication and PO approval remain required.
+See [NLA-EVENT-TRIAGE-001](../02-architecture/NOTIFICATION-EVENT-CANDIDATE-TRIAGE-001.md) v0.1.1 for the CMD-001–040 review. It separates PO discussion candidates from operational/control events and unresolved composite declarations. No event is enabled. The PO discussion shortlist is limited to user-visible account outcomes, role revocation, project/session closure, assignment creation/change, and inspection submission/return/approval/reopen. The shortlist is not an allowlist; exact event identity, recipient mapping, deduplication and PO approval remain required.
 
 ## 10. Required next work before an event registry can be approved
 
