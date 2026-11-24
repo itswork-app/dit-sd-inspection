@@ -190,7 +190,7 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 - Repository intent: **DOCUMENTATION AND APPLICATION IN ONE REPOSITORY — CONFIRMED BY PRODUCT OWNER**
 - Documentation gap audit: **DGA-001 v1.11.27 RECORDED; blocking closure IN PROGRESS**
 - Mandatory agent instructions: **AGENTS.md v1.2.1 — READ BEFORE EVERY WORK SESSION/TASK**
-- Implementation roadmap: **IRG-001 v1.0.1 — CONTROLLED PLAN, NOT AUTHORIZATION**
+- Implementation roadmap: **IRG-001 v1.0.2 — CONTROLLED PLAN, NOT AUTHORIZATION**
 - SemVer policy: **2.0.0 adopted; application version not assigned before release**
 - Active implementation gate: **NOT READY — see DGA-001**
 - Current phase: **DOCUMENTATION / SSOT MATURATION**
