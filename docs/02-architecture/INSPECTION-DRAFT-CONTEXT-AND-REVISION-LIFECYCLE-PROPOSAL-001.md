@@ -1,7 +1,7 @@
 # Inspection Draft Context and Revision Lifecycle — Technical Proposal
 
 **Document ID:** INSPECTION-DRAFT-001  
-**Version:** 0.1.1  
+**Version:** 0.1.2  
 **Date:** 2026-11-24  
 **Status:** Engineering / Database / Security / Product Owner review required — NOT APPROVED  
 **Scope:** CMD-026 claim-unit; CMD-028 save-draft; CMD-029 submit-inspection; CMD-030 return-inspection; CMD-032 reopen-inspection; CMD-033/034 evidence upload/finalization  
@@ -38,7 +38,9 @@ Do not use an unsubmitted mutable row in `inspection_revisions` and then describ
 Candidate relation: `inspection_draft_contexts` (new, candidate-only).
 
 - One inspection aggregate may have multiple historical draft contexts over its lifecycle.
-- At most one context may be ACTIVE for an inspection at a time.\n- Every inspection attempt is immutably bound to exactly one session (`session_id`); no context, claim, draft, evidence workflow or returned correction may be resumed in another session.\n- An unfinished attempt must be explicitly aborted before its session can be finally closed. ABORTED is terminal; a later session creates a new inspection attempt and context rather than reviving the old one.
+- At most one context may be ACTIVE for an inspection at a time.
+- Every inspection attempt is immutably bound to exactly one session (`session_id`); no context, claim, draft, evidence workflow or returned correction may be resumed in another session.
+- An unfinished attempt must be explicitly aborted before its session can be finally closed. ABORTED is terminal; a later session creates a new inspection attempt and context rather than reviving the old one.
 - An ACTIVE context is the only writable working copy.
 - On successful submission, the context is sealed as SUBMITTED and is bound to exactly one new immutable `inspection_revisions` row.
 - A later return or authorized reopen creates a new ACTIVE context. It never reactivates or overwrites an old context.
@@ -53,7 +55,8 @@ This relation is not admitted to the canonical 48-table physical inventory. It i
 | Candidate attribute | Purpose / rule |
 |---|---|
 | `id` | Server-generated UUID primary key |
-| `inspection_id` | FK to the stable inspection aggregate |\n| `session_id` | Immutable FK to the exact active session in which this inspection attempt was claimed; never reassigned |
+| `inspection_id` | FK to the stable inspection aggregate |
+| `session_id` | Immutable FK to the exact active session in which this inspection attempt was claimed; never reassigned |
 | `context_no` | Monotonic per-inspection draft-context sequence; unique with inspection_id |
 | `instrument_version_id` | Exact published version pinned by the inspection/assignment |
 | `base_revision_id` | Nullable FK to the immutable revision from which a correction/reopen draft is derived; null for the initial draft |
