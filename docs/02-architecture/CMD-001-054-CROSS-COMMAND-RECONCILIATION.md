@@ -159,9 +159,9 @@ The following cross-command gaps recur across independent command reviews:
 | X-DB-13 | CMD-036/037 | Document source provenance, template registry/version, renderer job lifecycle and immutable document version/print sequence are incomplete | Define source FK/provenance, template/version, job/lease/retry and lock-safe version/sequence allocation |
 | X-DB-14 | CMD-038 | Print batch item manifest and durable outcomes for invalid/unresolvable items are unclear | Decide print_batch_items or equivalent stable manifest; define per-item outcome and aggregate reconciliation |
 | X-DB-15 | CMD-039/040 | Attendance location/assignment linkage, upload metadata and append-only verification history are incomplete | Define exact location scope, two-phase upload, immutable verification history, rejection event and uploader/verifier SoD |
-| X-DB-16 | CMD-050 | expected_version is in the command catalogue but notifications schema has no version column | Remove expected_version or approve a physical version model |
-| X-DB-17 | CMD-051 | Policy draft lifecycle is not fully represented by the proposed policy_versions table | Define draft identity/edit history/hash canonicalization/publish concurrency |
-| X-DB-18 | CMD-052 | NLA/schema/catalogue differ on outbox payload and lease field detail | Reconcile safe_payload versus payload_ref, lease owner/token/expiry, retry/status fields and partial fan-out |
+| X-DB-16 | CMD-050 | Previous expected_version field conflicted with no physical notifications row-version | RESOLVED AT DOCUMENTATION BOUNDARY: remove expected_version; guarded set-once read_at is the state arbiter; runtime/audit verification remains open |
+| X-DB-17 | CMD-051 | Persisted draft lifecycle was previously conflated with the publish command | RESOLVED AT COMMAND SCOPE: CMD-051 is publish-only; persisted draft CRUD is excluded pending a separate approved command/schema |
+| X-DB-18 | CMD-052 | NLA/schema/catalogue previously differed on payload and lease detail | RESOLVED AT DOCUMENTATION BOUNDARY: safe_payload and owner/token-hash/generation/expiry lease tuple aligned; partial progress remains PROCESSING and retries use uniqueness arbiters |
 | X-DB-19 | CMD-045–048 | Retention/legal-hold, security-case, provider-config and release-record schemas are absent or intentionally undefined | Keep blocked until institutional/operational authority and domain models are approved; do not add placeholders |
 
 The repeated version-token pattern is systemic, not a set of isolated API issues. Every expected_version field must map to a physical concurrency token, a documented compare-and-swap predicate and an increment rule. A request field alone does not provide optimistic concurrency.
@@ -190,12 +190,12 @@ The 48/48 physical/RLS table-name parity is a documentation inventory check. It 
 - actual caller JWT forwarding and PostgREST exposure.
 
 The RLS catalogue's CMD label means command-only mutation; it is not a direct browser DML grant. The following notification posture is proposed:
-- notifications: recipient-self read and command-only self read/dismiss mutation;
+- notifications: recipient-self read only; CMD-050 set-once read via trusted command; no R-admin/global inbox read; dismissed_at is dormant;
 - notification_outbox: no browser read; internal worker only;
 - notification_deliveries: no browser access; worker-only mutation, restricted operations reader only if approved;
 - notification_delivery_attempts: no browser access; append-only sanitized worker history;
-- notification_escalation_events: restricted oversight/worker access;
-- notification_policy_versions: explicit configuration-scope read and reviewed command-only draft/publish.
+- notification_escalation_events: no browser access by default; internal worker only; restricted operations reader only after explicit approval;
+- notification_policy_versions: default-deny browser read; any narrowly scoped configuration read requires an approved grant; CMD-051 publish-only.
 
 Each table requires exact positive/negative RLS tests and SQL privilege review. RLS does not itself grant SQL privileges, and a function EXECUTE grant does not itself authorize the business action.
 
@@ -205,8 +205,8 @@ Each table requires exact positive/negative RLS tests and SQL privilege review. 
 - API-AND-TRANSACTION-CONTRACTS.md defines a common envelope and selected transaction patterns, but does not replace a complete command-by-command request/response schema and exact route/RPC mapping.
 - The Command Authorization Verification Matrix reports 54 individual command draft rows but zero approved/executable command-specific contracts.
 - Candidate names such as cmd_<name>_v1 remain naming conventions only; actual SQL types, overloads, route methods, response schemas and typed error mappings must be derived from approved physical types and inspected inventory.
-- CMD-053 provider callback/webhook ingestion is an identified gap: NLA-001 describes result/webhook recording, but CMD-049–054 do not clearly assign a separate logical callback-ingestion operation or explicitly scope it within CMD-053.
-- CMD-054 catalogue input evaluation_time must not become a caller-controlled clock; due-ness must derive from server time and approved SLA semantics.
+- CMD-053 provider callbacks are assigned to INT-NOTIF-001, a separate provider-authenticated integration ingress; provider-specific signature, freshness, event deduplication and runtime ACL remain open.
+- CMD-054 no longer accepts evaluation_time; the worker captures one DB UTC instant. SLA start, calendar/timezone and pause/close semantics remain open.
 
 ### 4.5 Audit event and privacy gaps
 
@@ -217,9 +217,9 @@ Cross-command audit mismatches and dependencies:
 - CMD-040 has VERIFIED/REJECTED outcomes, but attendance.rejected is not clearly enumerated in the audit event catalogue.
 - CMD-043 audit access requires a non-recursive access-audit path and field-minimized event projection.
 - CMD-044 requires institutional export authority and a complete export request/job/manifest/artifact lifecycle; none is established by the current physical inventory.
-- CMD-050 notification.read audit semantics must be reconciled with the privacy and volume implications of recording every inbox read.
+- CMD-050 emits notification.read once on the first set-once read transition; inbox page access and duplicate acknowledgements do not emit general audit events.
 - CMD-053 delivery attempts belong in the dedicated append-only attempt table; routine retries should not be duplicated into the general audit stream.
-- CMD-053 provider callback audit/event semantics need an explicit integration contract.
+- INT-NOTIF-001 callback state changes remain in delivery projections and privacy-safe telemetry; routine callbacks/retries do not flood the general audit stream.
 - CMD-045 retention/legal-hold must reconcile immutable audit history with institutional disposition policy. Engineering cannot decide to retain all personal data indefinitely or delete audit rows silently.
 - CMD-046 security-case access and actions must be auditable, but case evidence and sensitive payloads must be minimized.
 - CMD-047 provider changes and CMD-048 release events require safe metadata and approved evidence retention.
@@ -342,7 +342,7 @@ This reconciliation does not close any DGA, RTM or RAID item. A status change re
 
 The systemic version-token mismatch has a dedicated decision-ready proposal: [Concurrency and Version Token Reconciliation](CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md) v0.1.2.
 
-The proposal maps command request fields to their intended aggregate/token, separates row versions from business versions, inspection revision numbers, content hashes, print sequences and worker lease/fencing tokens, and identifies catalogue-versus-review mismatches for CMD-005, CMD-007, CMD-035, CMD-040 and CMD-050.
+The proposal maps command request fields to their intended aggregate/token, separates row versions from business versions, inspection revision numbers, content hashes, print sequences and worker lease/fencing tokens, and identifies remaining catalogue-versus-review mismatches for CMD-005, CMD-007, CMD-035 and CMD-040. CMD-050 expected_version has been removed.
 
 Key dispositions:
 - Existing physical \`row_version\` fields on \`inspections\` and \`unit_claims\` are retained as design references; their exact initialization/increment semantics still require approval.
