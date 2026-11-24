@@ -174,7 +174,7 @@ New source evidence: the 23-November Standing Bracket form and 20-November BA ar
 | INS-S-001 | Standing Bracket controlled source checklist and item mapping must be approved | Standing Bracket Instrument Specification; Package S | Controlled source/version and Product Owner/institution approval | BLOCKED |
 | DOC-S-001 | BA signatory, attendance verification, and report reconciliation authority must be approved | Reports, Documents, Printing, Attendance, and Audit Design; Package S | Approved document governance and UAT | BLOCKED |
 | OFF-S-001 | Offline/device/local data protection contract must be approved | Offline Sync and Recovery; Package S | Approved device matrix, retention, encryption, conflict and recovery acceptance | BLOCKED |
-| AUD-S-001 | INS-016 audit policy and institutional governance must be approved or explicitly deferred | Audit Event Catalogue and Governance; Package S | Formal approval/deferment with compensating controls | BLOCKED |
+| AUD-S-001 | INS-016 audit policy and institutional governance must be approved or explicitly deferred | T-15 PO APPROVED option A; T-10 institutional authority | Audit Event Catalogue and Governance; Package S | PO policy: APPROVED; institutional classification/retention/deletion/legal-hold/network-metadata authority: BLOCKED; implementation and verification: NOT AUTHORIZED / NOT EXECUTED |
 | OPS-S-001 | Provider, region, quota, billing, backup and restore capability must be verified | Packages O/P/Q; Package S | Provider capability sheet, approved budget/region, successful restore drill | BLOCKED |
 
 ## Package T decision traceability
