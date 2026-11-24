@@ -1,7 +1,7 @@
 # Concurrency and Version Token Reconciliation
 
 **Document ID:** CONCURRENCY-001  
-**Version:** 0.1.1  
+**Version:** 0.1.2  
 **Status:** Engineering proposal — PO/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054, physical schema, command catalogue, transaction/lock contracts, audit and QA traceability  
@@ -29,7 +29,7 @@ Reviewed on branch \`docs/t17-instrument-governance-t18-command-boundary\`:
 
 - \`AGENTS.md\` v1.2.0.
 - \`docs/02-architecture/PHYSICAL-DATABASE-SCHEMA-AND-INTEGRITY-SPECIFICATION.md\` v0.3.0.
-- \`docs/02-architecture/POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md\` v0.3.0.
+- \`docs/02-architecture/POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md\` v0.3.1.
 - \`docs/02-architecture/CMD-001-010-DETAILED-CONTRACT-REVIEW.md\`.
 - \`docs/02-architecture/CMD-011-020-DETAILED-CONTRACT-REVIEW.md\`.
 - \`docs/02-architecture/CMD-021-030-DETAILED-CONTRACT-REVIEW.md\`.
