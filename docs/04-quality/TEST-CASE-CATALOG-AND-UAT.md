@@ -487,3 +487,23 @@ See [PostgreSQL Function Security & EXECUTE Grant Design](../02-architecture/POS
 | TC-FN-SEC-025-063 | SECURITY DEFINER owner table ownership | Global | Definer owner does not own protected application tables or inherit table-owner privileges; if an exception is approved, FORCE ROW LEVEL SECURITY and explicit threat-model evidence are required. | PASS only when ownership, role inheritance, FORCE RLS and runtime negative tests agree | PLANNED / NOT EXECUTED |
 
 **Execution gate:** 63 cases are PLANNED / NOT EXECUTED. The critical SECURITY INVOKER versus browser direct-DML compatibility issue must be resolved before any protected mutation RPC or grant is implemented. No SQL, grants, revokes, migrations, RLS changes or runtime tests were performed by this documentation update.
+
+## Supabase live database security inventory verification (2026-11-24)
+
+See [Supabase Live Database Security Inventory Runbook](../02-architecture/SUPABASE-LIVE-DATABASE-SECURITY-INVENTORY-RUNBOOK.md). These cases require actual read-only catalog/Dashboard evidence from the approved target environment. Repository documents or screenshots of proposed schemas are not substitutes. No live database inventory has been executed.
+
+| Test ID | Inventory surface | Verification requirement | Evidence / acceptance | Status |
+|---|---|---|---|---|
+| TC-LIVE-INV-026-001 | Environment identity and engine | Verify target project/environment label, database identity and PostgreSQL version before interpreting catalog results. | Approved non-secret environment reference and timestamp; no credentials captured. | PLANNED / NOT EXECUTED |
+| TC-LIVE-INV-026-002 | Roles and memberships | Inventory role attributes and memberships; identify LOGIN, SUPERUSER, CREATEROLE, BYPASSRLS and inherited privileges. | All application and privileged roles classified; unexpected privilege paths resolved. | PLANNED / NOT EXECUTED |
+| TC-LIVE-INV-026-003 | Schema and object ownership | Inventory schemas, table/view/partition/sequence ownership and schema ACLs. | Ownership reconciled to approved least-privilege model; no unreviewed exposed schema. | PLANNED / NOT EXECUTED |
+| TC-LIVE-INV-026-004 | Table ACL and RLS | Inventory table ACLs, RLS enabled/forced flags and all policies. | Protected browser roles lack direct INSERT/UPDATE/DELETE; exposed application tables have reviewed deny-by-default RLS. | PLANNED / NOT EXECUTED |
+| TC-LIVE-INV-026-005 | Function inventory and EXECUTE | Inventory exact function identities/overloads, owners, language, SECURITY mode, function settings and effective EXECUTE grants. | PUBLIC/anon and inherited broad EXECUTE paths are resolved; exact approved signatures only. | PLANNED / NOT EXECUTED |
+| TC-LIVE-INV-026-006 | SECURITY DEFINER ownership | Verify definer owner attributes, memberships, protected-table ownership, search_path and schema qualification. | NOLOGIN least-privileged owner; no SUPERUSER/BYPASSRLS or inherited table-owner privilege; exception requires approved threat model. | PLANNED / NOT EXECUTED |
+| TC-LIVE-INV-026-007 | Default ACL and inheritance | Inspect default privileges, schema usage and inherited table/routine grants. | No future object silently receives broad PUBLIC/browser DML or EXECUTE. | PLANNED / NOT EXECUTED |
+| TC-LIVE-INV-026-008 | Views, triggers and sequences | Inventory view ownership/security behavior, trigger targets and sequence ACLs. | No unreviewed privilege bypass or direct sequence exposure. | PLANNED / NOT EXECUTED |
+| TC-LIVE-INV-026-009 | Storage policy metadata | Inventory Storage bucket/object policy definitions and bucket privacy/limits without reading object data. | Upload/download/delete policies are scoped; no public evidence exposure; T-10 limits remain unset until institutional approval. | PLANNED / NOT EXECUTED |
+| TC-LIVE-INV-026-010 | Supabase Dashboard/provider controls | Verify exposed schemas, Auth configuration, environment-variable names only, backups/PITR, region, network and ownership/recovery evidence. | T-12 provider/backup/ownership gates have authoritative evidence; secrets are never exported. | PLANNED / NOT EXECUTED |
+
+**Execution gate:** All 10 inventory cases remain PLANNED / NOT EXECUTED because no live Supabase connector/session is available. The audit must use the read-only runbook, preserve permission errors and redacted evidence, and must not execute migrations or privilege changes.
+
