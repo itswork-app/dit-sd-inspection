@@ -498,19 +498,25 @@ Physical schema gap: the current catalogue lists attendance_records and attendan
 
 ### CMD-041
 
-**OPEN:** The detailed contract review does not enumerate a complete command-specific physical read/write set. Candidate boundary is a bounded, actor/scope-authorized actual-data query with stable scope/time ordering and cursor pagination. Exact source tables, joins, snapshot/watermark, indexes, query plan and RLS policy must be mapped from the approved report contract before implementation.
+**PHYSICAL READ SET RECONCILED — PROPOSAL, NOT APPROVED:** `inspections`, `inspection_revisions`, `inspection_events`, `review_events`, `documents`, `print_events`, `units`, `unit_project_associations`, `operational_assignments`, `assignment_members`, `sessions`, `locations`, `projects`, and referenced immutable instrument-version records. Authorization resolver reads effective account/grant/scope records. No business-table writes. Optional `audit_events` append only if the approved report-access policy requires it.
+
+The report is computed from authoritative source records; no report snapshot/materialized table is assumed. Apply one authorized scope predicate before aggregation, use event-time and state-as-of semantics from a versioned metric dictionary, and return `measured_at` plus an explicit watermark. Candidate index families (not DDL) are project/session/assignment plus event timestamp and immutable event/resource ID for inspection/review/print events, and project/session/status/version for current-state joins. Exact index keys/order, EXPLAIN plans and numeric bounds remain OPEN pending approved workload and G10 staging evidence. RLS rows for source entities remain controlling; aggregate output must not reveal counts outside location scope.
 
 ### CMD-042
 
-**OPEN:** The detailed contract review does not enumerate a complete command-specific physical read/write set. Candidate boundary is a bounded target-plan/allocation read with deterministic calculation/version. Exact source tables, published-versus-draft selection, snapshot semantics, indexes, query plan and RLS policy remain OPEN. Target data must remain separate from actual inspection data.
+**PHYSICAL READ SET RECONCILED — PROPOSAL, NOT APPROVED:** `target_plans`, `target_allocations`, `projects`, `sessions`, `locations`, instrument references and `operational_assignments`/`assignment_members` only where needed to prove effective scope or supported allocation dimensions. Optional actual-progress overlay may read CMD-041 source entities only after PO approval and must carry its own metric-definition version and watermark. No business-table writes.
+
+Resolve one immutable PUBLISHED `target_plans` version once per cursor chain; bind the cursor to actor, project/session, plan-version ID, normalized filters, sort and snapshot/watermark. Do not use a mutable "latest plan" lookup on subsequent pages. No report snapshot table is assumed. Candidate index families (not DDL): `target_plans(project_id, version, status)` and `target_allocations(target_plan_id, target_date, allocation dimension, id)`; exact dimension key and index order remain dependent on final allocation contract and EXPLAIN evidence.
 
 ### CMD-043
 
-**OPEN:** The detailed contract review does not enumerate a complete command-specific physical read/write set. Candidate boundary is a bounded purpose-bound audit read under SECURITY INVOKER/RLS with stable cursor pagination. Exact audit columns, reader-purpose authorization, anti-recursion, access-audit append policy, retention and function owner/EXECUTE ACL are controlled by T-10 and remain OPEN.
+**PHYSICAL READ SET RECONCILED — PROPOSAL, T-10 BLOCKED:** `audit_events` plus only the minimum authorization/scope resolver and safe label references (`app_users`, roles/scope grants, projects/sessions/locations) needed for the approved purpose. The query returns event-type-specific allowlisted projections, never arbitrary `metadata` JSON. No mutation to existing audit rows.
+
+Access logging is a distinct append operation, not a read-triggered call back into CMD-043. Candidate anti-recursion rule: the access event carries a dedicated event class/action and correlation ID; the audit-read query excludes its own access-event class by server policy, while other approved readers may see it only if the T-10 field/purpose matrix permits. At most one access event is emitted per request/correlation ID. Whether append failure blocks the read or routes to a durable monitored path is an institutional T-10 decision and remains OPEN. No new purpose/schema registry table is assumed; those are external governance inputs until approved. Candidate index family: `audit_events(scope/time)` and `audit_events(actor/time)` with event ID tie-breaker, subject to classification, partition and query-plan review.
 
 ### CMD-044
 
-**BLOCKED / NO EXECUTABLE PHYSICAL SET:** T-10 institutional records/privacy authority is absent. No export request/job/manifest/artifact table, worker, permission, grant or command implementation may be inferred. A future export design requires institutional approval, export SoD, purpose/scope, encryption, access expiry, retention/legal hold and durable audit.
+**BLOCKED / NO EXECUTABLE PHYSICAL SET:** T-10 institutional records/privacy authority is absent. No export route, function, permission grant, job, bucket, worker or artifact may be created. A candidate-only object model is documented in the CMD-041–044 review and physical schema annex for future review; it is NOT admitted to the canonical 48-table inventory. Export requires institutional approval of authority, purpose, SoD, scope, classification, format/volume, recipient, encryption/key custody, download authorization, retention/legal hold, deletion and recovery. Existing `documents` and `notification_outbox` are not to be repurposed.
 
 ### CMD-049
 
