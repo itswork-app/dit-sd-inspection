@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.36
+**Version:** 1.11.37
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -70,6 +70,8 @@ The Product Owner approved [CMD-045–048 Control-Plane Resolution Proposal](../
 **Application design disposition:** CLOSED for the four command surfaces. No application permission, route, RPC, function, table, worker, generic CRUD or app transaction/lock set is to be created for CMD-045–048. Future narrow integrations require a new requirement/command ID and separate review.
 
 **Residual gate disposition:** DGA-B04, DGA-B05 and DGA-B15 remain open/blocked; DGA-B09/B10/B12 and DGA-B19 remain open for the 50 application commands and technical evidence. The former CMD-045–048 application-command test backlog is not applicable; external control-plane verification belongs to accountable owners. G9 remains NOT READY; G10 remains NOT ACTIVE.
+
+**Current synchronized references:** Decision Register CMD-045–048 approval (2026-11-24); CMD-045–048 Resolution Proposal v0.1.0; Detailed Contract Review v0.1.3; PostgreSQL Command Contract Catalogue v0.4.6; Cross-Command Reconciliation v0.8.14; RTM-001 v0.1.4; RAID-001 v0.1.2; LOCK-MANIFEST-001 v0.4.21. QA cases previously associated with CMD-045–048 remain planned as external control-plane verification requirements only; they are not an application command test backlog.
 
 
 ## 4. High-risk design quality gaps
