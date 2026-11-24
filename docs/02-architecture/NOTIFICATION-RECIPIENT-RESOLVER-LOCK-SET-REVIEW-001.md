@@ -1,7 +1,7 @@
 # Notification Recipient-Resolver Lock-Set Review
 
 **Document ID:** NLA-RESOLVER-LOCK-001  
-**Version:** 0.1.10  
+**Version:** 0.1.11  
 **Status:** Engineering design proposal — NOT APPROVED; no lock rank or physical mechanism is admitted  
 **Date:** 2026-11-24  
 **Repository baseline:** docs/audit-lock-and-identity-reconciliation at 7d722a77ac37a4c82a026daeddd1b00df4a4f713  
@@ -280,3 +280,8 @@ NRL-T13 adds the mixed-load contention benchmark at the approved maximum audienc
 Current controlled inputs for this review are NLA-001 v0.1.9; NLA-L05-TDR-001 v0.1.4; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.9; RAID-001 v0.1.8; DGA-001 v1.11.61; source-event map v0.1.0; eligibility-writer matrix v0.1.2; QA Catalogue v0.4.6.
 
 LOCK-MANIFEST-001 §7.13 now provides a partial candidate ordering overlay for CMD-031/032/033/034/037. CMD-035/036/038/039/040 remain blocked on operation transaction semantics, worker/lease identity and rank, per-item event boundaries, attendance aggregate/version physicalization or institutional authority. This advances the static source lock-order proposal only. It does not increase the 0/40 resolver certification or 0/50 application-command certification. F-03 remains OPEN pending all 40 producer paths, actual function/finalizer call graphs, complete post-L05 lock unions and graph proof. F-04 remains OPEN pending exact physical writer and bypass inventory. G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 20. POQ-04 product decision disposition — 2026-11-24
+
+POQ-04 is now PO APPROVED: all five transition outcomes (role revoke, account reject/disable/suspend, assignment-member end, project/session close and self-revoke) were accepted without changes. The approved product invariant is an immutable pre-mutation event-time candidate set, exact-selector-only inclusion, dispatch-time suppression without audience widening, and retry reuse of the same candidate set/checkpoint. This resolves the outstanding Product Owner decision dependency for F-05 but does not close the technical finding. Security/Engineering must validate selector grammar, suppression semantics, retry-after-reactivation, parent-state checks and audit behavior against the final L05 design. F-03/F-04 and all lock proof requirements remain open; resolver certification 0/40; application lock certification 0/50; G9 NOT READY; G10 NOT ACTIVE.
