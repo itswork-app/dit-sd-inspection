@@ -135,7 +135,7 @@ Current controlled sources:
 - RTM-001 v0.1.1; RAID-001 v0.1.1; QA Catalogue v0.3.5.
 - SSOT-AUDIT-001 v0.1.0; POQ-001 v0.1.0; AUTH-001 v0.1.0.
 
-The cross-document review confirmed 125 unique RTM requirement IDs, 53 unique RAID IDs and 50 unique Decision Register IDs. Package S §9.15's 391-test identifier count remains historical; the current DGA scan reports 410 unique planned test definitions. The RTM T-13 mapping now points to TC-PRINT-001..007 and TC-PRINT-BATCH-001..008; TC-DOC-009..011 remain instrument/document cases.
+The cross-document review confirmed 125 unique RTM requirement IDs, 65 unique RAID IDs and 50 unique Decision Register IDs. Package S §9.15's 391-test identifier count remains historical; the current DGA scan reports 410 unique planned test definitions. The RTM T-13 mapping now points to TC-PRINT-001..007 and TC-PRINT-BATCH-001..008; TC-DOC-009..011 remain instrument/document cases.
 
 No PO decision was changed. T-10/T-12 institutional/provider approvals remain outstanding. DGA-B04/B05/B09/B10/B11/B12/B13/B14/B15/B16/B17/B18/B19/B20/B21 remain open/partial. Lock progress remains 10/54 candidate-normalized and 0/54 technically approved/certified. No tests, CI, live database/provider inspection, restore drill, UAT, merge or implementation were performed.
 
