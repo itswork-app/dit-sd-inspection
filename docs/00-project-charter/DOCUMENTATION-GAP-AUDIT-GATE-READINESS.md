@@ -835,4 +835,4 @@ NREG-010/011 remain PARTIAL_STATIC_REVIEW only; all eleven event candidates rema
 
 ### Current CMD-031/032 evidence-control pointers — 2026-11-24
 
-The controlling static technical reconciliation is NLA-EVENT-TECH-RECON-001 v0.1.7. The targeted accountable evidence matrix is TECH-RESOLUTION-LPR-001 v0.1.11 §18. The lock protocol decision status is LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.13. These references do not change blocker status: LPR-01/LPR-07/LPR-09/LPR-11 OPEN; LPR-10 NOT EXECUTED; F-03/F-04/F-05/F-07 OPEN; resolver 0/40; application lock 0/50; G9 NOT READY; G10 NOT ACTIVE.
+The controlling static technical reconciliation is NLA-EVENT-TECH-RECON-001 v0.1.7. The targeted accountable evidence matrix is TECH-RESOLUTION-LPR-001 v0.1.11 §18. The lock protocol decision status is LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.14. These references do not change blocker status: LPR-01/LPR-07/LPR-09/LPR-11 OPEN; LPR-10 NOT EXECUTED; F-03/F-04/F-05/F-07 OPEN; resolver 0/40; application lock 0/50; G9 NOT READY; G10 NOT ACTIVE.
