@@ -1,7 +1,7 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.4.9
+**Version:** 0.4.10
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Parent:** LOCK-GRAPH-001 v0.4.6  
