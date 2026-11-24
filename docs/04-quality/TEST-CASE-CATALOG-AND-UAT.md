@@ -258,7 +258,7 @@ For each test, record exact command/function, caller fixture, permission/scope f
 
 ## T-18 — Command authorization verification matrix (design cases, 2026-11-24)
 
-The command-family authorization mapping is maintained in [Command Authorization Verification Matrix](../02-architecture/COMMAND-AUTHORIZATION-VERIFICATION-MATRIX.md). The following 36 cases are allocated to command-family review and common security-boundary verification. They are planned specifications, not executed tests. They do not replace later per-command request/response, RLS, EXECUTE-grant, audit rollback, idempotency and concurrency cases once exact command contracts are approved.
+The command-family authorization mapping is maintained in [Command Authorization Verification Matrix](../02-architecture/COMMAND-AUTHORIZATION-VERIFICATION-MATRIX.md). The following 40 cases are allocated to command-family review and common security-boundary verification. They are planned specifications, not executed tests. They do not replace later per-command request/response, RLS, EXECUTE-grant, audit rollback, idempotency and concurrency cases once exact command contracts are approved.
 
 | Test ID | Scenario | Expected result |
 |---|---|---|
@@ -298,6 +298,10 @@ The command-family authorization mapping is maintained in [Command Authorization
 | TC-CMD-AUTHZ-024-034 | Idempotency replay and hash — Same key/same semantic request then same key/different semantic request | First replay returns original outcome; changed hash returns IDEMPOTENCY_KEY_REUSED |
 | TC-CMD-AUTHZ-024-035 | Audit fail-closed boundary — Required audit validation/insert fails for any critical state-changing command | Business mutation rolls back and no success response is emitted |
 | TC-CMD-AUTHZ-024-036 | RPC/SECURITY DEFINER grant review — Unauthorized role calls RPC or PUBLIC attempts SECURITY DEFINER function | Only explicit EXECUTE principals succeed; pinned search_path, minimal owner/grants, schema-qualified refs verified |
+| TC-CMD-AUTHZ-024-037 | Notification inbox recipient isolation — Recipient A lists or marks recipient B's notification read, or follows a notification link without source-resource permission | No cross-recipient row/read-state mutation; referenced resource independently re-authorizes; no resource existence leakage |
+| TC-CMD-AUTHZ-024-038 | Notification policy authority — Caller without approved notification.policy.manage scope, grantor ceiling or required SoD publishes a policy or changes a published version | Denied; published versions immutable; no role grant inferred from title; policy/audit state unchanged |
+| TC-CMD-AUTHZ-024-039 | Notification worker boundary — anon/authenticated/browser caller invokes fan-out, provider dispatch or escalation operation, or presents forged worker/lease identity | Browser invocation denied; only separately approved worker principal and valid lease may proceed; no service-role caller identity substitution |
+| TC-CMD-AUTHZ-024-040 | Notification business-state isolation — Provider failure, retry exhaustion or escalation processing attempts to change inspection/project/session state | Notification lifecycle may change only its own state; inspection/project/session state remains unchanged; duplicate processing is idempotent |
 
 **Execution status:** NOT EXECUTED. No runtime, database, RLS, grant, RPC or deployment changes were made by adding these specifications.
 
