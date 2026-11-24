@@ -16,7 +16,8 @@ Only explicitly approved decisions are marked APPROVED.
 | RBAC-001 | Google sign-in; new users require approval and role assignment | APPROVED | No self-role elevation |
 | RBAC-002 | Multi-role accounts allowed with explicit operational assignment | APPROVED | Scope by session/location/instrument; no self-review |
 | WF-001 | Reviewer returns corrections to Inspector; Inspector resubmits | APPROVED | Immutable version history |
-| WF-002 | Reopening approved inspection requires authority, reason, and audit | APPROVED | Explicit permission required |\n| SES-001 | Each unit inspection attempt is bound to exactly one session; unfinished unit work is aborted at session end and cannot resume in another session | APPROVED | Same Inspector handles returned correction only within the original session; later session starts a new attempt |
+| WF-002 | Reopening approved inspection requires authority, reason, and audit | APPROVED | Explicit permission required |
+| SES-001 | Each unit inspection attempt is bound to exactly one session; unfinished unit work is aborted at session end and cannot resume in another session | APPROVED | Same Inspector handles returned correction only within the original session; later session starts a new attempt |
 | WF-003 | Session closure requires every assigned unit attempt to reach an allowed terminal outcome; incomplete attempts must be aborted before final closure | APPROVED | Completed units follow approval/document/print requirements; aborted attempts remain explicit non-completion records |
 | RPT-001 | Actual and Target reports are separate | APPROVED | Daily, weekly, and final variants |
 | RPT-002 | Actual records retain true activity dates/times | APPROVED | Never rewrite actual activity to match target allocation |
