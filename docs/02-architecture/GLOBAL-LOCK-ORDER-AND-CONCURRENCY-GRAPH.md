@@ -349,7 +349,7 @@ This graph now consumes the current candidate sources: PostgreSQL Command Contra
 
 ## 19. CMD-001–010 candidate edge normalization — 2026-11-24
 
-**Authority:** candidate overlay only; see CMD-001–010 Detailed Contract Review v0.3.3 §9 and LOCK-MANIFEST-001 v0.4.9. No Engineering/Database/Security approval or acyclic proof is implied.
+**Authority:** candidate overlay only; see CMD-001–010 Detailed Contract Review v0.3.4 §9 and LOCK-MANIFEST-001 v0.4.10. No Engineering/Database/Security approval or acyclic proof is implied.
 
 ### 19.1 Candidate edge set
 
@@ -386,3 +386,8 @@ This graph now consumes the current candidate sources: PostgreSQL Command Contra
 ### 19.4 Disposition
 
 CMD-001–010 are candidate-normalized at documentation level. The effective graph still contains unverified implicit FK/index/trigger/function edges; LPR-01/LPR-07/LPR-11 remain OPEN; LPR-10 is NOT EXECUTED. The graph is not certified acyclic and lock-complete remains 0/54.
+
+
+## 20. Current CMD-001–010 source refresh — 2026-11-24
+
+The current candidate overlay is CMD-001–010 Detailed Contract Review v0.3.4 §9; LOCK-MANIFEST-001 v0.4.10; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.6; DGA-001 v1.11.12; QA Catalogue v0.3.2. The older §15 gap narrative is historical and superseded by §§19–20. Candidate design only; LPR-01/LPR-07/LPR-11 remain OPEN and 0/54 certified.
