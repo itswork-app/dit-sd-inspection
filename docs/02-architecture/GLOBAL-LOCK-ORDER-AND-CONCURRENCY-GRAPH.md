@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.1
+**Version:** 0.4.2
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -271,7 +271,7 @@ Do not update canonical lock recipes to the candidate hierarchy before approval.
 
 ## 12. Command-level manifest inventory update — 2026-11-24
 
-[LOCK-MANIFEST-001 — Command-Level Lock Manifest Reconciliation CMD-001–054](COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.4.1 now inventories source-stated lock/resource sequences for all 54 logical command IDs. It records 54/54 inventory coverage and 0/54 certified lock-complete based on the current static evidence. It explicitly preserves unresolved ordering rather than normalizing conflicting source contracts.
+[LOCK-MANIFEST-001 — Command-Level Lock Manifest Reconciliation CMD-001–054](COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) now inventories source-stated lock/resource sequences for all 54 logical command IDs. It records 54/54 inventory coverage and 0/54 certified lock-complete based on the current static evidence. It explicitly preserves unresolved ordering rather than normalizing conflicting source contracts.
 
 The manifest confirms the CMD-023/024/025/026/027/028 ordering issues, parent/child closure conflicts, T-14 eligibility path gaps, instrument/assignment rank gap, evidence/document/attendance finalization gaps, print sequence allocator gaps and notification worker fencing gaps. It is an evidence inventory, not an approved lock plan or proof of deadlock freedom. All new tests remain planned/not executed; G9 remains NOT READY and G10 NOT AUTHORIZED.
 
@@ -298,7 +298,7 @@ The notification queue is not a license to acquire queue locks and then domain a
 
 ## 15. CMD-001–010 normalization overlay and identity/authorization rank gap — 2026-11-24
 
-LOCK-MANIFEST-001 v0.4.0 adds a row-level overlay for CMD-001–010. It separates mutable resource rows, unique-key arbiters, append-only facts, competing command paths and unresolved physical evidence.
+LOCK-MANIFEST-001 (current branch revision) adds a row-level overlay for CMD-001–010. It separates mutable resource rows, unique-key arbiters, append-only facts, competing command paths and unresolved physical evidence.
 
 Key conclusions:
 - CMD-001 uses own-identity upsert/unique auth_user_id arbitration; a missing app_users row cannot be treated as an already-lockable row.
@@ -309,4 +309,4 @@ Key conclusions:
 - CMD-009/010 use the project parent candidate rank L30. All project-scoped child writers must acquire the parent fence before child resources, then revalidate project state after any wait. Child-first writers can deadlock against closure or commit stale work after closure.
 - CMD-010's blocker inventory, parent lock mode, child-writer coverage and physical project row-version token remain unresolved.
 
-LPR-11 is added to LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.0 to define and approve identity/account/authorization lock classes and their order relative to T-14 capacity, project/session parents and assignment membership. Until it is resolved, CMD-001–007 cannot be marked rank-normalized. This does not close DGA-B18/B19, prove an acyclic graph, certify deadlock freedom or authorize implementation.
+LPR-11 is added to LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.1 to define and approve identity/account/authorization lock classes and their order relative to T-14 capacity, project/session parents and assignment membership. Until it is resolved, CMD-001–007 cannot be marked rank-normalized. This does not close DGA-B18/B19, prove an acyclic graph, certify deadlock freedom or authorize implementation.
