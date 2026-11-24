@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.85
+**Version:** 1.11.86
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -860,3 +860,8 @@ The candidate lifecycle design is now cross-referenced through:
 The proposal preserves the approved field journey and does not alter PRD or Decision Register. It separates mutable draft context from immutable submitted revision, and it does not infer evidence carry-forward, next Inspector/claim owner or claim release/resume/reassignment behavior.
 
 DGA-B10 remains OPEN. The candidate relation is not admitted; 48-table inventory remains unchanged. G9 NOT READY; G10 NOT ACTIVE. No source code, SQL, migration, grants, RLS, CI/test execution, live database inspection, deployment or merge was performed.
+
+
+## SES-001 session-bound inspection abort readiness update — 2026-11-24
+
+PO product semantics are approved and synchronized to Decision Register SES-001. Documentation now states immutable session_id binding, same-Inspector/same-session returned correction, no cross-session resume, terminal ABORTED handling before final session close, claim release/history preservation, and fresh attempt in a later session. Closure evidence is still missing for the exact CMD-027 versus dedicated abort command, session-close writer/lock participation, physical session FK and historical-attempt uniqueness, ABORTED state enforcement, atomic audit/event/idempotency, RLS/ACL, and execution of TC-INS-DRAFT-021..026. This update does not close G9 or activate G10. DGA issue remains OPEN pending Engineering/Database/Security/QA verification.
