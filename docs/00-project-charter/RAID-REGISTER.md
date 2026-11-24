@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.26  
+**Version:** 0.1.27  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -458,3 +458,9 @@ The PO clarification narrows ABORT to an exceptional disposition: Reviewer has r
 Until approved, the returned attempt remains unresolved. Approved ABORT is terminal and preserves submitted revision, Reviewer return, evidence and audit history; it is not approval, inspection completion, good/defective classification or print completion. A later inspection uses a new session-bound inspection_id. CMD-013 cannot create/approve/bulk-abort. Do not treat every unfinished attempt as eligible for ABORT.
 
 R-017, I-013 and D-010 remain OPEN — BLOCKING for command identity, authorization/SoD, reason and packed-state evidence policy, atomicity, lock/RLS/schema and QA evidence. No implementation or test execution is implied.
+
+## SES-001 — technical abort workflow risk/dependency refinement (2026-11-24)
+
+The approved business exception now has a candidate two-step technical design. The request/decision workflow is separate from CMD-027 claim release. Key additional risks are stale revision approval, requester/approver identity confusion, unverified packed-state evidence, concurrent correction versus approval, and partial claim/inspection/audit mutation. The current command/schema/lock contracts do not yet prove these cases.
+
+R-017, I-013 and D-010 remain OPEN — BLOCKING. Engineering/Database/Security must validate the request/decision record, exact command and permission mapping, role/delegation/SoD, evidence acceptance, atomic write set, RLS/T-18, lock/fence protocol and test evidence. No new RAID ID is assigned; no G9/G10 status changes.
