@@ -2,7 +2,7 @@
 
 **Document ID:** MIB-001  
 **Status:** CONTROLLED BASELINE — DOCUMENTATION PHASE  
-**Version:** 1.0.7  
+**Version:** 1.0.8  
 **Last reviewed:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Implementation authorization:** NOT GRANTED  
@@ -188,14 +188,15 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 ## 10. Current project status
 
 - Repository intent: **DOCUMENTATION AND APPLICATION IN ONE REPOSITORY — CONFIRMED BY PRODUCT OWNER**
-- Documentation gap audit: **DGA-001 v1.11.26 RECORDED; closure IN PROGRESS**
-- Mandatory agent instructions: **AGENTS.md v1.2.0 — READ BEFORE EVERY WORK SESSION/TASK**
+- Documentation gap audit: **DGA-001 v1.11.27 RECORDED; blocking closure IN PROGRESS**
+- Mandatory agent instructions: **AGENTS.md v1.2.1 — READ BEFORE EVERY WORK SESSION/TASK**
 - Implementation roadmap: **IRG-001 v1.0.1 — CONTROLLED PLAN, NOT AUTHORIZATION**
 - SemVer policy: **2.0.0 adopted; application version not assigned before release**
 - Active implementation gate: **NOT READY — see DGA-001**
 - Current phase: **DOCUMENTATION / SSOT MATURATION**
 - Application source code: **INTENTIONALLY NOT STARTED**
 - T-18 hybrid execution model: **PO-APPROVED DESIGN; implementation conformance NOT VERIFIED**
+- Notification product semantics: **POQ-01..03 APPROVED; engineering/security/institutional closure OPEN**
 - Live Supabase inspection: **NOT EXECUTED**
 - CI, runtime, restore, performance and UAT evidence: **NOT EXECUTED**
 - Scope freeze: **NOT READY**
@@ -207,7 +208,7 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 1. Treat [Documentation Gap Audit — Gate Implementation Readiness](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) as the active evidence-backed closure queue; do not claim readiness while any blocking row remains open.
 2. Reconcile historical status language in Package T, Package S, Decision Register, RTM and RAID without changing approved decision meaning.
 3. Close instrument source/evidence-slot and BA/template authority dependencies with controlled source evidence.
-4. Obtain PO/security review of NLA-001, approve notification recipient/policy/worker authority and T-10/provider dependencies, and complete independent technical review of the six notification tables plus T-13 `print_batches` constraints, locks and tests.
+4. Reconcile the approved POQ-01..03 notification semantics across NLA-001, command/API/schema/RLS/RTM/QA; close durable audience snapshot/checkpoint and selector design, worker identity/ACL, policy grants/SoD, provider callback security, retry horizons and T-10/provider dependencies; then obtain independent technical review of the six notification tables plus T-13 `print_batches` constraints, locks and tests.
 5. Complete the 54-operation command review: exact permissions, role/grantor/SoD, schemas, physical read/write sets, route/RPC mapping, transaction boundaries, idempotency, audit and command-specific tests.
 6. Reconcile physical schema, RLS, views, functions, triggers, sequences, Storage policies and exact grants.
 7. Close offline/device/local-data, evidence lifecycle, report reproducibility, account recovery, provider, backup/restore and measurable SLO specifications.
@@ -220,7 +221,7 @@ This blueprint is a governance/navigation artifact. It does not authorize code, 
 
 ## 12. Notification and batch-print design reconciliation — 2026-11-24
 
-- INS-015 design proposal is documented in [Notification Lifecycle and Delivery Architecture](../02-architecture/NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md) (NLA-001 v0.1.2). It defines six notification persistence entities, independent inbox/delivery states, transactional outbox, internal workers with lease fencing, publish-only policy, INT-NOTIF-001 provider callback ingress, escalation, audit and 26 planned tests. CMD-049–054 review v0.1.1 and the cross-document mapping are recorded; approvals and runtime evidence remain open.
+- INS-015 design proposal is documented in [Notification Lifecycle and Delivery Architecture](../02-architecture/NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md) (NLA-001 v0.1.3). POQ-01..03 are approved: hybrid event-time audience with non-widening dispatch revalidation, per-policy SLA with ELAPSED_UTC initial default and quiet-hours delivery deferral only, and no dismiss/archive in MVP. The six notification persistence entities, transactional outbox, worker lease fencing, publish-only policy, INT-NOTIF-001 provider callback ingress and escalation remain proposed pending engineering/security/institutional approval. QA has 29 notification cases, all planned/not executed. CMD-049–054 review v0.1.2 and cross-document mappings are recorded; technical and runtime evidence remain open.
 - T-13 PO-approved batch printing is represented by `print_batches` plus append-only per-document `print_events`; no new product decision is inferred beyond T-13.
 - Proposed physical schema/RLS inventory is 48/48 by static document comparison. This is not live database verification.
 - DGA-B10/B11/B13/B14 remain open or partial pending independent technical review, permission/worker approval, institutional T-10 decisions, provider evidence and test traceability.
@@ -230,12 +231,19 @@ This blueprint is a governance/navigation artifact. It does not authorize code, 
 ## 13. Cross-document audit and authority request control — 2026-11-24
 
 The current governance review is recorded in:
-- [SSOT-AUDIT-001 — Cross-Document Reconciliation Audit](SSOT-CROSS-DOCUMENT-RECONCILIATION-AUDIT.md) v0.1.2.
-- [POQ-001 — Product Owner Open Decision Packet](PRODUCT-OWNER-OPEN-DECISION-PACKET.md) v0.1.0.
+- [SSOT-AUDIT-001 — Cross-Document Reconciliation Audit](SSOT-CROSS-DOCUMENT-RECONCILIATION-AUDIT.md) v0.1.4.
+- [POQ-001 — Product Owner Decision Packet](PRODUCT-OWNER-OPEN-DECISION-PACKET.md) v0.1.1.
 - [AUTH-001 — Institutional and Technical Authority Approval Package](INSTITUTIONAL-AND-TECHNICAL-AUTHORITY-APPROVAL-PACKAGE.md) v0.1.0.
 
-Package S §9.16 is the current cross-document inventory snapshot; §9.15 and earlier audit sections remain historical. Package T v0.1.1 is a historical decision pack; the Decision Register remains the canonical index of current PO decisions. RTM-001 v0.1.2 and RAID-001 v0.1.1 are synchronized with the audit. The T-13 print test mapping is corrected against QA Catalogue v0.3.5.
+Package S §9.16 is the current cross-document inventory snapshot; §9.15 and earlier audit sections remain historical. Package T v0.1.1 is a historical decision pack; the Decision Register remains the canonical index of current PO decisions. RTM-001 v0.1.3 and RAID-001 v0.1.1 are synchronized with the audit. The T-13 print test mapping is corrected against QA Catalogue v0.3.6.
 
-The PO packet requests only unresolved product-semantic decisions. AUTH-001 routes institutional, security, database, repository and operations evidence requests to their actual delegated authorities. No response or approval is assumed.
+POQ-01..03 are approved and recorded. AUTH-001 continues to route institutional, security, database, repository and operations evidence requests to actual delegated authorities; no institutional or technical approval is assumed.
 
 Current gates remain G9 NOT READY and G10 NOT AUTHORIZED. This control-plane update does not authorize code, SQL, migrations, grants/revokes, live database changes, CI execution, deployment, merge or production activation.
+
+
+## 14. Agent policy and notification decision baseline — 2026-11-24
+
+Root AGENTS.md is updated to v1.2.1. It records POQ-01..03 as approved product semantics and explicitly preserves the technical/institutional boundary. The active current sources are DGA-001 v1.11.27, IRG-001 v1.0.2, SSOT-AUDIT-001 v0.1.4, RTM-001 v0.1.3, QA Catalogue v0.3.6, NLA-001 v0.1.3 and CMD-049–054 review v0.1.2.
+
+The static QA inventory contains 413 unique planned definitions, including TC-NOTIF-001..029; none is execution evidence. G9 remains NOT READY because source authority, institutional approvals, permission/command/database/lock closure, operational evidence and independent review remain incomplete. G10 remains NOT GRANTED. No implementation, SQL, migrations, grants/revokes, CI run, deployment or merge is authorized by this update.
