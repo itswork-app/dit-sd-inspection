@@ -1,7 +1,7 @@
-# Concurrency and Version Token Reconciliation
+| CV-06 | CMD-050 previously listed optional expected_version despite no physical row-version field | RESOLVED AT REQUEST-CONTRACT LEVEL: current catalogue and detailed review accept notification_id only; guarded set-once read_at is the state arbiter; PO/Security approval and runtime evidence remain open |
 
 **Document ID:** CONCURRENCY-001  
-**Version:** 0.1.5  
+**Version:** 0.1.6  
 **Status:** Engineering proposal — PO/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054, physical schema, command catalogue, transaction/lock contracts, audit and QA traceability  
