@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.55
+**Version:** 1.11.56
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -642,3 +642,12 @@ NLA-001 v0.1.4, CMD-049–054 Detailed Contract Review v0.1.3, Command-Level Loc
 A new critical risk is recorded as RAID R-037: recipient/scope snapshot and inbox inserts may cause implicit FK KEY SHARE locks against L15/L30/L50/L55 resources after source aggregate, queue or policy locks, potentially inverting the global candidate order. This is a potential edge, not an observed deadlock. The source command/event inventory, temporal eligibility linearization, exact FKs, worker paths and all implicit edges must be proven before candidate admission.
 
 RTM NOTIF-014/015 records the durable snapshot requirement and lock-order proof requirement. QA v0.4.2 adds TC-NOTIF-036..040 mapped to LG-41..45. All snapshot and concurrency cases remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE; 0/50 application lock-certified. No implementation or live database test occurred.
+
+
+## Complete source-event producer inventory — 2026-11-24
+
+LOCK-MANIFEST-001 v0.4.27 §7.7 maps all 40/40 CMD-001–040 canonical event declarations to their current candidate lock paths. NLA-001 v0.1.5 §17 and LOCK-GRAPH-001 v0.4.20 §28 identify the correct source transaction/finalizer boundaries for CMD-001–040, including operation-level CMD-035 events and asynchronous CMD-036/038/039 finalizers. QA v0.4.3 adds TC-NOTIF-041, PLANNED / NOT EXECUTED.
+
+This closes static producer-inventory coverage only. The recipient resolver lock set (L15 principal, L16 role grant, L17 scope grant, and applicable L30/L50 scope parent) is not reconciled against all 40 existing source lock paths. Potential lower-rank-after-higher-rank inversions remain, especially where a source command already holds L30/L40/L50/L60/L70/L90 before appending its event. No lock-safe ordering or temporal snapshot strategy is approved. CMD-041..044 read-side events remain excluded absent a separately approved access-event transaction boundary; CMD-049..054 are excluded from recursive matching by default.
+
+Candidate relation/header remain NOT ADMITTED and outside the 48-table inventory. Global graph remains NOT CERTIFIED ACYCLIC; application lock certification 0/50; G9 NOT READY; G10 NOT ACTIVE. No code, SQL, migration, database, CI or runtime test work was performed.
