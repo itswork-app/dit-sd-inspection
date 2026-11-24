@@ -18,7 +18,7 @@ Only explicitly approved decisions are marked APPROVED.
 | WF-001 | Reviewer returns corrections to Inspector; Inspector resubmits | APPROVED | Immutable version history |
 | WF-002 | Reopening approved inspection requires authority, reason, and audit | APPROVED | Explicit permission required |
 | SES-001 | Each unit inspection attempt is bound to exactly one session; a returned inspection may be ABORTED only when a detected error cannot be corrected/reinspected because the physical unit has already been packed and prepared for shipment; Inspector requests and Admin/Korlap approves | APPROVED | Normal returned corrections remain with the same Inspector in the original active session; ABORTED is terminal and is not approval/completion; a later session uses a new attempt |
-| WF-003 | Session closure requires every assigned unit attempt to reach an allowed terminal outcome; incomplete attempts must be aborted before final closure | APPROVED | Completed units follow approval/document/print requirements; aborted attempts remain explicit non-completion records |
+| WF-003 | Session closure requires every assigned unit attempt to reach an allowed terminal outcome; ABORT is permitted only through the SES-001 packed-unit exception with Inspector request and Admin/Korlap approval | APPROVED | Otherwise returned work follows WF-001 correction/resubmission; ABORTED remains explicit non-completion and cannot bypass other close gates |
 | RPT-001 | Actual and Target reports are separate | APPROVED | Daily, weekly, and final variants |
 | RPT-002 | Actual records retain true activity dates/times | APPROVED | Never rewrite actual activity to match target allocation |
 | DOC-001 | Wet signature in Phase 1; no digital signature substitution | APPROVED | Per-unit print does not assert signature verification |
@@ -335,10 +335,10 @@ This clarification does not fabricate or substitute a third party's signed insti
 **Required behavior:**
 1. CMD-026 may create/claim an inspection attempt only in the caller's currently active, authorized session and binds the attempt immutably to that session.
 2. Draft editing, offline continuation under T-09, evidence upload/finalization, submit and any returned correction are confined to that same session. The responsible Inspector remains the same Inspector for a returned correction, consistent with WF-001 and the separate PO decision on correction ownership.
-3. Before a session is finally closed, every unit attempt that has not reached an allowed terminal outcome must be explicitly aborted. An incomplete/hanging unit is not silently carried forward, left as a resumable draft, or moved to another session.
+3. Before a session is finally closed, every unit attempt must reach an allowed terminal outcome. Returned work that remains practically correctable follows WF-001 correction/resubmission. ABORT is allowed only for a Reviewer-returned error where the physical unit is already packed/boxed and prepared for shipment so correction/reinspection is impracticable, and only after Inspector request plus Admin/Korlap approval. A generic incomplete/hanging attempt is not eligible for ABORT.
 4. Abort is a terminal, auditable outcome for that inspection attempt. It preserves the attempt history, prior revisions, evidence metadata and audit trail; it is not a successful inspection, approval or completion.
 5. A later session must create a new inspection attempt bound to that new session. It must not reactivate or mutate the aborted attempt. Prior evidence is historical and is not automatically reused to satisfy the new attempt.
-6. Session closure must be blocked while unresolved unit attempts remain, until each is completed through the allowed workflow or explicitly aborted. Abort must be performed before final session closure.
+6. Session closure must be blocked while unresolved unit attempts or pending ABORT requests remain. A qualifying ABORT must be explicitly approved before final session closure; CMD-013 cannot initiate or approve it.
 
 **Scope:** IFP and Standing Bracket inspections by the Dit. SD inspection team only. This decision does not add school-side personas or workflows.
 
