@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.14  
+**Version:** 0.1.15  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -491,3 +491,13 @@ TC-NOTIF-073/074 remain PLANNED / NOT EXECUTED. PO approval does not authorize e
 | NOTIF-025 | CMD-002/003 must serialize competing terminal decisions and atomically bind account mutation, immutable decision, canonical event, audit, idempotency and (only after admission) outbox/candidate snapshot; every account eligibility writer must participate in the approved L05 protocol | POQ-01; POQ-04; T-18; Security/Engineering/Database | NLA-EVENT-TECH-RECON-001 v0.1.0 §§3–5; LOCK-NORMALIZATION-001 v0.1.1; L05 writer matrix v0.1.4 | TC-NOTIF-076; command concurrency, atomic rollback, uniqueness and complete-writer evidence | OPEN — DECISION UNIQUENESS / WRITER COVERAGE / LOCK PROOF MISSING |
 
 TC-NOTIF-075/076 remain PLANNED / NOT EXECUTED. NOTIF-024/025 are design/verification requirements, not implementation authorization. G9 NOT READY; G10 NOT ACTIVE.
+
+
+## Role revocation event technical traceability — 2026-11-24
+
+| Requirement ID | Requirement / invariant | Authority | Design reference | Verification | Status |
+|---|---|---|---|---|---|
+| NOTIF-026 | `role.revoked` must snapshot only principals selected by the exact approved selector against pre-revoke role/scope state; actor is never implicit, and dispatch-time current-role/scope checks may suppress but never widen or rewrite the immutable candidate set | POQ-01; POQ-04; INS-015; CMD-005 | NLA-EVENT-REGISTRY-001 v0.1.2; NLA-EVENT-TECH-RECON-001 v0.1.1 §9; NLA-L05-TDR-001 v0.1.8 §4.2.2 | TC-NOTIF-077; target/self-revoke positive and negative selector cases | OPEN — EVENT PARTICIPANT / DISPATCH PROFILE UNRESOLVED |
+| NOTIF-027 | CMD-005 must use an approved physical concurrency token or remove the unresolved expected_version request field; role transition, audit, idempotency and future admitted outbox/snapshot are atomic, with complete L05/L10 writer participation | POQ-01; POQ-04; T-14; T-18; Security/Database | NLA-EVENT-TECH-RECON-001 v0.1.1 §§9–10; LOCK-NORMALIZATION-001 v0.1.1; L05 writer matrix v0.1.4 | TC-NOTIF-078; stale-write, duplicate, capacity and writer-completeness evidence | OPEN — PHYSICAL CAS / WRITER / LOCK PROOF MISSING |
+
+TC-NOTIF-077/078 remain PLANNED / NOT EXECUTED. NOTIF-026/027 do not authorize implementation or G10 activation.
