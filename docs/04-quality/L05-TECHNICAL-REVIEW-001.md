@@ -1,7 +1,7 @@
 # L05 Audience Guard — Internal Technical Review
 
 **Document ID:** L05-REVIEW-001  
-**Version:** 0.1.4  
+**Version:** 0.1.5  
 **Review status:** REQUEST CHANGES — NOT TECHNICALLY APPROVED  
 **Review date:** 2026-11-24  
 **Reviewer capacity:** Internal technical reviewer acting for Product Owner interests; not an independent human Engineering, Database, Security or institutional sign-off  
@@ -185,3 +185,10 @@ Reviewer disposition remains REQUEST CHANGES — NOT TECHNICALLY APPROVED. L05 r
 The canonical Decision Register now contains POQ-04 as **PROPOSED — NOT APPROVED**. The proposal defines pre-mutation event-time candidate evaluation, exact-selector-only actor/target inclusion, and separate dispatch-time suppression for current account, role/scope and parent eligibility. It explicitly addresses role revoke, account reject/disable/suspend, assignment-member end, project/session close and self-revoke. TDR v0.1.5 records the same matrix; QA v0.4.7 adds TC-NOTIF-055..059 as PLANNED / NOT EXECUTED.
 
 This advances F-05 from an unstructured question to a reviewable PO decision package; it does **not** close F-05. PO approval or corrections are still required, followed by Security/Engineering validation of selector and suppression semantics. No implementation, database/runtime test or gate activation occurred.
+
+
+## 10. F-05 PO decision accepted; technical validation outstanding — 2026-11-24
+
+The Product Owner approved all five POQ-04 transition recommendations without changes. The approved semantics are recorded in DECISION-REGISTER.md, NLA-L05-TDR-001 v0.1.6 §4.2.2–4.2.3 and NLA-001 v0.1.12 §20. TC-NOTIF-055..059 now trace to the approved decision and remain PLANNED / NOT EXECUTED.
+
+**F-05 disposition:** the PO decision dependency is RESOLVED; the technical finding remains OPEN pending Security/Engineering validation of exact selector grammar, actor/target inclusion, current-scope and parent-state suppression, retry-after-reactivation, audit outcomes and consistency with the final L05 protocol. Reviewer disposition remains REQUEST CHANGES — NOT TECHNICALLY APPROVED. Resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE. No implementation, database/runtime test or gate activation occurred.
