@@ -254,3 +254,12 @@ The static QA inventory contains 413 unique planned definitions, including TC-NO
 [EVID-EXT-001 — External Inspection Evidence Register](EXTERNAL-INSPECTION-EVIDENCE-REGISTER-001.md) v0.1.0 is the current index for the Product Owner-supplied inspection evidence. It records the 20 Nov SB batch BA (460/456/4), 23 Nov IFP visit BA (300/300/0, SB 0/0/0), 23 Nov SB form no. 469, 24 Nov IFP form no. 189, the 13-row serial-number example and the 23–25 Nov attendance sheet. Product Owner acceptance of these artifacts and clarification that the 3TB75B-prefixed examples are correct are recorded. These samples improve G1 evidence traceability but do not replace controlled-source provenance, institutional signatory/attendance authority or full annex verification.
 
 Current gate effect: DGA-B01..B03 evidence-receipt/PO subcomponents are updated; institutional/source closure remains open. G1 and G9 remain NOT READY. G10 remains NOT AUTHORIZED. The existing AGENTS.md authorization boundary is unchanged.
+
+
+## 16. Product Owner conditional implementation authorization — 2026-11-24
+
+The Product Owner supplied an explicit written authorization to move the project from documentation toward implementation from zero in this repository, using the current SSOT as the build baseline. The authorization directs the team to close G9 prerequisites, freeze scope only after critical blockers are closed, and activate G10 only after verification. It permits source code, database schema, migrations, API, frontend and automated tests on a dedicated implementation branch after G10 activation. Production changes, deployment and operations affecting real data require separate approval. No gate may be marked PASS without required evidence and approvals.
+
+Canonical approval record: [Decision Register — Product Owner conditional implementation authorization](DECISION-REGISTER.md).
+
+**Gate disposition:** PO CONDITIONAL AUTHORIZATION RECEIVED. G9 remains NOT READY; G10 remains NOT ACTIVE; implementation remains prohibited until the G9 scope-freeze and G10 activation records are complete. This authorization does not replace institutional, Security, Database, Operations or provider approvals. The repository root AGENTS.md remains the mandatory execution boundary until updated through the approved gate process.
