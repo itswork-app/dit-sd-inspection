@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.19  
+**Version:** 0.1.20  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -383,7 +383,7 @@ RTM-001 v0.1.18 adds NOTIF-035..038; QA Catalogue v0.5.8 adds TC-NOTIF-086..089,
 
 ## D-026 / R-037 CMD-031/032 approval/reopen event update — 2026-11-24
 
-NLA-EVENT-TECH-RECON-001 v0.1.6 partially reviews NREG-010 `inspection.approved` and NREG-011 `inspection.reopened`. Approval is bound to one exact current immutable submitted revision, but the persisted Reviewer assignment, responsible-Inspector recipient mapping and terminal-decision uniqueness arbiter remain unadmitted. CMD-030 return and CMD-031 approval must serialize on the same inspection aggregate and one terminal decision per revision.
+NLA-EVENT-TECH-RECON-001 v0.1.7 partially reviews NREG-010 `inspection.approved` and NREG-011 `inspection.reopened`. Approval is bound to one exact current immutable submitted revision, but the persisted Reviewer assignment, responsible-Inspector recipient mapping and terminal-decision uniqueness arbiter remain unadmitted. CMD-030 return and CMD-031 approval must serialize on the same inspection aggregate and one terminal decision per revision.
 
 Reopen requires explicit `inspection.reopen` authority, exact scope and mandatory reason; the role/grant/SoD matrix and next-action owner remain unresolved. Mutable draft persistence/state vocabulary and active claim/association/evidence/document finalizer blocker graph are incomplete. Historical approved revisions, evidence, generated documents and print events must remain immutable.
 
