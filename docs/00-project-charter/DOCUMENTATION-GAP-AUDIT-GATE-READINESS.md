@@ -1,9 +1,9 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.8.0
+**Version:** 1.9.0
 **Audit date:** 2026-11-24  
-**Branch reviewed:** `docs/t17-instrument-governance-t18-command-boundary`  
+**Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
 **Status:** AUDIT IN PROGRESS — GATE IMPLEMENTATION NOT READY  
 **Implementation authorization:** NOT GRANTED
