@@ -420,7 +420,7 @@ QA Catalogue v0.3.3 aligns TC-CMD-CONTRACT-024-001..010 concurrency assertions. 
 
 ## CMD-045–048 control-plane resolution proposal — 2026-11-24
 
-[CMD-045–048 Control-Plane Resolution Proposal](CMD-045-048-RESOLUTION-PROPOSAL.md) v0.1.0 recommends keeping the stable command IDs for traceability while moving retention/legal-hold, security incident response, provider configuration and production release authority to their respective institutional/provider/release control planes. This is an engineering recommendation only; no Product Owner disposition is recorded. CMD-045..048 remain blocked/non-executable. T-10, T-12, incident-response RACI and repository/release governance remain independent gate dependencies. Current gate state is G9 NOT READY and G10 NOT ACTIVE; historical G10 NOT AUTHORIZED statements below are dated snapshots.
+[CMD-045–048 Control-Plane Resolution Proposal](CMD-045-048-RESOLUTION-PROPOSAL.md) v0.1.0 recommends keeping the stable command IDs for traceability while moving retention/legal-hold, security incident response, provider configuration and production release authority to their respective institutional/provider/release control planes. The Product Owner approved this proposal on 2026-11-24. CMD-045..048 are now deferred/excluded from the application command surface and remain non-executable; only their external control-plane dependencies remain open. T-10, T-12, incident-response RACI and repository/release governance remain independent gate dependencies. Current gate state is G9 NOT READY and G10 NOT ACTIVE; historical G10 NOT AUTHORIZED statements below are dated snapshots.
 
 ## CMD-045–048 blocked-command synchronization — 2026-11-24
 
