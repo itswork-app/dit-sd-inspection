@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.50
+**Version:** 1.11.51
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -603,3 +603,8 @@ Eight candidate object families are mapped across those documents. They remain N
 Permission reconciliation confirms existing mappings for sync.apply, document.generate, document.print.batch, attendance.upload, attendance.verify, report.read and audit.export. No new permission is approved. Device enrollment/revocation and template publication require separately defined command/permission boundaries. Renderer workers remain a distinct workload identity and do not inherit document.generate, authenticated-user permissions or service_role.
 
 Residual decisions: candidate FK/cardinality and indexes; device trust/recovery; template governance; renderer identity/ACL; print item/attempt identity; attendance scope authority and uploader/verifier SoD; export artifact model and T-10. No SQL, schema migration, RLS deployment, GRANT/REVOKE, runtime test or live DB verification occurred. G9 NOT READY; G10 NOT ACTIVE; 0/50 lock-certified.
+
+
+## Candidate durable-object QA coverage — 2026-11-24
+
+TEST-CASE-CATALOG-AND-UAT v0.3.7 now allocates 14 candidate-only planned cases TC-CANDIDATE-LEDGER-001..014 for sync replay/partial results/device trust, renderer lease fencing/source provenance, print manifest/retry, attendance version/verification/SoD, candidate RLS/ACL and permission non-inheritance. All remain PLANNED / NOT EXECUTED and are excluded from passing/executed denominators. The cases are conditional on schema admission, G10 authorization and controlled test deployment. This closes a test-specification traceability gap only; it is not test evidence and advances no gate.
