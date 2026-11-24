@@ -575,3 +575,8 @@ The Product Owner approves **option A: Vercel server route + caller-JWT PostgreS
 - Stable typed outcomes distinguish success, validation failure, unauthenticated, forbidden, conflict/stale state, idempotency-key reuse with a different request hash, and retryable infrastructure failure without leaking sensitive data.
 
 This approves the architecture pattern, not every individual command contract or SECURITY DEFINER exception. T-16 canonical unit/project-association reconciliation, T-17 publication controls, T-15 atomic audit, table-by-table RLS/grants, institutional privacy/provider blockers and command-specific permissions remain required design/acceptance gates. **No code, RPC, migration, deployment or test execution is authorized or claimed. Scope freeze remains NOT READY; feature implementation remains NOT AUTHORIZED.**
+
+
+## T-16 design reconciliation update (2026-11-24)
+
+The architecture documents now specify a project-independent canonical `units` identity, durable `unit_project_associations` episodes, controlled `unit_identity_conflicts`, inspection/claim composite association bindings, and a global one-active-claim-per-canonical-unit rule. Project access is still enforced through the exact association + project + session + assignment + permission; `unit_id` is never an authorization grant. The prior project-scoped unit uniqueness index is explicitly withdrawn because it contradicted PO-approved T-16 option B. This closes the logical ambiguity for review but does not close institutional normalization/exception policy, command/RLS implementation design review, scope-freeze gates or implementation authorization. No migration, code or tests are claimed.
