@@ -1,7 +1,7 @@
 # CMD-021–030 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security review required; NOT approved for implementation  
-**Version:** 0.3.2  
+**Version:** 0.3.3  
 **Date:** 2026-11-24  
 **Scope:** CMD-021 through CMD-030  
 **Controls:** T-15 append-only audit direction; T-16 canonical unit identity and association model; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
@@ -1244,3 +1244,16 @@ This is a candidate cross-check only. The physical relation, payload schema, cla
 ## SES-001 session-bound inspection and abort contract cross-check — 2026-11-24
 
 PO decision SES-001 is APPROVED in the Decision Register. CMD-026 must bind every new inspection attempt to the exact active session_id and must reject a claim when that session is not active or outside the caller's assignment scope. CMD-027 release-unit-claim must not be treated as equivalent to abort: session-end abort must terminally mark the inspection attempt/context ABORTED, release its active claim, preserve historical revisions/evidence, and append audit/event/idempotency atomically. Engineering must decide whether CMD-027 can support this complete semantic or a dedicated abort command is required. CMD-028, CMD-029, CMD-033/034 and returned correction remain bound to the same immutable session_id; offline editing under T-09 does not extend across sessions. A returned revision is correctable only by its original Inspector and only while the original session remains active. No cross-session draft resume, claim transfer or context reactivation is permitted. Session final close must be blocked until each unresolved unit attempt is completed or explicitly aborted. These are PO product semantics; command write sets, physical state/constraints, event names, locks, ACL/RLS and tests remain uncertified. No implementation is authorized by this addendum.
+
+
+## SES-001 — CMD-027 release is not inspection abort (2026-11-24)
+
+CMD-027's current approved-for-review candidate contract is `release-unit-claim`: it changes the claim to RELEASED and preserves the inspection draft, responses and evidence. That behavior is intentionally non-destructive and is **not** sufficient for SES-001 session-end abort.
+
+A session-end abort is a separate terminal inspection-attempt transition. It must be an explicit per-unit action, require a reason, verify actor permission and exact project/session/assignment scope, verify the inspection attempt is still abort-eligible, and atomically: (a) set the inspection attempt and active draft context to terminal ABORTED; (b) terminate/release the active claim with a distinguishable abort reason/outcome; (c) preserve all submitted revisions, return decisions, evidence bytes/metadata and audit history; and (d) append the approved audit/domain fact plus idempotency result. Failure of any required write rolls back the whole abort. It must reject already approved/completed attempts and must not act as CMD-030 return, CMD-032 reopen, association end or claim handoff.
+
+Do not overload CMD-027 silently: doing so would break its existing `DRAFT_PRESERVED` semantics and callers. The canonical command registry must decide whether to introduce a dedicated abort command identity or explicitly version CMD-027 with a separate action contract. Until that decision, CMD-027 remains claim release only and no executable abort endpoint is specified. A generic role label does not grant abort authority; exact permission and operational authority remain to be approved.
+
+A returned-but-unresolved revision is eligible for attempt abort before its originating session closes. The immutable returned revision and return reason remain historical; its correction context becomes non-editable. A later session must create a new inspection attempt rather than resume that correction context. No notification event for abort is implied by SES-001; audit/domain event admission and any user notification require their own registry/authority review.
+
+**Open / blocking:** command ID and permission, allowed-state matrix, reason rules, claim terminal semantics, inspection/draft ABORTED representation, event identity, physical constraints, RLS/ACL, lock order against CMD-013/CMD-028/029/030/032/033/034, and adversarial QA. No DDL, SQL, grants, RLS or implementation is authorized.
