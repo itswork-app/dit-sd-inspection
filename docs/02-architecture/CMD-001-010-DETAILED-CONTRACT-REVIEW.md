@@ -1,7 +1,7 @@
 # CMD-001–010 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security review required; NOT approved for implementation  
-**Version:** 0.2.0  
+**Version:** 0.3.0  
 **Date:** 2026-11-24  
 **Scope:** CMD-001 through CMD-010  
 **Controls:** T-15 append-only audit direction; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
@@ -721,6 +721,7 @@ The confirmation token is not an authorization credential. If retained, its issu
 | Project optimistic version fields absent from current physical summary | CMD-009/010 | Add approved version/update metadata or change contract to a fully specified alternative | Blocks physical-schema parity |
 | Project closure dependencies and concurrency protocol are not approved | CMD-010 | PO + institution define closure blockers, child-command fencing and reopen authority | Blocks CMD-010 contract completion |
 | Actual function owner, SECURITY mode, search_path and EXECUTE ACL not verified in Supabase | CMD-001–010 | Read-only catalog inventory and per-function security review after authorized environment access | Blocks G9/G10 |
+| Mutable identity/authorization rows have no class in candidate L00–L110 lock hierarchy | CMD-001–007 | Engineering/Security resolve LPR-11: rank and same-rank order for app_users, user_roles and user_scope_grants relative to T-14 capacity, project/session parents, grantor authority and assignment membership | Blocks rank normalization and concurrency approval |
 
 ## 5. Route/RPC mapping status
 
@@ -746,3 +747,20 @@ The ten candidate route/RPC pairs in this document are naming proposals only. No
 - Notification worker identity and ACL remain pending separate approval.
 
 Next documentation-only step: resolve the cross-command decisions above with PO/security/institutional owners, then reconcile the approved CMD-001–010 contract back into the canonical catalogue and test catalogue. Do not proceed to SQL/RPC implementation until G9 is explicitly READY and G10 is explicitly AUTHORIZED.
+
+## 7. Lock-rank reconciliation checkpoint — 2026-11-24
+
+The row-level CMD-001–010 overlay in LOCK-MANIFEST-001 v0.4.0 preserves source-stated lock/transaction behavior while distinguishing candidate-rank mappings from unclassified resources.
+
+- CMD-001–003 mutate or arbitrate app_users account identity/state. CMD-004/005 mutate user_roles. CMD-006/007 mutate user_scope_grants. None of these mutable resource classes is named in the current L00–L110 candidate hierarchy.
+- Do not map these resources to L50 assignment/membership or L110 append-only facts by analogy. LPR-11 is OPEN and requires Engineering/Security resolution before CMD-001–007 can be rank-normalized.
+- CMD-004/005 must share the T-14 capacity serialization point whenever a role/account mutation changes the qualifying Inspector population; the full eligibility-changing writer set is not yet proven complete.
+- CMD-002/003 must share the same target-account terminal transition and uniqueness protocol; actor authorization revocation race remains unresolved.
+- CMD-006/007 require an explicit order among target principal, grantor authority, scope parent and scope-grant row, plus a revocation-freshness policy.
+- CMD-008 is unique-key insert arbitration; CMD-009/010 use the project parent candidate rank, but physical CAS tokens and complete parent-fence/closure-blocker coverage remain open.
+
+No candidate rank or lock primitive is approved by this checkpoint. No source code, SQL, migration, grant, live database inspection, CI or test was executed.
+
+## 8. Change history
+
+- **0.3.0 — 2026-11-24:** Added the missing identity/authorization resource-class finding and LPR-11 traceability; reconciled the detailed CMD-001–010 review with the new row-level manifest overlay. Proposal status and G9/G10 boundaries unchanged.
