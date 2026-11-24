@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.16
+**Version:** 0.4.17
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -463,3 +463,8 @@ Command boundary coverage: 50/54 commands have documented candidate execution/tr
 ## 25. Application lock-certification denominator reconciliation — 2026-11-24
 
 The graph covers 54 stable traceability IDs, but CMD-045–048 are external control-plane responsibilities and have no application transaction or lock set. Accordingly, the application denominator is **50 commands**. Current static documentation records candidate execution/transaction boundaries for all 50 application commands; this is not normalized-manifest certification. **0/50 application commands are technically approved or certified lock-complete.** LPR-01, LPR-07–LPR-09 and LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. The effective PostgreSQL lock graph is not proven acyclic because exact lock modes, implicit FK/index/trigger/function edges, privileges and competing writer paths remain unverified. LOCK-MANIFEST-001 is synchronized to v0.4.23. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT ACTIVE.
+
+
+## 26. Normalized application command register integration — 2026-11-24
+
+[LOCK-NORMALIZATION-001](COMMAND-LOCK-MANIFEST-NORMALIZATION-REGISTER-001.md) v0.1.0 consolidates 50 application command boundaries across mutation, bounded-read and notification/worker paths. The register is a source-normalization aid, not an approved lock protocol. It preserves the unresolved CMD-011–015 parent-fence modes, CMD-023/025 ordering conflicts, CMD-026 canonical-key order, CMD-028–031 inspection/review serialization, CMD-033–040 evidence/document/attendance dependencies, and CMD-049–054 worker/provider dependencies. Exact PostgreSQL modes and implicit edges remain unverified; the graph is not certified acyclic. LPR-09 OPEN; LPR-10 NOT EXECUTED; 0/50 certified; G9 NOT READY; G10 NOT ACTIVE.
