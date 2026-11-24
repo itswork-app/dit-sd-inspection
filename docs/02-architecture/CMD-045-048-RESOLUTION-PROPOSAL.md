@@ -18,7 +18,7 @@ The approval closes the product-scope ambiguity only. Institutional records/priv
 
 ## 2. Approved disposition by command
 
-| Command | Proposed application disposition | Authoritative control plane | What the application may do later | What it must never do |
+| Command | Approved application disposition | Authoritative control plane | What the application may do later | What it must never do |
 |---|---|---|---|---|
 | CMD-045 retention/legal-hold | DEFER application mutation; no generic retention/legal-hold RPC | Institution-approved records/legal/privacy process and approved records/storage lifecycle controls | Preserve policy/version references and a minimal hold/disposition status reference if an approved integration contract requires it | Invent retention periods, initiate deletion, release a hold, shorten retention, or treat a client approval reference as authority |
 | CMD-046 security incident | DEFER case management; no security-case CRUD or generic incident reviewer endpoint | Institution's designated incident-response system/process | Record a minimal incident reference and a separately approved operational linkage, if required | Create security authority, expose incident evidence, grant break-glass access, suspend accounts or revoke credentials implicitly |
