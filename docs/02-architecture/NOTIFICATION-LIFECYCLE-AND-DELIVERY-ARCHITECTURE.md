@@ -1,7 +1,7 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.9  
+**Version:** 0.1.10  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
@@ -475,10 +475,10 @@ PO selected the global transaction-scoped audience guard (candidate L05) as the 
 ## 19. Current L05 review baseline — 2026-11-24
 
 Current controlled L05 references are:
-- Resolver review NLA-RESOLVER-LOCK-001 v0.1.9.
-- Technical decision record NLA-L05-TDR-001 v0.1.4; parent resolver review v0.1.9.
+- Resolver review NLA-RESOLVER-LOCK-001 v0.1.10.
+- Technical decision record NLA-L05-TDR-001 v0.1.4; parent resolver review v0.1.10.
 - Source-event path map NLA-L05-SOURCE-MAP-001 v0.1.0.
-- Eligibility-writer matrix NLA-L05-WRITER-MATRIX-001 v0.1.1.
+- Eligibility-writer matrix NLA-L05-WRITER-MATRIX-001 v0.1.2.
 - LOCK-MANIFEST-001 v0.4.30 §7.7 and §7.13; LOCK-GRAPH-001 v0.4.23 §§28–30.
 - RTM-001 v0.1.9; QA Catalogue v0.4.6.
 
