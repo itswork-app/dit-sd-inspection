@@ -785,3 +785,8 @@ These cases are mapped to LOCK-GRAPH-001 LG-41..LG-45. They are deterministic co
 | TC-NOTIF-051 | Inject FK violation, unique conflict, deadlock or serialization failure during source snapshot transaction | Source mutation, event, audit, idempotency, outbox and snapshot roll back atomically; retry is bounded/idempotent; SQLSTATE and lock diagnostics are captured | PLANNED / NOT EXECUTED |
 
 **Execution evidence required:** exact approved mechanism and lock-rank version; schema/FK/index/trigger/function SHA; PostgreSQL major/version; deterministic transaction barriers; SQLSTATE and lock-wait/deadlock diagnostics; final invariant queries; source-event/outbox/snapshot correlation; rollback and retry evidence. Mocks or static reasoning do not pass these cases. G10 activation and an authorized isolated PostgreSQL environment are prerequisites.
+
+
+### Resolver test execution prerequisite — 2026-11-24
+
+PO has selected candidate L05 as the primary mechanism for technical approval review. TC-NOTIF-042..051 remain PLANNED / NOT EXECUTED until Engineering/Database/Security approve the concrete primitive/key, transaction-scoped lifetime, writer participation, canonical order, timeout/retry and bounded contention profile. If L05 is rejected, the cases must be re-baselined against the approved alternative; do not test a mixed L05 + SERIALIZABLE design. This selection does not activate G10 or authorize database/runtime testing.
