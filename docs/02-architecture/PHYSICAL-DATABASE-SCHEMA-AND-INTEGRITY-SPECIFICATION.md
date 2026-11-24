@@ -1,7 +1,7 @@
 # Physical Database Schema and Integrity Specification
 
 **Status:** Engineering specification draft — approval required before migrations  
-**Version:** 0.4.3  
+**Version:** 0.4.4  
 **Package:** L — Physical Data Model and Integrity  
 **Date:** 2026-11-23
 
@@ -286,7 +286,7 @@ See [T-18 Execution Model Security Review](T18-EXECUTION-MODEL-SECURITY-REVIEW.m
 
 ## Notification and print persistence design addendum — NLA-001 / T-13
 
-The six notification tables above are proposed by [Notification Lifecycle and Delivery Architecture](NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md) v0.1.2. `notification_events` is not a physical entity and must not be added. Source mutation + domain event + audit + outbox intent are atomic; fan-out and provider delivery are asynchronous. Delivery attempts and escalation history are append-only. Read state is stored only on recipient-owned `notifications` rows. CMD-050 has no row-version field; CMD-052/053 use separate lease fencing fields, not a business row-version token. INT-NOTIF-001 is a provider callback ingress and adds no table to the current 48-table proposal.
+The six notification tables above are proposed by [Notification Lifecycle and Delivery Architecture](NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md) v0.1.4. `notification_events` is not a physical entity and must not be added. Source mutation + domain event + audit + outbox intent are atomic; fan-out and provider delivery are asynchronous. Delivery attempts and escalation history are append-only. Read state is stored only on recipient-owned `notifications` rows. CMD-050 has no row-version field; CMD-052/053 use separate lease fencing fields, not a business row-version token. INT-NOTIF-001 is a provider callback ingress and adds no table to the current 48-table proposal.
 
 T-13 requires durable batch identity and per-document outcomes. `print_batches` stores batch lifecycle and request identity; `print_events` stores every per-document attempt/outcome and optional batch reference. Batch status/counts are reconciled from latest per-document outcomes. Retry is failed-only and appends attempts; it never overwrites prior outcomes or claims physical printer success.
 
@@ -359,3 +359,21 @@ Do not create a generic `export_requests` framework, polymorphic artifact table,
 The candidate object count above is not a revised table count. Package L's canonical inventory remains 48 proposed tables until Product, Engineering, Database, Security and institutional approvals admit a concrete model and the physical schema, RLS, permission registry, ERD, command contracts, indexes/FKs and QA catalogue are updated together.
 
 Do not add a generic polymorphic source FK, generic worker table or generic device credential store without explicit review. Do not reuse notification_outbox for document generation. Do not claim candidate names exist in a deployed database. T-10 retention/legal hold remains externally blocked.
+
+
+## POQ-01 candidate recipient snapshot relation — NOT ADMITTED (2026-11-24)
+
+The six notification tables remain the current canonical proposal. POQ-01 requires a durable event-time candidate recipient and source-scope snapshot; the current six-table model does not explicitly persist that set. The following seventh notification relation is a candidate only and is excluded from the canonical 48-table inventory until Engineering, Database and Security approve it.
+
+| Candidate relation | Candidate fields | Candidate integrity |
+|---|---|---|
+| `notification_outbox_recipients` | `outbox_id`, `recipient_user_id`, `project_id?`, `session_id?`, `location_id?`, `assignment_id?`, `scope_snapshot_hash`, `resolved_at` | Unique/PK `(outbox_id, recipient_user_id)`; FK to outbox and app user; composite FK or trusted assertion for scope hierarchy; immutable after audience snapshot finalization; canonical sorted snapshot hash/count reconciled to outbox header |
+
+Candidate transaction requirements:
+- Recipient identity and scope are resolved against source-event-time authorization state, not current membership at retry time.
+- Candidate rows and the snapshot completion marker/hash/count are persisted in the same transaction as the source event and outbox intent, or through another formally approved immutable event-time snapshot mechanism that cannot widen the audience.
+- CMD-052 reads candidate rows deterministically and idempotently materializes `notifications`; existing `(outbox_id, recipient_user_id)` uniqueness remains a second arbiter.
+- External channel eligibility is revalidated at dispatch; it may suppress a candidate's channel delivery but may not add a recipient or rewrite the immutable snapshot.
+- No browser SELECT/INSERT/UPDATE/DELETE, no authenticated user grant, no generic worker table and no service_role impersonation.
+
+Numeric fan-out bound, transaction latency/lock budget, exact scope FKs, canonical hash format, outbox snapshot header fields, RLS/ACL, workload identity and recovery behavior remain OPEN. This candidate is NOT ADMITTED, creates no migration authority, and does not change the current 48-table parity count.
