@@ -1,7 +1,7 @@
 # API and Transaction Contracts — Dit. SD Inspection
 
 Status: Application command design draft — endpoint implementation not authorized  
-Version: 0.1.0
+Version: 0.2.0
 
 ## 1. Contract principles
 
