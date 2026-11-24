@@ -1,9 +1,9 @@
 # Command Authorization Verification Matrix
 
 **Status:** Design draft — PO/security review required; not implementation authority  
-**Version:** 0.1.0  
+**Version:** 0.2.0  
 **Date:** 2026-11-24  
-**Depends on:** T-15, T-16, T-17, T-18; Canonical Permission Registry v0.1.0; RLS and Authorization Design; Privileged Command Boundary and Transaction Specification
+**Depends on:** T-15, T-16, T-17, T-18; Canonical Permission Registry v0.2.0; RLS and Authorization Design; Privileged Command Boundary and Transaction Specification
 
 
 ## Physical schema/RLS reconciliation dependency
