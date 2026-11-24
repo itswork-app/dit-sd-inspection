@@ -1,7 +1,7 @@
 # Canonical Permission Registry and Command Authorization Matrix
 
 **Status:** Draft for Product Owner and security review — NOT approved for implementation  
-**Version:** 0.2.1 | **Package:** M/N | **Date:** 2026-11-24  
+**Version:** 0.2.2 | **Package:** M/N | **Date:** 2026-11-24  
 **Authority:** T-15, T-17, T-18; legacy RBAC catalogue and privileged command inventory
 
 ## 1. Purpose and mandatory rules
@@ -181,7 +181,7 @@ See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SE
 
 ## NLA-001 permission extension
 
-`notification.read` is self-scoped and never grants access to the referenced project/inspection/evidence. `notification.policy.manage` is a proposed scoped configuration permission; no role-to-permission assignment or grantor authority is approved. CMD-052..054 are internal worker operations and must not be represented as user-role permissions. Add exact scope predicates, grants, negative tests and SoD review before implementation.
+`notification.read` is self-scoped and never grants access to the referenced project/inspection/evidence. `notification.policy.manage` is a proposed scoped configuration permission; no role-to-permission assignment or grantor authority is approved. CMD-051 is publish-only; persisted draft CRUD is excluded from this command. CMD-052..054 are internal worker operations and must not be represented as user-role permissions. INT-NOTIF-001 is a separate provider-authenticated integration ingress, not a user permission or browser RPC. Add exact scope predicates, grants, negative tests and SoD review before implementation.
 
 
 ## CMD-011–020 Product Owner approval boundary — permission semantics (2026-11-24)
@@ -194,3 +194,11 @@ In particular:
 - The approved CMD-011–020 product semantics must be reconciled with the command authorization verification matrix and exact per-command scope/SoD rules by Security/Engineering before any role mapping or grant is approved.
 
 **Registry status remains DRAFT / NOT APPROVED FOR IMPLEMENTATION.**
+
+
+## Notification authorization boundary reconciliation — 2026-11-24
+
+- notification.read is recipient-self only. It never grants access to the referenced project, inspection or evidence. CMD-050 uses a set-once read_at update; no expected_version or browser direct DML is allowed.
+- notification.policy.manage remains a proposed scoped permission with no approved role assignment, grantor ceiling or SoD matrix. CMD-051 publishes a validated immutable policy version only; it does not create/edit persisted drafts.
+- CMD-052, CMD-053 and CMD-054 remain internal worker/scheduler operations. They do not receive user-role permissions, authenticated-browser EXECUTE or service_role impersonation.
+- INT-NOTIF-001 is a provider callback integration ingress with provider-specific authentication and durable deduplication still pending provider selection/security approval.
