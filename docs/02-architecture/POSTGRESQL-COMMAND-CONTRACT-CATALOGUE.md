@@ -1,14 +1,14 @@
 # PostgreSQL Command Contract Catalogue
 
 **Status:** Detailed engineering contract proposal — PO/security review required; NOT approved for implementation  
-**Version:** 0.1.0 | **Date:** 2026-11-24  
-**Decision basis:** T-14, T-15, T-16, T-17, T-18; Package L/M; canonical permission registry v0.1.0.
+**Version:** 0.2.0 | **Date:** 2026-11-24  
+**Decision basis:** T-14, T-15, T-16, T-17, T-18; Package L/M; canonical permission registry v0.2.0.
 
 ## 1. Purpose and boundary
 
 This catalogue expands the 28 logical authorization families into individual command/read contracts. It is a design artifact. It does not create PostgreSQL functions, Vercel routes, migrations, grants, RLS policies or role assignments.
 
-**Naming rule:** `CMD-001..048` are stable proposed catalogue IDs. Command names are logical names. No physical PostgreSQL function name or REST route is approved by this document. If implementation later uses `cmd_<name>_v1`, that is a candidate naming convention only and must be checked against the actual schema/function inventory before adoption.
+**Naming rule:** `CMD-001..054` are stable proposed catalogue IDs; CMD-001..048 are the original domain operations and CMD-049..054 are the NLA-001 notification extension. Command names are logical names. No physical PostgreSQL function name or REST route is approved by this document. If implementation later uses `cmd_<name>_v1`, that is a candidate naming convention only and must be checked against the actual schema/function inventory before adoption.
 
 **Authority rule:** permission codes are taken from the canonical registry draft. They are not approved for seeding. The registry's permission/role semantics and role grant matrix remain subject to PO/security approval. Commands marked blocked are intentionally not implementable until their missing institutional authority or physical schema is resolved.
 
