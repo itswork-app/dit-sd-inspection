@@ -1,7 +1,7 @@
 # PostgreSQL Function Security & EXECUTE Grant Design
 
 **Status:** Security architecture proposal — T-18 Option A approved; per-function privilege review required; NOT approved for implementation  
-**Version:** 0.2.0 | **Date:** 2026-11-24  
+**Version:** 0.3.0 | **Date:** 2026-11-24  
 **Depends on:** T-18 option A; PostgreSQL Command Contract Catalogue v0.2.0; physical schema and 48-table proposed RLS catalogue; canonical permission registry v0.2.0 draft.
 
 ## 1. Purpose and strict boundary
@@ -53,7 +53,7 @@ Never assume a role name, NOLOGIN attribute, BYPASSRLS flag, membership or schem
 
 | Class | Function purpose | Security mode | Caller ACL | Internal authorization |
 |---|---|---|---|---|
-| F1 | Protected business mutation commands CMD-001..040 | SECURITY DEFINER only after Option A approval; otherwise not implementable under current caller/table-DML boundary | Exact signature EXECUTE to `authenticated`; PUBLIC and `anon` denied | Mandatory JWT actor + active account + canonical permission + scope + state + SoD + audit/idempotency |
+| F1 | Protected business mutation commands CMD-001..040 | narrow SECURITY DEFINER under PO-approved Option A; per-function security approval and evidence required | Exact signature EXECUTE to `authenticated`; PUBLIC and `anon` denied | Mandatory JWT actor + active account + canonical permission + scope + state + SoD + audit/idempotency |
 | F2 | Scoped read commands CMD-041..044 when implemented as RPC | SECURITY INVOKER preferred | Exact EXECUTE to `authenticated` only if route uses RPC; no anon unless separately public-approved | RLS plus explicit permission/scope and bounded filters; audit read/export distinction |
 | F3 | Internal authorization helpers | INVOKER if feasible; narrowly hardened DEFINER only to avoid RLS recursion | Not exposed to PostgREST; no PUBLIC/anon/authenticated EXECUTE unless an explicit reviewed call path requires it | Derive caller from auth context; no caller-supplied actor ID |
 | F4 | Trigger functions | INVOKER unless documented need | Not callable as public RPC; trigger invocation only | Validate immutable/audit invariants; no hidden bypass |
@@ -187,7 +187,7 @@ Global tests must prove:
 - Protected-table DML grants/revokes applied: none.
 - RLS/Storage changes deployed: none.
 - Runtime security tests executed: none.
-- T-18 Option A model: PO APPROVED; per-function implementation/security verification and INVOKER/DEFINER compatibility remain OPEN.
+- T-18 Option A model: PO APPROVED; per-function implementation/security verification, owner/ACL/RLS analysis and caller-JWT path evidence remain OPEN.
 - Scope freeze: **NOT READY**.
 - Implementation authorization: **NOT GRANTED**.
 
@@ -197,4 +197,4 @@ Any change to caller roles, function security mode, function owner, search_path,
 
 ## Live database inventory prerequisite
 
-See [Supabase Live Database Security Inventory Runbook](SUPABASE-LIVE-DATABASE-SECURITY-INVENTORY-RUNBOOK.md). It defines read-only catalog queries and Dashboard evidence needed to verify actual roles, memberships, ownership, ACLs, RLS/policies, function signatures/security modes/owners/EXECUTE grants, default privileges, views, triggers, sequences and Storage policies. The runbook has not been executed against a live database. Repository design artifacts are not proof of deployed state. Do not finalize the T-18 execution model or prepare grants/migrations until live evidence is reviewed and the INVOKER/DEFINER/executor conflict is explicitly resolved.
+See [Supabase Live Database Security Inventory Runbook](SUPABASE-LIVE-DATABASE-SECURITY-INVENTORY-RUNBOOK.md). It defines read-only catalog queries and Dashboard evidence needed to verify actual roles, memberships, ownership, ACLs, RLS/policies, function signatures/security modes/owners/EXECUTE grants, default privileges, views, triggers, sequences and Storage policies. The runbook has not been executed against a live database. Repository design artifacts are not proof of deployed state. Do not prepare grants/migrations or expose functions until live evidence is reviewed and each SECURITY DEFINER owner, effective privilege set, RLS interaction, exact EXECUTE ACL and caller-JWT route path is approved. The execution-model choice itself is already resolved by PO approval of Option A.
