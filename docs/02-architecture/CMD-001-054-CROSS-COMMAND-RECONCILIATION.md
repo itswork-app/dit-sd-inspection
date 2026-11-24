@@ -553,7 +553,7 @@ PO selected Option A, the global transaction-scoped audience guard (candidate L0
 
 ## Current L05 and CMD-031–040 lock-order baseline — 2026-11-24
 
-The current controlled references for the L05 notification resolver are NLA-001 v0.1.8; NLA-RESOLVER-LOCK-001 v0.1.9; NLA-L05-TDR-001 v0.1.2; source-event path map v0.1.0; eligibility-writer matrix v0.1.1; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.7; RAID-001 v0.1.6; DGA-001 v1.11.59; QA Catalogue v0.4.5.
+The current controlled references for the L05 notification resolver are NLA-001 v0.1.8; NLA-RESOLVER-LOCK-001 v0.1.9; NLA-L05-TDR-001 v0.1.3; source-event path map v0.1.0; eligibility-writer matrix v0.1.1; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.7; RAID-001 v0.1.6; DGA-001 v1.11.59; QA Catalogue v0.4.5.
 
 LOCK-MANIFEST-001 §7.13 and LOCK-GRAPH-001 §30 add a candidate CMD-031–040 overlay. CMD-031/032/033/034/037 have partial candidate ordering only. CMD-035/036/038/039/040 remain blocked on unresolved transaction/event boundaries, worker/lease fencing, per-item events, attendance physical rank/version and institutional authority. No command is technically certified; application lock certification remains 0/50, resolver certification 0/40, global graph NOT PROVEN ACYCLIC, tests PLANNED / NOT EXECUTED, G9 NOT READY and G10 NOT ACTIVE.
 
