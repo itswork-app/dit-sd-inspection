@@ -542,3 +542,18 @@ This is a Product Owner decision defining the counting predicate. It does not au
 ### T-14 clarification — account registration and Super Admin-controlled staffing (2026-11-24)
 
 The Inspector lifecycle is ordered: a person must first register/authenticate and obtain an application account; registration alone grants no operational access and does not count toward Inspector capacity. Super Admin then approves/activates the account and explicitly assigns its role(s), project/session/location scope, team membership and operational assignment. Super Admin controls the number of teams and the number/identity of personnel assigned to each team, subject to the approved Inspector capacity and applicable project/session plan. Only a registered, enabled account with an active Inspector role grant and at least one currently effective operational Inspector assignment counts once toward the combined Inspector cap. Users cannot self-select teams, roles, or assignments.
+
+
+
+## Package T — T-15 Product Owner decision (2026-11-24)
+
+**Decision: PO APPROVED option A — approve the proposed INS-016 audit controls.** The Product Owner approves the append-only audit event catalogue and the following mandatory controls for critical actions:
+
+1. Audit records are append-only through application operations; ordinary application roles cannot update or delete recorded events.
+2. Each critical business/security/governance mutation and its audit event commit in the same database transaction. If the audit insert fails, the critical mutation fails closed and rolls back.
+3. Events record actor identity, active role, applicable scope, action/event type, timestamp, correlation and idempotency references, and privacy-safe change context.
+4. Access to and export of sensitive inspection evidence are auditable events.
+5. Audit access is least-privilege and separately permissioned; payloads must not contain secrets, credentials, raw evidence, or unnecessary personal data.
+6. Audit retention, deletion/disposition, legal hold, and network metadata remain governed by T-10 and institutional records/privacy/security approvals. This decision does not invent retention periods or approve IP/network metadata collection.
+
+**Boundary:** This is Product Owner approval of the INS-016 product/technical control direction. It is not institutional approval of retention, legal hold, classification, WORM archive, network metadata, or provider capabilities. Schema, RLS, command grants, transaction behavior and tests still require detailed reconciliation and implementation evidence. No migration, code, test execution or production activation is claimed. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
