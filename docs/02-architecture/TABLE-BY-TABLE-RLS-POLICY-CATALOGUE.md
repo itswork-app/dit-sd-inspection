@@ -254,7 +254,7 @@ See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SE
 
 ## NLA-001 notification security notes
 
-- Browser callers can read only their own `notifications` rows and can mutate only their own `read_at` through the trusted CMD-050 command; `dismissed_at` remains reserved and inactive pending explicit PO/UX approval. Direct browser DML remains denied.
+- Browser callers can read only their own `notifications` rows and can mutate only their own `read_at` through the trusted CMD-050 command; POQ-03 excludes dismiss/archive from MVP, so `dismissed_at` is dormant with no command, permission or browser mutation. Direct browser DML remains denied.
 - No browser role reads or mutates outbox, delivery queue, provider attempt or escalation worker tables.
 - Policy versions require explicit config scope and `notification.policy.manage`; no role-to-permission grant is implied by title.
 - Internal worker role, owner, JWT/scheduler trust, exact EXECUTE ACL and effective privileges are a separate T-18 security blocker.
