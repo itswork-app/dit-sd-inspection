@@ -1,7 +1,7 @@
 # CMD-021–030 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security review required; NOT approved for implementation  
-**Version:** 0.3.0  
+**Version:** 0.3.1  
 **Date:** 2026-11-24  
 **Scope:** CMD-021 through CMD-030  
 **Controls:** T-15 append-only audit direction; T-16 canonical unit identity and association model; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
@@ -1231,3 +1231,11 @@ No implementation readiness or production readiness is claimed by this review.
 - Update the canonical command catalogue, permission registry, physical schema, RLS catalogue, audit catalogue and test catalogue together when an issue is resolved.
 - Preserve immutable command IDs. Breaking contract changes require a new schema/API version and explicit compatibility plan.
 - Re-review CMD-021–030 against CMD-011–020 where shared invariants intersect, especially instrument lifecycle, canonical unit identity, T-16 association model, lock order, claim lifecycle and inspection row_version.
+
+## Draft-context lifecycle proposal cross-check — 2026-11-24
+
+[INSPECTION-DRAFT-001](INSPECTION-DRAFT-CONTEXT-AND-REVISION-LIFECYCLE-PROPOSAL-001.md) v0.1.0 proposes a distinct mutable `inspection_draft_contexts` workspace and preserves `inspection_revisions` as immutable submitted snapshots. The candidate flow is: CMD-026 creates the initial active context; CMD-028 patches only that context under the inspection aggregate row_version; CMD-029 seals the context and atomically creates the immutable revision; CMD-030 creates a new correction context from the returned revision without editing that revision.
+
+The proposal also clarifies that CMD-033/034's unresolved `revision_context` should refer to the active draft context, and that evidence is bound to the exact immutable revision at successful submission. Evidence carry-forward across revisions remains OPEN and must not be inferred.
+
+This is a candidate cross-check only. The physical relation, payload schema, claim/resume semantics, evidence linkage, state vocabulary, lock order and all tests remain unapproved. CMD-026/028/029/030 remain NOT CERTIFIED; no command contract or canonical schema is changed by this addendum.
