@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.1
+**Version:** 1.11.2
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -204,12 +204,12 @@ The proposal maps:
 
 [DGA-B20 — Global lock protocol decision resolution](../02-architecture/LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.2.0 consolidates the candidate hierarchy and resolves source conflicts as recommendations only. PO decisions are separated from Engineering/Security technical approvals and institutional/Operations evidence.
 
-**Disposition:** DGA-B20 PARTIAL — PO decisions LPR-02–LPR-06 are approved. LPR-01 and LPR-07–LPR-10, normalized lock manifests and effective graph evidence remain open. This proposal does not amend canonical command contracts, prove deadlock freedom or authorize implementation. G3/G4/G5/G7/G9 remain NOT READY; G10 NOT AUTHORIZED. No tests or runtime/database inspection were executed.
+**Disposition:** DGA-B20 PARTIAL — PO decisions LPR-02–LPR-06 are approved. LPR-01 and LPR-07–LPR-11, normalized lock manifests and effective graph evidence remain open. This proposal does not amend canonical command contracts, prove deadlock freedom or authorize implementation. G3/G4/G5/G7/G9 remain NOT READY; G10 NOT AUTHORIZED. No tests or runtime/database inspection were executed.
 
 
 ## Lock protocol PO decision update — 2026-11-24
 
-The Product Owner has approved LPR-02–LPR-06 and the Decision Register records the exact semantics. This partially closes the PO decision portion of DGA-B20 only. LPR-01 and LPR-07–LPR-10, 54-command lock-manifest normalization/certification, live effective lock graph and adversarial concurrency evidence remain open. DGA-B18 and DGA-B19 remain open; G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED. No tests or runtime/database inspection were executed.
+The Product Owner has approved LPR-02–LPR-06 and the Decision Register records the exact semantics. This partially closes the PO decision portion of DGA-B20 only. LPR-01 and LPR-07–LPR-11, 54-command lock-manifest normalization/certification, live effective lock graph and adversarial concurrency evidence remain open. DGA-B18 and DGA-B19 remain open; G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED. No tests or runtime/database inspection were executed.
 
 
 ## PO lock protocol decision traceability synchronization — 2026-11-24
@@ -224,7 +224,7 @@ A targeted static consistency pass found two material documentation contradictio
 
 2. **T-18 execution model:** several command specifications still described SECURITY DEFINER as unapproved or retained the earlier INVOKER/direct-DML compatibility conflict, despite the Decision Register and T18 security review recording PO approval of Option A. The command catalogue, detailed CMD reviews, API/transaction contracts, physical schema, privileged boundary, function-security design and authorization matrix now consistently state: narrow SECURITY DEFINER wrappers for protected writes; SECURITY INVOKER preferred for scoped reads; each function still requires individual owner, effective-privilege, RLS, search_path, exact EXECUTE ACL and caller-JWT path review. No function, grant or migration is approved by this documentation correction.
 
-**Residual status:** these two static contradictions are corrected in the reviewed files, but this is not a complete repository-wide or physical-runtime certification. LOCK-MANIFEST-001 remains 54/54 inventoried and 0/54 lock-complete. LPR-01 and LPR-07–LPR-10 remain open/not executed; DGA-B18/B19/B20 remain partial/open. No live database inventory, SQL, migration, CI, automated test, concurrency test or deployment was executed. G9 remains NOT READY and G10 NOT AUTHORIZED.
+**Residual status:** these two static contradictions are corrected in the reviewed files, but this is not a complete repository-wide or physical-runtime certification. LOCK-MANIFEST-001 remains 54/54 inventoried and 0/54 lock-complete. LPR-01 and LPR-07–LPR-11 remain open/not executed; DGA-B18/B19/B20 remain partial/open. No live database inventory, SQL, migration, CI, automated test, concurrency test or deployment was executed. G9 remains NOT READY and G10 NOT AUTHORIZED.
 
 
 ## Command lock-manifest source-baseline refresh — 2026-11-24
@@ -246,31 +246,31 @@ The documentation has now been reconciled as follows:
 
 The notification boundary explicitly keeps queue claims in short isolated transactions, commits lease/fencing generation before fan-out/provider I/O, separates recipient read state from delivery state, and leaves provider callback command mapping unresolved. CMD-041–043 remain read/purpose-bound query designs; CMD-044 remains blocked by T-10; CMD-045–048 remain authority/schema/provider/release blocked.
 
-**Disposition:** DGA-B18 remains PARTIAL and DGA-B19 remains OPEN. 54/54 command IDs are inventoried, but 0/54 are normalized and certified lock-complete. LPR-01 and LPR-07–LPR-10 remain open/not executed. No PostgreSQL catalog, trigger/FK/index graph, deployed RLS/ACL, worker principal, CI, test, SQL, migration, live database, deployment or merge was inspected or executed. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT AUTHORIZED.
+**Disposition:** DGA-B18 remains PARTIAL and DGA-B19 remains OPEN. 54/54 command IDs are inventoried, but 0/54 are normalized and certified lock-complete. LPR-01 and LPR-07–LPR-11 remain open/not executed. No PostgreSQL catalog, trigger/FK/index graph, deployed RLS/ACL, worker principal, CI, test, SQL, migration, live database, deployment or merge was inspected or executed. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT AUTHORIZED.
 
 ## Lock-rank cross-reference synchronization — 2026-11-24
 
 Following the CMD-049–054 transaction-boundary reconciliation, the controlled-document cross-references were synchronized: LOCK-MANIFEST-001 v0.3.7 now points to LOCK-GRAPH-001 v0.3.6 and LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.2.2; LOCK-GRAPH-001 v0.3.6 points to LOCK-MANIFEST-001 v0.3.7. The manifest's source table retains the exact earlier reviewed snapshot identifiers (DGA-001 v1.9.5, LOCK-GRAPH-001 v0.3.4 and protocol resolution v0.2.1) rather than misrepresenting them as the post-edit versions.
 
-**Disposition unchanged:** DGA-B18 PARTIAL; DGA-B19 OPEN; 54/54 inventoried, 0/54 normalized/certified. LPR-01 and LPR-07–LPR-10 remain open/not executed. G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED. No CI, tests, SQL, migrations, live database inspection, deployment or merge occurred.
+**Disposition unchanged:** DGA-B18 PARTIAL; DGA-B19 OPEN; 54/54 inventoried, 0/54 normalized/certified. LPR-01 and LPR-07–LPR-11 remain open/not executed. G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED. No CI, tests, SQL, migrations, live database inspection, deployment or merge occurred.
 
 ## Candidate rank summary correction — 2026-11-24
 
 LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.2.3 now explicitly includes L100 dependent mutable aggregates in its recommended-order summary between L90 inspection and L110 append-only facts. LOCK-GRAPH-001 v0.3.7 and LOCK-MANIFEST-001 v0.3.8 cross-references are synchronized. This removes a summary omission; it does not approve the candidate hierarchy or close any command manifest.
 
-**Disposition unchanged:** DGA-B18 PARTIAL; DGA-B19 OPEN; 54/54 inventoried, 0/54 normalized/certified. LPR-01 and LPR-07–LPR-10 remain open/not executed. G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED.
+**Disposition unchanged:** DGA-B18 PARTIAL; DGA-B19 OPEN; 54/54 inventoried, 0/54 normalized/certified. LPR-01 and LPR-07–LPR-11 remain open/not executed. G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED.
 
 ## Final lock artifact parent-version synchronization — 2026-11-24
 
 The final parent/reference chain is synchronized: LOCK-MANIFEST-001 v0.3.9 declares LOCK-GRAPH-001 v0.3.8 as its parent; LOCK-GRAPH-001 v0.3.8 references LOCK-MANIFEST-001 v0.3.9 and LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.2.3. The manifest's source snapshot table intentionally retains the older exact versions reviewed at the start of this reconciliation, rather than claiming those snapshots are the latest edited artifacts.
 
-**Disposition unchanged:** DGA-B18 PARTIAL; DGA-B19 OPEN; 54/54 inventoried, 0/54 normalized/certified. LPR-01 and LPR-07–LPR-10 remain open/not executed. G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED. No CI, tests, SQL, migrations, live database inspection, deployment or merge occurred.
+**Disposition unchanged:** DGA-B18 PARTIAL; DGA-B19 OPEN; 54/54 inventoried, 0/54 normalized/certified. LPR-01 and LPR-07–LPR-11 remain open/not executed. G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED. No CI, tests, SQL, migrations, live database inspection, deployment or merge occurred.
 
 ## Final parent-chain version correction — 2026-11-24
 
 LOCK-MANIFEST-001 v0.3.10 now declares LOCK-GRAPH-001 v0.3.8 as its parent; LOCK-GRAPH-001 v0.3.9 references LOCK-MANIFEST-001 v0.3.10 and LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.2.3. This is the final synchronized parent/reference chain for this documentation checkpoint.
 
-**Disposition unchanged:** DGA-B18 PARTIAL; DGA-B19 OPEN; 54/54 inventoried, 0/54 normalized/certified. LPR-01 and LPR-07–LPR-10 remain open/not executed. G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED. No CI, tests, SQL, migrations, live database inspection, deployment or merge occurred.
+**Disposition unchanged:** DGA-B18 PARTIAL; DGA-B19 OPEN; 54/54 inventoried, 0/54 normalized/certified. LPR-01 and LPR-07–LPR-11 remain open/not executed. G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED. No CI, tests, SQL, migrations, live database inspection, deployment or merge occurred.
 
 ## CMD-001–010 lock normalization checkpoint — 2026-11-24
 
