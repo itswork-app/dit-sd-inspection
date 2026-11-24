@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.21
+**Version:** 1.11.22
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -431,3 +431,15 @@ The static closure audit reviewed the current root AGENTS.md v1.2.0, MIB-001 v1.
 This audit does not close DGA-B04/B05/B09/B10/B11/B12/B13/B14/B15/B16/B17/B18/B19/B20/B21. In particular, the candidate global lock graph is not approved or proven acyclic; 44/54 command manifests remain not candidate-normalized; all 54 remain uncertified; exact command JSON Schema/OpenAPI, route/RPC signatures, function owners/privileges/EXECUTE ACL, physical constraints/indexes/FKs, RLS/grants, provider/worker identity, recipient eligibility semantics, retry/SLA policy, T-10 institutional records/privacy authority, T-12 provider ownership, CI/ruleset evidence and implementation/runtime verification remain outstanding.
 
 No CI workflow, automated test, concurrency test, live Supabase inventory, SQL, migration, grant/revoke, provider setup, deployment, production mutation or merge was performed. PR #3 remains Draft/Open. G9 remains NOT READY; G10 remains NOT AUTHORIZED. This checkpoint closes only the identified static documentation inconsistencies, not implementation readiness or all possible repository gaps.
+
+
+## 13. Governance source-pointer reconciliation — 2026-11-24
+
+A current-source pointer review identified stale version labels in MIB-001 §10 and DOC-AUDIT-001 §§4–8. The governing documents themselves were current; the navigation references were not. This was a documentation traceability defect, not evidence of an approval or implementation gap being closed.
+
+Corrective actions:
+- MIB-001 is updated to v1.0.3 and now identifies AGENTS.md v1.2.0, DGA-001 v1.11.22 and IRG-001 v1.0.1 in its current-status block.
+- DOC-AUDIT-001 is updated to v0.1.3 and its canonical source snapshot and cross-reference table now point to the current DGA-001 v1.11.22 and CMD-CROSSWALK-001-054 v0.8.13.
+- Historical checkpoint references inside this audit remain historical and are not rewritten as current evidence.
+
+Verification boundary: these edits correct document-version navigation only. They do not close DGA-B04–B21, approve any proposed command/lock/security design, establish CI or runtime evidence, pass G9, or authorize G10.
