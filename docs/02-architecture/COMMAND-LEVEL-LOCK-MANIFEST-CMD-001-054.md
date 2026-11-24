@@ -1,7 +1,7 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.4.20
+**Version:** 0.4.21
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Parent:** LOCK-GRAPH-001 v0.4.12  
@@ -469,19 +469,19 @@ These commands are read-oriented and do not acquire write locks in the proposed 
 | CMD-043 read-audit | Validate audit.read + approved purpose/scope → bounded SECURITY INVOKER/RLS read → stable cursor/page; separate narrow access-audit append path only if approved | audit.read is distinct from report.read/export; no raw evidence, secrets, object keys or unrestricted network metadata; anti-recursion | T-10 reader/purpose/classification policy, RLS, function owner/ACL, access event policy and retention remain unresolved |
 | CMD-044 export-audit | No executable lock plan; policy-gated design only | T-10 institutional approval, export authority/SoD, purpose/scope, artifact encryption/access/expiry/retention/legal hold, durable job and audit required before design can be enabled | Explicitly BLOCKED by T-10; export job/manifest/artifact schema and policy are absent. Do not implement or grant |
 
-### CMD-045–048 — privileged authority-gated commands
+### CMD-045–048 — external control-plane traceability IDs (PO APPROVED)
 
-No executable lock-order overlay is assigned because their authority and physical state machines are not approved. They remain hard-gated, not normalized:
+The Product Owner approved CMD-045–048 Control-Plane Resolution Proposal v0.1.0 on 2026-11-24. These four IDs remain in the 54-ID traceability inventory but are not application commands and have no application transaction/lock set. They are excluded from the application lock-certification denominator:
 
 | Command | Status | Required precondition before lock design |
 |---|---|---|
-| CMD-045 retention/legal-hold | BLOCKED_BY_POLICY | Written institutional classification, retention schedule, legal-hold/release and disposition authority; approved lifecycle, SoD and external-object reconciliation |
-| CMD-046 review-security-incident | BLOCKED_BY_SCHEMA_AUTHORITY | Approved security incident authority, evidence custody/classification, incident state model, access/SoD and immutable audit evidence |
-| CMD-047 manage-provider-configuration | BLOCKED_BY_T12 | Actual provider/legal account owner, billing owner, custodians, region, plan, quotas, budget, recovery and credential custody |
-| CMD-048 manage-production-release | BLOCKED_BY_AUTHORITY | Approved release authority, environment separation, CI/ruleset required checks, rollback and production change-control evidence |
+| CMD-045 retention/legal-hold | DEFERRED_EXTERNAL_CONTROL_PLANE — no application transaction/lock set | T-10 institutional records/legal/privacy policy and external records/storage lifecycle evidence |
+| CMD-046 review-security-incident | DEFERRED_EXTERNAL_CONTROL_PLANE — no application transaction/lock set | Designated institutional incident-response owner, RACI, case/evidence handling and escalation |
+| CMD-047 manage-provider-configuration | OUT_OF_APPLICATION_SCOPE_EXTERNAL_PROVIDER_CONTROL — no application transaction/lock set | T-12 signed provider ownership/custody, region/plan/budget, secret manager and recovery evidence |
+| CMD-048 manage-production-release | OUT_OF_APPLICATION_SCOPE_EXTERNAL_RELEASE_CONTROL — no application transaction/lock set | GitHub/release governance, CI/rulesets, protected environments, artifact provenance and operator/approver SoD |
 
-No proposed permission labels for CMD-045–048 may be seeded or granted. No route, worker, function, migration, provider mutation or production action is authorized by this reconciliation.
+No application permission labels for CMD-045–048 may be seeded or granted. No application route, worker, function, migration, provider mutation or production action is authorized. Any future narrow integration requires a new requirement/command ID and separate approval.
 
 ### 7.5.1 Normalization and evidence boundary
 
-CMD-041–044 now have candidate read-boundary normalization. CMD-045–048 remain deliberately unnormalized because their authority/state model is blocked. CMD-049–054 retain their separately recorded notification transaction boundaries in §4.2 and subsequent notification alignment notes. Across the command set, **50/54 commands have a documented candidate execution/transaction boundary (CMD-001–044 and CMD-049–054); 4/54 privileged commands remain hard-gated; 0/54 are technically approved/certified**. This count is documentation coverage only, not proof of database locks, RLS, ACL or runtime behavior.
+CMD-041–044 now have candidate read-boundary normalization. CMD-045–048 are external control-plane traceability IDs with no application lock set. CMD-049–054 retain their separately recorded notification transaction boundaries in §4.2 and subsequent notification alignment notes. Across the 54-ID inventory, **50 application commands have candidate execution/transaction boundaries; 4 IDs are external control-plane responsibilities; 0/50 application commands are technically approved/certified lock-complete**. This count is documentation coverage only, not proof of database locks, RLS, ACL or runtime behavior.
