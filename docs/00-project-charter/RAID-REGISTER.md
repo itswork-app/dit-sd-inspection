@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.20  
+**Version:** 0.1.21  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -388,3 +388,8 @@ NLA-EVENT-TECH-RECON-001 v0.1.7 partially reviews NREG-010 `inspection.approved`
 Reopen requires explicit `inspection.reopen` authority, exact scope and mandatory reason; the role/grant/SoD matrix and next-action owner remain unresolved. Mutable draft persistence/state vocabulary and active claim/association/evidence/document finalizer blocker graph are incomplete. Historical approved revisions, evidence, generated documents and print events must remain immutable.
 
 RTM-001 v0.1.19 adds NOTIF-039..043; QA Catalogue v0.5.9 adds TC-NOTIF-090..094, all PLANNED / NOT EXECUTED. D-026 remains OPEN — BLOCKING; R-037 remains OPEN — CRITICAL; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## D-026 / R-037 technical source cross-check — 2026-11-24
+
+Physical schema v0.4.4 states the one-terminal-decision-per-revision invariant in the `review_events` description but does not name a concrete unique index/constraint or review-round sequence. The invariant is therefore not yet physically enforced by evidenced schema. Source-event path map v0.1.0 and CMD lock manifest v0.4.30 retain inspection-first candidate recipes, while global graph §30 proposes authorization/parent/assignment/optional-claim before inspection; this ordering conflict remains unresolved. No lock certification or event admission follows from the documentation update.
