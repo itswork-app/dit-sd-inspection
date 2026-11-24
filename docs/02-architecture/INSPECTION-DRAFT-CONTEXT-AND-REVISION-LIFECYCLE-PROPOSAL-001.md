@@ -1,7 +1,7 @@
 # Inspection Draft Context and Revision Lifecycle — Technical Proposal
 
 **Document ID:** INSPECTION-DRAFT-001  
-**Version:** 0.1.4  
+**Version:** 0.1.5  
 **Date:** 2026-11-24  
 **Status:** Engineering / Database / Security / Product Owner review required — NOT APPROVED  
 **Scope:** CMD-026 claim-unit; CMD-028 save-draft; CMD-029 submit-inspection; CMD-030 return-inspection; CMD-032 reopen-inspection; CMD-033/034 evidence upload/finalization  
@@ -284,3 +284,18 @@ An inspection aggregate is one session-bound attempt, not a permanent row for th
 SES-001 clearly prohibits cross-session continuation and requires abort of unfinished attempts before session close. The precise disposition of a revision returned by a Reviewer but not corrected before session closure must be encoded as an abort of the overall attempt, preserving the returned immutable revision and reason. A later session must start a new attempt; it must not reopen the prior correction context. The same Inspector restriction applies to correction while the original session remains active.
 
 **Disposition:** SES-001 product semantics are PO APPROVED. Session FK, abort state machine, CMD-027 versus dedicated abort command, claim-release atomicity, session-close writer/lock graph, RLS/ACL, event registry, physical constraints and QA remain NOT CERTIFIED / OPEN. No schema or implementation is approved by this proposal.
+
+## SES-001 packed-unit ABORT — draft-context lifecycle integration candidate (2026-11-24)
+
+**Status:** Candidate only; not approved for implementation. PO-approved business rule is the authority.
+
+A pending ABORT request is a disposition workflow attached to the existing session-bound inspection attempt, not a new inspection, draft context, revision or claim release. It must reference the exact current submitted revision and exact Reviewer RETURN decision. Do not create a correction draft or mutate the submitted revision merely to request ABORT.
+
+Candidate lifecycle:
+1. RETURNED_FOR_CORRECTION remains the inspection state while a separate ABORT request is PENDING.
+2. Pending request freezes correction draft mutation/submission for that inspection to prevent a concurrent correction and approval from producing contradictory outcomes. Rejection removes this hold; WF-001 correction/resubmission then continues in the original session with the same Inspector.
+3. Approval revalidates the exact returned revision and session, records the decision, transitions the inspection to terminal ABORTED, and releases the active claim if one exists in the same transaction.
+4. Rejection leaves the inspection returned, preserves all history and does not release the claim or mark the inspection complete.
+5. A stale request cannot be approved after a newer correction revision or other legal lifecycle transition has superseded its referenced revision.
+
+No ABORT_REQUESTED inspection status is proposed; request status belongs to its own decision record. The exact persistence relation, request/decision record, request cardinality/retry policy, evidence references, CAS token, claim owner/release behavior and constraints remain OPEN for Database/Engineering/Security review. The existing candidate inspection_draft_contexts model is not admitted by this addendum.
