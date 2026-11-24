@@ -62,8 +62,8 @@ Purpose: Link product intent to specifications, implementation units, and verifi
 | EVD-003 | Evidence privacy, classification, retention, legal hold, deletion and recovery are controlled and institutionally approved | Package O | Evidence Privacy, Retention, Deletion and Recovery Specification | Access, hold, expiry, deletion, object recovery and audit tests | DRAFT; INSTITUTIONAL APPROVAL BLOCKED |
 | OPS-003 | Database and object backups have approved RPO/RTO and proven restore procedures | Package P | Backup, Restore and Disaster Recovery Plan | Isolated PostgreSQL + Storage restore drill and checksum reconciliation | DRAFT; PROVIDER VERIFICATION BLOCKED |
 | OPS-004 | Production region, environments, secrets, quotas, billing and provider ownership are governed | Package Q | Production Environment, Secrets and Provider Governance | Environment isolation, secret scan, quota sheet, deployment/rollback and account review | DRAFT; SPONSOR APPROVAL BLOCKED |
-| API-001 | Critical commands are idempotent and transactionally enforce claims, submission, approval, and capacity | Functional decisions | API and Transaction Contracts | Duplicate/retry/concurrency/transaction tests | DESIGN DRAFT |
-| API-002 | Every privileged mutation executes through a trusted Vercel route and narrowly scoped PostgreSQL command boundary; browser direct DML is denied | Package N; T-18 PO APPROVED (A), 2026-11-24 | Privileged Command Boundary and Transaction Specification; RLS/grant catalogue | Forged-actor, direct-DML, RPC grant, and concurrency tests | PO APPROVED; command/grant review and executable verification OPEN |
+| API-001 | Critical commands are idempotent and transactionally enforce claims, submission, approval, and capacity | Functional decisions; T-18 PO-approved architecture | API and Transaction Contracts; Privileged Command Boundary | Per-command duplicate/retry/concurrency/audit rollback tests | COMMAND-FAMILY INVENTORY; PER-COMMAND CONTRACTS OPEN |
+| API-002 | Every privileged mutation executes through a trusted Vercel route and narrowly scoped PostgreSQL command boundary; browser direct DML is denied | Package N; T-18 PO APPROVED (A), 2026-11-24 | Privileged Command Boundary and Transaction Specification; RLS/grant catalogue | Forged-actor, direct-DML, RPC grant, command-specific audit/idempotency/concurrency tests | PO APPROVED; command-by-command contracts, exact grants and executable verification OPEN |
 
 ## Instrument-specific traceability (pending official source validation)
 
@@ -151,7 +151,7 @@ Audit outcome: documentation review completed; security posture not tested/certi
 | UX-002 | Mobile-first inspection flows with explicit save/sync states | Screen Flows and Wireframe Specification | Mobile E2E and usability UAT | DESIGN DRAFT |
 | UX-003 | Consistent responsive and accessible UI components | Design System and Responsive UX | Responsive, keyboard, contrast, and screen-reader checks | DESIGN DRAFT |
 | QA-001 | Layered quality gates for functional, security, data integrity, and recovery | Test Strategy and Quality Gates | CI and release evidence | DESIGN DRAFT |
-| QA-002 | Traceable test cases for authorization, capacity, lifecycle, offline, documents, and reporting | Test Case Catalog and UAT | Executed test records and Product Owner sign-off | CATALOG DRAFT |
+| QA-002 | Traceable test cases for authorization, capacity, lifecycle, offline, documents, and reporting | Test Case Catalog and UAT | Command-specific positive/negative/audit rollback/idempotency/concurrency evidence; executed test records and Product Owner sign-off | CATALOG DRAFT; command-specific coverage OPEN |
 
 ## Package R — Audit event catalogue and governance
 
