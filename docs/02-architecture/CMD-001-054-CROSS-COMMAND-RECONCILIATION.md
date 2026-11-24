@@ -1,12 +1,12 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.4.0  
+**Version:** 0.5.0
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
 **Authority:** AGENTS.md, MIB-001, DGA-001, IRG-001, T-10, T-14–T-18 and the approved Decision Register  
-**Controls:** G2–G10; DGA-B04–B19; G9 NOT READY; G10 NOT AUTHORIZED.
+**Controls:** G2–G10; DGA-B04–B20; G9 NOT READY; G10 NOT AUTHORIZED.
 
 ## 1. Purpose and conclusion
 
@@ -372,3 +372,4 @@ Key findings:
 [LOCK-MANIFEST-001 — Command-Level Lock Manifest Reconciliation CMD-001–054](COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.1.0 records a source-evidence inventory for every proposed command. Coverage is 54/54 IDs; lock-complete certification is 0/54. This is not a pass result: source order conflicts and incomplete lock targets remain explicit.
 
 The manifest does not change the canonical command catalogue, physical schema or detailed command reviews. It adds X-17 and requires approved global order, per-command lock targets, deterministic multi-row ordering, implicit constraint/trigger review, worker fencing and adversarial test evidence. No test was executed. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT AUTHORIZED.
+\n\n## 13. Lock protocol decision-resolution proposal — 2026-11-24\n\n[LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.1.0 consolidates a candidate resource hierarchy and decision-ready recommendations for the 54-command lock protocol. It separates four PO/domain decisions (canonical identity/conflict semantics; claim requirement/exceptions; project/session closure and in-flight work; T-14 eligibility semantics; instrument deactivation effect) from technical approvals reserved to Engineering/Security and institutional/Operations authorities.\n\n**Disposition:** X-18 OPEN; DGA-B20 OPEN. The proposal does not approve a global lock order, alter canonical contracts or prove deadlock freedom. G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED; tests remain planned/not executed.\n
