@@ -1,7 +1,7 @@
 # Inspection Draft Context and Revision Lifecycle — Technical Proposal
 
 **Document ID:** INSPECTION-DRAFT-001  
-**Version:** 0.1.5  
+**Version:** 0.1.6  
 **Date:** 2026-11-24  
 **Status:** Engineering / Database / Security / Product Owner review required — NOT APPROVED  
 **Scope:** CMD-026 claim-unit; CMD-028 save-draft; CMD-029 submit-inspection; CMD-030 return-inspection; CMD-032 reopen-inspection; CMD-033/034 evidence upload/finalization  
@@ -263,12 +263,14 @@ The Product Owner approved SES-001 in the canonical Decision Register. This sect
 - No resume, claim transfer, context reactivation or draft continuation is allowed across sessions.
 
 ### 11.2 Abort before final session closure
-- A unit attempt that is incomplete when the session is being closed must be explicitly transitioned to terminal ABORTED before final session closure.
-- Abort is not submit, return, approval or completion. It must preserve the inspection attempt, any already-submitted immutable revisions, captured evidence and audit history.
-- Abort must atomically terminate the active draft context, close/release the attempt's active claim, append the required event/audit record and store the idempotency result. If any required write fails, the abort and session-close progression fail closed.
-- A unit in ABORTED state cannot be edited, submitted, reopened or resumed. A subsequent session creates a new inspection attempt bound to that new session; it does not mutate the old attempt.
+- ABORT is eligible only for a Reviewer-returned submitted revision with an identified error when the physical unit is already packed/boxed and prepared for shipment such that correction/reinspection is impracticable.
+- The responsible Inspector must submit an ABORT request with a reason. Admin/Korlap must explicitly approve or reject that request; only approval may transition the attempt to terminal ABORTED. A pending request is not an abort and continues to block final session closure.
+- Generic incomplete or hanging attempts are not eligible for ABORT. If the unit remains practically accessible, the same Inspector must follow WF-001 correction/resubmission within the original active session.
+- ABORT is not submit, return, approval or completion. It must preserve the inspection attempt, submitted immutable revision, Reviewer return decision, captured evidence and audit history.
+- The candidate abort transaction must atomically record the approved disposition, terminate the applicable active draft context, release the exact active claim if one exists, append the required event/audit record and store the idempotency result. If any required write fails, the abort and session-close progression fail closed; the exact command, persistence and lock contract remain OPEN for Engineering/Database/Security review.
+- A unit in ABORTED state cannot be edited, submitted, reopened or resumed. A subsequent session creates a new inspection attempt bound to that new session with a distinct inspection_id; it does not mutate the old attempt.
 - Evidence from an aborted attempt remains historical and is not automatically carried into the new attempt. Any future evidence reuse requires a separately approved provenance/policy model.
-- Final session closure is blocked while any unit attempt remains unresolved or an ABORT request is pending. Returned work follows WF-001 unless the SES-001 packed-unit exception is approved by Admin/Korlap.
+- Final session closure is blocked while any unit attempt remains unresolved or an ABORT request is pending. Only the qualifying approved ABORT resolves that attempt to a terminal non-completion; it does not satisfy unrelated evidence, document, print or attendance gates.
 
 ### 11.3 Command and model implications (candidate only)
 - Add immutable session_id to the inspection aggregate and enforce same-session consistency across claim, draft context, evidence, revisions and assignment scope.
