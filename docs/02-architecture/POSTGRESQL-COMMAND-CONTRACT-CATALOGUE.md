@@ -1,8 +1,8 @@
 # PostgreSQL Command Contract Catalogue
 
 **Status:** PO product semantics for CMD-011–020 APPROVED; detailed engineering/security contract OPEN; NOT approved for implementation  
-**Version:** 0.4.3 | **Date:** 2026-11-24  
-**Decision basis:** T-14, T-15, T-16, T-17, T-18; Package L/M; canonical permission registry v0.2.0.
+**Version:** 0.4.4 | **Date:** 2026-11-24  
+**Decision basis:** T-14, T-15, T-16, T-17, T-18; Package L/M; canonical permission registry v0.2.2.
 
 ## 1. Purpose and boundary
 
@@ -20,7 +20,7 @@ This catalogue expands the 28 logical authorization families into individual com
 4. Protected state-changing commands follow PO-approved T-18 Option A: narrow SECURITY DEFINER wrappers with a dedicated least-privileged NOLOGIN owner, fixed empty search_path, schema-qualified objects, strict input validation, caller-JWT actor derivation, PUBLIC/anon denial and exact-signature EXECUTE grants. SECURITY INVOKER remains preferred for scoped reads and non-elevated helpers. Approval of the model does not approve any individual function or ACL.
 5. Every state-changing command appends its required domain/audit event in the same transaction. Audit failure rolls back the mutation. External Storage/PDF work uses an explicit intent/finalization or outbox/reconciliation state; never hold database locks over network or object transfer.
 6. Idempotency for mutations is scoped to authenticated actor + command + resource scope + opaque key. Hash canonical schema version + semantic payload. Same hash returns the prior result after reauthorization; different hash returns `IDEMPOTENCY_KEY_REUSED`. Reads do not require write idempotency.
-7. Lock only invariant-bearing rows, following the approved global order: idempotency arbitration → capacity row when relevant → canonical serial key → project/session/assignment → unit → association → inspection → evidence/document → append-only events. Multi-row locks are sorted deterministically.
+7. Lock only invariant-bearing rows, following the candidate resource-rank proposal in LOCK-GRAPH-001: L00 idempotency → L10 capacity when relevant → L15 principal → L16 role grants → L17 scope grants → conditional L18 authorization catalog → L20 canonical identity → L30 project/session → L40 instrument/version → L50 assignment → L55 membership → L60 unit → L70 association → L80 claim → L90 inspection → L100 dependent mutable aggregates → L110 append-only facts. This is a review hypothesis only: it is NOT approved, complete or proven acyclic. Each command locks only applicable resources; exact paths and implicit database edges remain subject to Engineering/Database/Security review. Multi-row locks use deterministic total ordering.
 8. Responses use stable typed outcomes; unauthorized callers receive no resource-existence details. Server/database time is authoritative.
 9. Route-level validation is defense-in-depth; PostgreSQL repeats every security-relevant validation. No generic update-any-row RPC or arbitrary SQL endpoint.
 10. Every function signature, owner, security mode, search_path, caller role, EXECUTE grant, read/write set and test must be reviewed against actual deployed schema before migration.
@@ -191,7 +191,7 @@ Update this catalogue, API contracts, command boundary, permission registry, RBA
 
 ## Function security and EXECUTE ACL dependency
 
-See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md) v0.3.0. The 54 operations are assigned provisional F1/F2/F5/F6 classes, not deployed function names or grants. T-18 Option A resolves the architecture selection; per-function owner, effective privilege, RLS, caller-JWT, signature and exact EXECUTE evidence remain required before exposure.
+See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md) v0.3.2. The 54 operations are assigned provisional F1/F2/F5/F6 classes, not deployed function names or grants. T-18 Option A resolves the architecture selection; per-function owner, effective privilege, RLS, caller-JWT, signature and exact EXECUTE evidence remain required before exposure.
 
 ## NLA-001 notification command extension — proposed IDs CMD-049..054
 
@@ -218,3 +218,8 @@ Compatibility requirements:
 ## Technical lock-order overlay — LPR review only (2026-11-24)
 
 The candidate sequences in CMD-009–016 are cross-referenced to TECH-RESOLUTION-LPR-001 v0.1.0. They are proposals, not approved lock contracts. The parent-fence modes, L15–L18 identity/authorization ranks, T-14 writer coverage, physical row_version fields and exact PostgreSQL effective lock graph require Engineering/Database/Security approval. No command is certified lock-complete by this catalogue update.
+
+
+## Global lock-order authority correction — 2026-11-24
+
+The previous phrase “approved global order” overstated the status of the lock proposal. It is replaced with an explicit candidate rank reference. LOCK-GRAPH-001 remains an Engineering proposal; LPR-01 and LPR-07–LPR-11 remain open/not executed, and LOCK-MANIFEST-001 remains 0/54 technically approved/certified. No command is authorized by the candidate ordering.
