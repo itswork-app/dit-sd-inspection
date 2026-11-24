@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.13
+**Version:** 0.4.14
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -447,3 +447,12 @@ LOCK-MANIFEST-001 v0.4.19 adds candidate transaction/resource overlays for CMD-0
 - CMD-039 attendance document replacement creates a new immutable version. CMD-040 verification is bound to that exact version and must serialize one terminal decision; verification-history physical storage is missing.
 
 Candidate manifest progress is now 40/54 documentation-normalized (CMD-001–040); 0/54 technically approved/certified. This is not proof of an acyclic effective database lock graph. Exact physical aggregates, worker/device identities, quota/sequence/verification constraints, lock modes, implicit FK/index/trigger/function edges, independent technical review and adversarial evidence remain open.
+
+
+## 24. CMD-041–048 read-path and privileged-command gate integration — 2026-11-24
+
+CMD-041 actual reporting and CMD-042 target reporting are bounded read paths, not write-lock participants. Their correctness depends on actor/scope authorization, stable cursor pagination, explicit source separation and a defined snapshot/watermark; no lock rank should be invented for them. CMD-043 audit reading is a separate sensitive read path: purpose and scope validation, SECURITY INVOKER/RLS, bounded cursor and anti-recursion are required. CMD-044 audit export remains non-executable until T-10 institutional records/privacy authority, export SoD, artifact lifecycle and external job model are approved.
+
+CMD-045 retention/legal-hold, CMD-046 security incident review, CMD-047 provider configuration and CMD-048 production release remain deliberately outside the executable lock graph. Their authority/state models are blocked by institutional policy, schema/authority, provider ownership and release governance respectively. Do not assign candidate lock ranks to undefined privileged state machines and do not seed/grant their proposed permission labels.
+
+Command boundary coverage: 50/54 commands have documented candidate execution/transaction boundaries (CMD-001–044 and CMD-049–054); CMD-045–048 remain hard-gated; 0/54 technically approved/certified. This coverage is not a proven acyclic graph. Report snapshot semantics, audit purpose/RLS/ACL, export lifecycle, privileged state models, worker identity/ACL, implicit PostgreSQL edges, independent review and adversarial runtime tests remain open.
