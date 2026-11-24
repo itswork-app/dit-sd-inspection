@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.65
+**Version:** 1.11.66
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -719,3 +719,10 @@ A final scoped cross-reference pass was completed for the 14-file L05 review set
 POQ-04 has been added to the canonical Decision Register as **PROPOSED — NOT APPROVED**. It defines the recommended pre-mutation event-time snapshot and explicit dispatch-time suppression outcomes for role revoke, account reject/disable/suspend, assignment-member end, project/session closure and self-revoke. TDR v0.1.5 contains the same proposal; QA Catalogue v0.4.7 adds TC-NOTIF-055..059, all PLANNED / NOT EXECUTED; L05-REVIEW-001 v0.1.4 records the bounded follow-up.
 
 **F-05 remains OPEN pending explicit PO approval or correction and subsequent Security/Engineering validation.** This is a prepared decision package, not an approved behavior or implementation. F-03, F-04 and F-07 remain OPEN. Resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE. No code, SQL, migration, grants, RLS, live DB inspection, runtime test or deployment occurred.
+
+
+### F-05 POQ-04 approved — technical validation remains OPEN (2026-11-24)
+
+The Product Owner approved all five POQ-04 recommendations without changes. DECISION-REGISTER.md now records PO APPROVED; NLA-L05-TDR-001 v0.1.6 and NLA-001 v0.1.12 carry the approved event-transition semantics; NLA-RESOLVER-LOCK-001 v0.1.11 records the product-decision disposition; QA Catalogue v0.4.8 aligns TC-NOTIF-055..059 to the approved matrix; L05-REVIEW-001 v0.1.5 records the review outcome.
+
+**F-05 status:** PO decision dependency RESOLVED; technical finding OPEN pending Security/Engineering validation of exact selector grammar, current-scope and parent-state suppression, retry-after-reactivation, audit semantics and final L05 design consistency. Do not mark F-05 CLOSED until that validation is documented. F-03, F-04 and F-07 remain OPEN. Resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; NRL-T01..T13 and TC-NOTIF-001..059 remain PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE. Documentation/static reconciliation only; no code, SQL, migration, grant, RLS, live DB, runtime test, deployment or merge.
