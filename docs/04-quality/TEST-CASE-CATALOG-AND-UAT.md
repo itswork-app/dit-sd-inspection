@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.4.3
+Version: 0.4.4
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -764,3 +764,24 @@ These cases are mapped to LOCK-GRAPH-001 LG-41..LG-45. They are deterministic co
 | TC-NOTIF-041 | CMD-001..040 / LOCK-MANIFEST-001 §7.7 | Reconcile every enabled notification event type against one or more explicitly identified canonical source commands/finalizers (each event instance bound to exactly one producer transaction); exercise event cardinality for CMD-035 sync operations and CMD-036/038/039 finalizers | No enabled policy event type is orphaned or mapped only to a projection instead of its source fact; every event instance identifies its single producing command execution/finalizer; every source event, audit, outbox and immutable audience snapshot share the required transaction boundary; CMD-041..044 read-side events are excluded absent a separately approved access-event boundary; CMD-049..054 cannot recursively trigger notification fan-out by default | PLANNED / NOT EXECUTED |
 
 **Evidence required:** approved policy event-type allowlist; producer/event crosswalk; transaction/finalizer sequence diagrams; source-event and outbox correlation keys; durable operation/finalizer idempotency; rollback/partial-failure evidence; recipient snapshot lock-set and FK-edge analysis. Static 40/40 producer mapping is documentation coverage only and is not a passing execution result.
+
+
+## Recipient-resolver lock-set adversarial cases — 2026-11-24
+
+**Design reference:** NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001 v0.1.0; LOCK-MANIFEST-001 §7.7–7.8; LOCK-GRAPH-001 §29.  
+**Status:** All cases PLANNED / NOT EXECUTED. These are specification-only until the Product Owner approves event-time linearization and Engineering/Database/Security select and approve the resolver serialization mechanism. If the L05 guard is rejected, execute the equivalent assertions against the approved alternative. No candidate table, lock rank or mechanism is approved by these test definitions.
+
+| Test ID | Scenario | Expected result / invariant | Status |
+|---|---|---|---|
+| TC-NOTIF-042 | Source event races role grant, revoke or expiry while recipient selectors are evaluated | One approved serialization winner is reflected in the immutable candidate set; no mixed authorization state, audience widening or deadlock | PLANNED / NOT EXECUTED |
+| TC-NOTIF-043 | Source event races account suspension, disablement or reactivation | Recipient eligibility follows the approved event-time linearization point; dispatch-time restrictions may suppress but never add candidates | PLANNED / NOT EXECUTED |
+| TC-NOTIF-044 | Source event races scope grant, revoke, expiry or scope reassignment | Candidate recipient and scope tuple are internally consistent; no unauthorized scope reference or audience widening | PLANNED / NOT EXECUTED |
+| TC-NOTIF-045 | Source event races assignment-member start, end or expiry | Candidate membership reflects the approved effective-time rule; assignment and membership locks follow the canonical order | PLANNED / NOT EXECUTED |
+| TC-NOTIF-046 | Source event races project/session close or transition | Parent lifecycle fence and snapshot path serialize; no child event or notification intent commits after a rejected closure boundary | PLANNED / NOT EXECUTED |
+| TC-NOTIF-047 | T-14 capacity change races notification recipient resolution | Capacity and recipient predicates use their approved shared serialization mechanism; no stale eligibility count or lock cycle | PLANNED / NOT EXECUTED |
+| TC-NOTIF-048 | Two notification-eligible source commands have overlapping candidate audiences | Principal, grant and scope rows are acquired in deterministic order; both transactions complete or return a safe retry outcome; no duplicate candidate per outbox/recipient | PLANNED / NOT EXECUTED |
+| TC-NOTIF-049 | CMD-052 fan-out races grant revocation and project/session closure after source snapshot | Fan-out consumes only immutable candidate rows; it does not re-resolve membership; FK behavior is safe; stale worker cannot finalize | PLANNED / NOT EXECUTED |
+| TC-NOTIF-050 | CMD-054 duplicate scheduler ticks race CMD-051 policy publication and recipient revocation | Exactly one escalation event wins; pinned policy and event-time snapshot remain immutable; no lower-rank-after-higher-rank acquisition | PLANNED / NOT EXECUTED |
+| TC-NOTIF-051 | Inject FK violation, unique conflict, deadlock or serialization failure during source snapshot transaction | Source mutation, event, audit, idempotency, outbox and snapshot roll back atomically; retry is bounded/idempotent; SQLSTATE and lock diagnostics are captured | PLANNED / NOT EXECUTED |
+
+**Execution evidence required:** exact approved mechanism and lock-rank version; schema/FK/index/trigger/function SHA; PostgreSQL major/version; deterministic transaction barriers; SQLSTATE and lock-wait/deadlock diagnostics; final invariant queries; source-event/outbox/snapshot correlation; rollback and retry evidence. Mocks or static reasoning do not pass these cases. G10 activation and an authorized isolated PostgreSQL environment are prerequisites.
