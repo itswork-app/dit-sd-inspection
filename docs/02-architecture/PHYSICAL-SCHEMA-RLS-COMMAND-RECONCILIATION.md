@@ -1,7 +1,7 @@
 # Physical Schema ↔ RLS ↔ Command Reconciliation
 
 **Status:** Engineering/security reconciliation draft — review required; no implementation authority  
-**Version:** 0.2.2  
+**Version:** 0.2.3  
 **Date:** 2026-11-24  
 **Scope:** Package L physical table catalogue, Package M table-by-table RLS catalogue, logical ERD, T-18 command boundary and command authorization matrix.
 
