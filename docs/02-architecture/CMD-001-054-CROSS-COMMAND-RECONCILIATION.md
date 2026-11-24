@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.51
+**Version:** 0.8.52
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -728,3 +728,9 @@ The Product Owner has clarified the ABORT business meaning. It is **not** a gene
 If the unit is still practically accessible, WF-001 correction/resubmission remains mandatory with the same Inspector in the original active session. The approved ABORT outcome is terminal, preserves the submitted revision, Reviewer return, evidence and audit history, and does not mean approved, good/defective, inspected-complete or printed. A later inspection requires a new session-bound inspection_id; the ABORTED attempt is never reopened or reused.
 
 This PO clarification supersedes the earlier generic wording in this document that every hanging/incomplete attempt may simply be aborted. CMD-013 cannot create or approve aborts. Exact command identity, authorization/SoD, reason/evidence policy, atomic persistence, lock/RLS/schema and QA remain OPEN; no implementation or physical contract is admitted.
+
+## SES-001 technical contract — packed-unit ABORT request/decision (2026-11-24)
+
+The PO-approved packed-unit exception is now decomposed into a candidate two-step protected workflow: Inspector request, then Admin/Korlap approve/reject. The request references the exact current Reviewer-returned revision and immutable session. Request alone does not transition inspection or release claim. Approval is the only candidate transition to terminal ABORTED; rejection leaves the inspection returned for normal WF-001 correction. CMD-027 remains release-only. Pending requests block FINAL_CLOSE; requester and approver must be different principals.
+
+Exact command identities, permission/SoD registry, evidence policy, physical request/decision representation, RLS/T-18 grants, atomic write set and lock graph remain OPEN. No implementation or schema admission follows.
