@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.4.0
+Version: 0.4.1
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -523,8 +523,10 @@ See [PostgreSQL Function Security & EXECUTE Grant Design](../02-architecture/POS
 | TC-FN-SEC-025-067 | CMD-052 `fanout-notification-outbox` | F5 / internal worker principal | No browser EXECUTE; worker identity, lease token, bounded batch and idempotent recipient/channel fan-out required; no user actor impersonation. | WORKER_ONLY / BROWSER_DENIED | PLANNED / NOT EXECUTED |
 | TC-FN-SEC-025-068 | CMD-053 `dispatch-notification-delivery` | F5 / internal delivery worker | No browser EXECUTE; provider I/O outside DB transaction; lease and attempt idempotency; ambiguous provider acceptance remains UNKNOWN; secrets/payloads redacted. | WORKER_ONLY / BROWSER_DENIED | PLANNED / NOT EXECUTED |
 | TC-FN-SEC-025-069 | CMD-054 `evaluate-notification-escalation` | F5 / internal scheduler/worker | No browser EXECUTE; policy-version-pinned SLA evaluation; unique escalation step; recipient revalidation; no business-state mutation. | WORKER_ONLY / BROWSER_DENIED | PLANNED / NOT EXECUTED |
+| TC-FN-SEC-025-070 | POQ-01 source-event audience snapshot helper | F3 internal helper, invoked only by reviewed source command wrapper | No PostgREST/browser EXECUTE; derives recipient and scope from database-authoritative event-time state; candidate rows and snapshot hash/count commit atomically with source event/outbox; client cannot supply recipient/role/scope. | INTERNAL_CALL_ONLY / ATOMIC_SNAPSHOT_OR_ROLLBACK | PLANNED / NOT EXECUTED |
+| TC-FN-SEC-025-071 | CMD-052 notification fan-out worker | F5 / dedicated workload principal | No browser EXECUTE; worker reads only candidate rows for the currently claimed outbox under valid lease; cannot mutate candidate rows, widen audience, impersonate user or access unrelated outboxes. | WORKER_SCOPE_ONLY / BROWSER_DENIED | PLANNED / NOT EXECUTED |
 
-**Execution gate:** 69 cases are PLANNED / NOT EXECUTED (54 operation-level cases for CMD-001..054 plus 15 global privilege-boundary cases). T-18 execution-model selection is PO-approved as Option A. Exact function-level reviews, live role/ACL inventory and runtime evidence remain mandatory before any protected mutation RPC or grant is implemented. No SQL, grants, revokes, migrations, RLS changes or runtime tests were performed by this documentation update.
+**Execution gate:** 71 cases are PLANNED / NOT EXECUTED (54 operation-level cases for CMD-001..054, 15 global privilege-boundary cases and 2 notification snapshot/worker-boundary cases). T-18 execution-model selection is PO-approved as Option A. Exact function-level reviews, live role/ACL inventory and runtime evidence remain mandatory before any protected mutation RPC or grant is implemented. No SQL, grants, revokes, migrations, RLS changes or runtime tests were performed by this documentation update.
 
 ## Supabase live database security inventory verification (2026-11-24)
 
@@ -735,3 +737,6 @@ The following tests validate the approved event-time audience semantics against 
 | TC-RLS-024-049 | `notification_outbox_recipients` (NOT ADMITTED) | Anonymous/authenticated browser attempts SELECT/INSERT/UPDATE/DELETE; CMD-052 attempts cross-outbox read or stale-lease read | All browser access denied; worker read is restricted to the currently claimed outbox and valid lease; candidate rows remain immutable | PLANNED / NOT EXECUTED |
 
 **Execution gate:** Engineering/Database/Security must first admit or replace the candidate physical representation, approve exact scope FKs/hash/count/transaction bounds, RLS/ACL and workload identity, and activate G10. No test may be reported PASS before reproducible staging evidence is attached.
+
+
+The two new function-security cases are conditional on approval/admission of the candidate notification audience snapshot design and exact F3/F5 function identities. They are PLANNED / NOT EXECUTED and do not authorize function creation or grant changes.
