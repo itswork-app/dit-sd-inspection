@@ -217,3 +217,11 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 
 ---
 This blueprint is a governance/navigation artifact. It does not authorize code, migrations, SQL execution, grants/revokes, live database changes, deployment, or merge.
+
+## 12. Notification and batch-print design reconciliation — 2026-11-24
+
+- INS-015 design proposal is documented in [Notification Lifecycle and Delivery Architecture](../02-architecture/NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md) (NLA-001 v0.1.0). It defines six notification persistence entities, independent inbox/delivery states, transactional outbox, internal workers, versioned policy, escalation, audit and 18 planned tests.
+- T-13 PO-approved batch printing is represented by `print_batches` plus append-only per-document `print_events`; no new product decision is inferred beyond T-13.
+- Proposed physical schema/RLS inventory is 48/48 by static document comparison. This is not live database verification.
+- DGA-B10/B11/B13/B14 remain open or partial pending independent technical review, permission/worker approval, institutional T-10 decisions, provider evidence and test traceability.
+- No migrations, SQL, grants, live database changes, provider configuration or implementation are authorized.
