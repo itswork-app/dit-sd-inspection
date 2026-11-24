@@ -380,6 +380,7 @@ This graph now consumes the current candidate sources: PostgreSQL Command Contra
 - Any command that may change T-14 eligibility must discover the complete affected project set before L15, lock L10 rows in ascending project UUID order, and revalidate the set. A newly discovered lower-rank L10 after L15 is an abort/retry condition.
 - If `roles`, `permissions` or `role_permissions` are mutable, they require enforced freeze or a separately approved L18 mutation protocol.
 - CMD-010 closure relies on a project parent fence only if every project-scoped child writer/finalizer takes the matching project `FOR SHARE` before child resources. A missing child fence is a correctness defect, not an exception to be silently accepted.
+- After waiting for L10 or a project parent fence, the capacity/blocker predicate must use a fresh post-fence READ COMMITTED statement snapshot, or SERIALIZABLE with retry. A REPEATABLE READ snapshot established before the lock wait can omit a transaction that committed while the closer waited and is therefore not sufficient by itself.
 - Project/session close does not cascade-delete or rewrite child history. Pending durable intents/jobs must be explicitly included in the blocker/reconciliation policy.
 
 ### 19.4 Disposition
