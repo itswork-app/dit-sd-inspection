@@ -418,3 +418,18 @@ LOCK-MANIFEST-001 v0.4.18 adds candidate overlays for CMD-021–030. The integra
 - CMD-021 deactivation must preserve published instrument versions and assignment history; CMD-022 canonical serial uniqueness is a unique-index arbitration path unless a reviewed design explicitly defines a separate lock.
 
 The candidate manifest count is now 30/54 documentation-normalized (CMD-001–030); 0/54 are technically approved or certified. This is not a proof of an acyclic graph. Exact lock modes, implicit FK/index/trigger/function edges, complete competing-writer coverage, physical constraints, independent Engineering/Database/Security review and adversarial concurrency evidence remain open. LPR-01/LPR-07/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED.
+
+
+## 22. CMD-021–030 manifest integration checkpoint — 2026-11-24
+
+LOCK-MANIFEST-001 v0.4.18 adds candidate resource-order overlays for CMD-021–030. The overlay records, without certifying, the canonical serial identity arbiter (L20), project/session and assignment parent references, unit/association/claim/inspection lifecycle resources, and dependent response/evidence/revision facts.
+
+The cross-command review exposes the following graph obligations:
+- CMD-022 registration, CMD-023 association, CMD-024 association end/revoke, CMD-025 conflict resolution and CMD-026 claim must converge on one canonical identity arbitration strategy. A unique index may be the final arbiter, but any explicit key/advisory lock must have one stable identity and rank.
+- CMD-023/024 local ordering does not consistently include the project/session parent fence. The proposed L30-before-child sequence must be reviewed against all association writers and project/session closure.
+- CMD-025 requires a lock rank for the conflict aggregate. Conflict-first ordering can invert with unit/association-first paths; no rank is assigned as approved by this checkpoint.
+- CMD-026 is an explicit source conflict: its detailed contract orders canonical serial key → project/session/assignment → unit → association → claim/inspection, while the catalogue retains a legacy unit → association → assignment/claim sequence. No source precedence or physical lock mode is certified here.
+- CMD-021 deactivation must serialize/revalidate against CMD-014 assignment publication on the instrument lifecycle resource; current local CMD-021 locking does not prove the competing writer participates.
+- CMD-028 draft save, CMD-029 submit and CMD-030 return must share the inspection aggregate serialization and one terminal review-decision invariant with the approval path. Evidence/object-provider checks must not hold database locks across external I/O.
+
+Manifest progress is now **30/54 candidate-normalized at documentation level; 0/54 technically approved/certified**. The candidate graph is not proven acyclic or lock-complete. Exact lock modes, implicit FK/index/trigger/function edges, conflict aggregate rank, complete competing writers, row-version and immutable revision constraints, and adversarial tests remain open. LPR-01/LPR-07/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED.
