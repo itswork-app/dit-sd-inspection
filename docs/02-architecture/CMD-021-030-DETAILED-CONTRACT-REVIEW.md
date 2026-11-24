@@ -1,7 +1,7 @@
 # CMD-021–030 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security review required; NOT approved for implementation  
-**Version:** 0.3.3  
+**Version:** 0.3.4  
 **Date:** 2026-11-24  
 **Scope:** CMD-021 through CMD-030  
 **Controls:** T-15 append-only audit direction; T-16 canonical unit identity and association model; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
@@ -1257,3 +1257,8 @@ Do not overload CMD-027 silently: doing so would break its existing `DRAFT_PRESE
 A returned-but-unresolved revision is eligible for attempt abort before its originating session closes. The immutable returned revision and return reason remain historical; its correction context becomes non-editable. A later session must create a new inspection attempt rather than resume that correction context. No notification event for abort is implied by SES-001; audit/domain event admission and any user notification require their own registry/authority review.
 
 **Open / blocking:** command ID and permission, allowed-state matrix, reason rules, claim terminal semantics, inspection/draft ABORTED representation, event identity, physical constraints, RLS/ACL, lock order against CMD-013/CMD-028/029/030/032/033/034, and adversarial QA. No DDL, SQL, grants, RLS or implementation is authorized.
+
+
+### CMD-026 new-session attempt identity clarification — SES-001
+
+For a canonical unit whose prior session-bound inspection attempt is terminal ABORTED, CMD-026 in a later active session must create a **new inspection aggregate with a new inspection_id** and bind it immutably to the new session. It must not resume the old claim, draft context, inspection_id or evidence. The old ABORTED attempt remains in history. Within one still-active originating session, an allowed return correction or approved reopen continues on the existing inspection aggregate using a new draft context; it does not create another inspection_id. The final database invariant must prevent more than one nonterminal inspection attempt and more than one ACTIVE claim for the same canonical unit globally, while retaining historical terminal attempts. Exact partial uniqueness/exclusion strategy and reinspection eligibility after ABORTED remain Database/Engineering review items. This is a candidate contract clarification only; CMD-026 remains NOT CERTIFIED.
