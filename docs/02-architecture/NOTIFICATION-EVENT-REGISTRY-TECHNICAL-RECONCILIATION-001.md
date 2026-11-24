@@ -10,7 +10,7 @@
 
 ## 1. Purpose and boundary
 
-This document records a static, evidence-bounded technical pass over all eleven PO-approved event candidates: CMD-002/003, CMD-005, CMD-010/013, CMD-014/015 and CMD-029/030. It is not an executable event contract, source-code inspection, live database inspection, or technical approval. CMD-001 `account.requested` remains deferred and is not among the approved first-batch candidates; CMD-031/032 are reviewed below; all eleven rows remain partial.
+This document records a static, evidence-bounded technical pass over all eleven PO-approved event candidates: CMD-002/003, CMD-005, CMD-010/013, CMD-014/015 and CMD-029/030/031/032. It is not an executable event contract, source-code inspection, live database inspection, or technical approval. CMD-001 `account.requested` remains deferred and is not among the approved first-batch candidates; CMD-031/032 are reviewed below; all eleven rows remain partial.
 
 The following remain prohibited until G10 activation: source code, SQL, migrations, grants/revokes, RLS changes, live database operations, provider setup, deployment and production/staging mutation. No event is enabled by this document.
 
