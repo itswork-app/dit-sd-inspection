@@ -424,7 +424,7 @@ INS-021, REV-003, REV-004 and EVD-004 are added to RTM-001 v0.1.22 as candidate/
 ### New risk
 | ID | Type | Description | Impact | Likelihood | Mitigation / response | Accountable role | Status |
 |---|---|---|---|---|---|---|---|
-| R-017 | Risk | Inspection drafts, claims, evidence or returned corrections cross session boundaries, or unfinished units remain hanging at session close, causing ambiguous operational ownership and contaminated session reporting | Critical | Medium | Enforce immutable inspection.session_id; prohibit cross-session resume/reassignment; require explicit terminal abort before final session close; atomically release claim and append audit; test retries, races and history preservation | Product Owner / Operational Owner / Engineering / Database / Security / QA | OPEN — BLOCKING |
+| R-017 | Risk | Inspection drafts, claims, evidence or returned corrections cross session boundaries, or a returned inspection is incorrectly aborted without the narrow packed-unit exception and Admin/Korlap approval, causing ambiguous ownership or loss of required correction | Critical | Medium | Enforce immutable inspection.session_id; prohibit cross-session resume/reassignment; require WF-001 correction when possible; permit ABORT only after Reviewer return, packed/shipment-ready condition, Inspector request and Admin/Korlap approval; atomically preserve history and conditionally release claim; test authorization, retries and races | Product Owner / Operational Owner / Engineering / Database / Security / QA | OPEN — BLOCKING |
 
 ### New issue
 | ID | Issue | Required resolution | Accountable role | Status |
