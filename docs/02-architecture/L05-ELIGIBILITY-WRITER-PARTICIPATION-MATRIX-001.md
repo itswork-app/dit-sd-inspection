@@ -1,10 +1,10 @@
 # L05 Eligibility-Writer Participation Matrix
 
 **Document ID:** NLA-L05-WRITER-MATRIX-001  
-**Version:** 0.1.2  
+**Version:** 0.1.3  
 **Status:** STATIC INVENTORY — INCOMPLETE; NOT CERTIFIED  
 **Date:** 2026-11-24  
-**Inputs:** NLA-L05-TDR-001 v0.1.4; LOCK-MANIFEST-001 v0.4.30; PostgreSQL Command Contract Catalogue v0.4.8; Function Security & EXECUTE Grant Design v0.3.3; physical schema proposal v0.4.4
+**Inputs:** NLA-L05-TDR-001 v0.1.7; LOCK-MANIFEST-001 v0.4.30; PostgreSQL Command Contract Catalogue v0.4.8; Function Security & EXECUTE Grant Design v0.3.3; physical schema proposal v0.4.4
 
 ## 1. Purpose and decision boundary
 
@@ -71,3 +71,17 @@ This matrix does not authorize implementation, SQL, migration, grants/revokes, R
 ## 6. Source baseline refresh — 2026-11-24
 
 The current candidate lock-manifest baseline is LOCK-MANIFEST-001 v0.4.30, including the CMD-031–040 candidate overlay in §7.13. This refresh does not expand the physical writer inventory or change its certification state. Exact deployed RPC/helper/trigger/job names, selector dependency universe, ownership/ACL, direct-DML bypass proof and admin/import/repair/expiry paths remain unavailable. The matrix remains INCOMPLETE; no writer is certified to participate in L05.
+
+
+## 7. POQ-04 selector grammar dependency — 2026-11-24
+
+POQ-04 is PO APPROVED, but the exact selector grammar remains unapproved technically. The current §1/§2 writer inventory cannot be considered exhaustive until F05-T1 freezes every selector kind, event allowlist, principal/scope reference, boolean dependency, effective-time predicate and referenced column/table. A selector that references a new field or parent resource changes the eligibility-writer universe and may introduce a new lock/FK/trigger edge.
+
+**Required reconciliation before certification:**
+1. Build a selector-to-column/table dependency map from the versioned grammar and every enabled policy version.
+2. Join each dependency to command and non-command writer paths, including direct DML, SECURITY DEFINER helpers, triggers/cascades, imports, sync, repair, expiry, admin and scheduler paths.
+3. For every writer, prove L05 acquisition before the first conflicting mutable lock, and include implicit FK/unique/trigger/helper edges.
+4. Re-run global graph acyclicity analysis after the dependency map is complete.
+5. Reject any policy selector that references an unregistered dependency or exceeds approved depth/cardinality bounds.
+
+**Status:** selector dependency universe NOT FROZEN; exact physical writer inventory INCOMPLETE; 0 writers certified to participate in L05. This addendum does not alter the 0/40 resolver and 0/50 application certification counts, and does not authorize implementation or database operations.
