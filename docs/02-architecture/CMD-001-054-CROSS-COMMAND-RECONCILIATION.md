@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.12
+**Version:** 0.8.13
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -447,7 +447,7 @@ No route, RPC, table, permission grant, secret-manager resource, CI rule or depl
 | Command-Level Lock Manifest | 0.4.15 | Current LOCK-GRAPH-001 v0.4.10 parent pointer; candidate-only, 0/54 certified |
 | Concurrency and Version Token Reconciliation | 0.1.6 | CMD-050 notification_id-only request; CMD-052/053 lease fencing; CMD-054 DB time |
 | QA Catalogue | 0.3.5 | TC-NOTIF-001..026 and TC-FN-SEC-025-064..069 |
-| RTM / RAID / DGA | RTM-001 v0.1.0; RAID-001 v0.1.0; DGA-001 v1.11.20 | Unique requirement/risk IDs; NOTIF-007..012; D-034..D-036/R-034..R-035; gate blockers |
+| RTM / RAID / DGA | RTM-001 v0.1.0; RAID-001 v0.1.0; DGA-001 v1.11.21 | Unique requirement/risk IDs; NOTIF-007..012; D-034..D-036/R-034..R-035; gate blockers |
 
 ### 2. Command-to-domain crosswalk
 
