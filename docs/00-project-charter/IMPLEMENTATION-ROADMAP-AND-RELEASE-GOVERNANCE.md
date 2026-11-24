@@ -1,7 +1,7 @@
 # Implementation Roadmap and Release Governance
 
 **Document ID:** IRG-001  
-**Version:** 1.0.2  
+**Version:** 1.0.3  
 **Status:** CONTROLLED PLAN — PRE-IMPLEMENTATION  
 **Date:** 2026-11-24  
 **Authority:** MIB-001, AGENTS.md, approved Decision Register and ADRs  
@@ -266,13 +266,18 @@ G12 production approval is an explicit sign-off, not an automatic result of a su
 
 ## 8. Current status
 
-- Pre-implementation documentation phases 0–6: **IN PROGRESS; DGA-001 v1.11.27 blockers remain**.
+- Pre-implementation documentation phases 0–6: **IN PROGRESS; DGA-001 v1.11.28 blockers remain**.
 - POQ-01..03 notification product semantics: **APPROVED 2026-11-24; technical and institutional dependencies remain OPEN**.
 - G9 scope freeze: **NOT READY**.
 - G10 implementation authorization: **NOT GRANTED**.
 - I0–I7 implementation: **NOT STARTED / NOT AUTHORIZED**.
-- Current SSOT audit: **SSOT-AUDIT-001 v0.1.4 — closure PARTIAL**.
+- Current SSOT audit: **SSOT-AUDIT-001 v0.1.5 — closure PARTIAL**.
 - Application SemVer: **not assigned yet**; no release tag exists.
 - Target stable release: **v1.0.0 only after G12 acceptance**.
 
 ---
+
+
+## 9. External evidence intake — 2026-11-24
+
+EVID-EXT-001 v0.1.0 indexes the six Product Owner-supplied inspection artifacts. DGA-B01..B03 have been refined to distinguish evidence receipt and PO acceptance from institutional source/signatory/attendance authority. This is a documentation and evidence-indexing milestone only; it does not pass G1/G9, authorize merge or open G10.
