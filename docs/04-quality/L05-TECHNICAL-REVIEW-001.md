@@ -1,11 +1,11 @@
 # L05 Audience Guard — Internal Technical Review
 
 **Document ID:** L05-REVIEW-001  
-**Version:** 0.1.5  
+**Version:** 0.1.6  
 **Review status:** REQUEST CHANGES — NOT TECHNICALLY APPROVED  
 **Review date:** 2026-11-24  
 **Reviewer capacity:** Internal technical reviewer acting for Product Owner interests; not an independent human Engineering, Database, Security or institutional sign-off  
-**Reviewed artifact:** NLA-L05-TDR-001 v0.1.1  
+**Reviewed artifact:** NLA-L05-TDR-001 v0.1.7  
 **Reviewed branch:** `docs/notification-resolver-lock-closure`  
 **Review scope:** static documentation and PostgreSQL semantics; no live database, code, migration, CI or runtime verification
 
@@ -192,3 +192,18 @@ This advances F-05 from an unstructured question to a reviewable PO decision pac
 The Product Owner approved all five POQ-04 transition recommendations without changes. The approved semantics are recorded in DECISION-REGISTER.md, NLA-L05-TDR-001 v0.1.6 §4.2.2–4.2.3 and NLA-001 v0.1.12 §20. TC-NOTIF-055..059 now trace to the approved decision and remain PLANNED / NOT EXECUTED.
 
 **F-05 disposition:** the PO decision dependency is RESOLVED; the technical finding remains OPEN pending Security/Engineering validation of exact selector grammar, actor/target inclusion, current-scope and parent-state suppression, retry-after-reactivation, audit outcomes and consistency with the final L05 protocol. Reviewer disposition remains REQUEST CHANGES — NOT TECHNICALLY APPROVED. Resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE. No implementation, database/runtime test or gate activation occurred.
+
+
+## 11. F-05 technical validation findings after POQ-04 approval — 2026-11-24
+
+POQ-04 has resolved the product-decision question, but static review of the current controlled artifacts identifies five technical acceptance gaps, now tracked as F05-T1..T5 in NLA-L05-TDR-001 v0.1.7 §4.2.4:
+
+- **F05-T1 — Selector grammar / dependency universe:** NLA-001 §5.2 lists broad selector categories only. There is no versioned grammar, event allowlist, typed field/operator set, null semantics, deterministic canonicalization, bounded complexity, or complete selector-to-column dependency map. This blocks an exhaustive eligibility-writer inventory and therefore affects F-04 as well as F-05.
+- **F05-T2 — Event-specific dispatch authorization:** generic current-scope wording can suppress role-revocation and project/session-closure notices because the transition itself invalidates the qualification predicate. Security must separate event-time recipient qualification from current authorization to deliver/open a notice and define exact behavior per event.
+- **F05-T3 — Suppression and retry state machine:** POQ-04 permits a later retry after account reactivation for the same candidate, but no exhaustive reason-code catalog, terminal/retryable classification, retry owner, attempt limit, expiry, or checkpoint semantics is specified. Re-evaluate consent/channel/security; never clear unrelated suppression or rebuild the snapshot.
+- **F05-T4 — Audit contract:** auditable suppression is required, but append-only attempt/outcome fields, correlation, worker provenance, reason codes, retention and data-minimization rules are not specified.
+- **F05-T5 — Snapshot/atomicity binding:** candidate snapshot relation/header remains NOT ADMITTED; exact binding of policy version, event, audit, idempotency, outbox, candidate set and audience_evaluated_at is not yet technically proven.
+
+QA v0.4.9 adds TC-NOTIF-060..064 as PLANNED / NOT EXECUTED. These are acceptance specifications only, not evidence.
+
+**Reviewer disposition:** REQUEST CHANGES — NOT TECHNICALLY APPROVED. POQ-04 is PO APPROVED; F-05 remains OPEN until F05-T1..T5 are defined, independently reviewed and evidenced. F-03/F-04/F-07 remain OPEN. Resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE. No code, SQL, migration, grant, RLS, live DB inspection or runtime test occurred.
