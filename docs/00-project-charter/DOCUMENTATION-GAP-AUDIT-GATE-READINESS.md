@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.81
+**Version:** 1.11.82
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -822,3 +822,12 @@ NLA-EVENT-TECH-RECON-001 v0.1.6 completes a bounded partial static pass for NREG
 CMD-032 reopen requires explicit approved `inspection.reopen` authority, scope and mandatory reason. The role/grant/SoD matrix and next-action owner remain unresolved. Mutable draft persistence/state vocabulary and one-active-draft invariant are not physically defined. Active claim/association/assignment and evidence/document finalizer blockers require a complete writer/lock graph. Historical approved revision, evidence, generated documents and print events must remain immutable.
 
 RTM-001 v0.1.19 adds NOTIF-039..043; QA Catalogue v0.5.9 adds TC-NOTIF-090..094, all PLANNED / NOT EXECUTED. All eleven registry rows are PARTIAL_STATIC_REVIEW only; all canonical contracts, recipient mappings, selectors and dispatch profiles remain UNRESOLVED; all events remain NOT ENABLED. F-05/F-04/F-03/F-07 remain OPEN; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+### CMD-031/032 technical closure evidence decomposition — 2026-11-24
+
+TECH-RESOLUTION-LPR-001 v0.1.11 adds a bounded evidence matrix for CMD-031 approval and CMD-032 reopen. It identifies the accountable decision boundaries: PO/operational owner for product authority, next-action ownership, draft workflow semantics and active-work disposition; Security for reviewer/reopen grants, scope and SoD; Engineering/Database for revision/draft physical identity, unique terminal-decision arbitration, CAS, transaction and lock graph; QA for planned adversarial tests after G10.
+
+This is a checklist and owner decomposition, not closure evidence. The review-decision unique arbiter, persisted Reviewer assignment, reopen grant matrix, mutable draft representation, active-work/finalizer blocker graph and complete source/non-command writer inventory remain unresolved. Source-event path map and candidate lock manifest still expose incompatible inspection-first versus parent/assignment/claim-first sequences.
+
+NREG-010/011 remain PARTIAL_STATIC_REVIEW only; all eleven event candidates remain UNRESOLVED / NOT ENABLED. LPR-01/LPR-07/LPR-09/LPR-11 remain OPEN; LPR-10 NOT EXECUTED; F-05/F-04/F-03/F-07 OPEN; resolver 0/40; application lock 0/50; global graph NOT PROVEN ACYCLIC; G9 NOT READY; G10 NOT ACTIVE. No implementation, SQL, migration, grant, RLS, database mutation or runtime test was performed.
