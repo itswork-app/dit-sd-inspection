@@ -155,3 +155,10 @@ Product Owner approved T-15 option A: INS-016 append-only audit events, atomic a
 ### T-16 — Cross-project serial collision and evidence lineage risk (2026-11-24)
 
 **Risk:** A project-local unit model may create duplicate physical identities across projects, while a global serial rule may incorrectly reject a serial reused by another instrument type. Evidence may also become detached from the exact revision/version or be overwritten. **Control:** PO-approved key `(instrument_id, serial_normalized)` across projects; preserve project-scoped authorization via explicit project associations; permit reuse across different instrument types; route same-type conflicts to authorized, reasoned and audited resolution; bind immutable evidence to exact revision/version and prohibit in-place replacement. **Status:** Design reconciliation, institution-approved exception policy, implementation and tests remain OPEN.
+
+
+## Package T — T-17 publication governance update (2026-11-24)
+
+**D-022 — Dependency — CFG-001 publication authorization reconciliation.** Product Owner approved option A: Super Admin may directly publish a version after server-side schema validation; no second-person approval is required. Reconcile explicit `instrument.publish` permission, trusted actor derivation, atomic publication + audit, immutable published version, session/assignment version pinning, historical snapshot retention, and separate audited deactivation across schema, RLS, command and QA artifacts. **Status:** PO direction approved; design and implementation evidence OPEN. No migration, code or test execution claimed.
+
+**R-023 — Risk — instrument configuration privilege or history drift.** A broad configuration editor or mutable published version could alter inspection meaning or allow privilege escalation. **Mitigation:** bounded allowlists; deny arbitrary executable configuration; server-side authorization; atomic publication/audit; immutable versions and exact snapshots; explicit scoped operational authorization independent of global Super Admin administration. **Status:** OPEN pending design reconciliation and verification.
