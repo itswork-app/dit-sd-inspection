@@ -317,7 +317,7 @@ Before any technical approval is recorded:
 
 ## 11. Current verification and gate status
 
-Static documentation review only. The root AGENTS.md v1.2.1, MIB-001 v1.0.10, IRG-001 v1.0.4, DGA-001 v1.11.30, SSOT-AUDIT-001 v0.1.5, Decision Register, lock resolution, global graph, 54-command manifest, command catalogue, detailed command reviews, physical schema and privileged transaction specification were inspected.
+Static documentation review only. The root AGENTS.md v1.2.1, MIB-001 v1.0.9, IRG-001 v1.0.3, DGA-001 v1.11.28, SSOT-AUDIT-001 v0.1.5, Decision Register, lock resolution, global graph, 54-command manifest, command catalogue, detailed command reviews, physical schema and privileged transaction specification were inspected.
 
 Not performed: source-code changes, SQL, migrations, grants/revokes, live database catalog/lock inspection, CI, automated tests, adversarial concurrency tests, deployment, merge or production changes.
 
