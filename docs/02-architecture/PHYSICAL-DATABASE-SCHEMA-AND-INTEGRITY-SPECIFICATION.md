@@ -197,7 +197,7 @@ These are not silently resolved by engineering:
 
 No migration may be written until:
 - the Product Owner resolves the items in Section 7 that affect constraints;
-- table-by-table RLS catalogue and privileged command boundary are approved;
+- T-18 command architecture is PO APPROVED; complete the table-by-table RLS/grant catalogue, command-specific EXECUTE grants, direct-DML denial matrix and any SECURITY DEFINER function review;
 - evidence retention and object recovery contracts are approved;
 - all enum/status transitions are reconciled with functional workflow docs.
 
@@ -214,7 +214,7 @@ Before production:
 
 **Physical data model:** DRAFT COMPLETE FOR REVIEW.  
 **Resolved by this package:** schema catalogue, integrity boundaries, instrument extensibility primitives, serial normalization proposal, active-claim uniqueness, revision/evidence linkage, critical index/transaction requirements.  
-**Still blocked:** Product Owner confirmation items in Section 7; RLS catalogue; privileged command boundary; evidence/privacy policy; backup/restore plan.  
+**Still blocked:** Product Owner confirmation items in Section 7; detailed table-by-table RLS/grant catalogue and command-specific function review (T-18 architecture approved); evidence/privacy policy; backup/restore plan.  
 **Implementation authorization:** NOT GRANTED.  
 **Migrations/tests executed:** NONE.
 
@@ -246,3 +246,8 @@ Every evidence record must reference the exact immutable inspection revision and
 - `published_by`, publication time, version number, schema version, change summary and configuration snapshot/hash must be retained. Database-level constraints/triggers and command authorization must prevent direct browser mutation and post-publication edits.
 
 **T-16 dependency:** canonical unit identity is instrument-type scoped across projects, while project association and inspection access remain explicit and scoped. Final association/FK and claim uniqueness semantics must be reconciled before any migration. T-17 does not resolve that schema dependency. No migration or test execution is claimed.
+
+
+## T-18 database privilege alignment (PO APPROVED option A, 2026-11-24)
+
+The selected command architecture requires the database privilege model to deny browser-facing anon/authenticated roles direct INSERT/UPDATE/DELETE on protected business and governance tables. Expose only narrowly scoped command functions with explicit EXECUTE grants; keep ordinary reads under RLS. Derive actor from the caller JWT at the PostgreSQL boundary and validate permission, role, project association, session, assignment, state and separation-of-duties within the command transaction. Prefer SECURITY INVOKER; any SECURITY DEFINER exception requires pinned search_path, schema-qualified references, strict validation, least-privileged ownership and minimal grants. The architecture decision is approved, but exact grants/policies and executable verification remain pending. No migration or test execution is claimed.
