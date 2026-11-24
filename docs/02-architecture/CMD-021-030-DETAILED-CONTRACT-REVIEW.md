@@ -267,7 +267,7 @@ For privacy, a collision response must not disclose the existing canonical unit 
 - Read: \`instruments\`, \`units\`, \`operational_assignments\`, \`projects\`, \`idempotency_records\`; read existing \`unit_project_associations\` only when the approved collision/visibility policy requires it.
 - Write: \`units\` for a genuinely new canonical identity; \`unit_identity_conflicts\` for a controlled collision workflow if the approved policy says registration creates a conflict; \`idempotency_records\`; \`audit_events\`.
 - No write to \`unit_project_associations\`, \`unit_claims\` or \`inspections\`.
-- Physical columns: \`units(id, instrument_type, serial_raw, serial_normalized, normalization_version, status)\`; known serial unique key is \`(instrument_id, serial_normalized)\` for non-null serials.
+- Physical columns: \`units(id, instrument_type, serial_raw, serial_normalized, normalization_version, status)\`; known serial unique key is \`(instrument_type, serial_normalized)\` for non-null serials.
 
 ### Transaction, lock and idempotency
 
