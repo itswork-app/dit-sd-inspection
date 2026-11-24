@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.23
+**Version:** 0.8.24
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -534,3 +534,8 @@ LOCK-MANIFEST-001 v0.4.27 §7.7 maps 40/40 CMD-001–040 event declarations to c
 This is static producer coverage only. Recipient resolver L15/L16/L17 and scope-parent L30/L50 lock sets are not mapped for all 40 paths. Many source paths already hold higher-ranked resources before their event append. This is a potential inversion, not an observed deadlock. CMD-041..044 read-side access events are excluded pending a separately approved side-effect boundary; CMD-049..054 are excluded from notification policy matching by default to prevent recursion.
 
 QA v0.4.3 adds TC-NOTIF-041 for event-producer completeness and transaction-boundary evidence; PLANNED / NOT EXECUTED. Candidate snapshot relation/header remain NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE; application lock certification 0/50.
+
+
+## Notification recipient-resolver lock-set review — 2026-11-24
+
+[NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001](NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) v0.1.0 builds on the 40/40 source event declaration inventory in LOCK-MANIFEST-001 §7.7 and identifies the remaining 0/40 resolver lock-set certification gap. It compares a candidate global transaction-scoped L05 audience guard with a SERIALIZABLE predicate-snapshot alternative, defines required writer participation, FK parent pre-acquisition, CMD-052 fan-out separation and CMD-054 scheduler ordering. Neither mechanism is approved. Exact event-time semantics, selector allowlist, writer coverage, FK/trigger/function graph, acyclicity and runtime evidence remain OPEN. Candidate snapshot relation/header remain NOT ADMITTED; 0/50 application lock-certified; G9 NOT READY; G10 NOT ACTIVE.
