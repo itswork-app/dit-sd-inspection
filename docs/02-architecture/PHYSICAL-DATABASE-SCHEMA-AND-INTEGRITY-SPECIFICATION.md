@@ -310,7 +310,7 @@ The Product Owner has approved the product-semantic invariants in the Decision R
 | CMD-019 complete declarative draft replacement; published snapshots immutable | Child reconciliation and immutable snapshot/hash representation | Schema allowlist, bounds, stable child keys, hash and CAS remain open |
 | CMD-020 T-17 explicit publish permission and immutable version pinning | Publication row/event, immutable child snapshot and assignment/session version references | Existing T-17 design remains subject to exact function/ACL/constraint review |
 
-**No inferred DDL:** This table records semantic obligations and missing physical decisions. It deliberately does not invent column names, data types, indexes, constraints, triggers, lock modes or migration order. G3/G5/G9 remain NOT READY; G10 NOT AUTHORIZED.
+**No inferred DDL:** This table records semantic obligations and missing physical decisions. It deliberately does not invent column names, data types, indexes, constraints, triggers, lock modes or migration order. G3/G5/G9 remain NOT READY; G10 NOT ACTIVE.
 
 
 ## NLA-001 physical field reconciliation — 2026-11-24
