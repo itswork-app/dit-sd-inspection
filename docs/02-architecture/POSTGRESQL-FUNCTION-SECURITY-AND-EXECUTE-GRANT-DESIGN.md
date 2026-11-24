@@ -188,3 +188,7 @@ Global tests must prove:
 ## 12. Change control
 
 Any change to caller roles, function security mode, function owner, search_path, EXECUTE ACL, table ACL, RLS policy, exposed schema, JWT propagation or service-role usage requires synchronized updates to this document, the command catalogue, RLS catalogue, command boundary, API contracts, QA catalogue, RTM and Package S. Never infer approval from a draft row or a successful documentation commit.
+
+## Live database inventory prerequisite
+
+See [Supabase Live Database Security Inventory Runbook](SUPABASE-LIVE-DATABASE-SECURITY-INVENTORY-RUNBOOK.md). It defines read-only catalog queries and Dashboard evidence needed to verify actual roles, memberships, ownership, ACLs, RLS/policies, function signatures/security modes/owners/EXECUTE grants, default privileges, views, triggers, sequences and Storage policies. The runbook has not been executed against a live database. Repository design artifacts are not proof of deployed state. Do not finalize the T-18 execution model or prepare grants/migrations until live evidence is reviewed and the INVOKER/DEFINER/executor conflict is explicitly resolved.
