@@ -436,4 +436,4 @@ INS-021, REV-003, REV-004 and EVD-004 are added to RTM-001 v0.1.22 as candidate/
 |---|---|---|---|---|
 | D-010 | Certified session-bound inspection and abort contract, including returned-but-unresolved work at session close | Freeze CMD-026/027/028/029/030/032 and session-close contract; G9 scope review | Operational Owner / Engineering / Database / Security / QA | OPEN — BLOCKING |
 
-SES-001 product semantics are PO APPROVED. R-017, I-011 and D-009 remain OPEN — BLOCKING until physical, command, lock, security and QA evidence is accepted. No implementation, test execution or gate transition is implied.
+SES-001 product semantics are PO APPROVED. R-017, I-013 and D-010 remain OPEN — BLOCKING until physical, command, lock, security and QA evidence is accepted. No implementation, test execution or gate transition is implied.
