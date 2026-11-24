@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.2  
+**Version:** 0.1.3  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -183,7 +183,7 @@ Product Owner approved T-15 option A: INS-016 append-only audit events, atomic a
 
 | ID | Type | Description | Impact | Mitigation / response | Accountable role | Status |
 |---|---|---|---|---|---|---|
-| D-026 | Dependency | INS-015 notification lifecycle is documented through CMD-049–054, but recipient eligibility semantics, policy permission/SoD, worker identity/ACL, provider callback capability, retry horizons and T-10 retention/privacy remain unapproved | Scope freeze and notification implementation | Reconcile NLA-001 v0.1.2 and CMD review v0.1.1 across schema/RLS/API/audit/lock/QA; obtain accountable approvals and provider evidence; execute tests only after G10 | PO / Security / Institution / Operations | OPEN — BLOCKING |
+| D-026 | Dependency | INS-015 notification lifecycle is PO-approved; exact selector grammar, event-time recipient/scope snapshot representation, policy permission/SoD, worker identity/ACL, provider callback capability, retry horizons and T-10 retention/privacy remain unresolved | Scope freeze and notification implementation | NLA-001 v0.1.4; candidate notification_outbox_recipients is NOT ADMITTED; reconcile schema/RLS/ERD/command/lock/QA and obtain accountable approvals/provider evidence; execute tests only after G10 | PO / Security / Institution / Operations / Engineering | OPEN — BLOCKING |
 | R-026 | Risk | External notification providers have at-least-once/ambiguous acceptance behavior; retries or unauthenticated/replayed callbacks can duplicate delivery, corrupt status or silently lose notices | High | Transactional outbox, unique recipient/channel arbiters, append-only attempt evidence, owner/token-hash/generation/expiry fencing, INT-NOTIF-001 signature/freshness/replay validation, UNKNOWN state and backlog/dead-letter monitoring | Engineering / Security / Operations | MITIGATING BY DESIGN; PROVIDER/WORKER VERIFICATION OPEN |
 | D-027 | Dependency | T-13 batch print decision requires physical batch persistence and append-only per-document outcomes to be reconciled with RLS, commands and tests | Scope freeze and print implementation | Include `print_batches`; link `print_events`; review lock/projection/retry contract and failure/concurrency tests | PO / Engineering / Security | DESIGN RECORDED; REVIEW OPEN |
 
@@ -253,7 +253,7 @@ CMD-045–048 Detailed Contract Review v0.1.0 records the present safe-unavailab
 | D-034 | Dependency | CMD-052/053 worker identity, scheduler trust, database role, function owner, exact EXECUTE ACL, lease-token custody and monotonic fencing have no approved runtime principal or evidence | G4/G7/G9; stale worker or privilege escalation risk | Security/Operations approve a non-login least-privilege workload identity, exact owner/ACL, token handling, generation fencing, rate limits and isolated verification | Security / Operations / Engineering | OPEN — BLOCKING |
 | D-035 | Dependency | INT-NOTIF-001 provider callback ingress requires a selected provider, signature/freshness model, stable event identity, durable deduplication and provider-message mapping | Delivery state integrity and provider operations | Select provider only after T-12 ownership/cost/capability evidence; define callback authentication, replay defense, monotonic transitions and failure reconciliation | Provider owner / Security / Operations | OPEN — BLOCKING |
 | D-036 | Dependency | CMD-051 policy publish requires an approved notification.policy.manage grant, scope, grantor ceiling, policy schema/selector allowlist and SoD; persisted draft CRUD is excluded | G5/G9; unauthorized global policy mutation | PO/Security approve exact policy schema, role/scope/grantor matrix and publish authority; any draft workflow requires separate command/schema approval | PO / Security | OPEN — BLOCKING |
-| R-034 | Risk | Recipient eligibility changes between source event and asynchronous fan-out; without a defined snapshot/checkpoint, delayed or partial retries could notify an unintended or incomplete audience | High | PO/Security decide event-time versus fan-out-time audience semantics; define deterministic recipient snapshot/checkpoint and revalidation before external send; never widen scope on retry | PO / Security / Engineering | OPEN — BLOCKING |
+| R-034 | Risk | Event-time audience semantics are PO-approved, but the durable recipient/scope snapshot is not admitted; if fan-out retries re-resolve current role/assignment membership, recipients may be added, omitted or exposed outside the original event scope | High | Persist immutable event-time recipient/scope candidates and snapshot hash/count before source transaction commit; retries consume only that set; dispatch-time revalidation may suppress only; never widen audience | PO / Security / Engineering / Database | OPEN — BLOCKING |
 | R-035 | Risk | Ambiguous provider acceptance followed by blind retry may duplicate a sensitive notification; callbacks may arrive late or out of order | High | Keep UNKNOWN until safe reconciliation, use provider idempotency where supported, authenticate INT-NOTIF-001, enforce monotonic transitions and alert on unresolved age | Engineering / Security / Operations | MITIGATING BY DESIGN; VERIFICATION OPEN |
 
 CMD-049–054 Detailed Contract Review v0.1.1 and NLA-001 v0.1.2 resolve several documentation-level mismatches only. D-034..D-036 and R-034..R-035 remain open; no worker, provider, role, grant, route, table, SQL or test execution is authorized by this register update.
@@ -278,3 +278,10 @@ The static audit in [SSOT-AUDIT-001](SSOT-CROSS-DOCUMENT-RECONCILIATION-AUDIT.md
 No RAID owner has been replaced with an invented person or institution. No new risk is assigned without evidence of a distinct risk beyond the existing DGA/RAID register. The PO and authority requests are tracked in POQ-001 and AUTH-001.
 
 **Status:** RAID review remains OPEN for the existing dependencies and risks. No external approval, technical certification, implementation, test, merge or release evidence is implied.
+
+
+## Notification audience snapshot lock-order risk — 2026-11-24
+
+| ID | Type | Description | Impact | Mitigation / response | Accountable role | Status |
+|---|---|---|---|---|---|---|
+| R-037 | Risk | POQ-01 event-time audience snapshot persistence may introduce implicit FK KEY SHARE locks to app_users and project/session/location/assignment rows after a source command, CMD-052 or CMD-054 already holds higher-ranked aggregate/queue/policy locks; this may invert L15/L16/L17/L30/L50/L55 order and create deadlocks or inconsistent eligibility snapshots | Critical | Keep notification_outbox_recipients candidate-only until every source event/worker path, competing account/scope writer and implicit FK/index/trigger/helper edge is mapped; define one event-time linearization and canonical order; prove the full graph acyclic and execute deterministic opposing-transaction tests before G9 | Engineering / Database / Security / QA | OPEN — CRITICAL |
