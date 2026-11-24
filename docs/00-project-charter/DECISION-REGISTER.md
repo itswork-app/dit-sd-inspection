@@ -324,3 +324,20 @@ This clarification does not fabricate or substitute a third party's signed insti
 **Binding constraints:** POQ-01 and POQ-04 immutable event-time candidate, exact-selector-only inclusion, dispatch-time suppression without widening, and retry reuse rules remain binding. Security/Engineering/Database review, F-05/F-04/F-03/F-07 closure evidence and G9/G10 gate approvals remain mandatory. G9 remains NOT READY; G10 remains NOT ACTIVE.
 
 **Recorded artifact:** NLA-EVENT-REGISTRY-001 v0.1.0 is the controlled draft inventory for these eleven candidates. It is not an enabled registry or implementation authorization.
+
+
+## Product Owner decision — SES-001 session-bound unit inspection (2026-11-24)
+
+**Status: PO APPROVED.** Each inspection attempt for one physical unit is valid within exactly one inspection session. The inspection record and all draft/evidence work must remain bound to that session; a draft or claim must never be resumed, transferred or continued in a different session.
+
+**Required behavior:**
+1. CMD-026 may create/claim an inspection attempt only in the caller's currently active, authorized session and binds the attempt immutably to that session.
+2. Draft editing, offline continuation under T-09, evidence upload/finalization, submit and any returned correction are confined to that same session. The responsible Inspector remains the same Inspector for a returned correction, consistent with WF-001 and the separate PO decision on correction ownership.
+3. Before a session is finally closed, every unit attempt that has not reached an allowed terminal outcome must be explicitly aborted. An incomplete/hanging unit is not silently carried forward, left as a resumable draft, or moved to another session.
+4. Abort is a terminal, auditable outcome for that inspection attempt. It preserves the attempt history, prior revisions, evidence metadata and audit trail; it is not a successful inspection, approval or completion.
+5. A later session must create a new inspection attempt bound to that new session. It must not reactivate or mutate the aborted attempt. Prior evidence is historical and is not automatically reused to satisfy the new attempt.
+6. Session closure must be blocked while unresolved unit attempts remain, until each is completed through the allowed workflow or explicitly aborted. Abort must be performed before final session closure.
+
+**Scope:** IFP and Standing Bracket inspections by the Dit. SD inspection team only. This decision does not add school-side personas or workflows.
+
+**Technical constraints still requiring review:** exact abort command/API mapping and permission; whether existing CMD-027 release semantics can be reused or a dedicated abort command is required; atomic abort + claim release + audit/event/idempotency; handling of a returned correction that remains unresolved at session close; and physical uniqueness allowing a new session-bound attempt while preserving canonical unit identity. These are not silently inferred as implementation-ready. No DDL, RLS, grants, code or tests are approved by this decision.
