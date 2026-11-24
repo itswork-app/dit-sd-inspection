@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.17
+**Version:** 1.11.18
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -384,7 +384,7 @@ All ten command test cases remain PLANNED / NOT EXECUTED. Progress remains 10/54
 **Cross-command source synchronization:** CMD-001–054 Cross-Command Reconciliation v0.8.8 now records the CMD-001–010 candidate lock overlay and the 10/54 candidate-normalized progress count. This remains a documentation proposal only; no command contract is approved or certified by this synchronization.
 
 
-**CMD-045–048 review synchronization (2026-11-24):** CMD catalogue v0.4.2, CMD-001–054 Cross-Command Reconciliation v0.8.10, QA Catalogue v0.3.4, RTM RET-001 / INC-001 / PROV-001 / REL-001 and RAID D-031..D-033/R-032..R-033 now reference CMD-045–048 Detailed Contract Review v0.1.0. These are documentation updates only. T-10/T-12 institutional approvals, incident scope, provider custody and release governance remain open; no command is approved, no test was executed, 0/54 commands are technically certified, G9 remains NOT READY and G10 remains NOT AUTHORIZED.
+**CMD-045–048 review synchronization (2026-11-24):** CMD catalogue v0.4.2, CMD-001–054 Cross-Command Reconciliation v0.8.11, QA Catalogue v0.3.4, RTM RET-001 / INC-001 / PROV-001 / REL-001 and RAID D-031..D-033/R-032..R-033 now reference CMD-045–048 Detailed Contract Review v0.1.0. These are documentation updates only. T-10/T-12 institutional approvals, incident scope, provider custody and release governance remain open; no command is approved, no test was executed, 0/54 commands are technically certified, G9 remains NOT READY and G10 remains NOT AUTHORIZED.
 
 
 ## CMD-049–054 notification contract reconciliation checkpoint — 2026-11-24
@@ -400,3 +400,34 @@ The following documentation mismatches have been resolved at proposal level and 
 Updated references: NLA-001 v0.1.2; CMD-049–054 Detailed Contract Review v0.1.1; Command Catalogue v0.4.3; Physical Schema v0.4.1; RLS Catalogue v0.2.1; API Contracts v0.2.1; Audit Event Catalogue; Lock Manifest v0.4.14; Concurrency Token Reconciliation v0.1.4; QA Catalogue v0.3.5; RTM NOTIF-007..012; RAID D-034..D-036/R-034..R-035.
 
 The 26 notification cases are PLANNED / NOT EXECUTED. DGA-B10 remains OPEN because approvals and exact executable contracts are incomplete. DGA-B11 remains design-reconciled/live-unverified. DGA-B13 remains approval/runtime-open. DGA-B17 remains OPEN for other command token mismatches. DGA-B19 remains 10/54 candidate-normalized and 0/54 technically approved/certified. G9 remains NOT READY and G10 NOT AUTHORIZED. No implementation, SQL, migration, grant, CI, test execution, live database inspection, provider setup, deployment or merge occurred.
+
+
+## Final documentation closure audit checkpoint — 2026-11-24
+
+The static closure audit reviewed the current root AGENTS.md v1.2.0, MIB-001 v1.0.2, IRG-001 v1.0.1, Decision Register, PRD/acceptance baseline, Package S/T decision records, T-18/T-19, all seven detailed CMD review ranges, command catalogue, physical schema, RLS, ERD, lock graph/manifest, concurrency reconciliation, permission/function-security documents, RTM, RAID and QA catalogue.
+
+### Static inventory and consistency results
+
+- Detailed command review coverage: CMD-001..010, 011..020, 021..030, 031..040, 041..044, 045..048 and 049..054 are all present as separate review documents.
+- Command catalogue: 54/54 unique command IDs; every command row's planned test anchor is present in the QA catalogue.
+- Lock manifest: 54/54 unique command IDs in the primary inventory; 10/54 candidate-normalized at documentation level; 0/54 technically approved/certified. Extra command references in overlay tables are not additional primary manifest rows.
+- Physical schema and RLS catalogue: 48/48 table names with exact name-set parity by static comparison; no live schema, constraint, grant or RLS verification is implied.
+- QA catalogue: 410 unique test-case definitions; TC-NOTIF-001..026 all present; all relevant cases remain PLANNED / NOT EXECUTED.
+- Decision Register: 50 unique decision IDs; RTM-001: 125 unique requirement IDs; RAID-001: 53 unique risk/assumption/dependency IDs; DGA gap register: 21 unique DGA-B IDs.
+- Twenty reviewed core documents had their relative Markdown link targets checked against the current repository tree; no missing local file targets were found in that reviewed set. This is not a proof that every external URL or every link in every repository file is reachable.
+- All 33 files in PR #3's compared diff are Markdown documentation files; no source, SQL, migration, configuration or workflow file is in that diff.
+
+### Corrected documentation findings
+
+1. RTM duplicate AUTH-LOCK-001 corrected: the detailed actor/target/grantor serialization requirement is now AUTH-LOCK-002.
+2. RAID duplicate R-014 corrected: the alternative provider-ownership continuity risk is now R-036.
+3. Command catalogue wording “approved global order” corrected to candidate lock-rank proposal; the candidate order is explicitly not approved or proven acyclic.
+4. Concurrency reconciliation wording corrected to candidate lock-order status; CMD-050 CV-06 is marked resolved at request-contract level while approval/runtime evidence remains open.
+5. RLS summary corrected: only recipient-owned read_at is exposed through CMD-050; dismissed_at remains dormant and no dismiss command is approved.
+6. Current version pointers refreshed for command catalogue, lock manifest, RTM/RAID and cross-command reconciliation. Historical dated source snapshots remain historical and are not silently rewritten.
+
+### Remaining closure boundary
+
+This audit does not close DGA-B04/B05/B09/B10/B11/B12/B13/B14/B15/B16/B17/B18/B19/B20/B21. In particular, the candidate global lock graph is not approved or proven acyclic; 44/54 command manifests remain not candidate-normalized; all 54 remain uncertified; exact command JSON Schema/OpenAPI, route/RPC signatures, function owners/privileges/EXECUTE ACL, physical constraints/indexes/FKs, RLS/grants, provider/worker identity, recipient eligibility semantics, retry/SLA policy, T-10 institutional records/privacy authority, T-12 provider ownership, CI/ruleset evidence and implementation/runtime verification remain outstanding.
+
+No CI workflow, automated test, concurrency test, live Supabase inventory, SQL, migration, grant/revoke, provider setup, deployment, production mutation or merge was performed. PR #3 remains Draft/Open. G9 remains NOT READY; G10 remains NOT AUTHORIZED. This checkpoint closes only the identified static documentation inconsistencies, not implementation readiness or all possible repository gaps.
