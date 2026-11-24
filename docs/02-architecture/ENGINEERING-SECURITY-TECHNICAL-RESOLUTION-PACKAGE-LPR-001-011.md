@@ -24,7 +24,7 @@ The current candidate L00–L110 hierarchy is incomplete because it omits mutabl
 3. Place T-14 capacity serialization before all account, role, scope, and assignment-membership changes that can alter the qualifying Inspector population.
 4. Add explicit resource classes for `app_users`, `user_roles`, and `user_scope_grants`; do not hide them inside assignment locks.
 5. Treat worker claim, provider I/O and finalization as separate transactions with lease fencing; never hold database row locks over external I/O.
-6. Normalize each of the 54 manifests against one schema. An inventory row is not lock-complete until all fields and implicit lock edges are evidenced.
+6. Normalize the 50 in-scope application command manifests against one schema. Keep CMD-045–048 as four external control-plane traceability IDs with no application lock set; do not include them in the application lock-certification denominator. An inventory row is not lock-complete until all fields and implicit lock edges are evidenced.
 7. Keep LPR-10 NOT EXECUTED until an authorized isolated PostgreSQL environment, exact schema/commit, and reproducible adversarial test evidence exist.
 
 ### 1.2 Approval boundary
@@ -35,7 +35,7 @@ The current candidate L00–L110 hierarchy is incomplete because it omits mutabl
 | Candidate rank hierarchy LPR-01 | Engineering + Security; PO only for product-impacting policy | PROPOSED; OPEN |
 | Exact lock primitives and effective lock graph LPR-07 | Engineering + Database + Security | PROPOSED; OPEN |
 | Worker identity, queue fencing, callback trust and ACL LPR-08 | Security + Operations + provider owner | PROPOSED; OPEN |
-| 54-command manifest normalization LPR-09 | Engineering + Database/Security + QA | SPECIFICATION; OPEN |
+| 50-application-command manifest normalization LPR-09 | Engineering + Database/Security + QA | SPECIFICATION; OPEN |
 | Adversarial concurrency suite LPR-10 | Engineering + QA + Security | NOT EXECUTED |
 | Identity/authorization ranks LPR-11 | Engineering + Security; institutional owner where relevant | PROPOSED; OPEN |
 
@@ -219,7 +219,7 @@ For CMD-033/034, CMD-036, CMD-038/039, CMD-044 and CMD-049–054 where asynchron
 
 ---
 
-## 7. LPR-09 — normalized 54-command lock manifest
+## 7. LPR-09 — normalized 50-application-command lock manifest
 
 Every manifest row must contain the following fields before it can be certified:
 
@@ -246,7 +246,7 @@ Every manifest row must contain the following fields before it can be certified:
 - REVIEWED: Engineering, Database and Security have reviewed applicable details and accepted findings.
 - CERTIFIED: complete effective graph and required tests prove the manifest against the exact schema/code commit/environment.
 
-The current baseline remains 54/54 INVENTORIED and 0/54 CERTIFIED. No command is upgraded by this package. LPR-09 remains OPEN until all rows are normalized and reviewed.
+The current baseline is 54/54 traceability IDs inventoried: 50 application commands and 4 external control-plane IDs. Application lock certification remains 0/50. No command is upgraded by this package. LPR-09 remains OPEN until all 50 application rows are normalized and reviewed; CMD-045–048 remain outside the application lock set.
 
 ---
 
@@ -293,7 +293,7 @@ The accountable reviewers must record one explicit outcome per item: APPROVE, RE
 | LPR-01 | Accept/refine the candidate rank order in §3, including L15–L18 identity/authorization classes and no late lower-rank acquisition | Engineering + Security | OPEN — no approval inferred |
 | LPR-07 | Approve exact PostgreSQL lock modes/primitives only after effective object graph, deployed version, privileges and implicit index/FK/trigger paths are inventoried | Engineering + Database + Security | OPEN |
 | LPR-08 | Approve worker-specific identity, lease/fencing, provider callback trust, secrets custody and ACL per worker/provider | Security + Operations + provider owner | OPEN |
-| LPR-09 | Normalize/review all 54 manifests against §7; reconcile each command catalogue/detail/physical schema/test reference | Engineering + Database + Security + QA | OPEN |
+| LPR-09 | Normalize/review all 50 application manifests against §7; reconcile each command catalogue/detail/physical schema/test reference. Keep CMD-045–048 as external traceability only | Engineering + Database + Security + QA | OPEN |
 | LPR-10 | Execute §8 adversarial suite in authorized isolated environment and attach reproducible evidence | Engineering + QA + Security | NOT EXECUTED |
 | LPR-11 | Approve L15–L18 identity/authorization ordering relative to L10, L20, L30 and L50/L55; validate T-14 writer coverage | Engineering + Security; institution where relevant | OPEN |
 
@@ -334,7 +334,7 @@ Not performed: source-code changes, SQL, migrations, grants/revokes, live databa
 | DGA-B18 | PARTIAL |
 | DGA-B19 | OPEN |
 | DGA-B21 | OPEN |
-| Lock manifest | 54/54 inventoried; 0/54 certified |
+| Lock manifest | 54/54 traceability IDs inventoried (50 application + 4 external); 0/50 application commands certified |
 | G3/G4/G5/G7/G9 | NOT READY |
 | G10 | NOT ACTIVE — pending verified G9 and separate activation record |
 
@@ -356,3 +356,8 @@ The Product Owner's explicit conditional implementation authorization is recorde
 This version synchronizes the current authority pointers to root AGENTS.md v1.2.2, MIB-001 v1.0.11, IRG-001 v1.0.4 and DGA-001 v1.11.39. The controlling authorization state is conditional Product Owner implementation authorization received; G9 NOT READY; G10 NOT ACTIVE pending verified G9 and a separate approved G10 activation record. Any earlier “G10 NOT AUTHORIZED” statement in this document is a historical snapshot, not the current state.
 
 This correction changes no technical approval, lock primitive, worker identity, ACL, manifest certification or test status. LPR-01 and LPR-07–LPR-09/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED; lock certification remains 0/50 application commands. G3/G4/G5/G7/G9 remain NOT READY. No implementation, SQL, migration, grants/revokes, CI, live database inspection, concurrency test, deployment or merge is claimed.
+
+
+## 14. Application lock-certification denominator clarification — 2026-11-24
+
+CMD-045–048 are Product Owner-approved external control-plane traceability IDs and do not represent application commands, routes, RPCs, workers or database transactions. Accordingly, LPR-09 normalization and LPR-10 adversarial application lock verification apply to the 50 in-scope application commands only. The repository inventory remains 54/54 traceability IDs; the current application lock certification baseline remains 0/50. This denominator clarification is documentation reconciliation only and does not certify any manifest or change any technical approval/test status.
