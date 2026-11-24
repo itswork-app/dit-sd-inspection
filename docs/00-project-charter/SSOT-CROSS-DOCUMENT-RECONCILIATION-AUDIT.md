@@ -1,13 +1,13 @@
 # SSOT Cross-Document Reconciliation Audit — Dit. SD Inspection
 
 **Document ID:** SSOT-AUDIT-001  
-**Version:** 0.1.3  
+**Version:** 0.1.4  
 **Status:** STATIC CROSS-DOCUMENT AUDIT COMPLETED — CLOSURE PARTIAL  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
 **PR:** #3 — Draft / Open  
-**Authority snapshot reviewed:** AGENTS.md v1.2.0; MIB-001 v1.0.5; DGA-001 v1.11.27; IRG-001 v1.0.1  
+**Authority snapshot reviewed:** AGENTS.md v1.2.1; MIB-001 v1.0.8; DGA-001 v1.11.27; IRG-001 v1.0.2  
 **Implementation authorization:** NOT GRANTED
 
 ## 1. Executive result
@@ -25,8 +25,8 @@ This audit does not grant approval, close institutional dependencies, certify te
 ## 2. Scope and evidence boundary
 
 Reviewed on the target branch:
-- Root AGENTS.md v1.2.0.
-- MIB-001 v1.0.5; DGA-001 v1.11.24; IRG-001 v1.0.1.
+- Root AGENTS.md v1.2.1.
+- MIB-001 v1.0.8; DGA-001 v1.11.27; IRG-001 v1.0.2.
 - Decision Register and its T-01..T-18, T-14 clarification, T-15..T-18, and LPR-02..LPR-06 decision addenda.
 - Package S — Final Cross-Document Audit and Scope-Freeze Readiness, including §9.15.
 - Package T — Product Owner Decision Closure Pack v0.1.1, including its historical-status reconciliation.
@@ -40,9 +40,9 @@ This was a read-only content review followed by documentation-only corrections o
 
 | Source | Current role | Audit disposition |
 |---|---|---|
-| AGENTS.md v1.2.0 | Mandatory repository work policy and G10 boundary | Read before this task; documentation-only scope retained |
-| MIB-001 v1.0.5 | Governance and gate control plane | Current-source pointers reconciled; G9/G10 unchanged |
-| DGA-001 v1.11.24 | Active evidence-backed gap register | Remains the controlling closure queue; 21 gap IDs |
+| AGENTS.md v1.2.1 | Mandatory repository work policy, approved POQ notification semantics and G10 boundary | Read before this task; documentation-only scope retained |
+| MIB-001 v1.0.8 | Governance and gate control plane | Current-source pointers reconciled; G9/G10 unchanged |
+| DGA-001 v1.11.27 | Active evidence-backed gap register | Remains the controlling closure queue; 21 gap IDs |
 | IRG-001 v1.0.1 | Pre-implementation and release roadmap | Plan only; no implementation authorization |
 | Decision Register | Canonical index of current PO decisions | Current authority; approved decisions are not reopened by historical recommendation text |
 | Package S | Historical cross-document audit with dated current-state addenda | §9.15 remains historical; §9.16 is added as current snapshot |
@@ -169,3 +169,18 @@ The following technical details remain open: exact selector grammar and snapshot
 ## POQ closure and notification QA inventory update — 2026-11-24
 
 POQ-01..03 are explicitly approved and recorded in the Decision Register. NLA-001 v0.1.3, CMD-049–054 review v0.1.2, RTM-001 v0.1.3, DGA-001 v1.11.27 and QA Catalogue v0.3.6 now reflect the approved hybrid audience, per-policy SLA and MVP dismissal exclusion. QA inventory now contains 413 unique planned test definitions, including TC-NOTIF-001..029; all remain PLANNED / NOT EXECUTED. The physical audience snapshot representation/checkpoint, worker security, provider, T-10 and runtime evidence remain open. G9 NOT READY; G10 NOT AUTHORIZED.
+
+
+## 9. Current controlled-source checkpoint and agent policy — 2026-11-24
+
+This addendum supersedes only current-source navigation and status pointers; historical audit sections above retain their original evidence boundary.
+
+- Root AGENTS.md v1.2.1 now records POQ-01..03 as approved product semantics and explicitly preserves the documentation-only boundary while G9 is NOT READY and G10 NOT GRANTED.
+- MIB-001 v1.0.8 and IRG-001 v1.0.2 reflect current DGA/SSOT pointers and the approved notification semantics without authorizing implementation.
+- DGA-001 v1.11.27 remains the active blocker queue. SSOT-AUDIT-001 is v0.1.4. RTM-001 is v0.1.3; RAID-001 remains v0.1.1.
+- NLA-001 v0.1.3, CMD-049–054 review v0.1.2, command catalogue v0.4.5, physical schema v0.4.2, RLS catalogue v0.2.3, API contracts v0.2.2 and QA catalogue v0.3.6 reflect the approved POQ semantics.
+- POQ-01 Option C, POQ-02 Option C and POQ-03 Option A close the PO product-semantic questions only. Durable audience snapshot/checkpoint representation, selector grammar, worker identity/ACL, policy grants/SoD, provider callback/capability, T-10 privacy/retention, exact physical constraints/RLS, CI and runtime evidence remain open.
+- QA contains 413 unique planned test definitions including TC-NOTIF-001..029; no execution evidence is claimed.
+- AUTH-01..09 remain pending. DGA-B01..B21 retain their evidence-backed individual states; lock progress remains 10/54 candidate-normalized and 0/54 technically approved/certified.
+
+**Gate decision:** SSOT documentation remains materially incomplete for G9. No scope-freeze record or independent G9 sign-off exists. G10 remains NOT AUTHORIZED. No implementation, SQL, migration, grant/revoke, CI execution, live resource change, deployment, merge or production activation is authorized.
