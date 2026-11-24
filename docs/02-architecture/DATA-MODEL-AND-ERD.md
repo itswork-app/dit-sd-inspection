@@ -1,7 +1,7 @@
 # Data Model and ERD — Dit. SD Inspection
 
 Status: Logical data model draft — not a migration specification  
-Version: 0.3.2
+Version: 0.3.3
 
 
 ## Physical schema and RLS reconciliation status
@@ -222,3 +222,12 @@ Permission boundaries are cross-referenced in CANONICAL-PERMISSION-REGISTRY-AND-
 The future audit-export lifecycle may require three candidate entities: audit_export_jobs, audit_export_manifests, and audit_export_artifacts. They are intentionally excluded from the Mermaid ERD and canonical 48-table count. No relationship, FK, ownership cardinality or retention cascade is approved.
 
 Candidate lifecycle relationship for review only: one export job may produce one immutable manifest and one or more artifact attempts/versions only if policy explicitly permits; otherwise enforce one terminal artifact. Exact cardinality, retry semantics, approval/dual-control records, download grants and deletion linkage must be decided after T-10. Never repurpose documents or notification_outbox. No export object or bucket may be created while T-10 remains blocked.
+
+
+## POQ-01 candidate audience snapshot — ERD admission deferred (2026-11-24)
+
+POQ-01 requires a persisted event-time candidate audience and authorized source-scope snapshot. The current six notification entities do not explicitly represent the immutable recipient candidate set. A future candidate relation, `notification_outbox_recipients`, is described in NLA-001 v0.1.4 and the physical schema/RLS annexes.
+
+It is intentionally **not drawn as a canonical ERD entity** and does not change the 48-table proposal. Candidate relationship: `notification_outbox` 1-to-many `notification_outbox_recipients`; each candidate row identifies one recipient and their event-time scope snapshot. A recipient may be matched by multiple policy selectors but is deduplicated by `(outbox_id, recipient_user_id)`. CMD-052 consumes immutable rows and materializes the existing `notifications` inbox rows idempotently.
+
+Before ERD admission, Engineering/Database must approve exact typed scope columns and composite FKs, source-transaction snapshot creation and bounds, snapshot hash/count header fields, index strategy, RLS/ACL and recovery behavior. No DDL or migration is authorized by this candidate.
