@@ -5,6 +5,11 @@
 **Package:** L — Physical Data Model and Integrity  
 **Date:** 2026-11-23
 
+
+## Schema/RLS reconciliation reference
+
+The exact 41-table physical inventory has been reconciled by name against the Package M RLS catalogue in [Physical Schema ↔ RLS ↔ Command Reconciliation](PHYSICAL-SCHEMA-RLS-COMMAND-RECONCILIATION.md). The two inventories have exact 41/41 parity. The logical ERD additionally names `print_batches` and `notification_events`, which are not physical tables or RLS entries; their disposition is open. This reconciliation does not establish live schema existence, deployed RLS or grants.
+
 ## 1. Purpose and implementation boundary
 
 This document converts the logical ERD into a physical PostgreSQL design contract for review. It is not a migration and does not authorize application coding.
