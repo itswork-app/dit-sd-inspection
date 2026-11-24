@@ -305,7 +305,7 @@ The main candidate rank table now includes L15–L18 and separates assignment ro
 
 ### 14.2 T-14 and authorization lock prerequisites
 
-- The T-14 affected project set must be discovered before L15, L10 rows locked by ascending project UUID, and the set revalidated after lock. If the set expands, abort/retry; no late lower-rank lock acquisition.
+- The T-14 affected project set must be discovered before L15, L10 rows locked by ascending project UUID, and the set revalidated after lock. The qualifying-count read must use a fresh post-L10 READ COMMITTED statement snapshot or SERIALIZABLE with retry. If the set expands, abort/retry; no late lower-rank lock acquisition.
 - Whether CMD-002/003 account-state transitions, CMD-006/007 role-bearing scope grants, or CMD-010 project closure alter the qualifying predicate is not yet approved. Each must either use L10 or document a predicate proof that it cannot affect the count.
 - Actor and target principals are locked by sorted UUID. Actor role/scope grants used to authorize the mutation are locked at L16/L17 so a concurrent revoke cannot silently race the authorization decision.
 - Mutable authorization catalog rows must be frozen for normal writes or governed under an approved L18 protocol.
