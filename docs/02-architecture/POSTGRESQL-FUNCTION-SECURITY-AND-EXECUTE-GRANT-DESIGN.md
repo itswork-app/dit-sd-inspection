@@ -1,8 +1,8 @@
 # PostgreSQL Function Security & EXECUTE Grant Design
 
 **Status:** Security architecture proposal — T-18 Option A approved; per-function privilege review required; NOT approved for implementation  
-**Version:** 0.3.1 | **Date:** 2026-11-24  
-**Depends on:** T-18 option A; PostgreSQL Command Contract Catalogue v0.3.1; physical schema and 48-table proposed RLS catalogue; canonical permission registry v0.2.0 draft.
+**Version:** 0.3.2 | **Date:** 2026-11-24  
+**Depends on:** T-18 option A; PostgreSQL Command Contract Catalogue v0.4.3; physical schema v0.4.1 and 48-table proposed RLS catalogue v0.2.1; canonical permission registry v0.2.2 draft.
 
 ## 1. Purpose and strict boundary
 
@@ -198,3 +198,10 @@ Any change to caller roles, function security mode, function owner, search_path,
 ## Live database inventory prerequisite
 
 See [Supabase Live Database Security Inventory Runbook](SUPABASE-LIVE-DATABASE-SECURITY-INVENTORY-RUNBOOK.md). It defines read-only catalog queries and Dashboard evidence needed to verify actual roles, memberships, ownership, ACLs, RLS/policies, function signatures/security modes/owners/EXECUTE grants, default privileges, views, triggers, sequences and Storage policies. The runbook has not been executed against a live database. Repository design artifacts are not proof of deployed state. Do not prepare grants/migrations or expose functions until live evidence is reviewed and each SECURITY DEFINER owner, effective privilege set, RLS interaction, exact EXECUTE ACL and caller-JWT route path is approved. The execution-model choice itself is already resolved by PO approval of Option A.
+
+
+## INT-NOTIF-001 integration security classification — 2026-11-24
+
+INT-NOTIF-001 is classified as F5 provider/integration ingress, not as a browser RPC, user command permission or generic service-role endpoint. It must terminate at a server-side route that authenticates the selected provider, validates callback freshness and event identity, resolves only a known provider_message_ref, applies a narrow monotonic delivery-state transition and uses a durable deduplication mechanism. It must not accept a user JWT as proof of provider identity and must not call a broad privileged command function.
+
+The callback route's secret manager, signature algorithm, provider identity, database function boundary, function owner, EXECUTE ACL, RLS interaction and failure/rotation process remain unapproved until provider selection and T-18 Security/Operations review. CMD-052..054 remain internal-only worker/scheduler operations with separate least-privilege identities. No function, role or grant was created or tested.
