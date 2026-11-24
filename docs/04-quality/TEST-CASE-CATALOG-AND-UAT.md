@@ -229,3 +229,24 @@ Test cases are specifications only; no test execution, migration or code change 
 | TC-CMD-018-014 | Command returns typed validation/forbidden/conflict/retryable outcomes | Stable typed response; no stack trace, secret, sensitive policy detail or unauthorized resource-existence disclosure |
 
 These are acceptance specifications only. No implementation, migration, security test or deployment is claimed.
+
+
+## T-16 — Canonical unit association and cross-project isolation test specifications
+
+| Test ID | Scenario | Expected result |
+|---|---|---|
+| TC-UNIT-016-006 | Create known serial for instrument A when no canonical key exists | One canonical `units` row is created without a project_id; a separate authorized association row links it to the requested project |
+| TC-UNIT-016-007 | Associate the same verified physical unit with a second project | A second `unit_project_associations` episode is created; no second `units` row is created; both project histories remain distinct |
+| TC-UNIT-016-008 | End one project's association while another project association remains active | Ended association is retained; other association remains valid; no historical inspection rows are rewritten |
+| TC-UNIT-016-009 | Attempt inspection/claim with unit_id but no matching active project association | Denied; no inspection, claim, evidence or scope disclosure |
+| TC-UNIT-016-010 | Inspection association belongs to Project A but assignment belongs to Project B | Composite FK/command validation rejects the write |
+| TC-UNIT-016-011 | Assignment instrument differs from canonical unit instrument | Command rejects; no claim or inspection is created |
+| TC-UNIT-016-012 | Same physical unit is actively claimed in Project A; Project B attempts claim through its own association | Denied by global active-claim invariant; no second active claim |
+| TC-UNIT-016-013 | Same physical unit is associated with two projects; Project A member queries Project B inspection/evidence | Denied absent independent Project B assignment and history permission; canonical unit reference does not grant visibility |
+| TC-UNIT-016-014 | User's project association ends or assignment is revoked while draft/history exists | New operational commands denied; historical records and evidence remain intact under explicit history-access policy |
+| TC-UNIT-016-015 | Duplicate serial conflict is opened | No second canonical unit row; conflict record captures candidate and submitted context with restricted visibility |
+| TC-UNIT-016-016 | Authorized conflict reviewer resolves by association to verified candidate | New association + resolution + audit commit atomically; no historical unit/inspection rows are merged or rewritten |
+| TC-UNIT-016-017 | Concurrent canonical registration with same instrument+normalized serial from two projects | Unique key/lock yields one canonical unit; one request creates it and the other becomes a controlled conflict or verified association path |
+| TC-UNIT-016-018 | Serial normalization policy changes for an instrument version | Existing canonical keys are not silently rewritten; migration/re-key requires explicit reviewed plan and collision analysis |
+
+All are acceptance specifications only. No test, migration or runtime implementation has been executed.
