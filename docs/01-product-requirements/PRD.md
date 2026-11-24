@@ -1,7 +1,7 @@
 # Product Requirements Document — Dit. SD Inspection
 
 Status: Draft — Product Owner validation required  
-Version: 0.1.0  
+Version: 0.2.0  
 Release target: Production  
 Scope baseline: IFP and Standing Bracket only
 
@@ -283,3 +283,13 @@ All personnel must first register/authenticate to create an application account.
 Within a given instrument type, a normalized serial number identifies one canonical physical unit across all projects. The uniqueness rule does not cross instrument types. A same-type duplicate discovered in another project is a controlled conflict and must be reviewed by an authorized person with a recorded reason and audit trail; the application must not silently merge or discard prior records. Project/session access remains independently scoped.
 
 Evidence is permanently associated with the exact immutable inspection revision and instrument version. Preserve original metadata, checksum, uploader, capture/upload timestamps and storage object identity. Evidence cannot be overwritten in place; a replacement is a new evidence record with a corresponding audit event. These requirements are approved product direction; source-based exception policy and implementation/UAT remain pending.
+
+## 6.7 Product Owner decisions — lock protocol semantics (2026-11-24)
+
+1. **Canonical unit:** one physical unit is identified globally by instrument type plus normalized serial number. Same-type collisions across projects require authorized, reasoned and audited conflict resolution; different instrument types may reuse a serial. Project/session/assignment access remains independently scoped.
+2. **Mandatory claim:** a valid active claim is required for every normal inspection workflow. Any administrative correction or historical migration exception must use a separately permissioned, reasoned and audited path; no implicit bypass.
+3. **Project/session closure:** CLOSED rejects new normal mutations and finalization. Reopening requires an explicit privileged workflow, reason and audit. Closure is not a date-based automatic transition.
+4. **Inspector capacity:** apply the exact approved T-14 qualifying predicate and one shared serialization point for all eligibility/capacity-changing paths. T-14's combined 1–100 cap/default 50 remains controlling.
+5. **Instrument deactivation:** block new assignment selection while preserving the immutable version already pinned to existing sessions. An explicit safety withdrawal may override continued use through an authorized, reasoned and audited workflow.
+
+These are Product Owner product decisions only. They do not approve the global database lock order, physical constraints, SQL/functions/privileges, RLS, implementation or tests. LPR-01 and LPR-07–LPR-10 remain open; G9 remains NOT READY and G10 NOT AUTHORIZED.
