@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.18  
+**Version:** 0.1.19  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -379,3 +379,12 @@ RTM-001 v0.1.17 adds NOTIF-031..034; QA Catalogue v0.5.7 adds TC-NOTIF-082..085,
 NLA-EVENT-TECH-RECON-001 v0.1.4 partially reviews submission and return events. `inspection_revision.created` is not a second approved notice; Reviewer assignment source is absent; responsible Inspector mapping from revision author/current assignment remains unresolved; review decision uniqueness and inspection-first lock-order conflicts remain open.
 
 RTM-001 v0.1.18 adds NOTIF-035..038; QA Catalogue v0.5.8 adds TC-NOTIF-086..089, all PLANNED / NOT EXECUTED. D-026 remains OPEN — BLOCKING; R-037 remains OPEN — CRITICAL; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## D-026 / R-037 CMD-031/032 approval/reopen event update — 2026-11-24
+
+NLA-EVENT-TECH-RECON-001 v0.1.6 partially reviews NREG-010 `inspection.approved` and NREG-011 `inspection.reopened`. Approval is bound to one exact current immutable submitted revision, but the persisted Reviewer assignment, responsible-Inspector recipient mapping and terminal-decision uniqueness arbiter remain unadmitted. CMD-030 return and CMD-031 approval must serialize on the same inspection aggregate and one terminal decision per revision.
+
+Reopen requires explicit `inspection.reopen` authority, exact scope and mandatory reason; the role/grant/SoD matrix and next-action owner remain unresolved. Mutable draft persistence/state vocabulary and active claim/association/evidence/document finalizer blocker graph are incomplete. Historical approved revisions, evidence, generated documents and print events must remain immutable.
+
+RTM-001 v0.1.19 adds NOTIF-039..043; QA Catalogue v0.5.9 adds TC-NOTIF-090..094, all PLANNED / NOT EXECUTED. D-026 remains OPEN — BLOCKING; R-037 remains OPEN — CRITICAL; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
