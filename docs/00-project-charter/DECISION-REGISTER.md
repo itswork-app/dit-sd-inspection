@@ -283,7 +283,7 @@ This clarification does not fabricate or substitute a third party's signed insti
 
 ## Product Owner decision proposal — POQ-04 event-transition recipient semantics (2026-11-24)
 
-**Status: PROPOSED — NOT APPROVED.** This proposal resolves L05-REVIEW-001 F-05. It does not alter POQ-01 through POQ-03 and is not executable until the Product Owner explicitly approves or revises it.
+**Status: PO APPROVED — 2026-11-24.** The Product Owner explicitly approved all five recommendations in full. POQ-04 resolves the product-decision portion of L05-REVIEW-001 F-05. It supplements POQ-01 through POQ-03 without changing them. Technical validation and implementation authorization remain separate.
 
 **Recommended common rule:** the immutable candidate audience is evaluated against the serialized pre-mutation state at the single captured `audience_evaluated_at`. The source mutation, canonical event and candidate snapshot commit atomically. Actor, target and affected member are included only when the exact approved event selector selects them; no participant is silently appended. After commit, dispatch-time account, channel, consent/revocation, current-scope and mandatory security revalidation may suppress an existing candidate but may never add a recipient. A retry reuses the same candidate set and checkpoint.
 
@@ -297,5 +297,5 @@ This clarification does not fabricate or substitute a third party's signed insti
 
 **Invariant:** snapshot membership is immutable and records the event-time decision; dispatch suppression is a separate outcome and cannot mutate or widen the snapshot. Suppression reasons and each attempt outcome must be auditable without storing unnecessary sensitive data.
 
-**Approval request:** PO must approve this complete matrix or specify corrections. Security/Engineering must then validate current-scope suppression, retry-after-reactivation, audit semantics and exact selector behavior. The proposal does not approve physical schema, lock ranks, SQL, implementation, runtime tests, G9 or G10.
+**Approval record (2026-11-24):** Product Owner approved the complete five-row matrix without changes. The approved product rule is the immutable pre-mutation event-time candidate set, exact-selector-only participant inclusion, dispatch-time suppression without widening, and retry reuse of the original candidate set/checkpoint. Security/Engineering must validate current-scope suppression, retry-after-reactivation, audit semantics, exact selector behavior and consistency with the final technical design before F-05 can close. This decision does not approve physical schema, lock ranks, SQL, implementation, runtime tests, G9 or G10.
 
