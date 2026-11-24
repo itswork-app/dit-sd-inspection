@@ -1,7 +1,7 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.4.12
+**Version:** 0.4.13
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Parent:** LOCK-GRAPH-001 v0.4.6  
@@ -31,7 +31,7 @@ Root `AGENTS.md` v1.2.0 was re-read from the target branch at the start of this 
 | LOCK-GRAPH-001 | v0.4.6 | Candidate resource ranks, cross-command conflicts and planned race scenarios |
 | CONCURRENCY-001 | v0.1.3 | Aggregate token, idempotency and worker-fencing mismatches |
 | LOCK-PROTOCOL-DECISION-RESOLUTION-001 | v0.3.4 | LPR decision state and static reconciliation checkpoint |
-| Detailed command reviews | Seven current command-range documents; CMD-001–010 review v0.3.3 at this checkpoint | Per-command source-stated operations and dependencies |
+| Detailed command reviews | Seven current command-range documents; CMD-001–010 review v0.3.2 at this checkpoint | Per-command source-stated operations and dependencies |
 
 This replaces the stale historical snapshot labels in the original v0.3.2 review method (including DGA v1.4.0, catalogue/physical schema v0.2.0 and lock graph v0.1.0). Version refresh is a traceability correction only; it does not imply those sources or any command lock manifest are approved.
 
