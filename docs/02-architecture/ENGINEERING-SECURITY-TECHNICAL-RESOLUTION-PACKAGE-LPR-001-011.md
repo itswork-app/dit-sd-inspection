@@ -1,11 +1,11 @@
 # Engineering & Security Technical Resolution Package — LPR-01 and LPR-07–LPR-11
 
 **Document ID:** TECH-RESOLUTION-LPR-001  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Status:** TECHNICAL RECOMMENDATION FOR ENGINEERING / DATABASE / SECURITY REVIEW — NOT APPROVED FOR IMPLEMENTATION  
 **Date:** 2026-11-24  
 **Repository / branch:** `itswork-app/dit-sd-inspection` / `docs/audit-lock-and-identity-reconciliation`  
-**Authority:** AGENTS.md v1.2.0; MIB-001; IRG-001; DGA-001; Decision Register; T-07, T-14, T-16, T-17, T-18; LOCK-PROTOCOL-DECISION-RESOLUTION-001; LOCK-GRAPH-001; LOCK-MANIFEST-001  
+**Authority:** AGENTS.md v1.2.1; MIB-001 v1.0.9; IRG-001 v1.0.3; DGA-001 v1.11.28; SSOT-AUDIT-001 v0.1.5; Decision Register; T-07, T-14, T-16, T-17, T-18; LOCK-PROTOCOL-DECISION-RESOLUTION-001; LOCK-GRAPH-001; LOCK-MANIFEST-001  
 **Scope:** LPR-01, LPR-07, LPR-08, LPR-09, LPR-10, LPR-11; cross-command project/session fences; CMD-001–054 and asynchronous finalizers  
 **Gate:** G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED
 
@@ -317,7 +317,7 @@ Before any technical approval is recorded:
 
 ## 11. Current verification and gate status
 
-Static documentation review only. The root AGENTS.md v1.2.0, MIB-001, IRG-001, DGA-001, Decision Register, lock resolution, global graph, 54-command manifest, command catalogue, detailed command reviews, physical schema and privileged transaction specification were inspected.
+Static documentation review only. The root AGENTS.md v1.2.1, MIB-001 v1.0.9, IRG-001 v1.0.3, DGA-001 v1.11.28, SSOT-AUDIT-001 v0.1.5, Decision Register, lock resolution, global graph, 54-command manifest, command catalogue, detailed command reviews, physical schema and privileged transaction specification were inspected.
 
 Not performed: source-code changes, SQL, migrations, grants/revokes, live database catalog/lock inspection, CI, automated tests, adversarial concurrency tests, deployment, merge or production changes.
 
@@ -339,3 +339,8 @@ Not performed: source-code changes, SQL, migrations, grants/revokes, live databa
 | G10 | NOT AUTHORIZED |
 
 **Final disposition:** this package makes the technical decisions concrete and reviewable; it does not approve them on behalf of Engineering, Database, Security, QA, Operations or the institution. Do not merge this PR or begin implementation based on this package alone.
+
+
+## 12. Authority and evidence freshness addendum — 2026-11-24
+
+This revision corrects the stale root-policy reference from AGENTS.md v1.2.0 to v1.2.1 and records the current governance source versions. It does not change any technical recommendation or approval status. AUTH-06/AUTH-07 remain pending; LPR-01 and LPR-07–LPR-09/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED; lock certification remains 0/54. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT AUTHORIZED. No implementation, SQL, migration, grants/revokes, CI, live database inspection or test execution is claimed.
