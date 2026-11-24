@@ -1,12 +1,12 @@
 # CMD-049–054 Detailed Contract Review
 
 **Document ID:** CMD-REVIEW-049-054  
-**Version:** 0.1.1  
+**Version:** 0.1.2  
 **Status:** Engineering contract review — proposal only; PO/security/institutional review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-049 through CMD-054  
 **Repository phase:** Documentation / SSOT maturation  
-**Controls:** INS-015; INS-016 / T-15; T-10; T-18; NLA-001 v0.1.2; DGA-B09, DGA-B10, DGA-B11, DGA-B12, DGA-B13; G9 NOT READY; G10 NOT AUTHORIZED.
+**Controls:** INS-015; INS-016 / T-15; T-10; T-18; NLA-001 v0.1.3; POQ-01..03 approved 2026-11-24; DGA-B09, DGA-B10, DGA-B11, DGA-B12, DGA-B13; G9 NOT READY; G10 NOT AUTHORIZED.
 
 ## 1. Purpose and authority boundary
 
@@ -51,7 +51,7 @@ The following are mandatory safety boundaries:
 |---|---|---|
 | INS-015 | APPROVED at PO level | Product behavior is binding within PO authority |
 | INS-016 / T-15 | PO-approved audit direction | Append-only audit and critical mutation/audit atomicity direction; T-10 details remain blocked |
-| NLA-001 v0.1.1 | Engineering design proposal | Lifecycle and six-table model require PO/security review |
+| NLA-001 v0.1.2 | Engineering design proposal | Lifecycle and six-table model require PO/security review |
 | Command catalogue v0.2.0 | Proposed logical contracts | IDs are stable proposals; permissions and transport mappings are not approved |
 | Physical schema v0.2.0 | Proposed physical inventory | Six notification tables are design inventory only, not live objects |
 | DGA-B13 | DESIGN PROPOSAL RECORDED; APPROVALS OPEN | Worker, selectors, providers, T-10 and cross-document approvals remain open |
@@ -535,16 +535,27 @@ Existing QA references include TC-NOTIF-001 through TC-NOTIF-018. They remain **
 
 ## 16. Notification engineering reconciliation addendum — 2026-11-24
 
-This addendum records the static contract decisions and remaining approval boundary after reconciliation with NLA-001 v0.1.2. It does not change the proposal status or authorize implementation.
+This addendum records the static contract decisions and remaining approval boundary after reconciliation with NLA-001 v0.1.3. It does not change the proposal status or authorize implementation.
 
 | Area | Documentation-level disposition | Remaining blocker |
 |---|---|---|
 | CMD-049 cursor/read boundary | Self-only, actor/filter-bound integrity-protected cursor; stable (created_at, id) order; no snapshot guarantee | Exact indexes, page-size cap and live RLS evidence |
 | CMD-050 read state | expected_version removed; set-once read_at; one notification.read event on first transition only | T-15 implementation verification and audit test |
 | CMD-051 policy | Publish-only; server canonical hash and expected current published version; no persisted draft CRUD | Permission/grantor/SoD authority, selector schema and effective interval constraints |
-| CMD-052 fan-out | Canonical safe_payload; explicit lease owner/token hash/generation/expiry; PROCESSING + unique arbiters for partial retry | Worker identity/ACL and recipient event-time vs fan-out-time decision |
+| CMD-052 fan-out | Canonical safe_payload; explicit lease owner/token hash/generation/expiry; PROCESSING + unique arbiters for partial retry | Worker identity/ACL and approved hybrid event-time candidate-audience snapshot/checkpoint with dispatch-time revalidation that cannot widen recipients |
 | CMD-053 delivery | External I/O outside transactions; UNKNOWN on ambiguous acceptance; INT-NOTIF-001 callback ingress | Provider choice/capability, callback signature and durable event deduplication |
-| CMD-054 escalation | No caller evaluation_time; one database UTC instant per transaction | SLA start event, elapsed/calendar semantics, timezone and paused/closed behavior |
-| Dismissal | dismissed_at reserved only | PO/UX approval; no command or browser mutation |
+| CMD-054 escalation | No caller evaluation_time; one database UTC instant per transaction | named SLA start event, per-policy elapsed/business-time mode, ELAPSED_UTC initial default, quiet-hours delivery deferral without SLA pause, and unapproved calendar/pause semantics |
+| Dismissal | dismissed_at reserved only | POQ-03 approval; no dismiss command, permission or browser mutation is in MVP |
 
 The six notification tables remain a proposed subset of the 48-table physical/RLS inventory. INT-NOTIF-001 is an integration contract, not a new CMD ID or table. TC-NOTIF-001..026 and TC-FN-SEC-025-064..069 remain PLANNED / NOT EXECUTED. Worker identities, exact function owners/EXECUTE ACLs, live RLS/grants, provider capability and T-10 institutional retention/privacy remain open. G9 NOT READY; G10 NOT AUTHORIZED.
+
+
+## Product Owner notification decisions — POQ-001 (2026-11-24)
+
+POQ-01 Option C, POQ-02 Option C and POQ-03 Option A were explicitly approved by the Product Owner on 2026-11-24 and are recorded in the Decision Register. These approvals close the three product-semantic questions only:
+
+- **Audience (POQ-01):** persist the event-time candidate audience and authorized source scope/checkpoint; fan-out/retries reuse it; dispatch-time account/channel/consent/revocation checks may suppress candidates but must never widen the audience.
+- **SLA (POQ-02):** immutable policy versions declare elapsed or business-time semantics; initial default is `ELAPSED_UTC`. Quiet hours defer delivery only and do not pause/stop/reset the SLA clock. Business calendars, time zones and pause/reset conditions need explicit policy specification before activation.
+- **Dismissal (POQ-03):** dismiss/archive is excluded from MVP. Only recipient-owned set-once `read_at` is exposed; no dismiss command, permission, browser write or UX action exists. Any `dismissed_at` field retained in a proposal is dormant.
+
+The following technical details remain open: exact selector grammar and snapshot/checkpoint representation; partial fan-out fencing; policy schema and worker authorization; provider capability/callback security; exact schema constraints/indexes/RLS; institutional T-10 retention/privacy; test execution and live evidence. G9 remains NOT READY and G10 NOT AUTHORIZED.
