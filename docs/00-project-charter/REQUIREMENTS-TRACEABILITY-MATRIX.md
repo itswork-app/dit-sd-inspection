@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.22  
+**Version:** 0.1.23  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -567,3 +567,10 @@ The source-event path map v0.1.0 and command lock manifest v0.4.30 still express
 | EVD-004 | Evidence is captured against an active draft context and bound to the exact immutable revision at submit; evidence carry-forward is not inferred | T-16 PO APPROVED; CMD-033/034 | INSPECTION-DRAFT-001 §4; Physical Schema candidate annex | IDC-07, IDC-08, IDC-17, evidence checksum/version/context binding and carry-forward decision | CANDIDATE PROPOSED — INSTITUTIONAL EVIDENCE / PO / DATABASE APPROVAL OPEN |
 
 These rows are candidate traceability entries only. They do not amend the approved PRD, change WF-001/WF-002/INS-010, approve a physical entity, or authorize implementation. IDC-01..20 are design acceptance IDs, not executed QA evidence. The formal QA catalogue/test IDs and requirement disposition must be reconciled after the candidate is reviewed.
+
+
+## SES-001 — session-bound unit inspection and terminal abort
+
+| Requirement ID | Requirement / invariant | Authority | Design reference | Verification | Status |
+|---|---|---|---|---|---|
+| INS-022 | Each unit inspection attempt is immutably bound to exactly one session; no cross-session draft/claim/evidence/correction/reopen continuation; unresolved attempts must be explicitly aborted before final session closure; later session starts a new attempt | PO-approved SES-001; session lifecycle; T-09; WF-001/WF-002 | Decision Register SES-001; INSPECTION-DRAFT-001 v0.1.1 §11; CMD-021–030 §SES-001; CMD-031–040 §SES-001 | TC-INS-DRAFT-021..026; session binding, cross-session denial, abort atomicity, claim release, immutable history, fresh later-session attempt | PRODUCT SEMANTICS PO APPROVED; PHYSICAL / COMMAND / SECURITY / QA CERTIFICATION OPEN |
