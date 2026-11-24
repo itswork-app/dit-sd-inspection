@@ -190,3 +190,25 @@ The 48-operation draft contract catalogue is maintained in [PostgreSQL Command C
 ## Function execution model and database ACL gate
 
 The route-to-RPC contract must follow [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md). User commands preserve the caller JWT. Do not use service_role to work around authenticated table ACLs. The SECURITY INVOKER versus protected-table DML boundary must be resolved before RPC implementation.
+
+## NLA-001 — Notification lifecycle and worker transaction contracts (proposed)
+
+### Recipient inbox read
+- `list-own-notifications` is a read-only query restricted to `recipient_user_id = auth.uid()` with cursor/filter binding to the actor. It does not reveal source-resource details outside the recipient's scope.
+- `mark-notification-read` is idempotent and sets `read_at` once using server UTC. It cannot update delivery state or business state.
+
+### Policy publication
+- Policy changes create a new immutable `notification_policy_versions` row after strict schema/allowlist validation and permission/scope/SoD checks. Publishing and its audit event are atomic. Existing outbox rows retain their pinned policy version.
+
+### Outbox fan-out
+- The originating domain command writes its domain event, audit event and minimal outbox intent atomically. Failure to persist audit or outbox intent rolls back that source command.
+- Internal fan-out claims a bounded lease, resolves recipients from the pinned policy, deduplicates recipient selectors and creates one inbox row and per-channel delivery projection idempotently. No provider I/O occurs in the transaction.
+
+### Provider dispatch and retry
+- Worker claims a delivery lease, appends an attempt record and performs provider I/O outside a database transaction. Completion is guarded/idempotent. Use provider idempotency where supported; otherwise represent ambiguous acceptance as UNKNOWN and reconcile before claiming success.
+- Retry is bounded and policy-controlled; routine delivery failure never blocks or rolls back the underlying business command.
+
+### SLA/reminder/escalation
+- Evaluate policy-version-pinned thresholds using server time. Append one unique escalation event per notification/policy/step/type. Enqueue another notification only after recipient scope is revalidated. Never change source business state.
+
+Worker identity, scheduler authentication, database role, function owner and exact EXECUTE ACL remain a separate T-18 security approval. CMD-052..054 must not be browser-callable.
