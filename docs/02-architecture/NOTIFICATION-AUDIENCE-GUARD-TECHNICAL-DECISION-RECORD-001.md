@@ -276,7 +276,9 @@ Additional assertions:
 | Timeout/retry/transaction budget | OPEN | Database + Operations |
 | Audience cardinality and performance SLO | OPEN | PO + Engineering + Operations |
 | Function volatility and post-wait snapshot proof through authenticated RPC | OPEN — design requirement added; deployed metadata/evidence absent | Engineering + Database + Security |
-| Post-L05 audience evaluation instant and effective-interval boundary approval | OPEN — proposed `clock_timestamp()` capture; PO/domain confirmation and test evidence pending | PO + Engineering + Database + Security |\n| Pre-/post-transition recipient inclusion semantics for revoke/suspend/end/close/self-revoke | OPEN — reviewer proposal documented; explicit PO decision required | PO + Security + Engineering |\n| Global-guard contention benchmark and measurable workload acceptance | OPEN — benchmark protocol required; numeric SLOs remain TBD | PO + Engineering + Database + Operations |
+| Post-L05 audience evaluation instant and effective-interval boundary approval | OPEN — proposed `clock_timestamp()` capture; PO/domain confirmation and test evidence pending | PO + Engineering + Database + Security |
+| Pre-/post-transition recipient inclusion semantics for revoke/suspend/end/close/self-revoke | OPEN — reviewer proposal documented; explicit PO decision required | PO + Security + Engineering |
+| Global-guard contention benchmark and measurable workload acceptance | OPEN — benchmark protocol required; numeric SLOs remain TBD | PO + Engineering + Database + Operations |
 | Static acyclicity and NRL-T01..T13 evidence | NOT EXECUTED | Engineering + Database + Security |
 
 **No numeric constants are approved:** advisory key integers, lock timeout, statement/transaction timeout, retry count, jitter, audience maximum and latency SLO remain TBD.
