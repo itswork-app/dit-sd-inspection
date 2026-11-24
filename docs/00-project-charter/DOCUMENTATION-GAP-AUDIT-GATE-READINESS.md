@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.40
+**Version:** 1.11.41
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -71,7 +71,7 @@ The Product Owner approved [CMD-045–048 Control-Plane Resolution Proposal](../
 
 **Residual gate disposition:** DGA-B04, DGA-B05 and DGA-B15 remain open/blocked; DGA-B09/B10/B12 and DGA-B19 remain open for the 50 application commands and technical evidence. The former CMD-045–048 application-command test backlog is not applicable; external control-plane verification belongs to accountable owners. G9 remains NOT READY; G10 remains NOT ACTIVE.
 
-**Current synchronized references:** Decision Register CMD-045–048 approval (2026-11-24); CMD-045–048 Resolution Proposal v0.1.1 (PO accepted v0.1.0); Detailed Contract Review v0.1.3; PostgreSQL Command Contract Catalogue v0.4.6; Cross-Command Reconciliation v0.8.14; RTM-001 v0.1.4; RAID-001 v0.1.2; LOCK-MANIFEST-001 v0.4.21. QA cases previously associated with CMD-045–048 remain planned as external control-plane verification requirements only; they are not an application command test backlog.
+**Current synchronized references:** Decision Register CMD-045–048 approval (2026-11-24); CMD-045–048 Resolution Proposal v0.1.1 (PO accepted v0.1.0); Detailed Contract Review v0.1.3; PostgreSQL Command Contract Catalogue v0.4.6; Cross-Command Reconciliation v0.8.17; RTM-001 v0.1.4; RAID-001 v0.1.2; LOCK-MANIFEST-001 v0.4.23. QA cases previously associated with CMD-045–048 remain planned as external control-plane verification requirements only; they are not an application command test backlog.
 
 
 ## 4. High-risk design quality gaps
@@ -569,4 +569,4 @@ This is an internal static documentation audit disposition, not an independent s
 
 ## Current lock-scope synchronization — 2026-11-24
 
-DGA-B18–B21 are synchronized to the current lock design baseline: LOCK-MANIFEST-001 v0.4.23; LOCK-GRAPH-001 v0.4.16; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.10; CMD-CROSSWALK-001-054 v0.8.16; TECH-RESOLUTION-LPR-001 v0.1.3; CONCURRENCY-001 v0.1.7. The traceability inventory remains 54 IDs (50 application commands + 4 external control-plane IDs). All 50 application commands have candidate execution/transaction boundaries recorded, but complete normalized-manifest review and technical approval remain open; application lock certification is 0/50. LPR-01 and LPR-07–LPR-09/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. DGA-B18/B19/B20/B21 remain partial/open as stated in §3. G9 NOT READY; G10 NOT ACTIVE.
+DGA-B18–B21 are synchronized to the current lock design baseline: LOCK-MANIFEST-001 v0.4.23; LOCK-GRAPH-001 v0.4.16; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.10; CMD-CROSSWALK-001-054 v0.8.17; TECH-RESOLUTION-LPR-001 v0.1.5; CONCURRENCY-001 v0.1.7. The traceability inventory remains 54 IDs (50 application commands + 4 external control-plane IDs). All 50 application commands have candidate execution/transaction boundaries recorded, but complete normalized-manifest review and technical approval remain open; application lock certification is 0/50. LPR-01 and LPR-07–LPR-09/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. DGA-B18/B19/B20/B21 remain partial/open as stated in §3. G9 NOT READY; G10 NOT ACTIVE.
