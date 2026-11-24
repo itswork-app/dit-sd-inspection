@@ -1,11 +1,11 @@
 # CERT-001 — Technical Certification Assessment
 
 **Document ID:** CERT-001  
-**Version:** 0.1.2  
+**Version:** 0.1.3  
 **Assessment date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
-**Assessment baseline:** `133af5c000b7d00ec34afddcfccf8fcf4d6d91b0`  
+**Assessment baseline:** `87fce0a34fc9afdf1f5287efee0fc5abda1b7dab`  
 **Pull request:** [PR #3 — docs: final governance and command-contract reconciliation](https://github.com/itswork-app/dit-sd-inspection/pull/3)  
 **Overall result:** **NOT CERTIFIED**  
 **G9:** NOT READY  
@@ -173,3 +173,8 @@ This addendum supersedes the assessment baseline and repository-state observatio
 The lock inventory is now explicitly reconciled as 54 traceability IDs: 50 application commands plus 4 external control-plane IDs (CMD-045–048). All 50 application commands have candidate execution/transaction boundaries documented; full normalized-manifest review and independent technical approval remain open. Application lock certification is **0/50**. LPR-01 and LPR-07–LPR-09/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. The effective PostgreSQL lock graph is not certified acyclic.
 
 The overall assessment remains **NOT CERTIFIED**. G9 remains NOT READY; G10 remains NOT ACTIVE. No application source, SQL, migration, grants/revokes, live database/provider inspection, CI execution, tests, deployment, merge or production data operation is claimed. This addendum is a static documentation/repository-state reassessment only and does not substitute for independent Engineering, Security, Database, Operations or institutional approval.
+
+
+## 11. Normalized command-register reassessment — 2026-11-24
+
+LOCK-NORMALIZATION-001 v0.1.0 was added and statically checked against the source tables. It contains 50 unique application command rows (CMD-001–044 and CMD-049–054), with CMD-045–048 correctly excluded as external control-plane IDs. The normalized register is a documentation consolidation, not technical approval. The unresolved fields and conflict register remain explicit. LPR-09 remains OPEN; LPR-10 remains NOT EXECUTED; no effective PostgreSQL lock graph acyclic proof or 0/50-to-PASS transition is claimed. Overall technical certification remains NOT CERTIFIED; G9 NOT READY; G10 NOT ACTIVE.
