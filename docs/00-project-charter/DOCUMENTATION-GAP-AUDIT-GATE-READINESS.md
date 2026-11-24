@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.9.1
+**Version:** 1.9.2
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -175,7 +175,7 @@ G5 remains BLOCKED. G9 remains NOT READY. G10 remains NOT AUTHORIZED. The comple
 
 ## Concurrency/version-token proposal update — 2026-11-24
 
-A dedicated decision-ready proposal is now available: [CONCURRENCY-001 — Concurrency and Version Token Reconciliation](../02-architecture/CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md) v0.1.0. The complete 54-command crosswalk links it from [CMD-001–054 Cross-Command Reconciliation](../02-architecture/CMD-001-054-CROSS-COMMAND-RECONCILIATION.md) v0.8.2.
+A dedicated decision-ready proposal is now available: [CONCURRENCY-001 — Concurrency and Version Token Reconciliation](../02-architecture/CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md) v0.1.2. The complete 54-command crosswalk links it from [CMD-001–054 Cross-Command Reconciliation](../02-architecture/CMD-001-054-CROSS-COMMAND-RECONCILIATION.md) v0.8.2.
 
 The proposal maps:
 - missing aggregate tokens for role/scope grants, projects, sessions, capacity settings, instruments, associations and attendance records;
