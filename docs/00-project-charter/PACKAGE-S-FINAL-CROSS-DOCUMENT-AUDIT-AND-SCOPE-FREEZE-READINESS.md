@@ -330,11 +330,11 @@ This addendum supersedes §9.15 only for current navigation and inventory counts
 
 - AGENTS.md v1.2.0 — mandatory repository policy.
 - MIB-001 v1.0.3 — governance control plane.
-- DGA-001 v1.11.23 — active gap register; 21 DGA-B IDs.
+- DGA-001 v1.11.24 — active gap register; 21 DGA-B IDs.
 - IRG-001 v1.0.1 — pre-implementation roadmap; not authorization.
 - Decision Register — canonical current Product Owner decision index.
 - Package T v0.1.1 — historical decision pack; PO outcomes are recorded, current authority remains the Decision Register and dated addenda.
-- RTM-001 v0.1.1 — 125 unique requirement IDs.
+- RTM-001 v0.1.2 — 125 unique requirement IDs.
 - RAID-001 v0.1.1 — 65 unique risk/assumption/issue/dependency IDs.
 - QA Catalogue v0.3.5 — 410 unique planned test-case definitions in the current DGA scan.
 
