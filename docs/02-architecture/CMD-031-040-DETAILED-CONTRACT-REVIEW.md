@@ -39,7 +39,7 @@ Every mutation below inherits the catalogue's common envelope:
 2. PostgreSQL derives the actor from trusted auth context (auth.uid()), resolves one active/approved application user, and evaluates permission, active role/scope, resource state and SoD in the mutation transaction.
 3. Actor, role, permission, reviewer identity and effective scope are never trusted from client payload fields.
 4. Protected browser roles receive no direct INSERT/UPDATE/DELETE on business or governance tables. RLS is not a substitute for command authorization.
-5. SECURITY INVOKER is the default. Any SECURITY DEFINER exception requires separate approval, a least-privileged non-login owner, schema-qualified references, pinned trusted/empty search_path, PUBLIC EXECUTE revoked and exact caller grants.
+5. Protected writes follow PO-approved T-18 Option A through narrow SECURITY DEFINER wrappers, with individual function security approval, a dedicated least-privileged NOLOGIN owner, schema-qualified references, fixed empty search_path, PUBLIC/anon denial and exact-signature EXECUTE grants. SECURITY INVOKER remains preferred for scoped reads and non-elevated helpers.
 6. Mutation idempotency is scoped to actor + command + resource scope + opaque key, with a canonical semantic request hash. Same key/same hash returns the prior outcome after reauthorization; same key/different hash returns IDEMPOTENCY_KEY_REUSED.
 7. The global lock order is idempotency arbitration → relevant project/session/assignment → inspection → evidence/document → append-only events. Lock only invariant-bearing rows; sort multi-row locks deterministically.
 8. Business state, domain event, audit event and idempotency outcome commit atomically. Audit failure rolls back the protected database mutation.
