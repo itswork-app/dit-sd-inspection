@@ -281,7 +281,7 @@ This clarification does not fabricate or substitute a third party's signed insti
 **Authority and gate boundary:** This decision is Product Owner candidate-direction approval only. It does not substitute for Engineering, Database, Security, Operations or institutional approvals and evidence. F-01/F-02 remain open pending authenticated RPC/database evidence and adversarial tests. Resolver lock certification remains 0/40; application lock certification remains 0/50; global graph acyclicity is NOT PROVEN; candidate snapshot relation remains NOT ADMITTED; G9 remains NOT READY and G10 remains NOT ACTIVE.
 
 
-## Product Owner decision proposal — POQ-04 event-transition recipient semantics (2026-11-24)
+## Product Owner decision — POQ-04 event-transition recipient semantics (2026-11-24)
 
 **Status: PO APPROVED — 2026-11-24.** The Product Owner explicitly approved all five recommendations in full. POQ-04 resolves the product-decision portion of L05-REVIEW-001 F-05. It supplements POQ-01 through POQ-03 without changing them. Technical validation and implementation authorization remain separate.
 
