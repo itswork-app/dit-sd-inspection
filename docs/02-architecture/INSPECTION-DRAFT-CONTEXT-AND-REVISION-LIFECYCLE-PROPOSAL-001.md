@@ -1,12 +1,12 @@
 # Inspection Draft Context and Revision Lifecycle — Technical Proposal
 
 **Document ID:** INSPECTION-DRAFT-001  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Date:** 2026-11-24  
 **Status:** Engineering / Database / Security / Product Owner review required — NOT APPROVED  
 **Scope:** CMD-026 claim-unit; CMD-028 save-draft; CMD-029 submit-inspection; CMD-030 return-inspection; CMD-032 reopen-inspection; CMD-033/034 evidence upload/finalization  
 **Product journey:** Dit. SD IFP and Standing Bracket inspection only  
-**Authority:** PRD §6; Decision Register WF-001, WF-002, INS-010, T-09, T-16; CMD-021–030 and CMD-031–040 detailed reviews; physical schema v0.4.4; AGENTS.md.
+**Authority:** PRD §6; Decision Register WF-001, WF-002, INS-010, T-09, T-16, SES-001; CMD-021–030 and CMD-031–040 detailed reviews; physical schema v0.4.4; AGENTS.md.
 
 ## 1. Purpose and user-journey contract
 
@@ -38,7 +38,7 @@ Do not use an unsubmitted mutable row in `inspection_revisions` and then describ
 Candidate relation: `inspection_draft_contexts` (new, candidate-only).
 
 - One inspection aggregate may have multiple historical draft contexts over its lifecycle.
-- At most one context may be ACTIVE for an inspection at a time.
+- At most one context may be ACTIVE for an inspection at a time.\n- Every inspection attempt is immutably bound to exactly one session (`session_id`); no context, claim, draft, evidence workflow or returned correction may be resumed in another session.\n- An unfinished attempt must be explicitly aborted before its session can be finally closed. ABORTED is terminal; a later session creates a new inspection attempt and context rather than reviving the old one.
 - An ACTIVE context is the only writable working copy.
 - On successful submission, the context is sealed as SUBMITTED and is bound to exactly one new immutable `inspection_revisions` row.
 - A later return or authorized reopen creates a new ACTIVE context. It never reactivates or overwrites an old context.
@@ -53,12 +53,12 @@ This relation is not admitted to the canonical 48-table physical inventory. It i
 | Candidate attribute | Purpose / rule |
 |---|---|
 | `id` | Server-generated UUID primary key |
-| `inspection_id` | FK to the stable inspection aggregate |
+| `inspection_id` | FK to the stable inspection aggregate |\n| `session_id` | Immutable FK to the exact active session in which this inspection attempt was claimed; never reassigned |
 | `context_no` | Monotonic per-inspection draft-context sequence; unique with inspection_id |
 | `instrument_version_id` | Exact published version pinned by the inspection/assignment |
 | `base_revision_id` | Nullable FK to the immutable revision from which a correction/reopen draft is derived; null for the initial draft |
 | `origin` | Closed server-owned vocabulary: INITIAL, RETURN_CORRECTION, APPROVED_REOPEN |
-| `status` | ACTIVE or SUBMITTED; no client-selected status |
+| `status` | ACTIVE, SUBMITTED or ABORTED; no client-selected status; ABORTED is terminal |
 | `payload_schema_version` | Version of the strict typed draft payload contract |
 | `draft_payload` | Canonical mutable working payload; server validates against the pinned instrument version |
 | `created_at / created_by` | Server timestamp and trusted command actor |
@@ -77,7 +77,7 @@ Candidate constraints:
 
 Candidate addition to `inspections`: nullable `active_draft_context_id`, with a composite FK proving the pointed context belongs to the same inspection. The pointer must equal the sole ACTIVE context or be null when there is no editable draft.
 
-The inspection aggregate remains the lifecycle and serialization point. Its existing `row_version` remains the optimistic concurrency token for CMD-028 and state-changing inspection commands unless Engineering approves a single consistent alternative. Do not add a second independently incremented token without defining which command owns each increment.
+The inspection aggregate remains the lifecycle and serialization point. Its `session_id` is immutable and must match the session pinned by the originating operational assignment/claim. Its existing `row_version` remains the optimistic concurrency token for CMD-028 and state-changing inspection commands unless Engineering approves a single consistent alternative. Do not add a second independently incremented token without defining which command owns each increment.
 
 ### 3.3 Immutable revision linkage
 
@@ -247,3 +247,33 @@ This proposal is not admitted until the following are reconciled and approved:
 - G9: **NOT READY**; G10: **NOT ACTIVE**.
 
 This proposal preserves the intended field workflow while separating mutable work-in-progress from immutable inspection evidence. It is not Product Owner, institutional, Engineering, Database, Security or QA approval.
+
+## 11. PO-approved session-bound attempt and abort lifecycle — SES-001 (2026-11-24)
+
+The Product Owner approved SES-001 in the canonical Decision Register. This section is a technical reconciliation of that decision; it does not by itself admit the candidate schema or certify command/lock contracts.
+
+### 11.1 Session binding
+- Each inspection attempt is created/claimed in one exact active session and stores an immutable session_id.
+- CMD-028 draft edits, T-09 offline continuation, CMD-033/034 evidence operations, CMD-029 submit and any WF-001 returned correction are valid only within that same session.
+- The Inspector who authored the returned revision remains the only Inspector allowed to correct it; the correction must still occur within the original session.
+- No resume, claim transfer, context reactivation or draft continuation is allowed across sessions.
+
+### 11.2 Abort before final session closure
+- A unit attempt that is incomplete when the session is being closed must be explicitly transitioned to terminal ABORTED before final session closure.
+- Abort is not submit, return, approval or completion. It must preserve the inspection attempt, any already-submitted immutable revisions, captured evidence and audit history.
+- Abort must atomically terminate the active draft context, close/release the attempt's active claim, append the required event/audit record and store the idempotency result. If any required write fails, the abort and session-close progression fail closed.
+- A unit in ABORTED state cannot be edited, submitted, reopened or resumed. A subsequent session creates a new inspection attempt bound to that new session; it does not mutate the old attempt.
+- Evidence from an aborted attempt remains historical and is not automatically carried into the new attempt. Any future evidence reuse requires a separately approved provenance/policy model.
+- Final session closure is blocked while any unit attempt remains unresolved; each must first reach an allowed terminal state or be explicitly aborted.
+
+### 11.3 Command and model implications (candidate only)
+- Add immutable session_id to the inspection aggregate and enforce same-session consistency across claim, draft context, evidence, revisions and assignment scope.
+- Add ABORTED to the candidate inspection-attempt and draft-context terminal vocabulary; do not represent abort as SUBMITTED or a generic claim release alone.
+- CMD-027 currently means release-unit-claim. Engineering must decide whether it can safely implement the full abort transaction or whether a dedicated command is needed. A claim release without terminally aborting the inspection attempt is insufficient.
+- Session close command must inspect all unit attempts in its exact session and refuse closure until unresolved attempts are completed or aborted.
+- Physical uniqueness must permit a new attempt in a later session while preserving global canonical unit identity and preventing simultaneous active claims. Exact historical-attempt key/constraint strategy remains for Database review.
+
+### 11.4 Explicit boundary still requiring resolution
+SES-001 clearly prohibits cross-session continuation and requires abort of unfinished attempts before session close. The precise disposition of a revision returned by a Reviewer but not corrected before session closure must be encoded as an abort of the overall attempt, preserving the returned immutable revision and reason. A later session must start a new attempt; it must not reopen the prior correction context. The same Inspector restriction applies to correction while the original session remains active.
+
+**Disposition:** SES-001 product semantics are PO APPROVED. Session FK, abort state machine, CMD-027 versus dedicated abort command, claim-release atomicity, session-close writer/lock graph, RLS/ACL, event registry, physical constraints and QA remain NOT CERTIFIED / OPEN. No schema or implementation is approved by this proposal.
