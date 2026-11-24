@@ -1,7 +1,7 @@
 # CMD-031–040 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security/institutional review required; NOT approved for implementation  
-**Document version:** 0.2.0  
+**Document version:** 0.2.1  
 **Date:** 2026-11-24  
 **Scope:** CMD-031 through CMD-040  
 **Repository phase:** Documentation / SSOT maturation  
@@ -1299,3 +1299,11 @@ Existing catalogue mappings:
 6. Re-run G9 documentation readiness only when closure evidence exists. G10 remains a separate explicit authorization.
 
 **Final boundary:** This review changes documentation only. No source code, SQL, migration, grant/revoke, RLS, Storage policy, live database, deployment, CI execution or merge was performed.
+
+## CMD-032 draft-context lifecycle cross-check — 2026-11-24
+
+[INSPECTION-DRAFT-001](INSPECTION-DRAFT-CONTEXT-AND-REVISION-LIFECYCLE-PROPOSAL-001.md) v0.1.0 proposes that CMD-032 create one new ACTIVE draft context seeded from the exact approved immutable revision. The approved revision, its review decision, evidence, generated documents, print history and audit history remain unchanged. The new context is not editable until a valid Inspector claim/assignment path exists.
+
+The candidate also requires CMD-032 to serialize against the inspection aggregate and conflicting active claims/finalizers, without silently transferring or releasing claims or selecting a next Inspector. Next-action ownership, claim resume/reassignment, evidence carry-forward and the canonical REOPENED state label remain OPEN.
+
+This is documentation-only candidate design. The proposal does not approve the role/grant matrix, physical schema, DDL, RLS, ACL, command implementation, runtime tests or lock certification. CMD-032 remains NOT CERTIFIED; G9 NOT READY; G10 NOT ACTIVE.
