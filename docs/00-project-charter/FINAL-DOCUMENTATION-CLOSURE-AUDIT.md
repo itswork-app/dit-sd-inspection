@@ -1,7 +1,7 @@
 # Final Documentation Closure Audit — Dit. SD Inspection
 
 **Document ID:** DOC-AUDIT-001  
-**Version:** 0.2.9  
+**Version:** 0.3.0  
 **Status:** STATIC DOCUMENTATION AUDIT COMPLETED — IMPLEMENTATION READINESS NOT ESTABLISHED  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
@@ -192,3 +192,12 @@ AGGREGATE-CONCURRENCY-RESOLUTION-001 v0.1.0 was added and cross-referenced by CM
 ## 16. Durable operation and artifact lifecycle proposals — 2026-11-24
 
 DURABLE-OPERATION-LEDGER-AND-ARTIFACT-LIFECYCLE-PROPOSAL-001 v0.1.0 was added and cross-referenced by CMD-PHYSICAL-CROSSWALK-001. Candidate models cover CMD-035 per-operation sync ledger/device binding; CMD-036 immutable template versions and renderer job/attempt lifecycle; CMD-038 print batch-item manifest and append-only outcomes; and CMD-039/040 attendance document versions and verification history. These are review proposals, not canonical schema additions or approved DDL. Device trust, renderer authority/worker ACL, print attempt identity, attendance location/assignment authority, uploader/verifier SoD, RLS, retention and concurrency tests remain open. No command certification or gate is advanced. G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 17. Candidate physical object cross-artifact reconciliation — 2026-11-24
+
+Eight candidate object families from DURABLE-OPERATION-LEDGER-AND-ARTIFACT-LIFECYCLE-PROPOSAL-001 are now recorded in candidate-only annexes across the physical schema, RLS policy catalogue, canonical permission registry, ERD and physical-schema/RLS/command reconciliation. The candidates are explicitly NOT ADMITTED and excluded from the canonical 48-table inventory and ERD. Existing 48/48 exact name parity remains unchanged for the current canonical proposed inventory only.
+
+Permission mapping confirms existing command permissions for sync.apply, document.generate, document.print.batch, attendance.upload, attendance.verify, report.read and audit.export; no new permission or role grant was approved. Device enrollment/revocation and template publication remain separate authorization design gaps. Renderer workload identity/ACL, print attempt identity, attendance scope authority and uploader/verifier SoD remain open.
+
+This closes a documentation cross-reference gap only. It does not close candidate schema design, approve new objects, verify deployed RLS/ACL, advance LPR items, or establish technical certification. G9 NOT READY; G10 NOT ACTIVE; application lock certification 0/50.
