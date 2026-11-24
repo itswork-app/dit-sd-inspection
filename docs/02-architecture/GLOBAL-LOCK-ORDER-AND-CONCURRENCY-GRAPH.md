@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.20
+**Version:** 0.4.21
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -541,3 +541,8 @@ Asynchronous finalizers add separate edges: CMD-036 renderer lease/source-versio
 7. Recompute and prove the effective graph acyclic, then execute deterministic opposing-transaction tests.
 
 **Disposition:** 40/40 source command event declarations statically mapped; 0/40 notification-recipient resolver lock paths certified. The candidate relation/header remain NOT ADMITTED. LOCK-GRAPH remains NOT CERTIFIED ACYCLIC; application lock certification 0/50; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 29. Recipient-resolver serialization boundary — 2026-11-24
+
+[NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001](NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) v0.1.0 classifies the 40 source paths in LOCK-MANIFEST-001 §7.7 and explains why command actor/target locks do not certify the full notification audience predicate. It proposes a global transaction-level audience guard at candidate L05 before L10/L15 and all source aggregate resources, with SERIALIZABLE predicate snapshot as an alternative. **L05 is a design option only, not an approved rank.** All account/role/scope/assignment/capacity/parent-lifecycle writers and policy publication would need consistent participation if selected. Candidate FK parents must still be acquired in deterministic L15/L30/L40/L50/L55 order. No new edge is considered closed; exact FK/trigger/helper behavior and full acyclicity remain unproven. Resolver certification 0/40; application lock certification 0/50; graph NOT CERTIFIED ACYCLIC; G9 NOT READY; G10 NOT ACTIVE.
