@@ -1,7 +1,7 @@
 # CMD-001–010 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security review required; NOT approved for implementation  
-**Version:** 0.3.1  
+**Version:** 0.3.2  
 **Date:** 2026-11-24  
 **Scope:** CMD-001 through CMD-010  
 **Controls:** T-15 append-only audit direction; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
@@ -720,6 +720,7 @@ The confirmation token is not an authorization credential. If retained, its issu
 | Project status on create must not bypass lifecycle | CMD-008 | Choose server default and allowed initial state | Blocks final request schema |
 | Project optimistic version fields absent from current physical summary | CMD-009/010 | Add approved version/update metadata or change contract to a fully specified alternative | Blocks physical-schema parity |
 | Project closure dependencies and concurrency protocol are not approved | CMD-010 | PO + institution define closure blockers, child-command fencing and reopen authority | Blocks CMD-010 contract completion |
+| Project/session parent fence is not consistent across child writers; CMD-011 FOR KEY SHARE may not conflict with a non-key project status UPDATE, while CMD-012/013 are session-first and CMD-015 omits explicit project/session parent locks | CMD-010–015 | Engineering/Security select compatible row-lock/serialization modes, redesign reverse-order session paths, require parent-first locks in CMD-014/015 and prove state revalidation after waits | Blocks project/session concurrency acceptance |
 | Actual function owner, SECURITY mode, search_path and EXECUTE ACL not verified in Supabase | CMD-001–010 | Read-only catalog inventory and per-function security review after authorized environment access | Blocks G9/G10 |
 | Mutable identity/authorization rows have no class in candidate L00–L110 lock hierarchy | CMD-001–007 | Engineering/Security resolve LPR-11: rank and same-rank order for app_users, user_roles and user_scope_grants relative to T-14 capacity, project/session parents, grantor authority and assignment membership | Blocks rank normalization and concurrency approval |
 
@@ -750,7 +751,7 @@ Next documentation-only step: resolve the cross-command decisions above with PO/
 
 ## 7. Lock-rank reconciliation checkpoint — 2026-11-24
 
-The row-level CMD-001–010 overlay in LOCK-MANIFEST-001 v0.4.3 preserves source-stated lock/transaction behavior while distinguishing candidate-rank mappings from unclassified resources.
+The row-level CMD-001–010 overlay in LOCK-MANIFEST-001 v0.4.5 preserves source-stated lock/transaction behavior while distinguishing candidate-rank mappings from unclassified resources.
 
 - CMD-001–003 mutate or arbitrate app_users account identity/state. CMD-004/005 mutate user_roles. CMD-006/007 mutate user_scope_grants. None of these mutable resource classes is named in the current L00–L110 candidate hierarchy.
 - Do not map these resources to L50 assignment/membership or L110 append-only facts by analogy. LPR-11 is OPEN and requires Engineering/Security resolution before CMD-001–007 can be rank-normalized.
@@ -765,3 +766,4 @@ No candidate rank or lock primitive is approved by this checkpoint. No source co
 
 - **0.3.0 — 2026-11-24:** Added the missing identity/authorization resource-class finding and LPR-11 traceability; reconciled the detailed CMD-001–010 review with the new row-level manifest overlay. Proposal status and G9/G10 boundaries unchanged.
 - **0.3.1 — 2026-11-24:** Synchronized the row-level overlay reference to LOCK-MANIFEST-001 v0.4.3. No contract authority or approval status changed.
+- **0.3.2 — 2026-11-24:** Added the CMD-011–015 project/session parent-fence compatibility finding and synchronized the manifest reference to v0.4.5. No lock mode or lifecycle authority was approved.
