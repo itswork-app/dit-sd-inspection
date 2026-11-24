@@ -185,3 +185,16 @@ LOCK-NORMALIZATION-001 v0.1.0 was added and statically checked against the sourc
 CMD-PHYSICAL-CROSSWALK-001 v0.1.0 was added with 50 command headings: 40 source-derived physical read/write sections for CMD-001–040, four explicit OPEN/BLOCKED entries for CMD-041–044, and six source-derived notification/worker entries for CMD-049–054. CMD-045–048 remain excluded external control-plane IDs. This validates the documentation inventory and exposes physicalization gaps; it does not verify any live table, index, FK, trigger, function, RLS policy, grant, Storage object or provider. In particular, CMD-041–044 require a complete physical query/export model, and CMD-044 remains blocked by T-10.
 
 The 50-command normalized register LOCK-NORMALIZATION-001 v0.1.1 now explicitly includes physical read/write set as a required field and links the physical crosswalk. The static inventory is 50 unique application commands; 0/50 are technically approved/certified lock-complete. LPR-09 remains OPEN; LPR-10 remains NOT EXECUTED. Overall technical certification remains **NOT CERTIFIED**; G9 NOT READY; G10 NOT ACTIVE. No source implementation, SQL, migration, grants/revokes, CI execution, tests, live database inspection, deployment, merge or production data operation was performed.
+
+
+## CMD-041–044 physical read/export reconciliation — 2026-11-24
+
+Evidence reviewed: CMD-041–044 Detailed Contract Review v0.1.1; Command Physical Object Crosswalk v0.1.1; physical schema/RLS/ERD candidate annexes; Permission Registry v0.2.4; Audit Event Catalogue candidate event disposition; QA catalogue v0.3.8.
+
+Certification effect:
+- CMD-041/042: physical source read sets now documented against canonical proposed source tables. This is a documentation completeness improvement only; metric semantics, exact query plans/indexes, bounded limits and runtime RLS remain unverified.
+- CMD-043: safe query/projection and anti-recursion design is documented; T-10 reader authority, purpose, classification, retention/legal hold and append-failure policy remain BLOCKED.
+- CMD-044: three candidate export object families are documented but NOT ADMITTED; T-10 blocks any executable path.
+- 18 new tests are PLANNED / NOT EXECUTED and contribute zero passing evidence.
+
+No certification gate advances. G9 remains NOT READY; G10 remains NOT ACTIVE; application lock certification remains 0/50. No source, SQL, migration, grant, live DB, runtime test or deployment evidence was produced by this documentation pass.
