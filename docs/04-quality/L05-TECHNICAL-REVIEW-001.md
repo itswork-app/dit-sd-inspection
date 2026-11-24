@@ -1,7 +1,7 @@
 # L05 Audience Guard — Internal Technical Review
 
 **Document ID:** L05-REVIEW-001  
-**Version:** 0.1.1  
+**Version:** 0.1.2  
 **Review status:** REQUEST CHANGES — NOT TECHNICALLY APPROVED  
 **Review date:** 2026-11-24  
 **Reviewer capacity:** Internal technical reviewer acting for Product Owner interests; not an independent human Engineering, Database, Security or institutional sign-off  
@@ -153,7 +153,7 @@ This review is based on repository documentation and official PostgreSQL documen
 
 ## 7. Revision response checkpoint — 2026-11-24
 
-TDR v0.1.3 and the synchronized QA artifacts now specify the proposed response to F-01/F-02, with NRL-T11/T12 and TC-NOTIF-052/053. The response is documentation-only; deployed wrapper volatility, authenticated RPC snapshot behavior, effective-time policy approval and execution evidence remain absent. F-01/F-02 remain OPEN pending evidence.
+TDR v0.1.4 and the synchronized QA artifacts now specify the proposed response to F-01/F-02, with NRL-T11/T12 and TC-NOTIF-052/053. The response is documentation-only; deployed wrapper volatility, authenticated RPC snapshot behavior, effective-time policy approval and execution evidence remain absent. F-01/F-02 remain OPEN pending evidence.
 
 [L05-SOURCE-MAP-001](../02-architecture/L05-SOURCE-EVENT-PATH-MAPPING-001.md) v0.1.0 provides a 40-row source-event/transaction-boundary mapping for F-03. It does not normalize the existing command lock sequences; 0/40 paths remain normalized/certified.
 
@@ -164,7 +164,7 @@ F-05 post-transition audience outcomes and F-07 measured contention envelope rem
 
 ## 8. Remaining decision/evidence checkpoint — 2026-11-24
 
-F-05 remains OPEN. TDR v0.1.2 now recommends pre-transition eligibility as the default because resolution precedes the source mutation, but this is not a Product Owner decision. Explicit outcomes are still required for role revoke, account rejection/suspension, assignment-member end, project/session closure and self-revoke.
+F-05 remains OPEN. TDR v0.1.4 now recommends pre-transition eligibility as the default because resolution precedes the source mutation, but this is not a Product Owner decision. Explicit outcomes are still required for role revoke, account rejection/suspension, assignment-member end, project/session closure and self-revoke.
 
 F-07 remains OPEN. NRL-T13 / TC-NOTIF-054 now specify the mixed-load benchmark and the required measurements (p50/p95/p99 lock wait/hold/transaction latency, throughput, timeout/deadlock/retry rates, queue age, audience cardinality and database I/O). Numeric workload limits and SLO thresholds remain unapproved and no benchmark has been run.
 
@@ -173,7 +173,7 @@ F-06 is partially remediated: TDR parent pointer now names NLA-RESOLVER-LOCK-001
 
 ## 9. Current cross-reference and CMD-031–040 response — 2026-11-24
 
-F-06 is closed for the scoped L05 cross-reference set. The current pointer set is NLA-001 v0.1.8; parent resolver review v0.1.9; TDR v0.1.2; source map v0.1.0; writer matrix v0.1.1; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM v0.1.8; RAID v0.1.7; DGA v1.11.60; QA v0.4.5; cross-command reconciliation v0.8.26. Historical source references remain in their dated checkpoints.
+F-06 is closed for the scoped L05 cross-reference set. The current pointer set is NLA-001 v0.1.10; parent resolver review v0.1.10; TDR v0.1.2; source map v0.1.0; writer matrix v0.1.2; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM v0.1.10; RAID v0.1.9; DGA v1.11.61; QA v0.4.6; cross-command reconciliation v0.8.28. Historical source references remain in their dated checkpoints.
 
 F-03 has advanced but remains OPEN: CMD-031/032/033/034/037 have partial candidate lock ordering in LOCK-MANIFEST-001 §7.13; CMD-035/036/038/039/040 remain blocked. The source map is an inventory, not proof of all held locks, function/finalizer call graphs, or a cycle-free total order. F-04 remains OPEN because the writer matrix is incomplete and no physical writer is certified. F-05 transition semantics and F-07 measured contention envelope remain OPEN.
 
