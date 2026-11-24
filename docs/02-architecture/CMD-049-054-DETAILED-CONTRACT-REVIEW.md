@@ -1,18 +1,18 @@
 # CMD-049–054 Detailed Contract Review
 
 **Document ID:** CMD-REVIEW-049-054  
-**Version:** 0.1.2  
+**Version:** 0.1.3  
 **Status:** Engineering contract review — proposal only; PO/security/institutional review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-049 through CMD-054  
 **Repository phase:** Documentation / SSOT maturation  
-**Controls:** INS-015; INS-016 / T-15; T-10; T-18; NLA-001 v0.1.3; POQ-01..03 approved 2026-11-24; DGA-B09, DGA-B10, DGA-B11, DGA-B12, DGA-B13; G9 NOT READY; G10 NOT AUTHORIZED.
+**Controls:** INS-015; INS-016 / T-15; T-10; T-18; NLA-001 v0.1.4; POQ-01..03 approved 2026-11-24; DGA-B09, DGA-B10, DGA-B11, DGA-B12, DGA-B13; G9 NOT READY; G10 NOT ACTIVE.
 
 ## 1. Purpose and authority boundary
 
 This document expands the six proposed notification commands in the PostgreSQL Command Contract Catalogue. It is a static engineering review of NLA-001, the command catalogue, physical schema proposal, Decision Register, DGA-001 and repository governance.
 
-INS-015 product behavior is PO-approved. NLA-001 lifecycle, physical tables, worker model, permission grants, exact selector semantics, provider choices, retention, routes, function signatures and runtime controls remain proposals or open approvals. This document does not authorize SQL, migrations, functions, routes, grants, RLS changes, provider setup, workers, deployment, CI execution or merge.
+INS-015 product behavior is PO-approved. NLA-001 lifecycle and PO-approved product semantics are recorded; the physical snapshot representation, selector grammar, worker model, permission grants, provider choices, retention, routes, function signatures and runtime controls remain proposals or open approvals. This document does not authorize SQL, migrations, functions, routes, grants, RLS changes, provider setup, workers, deployment, CI execution or merge.
 
 Stable logical IDs CMD-049–054 extend CMD-001–048. They do not imply physical function names or HTTP routes. The permission registry and role/grantor matrix remain draft; proposed permission labels are not approved for seeding.
 
@@ -51,12 +51,12 @@ The following are mandatory safety boundaries:
 |---|---|---|
 | INS-015 | APPROVED at PO level | Product behavior is binding within PO authority |
 | INS-016 / T-15 | PO-approved audit direction | Append-only audit and critical mutation/audit atomicity direction; T-10 details remain blocked |
-| NLA-001 v0.1.3 | Engineering design proposal | Lifecycle and six-table model require PO/security review |
-| Command catalogue v0.2.0 | Proposed logical contracts | IDs are stable proposals; permissions and transport mappings are not approved |
-| Physical schema v0.2.0 | Proposed physical inventory | Six notification tables are design inventory only, not live objects |
+| NLA-001 v0.1.4 | PO semantics approved; engineering design proposal | Six canonical notification tables plus one candidate-only audience snapshot relation; physical representation/worker controls require Engineering/Database/Security review |
+| Command catalogue v0.4.8 | Proposed logical contracts | IDs are stable; permission labels and transport mappings remain unapproved |
+| Physical schema v0.4.4 / RLS v0.2.5 | Proposed physical inventory | Six notification tables are canonical proposal; notification_outbox_recipients and audience header fields are candidate-only, not admitted or live objects |
 | DGA-B13 | DESIGN PROPOSAL RECORDED; APPROVALS OPEN | Worker, selectors, providers, T-10 and cross-document approvals remain open |
 | T-18 | PO direction approved | Per-function worker/user boundary and actual ACL still require review |
-| G9 / G10 | NOT READY / NOT AUTHORIZED | No implementation or release work may begin |
+| G9 / G10 | NOT READY / NOT ACTIVE | No implementation or release work may begin |
 
 ## 4. Shared notification domain model
 
@@ -73,7 +73,7 @@ NLA-001 proposes the following separation:
 | Policy configuration | notification_policy_versions | Published policy versions immutable and scope-bound |
 | Reminder/escalation decision | notification_escalation_events | Append-only, policy-version-pinned; never changes business state |
 
-The six objects are proposed, not implemented. The physical schema and RLS catalogue require review of composite foreign keys, indexes, check/enum constraints, uniqueness, policy immutability, recipient predicates and worker access.
+The six canonical notification objects are proposed, not implemented. POQ-01 additionally requires an immutable event-time recipient/scope snapshot; candidate relation notification_outbox_recipients and candidate outbox snapshot header fields are NOT ADMITTED and excluded from the canonical 48-table inventory. Composite FKs, indexes, check/enum constraints, uniqueness, policy immutability, recipient predicates and worker access require Engineering/Database/Security review.
 
 ### 4.2 Critical transaction and external effects
 
@@ -81,7 +81,7 @@ The intended sequence is:
 
 1. An authorized domain command performs the business mutation.
 2. The same PostgreSQL transaction appends the canonical domain/audit event and, if policy matches, a minimal outbox intent pinned to one immutable policy version.
-3. An internal fan-out worker claims the outbox using a bounded lease and resolves eligible recipients.
+3. At source-event time, the source command resolves and durably persists the deduplicated recipient/scope candidate set and snapshot hash/count before its transaction commits. CMD-052 later consumes that immutable set; it does not resolve current membership.
 4. Recipient inbox rows and eligible external channel delivery rows are created idempotently.
 5. A delivery worker claims a delivery row, records a durable attempt boundary, performs provider I/O outside the transaction and persists a guarded outcome.
 6. Ambiguous provider acceptance is represented as UNKNOWN and reconciled; it is not mislabeled as success or guaranteed exactly-once.
@@ -265,7 +265,7 @@ Existing mapping: TC-NOTIF-012. **PLANNED / NOT EXECUTED**.
 
 ### 8.1 Intent and status
 
-An internal worker claims one bounded outbox item and resolves recipient inbox and channel-delivery records. It is an internal-only operation, not a user permission and not browser-callable. Worker identity and ACL remain open under DGA-B13/T-18.
+An internal worker claims one bounded outbox item and materializes inbox/channel-delivery records from the immutable event-time candidate audience. It is an internal-only operation, not a user permission and not browser-callable. Worker identity and ACL remain open under DGA-B13/T-18.
 
 ### 8.2 Proposed request and principal
 
@@ -291,9 +291,9 @@ No worker identity, scheduler trust model, database role, function owner or exac
 
 ### 8.4 Physical write set and transaction
 
-Proposed objects: notification_outbox, notifications and notification_deliveries. Claim using a bounded lease and row-locking strategy equivalent to SKIP LOCKED; never hold a transaction across provider I/O. Create one inbox row per outbox/recipient and one external delivery row per selected notification/channel, with uniqueness preventing duplicates.
+Proposed objects: notification_outbox, candidate-only notification_outbox_recipients (NOT ADMITTED), notifications and notification_deliveries. The source domain transaction must persist the event-time candidate rows and snapshot header hash/count/completion marker before the outbox is claimable. CMD-052 claims the outbox with a bounded lease and row-locking strategy equivalent to SKIP LOCKED, commits the claim, then consumes immutable candidates in a separate fan-out transaction. Never hold a transaction across provider I/O. Create one inbox row per outbox/recipient and one external delivery row per selected notification/channel, with uniqueness preventing duplicates.
 
-NLA-001 proposes unique source_event_id/policy_version_id on the outbox, unique outbox_id/recipient_user_id on notifications, and unique notification_id/channel on notification_deliveries. Partial fan-out remains PROCESSING; retries resume idempotently through these unique arbiters. The outbox and delivery lease tuple is lease_owner, server-issued token hash, monotonic lease_generation and lease_expires_at; every finalizer checks the current tuple. safe_payload is the canonical minimized payload field. Exact nullability, indexes, constraints and recipient eligibility timing still require approval.
+NLA-001 v0.1.4 proposes unique source_event_id/policy_version_id on the outbox, unique outbox_id/recipient_user_id on candidate rows and notifications, and unique notification_id/channel on notification_deliveries. Partial fan-out remains PROCESSING; retries derive outstanding work by anti-joining immutable candidate rows to existing inbox rows. The outbox and delivery lease tuple is lease_owner, server-issued token hash, monotonic lease_generation and lease_expires_at; every finalizer checks the current tuple. safe_payload is the canonical minimized payload field. Candidate FKs, scope tuple, snapshot hash/count, transaction fan-out bounds, indexes and lock-order/implicit-FK effects remain OPEN.
 
 ### 8.5 Side-effect boundary
 
@@ -413,11 +413,11 @@ No numeric SLA, retry or escalation values may be inferred from NLA-001 examples
 
 ### 10.4 Recipient revalidation and scope
 
-Recipients must be resolved only from the explicit policy version and approved selector grammar. Revalidate current account and assignment eligibility before enqueueing. If no eligible recipient exists, append NO_ELIGIBLE_RECIPIENT and do not broaden scope. Escalation is communication workflow only; it does not grant permissions or transfer assignment.
+Recipients for an escalation are resolved at that escalation event's own source-event time under the explicit policy version and approved selector grammar; persist its own immutable candidate/scope snapshot with the escalation event and outbox. Dispatch-time revalidation may suppress external delivery only and cannot widen the audience. If no eligible recipient exists at event time, append NO_ELIGIBLE_RECIPIENT and do not broaden scope. Escalation is communication workflow only; it does not grant permissions or transfer assignment.
 
 ### 10.5 Physical write set and idempotency
 
-Proposed objects: notification_escalation_events and notification_outbox. Append one event for the unique notification/policy-version/step/event key, then create an outbox intent for the next notification if eligible. The uniqueness constraint makes repeated scheduler ticks idempotent.
+Proposed objects: notification_escalation_events, notification_outbox and candidate-only notification_outbox_recipients (NOT ADMITTED). Append one event for the unique notification/policy-version/step/event key, create the outbox intent and persist its event-time candidate/scope rows atomically. The uniqueness constraint makes repeated scheduler ticks idempotent.
 
 NLA-001 proposes unique notification_id/policy_version_id/step_no/event_type. Exact locking, due-time predicate, retry, concurrent scheduler behavior, event/outbox atomicity and retention must be reviewed. No provider I/O occurs in this command.
 
@@ -452,7 +452,7 @@ Existing mapping: TC-NOTIF-013/014. **PLANNED / NOT EXECUTED**.
 | N51-02 | 051 | notification.policy.manage role/grantor/scope/SoD is not approved | Approve canonical permission registry and policy-administrator matrix |
 | N51-03 | 051 | Exact recipient selector grammar and policy JSON schema remain open | PO/security approve versioned allowlist and validation |
 | N52-01 | 052 | Worker identity, scheduler trust, database role, owner and exact EXECUTE ACL unresolved | Security-approved worker principal and least-privilege execution design |
-| N52-02 | 052 | Event-time eligibility versus dispatch-time eligibility semantics not finalized | Approve resolution checkpoints and current eligibility revalidation |
+| N52-02 | 052 | POQ-01 event-time candidate audience semantics are approved; durable representation and snapshot completeness are not admitted | Review candidate recipient/scope relation, header hash/count, source-transaction bounds and non-widening dispatch suppression |
 | N52-03 | 052 | NLA/schema/catalogue payload and lease field descriptions differed | RESOLVED AT DOCUMENTATION BOUNDARY: safe_payload; lease_owner, lease_token_hash, lease_generation, lease_expires_at; partial work remains PROCESSING and resumes through uniqueness arbiters |
 | N53-01 | 053 | Provider selection, capability, quota, cost and secret custody unverified | Provider decision and evidence; approved adapter/credential boundary |
 | N53-02 | 053 | Provider callback/webhook operation was not assigned a boundary | RESOLVED AT INTEGRATION BOUNDARY: INT-NOTIF-001 is a separate provider-authenticated ingress, not a CMD ID or browser RPC; provider-specific signature and durable dedup remain open |
@@ -460,7 +460,7 @@ Existing mapping: TC-NOTIF-013/014. **PLANNED / NOT EXECUTED**.
 | N54-01 | 054 | Caller-supplied evaluation_time could conflict with trusted time | RESOLVED AT REQUEST BOUNDARY: remove evaluation_time; capture one DB UTC instant. SLA start, calendar/timezone and pause/close semantics remain open |
 | N54-02 | 054 | Worker/scheduler identity and ACL remain unresolved | Approve scheduler principal, lease, exact owner/EXECUTE ACL |
 | N54-03 | 054 | T-10 retention/legal-hold applies to notification content and history | Written institutional classification, retention and disposition decisions |
-| N49-54-01 | 049–054 | Six-table design, exact composite FKs, indexes, enums/checks and RLS remain proposed | Complete physical/RLS review and reconcile all six tables |
+| N49-54-01 | 049–054 | Six canonical tables plus candidate-only recipient snapshot relation/header fields; exact composite FKs, indexes, enums/checks and RLS remain proposed | Review/admit candidate notification_outbox_recipients only after source-event snapshot, scope FKs, hash/count, fan-out bounds and RLS/ACL are proven |
 | N49-54-02 | 049–054 | Permission registry, worker role grants and SoD remain unapproved | PO/security approval before role seeding or worker grants |
 | N49-54-03 | 049–054 | Provider capability and worker runtime evidence absent | Approved provider evidence and non-production operational verification |
 | N49-54-04 | 049–054 | Tests are catalogue plans only | Execute only after G10 in authorized environment and attach evidence to exact commit/schema |
@@ -481,6 +481,7 @@ Before CMD-049–054 can be considered implementation-ready:
 10. Define server-clock SLA semantics and scheduler behavior for CMD-054.
 11. Reconcile event names and audit payloads with T-15 and the audit event catalogue.
 12. Synchronize RTM, QA, DGA, RAID, lock manifest, audit and physical/RLS crosswalk to this proposal; accountable approvals and runtime evidence remain separate gates.
+13. Reconcile POQ-01 candidate snapshot creation against the global L15–L110 resource order and implicit FK KEY SHARE edges. Do not claim the source command or CMD-052 is deadlock-safe until all recipient/account/scope locks and foreign-key checks are included in the manifest and adversarial tests.
 
 Do not treat a notification command as a substitute for any domain command or as authority to mutate the underlying workflow.
 
@@ -519,7 +520,7 @@ Existing QA references include TC-NOTIF-001 through TC-NOTIF-018. They remain **
 | Provider setup | NOT PERFORMED | No provider selected/configured |
 | Tests | PLANNED / NOT EXECUTED | No test execution |
 | G9 | NOT READY | NLA, T-10, worker, provider and design approvals remain open |
-| G10 | NOT AUTHORIZED | No implementation authorization |
+| G10 | NOT ACTIVE | Separate activation record required after independent G9 verification |
 | Source code / SQL / migrations / grants / RLS | NOT PERFORMED | Outside authorized scope |
 | Live database / provider / deployment / CI / merge | NOT PERFORMED | Outside authorized scope |
 
@@ -547,7 +548,7 @@ This addendum records the static contract decisions and remaining approval bound
 | CMD-054 escalation | No caller evaluation_time; one database UTC instant per transaction | named SLA start event, per-policy elapsed/business-time mode, ELAPSED_UTC initial default, quiet-hours delivery deferral without SLA pause, and unapproved calendar/pause semantics |
 | Dismissal | dismissed_at reserved only | POQ-03 approval; no dismiss command, permission or browser mutation is in MVP |
 
-The six notification tables remain a proposed subset of the 48-table physical/RLS inventory. INT-NOTIF-001 is an integration contract, not a new CMD ID or table. TC-NOTIF-001..029 and TC-FN-SEC-025-064..069 remain PLANNED / NOT EXECUTED. Worker identities, exact function owners/EXECUTE ACLs, live RLS/grants, provider capability and T-10 institutional retention/privacy remain open. G9 NOT READY; G10 NOT AUTHORIZED.
+The six notification tables remain a proposed subset of the 48-table physical/RLS inventory. INT-NOTIF-001 is an integration contract, not a new CMD ID or table. TC-NOTIF-001..029 and TC-FN-SEC-025-064..069 remain PLANNED / NOT EXECUTED. Worker identities, exact function owners/EXECUTE ACLs, live RLS/grants, provider capability and T-10 institutional retention/privacy remain open. G9 NOT READY; G10 NOT ACTIVE.
 
 
 ## Product Owner notification decisions — POQ-001 (2026-11-24)
@@ -559,3 +560,33 @@ POQ-01 Option C, POQ-02 Option C and POQ-03 Option A were explicitly approved by
 - **Dismissal (POQ-03):** dismiss/archive is excluded from MVP. Only recipient-owned set-once `read_at` is exposed; no dismiss command, permission, browser write or UX action exists. Any `dismissed_at` field retained in a proposal is dormant.
 
 The following technical details remain open: exact selector grammar and snapshot/checkpoint representation; partial fan-out fencing; policy schema and worker authorization; provider capability/callback security; exact schema constraints/indexes/RLS; institutional T-10 retention/privacy; test execution and live evidence. G9 remains NOT READY and G10 NOT AUTHORIZED.
+
+
+## 17. POQ-01 event-time audience snapshot and lock-order addendum — 2026-11-24
+
+POQ-01 fixes product semantics: resolve and durably persist the recipient/scope candidate set at source-event time; retries reuse that set; dispatch-time revalidation may suppress only. NLA-001 v0.1.4 proposes candidate relation `notification_outbox_recipients` and candidate outbox header fields `audience_snapshot_version/hash/count/completed_at`. They are NOT ADMITTED and are excluded from the canonical 48-table inventory.
+
+### 17.1 CMD-052 and CMD-054 physical candidate boundary
+
+- CMD-052 claim remains a short transaction on one outbox row with owner/token-hash/generation/expiry fencing. It commits before fan-out.
+- Fan-out reads immutable candidate rows in deterministic recipient-key order, inserts inbox rows idempotently, and derives remaining work by anti-joining candidates to materialized notifications. It must not re-resolve current membership.
+- CMD-054 captures one DB UTC instant, serializes the unique notification/policy/step event, and creates its own outbox plus event-time candidate snapshot atomically.
+- CMD-053 provider I/O remains outside DB transactions. Callback ingress INT-NOTIF-001 is a separate F5 integration trust boundary; provider-specific event identity/dedup remains open.
+
+### 17.2 Lock-order and implicit-edge blocker
+
+The candidate snapshot relation introduces possible foreign-key checks to `app_users`, projects, sessions, locations and assignments. PostgreSQL FK validation can acquire implicit KEY SHARE locks on referenced rows. A source command may already hold L30/L50/L55 domain locks when it inserts outbox recipient rows, while account/scope revocation paths may acquire L15/L16/L17 before those domain locks. CMD-052 and CMD-054 may also hold queue/policy/notification rows before creating inbox/outbox rows with user/scope FKs.
+
+Therefore the source-event snapshot write and worker materialization paths have a new potential lower-rank-after-higher-rank edge. No candidate rank is assigned to the unadmitted relation. Before admission, Engineering/Database must:
+1. enumerate every source command/event that can create an outbox and its already-held lock set;
+2. enumerate account, role, scope and assignment writers that compete with event-time recipient resolution;
+3. define a single linearization strategy for recipient eligibility (sorted L15/L16/L17 and applicable L30/L50/L55 resources, or an approved temporal snapshot mechanism);
+4. include every implicit FK KEY SHARE/unique-index/trigger/function edge for candidate and notification inserts;
+5. prove that CMD-052/CMD-054 never acquire a lower-ranked domain resource after outbox/policy/notification locks;
+6. validate the final candidate lock graph for cycles and add deterministic adversarial concurrency tests.
+
+A preflight recipient SELECT alone is not a consistency guarantee. Do not suppress FK integrity merely to avoid a lock edge. Candidate schema, exact ranks, lock modes and transaction ordering remain OPEN; this addendum is a blocker record, not a certified solution.
+
+### 17.3 Certification disposition
+
+CMD-049/050 remain recipient-self read/set-once operations; CMD-051 remains publish-only; CMD-052/054 remain internal workload operations; CMD-053 remains provider dispatch plus separately authenticated callback ingress. Candidate audience snapshot design is documented but not admitted. Worker identity/ACL, provider callback dedup/auth, exact lock graph, implicit PostgreSQL edges, RLS and runtime tests remain OPEN. G9 NOT READY; G10 NOT ACTIVE; application lock certification remains 0/50.
