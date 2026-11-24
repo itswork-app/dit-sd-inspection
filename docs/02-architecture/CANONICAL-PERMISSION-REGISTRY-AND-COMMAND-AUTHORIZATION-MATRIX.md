@@ -1,7 +1,7 @@
 # Canonical Permission Registry and Command Authorization Matrix
 
 **Status:** Draft for Product Owner and security review — NOT approved for implementation  
-**Version:** 0.2.4 | **Package:** M/N | **Date:** 2026-11-24  
+**Version:** 0.2.5 | **Package:** M/N | **Date:** 2026-11-24  
 **Authority:** T-15, T-17, T-18; legacy RBAC catalogue and privileged command inventory
 
 ## 1. Purpose and mandatory rules
@@ -240,3 +240,8 @@ The durable-object proposal is reconciled to the existing permission vocabulary 
 - Candidate audit_export_jobs, audit_export_manifests and audit_export_artifacts do not receive browser permissions or role grants. Their future internal workload principal and exact ACL are separate T-18 security decisions.
 - audit.exported already exists in the audit event catalogue. Proposed audit.export_requested, audit.export_approved/rejected, audit.export_downloaded and audit.export_failed remain candidate event names until the event catalogue and institutional records policy approve their exact use and payload.
 - Access-event anti-recursion is a command/query behavior, not a permission expansion. A caller must not be able to suppress access auditing by request parameter.
+
+
+## POQ-01 candidate audience snapshot permission boundary — 2026-11-24
+
+The candidate relation notification_outbox_recipients does not create a new user permission. It is not browser-readable or browser-writable. CMD-052 remains an internal workload operation and has no authenticated-user permission. The source-domain command may persist the event-time candidate snapshot only through its own separately reviewed narrow transaction boundary; CMD-052 may read only candidates for the currently claimed outbox under valid lease fencing. No role grant, worker identity, EXECUTE ACL or RLS policy is approved by this addendum.
