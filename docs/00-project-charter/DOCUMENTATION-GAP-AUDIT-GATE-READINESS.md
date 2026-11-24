@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.57
+**Version:** 1.11.58
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -666,3 +666,8 @@ QA v0.4.4 adds TC-NOTIF-042..051 to cover the 0/40 resolver lock-set certificati
 ### L05 candidate selection checkpoint — 2026-11-24
 
 PO selected the global transaction-scoped audience guard (candidate L05) as the primary mechanism for technical approval review. Option B SERIALIZABLE is retained as contingency-only. The decision is recorded in [NLA-RESOLVER-LOCK-001 v0.1.6](../02-architecture/NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) §11. This selection does not close DGA notification/lock blockers: Engineering/Database/Security must still approve the concrete primitive/key, canonical order, all eligibility-changing writers including CMD-051, FK/index/trigger/helper edges, timeout/retry, contention bounds and acyclicity. L05 is not an admitted rank; no code/SQL/migration is authorized. Candidate snapshot relation/header remain NOT ADMITTED; resolver certification 0/40; application lock certification 0/50; G9 NOT READY; G10 NOT ACTIVE.
+
+
+### L05 technical decision record checkpoint — 2026-11-24
+
+[NLA-L05-TDR-001 v0.1.0](../02-architecture/NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) is drafted for Engineering/Database/Security review. It defines the candidate PostgreSQL advisory transaction lock, isolation/snapshot protocol, writer participation, timeout/retry, FK graph and adversarial tests. It intentionally leaves key constants, deployed isolation, full command writer matrix, numeric budgets, audience cap and performance SLO open. Technical approval and test evidence remain absent. G9 NOT READY; G10 NOT ACTIVE; no implementation is authorized.
