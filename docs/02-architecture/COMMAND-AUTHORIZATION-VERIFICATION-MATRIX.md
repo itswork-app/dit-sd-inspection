@@ -8,7 +8,7 @@
 
 ## Physical schema/RLS reconciliation dependency
 
-See [Physical Schema ↔ RLS ↔ Command Reconciliation](PHYSICAL-SCHEMA-RLS-COMMAND-RECONCILIATION.md) for the 41-table physical/RLS name parity, exact key-column crosswalk, and the two ERD-only entities requiring disposition. The command-family mapping remains logical; this reconciliation does not finalize individual command schemas, RPC signatures, table grants or executable predicates.
+See [Physical Schema ↔ RLS ↔ Command Reconciliation](PHYSICAL-SCHEMA-RLS-COMMAND-RECONCILIATION.md) for the proposed 48-table physical/RLS name parity and exact key-column crosswalk. The command-family mapping remains logical; this reconciliation does not finalize individual command schemas, RPC signatures, table grants or executable predicates.
 
 ## 1. Purpose and decision boundary
 
@@ -96,9 +96,9 @@ Before implementation, split each family into individual commands and fill every
 | Tests | Positive, wrong-role/scope, spoofing, direct DML, audit rollback, replay/hash mismatch and concurrency as applicable |
 
 
-## 5. Crosswalk to the current 41-table RLS catalogue
+## 5. Crosswalk to the current proposed 48-table RLS catalogue
 
-The authoritative current proposed inventory is [Table-by-Table RLS Policy Catalogue](TABLE-BY-TABLE-RLS-POLICY-CATALOGUE.md), section 4. The following crosswalk maps command families to its exact listed table names. It does not imply that every listed table is read/write-accessible to the command; the catalogue's R-self/R-scope/R-admin/CMD/NONE rules remain controlling design constraints.
+The authoritative current proposed 48-table inventory is [Table-by-Table RLS Policy Catalogue](TABLE-BY-TABLE-RLS-POLICY-CATALOGUE.md), section 4. It includes T-13 `print_batches` and the six NLA-001 notification tables. The following crosswalk maps command families to its exact listed table names. It does not imply that every listed table is read/write-accessible to the command; the catalogue's R-self/R-scope/R-admin/CMD/NONE rules remain controlling design constraints.
 
 | Command families | Exact tables in current RLS inventory |
 |---|---|
@@ -120,15 +120,16 @@ The authoritative current proposed inventory is [Table-by-Table RLS Policy Catal
 | CA-17 / CA-18 Evidence upload/read/export | evidence_assets plus private Storage bucket/object policies |
 | CA-19 Offline sync | sync_batches, idempotency_records, inspections, checklist_responses, specification_responses, evidence_assets |
 | CA-20 Document generation | documents, inspection_revisions, attendance_records plus private Storage |
-| CA-21 Print | documents, print_events |
+| CA-21 Print | print_batches, documents, print_events |
 | CA-22 Attendance | attendance_records, attendance_documents |
 | CA-23 Report read | inspections, target_plans, target_allocations |
-| CA-24 Audit read/export | audit_events; export artifact storage/table is not yet in the 41-table inventory |
-| CA-25 Retention/legal hold | audit_events, evidence_assets and private Storage; retention/hold records are not in the current 41-table inventory |
+| CA-24 Audit read/export | audit_events; export artifact storage/table is not yet in the 48-table inventory |
+| CA-25 Retention/legal hold | audit_events, evidence_assets and private Storage; retention/hold records are not in the current 48-table inventory |
 | CA-26 Security case review | No dedicated security-case table is in the current inventory |
 | CA-27 Provider/release administration | No provider-configuration or release-record table is in the current inventory |
+| CA-28 Notification inbox/policy/workers | notifications, notification_policy_versions, notification_outbox, notification_deliveries, notification_delivery_attempts, notification_escalation_events; internal worker operations are not browser-callable |
 
-**Inventory gap:** the current catalogue has 41 tables and three additional command domains (retention/legal-hold records, security cases, provider/release records) are referenced by the registry but do not have corresponding tables in that inventory. They must remain unimplemented/unexposed until data ownership, schema and RLS/EXECUTE design are approved and the catalogue is updated. Export artifacts also need a deliberate decision on whether they use an existing documents/storage model or a new table; do not assume either.
+**Inventory gap:** the current proposed catalogue has 48 tables and three additional command domains (retention/legal-hold records, security cases, provider/release records) are referenced by the registry but do not have corresponding tables in that inventory. They must remain unimplemented/unexposed until data ownership, schema and RLS/EXECUTE design are approved and the catalogue is updated. Export artifacts also need a deliberate decision on whether they use an existing documents/storage model or a new table; do not assume either.
 
 The physical schema specification and ERD remain authoritative for actual table existence. A table's presence in the RLS catalogue is a proposed policy entry, not evidence of a deployed table or policy.
 
@@ -161,7 +162,7 @@ The physical schema specification and ERD remain authoritative for actual table 
 ## 8. Verification status
 
 - Logical command families mapped: 27.
-- Individual command contract draft rows: **48** (CMD-001..048) in PostgreSQL Command Contract Catalogue.
+- Individual command contract draft rows: **54** (CMD-001..054; CMD-049..054 extend the original 48 with notification inbox/policy/worker operations) in PostgreSQL Command Contract Catalogue.
 - Approved/executable command-specific contracts: **0**; exact schemas, physical PostgreSQL signatures, role grants, EXECUTE grants, deployed RLS and staging evidence remain incomplete.
 - Planned family-level verification IDs: TC-CMD-AUTHZ-024-001 through TC-CMD-AUTHZ-024-036 (36 cases); not executed.
 - Planned individual contract cases: TC-CMD-CONTRACT-024-001 through TC-CMD-CONTRACT-024-048 (48 cases); not executed.
@@ -177,7 +178,7 @@ Changes to permission codes, command mappings, role grants, scope predicates, RL
 
 ## Individual command contract catalogue dependency
 
-[PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) now expands the 27 families into 48 logical operations (CMD-001..048) and links 48 planned QA cases (TC-CMD-CONTRACT-024-001..048). This is a detailed proposal, not 48 approved/executable contracts: exact physical PostgreSQL signatures, API routes, role grants, deployed RLS, EXECUTE grants, approved schemas and runtime evidence remain absent. CMD-045..048 are explicitly blocked pending institutional authority/schema.
+[PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) now expands the 27 families into 48 logical operations (CMD-001..048) and links 48 planned QA cases (TC-CMD-CONTRACT-024-001..048). This is a detailed proposal, not 48 approved/executable contracts: exact physical PostgreSQL signatures, API routes, role grants, deployed RLS, EXECUTE grants, approved schemas and runtime evidence remain absent. CMD-045..048 are explicitly blocked pending institutional authority/schema. CMD-052..054 are internal-only workers and require dedicated non-browser identity/ACL review.
 
 ## PostgreSQL function security and caller ACL dependency
 
