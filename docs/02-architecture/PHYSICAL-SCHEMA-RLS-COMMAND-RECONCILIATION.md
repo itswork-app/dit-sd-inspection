@@ -11,7 +11,7 @@ A line-by-line name comparison of the current Package L physical table catalogue
 
 This is a documentation inventory check only. It does not prove the tables exist in a live Supabase project, that RLS is enabled, that any policy is deployed, or that grants are correct.
 
-The logical ERD contains two additional named entities that are not in either 41-table inventory: `print_batches` and `notification_events`. These are explicit model/catalogue discrepancies and must be resolved before either entity is implemented or exposed.
+The prior two ERD-only entities have been dispositioned in the documentation design: T-13 requires `print_batches`, and INS-015's ambiguous `notification_events` placeholder is replaced by six explicit notification lifecycle tables. The proposed physical schema and RLS catalogue now each contain 48 tables with exact name parity. This is static documentation reconciliation only, not live database verification.
 
 ## 2. Controlling sources and rules
 
@@ -79,17 +79,16 @@ The key-column/constraint descriptions are transcribed from Package L; SELECT cl
 - Package M RLS catalogue table count: 41.
 - Physical tables without an RLS catalogue row: none.
 - RLS rows without a physical table specification: none.
-- The two inventories have exact name parity, including T-16 tables `unit_project_associations` and `unit_identity_conflicts`.
-- `print_batches` and `notification_events` are not part of this parity because they appear only in the logical ERD.
+- The two inventories have proposed exact name parity at 48/48, including `print_batches` and the six notification lifecycle tables. `notification_events` is removed from the logical ERD and is not a physical table.
 
-### 4.2 ERD-only entities requiring an explicit disposition
+### 4.2 Disposition of former ERD-only entities
 
-| ERD entity | Current physical spec | Current RLS catalogue | Required action |
+| Former discrepancy | Design disposition | Evidence | Remaining gate |
 |---|---|---|---|
-| `print_batches` | Absent | Absent | Decide whether batch orchestration is represented solely by `print_events` plus idempotency/result references, or requires a durable batch aggregate. If retained, define key columns, lifecycle, per-document outcomes, RLS, command permissions, audit events and retry semantics before adding it to Package L/M. |
-| `notification_events` | Absent | Absent | Reconcile with INS-015 notification decision. Define whether durable in-app notification state is required, recipient/assignment scope, delivery/read state, retry/idempotency, channel separation, audit/versioning and retention. If required, add a physical table specification and RLS row before implementation; do not treat FCM/browser push/email provider state as the system-of-record notification ledger by assumption. |
+| `print_batches` | RETAIN and add to physical schema/RLS. T-13 option B requires a durable batch ID and per-document outcomes. `print_events` stores append-only per-document attempts and optional batch reference. | T-13 PO-approved decision; API contract §6 print/batch-print; NLA-001 print model | Exact schema constraints, lock order, route contract and tests need technical review |
+| `notification_events` | REMOVE as ambiguous placeholder. Replace with `notification_policy_versions`, `notification_outbox`, `notifications`, `notification_deliveries`, `notification_delivery_attempts`, `notification_escalation_events`. | INS-015 PO-approved direction; NLA-001 v0.1.0 | PO/security review, worker principal/ACL, T-10 retention/privacy and provider approvals |
 
-Neither entity is authorized for migration or exposure by its mention in the ERD. Until disposition, mark both as logical placeholders / schema blockers, not existing physical tables.
+The 48/48 count is a proposed documentation inventory. It does not prove live database existence, deployed RLS or grants.
 
 ### 4.3 T-18 privilege interpretation gap
 
@@ -126,10 +125,10 @@ The SELECT classes `R-self`, `R-scope`, `R-admin`, `R-published`, and `R-conflic
 | Canonical unit and claims | units, unit_project_associations, unit_identity_conflicts, unit_claims | Physical coverage exists; T-16 relational technical review and institutional serial policy remain open |
 | Inspection/review | inspections, inspection_revisions, checklist_responses, specification_responses, review_events, inspection_events | Physical coverage exists; exact state machine, author/reviewer SoD and revision write model remain open |
 | Evidence and documents | evidence_assets, documents | Relational metadata coverage exists; Storage policy and evidence read/export authorization remain open |
-| Print | print_events | Per-document events are specified; batch aggregate model unresolved because ERD also names print_batches |
+| Print | `print_batches`, `print_events` | Durable batch ID and per-document attempt outcomes are specified under T-13; technical constraints/tests remain open |
 | Attendance | attendance_records, attendance_documents | Physical coverage exists; verification authority/signatory policy remains open |
 | Audit/idempotency/offline | audit_events, idempotency_records, sync_batches | Physical coverage exists; T-10 policy, idempotency retention and device/offline policy remain open |
-| Notifications | none | ERD-only notification_events; INS-015 physical/RLS design gap |
+| Notifications | `notification_policy_versions`, `notification_outbox`, `notifications`, `notification_deliveries`, `notification_delivery_attempts`, `notification_escalation_events` | NLA-001 design proposal; PO/security review, worker ACL, T-10 retention and provider dependencies remain open |
 
 ## 6. Required closure artifacts
 
@@ -145,10 +144,10 @@ Before implementation authorization, produce and review:
 
 ## 7. Verification status
 
-- Physical table inventory extracted: **41**.
-- RLS catalogue entries extracted: **41**.
-- Exact name parity: **PASS (41/41)**.
-- ERD-only entities identified: **2** (`print_batches`, `notification_events`).
+- Proposed physical schema inventory: **48**.
+- Proposed RLS catalogue entries: **48**.
+- Static documentation name parity: **48/48**.
+- Former ERD-only entities: **0 unresolved by name**; `print_batches` retained, `notification_events` replaced by six lifecycle tables.
 - Live database existence/RLS/grants inspected: **NO**.
 - SQL migrations or policies created/executed: **NO**.
 - Command function inventory/signatures complete: **NO**.
@@ -163,3 +162,10 @@ Any change to physical tables, ERD entities, RLS classes, table privileges, comm
 ## 9. Per-table verification case allocation
 
 The QA catalogue now allocates one design-level test to each of the 41 tables: TC-RLS-024-001..041. Each case checks the table's declared SELECT class, an unauthorized/wrong-scope read, and the T-18 prohibition on browser-facing direct INSERT/UPDATE/DELETE even when the catalogue labels a mutation CMD. Internal tables with SELECT NONE receive explicit no-client-access assertions. All 41 cases are planned only and require execution against staging Supabase after approved migrations/grants.
+
+## NLA-001 / T-13 reconciliation addendum — 2026-11-24
+
+- T-13 PO-approved batch printing requires persistent batch identity and per-document outcomes; `print_batches` is now part of the proposed physical schema and RLS catalogue.
+- `print_events` now records each per-document attempt/outcome and optional `batch_id`; retry appends a new attempt and is failed-only.
+- INS-015 notification persistence is specified in NLA-001 using six tables; `notification_events` is removed from ERD.
+- Proposed inventory parity is 48/48. This is not live Supabase evidence. Exact constraints, grants, RLS predicate verification, worker identity and test execution remain open.
