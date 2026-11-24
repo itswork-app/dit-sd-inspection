@@ -231,3 +231,16 @@ Audit read and export are separate proposed permissions (audit.read and audit.ex
 The canonical event mapping is limited to the existing notification events: notification.policy_published, notification.read, notification.escalation_evaluated and notification.escalation_enqueued. CMD-050 emits notification.read only on the first successful set-once read transition; the audit event and read_at update are atomic, and duplicate/no-op acknowledgements do not append another event. Inbox page access is not a general audit event. Routine provider attempts and callback status updates remain in dedicated notification delivery/attempt state and privacy-safe operational telemetry; do not flood the general audit stream with every retry or callback.
 
 No notification message body, evidence, full provider response, credential, token or signed URL may be placed in general audit metadata. T-10 institutional classification, retention, legal hold, disposition and audit export authority remain blocked. This is a documentation proposal, not a deployed audit control.
+
+
+## CMD-044 candidate event disposition — 2026-11-24
+
+The existing canonical event vocabulary includes audit.exported, audit.accessed and audit.search_performed. The following CMD-044 lifecycle events are mentioned only as candidates and are NOT admitted to the canonical event catalogue until T-10 and institutional records/security approval defines their use, payload classification, retention and access:
+
+- audit.export_requested
+- audit.export_approved
+- audit.export_rejected
+- audit.export_downloaded
+- audit.export_failed
+
+Do not emit or rely on these event names as implemented behavior. If dual control is not institutionally required, approval/rejection events may be unnecessary; do not create approval records by assumption. Export request, approval, generation, download, failure and disposition evidence must be mapped to one canonical event vocabulary before CMD-044 implementation. audit.exported remains the existing catalogue event but does not itself authorize export.
