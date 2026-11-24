@@ -483,7 +483,7 @@ Current controlled L05 references are:
 - LOCK-MANIFEST-001 v0.4.30 §7.7 and §7.13; LOCK-GRAPH-001 v0.4.23 §§28–30.
 - RTM-001 v0.1.12; RAID-001 v0.1.11; QA Catalogue v0.5.2; L05-REVIEW-001 v0.1.7; DGA-001 v1.11.73; NLA-EVENT-TRIAGE-001 v0.1.1; SCOPE-RECON-001 v0.1.2; POQ-04 PO APPROVED.
 
-Earlier dated sections retain the versions that were actually reviewed at those checkpoints and are historical, not current pointers. The CMD-031–040 overlay remains candidate-only; 0/40 resolver paths and 0/50 application commands are certified. Candidate snapshot relation/header remain NOT ADMITTED. NRL-T01..T13 and TC-NOTIF-001..072 remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE.
+Earlier dated sections retain the versions that were actually reviewed at those checkpoints and are historical, not current pointers. The CMD-031–040 overlay remains candidate-only; 0/40 resolver paths and 0/50 application commands are certified. Candidate snapshot relation/header remain NOT ADMITTED. NRL-T01..T13 and TC-NOTIF-001..074 remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE.
 
 
 ## 20. POQ-04 event-transition recipient semantics — PO APPROVED (2026-11-24)
@@ -551,7 +551,7 @@ The IFP instrument source remains draft; its photo-slot required status is OPEN.
 The PO decision is recorded in DECISION-REGISTER.md. NLA-EVENT-REGISTRY-001 v0.1.0 is a draft inventory for specification/review only. Engineering/Security/Database must complete exact event contract, participant mapping, selector dependency, deduplication, atomicity and dispatch profile review before any row can be technically admitted. F-05/F-04 remain OPEN; no physical schema, SQL, migration or runtime behavior is admitted.
 
 
-**Current pointer synchronization — 2026-11-24:** NLA-001 v0.1.21; NLA-L05-TDR-001 v0.1.8; L05 source map v0.1.0; writer matrix v0.1.4; QA v0.5.2; L05 review v0.1.7; DGA v1.11.73; SCOPE-RECON-001 v0.1.2; NLA-EVENT-TRIAGE-001 v0.1.2. TC-NOTIF-001..072 remain PLANNED / NOT EXECUTED. This pointer refresh does not close F-05/F-04 or enable any event.
+**Current pointer synchronization — 2026-11-24:** NLA-001 v0.1.21; NLA-L05-TDR-001 v0.1.8; L05 source map v0.1.0; writer matrix v0.1.4; QA v0.5.3; L05 review v0.1.7; DGA v1.11.74; SCOPE-RECON-001 v0.1.2; NLA-EVENT-TRIAGE-001 v0.1.2. TC-NOTIF-001..072 remain PLANNED / NOT EXECUTED. This pointer refresh does not close F-05/F-04 or enable any event.
 
 
 ## 25. PO-approved event candidate registry — specification only
