@@ -1,7 +1,7 @@
 # CMD-001–010 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security review required; NOT approved for implementation  
-**Version:** 0.1.0  
+**Version:** 0.2.0  
 **Date:** 2026-11-24  
 **Scope:** CMD-001 through CMD-010  
 **Controls:** T-15 append-only audit direction; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
