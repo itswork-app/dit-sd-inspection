@@ -1,11 +1,11 @@
 # Notification Audience Guard — Technical Decision Record
 
 **Document ID:** NLA-L05-TDR-001  
-**Version:** 0.1.3  
+**Version:** 0.1.4  
 **Status:** PO-APPROVED CANDIDATE — technical approval pending Engineering, Database and Security  
 **Date:** 2026-11-24  
 **Decision authority:** Product Owner candidate selection recorded in NLA-RESOLVER-LOCK-001 §11  
-**Parent design:** NLA-RESOLVER-LOCK-001 v0.1.9  
+**Parent design:** NLA-RESOLVER-LOCK-001 v0.1.10  
 **Scope:** PostgreSQL transaction serialization for event-time notification audience resolution; CMD-001–040 source-event paths, CMD-051 policy publication, CMD-052 fan-out and CMD-054 escalation
 
 ## 1. Decision requested
@@ -122,7 +122,7 @@ Reference: https://www.postgresql.org/docs/current/functions-datetime.html
 
 All rows below are in-scope for the guard unless a static proof shows the mutation cannot affect any enabled selector. The final command-ID mapping is a mandatory approval artifact; this category list is not a substitute for that matrix.
 
-See [NLA-L05-WRITER-MATRIX-001](L05-ELIGIBILITY-WRITER-PARTICIPATION-MATRIX-001.md) v0.1.0 for the current static command/non-command writer inventory. That artifact is intentionally PARTIAL: selector dependency grammar, deployed function/trigger/job inventory, direct-DML bypass evidence and actual writer ownership remain unknown. It does not close the complete-writer requirement.
+See [NLA-L05-WRITER-MATRIX-001](L05-ELIGIBILITY-WRITER-PARTICIPATION-MATRIX-001.md) v0.1.2 for the current static command/non-command writer inventory. That artifact is intentionally PARTIAL: selector dependency grammar, deployed function/trigger/job inventory, direct-DML bypass evidence and actual writer ownership remain unknown. It does not close the complete-writer requirement.
 
 | Writer class | Required behavior |
 |---|---|
