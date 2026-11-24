@@ -1,11 +1,11 @@
 # L05 Audience Guard — Internal Technical Review
 
 **Document ID:** L05-REVIEW-001  
-**Version:** 0.1.6  
+**Version:** 0.1.7  
 **Review status:** REQUEST CHANGES — NOT TECHNICALLY APPROVED  
 **Review date:** 2026-11-24  
 **Reviewer capacity:** Internal technical reviewer acting for Product Owner interests; not an independent human Engineering, Database, Security or institutional sign-off  
-**Reviewed artifact:** NLA-L05-TDR-001 v0.1.7  
+**Reviewed artifact:** NLA-L05-TDR-001 v0.1.8  
 **Reviewed branch:** `docs/notification-resolver-lock-closure`  
 **Review scope:** static documentation and PostgreSQL semantics; no live database, code, migration, CI or runtime verification
 
@@ -207,3 +207,25 @@ POQ-04 has resolved the product-decision question, but static review of the curr
 QA v0.4.9 adds TC-NOTIF-060..064 as PLANNED / NOT EXECUTED. These are acceptance specifications only, not evidence.
 
 **Reviewer disposition:** REQUEST CHANGES — NOT TECHNICALLY APPROVED. POQ-04 is PO APPROVED; F-05 remains OPEN until F05-T1..T5 are defined, independently reviewed and evidenced. F-03/F-04/F-07 remain OPEN. Resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE. No code, SQL, migration, grant, RLS, live DB inspection or runtime test occurred.
+
+
+## 12. Review of selector grammar v1 and dispatch profiles — 2026-11-24
+
+**Review result: candidate specification materially improved; not approved.**
+
+Positive findings:
+- The language is bounded to ROLE_SCOPE and EVENT_PARTICIPANT; arbitrary SQL, nested boolean trees, wildcards, free-form IDs and implicit participant append are explicitly prohibited.
+- The exact event-to-selector registry is distinguished from the CMD source-event inventory; composite/conditional declarations cannot be enabled as ambiguous tokens.
+- The dispatch matrix separates event-time qualification from current dispatch authorization and explicitly avoids blanket revoked-role, ended-membership and active-parent predicates for transition notices.
+- New QA cases TC-NOTIF-065..070 cover grammar validation, participant binding, event-token exactness, transition dispatch and scope-safe deduplication.
+
+Remaining approval blockers:
+1. The eight-clause cap is a proposed bound, not yet justified by measured workload or approved by Engineering/Operations.
+2. Canonical role-key registry and event-scope binding catalogue are not referenced to approved SSOT identifiers; exact participant field mappings for each event token do not exist.
+3. No complete exact event registry exists. The source map contains composite/conditional declarations and does not establish which events are notification-enabled.
+4. The dispatch matrix remains a proposed profile. Security must approve the current-scope exceptions for revoke/end/close notices and reconcile them with mandatory security restrictions and inbox/source-resource RLS.
+5. Candidate identity/scope serialization is not physically admitted; deduplication by recipient must not merge incompatible source scopes or widen scope evidence.
+6. No selector-to-column dependency map or complete physical writer inventory exists; F-04 remains OPEN.
+7. No Security/Engineering/Database sign-off or runtime evidence is present.
+
+**Disposition:** REQUEST CHANGES — NOT TECHNICALLY APPROVED. F-05 remains OPEN; F-04 remains OPEN; F-03/F-07 remain OPEN. TC-NOTIF-055..070 remain PLANNED / NOT EXECUTED. Resolver certification 0/40; application lock certification 0/50; graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE. Documentation/static review only.
