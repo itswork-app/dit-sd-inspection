@@ -540,7 +540,7 @@ The response must not return unrelated candidate-project data. For REJECT, assoc
 - Caller must be an approved/enabled designated conflict reviewer with explicit \`unit.identity.resolve\`; project operational membership alone is insufficient.
 - Enforce independent verification. The conflict reporter, candidate submitter and resolver relationship must be evaluated under an approved SoD policy. The exact non-self-resolution rule is not yet stated in the physical schema/command catalogue and requires PO/security approval.
 - Resolve only a conflict in an open/reviewable state.
-- For \`ASSOCIATE_EXISTING\`, candidate must match the conflict's \`instrument_id\` and \`serial_normalized\` exactly under the same normalization version/policy; never accept a different instrument or normalized key.
+- For \`ASSOCIATE_EXISTING\`, candidate must match the conflict's \`instrument_type\` and \`serial_normalized\` exactly under the same normalization version/policy; never accept a different instrument or normalized key.
 - Do not create a new canonical unit, clone a unit, merge identities, rewrite historical inspection/claim rows or expose the candidate's other project history.
 - Create a new project association episode only if the proposed project and reviewer authority are valid and no ACTIVE association already exists.
 - For \`REJECT\`, close the conflict with a reason and no association side effect.
