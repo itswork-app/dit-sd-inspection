@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.5  
+**Version:** 0.1.6  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -300,3 +300,8 @@ PO has selected candidate L05 (global transaction-scoped audience guard) as the 
 ### R-037 technical protocol checkpoint — 2026-11-24
 
 [NLA-L05-TDR-001 v0.1.0](../02-architecture/NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) proposes a transaction-scoped two-key PostgreSQL advisory lock at candidate L05. Exact key pair/registry, deployed READ COMMITTED configuration, complete writer mapping, helper ACL, FK/unique/trigger graph, numeric lock/transaction/retry budgets, audience cap, SLO and acyclicity evidence remain OPEN. R-037 remains OPEN — CRITICAL; no technical approval or implementation authorization is inferred. Resolver certification 0/40; application lock certification 0/50.
+
+
+### R-037 PO decision — 2026-11-24
+
+The Product Owner approved NLA-L05-TDR-001 v0.1.1 as the preferred technical candidate for Engineering/Database/Security review. This is candidate-direction approval only. L05 remains unadmitted; R-037 remains OPEN — CRITICAL until technical approvals, complete 40-source resolver lock coverage, FK/trigger graph, acyclicity proof and concurrency evidence are complete. No implementation authorization is created.
