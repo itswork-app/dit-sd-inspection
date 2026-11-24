@@ -1,10 +1,10 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.4.7
+**Version:** 0.4.8
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
-**Parent:** LOCK-GRAPH-001 v0.4.5  
+**Parent:** LOCK-GRAPH-001 v0.4.6  
 **Scope:** Per-command resource inventory, source-stated lock sequence, shared invariants, competing commands, constraints and unresolved ordering  
 **Gate:** G3 NOT READY; G4 NOT READY; G5 NOT READY; G7 NOT READY; G9 NOT READY; G10 NOT AUTHORIZED.
 
@@ -284,3 +284,6 @@ These rows reconcile logical resource/transaction boundaries only. The queue tab
 ## 7. Current source-version and rank synchronization — 2026-11-24
 
 Current linked candidate sources: LOCK-GRAPH-001 v0.4.5; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.4; CMD-011–020 Detailed Contract Review v0.3.6; PostgreSQL Command Contract Catalogue v0.4.1; CONCURRENCY-001 v0.1.3; TECH-RESOLUTION-LPR-001 v0.1.0. The refined L15–L18 identity/authorization and L55 membership classes are candidate ranks only. This source refresh does not normalize or certify any of the 54 rows: 54/54 remain INVENTORIED; 0/54 CERTIFIED.
+
+
+**Parent reference note:** this manifest was refreshed against LOCK-GRAPH-001 v0.4.6; the source-version table in §7 is a dated review snapshot, not a live version pointer. Subsequent parent edits require a new explicit review checkpoint.
