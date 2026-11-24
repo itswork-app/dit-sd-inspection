@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -254,3 +254,19 @@ CMD-049–054 Detailed Contract Review v0.1.1 and NLA-001 v0.1.2 resolve several
 ## Identifier uniqueness audit correction — 2026-11-24
 
 The final documentation audit detected a duplicate risk identifier. R-014 remains assigned to the project-wide scope-freeze risk. The alternative provider-ownership continuity risk is now R-036. The risk description, impact, likelihood, mitigation, owner and OPEN status are unchanged. RAID identifiers are unique within this register.
+
+
+## Cross-document governance audit checkpoint — 2026-11-24
+
+The static audit in [SSOT-AUDIT-001](SSOT-CROSS-DOCUMENT-RECONCILIATION-AUDIT.md) reconciled the current DGA, RTM, Decision Register, Package S and Package T status without changing the authority or risk meaning of existing entries.
+
+- Existing 53 unique RAID identifiers are retained; no risk, assumption, issue or dependency is marked closed by this documentation audit.
+- D-031..D-036 remain institutional/provider/worker/policy dependencies as recorded.
+- R-032..R-036 remain open or verification-open; documentation mitigations do not establish technical or operational closure.
+- T-10 and T-12 PO decisions approve governance paths only; institutional/provider evidence remains outstanding.
+- RTM T-13 print verification now maps to TC-PRINT-001..007 and TC-PRINT-BATCH-001..008; no test has been executed.
+- Package S §9.15 remains historical; §9.16 is the current inventory snapshot. Package T v0.1.1 remains a historical decision pack, with the Decision Register as current PO authority.
+
+No RAID owner has been replaced with an invented person or institution. No new risk is assigned without evidence of a distinct risk beyond the existing DGA/RAID register. The PO and authority requests are tracked in POQ-001 and AUTH-001.
+
+**Status:** RAID review remains OPEN for the existing dependencies and risks. No external approval, technical certification, implementation, test, merge or release evidence is implied.
