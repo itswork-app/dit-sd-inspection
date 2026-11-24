@@ -1,7 +1,7 @@
 # API and Transaction Contracts — Dit. SD Inspection
 
 Status: Application command design draft — endpoint implementation not authorized  
-Version: 0.2.0
+Version: 0.2.1
 
 ## 1. Contract principles
 
@@ -195,20 +195,25 @@ The route-to-RPC contract must follow [PostgreSQL Function Security & EXECUTE Gr
 
 ### Recipient inbox read
 - `list-own-notifications` is a read-only query restricted to `recipient_user_id = auth.uid()` with cursor/filter binding to the actor. It does not reveal source-resource details outside the recipient's scope.
-- `mark-notification-read` is idempotent and sets `read_at` once using server UTC. It cannot update delivery state or business state.
+- `mark-notification-read` accepts only the notification identifier, is idempotent and sets `read_at` once using database UTC; no expected_version is required because notifications has no row-version field. The first transition emits one notification.read event atomically; duplicate/no-op requests emit no duplicate event. It cannot update delivery state or business state.
 
 ### Policy publication
-- Policy changes create a new immutable `notification_policy_versions` row after strict schema/allowlist validation and permission/scope/SoD checks. Publishing and its audit event are atomic. Existing outbox rows retain their pinned policy version.
+- CMD-051 is publish-only: it validates a submitted candidate document, computes its canonical hash server-side, compares optional expected_current_version_id, serializes version allocation for the exact policy/scope and creates a new immutable notification_policy_versions row. Persisted draft CRUD is excluded from this command; any draft workflow requires a separately approved command/schema. Publishing and its audit event are atomic. Existing outbox rows retain their pinned policy version.
 
 ### Outbox fan-out
 - The originating domain command writes its domain event, audit event and minimal outbox intent atomically. Failure to persist audit or outbox intent rolls back that source command.
-- Internal fan-out claims a bounded lease, resolves recipients from the pinned policy, deduplicates recipient selectors and creates one inbox row and per-channel delivery projection idempotently. No provider I/O occurs in the transaction.
+- Internal fan-out claims a bounded lease using lease_owner, lease_token_hash, lease_generation and lease_expires_at, resolves recipients from the pinned policy, deduplicates recipient selectors and creates one inbox row and per-channel delivery projection idempotently. Partial progress remains PROCESSING and resumes through unique arbiters. No provider I/O occurs in the transaction.
 
 ### Provider dispatch and retry
-- Worker claims a delivery lease, appends an attempt record and performs provider I/O outside a database transaction. Completion is guarded/idempotent. Use provider idempotency where supported; otherwise represent ambiguous acceptance as UNKNOWN and reconcile before claiming success.
+- Worker claims a delivery lease using the same owner/token-hash/generation/expiry fencing tuple, appends an attempt record and performs provider I/O outside a database transaction. Completion is guarded/idempotent. Use provider idempotency where supported; otherwise represent ambiguous acceptance as UNKNOWN and reconcile before claiming success. Provider callbacks enter only through separately authenticated integration boundary INT-NOTIF-001, not a browser RPC.
 - Retry is bounded and policy-controlled; routine delivery failure never blocks or rolls back the underlying business command.
 
 ### SLA/reminder/escalation
-- Evaluate policy-version-pinned thresholds using server time. Append one unique escalation event per notification/policy/step/type. Enqueue another notification only after recipient scope is revalidated. Never change source business state.
+- Evaluate policy-version-pinned thresholds using one database-derived UTC instant per transaction; no caller evaluation_time is accepted. Append one unique escalation event per notification/policy/step/type. Enqueue another notification only after recipient scope is revalidated. Never change source business state.
 
 Worker identity, scheduler authentication, database role, function owner and exact EXECUTE ACL remain a separate T-18 security approval. CMD-052..054 must not be browser-callable.
+
+
+## Notification integration boundary — INT-NOTIF-001 (proposal)
+
+INT-NOTIF-001 is the provider callback ingress used by CMD-053's external delivery lifecycle. It is a separate server-side integration route, not a CMD ID, user permission or browser-callable PostgreSQL RPC. The selected provider must supply a verifiable signature/authentication mechanism and stable event identity. The ingress must validate signature and freshness, resolve only a known provider_message_ref, apply an allowlisted monotonic delivery-state transition, deduplicate provider event IDs through an approved durable mechanism, and reject replay/unknown references without revealing unrelated deliveries. It must never update notifications.read_at or source business state. Provider choice, callback credentials, event dedup persistence and exact route/function ACL remain unapproved.
