@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.3.3
+Version: 0.3.4
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -418,6 +418,27 @@ See [PostgreSQL Command Contract Catalogue](../02-architecture/POSTGRESQL-COMMAN
 | TC-CMD-CONTRACT-024-048 | CMD-048 `manage-production-release` | `release.manage` | Forged actor/role/scope fields and wrong-scope caller are rejected; protected direct browser DML remains denied. | Command remains unavailable until its institutional authority and physical schema are approved; no placeholder function/table is exposed. | `production.release_deployed/rollback_performed` | PLANNED / NOT EXECUTED |
 
 **Execution gate:** all 48 cases remain PLANNED / NOT EXECUTED. Before execution, bind each case to the approved exact RPC signature, route schema, staging migration, caller database role, fixtures, expected SQLSTATE/domain mapping and captured result. For blocked CMD-045..048, the expected result is deny/not exposed until the prerequisite institutional authority/schema is approved.
+
+### CMD-045–048 blocked-command review subcases — design only
+
+The following subcases expand the existing TC-CMD-CONTRACT-024-045..048 anchors. They are planned assertions, not executed tests. Until the relevant authority and exact contract are approved, the expected behavior is that the command is not exposed and no placeholder mutation occurs.
+
+| Test ID | Command | Scenario / assertion | Expected result | Status |
+|---|---|---|---|---|
+| TC-CMD-045-048-001 | CMD-045 | T-10 institutional policy absent or incomplete | Command unavailable; no hold, retention or disposition mutation | PLANNED / NOT EXECUTED |
+| TC-CMD-045-048-002 | CMD-045 | Active approved hold races with queued disposition | No covered record/object is disposed; deterministic audited outcome | PLANNED / NOT EXECUTED |
+| TC-CMD-045-048-003 | CMD-045 | Unauthorized hold release or arbitrary client approval reference | Denied; no policy or hold state changes | PLANNED / NOT EXECUTED |
+| TC-CMD-045-048-004 | CMD-046 | Incident scope/authority not approved or caller lacks case scope | Command unavailable or denied without case enumeration | PLANNED / NOT EXECUTED |
+| TC-CMD-045-048-005 | CMD-046 | Break-glass access, if institutionally approved | Bounded access, reason, expiry and independent review evidence | PLANNED / NOT EXECUTED |
+| TC-CMD-045-048-006 | CMD-046 | Incident review attempts to mutate business state or self-grant privileges | Denied; no operational state or authorization mutation | PLANNED / NOT EXECUTED |
+| TC-CMD-045-048-007 | CMD-047 | T-12 ownership/custody or approved secret manager absent | No provider configuration write path | PLANNED / NOT EXECUTED |
+| TC-CMD-045-048-008 | CMD-047 | Raw secret/token/private key supplied or emitted in logs/audit/errors | Rejected and never persisted or disclosed | PLANNED / NOT EXECUTED |
+| TC-CMD-045-048-009 | CMD-047 | Unauthorized provider/environment/config key or stale version | Denied; approved configuration remains unchanged | PLANNED / NOT EXECUTED |
+| TC-CMD-045-048-010 | CMD-048 | Missing release operator, environment approval or required CI check | Promotion/rollback unavailable | PLANNED / NOT EXECUTED |
+| TC-CMD-045-048-011 | CMD-048 | Artifact digest/source commit mismatch or untrusted artifact | Promotion denied; immutable provenance retained | PLANNED / NOT EXECUTED |
+| TC-CMD-045-048-012 | CMD-048 | Rollback with incompatible/destructive schema reversal | Rollback blocked pending approved recovery/compatibility plan | PLANNED / NOT EXECUTED |
+
+Execution requires G10, approved exact command/control-plane contracts, isolated authorized staging, named test identities and reproducible evidence. These cases do not authorize test execution against production or real institutional data.
 
 ## PostgreSQL function security and EXECUTE grant verification (2026-11-24)
 
