@@ -196,7 +196,7 @@ For each test, record actor fixture, grants, resource fixture, request, expected
 3. Exact RLS helper implementation and reviewed SECURITY DEFINER exceptions.
 4. **Superseded by T-18 PO APPROVED option A (2026-11-24):** browser-facing direct DML is denied on protected business/governance tables, including draft answer/response tables. Draft persistence uses the trusted Vercel route → caller-JWT PostgreSQL command function. The remaining work is the exact table grants, command EXECUTE grants and executable verification.
 5. Evidence retention/deletion and legal-hold policy.
-6. Audit event policy INS-016 approval, access, retention, and export.
+6. **INS-016 PO APPROVED (T-15 option A):** implement append-only audit writes and atomic fail-closed critical commands; institutional retention/legal-hold/disposition and final audit-reader/export authority remain open under T-10.
 7. Institutional data classification and privacy/legal basis.
 
 ## 10. Release gate and disposition
