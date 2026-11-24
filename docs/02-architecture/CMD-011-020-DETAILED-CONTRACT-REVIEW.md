@@ -1121,7 +1121,7 @@ The command catalogue permits timezone, while the physical session table does no
 
 ### F-011-02 — Session initial state and lifecycle graph are incomplete
 
-CMD-011 does not define server-selected initial state. CMD-013 has only an incomplete transition list and CLOSED terminal rule. Korlap's allowed transitions must be enumerated individually.
+CMD-011 initial state is PO-approved as T-07 DRAFT. CMD-013 preserves DRAFT/ACTIVE/PAUSED/CLOSED and treats CLOSE_REQUESTED as action/event. Exact transition edges and permission mapping remain Engineering/Security review items.
 
 ### F-012-01 — Session optimistic concurrency is not physicalized
 
@@ -1129,7 +1129,7 @@ CMD-012 and CMD-013 require expected_version, but \`sessions\` has no row_versio
 
 ### F-014-01 — Assignment/member lifecycle and overlap semantics are incomplete
 
-The physical tables define intervals and active membership uniqueness, but exact overlap dimensions, endpoint inclusivity, active-claim removal behavior and assignment initial state are not resolved.
+The PO has approved half-open [start,end) intervals, the scoped duplicate/conflicting Inspector eligibility predicate and preservation of submitted inspections. Active claim/in-progress orphan handling and physical uniqueness remain technical/operational review items.
 
 ### F-016-01 — Capacity settings version is missing
 
