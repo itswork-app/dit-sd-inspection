@@ -1,7 +1,7 @@
 # PostgreSQL Command Contract Catalogue
 
 **Status:** PO product semantics for CMD-011–020 APPROVED; CMD-045–048 external control-plane disposition PO APPROVED; remaining application command engineering/security contracts OPEN; NOT approved for implementation  
-**Version:** 0.4.6 | **Date:** 2026-11-24  
+**Version:** 0.4.7 | **Date:** 2026-11-24  
 **Decision basis:** T-14, T-15, T-16, T-17, T-18; Package L/M; canonical permission registry v0.2.2.
 
 ## 1. Purpose and boundary
@@ -90,7 +90,7 @@ The request fields below are proposed allowlists, not finalized OpenAPI/JSON Sch
 
 ## 3.1 CMD-045–048 external control-plane boundary — PO APPROVED
 
-See [CMD-045–048 Detailed Contract Review](CMD-045-048-DETAILED-CONTRACT-REVIEW.md) v0.1.0 for authority gaps, safe-unavailable behavior, candidate security invariants and future verification.
+See [CMD-045–048 Detailed Contract Review](CMD-045-048-DETAILED-CONTRACT-REVIEW.md) v0.1.3 for authority gaps, safe-unavailable behavior, candidate security invariants and future verification.
 
 - CMD-045 application command design is DEFERRED to the institutional records/legal/privacy control plane; T-10 policy remains a production-data gate.
 - CMD-046 application command design is DEFERRED to the designated institutional incident-response control plane; accountable incident RACI remains OPEN.
@@ -98,7 +98,7 @@ See [CMD-045–048 Detailed Contract Review](CMD-045-048-DETAILED-CONTRACT-REVIE
 - CMD-048 is OUT OF APPLICATION SCOPE; protected GitHub/deployment control planes are authoritative; release governance and runtime evidence remain OPEN/BLOCKING.
 - No application permission grants or executable app interfaces may be created for these four IDs. Any future narrow integration requires a new requirement/command ID and separate approval.
 - The four logical rows are not executable contracts. No route, function, permission grant, table, RLS policy, lock mode or idempotency contract is approved by their presence in this catalogue.
-- QA anchors TC-CMD-CONTRACT-024-045..048 and their review subcases remain PLANNED / NOT EXECUTED. The commands remain excluded from implementation until their individual authority and design gates close.
+- QA anchors TC-CMD-CONTRACT-024-045..048 and their review subcases remain PLANNED / NOT EXECUTED. The four IDs remain excluded from application implementation; external control-plane dependencies must be satisfied by their accountable owners and are not an application implementation backlog.
 
 ## 4. RPC signature and route contract status
 
