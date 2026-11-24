@@ -1,7 +1,7 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.2.0
+**Version:** 0.3.0
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Parent:** LOCK-GRAPH-001 v0.2.0  
@@ -35,7 +35,7 @@ Evidence is static documentation inspection only. No PostgreSQL catalog, query p
 |---|---|---|
 | L0 | Idempotency arbitration | Unique actor/command/resource/key request identity |
 | L10 | Shared serialization row | T-14 project capacity or another shared invariant row |
-| L20 | Canonical identity arbitration | Normalized instrument/serial identity or conflict identity |
+| L20 | Canonical identity arbitration | Canonical `(instrument_type, serial_normalized)` identity or conflict identity |
 | L30 | Project/session parent | Project and session lifecycle gates |
 | L40 | Assignment/instrument references | Assignment, membership, instrument and published version |
 | L50 | Canonical unit | Unit identity/lifecycle |
@@ -71,11 +71,11 @@ The L-ranks are candidate analysis labels, not an approved lock order. A dash me
 | CMD-019 | save-instrument-draft | L0 → L40 instrument row → instrument_version row → child configuration rows deterministic order → L90 | CMD-020 publish; competing draft saves; CMD-021 deactivation/assignment selection | Instrument row serializes version allocation; canonical config hash proposed | BLOCKED — config hash physical field, child replacement/history and assignment/instrument global rank open |
 | CMD-020 | publish-instrument-version | L0 → L40 instrument row → instrument_version row → child config validation → publication/audit | CMD-019 draft save; CMD-021 deactivate; CMD-014 assignment publication | Version status/hash and immutable published snapshot; DB enforcement not finalized | PARTIAL — publication history/child immutability constraint and cross-command instrument/assignment order open |
 | CMD-021 | deactivate-instrument | L0 → instrument row → assignment reference checks → L90 | CMD-014 assignment publish; CMD-019/020 version changes | Lifecycle transition; active-assignment guard only if approved | BLOCKED — source token expected_version lacks approved physical field; instrument-vs-assignment lock order open |
-| CMD-022 | register-canonical-unit | L0 → L20 canonical serial-key unique arbitration; authorize instrument/project/assignment context; unit insert → L90 | CMD-023 association, CMD-025 conflict resolution, CMD-026 claim | Unique canonical identity key; unknown serial uses new server UUID | PARTIAL — exact ordering of context rows versus canonical-key arbitration and duplicate collision workflow open |
+| CMD-022 | register-canonical-unit | L0 → L20 canonical serial-key unique arbitration; authorize instrument/project/assignment context; unit insert → L90 | CMD-023 association, CMD-025 conflict resolution, CMD-026 claim | Unique `(instrument_type, serial_normalized)` canonical identity key; unknown serial uses new server UUID | PARTIAL — exact ordering of context rows versus canonical-key arbitration and duplicate collision workflow open |
 | CMD-023 | associate-unit-to-project | L0 → source says L50 unit → L30 project → L60 association key/unique arbiter → L90 | CMD-024 end/revoke; CMD-025 conflict resolution; CMD-026 claim | Partial unique ACTIVE association index | BLOCKED — source unit-first order conflicts with CMD-026 parent-before-unit candidate order and global hierarchy |
 | CMD-024 | end-unit-project-association | L0 → source says unit + association + active claim/inspection rows in globally deterministic order → L90 | CMD-023 association; CMD-026 claim; CMD-027 release; CMD-028–032 inspection lifecycle | ACTIVE association and dependency guard; association history retained | BLOCKED — exact relative order of project/assignment/unit/association/claim/inspection is not stated |
 | CMD-025 | resolve-unit-identity-conflict | L0 → source says conflict row → candidate unit → project/association key → L90 | CMD-023 association; CMD-026 claim; other conflict resolver | Unique ACTIVE association index; one conflict resolution | BLOCKED — conflict-first order may invert canonical-key/project/unit path; conflict identity rank unresolved |
-| CMD-026 | claim-unit | L0 → L20 canonical serial key → L30 project/session/assignment → L50 unit → L60 association → L70 inspection/claim → L90 | CMD-023/024/025/027; CMD-028 save draft; claim expiry/takeover | Partial unique ACTIVE claim index; inspection lifecycle atomic | BLOCKED — conflicts with catalogue row (unit→association→assignment/claim); claim/inspection ordering and takeover semantics open |
+| CMD-026 | claim-unit | L0 → L20 canonical `(instrument_type, serial_normalized)` key → L30 project/session/assignment → L50 unit → L60 association → L70 inspection/claim → L90 | CMD-023/024/025/027; CMD-028 save draft; claim expiry/takeover | Partial unique ACTIVE claim index; inspection lifecycle atomic | BLOCKED — conflicts with catalogue row (unit→association→assignment/claim); claim/inspection ordering and takeover semantics open |
 | CMD-027 | release-unit-claim | L0 → source says canonical unit → association → assignment → claim → inspection → L90 | CMD-026 claim/takeover/expiry; CMD-028–032 inspection lifecycle | Claim row_version and single terminal claim outcome | BLOCKED — assignment-before-unit candidate hierarchy differs from source; exact lock set/order and token/schema alignment open |
 | CMD-028 | save-draft | L0 → inspection aggregate → active claim/association/assignment dependencies → response children → L90 | CMD-026/027 claim lifecycle; CMD-029 submit; CMD-035 sync; CMD-032 reopen | inspections.row_version CAS; pinned instrument version | BLOCKED — source aggregate-first order conflicts with parent/association rank proposal; exact child sort key/no-op behavior open |
 | CMD-029 | submit-inspection | L0 → inspection aggregate → claim/association/assignment + evidence rows → revision allocation → immutable revision/events → L90 | CMD-028 save; CMD-030 return; CMD-031 approve; CMD-032 reopen; CMD-033 evidence; CMD-035 sync | Unique (inspection_id, revision_no); row_version CAS | BLOCKED — dependency lock order and evidence finalization race must align; event cardinality/source table open |
@@ -185,6 +185,6 @@ All tests are PLANNED / NOT EXECUTED. No CI, local test, SQL, migration or datab
 
 ## 9. Lock protocol decision-resolution proposal — 2026-11-24
 
-[LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.1.0 provides a candidate global rank hierarchy and proposed resolutions for the source-order conflicts. It defines the required per-command manifest evidence, identifies PO-owned product-policy decisions separately from Engineering/Security technical approvals, and preserves the 54/54 inventory with 0/54 certified lock-complete.
+[LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.2.0 provides a candidate global rank hierarchy and proposed resolutions for the source-order conflicts. It defines the required per-command manifest evidence, identifies PO-owned product-policy decisions separately from Engineering/Security technical approvals, and preserves the 54/54 inventory with 0/54 certified lock-complete.
 
 The proposal does not amend command recipes, physical schema, constraints or runtime behavior. No tests or database inspection were performed. LM-01–LM-10 remain open/not executed; G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED.
