@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.3.0  
+**Version:** 1.4.0  
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/t17-instrument-governance-t18-command-boundary`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -50,6 +50,7 @@ No application code, migrations, live Supabase database, deployed RLS/grants, Ve
 | DGA-B14 | Reports/project closure | T-05/T-06 metrics, BA/serial annex and closure graph remain open. T-13 print batch persistence is mapped to `print_batches` + append-only per-document `print_events`; eight dedicated print-batch cases are now specified, but projection, retry and concurrency tests remain unexecuted | Metric definitions, closure gates, print schema/command review and execution evidence | PO + engineering | PARTIAL; PRINT DESIGN AND TESTS SPECIFIED |
 | DGA-B15 | CI/repository governance | Required CI jobs, branch protection, review requirements, secrets scanning, migration checks and actual workflow run were not verified | Live GitHub ruleset/workflow evidence and successful required-check run | Repository administrator | NOT VERIFIED |
 | DGA-B16 | Scope/authority document freshness | Package T status was reconciled; Package S now has a current 9.15 addendum superseding historical 9.14 counts; RTM/RAID and remaining historical audit status still require crosswalk review | Controlled status addenda and reconciled decision/requirement/RAID crosswalk | Document owner + PO | PARTIAL; REMAINING CROSSWALK OPEN |\n| DGA-B17 | Concurrency/version token contract | `expected_version`, `expected_row_version`, business version, revision, hash, print sequence and worker lease semantics are not consistently mapped to physical aggregates; CMD-005/007/035/040/050 have field/target mismatches | PO/Security decisions on [Concurrency and Version Token Reconciliation](../02-architecture/CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md), followed by synchronized schema/catalogue/review/QA updates | PO + engineering + security; institution for attendance authority | OPEN — PROPOSAL DOCUMENTED, DECISIONS PENDING |
+| DGA-B18 | Global lock order and concurrency graph | Catalogue and detailed reviews disagree on CMD-026 and unit/association ordering; instrument/assignment, capacity eligibility, closure fencing, claim/inspection and worker lease boundaries lack a complete reviewed acyclic graph | Decisions LGD-01–10 in [LOCK-GRAPH-001](../02-architecture/GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md), normalized lock manifests for all commands/workers, then adversarial concurrency/deadlock evidence | Engineering + Security + PO; Operations/Institution where applicable | OPEN — PROPOSAL DOCUMENTED, DECISIONS PENDING |
 
 ## 4. High-risk design quality gaps
 
@@ -81,7 +82,7 @@ Package T's document-level status must be updated from “Draft for Product Owne
 | G0 Governance/repository intent | PARTIAL | Repository purpose clarified; document freshness/crosswalk still open |
 | G1 Product closure | BLOCKED | IFP source, SB evidence rules, institutional BA authority |
 | G2 Workflow closure | PARTIAL/BLOCKED | PO decisions recorded; edge cases and exact transitions/authority need reconciliation |
-| G3 Data/transaction closure | BLOCKED | ERD-only entities, concurrency token columns/increment semantics, lock-order conflicts, constraints and external transaction patterns |
+| G3 Data/transaction closure | BLOCKED | ERD-only entities, concurrency token columns/increment semantics, unresolved global lock graph, lock-order conflicts, constraints and external transaction patterns |
 | G4 Security/privacy closure | BLOCKED | Permission matrix, live ACL/RLS, T-10 institutional approvals |
 | G5 API/integration closure | BLOCKED | 54 proposed operations have detailed reviews; exact approved schemas/routes/RPCs, consistent expected_row_version targets, permission mapping and runtime evidence remain open |
 | G6 UX/accessibility closure | PARTIAL | Responsive and offline/device acceptance evidence incomplete |
@@ -181,3 +182,10 @@ The proposal maps:
 - immutable revision/hash, print sequence and worker lease/fencing domains.
 
 **Disposition:** DGA-B17 OPEN. No PO/Security decision has been inferred. G3/G5 remain BLOCKED, G9 remains NOT READY and G10 remains NOT AUTHORIZED. The proposal does not alter the canonical physical schema or command contracts and no tests were executed.
+
+
+## Global lock/concurrency graph update — 2026-11-24
+
+[LOCK-GRAPH-001 — Global Lock-Order and Concurrency Graph Reconciliation](../02-architecture/GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md) v0.1.0 records the cross-command lock-order disagreements and proposes a candidate resource hierarchy, command/race matrix, potential deadlock inversions, lock-manifest requirements and 30 planned concurrency tests.
+
+**Disposition:** DGA-B18 OPEN. The proposal does not prove an acyclic graph, does not resolve CMD-026, does not alter canonical command contracts and does not authorize implementation. G3/G4/G5/G7 remain NOT READY/BLOCKED as recorded above; G9 remains NOT READY and G10 remains NOT AUTHORIZED. No tests or runtime lock inspection were executed.
