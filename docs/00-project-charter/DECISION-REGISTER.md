@@ -218,6 +218,25 @@ The Product Owner approved the following product/domain decisions in response to
 These decisions are effective 2026-11-24 for documentation and design reconciliation. They do not approve selector implementation, SLA worker execution, schema/RLS/grants, providers, institutional retention/privacy policy, G9 scope freeze, G10 implementation authorization, tests, deployment or merge.
 
 
+
+## Product Owner decision — CMD-045–048 control-plane disposition (2026-11-24)
+
+**Decision: APPROVED — CMD-045–048 Control-Plane Resolution Proposal v0.1.0.** The Product Owner explicitly accepted the proposal on 2026-11-24.
+
+The four stable logical IDs remain reserved for traceability, but the operations are not application commands and must not be implemented as browser routes, RPCs, PostgreSQL functions, generic CRUD endpoints, application permission grants or application-managed control planes:
+- CMD-045 retention/legal-hold: institutional records/legal/privacy control plane. The application must not invent retention schedules, initiate disposition, or release legal holds.
+- CMD-046 security incident review: institution-designated incident-response control plane. No application security-case CRUD, generic reviewer permission or implicit account/provider mitigation.
+- CMD-047 provider configuration: provider-native console and institution-approved secret-management/operations control plane. No application credential/configuration CRUD and no secret material in application data, requests, logs or audit.
+- CMD-048 production release: protected source-control/deployment control plane. No application deploy/rollback endpoint or bypass of GitHub/Vercel protections.
+
+Canonical disposition:
+- CMD-045: `DEFERRED_EXTERNAL_CONTROL_PLANE`.
+- CMD-046: `DEFERRED_EXTERNAL_CONTROL_PLANE`.
+- CMD-047: `OUT_OF_APPLICATION_SCOPE_EXTERNAL_PROVIDER_CONTROL`.
+- CMD-048: `OUT_OF_APPLICATION_SCOPE_EXTERNAL_RELEASE_CONTROL`.
+
+These dispositions close the application-surface design ambiguity only. They do not close T-10 institutional records/privacy policy, T-12 provider ownership and recovery evidence, security incident-response RACI, repository/release governance, CI/protected-environment verification, DGA-B04/B05/B15, or G8/G9 operational readiness. No permission grants, source code, SQL, migrations, live provider changes, deployment, CI execution or release is authorized by this decision. G9 remains NOT READY; G10 remains NOT ACTIVE pending its separate gate.
+
 ## Product Owner conditional implementation authorization — 2026-11-24
 
 **Approval source:** Explicit written Product Owner authorization supplied in the project conversation on 2026-11-24, titled “PRODUCT OWNER AUTHORIZATION — DIT SD INSPECTION”. The approval authorizes transition from documentation toward implementation of the application from zero in `itswork-app/dit-sd-inspection`, with the existing SSOT as the build baseline.
