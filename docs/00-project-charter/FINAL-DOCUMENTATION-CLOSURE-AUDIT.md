@@ -1,7 +1,7 @@
 # Final Documentation Closure Audit — Dit. SD Inspection
 
 **Document ID:** DOC-AUDIT-001  
-**Version:** 0.3.0  
+**Version:** 0.3.1  
 **Status:** STATIC DOCUMENTATION AUDIT COMPLETED — IMPLEMENTATION READINESS NOT ESTABLISHED  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
@@ -201,3 +201,8 @@ Eight candidate object families from DURABLE-OPERATION-LEDGER-AND-ARTIFACT-LIFEC
 Permission mapping confirms existing command permissions for sync.apply, document.generate, document.print.batch, attendance.upload, attendance.verify, report.read and audit.export; no new permission or role grant was approved. Device enrollment/revocation and template publication remain separate authorization design gaps. Renderer workload identity/ACL, print attempt identity, attendance scope authority and uploader/verifier SoD remain open.
 
 This closes a documentation cross-reference gap only. It does not close candidate schema design, approve new objects, verify deployed RLS/ACL, advance LPR items, or establish technical certification. G9 NOT READY; G10 NOT ACTIVE; application lock certification 0/50.
+
+
+## 18. Candidate durable-object QA traceability — 2026-11-24
+
+TEST-CASE-CATALOG-AND-UAT v0.3.7 adds 14 candidate-only planned cases TC-CANDIDATE-LEDGER-001..014. Coverage includes durable sync replay and partial outcomes, device trust, renderer lease fencing and immutable provenance, print manifest/retry, attendance document version/verification/SoD, candidate RLS/ACL and permission non-inheritance. All cases are PLANNED / NOT EXECUTED, excluded from executed/passing denominators and conditional on approved schema admission and G10. This is traceability only; no runtime test or certification was performed.
