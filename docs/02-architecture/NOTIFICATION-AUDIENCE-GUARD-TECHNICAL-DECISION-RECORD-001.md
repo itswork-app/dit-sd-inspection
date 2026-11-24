@@ -1,11 +1,11 @@
 # Notification Audience Guard — Technical Decision Record
 
 **Document ID:** NLA-L05-TDR-001  
-**Version:** 0.1.1  
+**Version:** 0.1.2  
 **Status:** PO-APPROVED CANDIDATE — technical approval pending Engineering, Database and Security  
 **Date:** 2026-11-24  
 **Decision authority:** Product Owner candidate selection recorded in NLA-RESOLVER-LOCK-001 §11  
-**Parent design:** NLA-RESOLVER-LOCK-001 v0.1.6  
+**Parent design:** NLA-RESOLVER-LOCK-001 v0.1.8  
 **Scope:** PostgreSQL transaction serialization for event-time notification audience resolution; CMD-001–040 source-event paths, CMD-051 policy publication, CMD-052 fan-out and CMD-054 escalation
 
 ## 1. Decision requested
@@ -73,6 +73,14 @@ This separation is material: a statement that waits for an advisory lock already
 
 The actual transaction isolation used by Supabase/PostgREST, user command wrappers, CMD-052 and CMD-054 is not yet verified. Database must prove it from the deployed configuration and integration evidence before approval.
 
+#### 4.1.1 RPC wrapper volatility and fresh-snapshot contract
+
+Every PostgREST RPC command wrapper that acquires L05 and then resolves an audience **must be declared `VOLATILE`**. It must not be declared `STABLE` or `IMMUTABLE`. For a PL/pgSQL wrapper, lock acquisition and audience resolution must be distinct procedural SQL commands, for example a `PERFORM pg_advisory_xact_lock(...)` followed by a separate `SELECT` statement. Do not combine them in one SQL expression, CTE, or single SQL-function statement.
+
+This is required because PostgreSQL VOLATILE functions obtain a fresh snapshot for each query they execute, whereas STABLE/IMMUTABLE functions use the calling query's snapshot. Actual wrapper/helper volatility metadata, function language, call path and READ COMMITTED behavior must be inspected and tested through the authenticated PostgREST RPC path before technical approval. This is a proposed design requirement, not evidence that deployed functions already comply.
+
+Reference: https://www.postgresql.org/docs/current/xfunc-volatility.html
+
 ### 4.2 Source transaction order
 
 For each command that can emit an allowlisted notification event:
@@ -80,12 +88,13 @@ For each command that can emit an allowlisted notification event:
 1. Begin transaction under the verified isolation contract.
 2. Perform only the approved L00 idempotency arbitration; no principal, role, scope, project, assignment, notification or other domain aggregate row lock may be taken yet.
 3. Acquire L05 in a dedicated SQL command using the fixed internal key pair.
-4. In a subsequent SQL command, read the immutable effective notification policy version and resolve the bounded event-time recipient/scope candidate set.
-5. Acquire the union of actor, target and candidate principal rows in stable UUID order (L15), then applicable role rows (L16), scope-grant rows (L17), and conditional catalogue rows (L18).
-6. Acquire every required FK parent in the approved canonical order (L20 and L30–L55 classes as applicable); then acquire remaining source-specific domain locks in the admitted global order.
-7. Revalidate policy version, account state, role/scope validity, assignment membership/effective dates, capacity and parent lifecycle while L05 is still held. Apply explicit post-transition semantics for self-revoke, account suspension, membership end and closure.
-8. Perform the source mutation; append canonical event, required audit, idempotency result, outbox intent and all immutable snapshot rows in the same transaction.
-9. Verify the snapshot row count/hash/completion marker against the exact inserted set, then commit. Any failure in the required atomic unit rolls back the source mutation.
+4. Immediately after the L05 lock call returns, capture exactly one database wall-clock instant as `audience_evaluated_at := clock_timestamp()`. This is the audience eligibility linearization instant for this transaction.
+5. In a subsequent SQL command, read the immutable effective notification policy version and resolve the bounded event-time recipient/scope candidate set using that captured instant for every time-dependent predicate. Do not use `now()`, `CURRENT_TIMESTAMP`, `transaction_timestamp()` or `statement_timestamp()` as the post-wait audience evaluation instant.
+7. Acquire the union of actor, target and candidate principal rows in stable UUID order (L15), then applicable role rows (L16), scope-grant rows (L17), and conditional catalogue rows (L18).
+8. Acquire every required FK parent in the approved canonical order (L20 and L30–L55 classes as applicable); then acquire remaining source-specific domain locks in the admitted global order.
+9. Revalidate policy version, account state, role/scope validity, assignment membership/effective dates, capacity and parent lifecycle while L05 is still held. Apply explicit post-transition semantics for self-revoke, account suspension, membership end and closure.
+10. Perform the source mutation; append canonical event, required audit, idempotency result, outbox intent and all immutable snapshot rows in the same transaction.
+11. Verify the snapshot row count/hash/completion marker against the exact inserted set, then commit. Any failure in the required atomic unit rolls back the source mutation.
 
 A command with an event type statically and immutably excluded from notification policy matching may omit L05 only when the exclusion is explicit in its command manifest and cannot be changed by policy publication. Runtime policy lookup cannot be used to skip L05 before the lock.
 
@@ -94,6 +103,12 @@ A command with an event type statically and immutably excluded from notification
 `L00 → L05 → L10 (when T-14 applies) → L15 → L16 → L17 → conditional L18 → L20 → L30 → L40 → L50 → L55 → L60 → L70 → L80 → L90 → L100 → L110`
 
 This is a proposed order, not an admitted graph. L05 must precede every mutable domain lock in a participating transaction. T-14 L10 ordering and all existing command-specific conflicts must be reconciled before any source path is certified. No transaction may acquire a lower-ranked row after a higher-ranked row.
+
+The captured `audience_evaluated_at` is one immutable instant for the eligibility decision. Effective intervals use half-open semantics `[valid_from, valid_until)`: an item is effective when `valid_from <= audience_evaluated_at` and `(valid_until IS NULL OR audience_evaluated_at < valid_until)`. This is a proposed technical convention and requires PO confirmation wherever it changes an existing approved domain contract. Policy, role, scope, assignment/member and parent-state predicates must all use the same captured value; no per-row wall-clock sampling is allowed.
+
+The canonical source event's business timestamp remains a separate fact unless the domain event contract explicitly equates it with `audience_evaluated_at`. Persist both when they represent different concepts; never silently rewrite a business-event timestamp to the audience evaluation instant.
+
+Reference: https://www.postgresql.org/docs/current/functions-datetime.html
 
 ## 5. Mandatory writer participation matrix
 
@@ -178,12 +193,12 @@ CMD-052 must claim an outbox row in a short transaction, commit, then perform fa
 
 ## 10. CMD-054 scheduler protocol
 
-1. Capture one database UTC instant for the evaluation attempt.
-2. Read due candidate IDs and pinned policy metadata as preflight only; no mutable policy/notification row lock is taken.
-3. For each bounded work unit, begin the transaction and acquire L05 before mutable recipient/policy/escalation locks.
-4. Re-read due state, current policy validity and event-time candidate eligibility after acquiring L05.
+1. Read due candidate IDs and pinned policy metadata as preflight only; no mutable policy/notification row lock is taken. Any preflight timestamp is advisory only and must not decide effective eligibility.
+2. For each bounded work unit, begin a READ COMMITTED transaction and acquire L05 before mutable recipient/policy/escalation locks.
+3. Immediately after L05 returns, capture one `audience_evaluated_at := clock_timestamp()` for that work unit.
+4. In a subsequent SQL command, re-read due state, current policy validity and event-time candidate eligibility using that exact captured instant.
 5. Acquire all principal/scope/FK parents and remaining notification/escalation rows in the approved order.
-6. Insert the unique escalation fact, outbox intent and immutable candidate snapshot atomically.
+6. Insert the unique escalation fact, outbox intent and immutable candidate snapshot, persisting the same evaluation instant atomically.
 7. Commit. No provider I/O and no domain workflow state mutation.
 
 Scheduler duplicate ticks converge through a unique escalation idempotency key. Exact due-state and policy-version semantics remain open until PO/Operations approval.
@@ -250,7 +265,7 @@ Additional assertions:
 | Exact FK/unique/trigger/helper topology | OPEN | Database |
 | Timeout/retry/transaction budget | OPEN | Database + Operations |
 | Audience cardinality and performance SLO | OPEN | PO + Engineering + Operations |
-| Static acyclicity and NRL-T01..T10 evidence | NOT EXECUTED | Engineering + Database + Security |
+| Function volatility and post-wait snapshot proof through authenticated RPC | OPEN — design requirement added; deployed metadata/evidence absent | Engineering + Database + Security |\n| Post-L05 audience evaluation instant and effective-interval boundary approval | OPEN — proposed `clock_timestamp()` capture; PO/domain confirmation and test evidence pending | PO + Engineering + Database + Security |\n| Static acyclicity and NRL-T01..T12 evidence | NOT EXECUTED | Engineering + Database + Security |
 
 **No numeric constants are approved:** advisory key integers, lock timeout, statement/transaction timeout, retry count, jitter, audience maximum and latency SLO remain TBD.
 
@@ -263,7 +278,7 @@ Additional assertions:
 - Application lock certification: 0/50.
 - Candidate snapshot relation/header: NOT ADMITTED.
 - Static global graph acyclicity: NOT PROVEN.
-- QA NRL-T01..T10 / TC-NOTIF-042..051: PLANNED / NOT EXECUTED.
+- QA NRL-T01..T12 / TC-NOTIF-042..053: PLANNED / NOT EXECUTED.
 - G9: NOT READY. G10: NOT ACTIVE.
 
 This is a documentation-only technical proposal. It authorizes no source code, SQL, migration, function, grant/revoke, RLS change, live database inspection, CI/runtime test, provider setup, deployment or merge.
@@ -288,5 +303,5 @@ This is a documentation-only technical proposal. It authorizes no source code, S
 - numeric lock/statement/transaction timeouts, retry count/backoff, audience cap or performance SLO;
 - any SQL, migration, source code, CI/runtime test, database mutation, provider setup, deployment or production operation.
 
-**Authority separation:** This is Product Owner approval of the candidate design direction, not Engineering, Database or Security technical certification. Those approvals and their evidence remain mandatory. G9 remains NOT READY and G10 remains NOT ACTIVE until the repository's gate requirements are independently satisfied and recorded.
+**Revision 0.1.2 review note:** F-01 and F-02 have been translated into explicit proposed requirements: VOLATILE RPC wrapper with separate internal SQL statements; and one `clock_timestamp()` capture immediately after L05 for all effective-time predicates. These amendments do not prove deployed function metadata, isolation or runtime behavior and do not close the review findings until independent evidence is supplied.\n\n**Authority separation:** This is Product Owner approval of the candidate design direction, not Engineering, Database or Security technical certification. Those approvals and their evidence remain mandatory. G9 remains NOT READY and G10 remains NOT ACTIVE until the repository's gate requirements are independently satisfied and recorded.
 
