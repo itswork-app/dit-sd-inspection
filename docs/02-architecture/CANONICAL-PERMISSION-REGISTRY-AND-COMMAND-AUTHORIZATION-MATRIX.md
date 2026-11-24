@@ -169,3 +169,7 @@ T-15 requires critical permission/command events to be appended atomically with 
 ## Individual command contract reference
 
 The [PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) expands the registry's 27 logical families into 48 proposed command/read operations (CMD-001..048), each linked to a planned QA case. This does not approve any permission semantics, role grant, grantor authority, RPC signature or EXECUTE grant. The registry remains a PO/security review draft and is not permission-seed authority.
+
+## Function ACL and caller execution model
+
+See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md). Permission grants and PostgreSQL EXECUTE grants are different: the former authorize a business action; the latter permit function invocation. Neither implies the other. Registry v0.1.0 remains a PO/security draft; no role mapping or EXECUTE grant is approved.
