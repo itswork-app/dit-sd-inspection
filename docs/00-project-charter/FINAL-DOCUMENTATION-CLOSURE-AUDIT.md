@@ -1,7 +1,7 @@
 # Final Documentation Closure Audit — Dit. SD Inspection
 
 **Document ID:** DOC-AUDIT-001  
-**Version:** 0.3.4
+**Version:** 0.3.5
 **Status:** STATIC DOCUMENTATION AUDIT COMPLETED — IMPLEMENTATION READINESS NOT ESTABLISHED  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
@@ -228,4 +228,13 @@ The CMD-045–048 resolution and detailed review now align with the Decision Reg
 
 NLA-001 v0.1.4 makes the POQ-01 implementation gap explicit: the six-table proposal does not persist a durable event-time candidate audience and per-recipient scope snapshot. A candidate-only relation `notification_outbox_recipients` is specified across physical schema, RLS, ERD, permission, command catalogue and QA documents. It is NOT ADMITTED and excluded from the 48-table inventory. CMD-052 consumes the immutable event-time set; CMD-054 persists its own event-time candidate set; retries may not query current memberships to widen recipients. Dispatch-time revalidation may suppress external delivery only.
 
-The candidate physical representation remains subject to Engineering/Database/Security approval, exact selector and temporal semantics, transaction/fan-out bounds, scope FKs, hash format, worker identity/ACL and provider callback security. QA v0.4.1 adds six planned notification snapshot cases, one candidate RLS case and two function-security cases; all are PLANNED / NOT EXECUTED. No runtime, CI, code, SQL, migration, grant, provider or deployment work was performed. G9 NOT READY; G10 NOT ACTIVE; 0/50 certified.
+The candidate physical representation remains subject to Engineering/Database/Security approval, exact selector and temporal semantics, transaction/fan-out bounds, scope FKs, hash format, worker identity/ACL and provider callback security. QA v0.4.2 adds six planned notification snapshot cases, five notification lock-race cases, one candidate RLS case and two function-security cases; all are PLANNED / NOT EXECUTED. No runtime, CI, code, SQL, migration, grant, provider or deployment work was performed. G9 NOT READY; G10 NOT ACTIVE; 0/50 certified.
+
+
+## CMD-049–054 lock-order and POQ-01 physicalization pass — 2026-11-24
+
+POQ-01 event-time candidate audience semantics are approved. NLA-001 v0.1.4 and CMD-049–054 review v0.1.3 propose candidate-only `notification_outbox_recipients` plus outbox snapshot header fields; they remain NOT ADMITTED and outside the canonical 48-table inventory. The candidate is reflected in physical schema v0.4.4, RLS v0.2.5, ERD v0.3.3, permission v0.2.5, command catalogue v0.4.8, physical crosswalk v0.1.2 and QA v0.4.2.
+
+The deeper lock review identified a potential implicit FK KEY SHARE inversion between source-event/worker snapshot writes and L15/L16/L17 account/grant resources versus L30/L50/L55 project/assignment resources. LOCK-MANIFEST-001 v0.4.26 §7.6 and LOCK-GRAPH-001 v0.4.19 §27 record this as OPEN; no lock rank or acyclic proof is claimed. RAID R-037 and RTM NOTIF-015 track the critical risk. LG-41..45 and TC-NOTIF-036..040 are planned adversarial cases, not executed evidence.
+
+No code, SQL, migration, grants, RLS deployment, live database inspection, concurrency test, provider setup or deployment was performed. G9 NOT READY; G10 NOT ACTIVE; application lock certification 0/50.
