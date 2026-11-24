@@ -180,6 +180,8 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 ## 10. Current project status
 
 - Repository intent: **DOCUMENTATION AND APPLICATION IN ONE REPOSITORY — CONFIRMED BY PRODUCT OWNER**
+- Documentation gap audit: **DGA-001 v1.0.0 RECORDED; closure IN PROGRESS**
+- Active implementation gate: **NOT READY — see DGA-001**
 - Current phase: **DOCUMENTATION / SSOT MATURATION**
 - Application source code: **INTENTIONALLY NOT STARTED**
 - T-18 hybrid execution model: **PO-APPROVED DESIGN; implementation conformance NOT VERIFIED**
@@ -191,12 +193,16 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 
 ## 11. Immediate next actions
 
-1. Reclassify T-19 as a repository phase/architecture evidence audit, not a defect report for missing code.
-2. Reconcile the Decision Register and all T-15–T-18 references so approved decisions are not shown as proposed or open.
-3. Build a complete document inventory and traceability map against the gates in this blueprint.
-4. Re-audit Package S blockers and assign each to a decision owner, evidence owner, dependent docs and exit test.
-5. Close product/institutional source dependencies before finalizing executable contracts.
-6. Perform the final SSOT consistency audit; only then request explicit scope-freeze and implementation authorization.
+1. Treat [Documentation Gap Audit — Gate Implementation Readiness](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) as the active evidence-backed closure queue; do not claim readiness while any blocking row remains open.
+2. Reconcile historical status language in Package T, Package S, Decision Register, RTM and RAID without changing approved decision meaning.
+3. Close instrument source/evidence-slot and BA/template authority dependencies with controlled source evidence.
+4. Complete INS-015 notification persistence and decide the ERD-only `notification_events` entity; decide `print_batches` disposition.
+5. Complete the 48-command review: exact permissions, role/grantor/SoD, schemas, physical read/write sets, route/RPC mapping, transaction boundaries, idempotency, audit and command-specific tests.
+6. Reconcile physical schema, RLS, views, functions, triggers, sequences, Storage policies and exact grants.
+7. Close offline/device/local-data, evidence lifecycle, report reproducibility, account recovery, provider, backup/restore and measurable SLO specifications.
+8. Obtain written institutional T-10/T-12 approvals and current provider capability evidence.
+9. Complete requirement-to-design-to-test traceability and independent cross-document consistency review.
+10. Only after blockers are closed, request scope-freeze approval; then request separate implementation authorization.
 
 ---
 This blueprint is a governance/navigation artifact. It does not authorize code, migrations, SQL execution, grants/revokes, live database changes, deployment, or merge.
