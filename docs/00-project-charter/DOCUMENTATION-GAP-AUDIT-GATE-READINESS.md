@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.43
+**Version:** 1.11.44
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -576,4 +576,4 @@ DGA-B18–B21 are synchronized to the current lock design baseline: LOCK-MANIFES
 
 [LOCK-NORMALIZATION-001](../02-architecture/COMMAND-LOCK-MANIFEST-NORMALIZATION-REGISTER-001.md) v0.1.0 consolidates the 50 in-scope application commands into a uniform candidate review register: 10 CMD-001–010, 10 CMD-011–020, 10 CMD-021–030, 10 CMD-031–040, 4 CMD-041–044 and 6 CMD-049–054. CMD-045–048 remain external control-plane IDs and are excluded. Static row inventory is 50 unique application commands with no duplicates or missing in-scope IDs. Candidate boundaries are documented, but field-level physical lock/ACL/constraint/implicit-edge closure and independent technical approval remain OPEN; 0/50 certified. DGA-B19 remains OPEN; LPR-09 remains OPEN; LPR-10 remains NOT EXECUTED. This is documentation coverage, not G9 closure.
 
-Current lock source pointers: LOCK-MANIFEST-001 v0.4.24; LOCK-GRAPH-001 v0.4.17; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.11; TECH-RESOLUTION-LPR-001 v0.1.7; CMD-CROSSWALK-001-054 v0.8.17; CONCURRENCY-001 v0.1.7. G9 NOT READY; G10 NOT ACTIVE.
+Current lock source pointers: LOCK-MANIFEST-001 v0.4.24; LOCK-GRAPH-001 v0.4.17; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.11; TECH-RESOLUTION-LPR-001 v0.1.8; CMD-CROSSWALK-001-054 v0.8.17; CONCURRENCY-001 v0.1.7. G9 NOT READY; G10 NOT ACTIVE.
