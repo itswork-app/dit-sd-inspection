@@ -66,7 +66,7 @@ erDiagram
 - `instruments`: extensible instrument catalog; instrument definitions are not hardcoded to IFP/Standing Bracket. Super Admin manages catalog lifecycle through authorized commands.
 - `instrument_versions`, `checklist_sections`, `checklist_items`, `specification_fields`, `evidence_slot_definitions`: declarative, versioned configuration primitives for supported checklist, specification, and evidence requirements.
 - Published versions are immutable; active sessions bind to one explicit version, and inspection revisions retain that exact snapshot. Adding a new instrument within supported primitives must not require an application code change. Arbitrary executable configuration is prohibited.
-- `units`: project/instrument scoped unit identity and normalized serial key.
+- `units`: canonical instrument-type scoped unit identity and normalized serial key, unique across projects; project-scoped inspection activity references this identity through an explicit project association.
 - `inspections`: stable aggregate identity and current lifecycle state.
 - `inspection_revisions`: immutable submitted snapshots, revision number, author, submitted timestamp, instrument version.
 - `checklist_responses`: response per revision/item, answer, exception reason, optional note.
@@ -88,14 +88,14 @@ erDiagram
 
 ## 4. Key integrity constraints
 
-1. One active normalized serial claim per project + instrument (exact uniqueness scope to validate against official operational rules).
+1. One canonical normalized serial identity per instrument type across all projects (T-16 PO-approved option B); different instrument types may reuse the same serial. Project ID is not part of the uniqueness key.
 2. One active claim per unit; claim acquisition and expiry takeover are atomic.
 3. Inspector capacity counts distinct active users globally across both locations, not assignment rows. Range is 1..100, default 50.
 4. A user cannot hold overlapping operational assignments at different locations; enforce by transaction/constraint strategy after schedule semantics are approved.
 5. One operational assignment has one location, one instrument, and one team.
 6. Revision numbers are unique per inspection; submitted revisions cannot be updated or deleted by application roles.
 7. Checklist response references an item in the exact instrument version snapshot used by the revision.
-8. Evidence metadata references a valid slot/item and inspection revision; object key is immutable once finalized.
+8. Evidence metadata references a valid slot/item, exact immutable inspection revision and exact instrument version; preserve checksum, uploader, capture/upload timestamps and immutable object identity. Replacement creates a new evidence record and audit event; finalized objects are never overwritten in place.
 9. Print events are append-only; a reprint creates a new event. Each event references the exact immutable document version and has a concurrency-safe per-document sequence.
 10. Batch print outcomes are per-document; retry can reference failed documents only and cannot duplicate a previously successful event. Each event references the exact immutable document version and has a concurrency-safe per-document sequence.
 10. Batch print outcomes are per-document; retry can reference failed documents only and cannot duplicate a previously successful event.
@@ -108,7 +108,7 @@ Use state columns for current query efficiency, backed by append-only domain eve
 ## 6. ERD limitations and open questions
 
 This is a logical model, not a final physical schema. Resolve before migrations:
-- exact uniqueness scope and normalization rules for serial numbers;
+- final canonical-unit/project-association implementation and institution-approved exception/normalization policy for the PO-approved instrument-type-wide serial uniqueness rule;
 - project/session lifecycle and temporal assignment semantics;
 - exact role/scope inheritance model;
 - whether evidence is attached to checklist response, inspection, or both;
@@ -135,3 +135,10 @@ Capacity counts distinct enabled login accounts with an active Inspector role gr
 ## Registration-first and Super Admin-managed staffing (PO clarification, 2026-11-24)
 
 Model account registration/approval separately from role grants, team memberships and operational assignments. A registered identity begins pending; registration alone grants no role, scope, team membership or Inspector capacity eligibility. Super Admin approves the account and controls role grants, permissions, scope, team count, team membership and operational assignments. Every team member and assignment must reference an existing approved/enabled account. Users cannot self-assign. T-14 capacity counts only distinct enabled accounts with an active Inspector grant and an effective operational assignment.
+
+
+## T-16 — Canonical unit identity and evidence linkage (PO-approved option B, 2026-11-24)
+
+`units` represent canonical physical identity within an instrument type, not a project-local duplicate. Enforce uniqueness on `(instrument_id, serial_normalized)` across every project. A project association must preserve project/session authorization and inspection history without cloning the canonical unit. Same-type duplicate discovery is a controlled conflict requiring authorized resolution, reason and audit; never silently merge or rewrite historical records. Different instrument types may reuse a serial string.
+
+Each evidence asset is linked to the exact immutable inspection revision and instrument version, with original metadata, checksum, uploader, capture/upload timestamps and immutable storage object identity. No in-place overwrite or destructive replacement is allowed. A replacement creates a new evidence record and audit event. This remains design-level until schema, RLS, commands and tests are reconciled.
