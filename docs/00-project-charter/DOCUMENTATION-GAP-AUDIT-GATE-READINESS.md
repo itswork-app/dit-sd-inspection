@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.7
+**Version:** 1.11.8
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -307,8 +307,8 @@ The CMD-011–015 detailed review was statically compared with CMD-010 closure:
 The Product Owner explicitly approved the product-semantic recommendations for CMD-011–020. The Decision Register contains the dated decision record; decision package v0.2.3 records the approved interpretation and response matrix. This closes the PO decision-response dependency for these ten commands only.
 
 The following controlled documents have been reconciled to the approved semantics:
-- CMD-011–020 Detailed Contract Review v0.3.2: product semantics marked PO APPROVED; engineering/security contract findings remain open.
-- PostgreSQL Command Contract Catalogue v0.4.0: command rows now reflect approved product behavior and identify unresolved technical fields/order.
+- CMD-011–020 Detailed Contract Review v0.3.6: product semantics marked PO APPROVED; engineering/security contract findings remain open.
+- PostgreSQL Command Contract Catalogue v0.4.1: command rows now reflect approved product behavior and identify unresolved technical fields/order.
 - Project/Session/Assignment Model v0.3.0: T-07 lifecycle, session, assignment, membership and target-plan semantics synchronized.
 - Physical Database Schema v0.4.0 and Data Model/ERD v0.3.0: semantic implications mapped without inventing DDL, columns or constraints.
 - Test Case Catalogue v0.3.0 and RTM: product requirements mapped to TC-CMD-CONTRACT-024-011..020; all cases remain planned/not executed.
@@ -325,7 +325,7 @@ The following controlled documents have been reconciled to the approved semantic
 Additional downstream synchronization completed:
 - Canonical Permission Registry v0.2.1 clarifies that PO-approved actor/action semantics do not approve role mappings, grants, RLS or EXECUTE ACLs; Korlap cannot final-close or reopen a session.
 - Command Authorization Verification Matrix v0.4.1 records the same T-07 transition boundary while retaining security review requirements.
-- CMD-001–054 Cross-Command Reconciliation v0.8.3 records that CMD-011–020 product decisions are approved but the engineering command contract remains open.
+- CMD-001–054 Cross-Command Reconciliation v0.8.4 records that CMD-011–020 product decisions are approved but the engineering command contract remains open.
 - Concurrency and Version Token Reconciliation v0.1.3 records CMD-017's approved session-scoped product semantics while preserving unresolved physical session binding and draft CAS.
 
 These changes do not alter any technical lock recommendation or certify a command. DGA-B14 PARTIAL, DGA-B17 OPEN, DGA-B18 PARTIAL, DGA-B19 OPEN and DGA-B21 OPEN remain unchanged; 0/54 lock-complete; G9 NOT READY; G10 NOT AUTHORIZED.
@@ -346,3 +346,6 @@ The CMD-011–020 decision package is v0.2.2 and explicitly corrects its older c
 
 
 **T-07 correction verification:** CMD-011–020 decision package v0.2.3 now replaces the stale `PLANNED` and persisted `CLOSE_REQUESTED` proposal rows directly with T-07's `DRAFT/ACTIVE/PAUSED/CLOSED` state set and action/event semantics. This is a documentation correction only; no state-machine implementation or test is claimed.
+
+
+**Command-contract lock overlay update:** CMD-011–020 Detailed Contract Review v0.3.6 and PostgreSQL Command Contract Catalogue v0.4.1 now carry the candidate parent-before-child lock ordering and proposed `expected_row_version` naming for the affected session/capacity commands. CMD-001–054 Cross-Command Reconciliation v0.8.4 references TECH-RESOLUTION-LPR-001. This closes only stale documentation references; physical token design, effective lock graph, 54-command normalization and all technical approvals remain open.
