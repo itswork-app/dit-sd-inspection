@@ -1,7 +1,7 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.4.3
+**Version:** 0.4.4
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Parent:** LOCK-GRAPH-001 v0.4.2  
@@ -236,6 +236,31 @@ This overlay decomposes the first ten commands into mutable aggregates, unique a
 6. **CMD-008 relies on a unique normalized-code arbiter**, not a preflight row lock.
 7. **CMD-009/010 require a common project parent fence.** Every project-scoped child writer must lock the parent before child resources and revalidate project state after waiting; closure's complete blocker set and compatible lock modes remain OPEN.
 8. All rank assignments in this overlay are candidate mappings only. No exact PostgreSQL lock mode, trigger/FK implicit lock, physical index, function call graph or runtime lock behavior was verified.
+
+## 4.1.2 Project/session parent-fence cross-check — CMD-010–015 — 2026-11-24
+
+The first-ten-command overlay depends on a project-parent fence. Static comparison with CMD-011–015 shows that the child-writer side is not yet consistently specified:
+
+| Command | Source-stated sequence in detailed review | Parent-fence finding |
+|---|---|---|
+| CMD-011 create-session | L00 → lock project FOR KEY SHARE (or approved equivalent) → validate project state → insert session | The exact mode is explicitly open. PostgreSQL documents that FOR KEY SHARE does not conflict with FOR NO KEY UPDATE, and an UPDATE that does not modify key columns normally acquires FOR NO KEY UPDATE. Therefore a plain project status UPDATE by CMD-010 is not proven to conflict with CMD-011's proposed FOR KEY SHARE. The closure protocol needs an explicitly compatible/conflicting lock design, not a generic "parent lock" label. |
+| CMD-012 update-session | L00 → lock session row → resolve parent project → validate state/version → update | Session-first order conflicts with the candidate project-before-session parent hierarchy. A concurrent project closure that locks project then session can deadlock against this reverse path. |
+| CMD-013 transition-session | L00 → lock session row → validate state/authorization → lock or snapshot closure dependencies | The source recipe does not acquire the project parent before the session row. Project/session closure and child mutation order remains unresolved. |
+| CMD-014 publish-assignment | L00 → L10 capacity when applicable → project/session/assignment reference rows in deterministic UUID order → affected users → insert assignment/members | This is the closest parent-first recipe, but exact cross-table comparator, lock modes, and whether all parent rows are locked rather than merely read must be specified. |
+| CMD-015 change-assignment-members | L00 → L10 capacity when applicable → assignment row → assignment_members and user rows | No explicit project/session parent fence is stated before the assignment/member mutation. Session/project closure can race unless the parent fence is added in an approved order. |
+
+### Required closure protocol decisions
+
+1. Every project/session child writer must acquire the approved parent fence before any child aggregate lock, then re-read/revalidate parent lifecycle state after any wait.
+2. CMD-012/013 must be redesigned or explicitly justified so they do not lock session first and project later.
+3. CMD-014/015 must explicitly identify which project/session parent rows are locked, not only read for validation.
+4. CMD-010 must use a parent lock mode or serialization primitive that conflicts with every child-writer fence. In particular, do not assume an ordinary non-key UPDATE conflicts with a child FOR KEY SHARE lock.
+5. The close transaction must acquire parent fence before blocker child rows; child writers must acquire parent fence before child rows. This avoids the parent→child versus child→parent cycle, but only if every writer participates.
+6. After acquiring the parent fence, re-evaluate all blockers under a transactionally consistent policy. A preflight SELECT alone is not a closure fence.
+
+**Technical reference:** PostgreSQL, Explicit Locking, §13.3.2 Row-Level Locks and Table 13.3 (lock conflicts): https://www.postgresql.org/docs/current/explicit-locking.html#LOCKING-ROWS. The documented FOR KEY SHARE / FOR NO KEY UPDATE compatibility must be checked against the exact PostgreSQL major version deployed by the institution. This is documentation evidence, not live database evidence.
+
+**Disposition:** project/session parent fencing remains OPEN. No exact lock mode is approved, and no command is certified lock-complete by this cross-check.
 
 ## 4.2 CMD-049–054 notification transaction boundary reconciliation — 2026-11-24
 
