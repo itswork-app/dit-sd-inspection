@@ -165,13 +165,13 @@ Constraints:
 
 ## 5. Recipient, scope and authorization rules
 
-1. Resolve recipients using the immutable policy version and approved event-time semantics; the proposed default is event-time eligibility for the initial audience, with a second current-authorization check before any sensitive link or resource access.
+1. Resolve recipients using the immutable policy version and an explicitly approved eligibility checkpoint. PO/Security must decide event-time snapshot versus fan-out-time resolution and define a deterministic snapshot/checkpoint for partial retries; a policy-version pin alone is not a recipient snapshot. Revalidate current authorization before any sensitive link or resource access.
 2. Recipient selectors must be explicit and bounded: role + effective project/session/location/assignment membership, or a named self/actor selector where approved.
 3. Never use global role membership as a substitute for assignment scope.
 4. Do not notify a user whose account is disabled, suspended, expired or otherwise ineligible at dispatch time.
 5. Deduplicate recipients across multiple matching selectors before creating inbox rows.
 6. The inbox query is restricted to `recipient_user_id = auth.uid()`; project scope is additional filtering, not a way to widen recipient ownership.
-7. Mark-read/dismiss operations require the caller to own the notification row. A forged notification ID returns a non-enumerating denial/not-found response.
+7. Mark-read requires the caller to own the notification row. dismissed_at is reserved and no dismiss command is exposed until PO/UX approval. A forged notification ID returns a non-enumerating denial/not-found response.
 8. Clicking a notification must independently re-authorize access to the referenced resource; the notification itself is not an access token.
 9. Role-to-permission grants for policy administration remain unapproved until the canonical permission registry and grantor/SoD matrix receive PO/security approval.
 
