@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.3.5
+Version: 0.3.6
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -586,13 +586,13 @@ The read-only repository audit found no application implementation or runtime/co
 ## Notification lifecycle verification — NLA-001 (planned, not executed)
 
 - TC-NOTIF-001: source event and outbox intent commit atomically; audit/outbox failure rolls back the business mutation.
-- TC-NOTIF-002: duplicate outbox processing creates one inbox row per recipient.
-- TC-NOTIF-003: multiple selectors resolving the same user produce one recipient notification.
+- TC-NOTIF-002: duplicate outbox processing creates one inbox row per recipient from the immutable event-time candidate audience; retries cannot add recipients outside that snapshot.
+- TC-NOTIF-003: multiple selectors resolving the same user produce one recipient notification within the immutable event-time candidate audience; later selector/role changes cannot widen a retry.
 - TC-NOTIF-004: role membership without matching assignment scope cannot receive or read scoped notification.
 - TC-NOTIF-005: recipient A cannot list/read/mark-read recipient B's notification.
 - TC-NOTIF-006: notification link does not bypass authorization on the referenced resource.
 - TC-NOTIF-007: delivery state and read state remain independent under all transitions.
-- TC-NOTIF-008: quiet hours suppress/defer only channels allowed by the pinned policy and correct time zone.
+- TC-NOTIF-008: quiet hours suppress/defer only channels allowed by the pinned policy and correct time zone; they do not pause, stop or reset the SLA clock.
 - TC-NOTIF-009: provider retry is idempotent; duplicate webhook/result does not create duplicate state transitions.
 - TC-NOTIF-010: provider accepted + worker crash yields safe UNKNOWN/reconciliation behavior, not false exactly-once claims.
 - TC-NOTIF-011: expired worker lease is reclaimable without duplicate fan-out.
@@ -652,3 +652,12 @@ The following product semantics are approved; the referenced cases remain **PLAN
 ## CMD-001–010 candidate lock/concurrency coverage — 2026-11-24
 
 The concurrency expectations in TC-CMD-CONTRACT-024-001..009 have been aligned with CMD-001–010 Detailed Contract Review v0.3.4 §9. They remain **PLANNED / NOT EXECUTED**. The test design must use deterministic transaction barriers, assert final database invariants and typed loser outcomes, capture relevant SQLSTATE/lock diagnostics, and run against the exact approved schema and PostgreSQL major. This documentation update is not execution evidence and does not close LPR-10.
+
+- TC-NOTIF-027: event-time candidate-audience snapshot is immutable across partial fan-out/retries; dispatch-time revalidation may suppress disabled/revoked/ineligible candidates but cannot add any recipient outside the snapshot.
+- TC-NOTIF-028: quiet-hours delivery deferral does not pause, stop or reset the policy's SLA clock; initial-release ELAPSED_UTC due time is computed from the named server-UTC start event.
+- TC-NOTIF-029: MVP exposes no dismiss/archive command, permission, browser write or UX action; any proposed dismissed_at field remains dormant.
+
+
+## POQ-01..03 acceptance coverage — 2026-11-24
+
+The Product Owner approved the audience, SLA and dismissal semantics on 2026-11-24. TC-NOTIF-027..029 add explicit acceptance cases for non-widening audience retries, quiet-hours/SLA independence and the absence of dismiss/archive in MVP. All TC-NOTIF-001..029 remain PLANNED / NOT EXECUTED; no implementation or runtime behavior is proven by this catalogue update.
