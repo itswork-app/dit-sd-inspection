@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.67
+**Version:** 1.11.68
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -735,3 +735,8 @@ Static review after POQ-04 approval decomposes the remaining F-05 technical work
 NLA-001 v0.1.13 records the dispatch, retry and audit gaps. Writer matrix v0.1.3 records that selector dependency universe is not frozen and the physical writer inventory therefore remains incomplete. QA v0.4.9 adds TC-NOTIF-060..064, all PLANNED / NOT EXECUTED. L05-REVIEW-001 v0.1.6 remains REQUEST CHANGES — NOT TECHNICALLY APPROVED.
 
 **F-05:** PO decision dependency RESOLVED; technical finding OPEN until F05-T1..T5 are specified, approved by Security/Engineering (and Database/Records/Privacy where applicable), and supported by authorized evidence. F-04 remains OPEN because selector dependency/writer inventory is incomplete. F-03 and F-07 remain OPEN. Resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; NRL-T01..T13 and TC-NOTIF-001..064 PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE. Documentation/static analysis only; no code, SQL, migration, grant, RLS, live DB, runtime test, deployment or merge.
+
+
+### F-05 traceability and RAID synchronization — 2026-11-24
+
+RTM-001 v0.1.11 now traces NOTIF-016..020 to F05-T1..T5 and TC-NOTIF-060..064. RAID-001 v0.1.10 updates D-026 and R-037 with the selector dependency, dispatch, retry, audit and atomicity risks. These are controlled requirements/risk records only; all associated tests remain PLANNED / NOT EXECUTED. F-05 remains OPEN; F-04 remains OPEN because selector dependency and writer inventory are incomplete. Current pointers: NLA-001 v0.1.13; NLA-L05-TDR-001 v0.1.7; writer matrix v0.1.3; QA v0.4.9; L05-REVIEW-001 v0.1.6; RTM-001 v0.1.11; RAID-001 v0.1.10. Resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
