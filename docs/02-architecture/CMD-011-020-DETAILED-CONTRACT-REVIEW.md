@@ -1,7 +1,7 @@
 # CMD-011–020 Detailed Contract Review
 
 **Status:** PO product semantics APPROVED (2026-11-24); Engineering/Security contract review OPEN; NOT approved for implementation  
-**Version:** 0.3.1  
+**Version:** 0.3.2  
 **Date:** 2026-11-24  
 **Scope:** CMD-011 through CMD-020  
 **Controls:** T-14 Inspector capacity; T-15 append-only audit direction; T-17 instrument governance; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
@@ -278,10 +278,9 @@ Patch keys must be an explicit allowlist. Status, project_id, actor, permission,
 
 ### Open decisions
 
-1. Add \`row_version\` (recommended) or formally choose another concurrency token; define initial value and increment semantics.
-2. Define mutable metadata allowlist, code mutability and reason requirement.
-3. Define change restrictions after assignments, claims or inspections exist.
-4. Confirm timezone source semantics.
+**PO semantics resolved:** immutable session code; allowlisted non-identity metadata; non-empty reason; reject schedule reinterpretation after dependent work exists.
+
+**Technical decisions still open:** exact metadata allowlist/dependent-work predicate; row-version/CAS representation and increment; physical field and project/session lock/fence design.
 
 ## CMD-013 — transition-session
 
@@ -671,10 +670,9 @@ Cap must be an integer. Reject null, float, string coercion, zero, negative valu
 
 ### Open decisions
 
-1. Add \`row_version\` to \`project_capacity_settings\` or approve an alternative concurrency token.
-2. Define deterministic creation/default initialization of the one-row-per-project setting.
-3. Ensure CMD-004 grant-role implementation uses this exact capacity-row-first protocol; its current catalogue summary must be reconciled.
-4. Confirm whether count includes future-effective or only currently effective assignment intervals at the exact server time.
+**PO semantics resolved/reaffirmed:** T-14 predicate, distinct enabled accounts with active Inspector role and currently effective operational Inspector assignment in governed scope; cap 1–100/default 50; reject below count; never silently revoke.
+
+**Technical decisions still open:** row-version/CAS; deterministic capacity-row initialization; exact server-time boundary; shared serialization across CMD-004/005/014/015/016 and all other eligibility writers.
 
 ## CMD-017 — manage-target-plan
 
@@ -996,11 +994,9 @@ The enum examples above are illustrative only. The authoritative allowlists for 
 
 ### Open decisions
 
-1. Approve versioned JSON schema and exact type/validation allowlists.
-2. Decide child-row reconciliation strategy and stable ID preservation.
-3. Add/store canonical configuration hash and draft concurrency token.
-4. Define whether \`instrument.version_drafted\` is sufficient or child-level events are required.
-5. Confirm whether draft edits require a reason/change summary every time.
+**PO semantics resolved:** atomic complete declarative draft replacement; omitted children removed from draft only; published snapshots immutable; meaningful change summary; no executable expressions/dynamic code/arbitrary regex/unbounded recursion.
+
+**Technical/security decisions still open:** exact versioned schema/primitive allowlist; size/depth/MIME/value bounds; stable child identity; canonical hash and draft CAS; audit event granularity.
 
 ## CMD-020 — publish-instrument-version
 
@@ -1161,14 +1157,17 @@ Closing a session must not strand assignments, targets or active work. The compl
 
 ## 6. PO decisions closed; technical/security decisions before contract freeze
 
-1. Approve session initial status, legal transition graph, Korlap transition subset, close-request/final-close semantics and closure dependency checklist.
-2. Approve timezone semantics, timestamp precision, interval endpoint rules and whether overlapping sessions/assignments are permitted.
-3. Approve physical \`row_version\` fields for sessions, assignments/members where needed, and project_capacity_settings; define increments.
-4. Approve assignment/member overlap and active claim removal behavior.
-5. Approve target plan project/session binding, action enum, allocation uniqueness dimensions, zero quantity semantics, versioning and supersession behavior.
-6. Approve instrument JSON schema, answer/value types, validation primitives, MIME allowlists and child reconciliation semantics.
-7. Approve canonical instrument configuration hash/snapshot storage and immutable publication enforcement.
-8. Reconcile CMD-004 role-grant locking with the T-14 capacity-row-first protocol.
+The Product Owner's CMD-011–020 product-semantic decisions are approved and recorded in the Decision Register. The approved semantics are synchronized in the command catalogue and functional model. No further PO response is required for the approved items unless a proposed change would alter them.
+
+The remaining pre-freeze decisions are assigned to the competent technical or institutional authorities:
+1. Engineering/Database: project/session parent-fence lock mode and one total order across CMD-009–015; PostgreSQL row-lock compatibility and complete competing-writer paths.
+2. Engineering/QA: physical row-version/CAS fields and increments for sessions and capacity settings; exact dependent-work predicate and transition matrix implementation.
+3. Engineering/Database/Security: T-14 capacity serialization across all eligibility-changing commands; membership active-claim/in-progress behavior; exact assignment constraints.
+4. Product/Engineering: target quantity unit/range and report selection semantics; draft concurrency and versioning.
+5. Engineering/Security: instrument code alphabet/collation; declarative schema allowlist and bounds; canonical configuration hash, child identity and CAS; publication immutability enforcement.
+6. Security/Database: function owner, effective privileges, RLS interaction, search_path, exact EXECUTE ACL and caller-JWT route evidence for each protected command.
+7. Institution/Operations: any closure checklist, records/privacy retention, active-work disposition or other authority reserved outside PO product scope.
+
 
 ## 7. Verification and implementation status
 
