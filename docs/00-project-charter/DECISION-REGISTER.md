@@ -299,3 +299,28 @@ This clarification does not fabricate or substitute a third party's signed insti
 
 **Approval record (2026-11-24):** Product Owner approved the complete five-row matrix without changes. The approved product rule is the immutable pre-mutation event-time candidate set, exact-selector-only participant inclusion, dispatch-time suppression without widening, and retry reuse of the original candidate set/checkpoint. Security/Engineering must validate current-scope suppression, retry-after-reactivation, audit semantics, exact selector behavior and consistency with the final technical design before F-05 can close. This decision does not approve physical schema, lock ranks, SQL, implementation, runtime tests, G9 or G10.
 
+
+
+## Product Owner decision — first-batch notification event candidates (2026-11-24)
+
+**Status: PO APPROVED — specification and review only.** The Product Owner explicitly approved the eleven first-batch candidates from NLA-EVENT-TRIAGE-001 for progression into a draft event registry and subsequent Security/Engineering/Database review:
+
+1. `account.approved` (CMD-002)
+2. `account.rejected` (CMD-003)
+3. `role.revoked` (CMD-005)
+4. `project.closed` (CMD-010)
+5. exact final `session.closed` (CMD-013); not `session.close_requested`
+6. `assignment.created` (CMD-014)
+7. `assignment.changed` (CMD-015)
+8. `inspection.submitted` (CMD-029); `inspection_revision.created` is a related fact, not a second approved notice
+9. `inspection.returned_for_correction` (CMD-030)
+10. `inspection.approved` (CMD-031)
+11. `inspection.reopened` (CMD-032)
+
+**Scope of approval:** record the candidates, prepare exact registry specifications and submit unresolved contracts/mappings for technical review. This decision does not approve canonical producer contracts, physical event fields, recipient mappings, selectors, role/scope grants, dispatch profiles, channels, templates, publication, event enablement, schema, SQL, implementation or tests. All eleven registry rows must remain `UNRESOLVED — NOT ENABLED` until each admission criterion is satisfied and required technical/institutional authorities approve.
+
+**Preserved exclusions:** `account.requested` (CMD-001) remains a secondary P-class candidate, deferred and neither approved nor rejected. `session.close_requested` is not interchangeable with final `session.closed`. No other CMD declaration is approved by implication. No school-principal, teacher, student, parent, school-customer or Attendance Verifier recipient is introduced.
+
+**Binding constraints:** POQ-01 and POQ-04 immutable event-time candidate, exact-selector-only inclusion, dispatch-time suppression without widening, and retry reuse rules remain binding. Security/Engineering/Database review, F-05/F-04/F-03/F-07 closure evidence and G9/G10 gate approvals remain mandatory. G9 remains NOT READY; G10 remains NOT ACTIVE.
+
+**Recorded artifact:** NLA-EVENT-REGISTRY-001 v0.1.0 is the controlled draft inventory for these eleven candidates. It is not an enabled registry or implementation authorization.
