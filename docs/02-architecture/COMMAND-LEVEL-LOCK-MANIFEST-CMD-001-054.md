@@ -4,7 +4,7 @@
 **Version:** 0.2.0
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
-**Parent:** LOCK-GRAPH-001 v0.1.0  
+**Parent:** LOCK-GRAPH-001 v0.2.0  
 **Scope:** Per-command resource inventory, source-stated lock sequence, shared invariants, competing commands, constraints and unresolved ordering  
 **Gate:** G3 NOT READY; G4 NOT READY; G5 NOT READY; G7 NOT READY; G9 NOT READY; G10 NOT AUTHORIZED.
 
@@ -181,4 +181,10 @@ All tests are PLANNED / NOT EXECUTED. No CI, local test, SQL, migration or datab
 | G10 implementation | NOT AUTHORIZED | No separate written implementation authorization |
 
 **Final disposition:** LOCK-MANIFEST-001 provides a 54-command source-evidence inventory and identifies where a complete manifest cannot yet be established. It does not normalize conflicting orders, approve any command, prove deadlock freedom or authorize implementation.
-\n\n## 9. Lock protocol decision-resolution proposal — 2026-11-24\n\n[LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.1.0 provides a candidate global rank hierarchy and proposed resolutions for the source-order conflicts. It defines the required per-command manifest evidence, identifies PO-owned product-policy decisions separately from Engineering/Security technical approvals, and preserves the 54/54 inventory with 0/54 certified lock-complete.\n\nThe proposal does not amend command recipes, physical schema, constraints or runtime behavior. No tests or database inspection were performed. LM-01–LM-10 remain open/not executed; G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED.\n
+
+
+## 9. Lock protocol decision-resolution proposal — 2026-11-24
+
+[LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.1.0 provides a candidate global rank hierarchy and proposed resolutions for the source-order conflicts. It defines the required per-command manifest evidence, identifies PO-owned product-policy decisions separately from Engineering/Security technical approvals, and preserves the 54/54 inventory with 0/54 certified lock-complete.
+
+The proposal does not amend command recipes, physical schema, constraints or runtime behavior. No tests or database inspection were performed. LM-01–LM-10 remain open/not executed; G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED.
