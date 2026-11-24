@@ -48,7 +48,7 @@ This was a read-only content review followed by documentation-only corrections o
 | Package S | Historical cross-document audit with dated current-state addenda | §9.15 remains historical; §9.16 is added as current snapshot |
 | Package T v0.1.0 | Historical decision instrument | Header and §10 correctly state that current PO authority is the Decision Register and dated addenda |
 | RTM-001 v0.1.0 | Requirement-to-design-to-verification index | 125 unique requirement IDs; T-13 test mapping correction recorded |
-| RAID-001 v0.1.0 | Risks, assumptions, issues and dependencies | 65 unique RAID IDs; D-031..D-036 and R-032..R-036 remain open/blocked as stated |
+| RAID-001 v0.1.1 | Risks, assumptions, issues and dependencies | 65 unique RAID IDs; D-031..D-036 and R-032..R-036 remain open/blocked as stated |
 | QA Catalogue v0.3.5 | Planned verification catalogue | 410 unique test definitions in DGA's current scan; all are planned, not execution evidence |
 
 ### 3.1 Package S reconciliation
