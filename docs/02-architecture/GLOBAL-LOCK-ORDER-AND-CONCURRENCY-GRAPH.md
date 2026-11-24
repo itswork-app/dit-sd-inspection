@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.12
+**Version:** 0.4.13
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -433,3 +433,17 @@ The cross-command review exposes the following graph obligations:
 - CMD-028 draft save, CMD-029 submit and CMD-030 return must share the inspection aggregate serialization and one terminal review-decision invariant with the approval path. Evidence/object-provider checks must not hold database locks across external I/O.
 
 Manifest progress is now **30/54 candidate-normalized at documentation level; 0/54 technically approved/certified**. The candidate graph is not proven acyclic or lock-complete. Exact lock modes, implicit FK/index/trigger/function edges, conflict aggregate rank, complete competing writers, row-version and immutable revision constraints, and adversarial tests remain open. LPR-01/LPR-07/LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED.
+
+
+## 23. CMD-031–040 lock-manifest integration checkpoint — 2026-11-24
+
+LOCK-MANIFEST-001 v0.4.19 adds candidate transaction/resource overlays for CMD-031–040. The global graph must preserve these shared serialization and external-I/O boundaries:
+
+- CMD-030 return, CMD-031 approve and CMD-032 reopen serialize on the inspection aggregate. Return/approve share one terminal-decision invariant; reopen cannot race a pending decision or create duplicate draft contexts.
+- CMD-033 upload-intent reservation and CMD-034 confirmation are separate database phases. Private Storage inspection/token issuance occurs outside row locks; finalization re-locks and revalidates the pending intent.
+- CMD-035 sync-batch uses deterministic inspection UUID lock order and independent durable per-operation outcomes; it is not an atomic multi-inspection transaction. Device identity/revocation remains a missing physical control.
+- CMD-036 document generation uses a durable request/outbox and worker lease; rendering/Storage I/O occurs outside DB locks. Worker identity/lease/ACL are not specified.
+- CMD-037 print sequence allocation serializes on the document aggregate. CMD-038 processes each batch item in its own short transaction; no batch-wide lock across printing.
+- CMD-039 attendance document replacement creates a new immutable version. CMD-040 verification is bound to that exact version and must serialize one terminal decision; verification-history physical storage is missing.
+
+Candidate manifest progress is now 40/54 documentation-normalized (CMD-001–040); 0/54 technically approved/certified. This is not proof of an acyclic effective database lock graph. Exact physical aggregates, worker/device identities, quota/sequence/verification constraints, lock modes, implicit FK/index/trigger/function edges, independent technical review and adversarial evidence remain open.
