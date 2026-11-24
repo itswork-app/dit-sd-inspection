@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.44
+**Version:** 0.8.45
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -641,3 +641,13 @@ Source-event path map v0.1.0 and command lock manifest v0.4.30 still show inspec
 The working baseline is one effective Reviewer appointment for the target immutable revision at the authorization/serialization instant; the authenticated reviewer must differ from that revision's author. No dual-review, multi-round, or blanket Inspector/Reviewer role prohibition is introduced. Appointment grantor authority, self-appointment/revoker SoD, inspection→claim→assignment FK proof, interval-overlap arbiter, and appointment writer lock paths remain OPEN. This proposal does not physicalize the entity or authorize role grants, DDL, RLS, runtime tests or implementation.
 
 Accordingly, CMD-030/031 Reviewer authorization remains **NOT PHYSICALIZED / NOT CERTIFIED** until Database, Engineering, Security and the authorized governance owner admit the exact schema and authority model. Resolver remains 0/40; application lock certification remains 0/50; global graph remains NOT PROVEN ACYCLIC; G9 NOT READY; G10 NOT ACTIVE.
+
+## IFP / Standing Bracket draft-context journey reconciliation — 2026-11-24
+
+[INSPECTION-DRAFT-001](INSPECTION-DRAFT-CONTEXT-AND-REVISION-LIFECYCLE-PROPOSAL-001.md) v0.1.0 proposes a mutable draft context distinct from immutable submitted revisions. This directly supports the PRD §6 journey: claim a unit online; capture configured evidence and complete the pinned instrument checklist; permit only bounded offline editing of an already-claimed draft; validate and submit online; reviewer returns with reasons or approves; correction creates a new immutable revision; privileged reopen creates a new draft context without rewriting approved history; only approved revisions feed final PDF and Print Officer workflows.
+
+IFP and Standing Bracket remain separate instrument versions. The draft payload is validated against the exact pinned version. The current IFP ten-slot and Standing Bracket five-slot lists do not become mandatory evidence requirements through this proposal; mandatory/applicability remains source/configuration controlled.
+
+Candidate flow: CMD-026 creates the initial context; CMD-028 updates only that context; CMD-029 seals it and creates the immutable revision; CMD-030 creates a correction context; CMD-032 creates an approved-reopen context; CMD-033/034 bind evidence to the active context and the resulting immutable revision at submit. The candidate relation is not admitted to the 48-table inventory.
+
+Open decisions remain: next Inspector/claim owner after return/reopen, claim release/resume/reassignment lifecycle, evidence carry-forward across revisions, exact draft payload/schema and physical constraints, and complete lock/ACL/RLS/QA evidence. No user-facing PRD scope or approved PO decision is changed by this candidate.
