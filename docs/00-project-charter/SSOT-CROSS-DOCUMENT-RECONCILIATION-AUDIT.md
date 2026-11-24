@@ -1,7 +1,7 @@
 # SSOT Cross-Document Reconciliation Audit — Dit. SD Inspection
 
 **Document ID:** SSOT-AUDIT-001  
-**Version:** 0.1.2  
+**Version:** 0.1.3  
 **Status:** STATIC CROSS-DOCUMENT AUDIT COMPLETED — CLOSURE PARTIAL  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
@@ -30,7 +30,7 @@ Reviewed on the target branch:
 - Decision Register and its T-01..T-18, T-14 clarification, T-15..T-18, and LPR-02..LPR-06 decision addenda.
 - Package S — Final Cross-Document Audit and Scope-Freeze Readiness, including §9.15.
 - Package T — Product Owner Decision Closure Pack v0.1.1, including its historical-status reconciliation.
-- RTM-001 v0.1.2 and RAID-001 v0.1.1.
+- RTM-001 v0.1.3 and RAID-001 v0.1.1.
 - QA Catalogue v0.3.5, including TC-PRINT-001..007, TC-DOC-001..011 and TC-PRINT-BATCH-001..008.
 - DGA command, lock, notification and institutional blocker summaries.
 
@@ -144,12 +144,23 @@ Counts are static text-level results. They do not prove semantic completeness, r
 
 ## 8. Next review sequence
 
-1. Obtain PO responses only for the open product-semantic questions in [POQ-001 — Product Owner Open Decision Packet](PRODUCT-OWNER-OPEN-DECISION-PACKET.md).
+1. POQ-01..03 are approved and recorded; reconcile the remaining engineering/security dependencies against those fixed product semantics.
 2. Route the institutional and technical approval requests in [AUTH-001 — Institutional and Technical Authority Approval Package](INSTITUTIONAL-AND-TECHNICAL-AUTHORITY-APPROVAL-PACKAGE.md) to the authorized role-holders.
 3. Attach source documents, signed approvals, provider capability evidence and exact technical review artifacts to the corresponding DGA/RTM/RAID IDs.
-4. Reconcile dependent documents only after the authoritative decision/evidence is received.
+4. Reconcile dependent documents to the approved POQ decisions; do not treat PO approval as a substitute for technical or institutional evidence.
 5. Request an independent G9 review only after all applicable blockers have closure evidence.
 6. Request separate written G10 authorization only after G9 approval.
 
 ---
 This audit is documentation-only. It does not approve scope, commands, schema, permissions, provider arrangements, tests, merge or implementation.
+
+
+## Product Owner notification decisions — POQ-001 (2026-11-24)
+
+POQ-01 Option C, POQ-02 Option C and POQ-03 Option A were explicitly approved by the Product Owner on 2026-11-24 and are recorded in the Decision Register. These approvals close the three product-semantic questions only:
+
+- **Audience (POQ-01):** persist the event-time candidate audience and authorized source scope/checkpoint; fan-out/retries reuse it; dispatch-time account/channel/consent/revocation checks may suppress candidates but must never widen the audience.
+- **SLA (POQ-02):** immutable policy versions declare elapsed or business-time semantics; initial default is `ELAPSED_UTC`. Quiet hours defer delivery only and do not pause/stop/reset the SLA clock. Business calendars, time zones and pause/reset conditions need explicit policy specification before activation.
+- **Dismissal (POQ-03):** dismiss/archive is excluded from MVP. Only recipient-owned set-once `read_at` is exposed; no dismiss command, permission, browser write or UX action exists. Any `dismissed_at` field retained in a proposal is dormant.
+
+The following technical details remain open: exact selector grammar and snapshot/checkpoint representation; partial fan-out fencing; policy schema and worker authorization; provider capability/callback security; exact schema constraints/indexes/RLS; institutional T-10 retention/privacy; test execution and live evidence. G9 remains NOT READY and G10 NOT AUTHORIZED.
