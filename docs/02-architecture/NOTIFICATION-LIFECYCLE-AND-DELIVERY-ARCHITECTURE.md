@@ -1,7 +1,7 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.20  
+**Version:** 0.1.21  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
@@ -540,7 +540,7 @@ SCOPE-RECON-001 is a scope-control review artifact, not a PRD amendment, PO appr
 
 [NLA-EVENT-TRIAGE-001](NOTIFICATION-EVENT-CANDIDATE-TRIAGE-001.md) v0.1.1 audits each CMD-001–040 event declaration against the PRD's actual inspection workflows. It classifies source declarations as PO discussion candidates, operational/control events, excluded ordinary events or unresolved composite/conditional tokens. This is not an enabled event allowlist.
 
-The Product Owner discussion shortlist is deliberately limited to: account.approved, account.rejected, role.revoked, project.closed, exact session.closed (not session.close_requested), assignment.created, assignment.changed, inspection.submitted (with inspection_revision.created treated as a related fact pending deduplication), inspection.returned_for_correction, inspection.approved and inspection.reopened. Inclusion in this shortlist means only that a human-facing notice may be useful; no event, recipient or channel is approved.
+The Product Owner approved the eleven first-batch candidate intents on 2026-11-24 for registry specification and technical review only: account.approved, account.rejected, role.revoked, project.closed, exact final session.closed (not session.close_requested), assignment.created, assignment.changed, inspection.submitted (inspection_revision.created remains a related fact, not a second notice), inspection.returned_for_correction, inspection.approved and inspection.reopened. This does not approve event publication, recipient mappings, channels or technical admission. All eleven rows remain UNRESOLVED — NOT ENABLED in NLA-EVENT-REGISTRY-001 v0.1.0.
 
 No notification should be emitted for generic project/session updates, instrument draft/configuration edits, unit registration/association/claim mechanics, inspection draft saves, upload intents, evidence-upload confirmations, print audit events, or read-side operations unless a separate approved product requirement establishes a concrete human action. Batch envelopes and per-item domain events must remain distinct. Attendance Verifier remains proposed with authority OPEN and cannot be used as a recipient role.
 
@@ -548,7 +548,14 @@ Composite/conditional source declarations are not policy keys. Exact token and t
 
 The IFP instrument source remains draft; its photo-slot required status is OPEN. Standing Bracket's 19-row checklist baseline is PO-confirmed, but evidence/photo rules remain OPEN. Neither instrument checklist/evidence details nor a photo slot is a notification event. Notification payloads must not include evidence bytes or permanent evidence URLs.
 
-The next product action is a PO decision on the shortlist, not engineering creation of an enabled registry. After PO approval, Engineering/Security/Database must complete exact event contract, participant mapping, selector dependency and dispatch profile review. F-05/F-04 remain OPEN; no physical schema, SQL, migration or runtime behavior is admitted.
+The PO decision is recorded in DECISION-REGISTER.md. NLA-EVENT-REGISTRY-001 v0.1.0 is a draft inventory for specification/review only. Engineering/Security/Database must complete exact event contract, participant mapping, selector dependency, deduplication, atomicity and dispatch profile review before any row can be technically admitted. F-05/F-04 remain OPEN; no physical schema, SQL, migration or runtime behavior is admitted.
 
 
-**Current pointer synchronization — 2026-11-24:** NLA-001 v0.1.20; NLA-L05-TDR-001 v0.1.8; L05 source map v0.1.0; writer matrix v0.1.4; QA v0.5.2; L05 review v0.1.7; DGA v1.11.73; SCOPE-RECON-001 v0.1.2; NLA-EVENT-TRIAGE-001 v0.1.0. TC-NOTIF-001..072 remain PLANNED / NOT EXECUTED. This pointer refresh does not close F-05/F-04 or enable any event.
+**Current pointer synchronization — 2026-11-24:** NLA-001 v0.1.21; NLA-L05-TDR-001 v0.1.8; L05 source map v0.1.0; writer matrix v0.1.4; QA v0.5.2; L05 review v0.1.7; DGA v1.11.73; SCOPE-RECON-001 v0.1.2; NLA-EVENT-TRIAGE-001 v0.1.2. TC-NOTIF-001..072 remain PLANNED / NOT EXECUTED. This pointer refresh does not close F-05/F-04 or enable any event.
+
+
+## 25. PO-approved event candidate registry — specification only
+
+The Product Owner approved exactly eleven first-batch event candidate intents for registry specification and technical review only. The decision is recorded in `docs/00-project-charter/DECISION-REGISTER.md`; the draft inventory is [NLA-EVENT-REGISTRY-001](NOTIFICATION-EVENT-REGISTRY-001.md) v0.1.0. The approved set is account.approved, account.rejected, role.revoked, project.closed, final session.closed, assignment.created, assignment.changed, inspection.submitted, inspection.returned_for_correction, inspection.approved and inspection.reopened.
+
+All eleven rows remain `UNRESOLVED — NOT ENABLED`. This PO decision does not establish canonical source contracts, event fields, recipient mappings, selectors, dispatch profiles, channels, templates, grants, publication or implementation. `account.requested` remains deferred, neither approved nor rejected. `session.close_requested` is not the final `session.closed`; `inspection_revision.created` is not a second approved notice. F-05/F-04/F-03/F-07 remain OPEN; G9 NOT READY; G10 NOT ACTIVE.
