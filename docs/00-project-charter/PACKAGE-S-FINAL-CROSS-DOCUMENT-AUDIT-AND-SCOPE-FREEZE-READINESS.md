@@ -305,3 +305,18 @@ The audit confirms substantial documentation coverage but identifies active bloc
 The QA catalogue contains 348 distinct test identifiers by text-level scan, including 48 command-contract, 36 command-authorization, 41 RLS-table, 63 function-security, 12 T-18 execution-model, 10 live-inventory and 8 repository-audit planned cases. These are specifications, not executed or passing tests. One test identifier appears more than once as a textual reference. No application, live database, CI, security, restore, load or UAT execution was performed by this audit.
 
 **Updated disposition:** documentation inventory SUBSTANTIAL; documentation closure INCOMPLETE; scope freeze NOT READY; implementation NOT AUTHORIZED; production readiness NOT VERIFIED. The gap audit is the active work queue and must be reconciled as each item closes.
+
+## 9.15 Current SSOT reconciliation — command, permission and function-security baseline (2026-11-24)
+
+This addendum supersedes historical counts/status in sections 9.10 and 9.14 where they conflict with the current documentation branch. It preserves those sections as dated historical audit records.
+
+- Current proposed physical schema/RLS inventory: **48/48 table-name parity** by static document comparison. This is a proposed documentation inventory, not deployed database evidence.
+- Current proposed command inventory: **54 operations (CMD-001..054)** across 28 authorization families. CMD-001..048 remain the original domain operations; CMD-049..054 add notification inbox, policy and internal worker operations.
+- Canonical permission registry and command authorization matrix: v0.2.0 proposal. No role-to-permission, grantor/delegation or worker-principal grant is approved.
+- Command authorization verification: **40 planned cases** (TC-CMD-AUTHZ-024-001..040), not executed.
+- Function security verification: **69 planned cases** (TC-FN-SEC-025-001..069), comprising 54 operation-level and 15 global privilege-boundary cases; not executed.
+- QA catalogue: **391 distinct test identifiers** by text-level scan. Counts are identifiers/specifications, not execution evidence.
+- T-18 Option A remains PO-approved at model-selection level. Function owners, effective privileges, exact signatures, EXECUTE ACLs, JWT propagation and runtime conformance remain open.
+- DGA-B10, B11, B12 and B13 remain open; B14 remains partial; B16 is partially reconciled. Scope freeze remains NOT READY and implementation authorization remains NOT GRANTED.
+
+No SQL, migration, permission seed, grant/revoke, live database mutation, deployment, CI/runtime/security/load/restore test or UAT was performed by this documentation update.
