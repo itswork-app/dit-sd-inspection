@@ -1,7 +1,7 @@
 # Final Documentation Closure Audit — Dit. SD Inspection
 
 **Document ID:** DOC-AUDIT-001  
-**Version:** 0.3.5
+**Version:** 0.3.6
 **Status:** STATIC DOCUMENTATION AUDIT COMPLETED — IMPLEMENTATION READINESS NOT ESTABLISHED  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
@@ -238,3 +238,10 @@ POQ-01 event-time candidate audience semantics are approved. NLA-001 v0.1.4 and 
 The deeper lock review identified a potential implicit FK KEY SHARE inversion between source-event/worker snapshot writes and L15/L16/L17 account/grant resources versus L30/L50/L55 project/assignment resources. LOCK-MANIFEST-001 v0.4.26 §7.6 and LOCK-GRAPH-001 v0.4.19 §27 record this as OPEN; no lock rank or acyclic proof is claimed. RAID R-037 and RTM NOTIF-015 track the critical risk. LG-41..45 and TC-NOTIF-036..040 are planned adversarial cases, not executed evidence.
 
 No code, SQL, migration, grants, RLS deployment, live database inspection, concurrency test, provider setup or deployment was performed. G9 NOT READY; G10 NOT ACTIVE; application lock certification 0/50.
+
+
+## Notification producer source-boundary reconciliation — 2026-11-24
+
+Static coverage is now 40/40 source command event declarations mapped in LOCK-MANIFEST-001 v0.4.27 §7.7. NLA-001 v0.1.5 §17 and LOCK-GRAPH-001 v0.4.20 §28 distinguish command transaction producers, operation-level sync events and asynchronous document/print/attendance finalizers. CMD-041..044 read-side access events remain outside this source mutation set; CMD-049..054 are non-recursive by default.
+
+This is not lock certification. Recipient resolver lock sets are not reconciled against all source producer paths; potential lock inversion remains. QA v0.4.3 TC-NOTIF-041 is PLANNED / NOT EXECUTED. Candidate audience relation/header remain NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE; application lock certification 0/50.
