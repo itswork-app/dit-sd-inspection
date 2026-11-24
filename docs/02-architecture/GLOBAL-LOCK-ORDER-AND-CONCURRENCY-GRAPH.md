@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.6
+**Version:** 0.4.7
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -30,8 +30,8 @@ Reviewed on branch `docs/audit-lock-and-identity-reconciliation` on 2026-11-24:
 - Physical Database Schema and Integrity Specification v0.3.0.
 - Privileged Command Boundary and Transaction Specification v0.2.0.
 - CMD-001–010, CMD-011–020, CMD-021–030, CMD-031–040, CMD-041–044, CMD-045–048 and CMD-049–054 detailed reviews.
-- CONCURRENCY-001 v0.1.3 and CMD-001–054 Cross-Command Reconciliation v0.8.4.
-- DGA-001 v1.11.8 and NLA-001 / notification worker design references.
+- CONCURRENCY-001 v0.1.3 and CMD-001–054 Cross-Command Reconciliation v0.8.5.
+- DGA-001 v1.11.10 and NLA-001 / notification worker design references.
 
 Evidence is static document inspection only. No live Supabase catalog, PostgreSQL lock table, deployed function, query plan, transaction trace, RLS/grant, worker runtime, CI workflow or test result was inspected or executed. The catalogue's “approved global order” wording is not treated as proof that the complete hierarchy passed cross-command review; the detailed reviews themselves identify unresolved conflicts.
 
@@ -345,3 +345,43 @@ The candidate rank table now includes L15–L18 and L55 as proposed in TECH-RESO
 ## 18. Current source-version refresh — 2026-11-24
 
 This graph now consumes the current candidate sources: PostgreSQL Command Contract Catalogue v0.4.1; CMD-011–020 Detailed Contract Review v0.3.6; CONCURRENCY-001 v0.1.3; CMD-001–054 Cross-Command Reconciliation v0.8.4; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.4; LOCK-MANIFEST-001 v0.4.7; TECH-RESOLUTION-LPR-001 v0.1.0; DGA-001 v1.11.8. Version synchronization is not technical approval. LPR-01/LPR-07–LPR-11 remain open; LPR-10 not executed; no lock graph is certified acyclic.
+
+
+## 19. CMD-001–010 candidate edge normalization — 2026-11-24
+
+**Authority:** candidate overlay only; see CMD-001–010 Detailed Contract Review v0.3.3 §9 and LOCK-MANIFEST-001 v0.4.9. No Engineering/Database/Security approval or acyclic proof is implied.
+
+### 19.1 Candidate edge set
+
+- `CMD-001`: L00 → L15 own account row; if no row exists, unique `auth_user_id` insert/upsert is the arbiter. A nonexistent row is not row-locked.
+- `CMD-002/003`: L00 → conditional L10 for every affected T-14 project → L15 actor/target principal rows sorted by UUID → L16/L17 actor authorization grants → L18 catalog if mutable → L110 decision/audit. Both commands use one target-account state transition and terminal-decision protocol.
+- `CMD-004/005`: L00 → conditional L10 → L15 sorted principals → L16 role grants → L17 delegation scope grants → L18 catalogue → L110 audit. The same L10 row set is shared with CMD-014/015/016 and every other eligibility-changing account/role path.
+- `CMD-006/007`: L00 → conditional L10 if the scope mutation changes the T-14 predicate → L15 principals → L16 where role authority is involved → L17 exact grants → L18 catalogue → L30 project/session parent → L50 location/team/assignment scope target → L110 audit. The concrete scope-type-to-physical-resource map remains open.
+- `CMD-008`: L00 → L15/L16/L17/L18 actor authority → L30 normalized-code unique insert. Initialize the default capacity row atomically with the new project in the same transaction; this new-aggregate bootstrap is not a general permission to acquire L10 late on an existing project.
+- `CMD-009`: L00 → L15/L16/L17/L18 actor authority → L30 project `FOR NO KEY UPDATE` candidate mode + CAS.
+- `CMD-010`: L00 → conditional L10 if closure changes T-14 eligibility → L15/L16/L17/L18 actor authority → L30 project `FOR NO KEY UPDATE` candidate mode → closure blocker evaluation while the parent fence is held.
+
+### 19.2 Candidate shared-invariant edges
+
+| Shared invariant | Competing command paths | Required serialization / final arbiter | Remaining proof |
+|---|---|---|---|
+| One account identity and request lifecycle | CMD-001 first request/profile provisioning | Unique `app_users.auth_user_id` plus approved request-state owner | UPSERT predicate, Auth provisioning race, request-history entity, trigger/FK effects |
+| One terminal account decision | CMD-002 approve vs CMD-003 reject | Same L15 target row + conditional transition + unique terminal decision identity | Eligible source states, terminal uniqueness, row_version and actor-authority freshness |
+| Role grant lifecycle and delegation ceiling | CMD-004 grant vs CMD-005 revoke | Same L15 principal and L16 exact grant rows; L17 grantor ceiling rows | Interval/exclusion constraint, last-admin recovery, grant-history representation |
+| Scope grant lifecycle and authorization freshness | CMD-006 grant vs CMD-007 revoke | Same L15 principal and L17 exact scope-grant rows; parent L30/L50 as needed | Scope hierarchy, inheritance, cache/token invalidation and overlap arbiter |
+| Project normalized-code uniqueness and capacity initialization | CMD-008 concurrent create | Unique normalized-code key; project + capacity row atomic bootstrap | Canonical normalization/collation, physical key, hidden FK/trigger edges |
+| Project metadata vs closure vs children | CMD-009 / CMD-010 / CMD-011–054 | Project `FOR NO KEY UPDATE` conflicts with child `FOR SHARE`; child revalidates after wait | Every child and worker path must actually take the fence; closure blockers and CAS must be complete |
+| T-14 Inspector qualifying count | CMD-002/003 when eligibility changes; CMD-004/005; CMD-006/007 if applicable; CMD-014/015/016 | Same L10 capacity row(s), sorted by project UUID, before L15–L18 | Complete writer inventory, account/project/session predicate, affected-project discovery and missing-row policy |
+
+### 19.3 Authorization freshness and deadlock constraints
+
+- Actor and target principal rows at L15 must be acquired in sorted UUID order; never actor-first by convention.
+- Actor role and scope grants are mutable resources. Commands must lock the exact L16/L17 grants used to justify authorization, or prove an equivalent serializable/revocation-fencing mechanism. A preflight permission read alone is insufficient.
+- Any command that may change T-14 eligibility must discover the complete affected project set before L15, lock L10 rows in ascending project UUID order, and revalidate the set. A newly discovered lower-rank L10 after L15 is an abort/retry condition.
+- If `roles`, `permissions` or `role_permissions` are mutable, they require enforced freeze or a separately approved L18 mutation protocol.
+- CMD-010 closure relies on a project parent fence only if every project-scoped child writer/finalizer takes the matching project `FOR SHARE` before child resources. A missing child fence is a correctness defect, not an exception to be silently accepted.
+- Project/session close does not cascade-delete or rewrite child history. Pending durable intents/jobs must be explicitly included in the blocker/reconciliation policy.
+
+### 19.4 Disposition
+
+CMD-001–010 are candidate-normalized at documentation level. The effective graph still contains unverified implicit FK/index/trigger/function edges; LPR-01/LPR-07/LPR-11 remain OPEN; LPR-10 is NOT EXECUTED. The graph is not certified acyclic and lock-complete remains 0/54.
