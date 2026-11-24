@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.46
+**Version:** 1.11.47
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -577,3 +577,8 @@ DGA-B18–B21 are synchronized to the current lock design baseline: LOCK-MANIFES
 [LOCK-NORMALIZATION-001](../02-architecture/COMMAND-LOCK-MANIFEST-NORMALIZATION-REGISTER-001.md) v0.1.1 consolidates the 50 in-scope application commands into a uniform candidate review register: 10 CMD-001–010, 10 CMD-011–020, 10 CMD-021–030, 10 CMD-031–040, 4 CMD-041–044 and 6 CMD-049–054. CMD-045–048 remain external control-plane IDs and are excluded. Static row inventory is 50 unique application commands with no duplicates or missing in-scope IDs. CMD-PHYSICAL-CROSSWALK-001 v0.1.0 adds 50 command-specific physical read/write entries, including explicit OPEN/BLOCKED entries for CMD-041–044; this is source extraction, not live physical validation. Candidate boundaries are documented, but field-level physical lock/ACL/constraint/implicit-edge closure and independent technical approval remain OPEN; 0/50 certified. DGA-B19 remains OPEN; LPR-09 remains OPEN; LPR-10 remains NOT EXECUTED. This is documentation coverage, not G9 closure.
 
 Current lock source pointers: LOCK-MANIFEST-001 v0.4.24; LOCK-GRAPH-001 v0.4.17; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.11; TECH-RESOLUTION-LPR-001 v0.1.8; CMD-CROSSWALK-001-054 v0.8.17; CONCURRENCY-001 v0.1.7. G9 NOT READY; G10 NOT ACTIVE.
+
+
+## Physical command-to-schema reconciliation addendum — 2026-11-24
+
+[CMD-SCHEMA-RECONCILIATION-001](../02-architecture/PHYSICAL-COMMAND-SCHEMA-RECONCILIATION-001.md) v0.1.0 records a static comparison of Package L and Package M: 48 unique physical table names and 48 RLS catalogue names, with exact 48/48 name parity. This closes only the table-name inventory comparison; it does not verify deployed RLS, grants, constraints, functions or live objects. Command physicalization remains incomplete. Material unresolved items include project/session and other aggregate row-version/CAS fields, CMD-035 per-operation sync result ledger and device trust model, CMD-036 renderer job/template model, CMD-038 durable batch item manifest, CMD-039 attendance upload/version authority, CMD-040 append-only verification history, CMD-041–044 query/audit/export contracts, and notification worker/callback ACL and deduplication evidence. Candidate object names are not approved schema. Application lock certification remains 0/50; LPR-09 OPEN; LPR-10 NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE. No gate status is advanced by this static comparison.
