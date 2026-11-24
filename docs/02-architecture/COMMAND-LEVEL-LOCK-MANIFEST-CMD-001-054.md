@@ -209,9 +209,9 @@ All tests are PLANNED / NOT EXECUTED. No CI, local test, SQL, migration or datab
 
 The proposal does not amend command recipes, physical schema, constraints or runtime behavior. No tests or database inspection were performed. LM-01–LM-10 remain open/not executed; G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED.
 
-## 4.1 CMD-001–010 row-level resource and lock normalization overlay — 2026-11-24
+## 4.1 Historical CMD-001–010 source-order overlay — superseded by §7
 
-This overlay decomposes the first ten commands into mutable aggregates, unique arbiters, append-only facts and known competing paths. It does **not** invent a rank for identity/authorization rows. The source-stated sequences below are preserved as observations; candidate-rank mapping is only made where the current L00–L110 table has an explicit class.
+Historical note: this source-order extraction is retained for audit traceability only. Its statements that L15–L18 are unclassified and CMD-001–007 cannot be candidate-normalized are superseded by the candidate overlay in §7 and CMD-001–010 Detailed Contract Review v0.3.3 §9. This historical table is not an executable order.
 
 | Command | Mutable resource(s) | Candidate rank mapping | Source-stated serialization / transaction boundary | Competing path and final arbiter | Normalization disposition |
 |---|---|---|---|---|---|
@@ -229,7 +229,7 @@ This overlay decomposes the first ten commands into mutable aggregates, unique a
 ### 4.1.1 Cross-command conclusions for CMD-001–010
 
 1. **L00 is a common arbitration boundary, not a substitute for domain locks.** A matching replay must not repeat a mutation; authorization revalidation requirements remain command-specific.
-2. **Identity/authorization rows are an explicit rank gap.** app_users, user_roles and user_scope_grants cannot be treated as append-only L110 facts or silently folded into L50 assignment/membership. LPR-11 is required before CMD-001–007 can be rank-normalized.
+2. **Identity/authorization rows require explicit ranks.** The current candidate overlay proposes L15 app_users, L16 user_roles, L17 user_scope_grants and conditional L18 authorization catalog. LPR-11 approval remains OPEN; see §7.
 3. **T-14 capacity is a mandatory earlier serialization point** for every mutation that can change the qualifying Inspector population, including role grant/revoke and account eligibility changes. CMD-004/005 are not the complete eligibility writer inventory.
 4. **CMD-002/003 must share one target-account transition protocol.** The terminal-decision uniqueness mechanism and actor authorization revocation race need explicit resolution.
 5. **CMD-006/007 need an authorization freshness contract.** Grantor delegation and revocation effects cannot be reduced to locking only the target grant row without deciding how concurrent authorization changes are fenced.
@@ -276,17 +276,17 @@ The first-ten-command overlay depends on a project-parent fence. Static comparis
 These rows reconcile logical resource/transaction boundaries only. The queue tables, policy/inbox/delivery physical keys, indexes, FK/trigger edges, worker principals, function owners, EXECUTE ACLs and provider callback runtime are not verified. Queue claim rows must never remain locked while external I/O occurs. If a worker ever mutates a source domain aggregate, it must separately reacquire the full approved parent/source lock chain and validate fencing; no such source mutation is authorized by CMD-049–054.
 
 
-## 6. Technical resolution overlay — 2026-11-24
+## 6. Historical technical resolution overlay — superseded by §§7 and 8
 
-[TECH-RESOLUTION-LPR-001](ENGINEERING-SECURITY-TECHNICAL-RESOLUTION-PACKAGE-LPR-001-011.md) §7 defines the required normalized manifest schema. This overlay is not a replacement for the source-stated 54 rows and does not upgrade any row's status. L15–L18 identity/authorization ranks, project/session fence modes, implicit database lock edges, worker identities/fencing and pairwise evidence remain unverified. Baseline remains 54/54 INVENTORIED and 0/54 CERTIFIED; LPR-09 OPEN; LPR-10 NOT EXECUTED.
+[TECH-RESOLUTION-LPR-001](ENGINEERING-SECURITY-TECHNICAL-RESOLUTION-PACKAGE-LPR-001-011.md) §7 defines the required normalized manifest schema. This historical note is retained for provenance. The current CMD-001–010 candidate normalization is in §7; current technical source versions and approvals remain as stated in §8. L15–L18 ranks, project/session fence modes, implicit database lock edges, worker identities/fencing and pairwise evidence remain technically unapproved/unverified. Baseline remains 54/54 INVENTORIED, 10/54 CANDIDATE-NORMALIZED and 0/54 CERTIFIED; LPR-09 OPEN; LPR-10 NOT EXECUTED.
 
 
 ## 7. Current source-version and rank synchronization — 2026-11-24
 
-Current linked candidate sources: LOCK-GRAPH-001 v0.4.5; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.4; CMD-011–020 Detailed Contract Review v0.3.6; PostgreSQL Command Contract Catalogue v0.4.1; CONCURRENCY-001 v0.1.3; TECH-RESOLUTION-LPR-001 v0.1.0. The refined L15–L18 identity/authorization and L55 membership classes are candidate ranks only. This source refresh does not normalize or certify any of the 54 rows: 54/54 remain INVENTORIED; 0/54 CERTIFIED.
+Current linked candidate sources: LOCK-GRAPH-001 v0.4.7; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.5; CMD-011–020 Detailed Contract Review v0.3.6; PostgreSQL Command Contract Catalogue v0.4.1; CONCURRENCY-001 v0.1.3; TECH-RESOLUTION-LPR-001 v0.1.0. The refined L15–L18 identity/authorization and L55 membership classes are candidate ranks only. This source refresh does not normalize or certify any of the 54 rows: 54/54 remain INVENTORIED; 0/54 CERTIFIED.
 
 
-**Parent reference note:** this manifest was refreshed against LOCK-GRAPH-001 v0.4.6; the source-version table in §7 is a dated review snapshot, not a live version pointer. Subsequent parent edits require a new explicit review checkpoint.
+**Parent reference note:** this manifest was refreshed against LOCK-GRAPH-001 v0.4.7; the source-version table in §7 is a dated review snapshot, not a live version pointer. Subsequent parent edits require a new explicit review checkpoint.
 
 
 ## 7. CMD-001–010 candidate-normalized lock overlay — 2026-11-24
@@ -306,3 +306,8 @@ The authoritative per-command candidate sequence and revalidation contract is **
 ### 7.2 Normalization count and residuals
 
 **10/54 command manifests candidate-normalized at documentation level; 0/54 technically approved or lock-complete certified.** CMD-011–054 remain pending their own per-command normalization. The candidate hierarchy is not yet proven acyclic. No physical PostgreSQL inventory, transaction trace or concurrency test was executed.
+
+
+## 8. Current source-version checkpoint — 2026-11-24
+
+The CMD-001–010 candidate overlay in §7 supersedes the historical source-order extraction in §4.1 and the earlier technical overlay in §6. Current linked sources: CMD-001–010 Detailed Contract Review v0.3.3; LOCK-GRAPH-001 v0.4.7; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.5; PostgreSQL Command Contract Catalogue v0.4.1; DGA-001 v1.11.11; TECH-RESOLUTION-LPR-001 v0.1.0. The manifest source list is a dated review snapshot, not a live pointer. 54/54 remain inventoried; 10/54 candidate-normalized; 0/54 technically approved/certified.
