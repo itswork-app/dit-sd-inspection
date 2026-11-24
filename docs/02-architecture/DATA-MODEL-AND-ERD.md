@@ -1,7 +1,7 @@
 # Data Model and ERD — Dit. SD Inspection
 
 Status: Logical data model draft — not a migration specification  
-Version: 0.1.0
+Version: 0.2.0
 
 
 ## Physical schema and RLS reconciliation status
@@ -160,7 +160,7 @@ Model account registration/approval separately from role grants, team membership
 
 ## T-16 — Canonical unit identity and evidence linkage (PO-approved option B, 2026-11-24)
 
-`units` represent canonical physical identity within an instrument type, not a project-local duplicate. Enforce uniqueness on `(instrument_id, serial_normalized)` across every project. A project association must preserve project/session authorization and inspection history without cloning the canonical unit. Same-type duplicate discovery is a controlled conflict requiring authorized resolution, reason and audit; never silently merge or rewrite historical records. Different instrument types may reuse a serial string.
+`units` represent canonical physical identity within an instrument type, not a project-local duplicate. Enforce uniqueness on `(instrument_type, serial_normalized)` across every project. `instrument_type` is a stable immutable canonical key on the instrument catalogue; the catalog row ID is not part of physical identity. A project association must preserve project/session authorization and inspection history without cloning the canonical unit. Same-type duplicate discovery is a controlled conflict requiring authorized resolution, reason and audit; never silently merge or rewrite historical records. Different instrument types may reuse a serial string.
 
 Each evidence asset is linked to the exact immutable inspection revision and instrument version, with original metadata, checksum, uploader, capture/upload timestamps and immutable storage object identity. No in-place overwrite or destructive replacement is allowed. A replacement creates a new evidence record and audit event. This remains design-level until schema, RLS, commands and tests are reconciled.
 
@@ -174,7 +174,7 @@ The canonical `units` identity may be referenced by multiple project association
 
 ## T-16 — Canonical unit and project-association relational contract (design reconciliation)
 
-**Canonical identity:** `units` contains one physical identity per `(instrument_id, serial_normalized)` across all projects. It has no `project_id`. A non-null normalized serial is unique within its instrument; different instruments may reuse the same serial. Preserve raw serial and normalization-policy version. Null/unknown serials use distinct UUID identities and never a shared empty key.
+**Canonical identity:** `units` contains one physical identity per `(instrument_type, serial_normalized)` across all projects. It has no `project_id`. A non-null normalized serial is unique within its instrument type; different instrument types may reuse the same serial. Preserve raw serial and normalization-policy version. Null/unknown serials use distinct UUID identities and never a shared empty key.
 
 **Project association:** `unit_project_associations` is a separate durable relation with at least `id`, `unit_id`, `project_id`, `status`, `associated_at`, `associated_by`, `association_reason`, `ended_at`, `ended_by`, and `end_reason`. A partial unique constraint permits at most one ACTIVE association for a given `(unit_id, project_id)` while retaining ended/revoked association episodes. A composite unique key `(id, unit_id, project_id)` supports referential proof. Associations are never hard-deleted; lifecycle changes are audited. The model permits one canonical unit to have associations in multiple projects without copying the unit record.
 
