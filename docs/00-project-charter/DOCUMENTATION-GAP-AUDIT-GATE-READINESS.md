@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.84
+**Version:** 1.11.85
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -844,3 +844,19 @@ The controlling static technical reconciliation is NLA-EVENT-TECH-RECON-001 v0.1
 Static cross-references were added to CMD-021–030 v0.3.1, CMD-031–040 v0.2.1, physical schema v0.4.5 and cross-command reconciliation v0.8.45. This is documentation synchronization only. The candidate relation is NOT ADMITTED and the 48-table inventory is unchanged. PRD/Decision Register semantics are not changed.
 
 Remaining blockers: Product Owner/operational decision on next Inspector and claim ownership after return/reopen; claim release/resume/reassignment semantics; evidence carry-forward across revisions; Database/Engineering approval of relation, FK/unique constraints, strict payload schema and one-time evidence binding; Security approval of RLS/ACL/function boundary; complete lock graph and adversarial QA. No runtime evidence or test execution exists. DGA-B10 remains OPEN; G9 NOT READY; G10 NOT ACTIVE. No code, SQL, migration, grant, RLS change, CI/test execution, live database inspection, deployment or merge was performed.
+
+## Inspection draft-context traceability and QA synchronization — 2026-11-24
+
+The candidate lifecycle design is now cross-referenced through:
+- INSPECTION-DRAFT-001 v0.1.0;
+- CMD-021–030 Detailed Contract Review v0.3.1;
+- CMD-031–040 Detailed Contract Review v0.2.1;
+- Physical Database Schema v0.4.5 (candidate-only annex; canonical 48-table inventory unchanged);
+- CMD Cross-Command Reconciliation v0.8.45;
+- RTM-001 v0.1.22 (INS-021, REV-003, REV-004, EVD-004; candidate/baselined-direction statuses distinguished);
+- RAID-001 v0.1.22 (R-016, I-010, D-008 OPEN — BLOCKING);
+- QA Catalogue v0.6.0 (TC-INS-DRAFT-001..020 PLANNED / NOT EXECUTED).
+
+The proposal preserves the approved field journey and does not alter PRD or Decision Register. It separates mutable draft context from immutable submitted revision, and it does not infer evidence carry-forward, next Inspector/claim owner or claim release/resume/reassignment behavior.
+
+DGA-B10 remains OPEN. The candidate relation is not admitted; 48-table inventory remains unchanged. G9 NOT READY; G10 NOT ACTIVE. No source code, SQL, migration, grants, RLS, CI/test execution, live database inspection, deployment or merge was performed.
