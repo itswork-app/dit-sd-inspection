@@ -1,7 +1,7 @@
 # Final Documentation Closure Audit — Dit. SD Inspection
 
 **Document ID:** DOC-AUDIT-001  
-**Version:** 0.3.2  
+**Version:** 0.3.3
 **Status:** STATIC DOCUMENTATION AUDIT COMPLETED — IMPLEMENTATION READINESS NOT ESTABLISHED  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
@@ -209,3 +209,14 @@ TEST-CASE-CATALOG-AND-UAT v0.3.7 adds 14 candidate-only planned cases TC-CANDIDA
 
 
 The canonical permission registry is now v0.2.3 with explicit candidate-object authorization boundaries. Existing command permissions are reused only within their stated scope; no new device enrollment, template publication or worker permission is approved. The registry remains draft and does not authorize seeds, grants or EXECUTE ACL.
+
+
+## 19. CMD-041–044 physical read/export reconciliation — 2026-11-24
+
+The CMD-041–044 detailed review is now v0.1.1 and the command physical crosswalk v0.1.1. CMD-041/042 source read sets have been enumerated against the existing proposed canonical tables; report snapshot tables are not assumed. Metric dictionary, exact period/count semantics, query plans/index evidence and numeric limits remain open. CMD-042 cursor pagination pins an immutable published target-plan version.
+
+CMD-043's proposed read boundary is restricted to audit_events plus minimum scope/authorization references, with event-specific field projection and a non-recursive access-audit append rule. T-10 still blocks reader purpose, classification, retention, legal hold and append-failure policy.
+
+CMD-044 now has candidate-only audit_export_jobs, audit_export_manifests and audit_export_artifacts mapped in physical schema, RLS and ERD annexes. All are NOT ADMITTED and excluded from the 48-table canonical inventory. No export route, worker, bucket, permission, grant or artifact is authorized. T-10 remains BLOCKED.
+
+TEST-CASE-CATALOG-AND-UAT v0.3.8 adds 18 planned report/audit/export verification cases, all PLANNED / NOT EXECUTED. This is static documentation reconciliation only. No code, SQL, migration, RLS, grant, live database, export, runtime test or deployment was performed. G9 NOT READY; G10 NOT ACTIVE; 0/50 lock-certified.
