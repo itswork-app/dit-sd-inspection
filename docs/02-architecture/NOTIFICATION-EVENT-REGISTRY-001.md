@@ -1,8 +1,8 @@
 # Notification Event Registry — PO-Approved Specification Candidates
 
 **Document ID:** NLA-EVENT-REGISTRY-001  
-**Version:** 0.1.1  
-**Status:** DRAFT — PO INTENT APPROVED FOR SPECIFICATION/REVIEW ONLY; ALL ROWS UNRESOLVED / NOT ENABLED; NREG-001/002 PARTIAL STATIC REVIEW ONLY  
+**Version:** 0.1.2  
+**Status:** DRAFT — PO INTENT APPROVED FOR SPECIFICATION/REVIEW ONLY; ALL ROWS UNRESOLVED / NOT ENABLED; NREG-001/002/003 PARTIAL STATIC REVIEW ONLY  
 **Date:** 2026-11-24  
 **Branch:** `docs/notification-resolver-lock-closure`  
 **Authority:** PRD-001, Decision Register PO event-candidate decision (2026-11-24), NLA-EVENT-TRIAGE-001 v0.1.1, CMD source-event map. This document does not supersede them.
@@ -23,11 +23,11 @@ All rows are deliberately initialized as:
 
 No physical event field, participant ID, role ID, scope column, selector expression, channel or dispatch predicate is inferred here. Conceptual workflow actors below are review questions only, not recipient mappings.
 
-## 2. CMD-002/003 technical review checkpoint
+## 2. CMD-002/003/005 technical review checkpoint
 
-NREG-001 (`account.approved`) and NREG-002 (`account.rejected`) received a partial static technical reconciliation in [NLA-EVENT-TECH-RECON-001 v0.1.0](NOTIFICATION-EVENT-REGISTRY-TECHNICAL-RECONCILIATION-001.md). The command-level candidate producer transactions and proposed source objects are identified, but the deployed producer, canonical event envelope/version, participant projection, account-state predicate split, decision uniqueness, complete account-writer inventory, L05/L10 order, and event/outbox/snapshot deduplication remain unresolved. This is not technical approval. Both rows remain `UNRESOLVED / NOT ENABLED`; no selector, recipient, channel, dispatch profile, schema or implementation is admitted.
+NREG-001 (`account.approved`), NREG-002 (`account.rejected`) and NREG-003 (`role.revoked`) received a partial static technical reconciliation in [NLA-EVENT-TECH-RECON-001 v0.1.0](NOTIFICATION-EVENT-REGISTRY-TECHNICAL-RECONCILIATION-001.md). The command-level candidate producer transactions and proposed source objects are identified, but the deployed producer, canonical event envelope/version, participant projection, account-state predicate split, decision uniqueness, complete account-writer inventory, L05/L10 order, and event/outbox/snapshot deduplication remain unresolved. This is not technical approval. All three rows remain `UNRESOLVED / NOT ENABLED`; no selector, recipient, channel, dispatch profile, schema or implementation is admitted.
 
-For these two rows only, `technical_review_status = PARTIAL_STATIC_REVIEW`; all other registry rows remain `NOT_REVIEWED`. The registry's publication status remains `NOT_ENABLED` for all eleven rows.
+For NREG-001, NREG-002 and NREG-003 only, `technical_review_status = PARTIAL_STATIC_REVIEW`; all other registry rows remain `NOT_REVIEWED`. The registry's publication status remains `NOT_ENABLED` for all eleven rows.
 
 ## 3. Approved candidate inventory
 
