@@ -49,7 +49,7 @@ This was a read-only content review followed by documentation-only corrections o
 | Package T v0.1.1 | Historical decision instrument | Header and §10 correctly state that current PO authority is the Decision Register and dated addenda |
 | RTM-001 v0.1.3 | Requirement-to-design-to-verification index | 125 unique requirement IDs; T-13 test mapping correction recorded |
 | RAID-001 v0.1.1 | Risks, assumptions, issues and dependencies | 65 unique RAID IDs; D-031..D-036 and R-032..R-036 remain open/blocked as stated |
-| QA Catalogue v0.3.5 | Planned verification catalogue | 413 unique test definitions in DGA's current scan; all are planned, not execution evidence |
+| QA Catalogue v0.3.6 | Planned verification catalogue | 413 unique test definitions in DGA's current scan; all are planned, not execution evidence |
 
 ### 3.1 Package S reconciliation
 
@@ -98,8 +98,8 @@ Static ID review confirms 65 unique RAID identifiers. The previously documented 
 | Command catalogue | 54/54 command IDs and QA anchors | Proposed contract inventory |
 | Lock manifest | 54/54 inventoried; 10/54 candidate-normalized; 0/54 technically approved/certified | Documentation proposal only |
 | Physical schema ↔ RLS | 48/48 table-name parity | Proposed document-name parity only |
-| QA catalogue | 410 unique planned test definitions | No test execution evidence |
-| Notification QA | TC-NOTIF-001..026 | Planned only |
+| QA catalogue | 413 unique planned test definitions | No test execution evidence |
+| Notification QA | TC-NOTIF-001..029 | Planned only |
 | Print batch QA | TC-PRINT-BATCH-001..008 | Planned only |
 
 Counts are static text-level results. They do not prove semantic completeness, runtime behavior, database existence, authorization correctness, or production readiness.
