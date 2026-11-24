@@ -1,7 +1,7 @@
 # Product Owner Open Decision Packet — Dit. SD Inspection
 
 **Document ID:** POQ-001  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Status:** DECISIONS RECORDED — POQ-01..03 APPROVED 2026-11-24  
 **Date:** 2026-11-24  
 **Authority:** Decision Register; Package T historical decision pack; MIB-001; DGA-001  
