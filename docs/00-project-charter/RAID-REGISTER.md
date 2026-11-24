@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.24  
+**Version:** 0.1.25  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -437,3 +437,16 @@ INS-021, REV-003, REV-004 and EVD-004 are added to RTM-001 v0.1.22 as candidate/
 | D-010 | Certified session-bound inspection and abort contract, including returned-but-unresolved work at session close | Freeze CMD-026/027/028/029/030/032 and session-close contract; G9 scope review | Operational Owner / Engineering / Database / Security / QA | OPEN — BLOCKING |
 
 SES-001 product semantics are PO APPROVED. R-017, I-013 and D-010 remain OPEN — BLOCKING until physical, command, lock, security and QA evidence is accepted. No implementation, test execution or gate transition is implied.
+
+
+## CMD-013 FINAL_CLOSE cross-lifecycle risk reconciliation — 2026-11-24
+
+The static cross-lifecycle audit confirms that session closure remains a critical unresolved integration point. Keep the existing session/lock risks and dependencies OPEN — BLOCKING; this addendum does not close or downgrade R-017, I-013, or D-010.
+
+- CMD-013 cannot be certified until the complete blocker predicate covers inspection/review, required evidence finalization, required document generation and print reconciliation, and the institutionally approved attendance condition.
+- Per-unit abort under SES-001 cannot be used to bypass required documents, printing, attendance, or review.
+- All session-scoped writers and asynchronous finalizers capable of changing the predicate must be fenced against FINAL_CLOSE.
+- The full 54-command resource/lock inventory, CMD-026 lock-order contradiction, parent/child fence protocol and global lock graph acyclicity proof remain unresolved.
+- Notifications remain asynchronous/non-blocking unless a future approved policy changes that behavior.
+
+No new risk/dependency ID is assigned by this note. G9 remains NOT READY; G10 NOT ACTIVE; relevant QA remains PLANNED / NOT EXECUTED.
