@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.0
+**Version:** 0.4.1
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -271,20 +271,20 @@ Do not update canonical lock recipes to the candidate hierarchy before approval.
 
 ## 12. Command-level manifest inventory update — 2026-11-24
 
-[LOCK-MANIFEST-001 — Command-Level Lock Manifest Reconciliation CMD-001–054](COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.4.0 now inventories source-stated lock/resource sequences for all 54 logical command IDs. It records 54/54 inventory coverage and 0/54 certified lock-complete based on the current static evidence. It explicitly preserves unresolved ordering rather than normalizing conflicting source contracts.
+[LOCK-MANIFEST-001 — Command-Level Lock Manifest Reconciliation CMD-001–054](COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.4.1 now inventories source-stated lock/resource sequences for all 54 logical command IDs. It records 54/54 inventory coverage and 0/54 certified lock-complete based on the current static evidence. It explicitly preserves unresolved ordering rather than normalizing conflicting source contracts.
 
 The manifest confirms the CMD-023/024/025/026/027/028 ordering issues, parent/child closure conflicts, T-14 eligibility path gaps, instrument/assignment rank gap, evidence/document/attendance finalization gaps, print sequence allocator gaps and notification worker fencing gaps. It is an evidence inventory, not an approved lock plan or proof of deadlock freedom. All new tests remain planned/not executed; G9 remains NOT READY and G10 NOT AUTHORIZED.
 
 
 ## 13. Lock protocol decision-resolution proposal — 2026-11-24
 
-[LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.3.0 consolidates a candidate monotonic resource order and explicit recommendations for CMD-022–027, CMD-028–032/035, project/session closure, T-14 capacity, instrument/assignment interaction, evidence/document/attendance/print, and notification worker/callback boundaries. It assigns PO, Engineering, Security, institutional and Operations decision ownership.
+[LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.3.1 consolidates a candidate monotonic resource order and explicit recommendations for CMD-022–027, CMD-028–032/035, project/session closure, T-14 capacity, instrument/assignment interaction, evidence/document/attendance/print, and notification worker/callback boundaries. It assigns PO, Engineering, Security, institutional and Operations decision ownership.
 
 **Disposition:** proposal only; not an approved lock protocol and not proof of an acyclic graph. Canonical command contracts and physical schema remain unchanged. 54/54 commands remain inventoried and 0/54 certified lock-complete. All tests remain PLANNED / NOT EXECUTED. G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED.
 
 ## 14. Candidate-rank and notification boundary reconciliation — 2026-11-24
 
-The rank table in §4 is now aligned with the candidate L00–L110 vocabulary in LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.0. This corrects the prior graph's compressed 0–90 model, which combined instrument with assignment, claim with inspection, and omitted the dependent-mutable versus append-only distinction. The candidate order remains unapproved; the change is a documentation reconciliation, not Engineering/Security approval.
+The rank table in §4 is now aligned with the candidate L00–L110 vocabulary in LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.1. This corrects the prior graph's compressed 0–90 model, which combined instrument with assignment, claim with inspection, and omitted the dependent-mutable versus append-only distinction. The candidate order remains unapproved; the change is a documentation reconciliation, not Engineering/Security approval.
 
 CMD-049–054 must be interpreted as follows:
 - CMD-049: recipient-owned read only; MVCC/read consistency and actor/filter-bound cursor, no mutation lock.
