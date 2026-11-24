@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.45
+**Version:** 0.8.46
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -651,3 +651,8 @@ IFP and Standing Bracket remain separate instrument versions. The draft payload 
 Candidate flow: CMD-026 creates the initial context; CMD-028 updates only that context; CMD-029 seals it and creates the immutable revision; CMD-030 creates a correction context; CMD-032 creates an approved-reopen context; CMD-033/034 bind evidence to the active context and the resulting immutable revision at submit. The candidate relation is not admitted to the 48-table inventory.
 
 Open decisions remain: next Inspector/claim owner after return/reopen, claim release/resume/reassignment lifecycle, evidence carry-forward across revisions, exact draft payload/schema and physical constraints, and complete lock/ACL/RLS/QA evidence. No user-facing PRD scope or approved PO decision is changed by this candidate.
+
+
+## SES-001 cross-command reconciliation — 2026-11-24
+
+PO-approved SES-001 establishes immutable session binding for each unit inspection attempt. CMD-026 claim, CMD-027 release/abort, CMD-028 draft edit, CMD-029 submit, CMD-030 return, CMD-032 reopen and CMD-033/034 evidence operations must all enforce the same originating session. Returned correction remains restricted to the original Inspector and original active session. CMD-032 reopen cannot create a draft after the originating session is finally closed. Session-close command must block on unresolved unit attempts; every hanging attempt must be explicitly aborted before final closure. Abort must preserve history, seal the draft, release claim and append audit/event/idempotency atomically. A later session creates a new inspection attempt for the canonical unit; no draft, claim, evidence or revision is resumed across sessions. Command identity, dedicated abort command versus CMD-027 reuse, physical constraints, lock graph, RLS/ACL and QA remain open; no certification is implied.
