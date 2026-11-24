@@ -18,14 +18,14 @@ All rows are deliberately initialized as:
 - `recipient_mapping_status = UNRESOLVED`
 - `selector_status = UNRESOLVED`
 - `dispatch_profile_status = UNRESOLVED`
-- `technical_review_status = NOT_REVIEWED`
+- `technical_review_status = PARTIAL_STATIC_REVIEW` (bounded static review only; not technical approval)
 - `publication_status = NOT_ENABLED`
 
 No physical event field, participant ID, role ID, scope column, selector expression, channel or dispatch predicate is inferred here. Conceptual workflow actors below are review questions only, not recipient mappings.
 
 ## 2. CMD-002/003/005/010/013/014/015/029/030/031/032 technical review checkpoint
 
-NREG-001 (`account.approved`), NREG-002 (`account.rejected`), NREG-003 (`role.revoked`), NREG-004 (`project.closed`), NREG-005 (`session.closed`), NREG-006 (`assignment.created`), NREG-007 (`assignment.changed`), NREG-008 (`inspection.submitted`) and NREG-009 (`inspection.returned_for_correction`) received a partial static technical reconciliation in [NLA-EVENT-TECH-RECON-001 v0.1.6](NOTIFICATION-EVENT-REGISTRY-TECHNICAL-RECONCILIATION-001.md). The command-level candidate producer transactions and proposed source objects are identified, but the deployed producer, canonical event envelope/version, participant projection, account-state predicate split, decision uniqueness, complete account-writer inventory, L05/L10 order, and event/outbox/snapshot deduplication remain unresolved. This is not technical approval. All nine reviewed rows remain `UNRESOLVED / NOT ENABLED`; no selector, recipient, channel, dispatch profile, schema or implementation is admitted.
+NREG-001 through NREG-011 (including NREG-010 `inspection.approved` and NREG-011 `inspection.reopened`) received a partial static technical reconciliation in [NLA-EVENT-TECH-RECON-001 v0.1.6](NOTIFICATION-EVENT-REGISTRY-TECHNICAL-RECONCILIATION-001.md). The command-level candidate producer transactions and proposed source objects are identified, but deployed producers, canonical event envelopes/versions, participant projections, exact event identities, decision uniqueness, reviewer assignment, reopen authority/draft persistence, complete writer inventory, L05 order, and event/outbox/snapshot deduplication remain unresolved. This is not technical approval. All eleven rows remain `UNRESOLVED / NOT ENABLED`; no selector, recipient, channel, dispatch profile, schema or implementation is admitted.
 
 For NREG-001 through NREG-011, `technical_review_status = PARTIAL_STATIC_REVIEW`; this means a bounded static pass only, not technical approval. All eleven rows still have `canonical_contract_status`, `recipient_mapping_status`, `selector_status`, and `dispatch_profile_status = UNRESOLVED`. The registry's publication status remains `NOT_ENABLED` for all eleven rows.
 
