@@ -238,3 +238,8 @@ This document advances static analysis only. It does not close RAID R-037 or RTM
 | Resolver certification | 0/40; unchanged |
 | Application lock certification | 0/50; unchanged |
 | G9 / G10 | NOT READY / NOT ACTIVE |
+
+
+## 12. L05 technical decision record — 2026-11-24
+
+[NLA-L05-TDR-001](NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) v0.1.0 now records the concrete candidate PostgreSQL protocol for Engineering/Database/Security review: transaction-scoped `pg_advisory_xact_lock(int,int)`, one reserved global key pair (numeric values TBD), READ COMMITTED with lock acquisition and resolver read in separate SQL statements, full writer participation, bounded timeout/retry, FK/unique/trigger/helper graph and NRL-T01..T10. The key pair, isolation configuration, command writer matrix, timeouts, audience cap and performance SLO are deliberately not invented or approved. The TDR is PROPOSED only; L05 remains unadmitted, 0/40 resolver paths certified, 0/50 application locks certified, G9 NOT READY and G10 NOT ACTIVE.
