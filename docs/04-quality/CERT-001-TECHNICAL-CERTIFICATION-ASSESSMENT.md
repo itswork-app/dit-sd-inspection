@@ -1,11 +1,11 @@
 # CERT-001 — Technical Certification Assessment
 
 **Document ID:** CERT-001  
-**Version:** 0.1.3  
+**Version:** 0.1.4  
 **Assessment date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
-**Assessment baseline:** `87fce0a34fc9afdf1f5287efee0fc5abda1b7dab`  
+**Assessment baseline:** `00859d5c39381f6ff6b58190abfec09c8e4b8bbd`  
 **Pull request:** [PR #3 — docs: final governance and command-contract reconciliation](https://github.com/itswork-app/dit-sd-inspection/pull/3)  
 **Overall result:** **NOT CERTIFIED**  
 **G9:** NOT READY  
@@ -178,3 +178,10 @@ The overall assessment remains **NOT CERTIFIED**. G9 remains NOT READY; G10 rema
 ## 11. Normalized command-register reassessment — 2026-11-24
 
 LOCK-NORMALIZATION-001 v0.1.0 was added and statically checked against the source tables. It contains 50 unique application command rows (CMD-001–044 and CMD-049–054), with CMD-045–048 correctly excluded as external control-plane IDs. The normalized register is a documentation consolidation, not technical approval. The unresolved fields and conflict register remain explicit. LPR-09 remains OPEN; LPR-10 remains NOT EXECUTED; no effective PostgreSQL lock graph acyclic proof or 0/50-to-PASS transition is claimed. Overall technical certification remains NOT CERTIFIED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 12. Physical object crosswalk reassessment — 2026-11-24
+
+CMD-PHYSICAL-CROSSWALK-001 v0.1.0 was added with 50 command headings: 40 source-derived physical read/write sections for CMD-001–040, four explicit OPEN/BLOCKED entries for CMD-041–044, and six source-derived notification/worker entries for CMD-049–054. CMD-045–048 remain excluded external control-plane IDs. This validates the documentation inventory and exposes physicalization gaps; it does not verify any live table, index, FK, trigger, function, RLS policy, grant, Storage object or provider. In particular, CMD-041–044 require a complete physical query/export model, and CMD-044 remains blocked by T-10.
+
+The 50-command normalized register LOCK-NORMALIZATION-001 v0.1.1 now explicitly includes physical read/write set as a required field and links the physical crosswalk. The static inventory is 50 unique application commands; 0/50 are technically approved/certified lock-complete. LPR-09 remains OPEN; LPR-10 remains NOT EXECUTED. Overall technical certification remains **NOT CERTIFIED**; G9 NOT READY; G10 NOT ACTIVE. No source implementation, SQL, migration, grants/revokes, CI execution, tests, live database inspection, deployment, merge or production data operation was performed.
