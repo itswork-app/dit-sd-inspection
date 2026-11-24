@@ -221,3 +221,16 @@ D-030 remains OPEN/BLOCKING. The first ten command manifests now have a candidat
 
 
 **Final reviewed source snapshot for CMD-001–010 checkpoint:** CMD detail v0.3.4; LOCK-MANIFEST-001 v0.4.13; LOCK-GRAPH-001 v0.4.10; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.8; Cross-Command Reconciliation v0.8.8; QA Catalogue v0.3.3; DGA-001 v1.11.15. D-030/R-030 remain OPEN; no implementation or concurrency evidence is claimed.
+
+
+## CMD-045–048 blocked-command review — 2026-11-24
+
+| ID | Type | Description | Impact | Mitigation / response | Accountable role | Status |
+|---|---|---|---|---|---|---|
+| D-031 | Dependency | CMD-045 retention/legal-hold cannot be designed as an executable command until T-10 institutional records/legal/privacy/security policy defines record classes, retention triggers, hold authority/precedence, disposition and backup/object treatment | G1/G4/G5/G8/G9; risk of unlawful or irreversible disposition | Obtain written institutional policy; define versioned policy and hold/disposition lifecycle; prove hold-vs-disposition concurrency and audit evidence before any implementation | Institutional records/legal/privacy/security owners | BLOCKED |
+| R-032 | Risk | A generic security-incident command without an approved case owner, need-to-know scope, evidence chain-of-custody and break-glass process could expose sensitive incident data or create unauthorized response powers | Critical | Decide product-owned vs external incident system; approve incident taxonomy, roles, scope, evidence and response lifecycle; keep command unavailable until physical/security review | Security owner / Institution / PO | OPEN — BLOCKING |
+| D-032 | Dependency | CMD-047 provider configuration lacks T-12 named account/billing owners, custodians, region, plan, secret-manager and rotation/recovery evidence | G4/G8/G9 and provider continuity | Complete signed ownership/RACI and provider evidence; approve server-side secret references, environment isolation, rotation, audit redaction and rollback | Sponsor / Institution / Operations / Security | BLOCKED |
+| D-033 | Dependency | CMD-048 release management has no verified release operator, branch/ruleset, required CI, protected environment, artifact provenance or deployment SoD evidence | G4/G8/G9 | Verify GitHub rulesets, CI and Vercel protected environments; define immutable artifact provenance, approval, rollback and schema compatibility; decide whether product-side command is unnecessary | Repository administrator / Operations / Security | OPEN — BLOCKING |
+| R-033 | Risk | Implementing CMD-047/048 as generic application CRUD/actions could bypass provider-native controls, expose credentials or allow deployment without independent approval | Critical | Prefer narrowly scoped provider/repository control planes; prohibit raw secrets and browser credentials; require exact allowlists, SoD, immutable evidence and independent review | Engineering / Security / Operations | OPEN — CRITICAL |
+
+CMD-045–048 Detailed Contract Review v0.1.0 records the present safe-unavailable behavior and required closure evidence. This documentation does not close DGA-B04/B05/B15, authorize any provider setup, or establish incident/release control-plane ownership. All subcases remain PLANNED / NOT EXECUTED.
