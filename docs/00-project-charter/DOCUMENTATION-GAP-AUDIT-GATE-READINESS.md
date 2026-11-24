@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.3
+**Version:** 1.11.4
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -304,7 +304,7 @@ The CMD-011–015 detailed review was statically compared with CMD-010 closure:
 
 ## CMD-011–020 Product Owner approval synchronization — 2026-11-24
 
-The Product Owner explicitly approved the product-semantic recommendations for CMD-011–020. The Decision Register contains the dated decision record; decision package v0.2.0 records the approved interpretation and response matrix. This closes the PO decision-response dependency for these ten commands only.
+The Product Owner explicitly approved the product-semantic recommendations for CMD-011–020. The Decision Register contains the dated decision record; decision package v0.2.1 records the approved interpretation and response matrix. This closes the PO decision-response dependency for these ten commands only.
 
 The following controlled documents have been reconciled to the approved semantics:
 - CMD-011–020 Detailed Contract Review v0.3.2: product semantics marked PO APPROVED; engineering/security contract findings remain open.
