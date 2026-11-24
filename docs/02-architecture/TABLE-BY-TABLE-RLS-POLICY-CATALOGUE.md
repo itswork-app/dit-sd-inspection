@@ -1,7 +1,7 @@
 # Table-by-Table RLS Policy Catalogue
 
 **Status:** Security policy design draft — security review and implementation approval required  
-**Version:** 0.2.3  
+**Version:** 0.2.4
 **Package:** M — RLS and Authorization Policy Catalogue  
 **Date:** 2026-11-23
 
@@ -300,3 +300,18 @@ Dismiss/archive is excluded from MVP by explicit Product Owner decision. There i
 The PostgreSQL Command Contract Catalogue references canonical permission registry v0.2.2, but this review did not establish the registry's exact repository path or retrieve its authoritative content. Therefore this annex does not claim the permission registry has been updated or that the listed mappings are registry-verified. Before any candidate object is admitted, retrieve the authoritative registry and reconcile exact permission codes, resource scopes, grantor ceilings, SoD, worker principals and EXECUTE/table ACL. In particular, device enrollment and template publication require explicit authorization design; they must not inherit sync.apply or document.generate by assumption.
 
 The existing 48-table policy matrix remains the canonical proposed table inventory. These candidate rows are not live RLS policies and no grant or policy has been deployed or verified.
+
+
+## CMD-044 candidate-only RLS/ACL annex — NOT ADMITTED (2026-11-24)
+
+**T-10 BLOCKED.** The following matrix is a future review boundary only. It adds no rows to the canonical 48-table RLS catalogue and authorizes no browser SELECT, DML, GRANT, policy or worker principal.
+
+| Candidate object | Browser SELECT | Browser INSERT/UPDATE/DELETE | Internal access candidate | Required boundary before admission |
+|---|---|---|---|---|
+| audit_export_jobs | NONE by default; minimal requester-owned status projection only if T-10 approves | NONE | Narrow export coordinator/worker command only | Named requester scope, policy-version binding, idempotency and fenced lease; exact worker role/ACL open |
+| audit_export_manifests | NONE | NONE | Finalizer-only immutable insert; approved integrity verifier read | Immutable after finalization; exact event identity/projection policy and canonical serialization approved |
+| audit_export_artifacts | NONE; no object key or signed URL exposed | NONE | Finalizer writes metadata after private Storage verification; download service resolves separate access decision | Private bucket, encryption/key custody, approved region, separate download authority, expiry/retention/legal hold/deletion |
+
+No candidate object inherits access from audit.read or audit.export automatically. audit.export authorizes only the approved export request boundary if T-10 later permits it; it does not itself authorize artifact download. Worker identities must be dedicated, non-user workload principals with exact table/function ACL, no browser EXECUTE and no service_role impersonation. No direct browser DML on audit records or candidate export records is permitted.
+
+The candidate annex is excluded from the 48-table canonical inventory. T-10 authority, purpose, classification, SoD, field projection, recipient, retention/legal hold, storage provider/region, encryption/key custody and deletion evidence remain blockers.
