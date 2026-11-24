@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.11
+**Version:** 1.11.12
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -362,3 +362,10 @@ The CMD-011–020 decision package is v0.2.2 and explicitly corrects its older c
 CMD-001–010 Detailed Contract Review v0.3.3 §9 now records per-command candidate resources, lock modes, post-lock revalidation, competing writers, open physical evidence and planned adversarial test pairs. LOCK-MANIFEST-001 v0.4.9 updates both the 54-command inventory rows and detailed resource rows; LOCK-GRAPH-001 v0.4.7 and LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.5 carry the same candidate edge overlay.
 
 **Progress accounting:** 10/54 are candidate-normalized at documentation level; 0/54 are technically approved or lock-complete certified. This does not close LPR-01, LPR-07, LPR-11, DGA-B18, DGA-B19, DGA-B21, G3, G4, G5, G7 or G9. LPR-10 remains NOT EXECUTED; G10 remains NOT AUTHORIZED. Physical PostgreSQL object/privilege inventory and concurrency evidence remain absent.
+
+
+## CMD-001–010 QA and source-version synchronization — 2026-11-24
+
+QA Catalogue v0.3.2 updates TC-CMD-CONTRACT-024-001..010 concurrency assertions for account request/decision races, role and scope grant lifecycle, T-14 serialization, project capacity bootstrap, project CAS and project-close parent fencing. CMD-001–010 Detailed Contract Review v0.3.4, LOCK-MANIFEST-001 v0.4.10, LOCK-GRAPH-001 v0.4.8 and LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.6 are the current candidate design references.
+
+All ten command test cases remain PLANNED / NOT EXECUTED. Progress remains 10/54 candidate-normalized at documentation level and 0/54 technically approved/certified. DGA-B18 PARTIAL, DGA-B19 OPEN, DGA-B21 PARTIAL; LPR-01/LPR-07–LPR-11 remain OPEN, LPR-10 NOT EXECUTED, G3/G4/G5/G7/G9 NOT READY and G10 NOT AUTHORIZED.
