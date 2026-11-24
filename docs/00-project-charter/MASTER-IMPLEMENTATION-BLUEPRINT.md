@@ -2,10 +2,11 @@
 
 **Document ID:** MIB-001  
 **Status:** CONTROLLED BASELINE — DOCUMENTATION PHASE  
-**Version:** 1.0.9  
+**Version:** 1.0.10  
 **Last reviewed:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
-**Implementation authorization:** NOT GRANTED  
+**Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
+**G10 implementation activation:** NOT ACTIVE — pending verified G9 and the required G10 activation record  
 **Scope-freeze status:** NOT READY
 
 ## 1. Purpose and authority
@@ -200,7 +201,8 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 - Live Supabase inspection: **NOT EXECUTED**
 - CI, runtime, restore, performance and UAT evidence: **NOT EXECUTED**
 - Scope freeze: **NOT READY**
-- Implementation authorization: **NOT GRANTED**
+- Product Owner authorization: **CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)**
+- G10 implementation activation: **NOT ACTIVE — pending verified G9 and the required G10 activation record**
 - Production readiness: **NOT VERIFIED**
 
 ## 11. Immediate next actions
