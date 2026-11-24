@@ -522,3 +522,8 @@ POQ-01 requires the event-time recipient and authorized source-scope candidate s
 7. Re-run global graph acyclicity review after the candidate physical model is approved; do not infer acyclicity from the documentation sequence.
 
 **Disposition:** CMD-049/050 remain read/set-once paths; CMD-051 policy publish remains BLOCKED on exact policy aggregate and permission/SoD; CMD-052/054 audience snapshot is a candidate design with unresolved implicit lock edges; CMD-053 provider callback remains provider-dependent. No new lock rank is approved. Lock-complete remains 0/50; LPR-01/LPR-07–LPR-09/LPR-11 remain OPEN; LPR-10 NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 7.7 Notification source-event inventory cross-reference — 2026-11-24
+
+[NOTIFICATION-SOURCE-EVENT-AND-SNAPSHOT-LOCK-RECONCILIATION-001](NOTIFICATION-SOURCE-EVENT-AND-SNAPSHOT-LOCK-RECONCILIATION-001.md) v0.1.0 is the source-event inventory and candidate FK/implicit-lock crosswalk for POQ-01. It records CMD-001–040 as potential source-event producers, CMD-054 as a separate scheduler source, and CMD-052/053 as consumers. The event-type-to-policy allowlist remains OPEN; the candidate relation and snapshot header remain NOT ADMITTED. Its source lock inventory is extracted from this manifest and must be normalized per command before any row can be certified. 0/50 remains unchanged.
