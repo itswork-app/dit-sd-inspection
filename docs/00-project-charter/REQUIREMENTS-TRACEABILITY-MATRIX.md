@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.24  
+**Version:** 0.1.25  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -574,3 +574,18 @@ These rows are candidate traceability entries only. They do not amend the approv
 | Requirement ID | Requirement / invariant | Authority | Design reference | Verification | Status |
 |---|---|---|---|---|---|
 | INS-022 | Each unit inspection attempt is immutably bound to exactly one session; no cross-session draft/claim/evidence/correction/reopen continuation; unresolved attempts must be explicitly aborted before final session closure; later session starts a new inspection aggregate with a distinct inspection_id | PO-approved SES-001; session lifecycle; T-09; WF-001/WF-002 | Decision Register SES-001; INSPECTION-DRAFT-001 v0.1.4 §§11–11.5; CMD-021–030 §SES-001; CMD-031–040 §SES-001 | TC-INS-DRAFT-021..027; session binding, cross-session denial, abort atomicity, claim release, immutable history, distinct inspection_id for a later-session attempt, same inspection_id for in-session return/reopen | PRODUCT SEMANTICS PO APPROVED; PHYSICAL / COMMAND / SECURITY / QA CERTIFICATION OPEN |
+
+
+## CMD-013 FINAL_CLOSE cross-lifecycle traceability — 2026-11-24
+
+SES-001/WF-003 traceability is extended across the complete session lifecycle. The existing approved requirements remain unchanged; this is a verification mapping, not a new product decision.
+
+| Requirement / decision | Workflow and state | Command / data boundary | Required security and QA evidence | Current disposition |
+|---|---|---|---|---|
+| SES-001 / WF-003 | Every assigned unit attempt terminal; explicit abort for unfinished attempt | CMD-013; CMD-026–032; candidate abort contract; immutable inspection/session identity | Per-unit abort authorization, atomic preservation, close-vs-attempt race, CMD-027 release-not-abort negative case | PO semantics approved; command identity, physical constraints and tests open |
+| INS-007 / INS-009 / INS-010 | Required evidence finalized before valid submission; submitted revision immutable | CMD-029, CMD-033/034; evidence assets and revision binding | Storage object verification, pending-intent close blocker, audit/idempotency atomicity, finalizer race | Design proposal; physical and runtime evidence open |
+| DOC-002 / INS-011 | Approved revision → final PDF → recorded print action for per-unit completion | CMD-036/037 and CMD-038; document generation and print item lifecycle | Source/template provenance, generation/print terminal reconciliation, lost acknowledgement and close race | Product direction approved; durable job/manifest model and tests open |
+| T-08 / CMD-039/040 | Session attendance upload and verification | Attendance document/version and verification history | Institutional verifier authority, uploader/verifier SoD, accepted evidence, close-predicate approval | Institutional/technical blocker |
+| INS-015 / POQ-01..03 | Notifications and delivery are separate from inspection/session completion | CMD-049–054; outbox and async delivery | Source/outbox atomicity and async retry; no close dependency absent approved rule | PO semantics approved; runtime and worker controls open |
+
+No row above proves implementation. All associated QA remains PLANNED / NOT EXECUTED; G9 NOT READY and G10 NOT ACTIVE.
