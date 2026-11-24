@@ -662,7 +662,7 @@ The concurrency expectations in TC-CMD-CONTRACT-024-001..009 have been aligned w
 
 ## POQ-01..03 acceptance coverage — 2026-11-24
 
-The Product Owner approved the audience, SLA and dismissal semantics on 2026-11-24. TC-NOTIF-027..029 add explicit acceptance cases for non-widening audience retries, quiet-hours/SLA independence and the absence of dismiss/archive in MVP. All TC-NOTIF-001..029 remain PLANNED / NOT EXECUTED; no implementation or runtime behavior is proven by this catalogue update.
+The Product Owner approved the audience, SLA and dismissal semantics on 2026-11-24. TC-NOTIF-027..029 add explicit acceptance cases for non-widening audience retries, quiet-hours/SLA independence and the absence of dismiss/archive in MVP. Later v0.4.1–0.4.2 add TC-NOTIF-030..040 for durable audience snapshots and adversarial lock-order races, TC-RLS-024-049 and TC-FN-SEC-025-070..071. All TC-NOTIF-001..040 and the related RLS/function-security cases remain PLANNED / NOT EXECUTED; no implementation or runtime behavior is proven by this catalogue update.
 
 
 ## 12. Candidate durable-object verification cases — CMD-035/036/038/039/040
