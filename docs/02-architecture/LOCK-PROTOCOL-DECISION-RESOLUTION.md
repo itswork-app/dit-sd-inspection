@@ -1,7 +1,7 @@
 # Lock Protocol Decision Resolution — LPR-01–LPR-11
 
 **Document ID:** LOCK-PROTOCOL-DECISION-RESOLUTION-001  
-**Version:** 0.3.12  
+**Version:** 0.3.13  
 **Status:** PO product decisions LPR-02–LPR-06 APPROVED; technical lock protocol remains OPEN / NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** Candidate global lock protocol for CMD-001–054 and asynchronous finalizers  
@@ -343,3 +343,12 @@ LPR-09 applies to **50 application commands**, not all 54 traceability IDs. CMD-
 ## 14. Normalized manifest register reference — 2026-11-24
 
 [LOCK-NORMALIZATION-001](COMMAND-LOCK-MANIFEST-NORMALIZATION-REGISTER-001.md) v0.1.0 is the consolidated field-level review index for the 50 application commands. It does not resolve or approve LPR-01 or LPR-07–LPR-09/LPR-11; LPR-10 remains NOT EXECUTED. CMD-045–048 remain external control-plane IDs and are excluded. The register's OPEN items must be resolved against exact physical schema and effective PostgreSQL behavior before any lock protocol approval.
+
+
+## 15. CMD-031/032 targeted technical closure checkpoint — 2026-11-24
+
+TECH-RESOLUTION-LPR-001 v0.1.11 adds a targeted Engineering/Database/Security closure matrix for inspection approval and reopen. It decomposes CMD-031 into exact immutable revision binding, persisted Reviewer assignment, reviewer != author SoD, one terminal-decision arbiter, atomic event/audit/idempotency/outbox/snapshot and complete lock/writer evidence. CMD-032 is decomposed into explicit reopen authority, approved state/next-action ownership, mutable draft persistence and uniqueness, active-work blockers, historical artifact preservation, atomic source evidence and shared inspection serialization.
+
+The command source contracts and physical schema remain proposals. The `review_events` physical catalogue does not yet name a review-round/decision sequence or reviewer-assignment identity, and it describes one terminal decision as an invariant without an admitted unique arbiter. CMD-032 still has no approved mutable draft representation or next-action owner. The source-event path map's inspection-first recipes remain in conflict with the candidate parent/assignment/claim-first hierarchy; no path is certified.
+
+NREG-010/011 remain PARTIAL_STATIC_REVIEW only and NOT ENABLED. LPR-01/LPR-07/LPR-09/LPR-11 remain OPEN; LPR-10 NOT EXECUTED. Resolver 0/40; application lock 0/50; global graph NOT PROVEN ACYCLIC; snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE. No technical approval or implementation authorization is implied.
