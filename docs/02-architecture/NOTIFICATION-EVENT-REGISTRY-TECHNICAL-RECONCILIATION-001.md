@@ -1,16 +1,16 @@
 # Notification Event Registry — Technical Reconciliation
 
 **Document ID:** NLA-EVENT-TECH-RECON-001  
-**Version:** 0.1.4  
-**Status:** STATIC TECHNICAL RECONCILIATION — PARTIAL; CMD-002/003/005/010/013/014/015/029/030 REVIEWED, ALL PARTIAL / UNRESOLVED / NOT ENABLED  
+**Version:** 0.1.5  
+**Status:** STATIC TECHNICAL RECONCILIATION — PARTIAL; NREG-001..009 (CMD-002/003/005/010/013/014/015/029/030) REVIEWED, ALL PARTIAL / UNRESOLVED / NOT ENABLED  
 **Date:** 2026-11-24  
 **Branch:** `docs/notification-resolver-lock-closure`  
-**Scope:** First technical pass for NREG-001 (`account.approved`) and NREG-002 (`account.rejected`)  
+**Scope:** Static technical reconciliation of the nine first-batch registry rows NREG-001..009; all remaining first-batch rows are not yet reviewed  
 **Authority:** AGENTS.md v1.2.2; Decision Register; CMD-001–054 Cross-Command Reconciliation; CMD-001–010 Detailed Contract Review; PostgreSQL Command Contract Catalogue; Command Physical Object Crosswalk; LOCK-NORMALIZATION-001; NLA-001; NLA-L05-TDR-001; L05 Eligibility-Writer Participation Matrix; POQ-04.
 
 ## 1. Purpose and boundary
 
-This document records a static, evidence-bounded technical pass over the first two PO-approved event candidates. It is not an executable event contract, source-code inspection, live database inspection, or technical approval.
+This document records a static, evidence-bounded technical pass over nine of the eleven PO-approved event candidates: CMD-002/003, CMD-005, CMD-010/013, CMD-014/015 and CMD-029/030. It is not an executable event contract, source-code inspection, live database inspection, or technical approval. CMD-001 `account.requested` remains deferred and is not among the approved first-batch candidates; CMD-031/032 remain to be reconciled.
 
 The following remain prohibited until G10 activation: source code, SQL, migrations, grants/revokes, RLS changes, live database operations, provider setup, deployment and production/staging mutation. No event is enabled by this document.
 
@@ -29,6 +29,11 @@ The registry's seven status dimensions remain controlling. All nine reviewed row
 | Source | Static evidence used | Limitation |
 |---|---|---|
 | CMD-001–010 Detailed Contract Review v0.3.4 | CMD-002/003 candidate request, response, authorization, read/write sets, transaction and audit proposals | Engineering proposal; no approved executable route/RPC/function |
+| CMD-011–020 Detailed Contract Review | CMD-010/013/014/015 source command contracts, state/roster mutation boundaries, candidate read/write sets and unresolved concurrency/active-work rules | Candidate route/RPC and physical contracts remain unapproved |
+| L05 Source-Event Path Mapping | CMD-002/003/005/010/013/014/015/029/030 producer transaction and proposed event/outbox/snapshot atomicity, candidate source paths and lock-order conflicts | Static candidate map; no source-code/function call graph or deployed transaction proof |
+| L05 Eligibility-Writer Participation Matrix | Account, role, capacity, project/session, assignment/member and inspection/evidence writer families, including known non-command writer gaps | Incomplete writer inventory; no writer certified to participate |
+| Command Lock Manifest Normalization Register | Candidate normalized global lock sequences for CMD-002/003/005/010/013/014/015/029/030 | Candidate ordering only; no lock certification or acyclic graph proof |
+| Notification Recipient Resolver Lock-Set Review | Known CMD-014/015 resolver rank inversions and required reordering | Review findings only; no resolver or lock set admitted |
 | PostgreSQL Command Contract Catalogue v0.4.8 | CMD-002/003 logical event names, permission family, target-account scope and candidate transaction semantics | Permission registry and command contracts remain unapproved for execution |
 | Command Physical Object Crosswalk | CMD-002/003 proposed `app_users`, `account_decisions`, `idempotency_records`, `audit_events` dependencies | Proposed physical model, not live schema proof |
 | Physical Database Schema and Integrity Specification | `app_users` candidate fields include `id`, `auth_user_id`, `approval_status`, `account_status`; `account_decisions` is proposed append-only with user, decision, actor, reason and time | Exact constraints, state model, deployed columns and ACL are unverified |
