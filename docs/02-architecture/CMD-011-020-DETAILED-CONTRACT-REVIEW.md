@@ -1,7 +1,7 @@
 # CMD-011–020 Detailed Contract Review
 
-**Status:** Engineering contract review — proposal only; PO/security review required; NOT approved for implementation  
-**Version:** 0.2.0  
+**Status:** PO product semantics APPROVED (2026-11-24); Engineering/Security contract review OPEN; NOT approved for implementation  
+**Version:** 0.3.0  
 **Date:** 2026-11-24  
 **Scope:** CMD-011 through CMD-020  
 **Controls:** T-14 Inspector capacity; T-15 append-only audit direction; T-17 instrument governance; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
@@ -1208,3 +1208,25 @@ No implementation readiness or production readiness is claimed by this review.
 - Update the canonical command catalogue, permission registry, physical schema, RLS catalogue, audit catalogue and test catalogue together when an issue is resolved.
 - Preserve immutable command IDs. Breaking contract changes require a new schema/API version and explicit compatibility plan.
 - Re-review CMD-001–010 findings alongside CMD-011–020 where shared invariants intersect, especially T-14 capacity serialization and version-field gaps.
+
+
+## 9. Product Owner semantic decision overlay — 2026-11-24
+
+The Decision Register's CMD-011–020 approval addendum and decision package v0.2.0 are authoritative for product semantics. This overlay supersedes conflicting candidate semantics in this review only where explicitly stated below. It does not approve API/JSON schemas, database fields/constraints, lock modes/order, permission grants, function signatures/ACLs, or implementation.
+
+| Command | PO-approved product semantics | Contract reconciliation required before freeze |
+|---|---|---|
+| CMD-011 create-session | Server selects initial state `DRAFT` under a project state that the canonical project lifecycle permits for session creation. Persist UTC instants; local input is interpreted using the project's canonical IANA timezone. Reject ambiguous/nonexistent DST local times. Overlap is not prohibited by default. | Replace any `PLANNED` candidate with canonical `DRAFT`; resolve exact project-state enum, timestamp precision/input contract, project/code uniqueness and parent fence. |
+| CMD-012 update-session | Session code is immutable. Only allowlisted non-identity metadata is mutable. Once dependent work references the session, reject schedule changes that reinterpret existing work. Every accepted metadata update has a non-empty reason. | Define exact metadata allowlist and dependent-work predicate. Session row-version/CAS and lock order remain Engineering/QA decisions; current physical schema lacks the required token. |
+| CMD-013 transition-session | Canonical states remain `DRAFT`, `ACTIVE`, `PAUSED`, `CLOSED`; `CLOSED` is terminal in ordinary flow. Korlap's actions are limited to activate/pause/resume/request closure within assigned scope and explicit permission. Final closure is a separate authorized action after gate validation; reopening is privileged, reasoned and audited. | `CLOSE_REQUESTED` is an action/event, not a persisted state. Super Admin remains final closure authority per T-06/T-07. Exact transition matrix, permissions, closure checklist and lock/fence protocol remain open. |
+| CMD-014 publish-assignment | One create-only command atomically creates one assignment and its complete initial roster. Server chooses initial published state only after validation. Assignment intervals are half-open `[start,end)`. Reject overlapping effective membership only when it creates duplicate/conflicting Inspector eligibility in the same governed project/session scope. | Define exact lifecycle enum and overlap predicate. T-14 capacity serialization, parent-fence and atomic roster implementation remain technical review items. |
+| CMD-015 change-assignment-members | Every membership end has its own `effective_at`; every accepted change has a reason; history is ended, not hard-deleted. Submitted inspections are never deleted, reassigned or invalidated by member removal. | Request shape must represent per-member effective times. Active claims/in-progress orphaning and transfer/grandfathering behavior require operational-owner review. Retention remains under T-10. |
+| CMD-016 change-inspector-capacity | Reaffirm T-14 unchanged: integer cap 1–100, default 50; distinct enabled accounts with active Inspector role and at least one currently effective operational Inspector assignment in governed project/session scope; reject reduction below count; never silently revoke roles/assignments. | No new capacity rule is created. Shared serialization, row version and physical enforcement remain open. |
+| CMD-017 manage-target-plan | Prefer session-scoped plans; project-wide plans require separate justified product change. Actions are `CREATE_DRAFT`, `REPLACE_DRAFT_ALLOCATIONS`, `PUBLISH`. Published plans are immutable; corrections create a new version. Allocation uniqueness is `(target_plan_id, assignment_id, target_date)`; duplicates and zero quantity are rejected. | Make `session_id` required for normal plans or define separately approved project-wide exception; define quantity unit/range and draft concurrency token. |
+| CMD-018 create-instrument | New instrument is draft/inactive and not selectable for assignment until a version is published. Code normalization direction: Unicode NFKC, trim surrounding whitespace, invariant uppercase for the approved ASCII alphabet, reject internal whitespace/control characters, unique normalized value. | ASCII alphabet, Unicode edge cases, collation and physical uniqueness enforcement require Engineering/Security approval before executable contract. |
+| CMD-019 save-instrument-draft | Save replaces the complete declarative configuration atomically; omitted children are removed from draft only; published snapshots are immutable; each save requires meaningful change summary. No executable expressions/dynamic code, arbitrary regex execution or unbounded recursion. | Exact schema/primitive allowlist, depth/size limits, stable child identity, canonical hash and concurrency token require Security/Engineering approval. |
+| CMD-020 publish-instrument-version | Reaffirm T-17: Super Admin with explicit `instrument.publish` publishes after server validation; `instrument.manage` alone is insufficient. Published version/children are immutable; correction creates a new version; assignments/sessions stay pinned. Same idempotency key replays original result; a different key cannot duplicate publication. | T-17 is not reopened. Exact hash, ACL, atomicity, audit and immutable snapshot enforcement remain Engineering/Security/QA review. |
+
+### Authority and status boundary
+
+Product-semantic review for CMD-011–020 is **PO APPROVED**. This does not close engineering findings F-011-01 through F-019/020-01, approve any candidate lock sequence, or close DGA-B14/B17/B18/B19/B21. T-14 and T-17 are reaffirmed, not reopened. All tests remain planned/not executed; G9 NOT READY; G10 NOT AUTHORIZED.
