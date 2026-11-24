@@ -562,6 +562,6 @@ Historical addenda above intentionally preserve the source versions reviewed at 
 
 ## POQ-04 approval and F-05 reconciliation — 2026-11-24
 
-Current POQ-04 status is **PO APPROVED** (all five recommendations accepted without changes). Current controlled pointers: NLA-001 v0.1.12; NLA-RESOLVER-LOCK-001 v0.1.11; NLA-L05-TDR-001 v0.1.6; L05 source-event path map v0.1.0; L05 eligibility-writer matrix v0.1.2; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.10; RAID-001 v0.1.9; DGA-001 v1.11.66; QA Catalogue v0.4.8; L05-REVIEW-001 v0.1.5; this cross-command reconciliation v0.8.31.
+Current POQ-04 status is **PO APPROVED** (all five recommendations accepted without changes). Current controlled pointers: NLA-001 v0.1.12; NLA-RESOLVER-LOCK-001 v0.1.11; NLA-L05-TDR-001 v0.1.6; L05 source-event path map v0.1.0; L05 eligibility-writer matrix v0.1.2; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM-001 v0.1.10; RAID-001 v0.1.9; DGA-001 v1.11.66; QA Catalogue v0.4.8; L05-REVIEW-001 v0.1.5; this cross-command reconciliation v0.8.32.
 
 POQ-04 resolves the product-decision dependency only. F-05 remains technically OPEN pending Security/Engineering validation. CMD-031/032/033/034/037 still have partial candidate ordering; CMD-035/036/038/039/040 remain blocked. No command is technically certified; resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; tests PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE.
