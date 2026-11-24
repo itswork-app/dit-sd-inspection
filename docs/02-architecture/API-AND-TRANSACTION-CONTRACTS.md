@@ -186,3 +186,7 @@ T-14 capacity commands use the exact approved qualifying-account predicate and t
 ## PostgreSQL individual command contract catalogue
 
 The 48-operation draft contract catalogue is maintained in [PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md). It defines proposed request allowlists, actor/scope/SoD, physical read/write references, lock/idempotency/audit rules and typed outcomes per logical command. Its names and fields are proposals, not approved REST routes or PostgreSQL signatures. See its explicit blockers for T-10, T-12, T-16, Storage, project closure and ERD-only objects. No implementation is authorized by the catalogue.
+
+## Function execution model and database ACL gate
+
+The route-to-RPC contract must follow [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md). User commands preserve the caller JWT. Do not use service_role to work around authenticated table ACLs. The SECURITY INVOKER versus protected-table DML boundary must be resolved before RPC implementation.
