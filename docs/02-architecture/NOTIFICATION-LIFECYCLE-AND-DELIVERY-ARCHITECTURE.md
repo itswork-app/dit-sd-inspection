@@ -69,7 +69,7 @@ Purpose: immutable, scope-bound policy snapshots.
 Minimum fields:
 - `id`, `policy_key`, `version_no`, `scope_type`, `scope_id`
 - `schema_version`, `policy_document`, `policy_hash`
-- `status` (DRAFT, PUBLISHED, RETIRED), `effective_from`, `effective_until`
+- `status` (DRAFT, PUBLISHED, RETIRED), `effective_from`, `effective_until`; DRAFT is reserved for a future separately approved workflow and is not written by CMD-051
 - `created_by`, `created_at`, `published_by`, `published_at`
 
 Constraints:
@@ -87,9 +87,9 @@ Purpose: transactional bridge from a domain event to asynchronous recipient fan-
 
 Minimum fields:
 - `id`, `source_event_id` (canonical `audit_events.id`), `event_type` (audited action), `scope_type`, `scope_id`
-- `policy_version_id`, `payload_ref` or minimized `payload`
-- `status` (PENDING, PROCESSING, COMPLETED, RETRY_WAIT, DEAD_LETTER)
-- `attempt_count`, `next_attempt_at`, `lease_owner`, `lease_expires_at`
+- `policy_version_id`, `safe_payload` (minimized, schema-validated JSONB)
+- `status` (PENDING, PROCESSING, COMPLETED, RETRY_WAIT, DEAD_LETTER); partial batch progress remains PROCESSING and resumes idempotently
+- `attempt_count`, `next_attempt_at`, `lease_owner`, `lease_token_hash`, `lease_generation`, `lease_expires_at`
 - `created_at`, `processed_at`, `last_error_code`
 
 Constraints:
@@ -107,13 +107,13 @@ Minimum fields:
 - `id`, `outbox_id`, `recipient_user_id`
 - `project_id?`, `session_id?`, `location_id?`, `assignment_id?`
 - `event_type`, `priority`, `title_key`, `body_key`, `safe_payload`
-- `created_at`, `expires_at?`, `read_at?`, `dismissed_at?`
+- `created_at`, `expires_at?`, `read_at?`, `dismissed_at?` (reserved; no command or browser mutation until PO/UX approval)
 
 Constraints:
 - Unique (`outbox_id`, `recipient_user_id`).
-- Recipient and scope are resolved server-side from the policy version and effective assignment/role at the defined event-time rule.
+- Recipient and scope are resolved server-side from the pinned policy version. Whether eligibility is snapshotted at source-event time or evaluated at fan-out time remains a PO/Security decision; no event-time snapshot is claimed until a durable snapshot/checkpoint is specified.
 - A role label alone never grants access to a notification or its source resource.
-- Read/dismiss actions are recipient-self only; the source resource still requires its own authorization.
+- Read is recipient-self only and set-once. dismissed_at is reserved; no dismiss action is exposed until PO/UX approval. The source resource still requires its own authorization.
 - Do not place sensitive evidence or full personal data in notification text/payload. Use opaque resource references and re-authorize on navigation.
 
 ### 4.4 `notification_deliveries`
@@ -124,10 +124,14 @@ Minimum fields:
 - `id`, `notification_id`, `channel` (WEB_PUSH, DEVICE_PUSH, EMAIL)
 - `status` (PENDING, SUPPRESSED, SENDING, SENT, DELIVERED, FAILED, EXPIRED, UNKNOWN)
 - `attempt_count`, `next_attempt_at`, `last_attempt_at`, `sent_at?`, `delivered_at?`
+- `lease_owner`, `lease_token_hash`, `lease_generation`, `lease_expires_at`
 - `provider_message_ref?`, `last_error_code?`, `created_at`, `updated_at`
 
 Constraints:
 - Unique (`notification_id`, `channel`).
+- Lease finalizers validate owner, token hash, generation and expiry; stale generations cannot commit after reclaim.
+- Candidate transition rules: PENDING may enter SENDING, SUPPRESSED or EXPIRED; SENDING may enter SENT, FAILED or UNKNOWN; SENT may advance to DELIVERED or provider-confirmed FAILED; UNKNOWN may advance only after provider reconciliation; terminal DELIVERED/FAILED/EXPIRED states do not regress. SUPPRESSED may return to PENDING only where the pinned policy explicitly permits rescheduling.
+- A duplicate or out-of-order callback is an idempotent no-op/denial; it cannot reset the state to an earlier phase.
 - Delivery state is not the read state. In-app availability is established by the inbox record and has no external delivery row; do not claim user-read from provider delivery.
 - Quiet hours and channel eligibility are evaluated before dispatch; suppressed items retain a reason and can be rescheduled if policy allows.
 - Provider callbacks are untrusted input: authenticate/signature-check them, validate provider reference and legal state transition, and make webhook processing idempotent.
