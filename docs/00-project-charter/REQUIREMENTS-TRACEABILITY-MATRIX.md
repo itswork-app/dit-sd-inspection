@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.9  
+**Version:** 0.1.10  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -446,6 +446,6 @@ PO selected Option A (global transaction-scoped audience guard, candidate L05) a
 
 ### NOTIF-015 current resolver and lock-order baseline — 2026-11-24
 
-Current references: NLA-001 v0.1.8; NLA-RESOLVER-LOCK-001 v0.1.9; NLA-L05-TDR-001 v0.1.4; L05 source-event map v0.1.0; L05 eligibility-writer matrix v0.1.1; LOCK-MANIFEST-001 v0.4.30 §§7.7/7.13; LOCK-GRAPH-001 v0.4.23 §§28–30; QA Catalogue v0.4.6.
+Current references: NLA-001 v0.1.10; NLA-RESOLVER-LOCK-001 v0.1.10; NLA-L05-TDR-001 v0.1.4; L05 source-event map v0.1.0; L05 eligibility-writer matrix v0.1.2; LOCK-MANIFEST-001 v0.4.30 §§7.7/7.13; LOCK-GRAPH-001 v0.4.23 §§28–30; QA Catalogue v0.4.6.
 
 The CMD-031–040 candidate overlay is partial and does not certify any resolver path. The exact deployed writer set, selector grammar, FK/trigger/helper edges, worker identity/lease, attendance aggregate/version constraints and full graph acyclicity remain open. NRL-T01..T13 and TC-NOTIF-001..054 remain PLANNED / NOT EXECUTED. NOTIF-015 remains OPEN — CRITICAL; resolver certification 0/40; application lock certification 0/50; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
