@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.9.6
+**Version:** 1.9.7
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -246,3 +246,9 @@ The documentation has now been reconciled as follows:
 The notification boundary explicitly keeps queue claims in short isolated transactions, commits lease/fencing generation before fan-out/provider I/O, separates recipient read state from delivery state, and leaves provider callback command mapping unresolved. CMD-041–043 remain read/purpose-bound query designs; CMD-044 remains blocked by T-10; CMD-045–048 remain authority/schema/provider/release blocked.
 
 **Disposition:** DGA-B18 remains PARTIAL and DGA-B19 remains OPEN. 54/54 command IDs are inventoried, but 0/54 are normalized and certified lock-complete. LPR-01 and LPR-07–LPR-10 remain open/not executed. No PostgreSQL catalog, trigger/FK/index graph, deployed RLS/ACL, worker principal, CI, test, SQL, migration, live database, deployment or merge was inspected or executed. G3/G4/G5/G7/G9 remain NOT READY; G10 remains NOT AUTHORIZED.
+
+## Lock-rank cross-reference synchronization — 2026-11-24
+
+Following the CMD-049–054 transaction-boundary reconciliation, the controlled-document cross-references were synchronized: LOCK-MANIFEST-001 v0.3.7 now points to LOCK-GRAPH-001 v0.3.6 and LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.2.2; LOCK-GRAPH-001 v0.3.6 points to LOCK-MANIFEST-001 v0.3.7. The manifest's source table retains the exact earlier reviewed snapshot identifiers (DGA-001 v1.9.5, LOCK-GRAPH-001 v0.3.4 and protocol resolution v0.2.1) rather than misrepresenting them as the post-edit versions.
+
+**Disposition unchanged:** DGA-B18 PARTIAL; DGA-B19 OPEN; 54/54 inventoried, 0/54 normalized/certified. LPR-01 and LPR-07–LPR-10 remain open/not executed. G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED. No CI, tests, SQL, migrations, live database inspection, deployment or merge occurred.
