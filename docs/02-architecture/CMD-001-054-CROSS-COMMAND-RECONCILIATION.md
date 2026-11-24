@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.6
+**Version:** 0.8.7
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -413,6 +413,6 @@ Current linked lock sources are LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.6; LO
 
 ## CMD-001–010 candidate lock-manifest normalization — 2026-11-24
 
-CMD-001–010 Detailed Contract Review v0.3.4 §9, LOCK-MANIFEST-001 v0.4.10, LOCK-GRAPH-001 v0.4.8 and LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.6 now share one candidate ordering overlay. It covers L00 idempotency; conditional L10 T-14 serialization; sorted L15 principal, L16 role, L17 scope-grant and conditional L18 catalog resources; L30 project/session parents; L50 operational scope targets; and L110 append-only facts. Candidate project fencing uses project FOR SHARE for child writers and FOR NO KEY UPDATE for project update/closure; closure/capacity predicates require fresh post-fence READ COMMITTED snapshots or SERIALIZABLE with retry.
+CMD-001–010 Detailed Contract Review v0.3.4 §9, LOCK-MANIFEST-001 v0.4.12, LOCK-GRAPH-001 v0.4.10 and LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.8 now share one candidate ordering overlay. It covers L00 idempotency; conditional L10 T-14 serialization; sorted L15 principal, L16 role, L17 scope-grant and conditional L18 catalog resources; L30 project/session parents; L50 operational scope targets; and L110 append-only facts. Candidate project fencing uses project FOR SHARE for child writers and FOR NO KEY UPDATE for project update/closure; closure/capacity predicates require fresh post-fence READ COMMITTED snapshots or SERIALIZABLE with retry.
 
-QA Catalogue v0.3.2 aligns TC-CMD-CONTRACT-024-001..010 concurrency assertions. All remain PLANNED / NOT EXECUTED. **10/54 command manifests are candidate-normalized at documentation level; 0/54 are technically approved or lock-complete certified.** LPR-01/LPR-07/LPR-11 remain OPEN; LPR-10 NOT EXECUTED; the graph is not proven acyclic; G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED.
+QA Catalogue v0.3.3 aligns TC-CMD-CONTRACT-024-001..010 concurrency assertions. All remain PLANNED / NOT EXECUTED. **10/54 command manifests are candidate-normalized at documentation level; 0/54 are technically approved or lock-complete certified.** LPR-01/LPR-07/LPR-11 remain OPEN; LPR-10 NOT EXECUTED; the graph is not proven acyclic; G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED.
