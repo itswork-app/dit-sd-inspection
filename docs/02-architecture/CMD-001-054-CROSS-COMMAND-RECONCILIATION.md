@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.43
+**Version:** 0.8.44
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -626,3 +626,10 @@ NLA-EVENT-TECH-RECON-001 v0.1.7 partially reviews NREG-010 `inspection.approved`
 CMD-032 reopen requires explicit `inspection.reopen` authority, exact scope and mandatory reason. The role/grant/SoD matrix, next-action owner, mutable draft storage/state vocabulary and one-active-draft invariant remain unresolved. Reopen must preserve approved revision, evidence, generated documents and print history. Active claim/association/assignment and evidence/document finalizer blocker graph remains incomplete.
 
 LOCK-MANIFEST-001 §7.13 and LOCK-GRAPH-001 §30 contain candidate ordering only. Source command paths, physical reviewer assignment, decision uniqueness, complete L05 writer set, implicit FK/trigger/helper edges, atomic event/outbox/snapshot identity and global acyclicity are not proven. RTM-001 v0.1.19 adds NOTIF-039..043; QA Catalogue v0.5.9 adds TC-NOTIF-090..094, all PLANNED / NOT EXECUTED. NREG-001..011 are PARTIAL_STATIC_REVIEW only and remain UNRESOLVED / NOT ENABLED. Resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## CMD-031/032 physical-schema and lock-order cross-check — 2026-11-24
+
+Physical schema v0.4.4 declares `review_events` with revision/reviewer/decision/reason/time fields and the one-terminal-decision-per-revision invariant, but no named unique arbiter or review-round/decision-sequence field. CMD-031 therefore remains blocked on an evidenced uniqueness mechanism. CMD-032 remains blocked on explicit reopen authority, next-action owner, mutable draft representation and active-work/finalizer blocker graph.
+
+Source-event path map v0.1.0 and command lock manifest v0.4.30 still show inspection-first candidate recipes for CMD-030/031/032. Global graph v0.4.23 §30 proposes authorization and project/session/assignment/optional-claim dependencies before inspection. This is a source-order conflict, not an approved choice; no path is certified. NLA-EVENT-TECH-RECON-001 v0.1.7; Registry v0.1.10; RTM v0.1.21; RAID v0.1.21; DGA v1.11.83; QA v0.5.9 (TC-NOTIF-090..094 PLANNED / NOT EXECUTED). LPR-01/LPR-07/LPR-09/LPR-11 OPEN; LPR-10 NOT EXECUTED; resolver 0/40; application lock 0/50; G9 NOT READY; G10 NOT ACTIVE.
