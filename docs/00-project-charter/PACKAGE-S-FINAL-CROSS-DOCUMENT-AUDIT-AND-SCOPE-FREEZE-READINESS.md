@@ -88,19 +88,19 @@ Supabase/Vercel are the chosen technology baseline, but actual organization/proj
 
 Required action: complete provider capability and cost review, approve region and plan, configure environments, and execute isolated database and Storage restore drills.
 
-### S-08 — Physical schema, RLS, and privileged command boundary remain design proposals
+### S-08 — Physical schema, RLS, and privileged command boundary require technical closure
 **Severity:** BLOCKER
 
-Package L/M/N documents are detailed design artifacts, but schema constraints, table-by-table policies, helper functions, SECURITY DEFINER rules, command contracts, and transactional audit semantics are not approved or implemented.
+PO direction is approved for T-16 canonical serial identity, T-17 instrument publication governance and T-18 caller-JWT command architecture/direct-DML denial. The project-independent canonical unit + durable project-association model is documented. However, physical constraints/composite FKs, institutional serial normalization/exception policy, exact table/function grants, RLS helper implementation, SECURITY DEFINER review, command-by-command contracts and executable security/concurrency evidence remain OPEN. No policy or command is deployed.
 
-Required action: resolve physical schema and serial identity rules; approve RLS and command boundary; reconcile all tables/views/RPCs/Storage buckets; then implement with negative authorization and concurrency tests.
+Required action: complete technical review of schema/association constraints; publish the canonical permission registry; reconcile every table/view/RPC/Storage object with exact grants; complete command contracts and dedicated negative/concurrency tests before any implementation authorization.
 
-### S-09 — Audit event policy is not approved
+### S-09 — PO-approved audit direction; institutional governance remains blocked
 **Severity:** BLOCKER
 
-Package R defines an audit catalogue and fail-closed transaction design, but Decision Register INS-016 remains PROPOSED. Audit retention, readers/exporters, network metadata collection, legal hold, and independent immutable archive requirements remain open.
+INS-016 is PO APPROVED option A under T-15: append-only audit records, atomic critical mutation + audit, fail-closed behavior, privacy-safe event context and least-privilege read/export. Institutional classification, retention, deletion/disposition, legal hold, network metadata, independent archive decision and final audit-reader/export authority remain OPEN under T-10. The command-level implementation and verification are also not complete.
 
-Required action: explicitly approve, reject, or defer INS-016 with institutional security/privacy/records sign-off before treating audit behavior as an implementation contract.
+Required action: obtain formal institutional records/privacy/legal/security decisions and complete command-level atomic audit contracts, RLS/grants and failure-injection test design. Do not treat PO approval as institutional policy approval or implementation evidence.
 
 ### S-10 — Report delivery, report count basis, and project reconciliation remain open
 **Severity:** HIGH
@@ -131,14 +131,14 @@ Required action: verify actual GitHub rules and CI workflows and record a succes
 4. Actual inspection events are immutable facts; target allocations are separate, versioned planning data.
 5. A completed unit follows the current baseline definition: approved inspection, final PDF generation, and recorded Print Officer print action.
 6. Physical printing is never inferred from opening or downloading a PDF.
-7. Audit write and critical state mutation must be atomic if INS-016 is approved.
+7. T-15 / INS-016 is PO APPROVED: audit write and critical state mutation must be atomic and fail closed; institutional retention and metadata policy remain separate gates.
 8. No public evidence URL; private object access is mediated and authorized.
 9. A document/sample is reference evidence, not automatically an authoritative specification.
 10. Proposed design, approved decision, implemented control, and tested control remain distinct statuses.
 
 ## 6. Decision Register and RAID updates required
 
-Before scope freeze: convert each blocker into a tracked decision/issue with an accountable institutional role; keep INS-016 PROPOSED; keep source checklist/photo requirements OPEN until controlled source approval; keep provider/region/backup and privacy/retention dependencies OPEN until verified; clarify the active-Inspector counting predicate; decide session creation and closed-session reopening; and resolve report count/delivery/closure semantics.
+Before scope freeze: convert each remaining blocker into a tracked decision/issue with an accountable institutional role; retain T-15 as PO APPROVED while keeping T-10 institutional records/privacy controls OPEN; keep source checklist/photo requirements OPEN until controlled source approval; keep provider/region/backup and privacy/retention dependencies OPEN until verified; implement and verify the T-14 qualifying Inspector predicate; complete T-16 technical review and T-18 command/permission closure; decide session creation and closed-session reopening; and resolve report count/delivery/closure semantics.
 
 ## 7. Scope-freeze gate
 
@@ -151,7 +151,7 @@ Before scope freeze: convert each blocker into a tracked decision/issue with an 
 - [ ] Production region, plans, quotas, billing, operational owners, and recovery capabilities approved.
 - [ ] Physical schema and serial identity invariants approved.
 - [ ] RLS and privileged command boundary approved.
-- [ ] INS-016 audit policy approved or explicitly deferred with accepted compensating controls.
+- [x] INS-016 PO direction approved under T-15; [ ] institutional T-10 classification, retention, legal hold, disposition and audit metadata policy approved; [ ] command-level atomic audit implementation/test evidence.
 - [ ] Report delivery/count/reconciliation/project closure approved.
 - [ ] Performance workload and measurable thresholds approved.
 - [ ] UAT owner, pilot scope, release/rollback criteria, and operational support owners confirmed.
@@ -206,3 +206,12 @@ The T-18 command boundary architecture is PO-approved, but the command inventory
 The command inventory now explicitly records previously omitted families: instrument deactivation, evidence access/export, project closure, audit read/export and bounded batch-print orchestration. Their exact permission codes and detailed contracts remain OPEN and must not be inferred from broad Super Admin status. The test catalogue records that generic TC-CMD-018 security cases are boundary-level only; command-specific positive/negative, audit-failure, idempotency and concurrency cases are still missing for several command families.
 
 **Current Package N status:** architecture PO-approved; command-family inventory improved; command-by-command request/response schemas, permission/scope predicates, lock/idempotency/audit/error contracts, exact grants and dedicated test traceability remain INCOMPLETE. No implementation or test execution is claimed. Scope freeze remains NOT READY.
+
+
+## 9.5 Permission registry and audit-status reconciliation (2026-11-24)
+
+The earlier S-09 and Package R wording that INS-016 remained unapproved is superseded: T-15 option A is PO APPROVED. The remaining blocker is institutional T-10 approval and command-level implementation/verification, not another PO decision on the audit direction.
+
+The legacy RBAC permission vocabulary and the T-18 command inventory are not yet one canonical registry. Several command identifiers are absent from the legacy catalogue, while legacy codes (notably combined `audit.view` and `document.upload`) need explicit mapping or separation. T-17's `instrument.manage`, `instrument.publish` and `instrument.deactivate` remain distinct. Evidence read/export, audit read/export and project closure require explicit narrow authority; no broad role may implicitly grant them.
+
+**Required closure:** publish canonical permission registry and legacy-code disposition; map every command to one or more exact permissions and scope predicates; map every permission to role/grant authority and separation-of-duties rule; link each command to its RLS/EXECUTE grant and dedicated test cases. This is a scope-freeze blocker. No permission seed, grants or implementation are claimed.
