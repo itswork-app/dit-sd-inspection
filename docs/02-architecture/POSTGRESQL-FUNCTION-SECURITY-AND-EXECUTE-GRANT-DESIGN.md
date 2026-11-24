@@ -1,8 +1,8 @@
 # PostgreSQL Function Security & EXECUTE Grant Design
 
 **Status:** Security architecture proposal — T-18 Option A approved; per-function privilege review required; NOT approved for implementation  
-**Version:** 0.3.2 | **Date:** 2026-11-24  
-**Depends on:** T-18 option A; PostgreSQL Command Contract Catalogue v0.4.3; physical schema v0.4.1 and 48-table proposed RLS catalogue v0.2.1; canonical permission registry v0.2.2 draft.
+**Version:** 0.3.3 | **Date:** 2026-11-24  
+**Depends on:** T-18 option A; PostgreSQL Command Contract Catalogue v0.4.8; physical schema v0.4.4 and 48-table proposed RLS catalogue v0.2.5; canonical permission registry v0.2.5 draft.
 
 ## 1. Purpose and strict boundary
 
@@ -205,3 +205,16 @@ See [Supabase Live Database Security Inventory Runbook](SUPABASE-LIVE-DATABASE-S
 INT-NOTIF-001 is classified as F5 provider/integration ingress, not as a browser RPC, user command permission or generic service-role endpoint. It must terminate at a server-side route that authenticates the selected provider, validates callback freshness and event identity, resolves only a known provider_message_ref, applies a narrow monotonic delivery-state transition and uses a durable deduplication mechanism. It must not accept a user JWT as proof of provider identity and must not call a broad privileged command function.
 
 The callback route's secret manager, signature algorithm, provider identity, database function boundary, function owner, EXECUTE ACL, RLS interaction and failure/rotation process remain unapproved until provider selection and T-18 Security/Operations review. CMD-052..054 remain internal-only worker/scheduler operations with separate least-privilege identities. No function, role or grant was created or tested.
+
+
+## POQ-01 audience snapshot and notification worker function boundary — 2026-11-24
+
+**Candidate design only; no function, role, ACL, grant or migration is approved.**
+
+1. **Source transaction snapshot writer:** candidate relation `notification_outbox_recipients` is populated in the same transaction as the source command's business mutation, canonical event, audit event and outbox intent. The candidate insert must derive recipient/scope eligibility from database-authoritative source-event-time state. It must not accept client-supplied recipient IDs, roles or scope claims. Engineering may use a narrowly scoped F3 internal helper called only by reviewed source command wrappers, or an equivalent in-transaction implementation; the helper must not be exposed through PostgREST or granted to browser roles.
+2. **CMD-052 fan-out worker:** F5 workload principal may read candidate rows only for the currently claimed outbox under the valid owner/token-hash/generation/expiry lease. It may insert inbox and delivery rows through a separately reviewed narrow function boundary. It cannot update/delete candidate rows, claim unrelated outboxes, widen recipients or impersonate an application user.
+3. **CMD-053 delivery worker:** separate F5 workload principal and exact scope limited to eligible delivery rows, attempt append and guarded result finalization. Provider I/O remains outside database transactions. UNKNOWN remains the outcome for ambiguous provider acceptance.
+4. **CMD-054 scheduler:** separate F5 workload principal, one database UTC evaluation instant, immutable policy-version binding, and atomic escalation-event/outbox/event-time-candidate persistence. It cannot mutate inspection/project/session state.
+5. **INT-NOTIF-001 callback ingress:** separate F5 provider trust principal; provider signature, freshness, known provider reference, durable provider-event dedup and monotonic transition checks are required. It cannot access inbox read state, source business state or broad worker functions. Provider-specific cryptographic algorithm, secret source, rotation, replay window and dedup retention remain blocked until a provider is selected.
+
+Every candidate function still requires an individually reviewed owner, role membership, effective privilege set, fixed search_path, schema-qualified SQL, exact signature, PUBLIC/anon/authenticated denial as appropriate, RLS interaction, narrow EXECUTE ACL, caller/workload authentication, bounded inputs, lock/lease behavior and negative runtime evidence. The candidate snapshot relation is NOT ADMITTED and the internal workload identities are not yet established. service_role is not a default worker principal.
