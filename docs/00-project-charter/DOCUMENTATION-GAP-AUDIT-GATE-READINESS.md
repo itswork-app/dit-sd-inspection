@@ -189,21 +189,21 @@ The proposal maps:
 
 ## Global lock/concurrency graph update — 2026-11-24
 
-[LOCK-GRAPH-001 — Global Lock-Order and Concurrency Graph Reconciliation](../02-architecture/GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md) v0.1.0 records the cross-command lock-order disagreements and proposes a candidate resource hierarchy, command/race matrix, potential deadlock inversions, lock-manifest requirements and 30 planned concurrency tests.
+[LOCK-GRAPH-001 — Global Lock-Order and Concurrency Graph Reconciliation](../02-architecture/GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md) v0.2.0 records the cross-command lock-order disagreements and proposes a candidate resource hierarchy, command/race matrix, potential deadlock inversions, lock-manifest requirements and 30 planned concurrency tests.
 
-**Disposition:** DGA-B18 OPEN. The proposal does not prove an acyclic graph, does not resolve CMD-026, does not alter canonical command contracts and does not authorize implementation. G3/G4/G5/G7 remain NOT READY/BLOCKED as recorded above; G9 remains NOT READY and G10 remains NOT AUTHORIZED. No tests or runtime lock inspection were executed.
+**Disposition:** DGA-B18 PARTIAL. PO product decisions LPR-02–LPR-06 are recorded; the proposal still does not prove an acyclic graph, resolve the complete CMD-026 and competing-command lock paths, alter canonical command contracts or authorize implementation. G3/G4/G5/G7 remain NOT READY/BLOCKED as recorded above; G9 remains NOT READY and G10 remains NOT AUTHORIZED. No tests or runtime lock inspection were executed.
 
 
 ## Command-level lock manifest update — 2026-11-24
 
-[LOCK-MANIFEST-001](../02-architecture/COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.1.0 inventories all 54 command IDs, with source-stated resource/lock sequence, shared invariant, competing command paths, stated constraints and unresolved decisions. Static inventory coverage is 54/54; lock-complete certification is 0/54. DGA-B19 remains OPEN. This does not imply any command is approved, executable or deadlock-free. G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED; no tests or runtime inspection were performed.
+[LOCK-MANIFEST-001](../02-architecture/COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.2.0 inventories all 54 command IDs, with source-stated resource/lock sequence, shared invariant, competing command paths, stated constraints and unresolved decisions. Static inventory coverage is 54/54; lock-complete certification is 0/54. DGA-B19 remains OPEN. This does not imply any command is approved, executable or deadlock-free. G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED; no tests or runtime inspection were performed.
 
 
 ## Lock protocol decision-resolution update — 2026-11-24
 
-[DGA-B20 — Global lock protocol decision resolution](../02-architecture/LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.1.0 consolidates the candidate hierarchy and resolves source conflicts as recommendations only. PO decisions are separated from Engineering/Security technical approvals and institutional/Operations evidence.
+[DGA-B20 — Global lock protocol decision resolution](../02-architecture/LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.2.0 consolidates the candidate hierarchy and resolves source conflicts as recommendations only. PO decisions are separated from Engineering/Security technical approvals and institutional/Operations evidence.
 
-**Disposition:** DGA-B20 OPEN. This proposal does not amend canonical command contracts, prove deadlock freedom or authorize implementation. G3/G4/G5/G7/G9 remain NOT READY; G10 NOT AUTHORIZED. No tests or runtime/database inspection were executed.
+**Disposition:** DGA-B20 PARTIAL — PO decisions LPR-02–LPR-06 are approved. LPR-01 and LPR-07–LPR-10, normalized lock manifests and effective graph evidence remain open. This proposal does not amend canonical command contracts, prove deadlock freedom or authorize implementation. G3/G4/G5/G7/G9 remain NOT READY; G10 NOT AUTHORIZED. No tests or runtime/database inspection were executed.
 
 
 ## Lock protocol PO decision update — 2026-11-24
