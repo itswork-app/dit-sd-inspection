@@ -532,3 +532,8 @@ LOCK-MANIFEST-001 v0.4.17 adds candidate resource-order overlays for CMD-011–0
 ## CMD-021–030 manifest progress checkpoint — 2026-11-24
 
 LOCK-MANIFEST-001 v0.4.18 adds candidate resource-order overlays for CMD-021–030; LOCK-GRAPH-001 v0.4.12 records the cross-command conflicts and residual proof obligations. Progress is now **30/54 candidate-normalized at documentation level; 0/54 technically approved or certified**. CMD-023 (unit-before-project) and CMD-025 (conflict-row-first) source-order conflicts remain explicitly unresolved; CMD-026 retains canonical serial-key-first ordering. CMD-031–048 and the worker commands remain to be reconciled. This is static design progress only. G9 remains NOT READY; G10 NOT ACTIVE.
+
+
+## CMD-021–030 manifest progress checkpoint — 2026-11-24
+
+LOCK-MANIFEST-001 v0.4.18 and LOCK-GRAPH-001 v0.4.12 now include candidate resource-order overlays and explicit conflict findings for CMD-021–030. Manifest progress is **30/54 candidate-normalized at documentation level; 0/54 technically approved/certified**. Key unresolved issues include CMD-026's catalogue-versus-detailed-contract ordering conflict, CMD-023/024 parent-fence omissions, CMD-025 conflict-aggregate rank, CMD-021 deactivation versus assignment-publication serialization, and CMD-028/029/030 shared inspection/review decision serialization. This is not a gate pass or technical certification. G9 remains NOT READY; G10 remains NOT ACTIVE.
