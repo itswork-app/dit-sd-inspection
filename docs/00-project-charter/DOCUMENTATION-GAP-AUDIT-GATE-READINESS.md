@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.1.0  
+**Version:** 1.2.0  
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/t17-instrument-governance-t18-command-boundary`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -83,7 +83,7 @@ Package T's document-level status must be updated from “Draft for Product Owne
 | G2 Workflow closure | PARTIAL/BLOCKED | PO decisions recorded; edge cases and exact transitions/authority need reconciliation |
 | G3 Data/transaction closure | BLOCKED | ERD-only entities, command details, constraints and external transaction patterns |
 | G4 Security/privacy closure | BLOCKED | Permission matrix, live ACL/RLS, T-10 institutional approvals |
-| G5 API/integration closure | BLOCKED | 48 draft operations not approved/executable; exact schemas/routes/RPCs absent |
+| G5 API/integration closure | BLOCKED | 54 proposed operations have detailed review documents; exact approved schemas/routes/RPCs, permission mapping and runtime evidence remain open |
 | G6 UX/accessibility closure | PARTIAL | Responsive and offline/device acceptance evidence incomplete |
 | G7 QA strategy closure | PARTIAL | Test design extensive; traceability gaps and all relevant execution evidence pending |
 | G8 Production operations closure | BLOCKED | Provider, ownership, region, quotas, SLO, restore and incident owners unverified |
@@ -97,7 +97,7 @@ Package T's document-level status must be updated from “Draft for Product Owne
 1. Reconcile historical status language in Package T, Package S, Decision Register, RTM and RAID without changing approved decision meaning.
 2. Close instrument source/evidence-slot and BA/template authority evidence.
 3. Obtain PO/security review of NLA-001, close worker/provider/T-10 dependencies, and technically review the six notification tables plus T-13 `print_batches`/`print_events` transaction and RLS contracts.
-4. Complete the 54-operation command contract review with exact permissions, request/response schemas, physical objects, transaction boundaries, API route/RPC mapping and command-specific tests.
+4. Complete the cross-command reconciliation of all 54 detailed command reviews; resolve physical/version/lock/audit/permission mismatches, then approve exact request/response schemas, route/RPC mapping and command-specific tests.
 5. Complete canonical permission/role/grantor/SoD matrix and exact object privilege/RLS/Storage matrix.
 6. Complete offline/device, report reproducibility, evidence lifecycle, account recovery and operational SLO specifications.
 7. Obtain institutional T-10/T-12 decisions and current provider capability evidence.
@@ -123,3 +123,47 @@ No source code, migration, SQL, grants, live database mutation, deployment, secu
 - T-13 is reconciled by adding `print_batches` to physical schema/RLS and linking per-document attempt outcomes in `print_events`.
 - Proposed physical/RLS inventory: 48 tables each; static document parity only.
 - DGA-B10, B11, B13 and B14 remain open/partial. No PO/security sign-off, live database inspection, migration, grant, provider setup or test execution is claimed.
+
+
+## CMD-001..054 detailed review and cross-command reconciliation update — 2026-11-24
+
+The detailed command review coverage is now documented across seven controlled engineering review files:
+
+- CMD-001–010 — [Detailed Contract Review](../02-architecture/CMD-001-010-DETAILED-CONTRACT-REVIEW.md)
+- CMD-011–020 — [Detailed Contract Review](../02-architecture/CMD-011-020-DETAILED-CONTRACT-REVIEW.md)
+- CMD-021–030 — [Detailed Contract Review](../02-architecture/CMD-021-030-DETAILED-CONTRACT-REVIEW.md)
+- CMD-031–040 — [Detailed Contract Review](../02-architecture/CMD-031-040-DETAILED-CONTRACT-REVIEW.md)
+- CMD-041–044 — [Detailed Contract Review](../02-architecture/CMD-041-044-DETAILED-CONTRACT-REVIEW.md)
+- CMD-045–048 — [Detailed Contract Review](../02-architecture/CMD-045-048-DETAILED-CONTRACT-REVIEW.md)
+- CMD-049–054 — [Detailed Contract Review](../02-architecture/CMD-049-054-DETAILED-CONTRACT-REVIEW.md)
+
+The cross-command synthesis is recorded in [CMD-001–054 Cross-Command Reconciliation](../02-architecture/CMD-001-054-CROSS-COMMAND-RECONCILIATION.md).
+
+**Important status distinction:** detailed review coverage is complete as documentation, but the command contracts are not approved or executable. The Command Authorization Verification Matrix still reports zero approved/executable command-specific contracts. The 48/48 physical-schema/RLS count remains static table-name parity only.
+
+### Current command and crosswalk disposition
+
+| Item | Updated evidence | Current status |
+|---|---|---|
+| DGA-B10 — command completeness | 54 logical command/read/worker operations reviewed in seven detailed documents; consolidated cross-command register created | OPEN — approvals and exact traceability remain |
+| DGA-B11 — database/RLS/ERD | 48/48 proposed table-name parity crosswalk | DESIGN RECONCILED; LIVE VERIFICATION OPEN |
+| DGA-B12 — T-18 execution | Option A PO-approved; per-function owner, security mode, search_path, exact EXECUTE ACL and caller-JWT proof absent | NOT VERIFIED |
+| DGA-B13 — notification lifecycle | CMD-049–054 review and NLA-001 crosswalk recorded | DESIGN PROPOSAL RECORDED; PO/SECURITY/WORKER/PROVIDER/T-10 APPROVALS OPEN |
+| DGA-B04 — institutional data governance | T-10 formal review path only | BLOCKED pending written institutional decisions |
+| DGA-B05 — provider ownership | T-12 alternative ownership direction only | BLOCKED pending signed ownership/RACI and provider evidence |
+
+### Consolidated high-priority unresolved findings
+
+- Physical concurrency tokens are absent for multiple commands that propose expected_version; each needs an approved physical token and compare-and-swap rule.
+- CMD-026 local lock order conflicts with the global lock hierarchy; the cross-command lock graph must be reconciled before implementation.
+- Several command families still lack explicit physical entities or lifecycle models, including account requests, reviewer assignment, draft revision context, sync operation conflicts, evidence upload intent, document generation/versioning, attendance verification history, retention/legal hold and security cases.
+- Canonical permission semantics, role/grantor matrix, SoD and worker authority remain unapproved.
+- Candidate route/RPC/function mappings and exact function ACLs remain unapproved and unverified.
+- Audit event names and privacy projections require reconciliation; T-10 remains the institutional blocker for retention, disposition, legal hold and audit export.
+- CMD-053 provider callback/webhook ingestion lacks a clearly assigned logical command boundary.
+- Provider ownership, plan, region, quota, billing and recovery evidence remain unverified under T-12.
+- All test cases remain planned; no runtime, security, concurrency, provider, UAT or operational test execution is claimed.
+
+### Gate disposition
+
+G5 remains BLOCKED. G9 remains NOT READY. G10 remains NOT AUTHORIZED. The completion of detailed documentation reviews does not close DGA-B10, authorize implementation or establish production readiness. Each DGA item may be closed only with accountable-owner acceptance and the required source/approval/runtime evidence.
