@@ -296,7 +296,7 @@ CMD-049–054 must be interpreted as follows:
 
 The notification queue is not a license to acquire queue locks and then domain aggregate locks. If any future worker operation must mutate a source aggregate, it must release its queue claim transaction, start a new transaction, acquire the full approved L30–L100 source chain in ascending order and validate the fencing generation. Physical queue tables, unique/FK indexes, triggers, helper calls, worker identity, function owner, EXECUTE ACL and provider callback runtime remain NOT VERIFIED.
 
-## 15. CMD-001–010 normalization overlay and identity/authorization rank gap — 2026-11-24
+## 15. Historical CMD-001–010 identity-rank gap — superseded by §19
 
 LOCK-MANIFEST-001 (current branch revision) adds a row-level overlay for CMD-001–010. It separates mutable resource rows, unique-key arbiters, append-only facts, competing command paths and unresolved physical evidence.
 
@@ -309,7 +309,7 @@ Key conclusions:
 - CMD-009/010 use the project parent candidate rank L30. All project-scoped child writers must acquire the parent fence before child resources, then revalidate project state after any wait. Child-first writers can deadlock against closure or commit stale work after closure.
 - CMD-010's blocker inventory, parent lock mode, child-writer coverage and physical project row-version token remain unresolved.
 
-LPR-11 is added to LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.1 to define and approve identity/account/authorization lock classes and their order relative to T-14 capacity, project/session parents and assignment membership. Until it is resolved, CMD-001–007 cannot be marked rank-normalized. This does not close DGA-B18/B19, prove an acyclic graph, certify deadlock freedom or authorize implementation.
+LPR-11 is added to LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.1 to define and approve identity/account/authorization lock classes and their order relative to T-14 capacity, project/session parents and assignment membership. This historical checkpoint is superseded by §19, which proposes L15–L18 and candidate-normalizes CMD-001–010 at documentation level. LPR-11 technical approval remains OPEN. This does not close DGA-B18/B19, prove an acyclic graph, certify deadlock freedom or authorize implementation.
 
 ## 16. Project/session parent-fence lock-mode reconciliation — CMD-010–015 — 2026-11-24
 
