@@ -1,8 +1,8 @@
 # Notification Audience Guard — Technical Decision Record
 
 **Document ID:** NLA-L05-TDR-001  
-**Version:** 0.1.0  
-**Status:** PROPOSED — technical approval pending Engineering, Database and Security  
+**Version:** 0.1.1  
+**Status:** PO-APPROVED CANDIDATE — technical approval pending Engineering, Database and Security  
 **Date:** 2026-11-24  
 **Decision authority:** Product Owner candidate selection recorded in NLA-RESOLVER-LOCK-001 §11  
 **Parent design:** NLA-RESOLVER-LOCK-001 v0.1.6  
@@ -267,3 +267,26 @@ Additional assertions:
 - G9: NOT READY. G10: NOT ACTIVE.
 
 This is a documentation-only technical proposal. It authorizes no source code, SQL, migration, function, grant/revoke, RLS change, live database inspection, CI/runtime test, provider setup, deployment or merge.
+
+
+## 15. Product Owner approval record — 2026-11-24
+
+**Decision:** APPROVED by the Product Owner as the preferred technical candidate and as the baseline for formal Engineering, Database and Security review.
+
+**Approved scope of this decision:**
+- endorse the proposed `pg_advisory_xact_lock(int,int)` global transaction guard as the primary candidate for L05;
+- endorse the proposed READ COMMITTED / separate-statement resolver snapshot protocol for detailed technical review;
+- direct Engineering, Database and Security to validate the complete writer participation matrix, lock graph, FK/unique/trigger/helper edges, transaction isolation, timeout/retry policy and measured contention before implementation;
+- use this TDR as the review baseline and update it only through controlled, evidence-backed decisions.
+
+**Explicitly not approved by this PO decision:**
+- final admission of L05 into the canonical global lock graph;
+- actual advisory key integer values or namespace reservation;
+- deployed transaction isolation configuration;
+- exact command/function/helper signatures, owner roles, search_path, ACL, grants/revokes or RLS;
+- candidate snapshot relation/header DDL, constraints or indexes;
+- numeric lock/statement/transaction timeouts, retry count/backoff, audience cap or performance SLO;
+- any SQL, migration, source code, CI/runtime test, database mutation, provider setup, deployment or production operation.
+
+**Authority separation:** This is Product Owner approval of the candidate design direction, not Engineering, Database or Security technical certification. Those approvals and their evidence remain mandatory. G9 remains NOT READY and G10 remains NOT ACTIVE until the repository's gate requirements are independently satisfied and recorded.
+
