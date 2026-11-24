@@ -1,7 +1,7 @@
 # L05 Eligibility-Writer Participation Matrix
 
 **Document ID:** NLA-L05-WRITER-MATRIX-001  
-**Version:** 0.1.3  
+**Version:** 0.1.4  
 **Status:** STATIC INVENTORY — INCOMPLETE; NOT CERTIFIED  
 **Date:** 2026-11-24  
 **Inputs:** NLA-L05-TDR-001 v0.1.7; LOCK-MANIFEST-001 v0.4.30; PostgreSQL Command Contract Catalogue v0.4.8; Function Security & EXECUTE Grant Design v0.3.3; physical schema proposal v0.4.4
@@ -85,3 +85,12 @@ POQ-04 is PO APPROVED, but the exact selector grammar remains unapproved technic
 5. Reject any policy selector that references an unregistered dependency or exceeds approved depth/cardinality bounds.
 
 **Status:** selector dependency universe NOT FROZEN; exact physical writer inventory INCOMPLETE; 0 writers certified to participate in L05. This addendum does not alter the 0/40 resolver and 0/50 application certification counts, and does not authorize implementation or database operations.
+
+
+## 8. Selector grammar v1 dependency intake — 2026-11-24
+
+TDR v0.1.8 proposes only ROLE_SCOPE and EVENT_PARTICIPANT selector clauses, but the proposal is not yet approved. The eight-clause cap is provisional. Before a selector is enabled, its event registry entry must enumerate every consulted principal, role, grant, assignment/member, scope-parent and effective-time dependency. The writer inventory must be generated/reconciled from those dependencies, not inferred from the CMD list alone.
+
+**Required intake per exact event token:** event type; source CMD/worker; source transaction boundary; grammar version; allowed clause kinds; participant-to-canonical-principal mapping; scope binding and cardinality; dependency references; dispatch profile; and effective policy interval. Composite/conditional CMD declarations must be split before they enter the enabled event registry.
+
+**Writer-matrix effect:** the candidate grammar narrows the allowed selector language but does not establish the actual dependency universe. Every registry dependency must be joined to command writers and non-command paths (direct DML, SECURITY DEFINER, triggers/cascades, imports, sync, repair, expiry, admin and scheduled jobs). Any unregistered dependency or writer invalidates certification. Status remains INCOMPLETE; 0 writers certified to participate in L05.
