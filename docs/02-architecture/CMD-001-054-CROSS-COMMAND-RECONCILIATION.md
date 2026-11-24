@@ -544,3 +544,8 @@ QA v0.4.3 adds TC-NOTIF-041 for event-producer completeness and transaction-boun
 ## Notification resolver serialization candidate decision — 2026-11-24
 
 PO selected Option A, the global transaction-scoped audience guard (candidate L05), as the primary mechanism to enter technical approval. Option B SERIALIZABLE is contingency-only and must not be combined with L05 without a separately reviewed design. See [NLA-RESOLVER-LOCK-001 v0.1.6](NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) §11. This does not approve a canonical lock rank or authorize implementation. Every CMD source path and eligibility writer must be reconciled against the selected primitive and order before certification; 0/40 resolver paths and 0/50 application commands are certified. G9 NOT READY; G10 NOT ACTIVE.
+
+
+## L05 technical decision record — 2026-11-24
+
+[NLA-L05-TDR-001 v0.1.0](NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) is the current technical proposal for the PO-selected audience guard. It proposes transaction-scoped `pg_advisory_xact_lock(int,int)`, one global key pair with values TBD, READ COMMITTED and separate lock/read statements. Full writer-to-command mapping (including CMD-051 and admin/import/repair paths), deployed isolation verification, exact FK/unique/trigger/helper graph, lock budgets and measured audience/throughput bounds remain open. PO selection is not technical approval; 0/40 resolver paths and 0/50 application lock paths certified; G9 NOT READY; G10 NOT ACTIVE.
