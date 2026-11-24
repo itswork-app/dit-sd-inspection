@@ -1,7 +1,7 @@
 # Physical Schema ↔ RLS ↔ Command Reconciliation
 
 **Status:** Engineering/security reconciliation draft — review required; no implementation authority  
-**Version:** 0.2.0  
+**Version:** 0.2.1  
 **Date:** 2026-11-24  
 **Scope:** Package L physical table catalogue, Package M table-by-table RLS catalogue, logical ERD, T-18 command boundary and command authorization matrix.
 
@@ -86,7 +86,7 @@ The key-column/constraint descriptions are transcribed from Package L; SELECT cl
 | Former discrepancy | Design disposition | Evidence | Remaining gate |
 |---|---|---|---|
 | `print_batches` | RETAIN and add to physical schema/RLS. T-13 option B requires a durable batch ID and per-document outcomes. `print_events` stores append-only per-document attempts and optional batch reference. | T-13 PO-approved decision; API contract §6 print/batch-print; NLA-001 print model | Exact schema constraints, lock order, route contract and tests need technical review |
-| `notification_events` | REMOVE as ambiguous placeholder. Replace with `notification_policy_versions`, `notification_outbox`, `notifications`, `notification_deliveries`, `notification_delivery_attempts`, `notification_escalation_events`. | INS-015 PO-approved direction; NLA-001 v0.1.0 | PO/security review, worker principal/ACL, T-10 retention/privacy and provider approvals |
+| `notification_events` | REMOVE as ambiguous placeholder. Replace with `notification_policy_versions`, `notification_outbox`, `notifications`, `notification_deliveries`, `notification_delivery_attempts`, `notification_escalation_events`. | INS-015 PO-approved direction; NLA-001 v0.1.2 | PO/security review, worker principal/ACL, T-10 retention/privacy and provider approvals |
 
 The 48/48 count is a proposed documentation inventory. It does not prove live database existence, deployed RLS or grants.
 
@@ -169,3 +169,16 @@ The QA catalogue now allocates one design-level test to each of the 48 proposed 
 - `print_events` now records each per-document attempt/outcome and optional `batch_id`; retry appends a new attempt and is failed-only.
 - INS-015 notification persistence is specified in NLA-001 using six tables; `notification_events` is removed from ERD.
 - Proposed inventory parity is 48/48. This is not live Supabase evidence. Exact constraints, grants, RLS predicate verification, worker identity and test execution remain open.
+
+
+## NLA-001 / CMD-049–054 command and security field reconciliation — 2026-11-24
+
+The six notification entities remain the same six tables; proposed physical/RLS parity remains 48/48. The current contract overlay now aligns the following design fields and access boundaries:
+
+- notification_outbox uses safe_payload and explicit lease_owner, lease_token_hash, lease_generation and lease_expires_at fields.
+- notification_deliveries uses the same logical lease-fencing tuple. A stale worker generation cannot finalize after lease reclaim.
+- notifications has no row-version token for CMD-050; read_at is a guarded set-once transition. dismissed_at remains reserved and inactive pending PO/UX approval.
+- Browser access is recipient-self SELECT on notifications only. No global R-admin inbox access is inferred. Worker queue/attempt/escalation tables remain unavailable to browser roles; policy configuration reads require an explicitly approved scoped grant.
+- CMD-051 is publish-only; no persisted draft CRUD is included. INT-NOTIF-001 is a provider callback ingress and adds no table or command ID.
+
+These are static design reconciliations only. Exact composite FKs, indexes, enum/check constraints, policy expressions, grants, function owners, provider callback deduplication and live schema/RLS evidence remain open. No live database was queried.
