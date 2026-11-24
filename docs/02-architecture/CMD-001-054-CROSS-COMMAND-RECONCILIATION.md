@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.15
+**Version:** 0.8.16
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -504,3 +504,8 @@ This crosswalk is static documentation evidence only. It does not approve a comm
 ## Final documentation consistency audit — current source snapshot (2026-11-24)
 
 The current source versions in §1 supersede older source-version references in this cross-command document only where those references are presented as current. Earlier checkpoint sections remain dated historical evidence. The canonical command catalogue now explicitly labels the global lock ranks as a candidate proposal, not an approved order. RTM-001 and RAID-001 have unique identifiers after the final audit correction. The local Markdown references in the current cross-command and linked core documents were checked against the repository tree; no missing local targets were found in the reviewed set.
+
+
+## 15. Current lock-manifest scope and certification denominator — 2026-11-24
+
+The stable inventory remains **54/54 traceability IDs**. CMD-045–048 are PO-approved external control-plane responsibilities and are not executable application commands; they have no application route/RPC/permission/transaction/lock set. The correct application denominator for LPR-09 and LPR-10 is therefore **50 commands**. Static documentation currently records candidate execution/transaction boundaries for 50/50 application commands; this is coverage, not full normalized-manifest completion or technical certification. **Application lock certification remains 0/50.** LPR-01, LPR-07–LPR-09 and LPR-11 remain OPEN; LPR-10 remains NOT EXECUTED. The 54-ID inventory and historical 0/54 statements in earlier dated checkpoints are preserved as historical inventory snapshots, not current application certification denominators. Current sources: LOCK-MANIFEST-001 v0.4.23; LOCK-GRAPH-001 v0.4.16; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.10; TECH-RESOLUTION-LPR-001 v0.1.3; CONCURRENCY-001 v0.1.7. G9 remains NOT READY; G10 remains NOT ACTIVE.
