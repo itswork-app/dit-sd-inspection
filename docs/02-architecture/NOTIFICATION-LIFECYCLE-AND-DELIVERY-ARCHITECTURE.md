@@ -1,7 +1,7 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.8  
+**Version:** 0.1.9  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
@@ -476,10 +476,10 @@ PO selected the global transaction-scoped audience guard (candidate L05) as the 
 
 Current controlled L05 references are:
 - Resolver review NLA-RESOLVER-LOCK-001 v0.1.9.
-- Technical decision record NLA-L05-TDR-001 v0.1.3; parent resolver review v0.1.9.
+- Technical decision record NLA-L05-TDR-001 v0.1.4; parent resolver review v0.1.9.
 - Source-event path map NLA-L05-SOURCE-MAP-001 v0.1.0.
 - Eligibility-writer matrix NLA-L05-WRITER-MATRIX-001 v0.1.1.
 - LOCK-MANIFEST-001 v0.4.30 §7.7 and §7.13; LOCK-GRAPH-001 v0.4.23 §§28–30.
-- RTM-001 v0.1.7; QA Catalogue v0.4.5.
+- RTM-001 v0.1.9; QA Catalogue v0.4.6.
 
 Earlier dated sections retain the versions that were actually reviewed at those checkpoints and are historical, not current pointers. The CMD-031–040 overlay remains candidate-only; 0/40 resolver paths and 0/50 application commands are certified. Candidate snapshot relation/header remain NOT ADMITTED. NRL-T01..T13 and TC-NOTIF-001..054 remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE.
