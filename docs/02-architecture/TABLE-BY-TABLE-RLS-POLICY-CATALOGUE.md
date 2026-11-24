@@ -1,7 +1,7 @@
 # Table-by-Table RLS Policy Catalogue
 
 **Status:** Security policy design draft — security review and implementation approval required  
-**Version:** 0.2.2  
+**Version:** 0.2.3  
 **Package:** M — RLS and Authorization Policy Catalogue  
 **Date:** 2026-11-23
 
@@ -108,7 +108,7 @@ Legend:
 | `sync_batches` | R-self/R-scope for own device batches only | CMD | CMD | NONE | Batch payload not exposed broadly; no cross-user read |
 | `notification_policy_versions` | NONE by default; narrowly scoped configuration read only after explicit grant approval | CMD-051 only | CMD-051 only | NONE | Published immutable; CMD-051 publish-only; no persisted draft CRUD; role/grantor/SoD grants not approved |
 | `notification_outbox` | NONE for browser roles; internal worker only | CMD | CMD | NONE | Private fan-out queue; no browser reads; internal worker privilege separately reviewed |
-| `notifications` | R-self where `recipient_user_id = auth.uid()` only | CMD-050 set-once read through trusted command; no direct DML | NONE | NONE | No R-admin/global inbox read; dismissed_at is dormant pending PO/UX approval; scope columns never widen recipient ownership |
+| `notifications` | R-self where `recipient_user_id = auth.uid()` only | CMD-050 set-once read through trusted command; no direct DML | NONE | NONE | No R-admin/global inbox read; dismissed_at is dormant; POQ-03 excludes dismiss/archive from MVP; scope columns never widen recipient ownership |
 | `notification_deliveries` | NONE for browser roles; internal worker; narrowly scoped operations reader only if approved | CMD | CMD | NONE | Provider state not exposed to recipients; worker-only mutation |
 | `notification_delivery_attempts` | NONE for browser roles; internal worker; restricted audit/operations reader if approved | CMD | NONE | NONE | Append-only sanitized attempts; no provider secrets or message bodies |
 | `notification_escalation_events` | NONE for browser roles; internal worker only; restricted operations reader only after explicit approval | CMD | NONE | NONE | Append-only; no browser oversight access inferred from role title |
@@ -273,3 +273,8 @@ See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SE
 ## Final audit correction — notification mutation boundary (2026-11-24)
 
 The earlier summary phrase “approved dismiss field” was inconsistent with the canonical CMD-049–054 contract and the table-level rule that dismissed_at is dormant. It is corrected: only recipient-owned read_at is currently exposed through CMD-050; no dismiss command or browser mutation is approved.
+
+
+## POQ-03 RLS disposition — 2026-11-24
+
+Dismiss/archive is excluded from MVP by explicit Product Owner decision. There is no dismiss command, permission, browser write or UX action. The only recipient mutation in MVP is the trusted CMD-050 set-once read_at transition. Any retained dismissed_at column is dormant and must not receive a browser UPDATE policy or trusted mutation path. Worker identity, exact ACLs and live RLS verification remain open.
