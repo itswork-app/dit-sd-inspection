@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.17  
+**Version:** 0.1.18  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -524,3 +524,15 @@ TC-NOTIF-079..081 remain PLANNED / NOT EXECUTED. NOTIF-028..030 do not authorize
 | NOTIF-034 | Assignment/member writers, role/account eligibility writers and capacity updates share one approved L05/L10 serialization and atomic idempotent event/snapshot protocol | T-14; POQ-01; POQ-04; T-18; Database/Security | NLA-EVENT-TECH-RECON-001 v0.1.3 §§17–20; LOCK-NORMALIZATION-001 v0.1.1; L05 writer matrix v0.1.4 | TC-NOTIF-085; concurrency, capacity, lock-order and writer-completeness evidence | OPEN — GLOBAL WRITER / LOCK PROOF MISSING |
 
 TC-NOTIF-082..085 remain PLANNED / NOT EXECUTED. NOTIF-031..034 do not authorize implementation or G10 activation.
+
+
+## Inspection submit/return event technical traceability — 2026-11-24
+
+| Requirement ID | Requirement / invariant | Authority | Design reference | Verification | Status |
+|---|---|---|---|---|---|
+| NOTIF-035 | `inspection.submitted` is the sole PO-approved notice candidate for CMD-029; `inspection_revision.created` is a related immutable source fact and must not create a duplicate notice | PO event-candidate decision; POQ-01/04; CMD-029 | NLA-EVENT-REGISTRY-001 v0.1.5; NLA-EVENT-TECH-RECON-001 v0.1.4 §22 | TC-NOTIF-086; exact event cardinality and replay dedup | OPEN — SOURCE EVENT ID / DEDUP CONTRACT UNRESOLVED |
+| NOTIF-036 | Submission notices target only a Reviewer selected through an approved physical assignment source and exact inspection scope; global role/title/project membership is insufficient | INS-015; CMD-029; Security/PO | NLA-EVENT-TECH-RECON-001 v0.1.4 §§22/24–25 | TC-NOTIF-087; wrong-scope and missing-assignment negative cases | OPEN — REVIEWER ASSIGNMENT SOURCE NOT ADMITTED |
+| NOTIF-037 | Return-for-correction notices target only the exact approved responsible-Inspector participant; revision author/current assignment mapping is explicit and reviewer != author SoD remains enforced | PO event-candidate decision; CMD-030; Security | NLA-EVENT-TECH-RECON-001 v0.1.4 §23; canonical permission/assignment registry | TC-NOTIF-088; author/member/reviewer substitution negatives | OPEN — RESPONSIBLE INSPECTOR MAPPING UNRESOLVED |
+| NOTIF-038 | Submission/review events are atomic with immutable revision/review facts, audit and idempotency; exactly one terminal review decision per revision; source lock order is globally compatible | T-18; CMD-029/030; Database/Security | NLA-EVENT-TECH-RECON-001 v0.1.4 §§22–25; LOCK-NORMALIZATION-001 v0.1.1 | TC-NOTIF-089; approve-vs-return race, replay, rollback and lock-order evidence | OPEN — DECISION UNIQUENESS / LOCK / SNAPSHOT PROOF MISSING |
+
+TC-NOTIF-086..089 remain PLANNED / NOT EXECUTED. NOTIF-035..038 do not authorize implementation or G10 activation.
