@@ -121,14 +121,14 @@ Constraints:
 Purpose: one current delivery projection per notification/channel.
 
 Minimum fields:
-- `id`, `notification_id`, `channel` (IN_APP, WEB_PUSH, DEVICE_PUSH, EMAIL)
+- `id`, `notification_id`, `channel` (WEB_PUSH, DEVICE_PUSH, EMAIL)
 - `status` (PENDING, SUPPRESSED, SENDING, SENT, DELIVERED, FAILED, EXPIRED, UNKNOWN)
 - `attempt_count`, `next_attempt_at`, `last_attempt_at`, `sent_at?`, `delivered_at?`
 - `provider_message_ref?`, `last_error_code?`, `created_at`, `updated_at`
 
 Constraints:
 - Unique (`notification_id`, `channel`).
-- Delivery state is not the read state. IN_APP availability is established by the inbox record; do not claim user-read from provider delivery.
+- Delivery state is not the read state. In-app availability is established by the inbox record and has no external delivery row; do not claim user-read from provider delivery.
 - Quiet hours and channel eligibility are evaluated before dispatch; suppressed items retain a reason and can be rescheduled if policy allows.
 - Provider callbacks are untrusted input: authenticate/signature-check them, validate provider reference and legal state transition, and make webhook processing idempotent.
 
@@ -173,7 +173,7 @@ Constraints:
 
 ## 6. Channel, quiet-hours and delivery rules
 
-- IN_APP is the baseline channel.
+- In-app is the baseline inbox and is not represented as a provider delivery channel.
 - WEB_PUSH/DEVICE_PUSH are optional and require explicit device/browser capability and consent; revocation stops future sends and invalidates relevant subscriptions.
 - EMAIL is used only for policy-defined important notices and only where an approved verified address exists.
 - WhatsApp is not an MVP channel.
