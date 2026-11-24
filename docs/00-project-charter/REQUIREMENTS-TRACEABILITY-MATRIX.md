@@ -306,3 +306,21 @@ T-13 requires a durable batch identifier and per-document outcomes. The physical
 | INSTRUMENT-DEACTIVATION-001 | Deactivation blocks new assignment selection while already-pinned sessions retain immutable historical versions by default; safety withdrawal is an explicit authorized, reasoned and audited override. | INS-001/CFG-001; LPR-06 PO APPROVED | PRD; Instrument Specification; CMD-014/018..021; LOCK-PROTOCOL-DECISION-RESOLUTION §4.4 | Assignment/deactivation race, pinned historical version retention, explicit safety withdrawal scope and audit tests; exact QA IDs to be assigned | PO APPROVED; AUTHORITY/LOCK/VERIFICATION OPEN |
 
 **Traceability boundary:** PO approval settles the product requirements above, not the technical lock order, physical constraints, function/trigger graph, privileges, RLS or test execution. LPR-01 and LPR-07–LPR-10 remain open; G9 is NOT READY and G10 is NOT AUTHORIZED.
+
+
+## CMD-011–020 Product Owner decision traceability — 2026-11-24
+
+| Requirement ID | Approved requirement | Authority | Design reference | Verification anchor | Status |
+|---|---|---|---|---|---|
+| SES-011 | Session creation uses server-selected T-07 DRAFT; project lifecycle gate; UTC instants with canonical project IANA timezone; reject DST gap/fold input; overlap not prohibited by default | PO CMD-011; T-07 | Decision Register; CMD-011–020 decision package; Project/Session/Assignment Model | TC-CMD-CONTRACT-024-011 | PO APPROVED; CONTRACT/TECHNICAL REVIEW OPEN |
+| SES-012 | Session code immutable; allowlisted metadata only; reason required; reject schedule reinterpretation after dependent work exists | PO CMD-012 | Decision Register; CMD detailed review | TC-CMD-CONTRACT-024-012 | PO APPROVED; CAS/DEPENDENCY PREDICATE OPEN |
+| SES-013 | T-07 state set preserved; closure request is action/event; Korlap scope limited; Super Admin final closure; CLOSED terminal in ordinary flow; reopen privileged/reasoned/audited | PO CMD-013; T-06/T-07 | Decision Register; Project/Session/Assignment Model | TC-CMD-CONTRACT-024-013 | PO APPROVED; TRANSITION/LOCK/SECURITY REVIEW OPEN |
+| ASN-014 | One create-only atomic assignment + complete roster; half-open interval; scoped effective membership conflict predicate | PO CMD-014 | Decision Register; CMD-011–020 detailed review | TC-CMD-CONTRACT-024-014 | PO APPROVED; CAPACITY/PARENT-FENCE REVIEW OPEN |
+| ASN-015 | Per-member effective_at; reasoned end-dating; no hard delete; submitted inspections remain unchanged after removal | PO CMD-015 | Decision Register; Project/Session/Assignment Model | TC-CMD-CONTRACT-024-015 | PO APPROVED; ACTIVE-WORK POLICY OPEN |
+| CAP-016 | T-14 predicate unchanged; cap 1–100/default 50; reject below count; no silent role/assignment revocation | PO CMD-016; T-14 | Decision Register; CMD-011–020 detailed review | TC-CMD-CONTRACT-024-016 | REAFFIRMED; TECHNICAL SERIALIZATION OPEN |
+| TGT-017 | Session-scoped target plans by default; explicit draft/replace/publish actions; unique allocation triple; reject zero; immutable published versions | PO CMD-017 | Decision Register; CMD-011–020 detailed review | TC-CMD-CONTRACT-024-017 | PO APPROVED; QUANTITY/CAS CONTRACT OPEN |
+| INS-018 | New instrument draft/inactive until published; normalized unique code using approved normalization direction | PO CMD-018 | Decision Register; CMD-011–020 detailed review | TC-CMD-CONTRACT-024-018 | PO APPROVED; ALPHABET/COLLATION SECURITY REVIEW OPEN |
+| INS-019 | Atomic complete declarative draft replacement; immutable published snapshot; change summary; no dynamic code/arbitrary regex/unbounded recursion | PO CMD-019 | Decision Register; CMD-011–020 detailed review | TC-CMD-CONTRACT-024-019 | PO APPROVED; SCHEMA/HASH/CAS SECURITY REVIEW OPEN |
+| INS-020 | T-17 explicit instrument.publish, immutable published versions, pinned assignments/sessions, new version for corrections and idempotent no-duplicate publication | PO CMD-020; T-17 | Decision Register; T-17; CMD-011–020 detailed review | TC-CMD-CONTRACT-024-020 | REAFFIRMED; FUNCTION/ACL/HASH REVIEW OPEN |
+
+**Traceability boundary:** The requirements above close PO product-semantic decisions only. They do not approve role grants, physical schema, lock order, function ACLs, RLS, concurrency safety or tests. Every referenced case remains PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT AUTHORIZED.
