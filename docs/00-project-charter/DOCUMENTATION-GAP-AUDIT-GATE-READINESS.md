@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.89
+**Version:** 1.11.90
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -893,3 +893,9 @@ CMD-013 FINAL_CLOSE cannot be certified from inspection status alone. The closur
 The explicit per-unit abort is not a generic session cleanup operation. It cannot bypass review, required evidence, document/print, or attendance obligations. It must preserve the aborted attempt and history. A later session creates a new attempt rather than reactivating the aborted one.
 
 **Critical unresolved evidence:** no complete writer/finalizer-to-resource lock matrix, certified parent/child fence protocol, global acyclicity proof, attendance closure authority, or runtime concurrency evidence is available. The existing CMD-026 lock-order contradiction and X-17 full 54-command lock inventory review remain open. The global lock graph is NOT PROVEN ACYCLIC. Existing relevant QA cases remain PLANNED / NOT EXECUTED. No code, SQL, migration, grant, RLS, live database, test, deployment or merge was performed.
+
+## SES-001 / packed-unit ABORT — DGA clarification (2026-11-24)
+
+The PO has approved a narrow exceptional ABORT path: after Reviewer returns an inspection for an identified error, Inspector may request ABORT only when the physical unit is already packed/boxed and prepared for shipment such that correction/reinspection is impracticable; Admin/Korlap must explicitly approve or reject. If the unit remains practically accessible, the normal same-Inspector, same-active-session correction/resubmission path applies. A pending request remains unresolved and blocks FINAL_CLOSE.
+
+This supersedes the generic “abort unfinished work” interpretation. ABORTED is terminal, preserves submitted revision/return/evidence/audit history, and is not approval, good/defective classification, inspection completion or print completion. A later inspection is a new session-bound attempt. CMD-013 cannot initiate or approve ABORT. Command identity, authorization/SoD, reason and packed-state evidence policy, atomicity, lock/RLS/schema and QA remain OPEN; G9 NOT READY, G10 NOT ACTIVE.
