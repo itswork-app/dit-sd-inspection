@@ -159,3 +159,20 @@ Add/retain test coverage for: enabled account + active Inspector grant + effecti
 - Verify pending/rejected/suspended/disabled/unregistered identities cannot be assigned.
 - Verify users cannot self-assign roles, teams, scope or operational work through UI or direct API.
 - Verify team staffing changes enforce the T-14 combined capacity predicate atomically and generate audit events.
+
+
+
+## T-15 — INS-016 audit policy test requirements (PO-approved 2026-11-24)
+
+Add/retain tests proving:
+- Every defined critical command commits its business mutation and audit event atomically.
+- Injected audit insert/validation failure rolls back the corresponding critical state mutation and returns failure.
+- No success response is returned when the audit event has not committed.
+- Event actor, active role, scope, action/event type, timestamp, correlation/idempotency reference and privacy-safe change context match the authorized command context.
+- Ordinary application roles and direct client paths cannot update/delete audit records or bypass audited critical commands.
+- Audit read and export require explicit least-privilege permission and are themselves auditable where required by the catalogue.
+- Sensitive evidence access and export produce audit events without placing raw evidence, secrets or credentials in event payloads.
+- Idempotent retries do not create misleading duplicate business events; audit event semantics remain deterministic and traceable.
+- T-10 retention, legal-hold and metadata rules are treated as configuration/policy gates, not guessed defaults.
+
+These are test requirements only. Test execution and implementation are not claimed.
