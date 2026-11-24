@@ -260,3 +260,8 @@ Internal review L05-REVIEW-001 v0.1.0 raised F-01 (function volatility/fresh sna
 ## 15. Source-event path mapping artifact — 2026-11-24
 
 [L05-SOURCE-MAP-001](L05-SOURCE-EVENT-PATH-MAPPING-001.md) v0.1.0 maps all 40 canonical source-event declarations to their documented transaction boundary, existing candidate lock path and required L05 prefix. It preserves the distinction between command transactions and asynchronous finalizers (CMD-036–040), and records unresolved CMD-012/013, CMD-023–032 and CMD-035 transaction-boundary conflicts. The mapping is an inventory and candidate placement artifact only: 0/40 source lock sequences are normalized after L05 and 0/40 resolver paths are certified. Exact function/worker call graph, implicit locks, eligibility-writer participation, static acyclicity and runtime evidence remain OPEN.
+
+
+## 16. Eligibility-writer inventory artifact — 2026-11-24
+
+[NLA-L05-WRITER-MATRIX-001](L05-ELIGIBILITY-WRITER-PARTICIPATION-MATRIX-001.md) v0.1.0 inventories known command-level writer classes and non-command classes including direct DML, SECURITY DEFINER helpers, triggers/cascades, imports, sync, repair, scheduled expiry and emergency mutation. The inventory is deliberately marked PARTIAL: exact deployed RPC/function/trigger/job names, selector dependency universe, ownership, ACL and bypass-prevention evidence are not available in this documentation-only review. No writer is certified to acquire L05; the all-writer proof remains OPEN.
