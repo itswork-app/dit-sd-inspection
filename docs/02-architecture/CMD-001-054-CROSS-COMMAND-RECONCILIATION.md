@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.5.0
+**Version:** 0.6.0
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -377,6 +377,11 @@ The manifest does not change the canonical command catalogue, physical schema or
 
 ## 13. Lock protocol decision-resolution proposal — 2026-11-24
 
-[LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.1.0 consolidates a candidate resource hierarchy and decision-ready recommendations for the 54-command lock protocol. It separates five PO/domain decisions (canonical identity/conflict semantics; claim requirement/exceptions; project/session closure and in-flight work; T-14 eligibility semantics; instrument deactivation effect) from technical approvals reserved to Engineering/Security and institutional/Operations authorities.
+[LOCK-PROTOCOL-DECISION-RESOLUTION-001](LOCK-PROTOCOL-DECISION-RESOLUTION.md) v0.2.0 consolidates a candidate resource hierarchy and decision-ready recommendations for the 54-command lock protocol. It separates five PO/domain decisions (canonical identity/conflict semantics; claim requirement/exceptions; project/session closure and in-flight work; T-14 eligibility semantics; instrument deactivation effect) from technical approvals reserved to Engineering/Security and institutional/Operations authorities.
 
-**Disposition:** X-18 OPEN; DGA-B20 OPEN. The proposal does not approve a global lock order, alter canonical contracts or prove deadlock freedom. G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED; tests remain planned/not executed.
+**Disposition:** PO decisions LPR-02–LPR-06 are now approved and recorded; X-18 and DGA-B20 remain OPEN because LPR-01 and LPR-07–LPR-10, complete manifests and effective lock-graph evidence remain outstanding. The PO decisions do not approve a global lock order, alter canonical command contracts or prove deadlock freedom. G3/G4/G5/G7/G9 remain NOT READY and G10 NOT AUTHORIZED; tests remain planned/not executed.
+
+
+## 14. Product Owner lock-protocol decision update — 2026-11-24
+
+The Decision Register records PO approval of LPR-02–LPR-06: canonical unit identity `(instrument_type, serial_normalized)` across projects; mandatory active claim for normal inspection; closed project/session mutation/finalization fence with explicit audited reopen; T-14 eligibility using the already approved T-14 predicate and shared serialization point; and instrument deactivation preserving pinned historical versions except for explicit safety withdrawal. These approvals settle product semantics only. LPR-01 and LPR-07–LPR-10, command manifest certification, physical constraints/trigger/function graph and adversarial concurrency evidence remain open. X-18/DGA-B20 are therefore still OPEN; G9 remains NOT READY and G10 NOT AUTHORIZED.
