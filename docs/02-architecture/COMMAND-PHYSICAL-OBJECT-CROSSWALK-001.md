@@ -1,7 +1,7 @@
 # Command Physical Object Crosswalk — CMD-001–054
 
 **Document ID:** CMD-PHYSICAL-CROSSWALK-001  
-**Version:** 0.1.1  
+**Version:** 0.1.2  
 **Date:** 2026-11-24  
 **Status:** Source-derived physical read/write proposal — Engineering / Database / Security review required; NOT approved for implementation  
 **Parent:** LOCK-NORMALIZATION-001 v0.1.0; LOCK-MANIFEST-001 v0.4.24  
@@ -546,9 +546,9 @@ The schema proposes unique policy/scope/version and one effective published vers
 
 Source section: ### 8.4 Physical write set and transaction
 
-Proposed objects: notification_outbox, notifications and notification_deliveries. Claim using a bounded lease and row-locking strategy equivalent to SKIP LOCKED; never hold a transaction across provider I/O. Create one inbox row per outbox/recipient and one external delivery row per selected notification/channel, with uniqueness preventing duplicates.
+Proposed objects: notification_outbox, candidate-only notification_outbox_recipients (NOT ADMITTED), notifications and notification_deliveries. The source domain transaction must persist the immutable event-time recipient/scope candidate rows and reconcile the snapshot header hash/count before the outbox becomes claimable. The current 48-table inventory does not yet admit this candidate relation. CMD-052 reads the candidate rows; it must not reconstruct recipients from current role/assignment membership. Claim using a bounded lease and row-locking strategy equivalent to SKIP LOCKED; never hold a transaction across provider I/O.
 
-NLA-001 proposes unique source_event_id/policy_version_id on the outbox, unique outbox_id/recipient_user_id on notifications, and unique notification_id/channel on notification_deliveries. Partial fan-out remains PROCESSING; retries resume idempotently through these unique arbiters. The outbox and delivery lease tuple is lease_owner, server-issued token hash, monotonic lease_generation and lease_expires_at; every finalizer checks the current tuple. safe_payload is the canonical minimized payload field. Exact nullability, indexes, constraints and recipient eligibility timing still require approval.
+NLA-001 v0.1.4 proposes unique source_event_id/policy_version_id on the outbox, unique outbox_id/recipient_user_id on the candidate relation and notifications, and unique notification_id/channel on notification_deliveries. Partial fan-out retries derive outstanding work by anti-joining immutable candidate rows to existing inbox rows; unique keys prevent duplicate materialization. The outbox and delivery lease tuple is lease_owner, server-issued token hash, monotonic lease_generation and lease_expires_at; every finalizer checks the current tuple. safe_payload is the canonical minimized payload field. Candidate scope columns/FKs, source-transaction fan-out bound, snapshot hash format, indexes, RLS/ACL and workload identity remain OPEN.
 
 ### CMD-053
 
@@ -564,7 +564,7 @@ Never persist provider credentials, full provider response bodies, message bodie
 
 Source section: ### 10.5 Physical write set and idempotency
 
-Proposed objects: notification_escalation_events and notification_outbox. Append one event for the unique notification/policy-version/step/event key, then create an outbox intent for the next notification if eligible. The uniqueness constraint makes repeated scheduler ticks idempotent.
+Proposed objects: notification_escalation_events and notification_outbox, plus candidate-only notification_outbox_recipients for the escalation's own event-time recipient/scope snapshot (NOT ADMITTED). Append one event for the unique notification/policy-version/step/event key, create the outbox intent and persist the deduplicated event-time candidate rows atomically. The uniqueness constraint makes repeated scheduler ticks idempotent; retries must not re-resolve a wider current audience.
 
 NLA-001 proposes unique notification_id/policy_version_id/step_no/event_type. Exact locking, due-time predicate, retry, concurrent scheduler behavior, event/outbox atomicity and retention must be reviewed. No provider I/O occurs in this command.
 
@@ -589,7 +589,7 @@ NLA-001 proposes unique notification_id/policy_version_id/step_no/event_type. Ex
 | CMD-037–038 | Document version identity, print sequence storage, durable batch item manifest/result model are incomplete | Define sequence allocator and recoverable per-item batch outcomes |
 | CMD-039–040 | Attendance location/assignment authority, upload intent/version fields and verification history are incomplete | Obtain institutional authority and define immutable attendance document/verification model |
 | CMD-041–044 | Command-specific physical read/write details, report snapshot/watermark, audit read purpose/RLS and T-10 export design are not fully specified | Define bounded query objects/indexes/cursors; CMD-044 remains blocked by T-10 |
-| CMD-049–054 | Notification indexes, composite scope integrity, policy exclusion constraints, worker ACL/lease schema and provider-event dedup remain unverified | Complete NLA physical schema, exact unique keys, worker identity, callback auth and retry proof |
+| CMD-049–054 | Notification indexes, composite scope integrity, policy exclusion constraints, event-time audience snapshot relation, worker ACL/lease schema and provider-event dedup remain unverified | Review candidate notification_outbox_recipients admission, exact unique/FK/index keys, worker identity, callback auth and retry proof |
 
 ## 4. Verification result
 
