@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.40
+**Version:** 0.8.41
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -610,3 +610,10 @@ The closure blocker graph, project/session physical row-version/CAS fields, exac
 NLA-EVENT-TECH-RECON-001 v0.1.3 partially reviews NREG-006 `assignment.created` and NREG-007 `assignment.changed`. CMD-014 is a create-only assignment + complete initial-roster transaction; the inserted member rows do not exist in pre-mutation assignment state, so trusted event-participant semantics must be explicitly admitted. CMD-015 is an atomic member add/end transaction; POQ-04 requires pre-end membership evaluation at one captured instant and no replacement member, while added/retained member selection and aggregate/per-member event cardinality remain unresolved.
 
 Active claim/in-progress inspection behavior, physical assignment/member constraints, exact L05/L10/T-14 lock order, membership expiry/import/repair writers and complete event/outbox/snapshot dedup remain open. RTM-001 v0.1.17 adds NOTIF-031..034; QA Catalogue v0.5.7 adds TC-NOTIF-082..085, all PLANNED / NOT EXECUTED. No event or implementation is admitted.
+
+
+## CMD-029/030 inspection event registry checkpoint — 2026-11-24
+
+NLA-EVENT-TECH-RECON-001 v0.1.4 partially reviews NREG-008 `inspection.submitted` and NREG-009 `inspection.returned_for_correction`. CMD-029 emits both submission and immutable revision facts, but only `inspection.submitted` is the approved notice candidate; exact source-event identity and one-notice dedup remain open. The authoritative Reviewer assignment source is not physicalized. CMD-030's responsible Inspector mapping cannot be inferred from revision author or generic assignment membership without an approved rule; reviewer != author SoD and one terminal decision per revision remain mandatory.
+
+The source command manifests still contain inspection-first paths that conflict with normalized project/session/assignment/unit/association/claim ordering. Reviewer/Inspector dependency writers, FK/trigger edges and event-time candidate snapshot integration remain unproven. RTM-001 v0.1.18 adds NOTIF-035..038; QA Catalogue v0.5.8 adds TC-NOTIF-086..089, all PLANNED / NOT EXECUTED. No event or implementation is admitted.
