@@ -1,7 +1,7 @@
 # CMD-001–054 Cross-Command Reconciliation
 
 **Document ID:** CMD-CROSSWALK-001-054  
-**Version:** 0.8.50
+**Version:** 0.8.51
 **Status:** Engineering reconciliation — OPEN; no executable command contract approved  
 **Date:** 2026-11-24  
 **Repository phase:** Documentation / SSOT maturation  
@@ -720,3 +720,11 @@ External Storage, renderer, printer and notification provider calls must execute
 The current global lock-order proposal is not a certification. The cross-command reconciliation already records a CMD-026 local/global order contradiction and X-17 requires review of the 54-command resource/lock inventory. The complete writer-to-resource matrix, parent/child fence coverage, finalizer lease fencing, and acyclicity proof have not been demonstrated. **Global lock graph remains NOT PROVEN ACYCLIC.** Do not claim that CMD-013 is race-safe or closure-ready.
 
 Existing CMD-013 and SES-001 QA cases remain PLANNED / NOT EXECUTED. No runtime, database, concurrency, Storage, renderer, printer or attendance-verification evidence was produced by this audit. The attendance closure predicate, finalizer inventories, abort command identity, session reopen edge, physical constraints, exact lock modes and ACL/RLS remain blockers.
+
+## SES-001 / exceptional packed-unit ABORT — PO clarification (2026-11-24)
+
+The Product Owner has clarified the ABORT business meaning. It is **not** a generic escape hatch for incomplete or hanging work. It is available only after Reviewer has returned an inspection for an identified error and the physical unit has already been packed/boxed and prepared for shipment, making correction or reinspection impracticable. The Inspector submits the request; Admin/Korlap must explicitly approve or reject it. Until approval, the attempt remains unresolved and continues to block FINAL_CLOSE.
+
+If the unit is still practically accessible, WF-001 correction/resubmission remains mandatory with the same Inspector in the original active session. The approved ABORT outcome is terminal, preserves the submitted revision, Reviewer return, evidence and audit history, and does not mean approved, good/defective, inspected-complete or printed. A later inspection requires a new session-bound inspection_id; the ABORTED attempt is never reopened or reused.
+
+This PO clarification supersedes the earlier generic wording in this document that every hanging/incomplete attempt may simply be aborted. CMD-013 cannot create or approve aborts. Exact command identity, authorization/SoD, reason/evidence policy, atomic persistence, lock/RLS/schema and QA remain OPEN; no implementation or physical contract is admitted.
