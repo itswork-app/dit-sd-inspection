@@ -1,7 +1,7 @@
 # L05 Audience Guard — Internal Technical Review
 
 **Document ID:** L05-REVIEW-001  
-**Version:** 0.1.2  
+**Version:** 0.1.3  
 **Review status:** REQUEST CHANGES — NOT TECHNICALLY APPROVED  
 **Review date:** 2026-11-24  
 **Reviewer capacity:** Internal technical reviewer acting for Product Owner interests; not an independent human Engineering, Database, Security or institutional sign-off  
@@ -173,7 +173,7 @@ F-06 is partially remediated: TDR parent pointer now names NLA-RESOLVER-LOCK-001
 
 ## 9. Current cross-reference and CMD-031–040 response — 2026-11-24
 
-F-06 is closed for the scoped L05 cross-reference set. The current pointer set is NLA-001 v0.1.10; parent resolver review v0.1.10; TDR v0.1.2; source map v0.1.0; writer matrix v0.1.2; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM v0.1.10; RAID v0.1.9; DGA v1.11.61; QA v0.4.6; cross-command reconciliation v0.8.28. Historical source references remain in their dated checkpoints.
+F-06 is partially closed: canonical decision and core L05 parent/TDR/manifest/graph links are synchronized; remaining secondary current-pointer entries require one final reconciliation pass. The current pointer set is NLA-001 v0.1.10; parent resolver review v0.1.10; TDR v0.1.4; source map v0.1.0; writer matrix v0.1.2; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; RTM v0.1.10; RAID v0.1.9; DGA v1.11.61; QA v0.4.6; cross-command reconciliation v0.8.28. Historical source references remain in their dated checkpoints.
 
 F-03 has advanced but remains OPEN: CMD-031/032/033/034/037 have partial candidate lock ordering in LOCK-MANIFEST-001 §7.13; CMD-035/036/038/039/040 remain blocked. The source map is an inventory, not proof of all held locks, function/finalizer call graphs, or a cycle-free total order. F-04 remains OPEN because the writer matrix is incomplete and no physical writer is certified. F-05 transition semantics and F-07 measured contention envelope remain OPEN.
 
