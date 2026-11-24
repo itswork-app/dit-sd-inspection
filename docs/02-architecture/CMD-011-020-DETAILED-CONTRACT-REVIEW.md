@@ -1,7 +1,7 @@
 # CMD-011–020 Detailed Contract Review
 
 **Status:** PO product semantics APPROVED (2026-11-24); Engineering/Security contract review OPEN; NOT approved for implementation  
-**Version:** 0.3.3  
+**Version:** 0.3.4  
 **Date:** 2026-11-24  
 **Scope:** CMD-011 through CMD-020  
 **Controls:** T-14 Inspector capacity; T-15 append-only audit direction; T-17 instrument governance; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
@@ -164,7 +164,7 @@ No initial status, actor, project scope, location, team, assignment or approval 
 - Read: \`projects\`; \`sessions\` for duplicate code and lifecycle checks; \`idempotency_records\`.
 - Write: \`sessions\`; \`idempotency_records\`; \`audit_events\`.
 - Physical schema documents \`sessions(id, project_id, code, status, starts_at, ends_at)\`, unique \`(project_id, code)\`, and valid interval.
-- No session-level \`row_version\` is specified in the physical schema. The API token proposal is \`expected_row_version\`; physical approval remains open.
+- No session-level `row_version` is specified in the physical schema. The API token proposal is `expected_row_version`; physical approval remains open.
 
 ### Transaction, lock and idempotency
 
@@ -448,8 +448,8 @@ No status, actor, approval, effective project scope or publication bypass field 
 
 - Claim idempotency key.
 - Lock \`project_capacity_settings\` first whenever any proposed member can qualify as Inspector; this is the T-14 serialization point shared with role grant, member changes and capacity changes.
-- Lock project/session/assignment reference rows in deterministic UUID order; validate all same-project foreign references and published instrument version.
-- Lock affected user rows in deterministic UUID order; verify each approved/enabled account, role grant, self-assignment prohibition and effective time.
+- Acquire affected principal, role and scope-grant rows at L15–L18 in stable-key order; then acquire project and session parent fences at L30 (`FOR SHARE`, project before session), instrument/version at L40 (`FOR SHARE`), assignment at L50 and membership rows at L55.
+- Revalidate same-project references, authorization, published instrument version, account/role eligibility, self-assignment and effective times after the relevant locks.
 - Validate overlap and calculate post-command distinct qualifying Inspector count while holding capacity lock.
 - Insert assignment and all member rows atomically; append \`assignment.created\` and any approved capacity-related audit detail; insert idempotency result.
 - If any member fails validation, reject the entire publish operation. No partial roster publication.
@@ -1125,7 +1125,7 @@ CMD-011 initial state is PO-approved as T-07 DRAFT. CMD-013 preserves DRAFT/ACTI
 
 ### F-012-01 — Session optimistic concurrency is not physicalized
 
-CMD-012 and CMD-013 require expected_version, but \`sessions\` has no row_version/version/updated_at in the physical specification. Add an explicit concurrency token and increment rule before implementation.
+CMD-012 and CMD-013 propose `expected_row_version`, but `sessions` has no `row_version` in the physical specification. Database/Engineering must approve the physical token and increment rule before implementation.
 
 ### F-014-01 — Assignment/member lifecycle and overlap semantics are incomplete
 
@@ -1133,7 +1133,7 @@ The PO has approved half-open [start,end) intervals, the scoped duplicate/confli
 
 ### F-016-01 — Capacity settings version is missing
 
-CMD-016 requires expected_version; \`project_capacity_settings\` has no version column. T-14 predicate is PO-approved, but physical versioning and default-row initialization remain design gaps.
+CMD-016 proposes `expected_row_version`; `project_capacity_settings` has no `row_version`. T-14 predicate is PO-approved; physical versioning and deterministic capacity-row initialization remain design gaps.
 
 ### F-017-01 — Target plan scope and allocation uniqueness are incomplete
 
