@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.2.0
+**Version:** 0.3.0
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -209,8 +209,19 @@ No command is lock-complete until its manifest is reviewed against all commands 
 | LG-28 | Project/session close vs every child writer | No post-closure child mutation |
 | LG-29 | Deadlock/timeout then idempotent retry | No duplicate mutation/event |
 | LG-30 | Audit append failure under competing commands | State/version changes roll back atomically |
+| LG-31 | Concurrent CMD-022 registration of the same instrument_type + normalized serial from different projects | Exactly one canonical unit exists; losing request becomes a controlled conflict with reason/audit; no cross-project activity disclosure |
+| LG-32 | Concurrent CMD-022 registration of the same serial under different instrument_type values | Both canonical units may exist; no false cross-type collision |
+| LG-33 | Concurrent CMD-026 claims for the same canonical unit from different projects/assignments | At most one ACTIVE claim globally; loser receives a typed conflict; no scope escalation |
+| LG-34 | Claim expiry/takeover vs CMD-027 release and CMD-028 save-draft | Exactly one legal claim outcome; stale/expired claim cannot authorize a new draft mutation |
+| LG-35 | T-14 role grant/revoke/expiry, account disable/suspension, assignment-member start/end/expiry vs CMD-004/005/015/016 | Every eligibility-changing path uses the same approved serialization point and exact predicate; no over-cap or stale qualifying count |
+| LG-36 | Pending-account approval/activation vs role grant and operational assignment provisioning | Pending/rejected/disabled account never becomes operational or capacity-eligible through a race |
+| LG-37 | CMD-020 instrument-version publish vs CMD-021 deactivation vs CMD-014 assignment publish | Assignment pins one exact published version; inactive instrument cannot be newly selected; no mutable published snapshot |
+| LG-38 | Explicit safety withdrawal vs already-pinned sessions and in-flight inspection work | Only authorized, reasoned, audited withdrawal can override default historical pinning; affected work follows one deterministic disposition |
+| LG-39 | Project/session closure vs asynchronous document, notification and provider finalizers | No stale worker can finalize scoped work after the parent fence; fencing and parent state are revalidated |
+| LG-40 | CMD-051 notification policy publication vs CMD-052 fan-out | Each recipient notification binds one immutable policy version; concurrent publication cannot produce mixed policy evaluation |
+| LG-41 | Concurrent same idempotency key/same hash vs same key/different hash | Same semantic request resolves to one durable outcome; different hash rejects; no duplicate mutation/event/external intent |
 
-Tests require deterministic fixtures, barriers/latches, bounded timeouts, isolation-level declaration and captured SQLSTATE/lock diagnostics. Run only against an isolated test database after implementation authorization. **No test above has been executed.**
+Tests require deterministic fixtures, barriers/latches, bounded timeouts, declared isolation level, captured SQLSTATE/lock diagnostics, and final invariant snapshots. Run only against an isolated test database after implementation authorization. **No test above has been executed.**
 
 ## 9. Decisions and evidence required
 
