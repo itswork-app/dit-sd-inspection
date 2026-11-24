@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.5.3
+Version: 0.5.4
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -894,3 +894,15 @@ These tests are planned controls for the eleven PO-approved specification candid
 | TC-NOTIF-074 | Attempt to publish an event outside the eleven approved candidate intents, including deferred `account.requested`, `session.close_requested`, or related `inspection_revision.created` as a second notification | Publication fails closed unless a separate explicit PO decision and complete technical admission record exists; no implied event, recipient or channel is created | PLANNED / NOT EXECUTED |
 
 **Execution control:** TC-NOTIF-073/074 require exact canonical registry contracts and Security/Engineering/Database sign-offs. Runtime execution requires G10 activation and an authorized isolated environment. No test result is implied.
+
+
+### Account outcome event candidate safety — 2026-11-24
+
+These cases guard the unresolved mapping between account event-time candidate selection and dispatch-time account eligibility, and the account decision race/dedup boundary. They remain planned; they do not approve the event or execute a test.
+
+| Test ID | Scenario | Expected result / invariant | Status |
+|---|---|---|---|
+| TC-NOTIF-075 | Attempt to admit `account.approved` or `account.rejected` while the exact pre-transition participant selector and dispatch-time enabled-account suppression predicates are not separately specified | Technical admission/publication fails closed; a pending applicant is not silently excluded by reusing a dispatch gate as a snapshot gate, and no recipient is inferred from a command field without an approved event projection | PLANNED / NOT EXECUTED |
+| TC-NOTIF-076 | Race CMD-002 approval against CMD-003 rejection and replay either command with the same or conflicting idempotency key | At most one terminal account decision and its canonical source event commit; replay does not create a second decision/event/outbox/snapshot; conflicting payload or terminal state is rejected; audit failure rolls back the atomic source transaction | PLANNED / NOT EXECUTED |
+
+**Execution control:** TC-NOTIF-075/076 require the approved account state machine, event/participant contract, decision uniqueness/CAS and source transaction proof. Runtime execution requires G10 activation and an authorized isolated environment. No test result is implied.
