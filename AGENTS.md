@@ -1,7 +1,7 @@
 # Repository Agent Instructions — Dit. SD Inspection
 
 **Document ID:** ENG-AGENT-001  
-**Version:** 1.1.0  
+**Version:** 1.2.0  
 **Status:** MANDATORY ENGINEERING POLICY  
 **Applies to:** Every human contributor, coding agent, reviewer and automation working in this repository.
 
@@ -99,6 +99,7 @@ Follow IRG-001 §6 and Semantic Versioning 2.0.0:
 - MAJOR = incompatible public contract; MINOR = backward-compatible feature; PATCH = backward-compatible fix.
 - Immutable release tags and maintained CHANGELOG.
 - Database migrations use immutable monotonic identifiers and compatibility notes, not app SemVer alone.
+- Controlled documents follow IRG-001 §6.2 with independent document SemVer; bump the affected document in the same commit, keep approval status separate from version, and synchronize impacted RTM/DGA/RAID/SSOT references.
 - API contracts, documentation baselines, instrument versions and test evidence have separate version/identity domains.
 
 Do not invent or tag an application version before an actual release artifact exists.
