@@ -525,3 +525,8 @@ CMD-052 must consume only the immutable event-time candidate set; CMD-054 create
 **New critical lock-graph finding:** candidate snapshot and inbox writes may trigger implicit FK KEY SHARE locks against app_users, project/session/location and assignment rows. If these occur after L30/L50/L55 source locks or after queue/policy locks, they may invert against L15/L16/L17 revocation paths. No candidate rank is approved. LOCK-MANIFEST-001 v0.4.26 §7.6 and LOCK-GRAPH-001 v0.4.19 §27 record the unresolved edges and LG-41..45 adversarial tests. RAID R-037 and RTM NOTIF-015 track this as OPEN — CRITICAL.
 
 QA v0.4.2 adds TC-NOTIF-030..040, TC-RLS-024-049 and TC-FN-SEC-025-070..071; all PLANNED / NOT EXECUTED. No lock mode, relation, grant, function, provider, migration or implementation is approved by this reconciliation. G9 NOT READY; G10 NOT ACTIVE; application lock certification remains 0/50.
+
+
+## Notification source-event lock reconciliation — 2026-11-24
+
+[NOTIFICATION-SOURCE-EVENT-AND-SNAPSHOT-LOCK-RECONCILIATION-001](NOTIFICATION-SOURCE-EVENT-AND-SNAPSHOT-LOCK-RECONCILIATION-001.md) v0.1.0 is the controlling inventory annex for CMD-001–040 potential source-event producers and CMD-054 scheduler-generated events. It records the candidate recipient/scope FK edges, the lock resources already stated by each source command, and a proposed pre-acquisition/revalidation transaction shape. The event-type/policy allowlist, exact FK DDL, location rank, per-command normalization and acyclicity evidence remain OPEN. CMD-052/053 remain consumers. No candidate relation is admitted and no technical certification status advances.
