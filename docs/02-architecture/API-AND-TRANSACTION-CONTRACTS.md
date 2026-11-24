@@ -182,3 +182,7 @@ The command list in this document is a capability inventory, not yet a complete 
 The inventory must include, in addition to the currently enumerated commands: instrument deactivation; evidence access and export; project closure; audit read and export; and bounded batch-print orchestration. Batch print remains a per-document sequence of independently authorized/idempotent print commands, not an atomic all-or-nothing mutation. Permission codes for the additional privileged operations must be explicitly confirmed in the permission catalogue rather than inferred from broad Super Admin status.
 
 T-14 capacity commands use the exact approved qualifying-account predicate and the project capacity-settings row lock across both locations. T-16 unit commands require canonical serial-key arbitration, durable project association and global active-claim serialization. No command may infer operational authorization from global catalog authority or canonical unit identity alone.
+
+## PostgreSQL individual command contract catalogue
+
+The 48-operation draft contract catalogue is maintained in [PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md). It defines proposed request allowlists, actor/scope/SoD, physical read/write references, lock/idempotency/audit rules and typed outcomes per logical command. Its names and fields are proposals, not approved REST routes or PostgreSQL signatures. See its explicit blockers for T-10, T-12, T-16, Storage, project closure and ERD-only objects. No implementation is authorized by the catalogue.
