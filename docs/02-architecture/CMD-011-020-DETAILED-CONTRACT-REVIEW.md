@@ -1,7 +1,7 @@
 # CMD-011–020 Detailed Contract Review
 
 **Status:** PO product semantics APPROVED (2026-11-24); Engineering/Security contract review OPEN; NOT approved for implementation  
-**Version:** 0.3.4  
+**Version:** 0.3.5  
 **Date:** 2026-11-24  
 **Scope:** CMD-011 through CMD-020  
 **Controls:** T-14 Inspector capacity; T-15 append-only audit direction; T-17 instrument governance; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
@@ -48,7 +48,7 @@ The command-specific schemas below are allowlists. The following envelope fields
 }
 \`\`\`
 
-The actor and trusted authorization context are derived server-side and are not accepted in payload. \`expected_version\` is required only where a physical, approved concurrency token exists; the schema gaps below must be resolved before relying on optimistic concurrency.
+The actor and trusted authorization context are derived server-side and are not accepted in payload. `expected_row_version` is the proposed aggregate compare-and-swap field; it is not implementable until the physical token and increment semantics are approved.
 
 ### 2.3 Proposed common response envelope
 
@@ -446,7 +446,7 @@ No status, actor, approval, effective project scope or publication bypass field 
 
 ### Transaction, lock and idempotency
 
-- Claim idempotency key.
+- Claim idempotency key at L00.
 - Lock \`project_capacity_settings\` first whenever any proposed member can qualify as Inspector; this is the T-14 serialization point shared with role grant, member changes and capacity changes.
 - Acquire affected principal, role and scope-grant rows at L15–L18 in stable-key order; then acquire project and session parent fences at L30 (`FOR SHARE`, project before session), instrument/version at L40 (`FOR SHARE`), assignment at L50 and membership rows at L55.
 - Revalidate same-project references, authorization, published instrument version, account/role eligibility, self-assignment and effective times after the relevant locks.
@@ -551,7 +551,7 @@ The PO-approved contract requires per-membership \`effective_at\` for each end o
 
 ### Transaction, lock and idempotency
 
-- Claim idempotency key.
+- Claim idempotency key at L00.
 - If Inspector eligibility may change, acquire L10 capacity first.
 - Acquire affected principal/role/scope rows L15–L18 before project/session parents L30; acquire project then session parent fences (`FOR SHARE`), assignment L50, then assignment_members L55 in stable order. Revalidate assignment-to-parent binding after the locks.
 - Validate all add/end operations before writing any; reject duplicate IDs, duplicate semantic operations, invalid intervals and conflicting add/end of same membership.
@@ -747,7 +747,7 @@ Proposed actions: \`CREATE_DRAFT\`, \`REPLACE_DRAFT_ALLOCATIONS\`, \`PUBLISH\`. 
 
 ### Transaction, lock and idempotency
 
-- Claim idempotency key.
+- Claim idempotency key at L00.
 - For new plan, lock project (and session if present) as needed to validate lifecycle and create next project plan version. Enforce unique \`(project_id, version)\`.
 - For draft replacement, lock target plan row and all existing allocation rows in deterministic order; verify plan remains DRAFT and expected plan version/hash.
 - Validate the entire allocation set before deleting/replacing any draft allocations. Published plan rows cannot be updated/deleted.
@@ -836,7 +836,7 @@ No status, active flag, version number, published version, project scope or acto
 
 ### Transaction, lock and idempotency
 
-- Claim idempotency key.
+- Claim idempotency key at L00.
 - Insert instrument with server-derived \`created_by\` and server-selected initial status.
 - Let unique code constraint arbitrate concurrent duplicate creation.
 - Append \`instrument.created\` and idempotency result atomically.
@@ -968,7 +968,7 @@ The enum examples above are illustrative only. The authoritative allowlists for 
 
 ### Transaction, lock and idempotency
 
-- Claim idempotency key.
+- Claim idempotency key at L00.
 - Lock instrument row, then target instrument_version row (or serialize version-number allocation under instrument lock).
 - Verify version belongs to instrument and is DRAFT.
 - Validate the entire proposed configuration before any child mutation.
@@ -1067,7 +1067,7 @@ No published_by, published_at, target status, approver ID, second-approver field
 
 ### Transaction, lock and idempotency
 
-- Claim idempotency key.
+- Claim idempotency key at L00.
 - Lock instrument row first, then instrument_version row.
 - Recheck caller permission, instrument/version relationship, DRAFT status and expected hash under lock.
 - Recompute hash from canonical child configuration; never trust a client-computed hash as evidence of validity.
