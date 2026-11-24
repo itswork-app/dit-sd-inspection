@@ -453,7 +453,7 @@ Reconciliation results:
 - Package S §9.15 remains an immutable historical checkpoint (391 distinct test identifiers in its scan). New §9.16 points to the current DGA/QA snapshot (410 unique test-case definitions); old counts are not rewritten.
 - Package T v0.1.1 remains a historical decision pack. The Decision Register remains the canonical index of PO decisions. T-10 and T-12 PO decisions approve review/ownership paths only; institutional/provider evidence remains blocked.
 - RTM-001 v0.1.1 corrects the T-13 test mapping: general print TC-PRINT-001..007 and batch lifecycle TC-PRINT-BATCH-001..008; TC-DOC-009..011 remain instrument/document cases.
-- RAID-001 v0.1.1 retains the existing open/blocked dependencies; this audit does not close risks or dependencies.
+- RAID-001 v0.1.1 has 65 unique current RAID identifiers (the earlier 53-ID count is a historical checkpoint); existing open/blocked dependencies remain open and this audit does not close risks or dependencies.
 - No PO decision is changed or reopened. No institutional, technical, provider, CI or runtime approval is inferred.
 
 The PO packet asks only for unresolved product semantics: notification audience snapshot timing, SLA clock semantics and whether dismissal is excluded or separately specified. The authority package routes controlled instrument sources, BA/attendance authority, T-10, T-12, incident authority, permission/RLS/function security, command/lock review, CI/release controls and operational SLO/recovery evidence to the proper role-holders.
