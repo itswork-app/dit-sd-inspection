@@ -191,3 +191,19 @@ These are test requirements only. Test execution and implementation are not clai
 - TC-EVD-016-004: Failed audit write rolls back the critical evidence replacement/resolution transaction in accordance with T-15.
 
 These are test specifications only; no test execution is claimed.
+
+
+## T-17 — Instrument configuration governance test specifications
+
+| Test ID | Scenario | Expected result |
+|---|---|---|
+| TC-CFG-001-001 | Submit unknown field type or validation primitive | Rejected server-side; no executable expression is evaluated |
+| TC-CFG-001-002 | Configure ordering, applicability, expected values and evidence slots | Persisted only as validated declarative data within one draft version |
+| TC-CFG-001-003 | Authorized Super Admin with `instrument.publish` publishes valid draft | Publication succeeds without second-person approval; actor is derived from trusted session |
+| TC-CFG-001-004 | Caller lacks `instrument.publish` or is not authorized Super Admin | Denied; no version or publication record is created |
+| TC-CFG-001-005 | Audit write fails during publication | Entire publication transaction rolls back |
+| TC-CFG-001-006 | Attempt to edit/delete a published version or child config | Denied; correction requires a new version |
+| TC-CFG-001-007 | Publish a newer version/deactivate old version while a session references old version | Existing session and historical revisions retain exact pinned version/snapshot |
+| TC-CFG-001-008 | Attempt to use canonical unit identity from another project without association/assignment | Denied; canonical identity does not grant operational access |
+
+Test cases are specifications only; no test execution, migration or code change is claimed.
