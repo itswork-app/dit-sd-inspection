@@ -1,13 +1,13 @@
 # Final Documentation Closure Audit — Dit. SD Inspection
 
 **Document ID:** DOC-AUDIT-001  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Status:** STATIC DOCUMENTATION AUDIT COMPLETED — IMPLEMENTATION READINESS NOT ESTABLISHED  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
 **Pull request:** #3 — Draft / Open  
-**Authority:** AGENTS.md v1.2.0; MIB-001 v1.0.2; IRG-001 v1.0.1; DGA-001 v1.11.18  
+**Authority:** AGENTS.md v1.2.0; MIB-001 v1.0.2; IRG-001 v1.0.1; DGA-001 v1.11.20  
 **Gate:** G9 NOT READY; G10 NOT AUTHORIZED
 
 ---
@@ -73,7 +73,7 @@ The audit used read-only GitHub file/tree/PR inspection and static identifier, t
 | Physical Database Schema | 0.4.1 |
 | Table-by-Table RLS Catalogue | 0.2.2 |
 | Lock Manifest | 0.4.15 |
-| Concurrency Token Reconciliation | 0.1.5 |
+| Concurrency Token Reconciliation | 0.1.6 |
 | QA Catalogue | 0.3.5 |
 | RTM-001 | 0.1.0 |
 | RAID-001 | 0.1.0 |
@@ -116,7 +116,7 @@ PR #3 remains Draft/Open. No CI success is claimed. G9 remains NOT READY. G10 re
 - [PostgreSQL Command Contract Catalogue](../02-architecture/POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) v0.4.4
 - [Command-Level Lock Manifest](../02-architecture/COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) v0.4.15
 - [Global Lock-Order and Concurrency Graph](../02-architecture/GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md) v0.4.10
-- [CMD-001–054 Cross-Command Reconciliation](../02-architecture/CMD-001-054-CROSS-COMMAND-RECONCILIATION.md) v0.8.11
+- [CMD-001–054 Cross-Command Reconciliation](../02-architecture/CMD-001-054-CROSS-COMMAND-RECONCILIATION.md) v0.8.12
 
 ## 9. Final disposition
 
