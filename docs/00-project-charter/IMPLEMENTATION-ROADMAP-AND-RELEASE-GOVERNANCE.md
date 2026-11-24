@@ -1,7 +1,7 @@
 # Implementation Roadmap and Release Governance
 
 **Document ID:** IRG-001  
-**Version:** 1.0.1  
+**Version:** 1.0.2  
 **Status:** CONTROLLED PLAN — PRE-IMPLEMENTATION  
 **Date:** 2026-11-24  
 **Authority:** MIB-001, AGENTS.md, approved Decision Register and ADRs  
@@ -266,10 +266,12 @@ G12 production approval is an explicit sign-off, not an automatic result of a su
 
 ## 8. Current status
 
-- Pre-implementation documentation phases 0–6: **IN PROGRESS; DGA-001 blockers remain**.
+- Pre-implementation documentation phases 0–6: **IN PROGRESS; DGA-001 v1.11.27 blockers remain**.
+- POQ-01..03 notification product semantics: **APPROVED 2026-11-24; technical and institutional dependencies remain OPEN**.
 - G9 scope freeze: **NOT READY**.
 - G10 implementation authorization: **NOT GRANTED**.
 - I0–I7 implementation: **NOT STARTED / NOT AUTHORIZED**.
+- Current SSOT audit: **SSOT-AUDIT-001 v0.1.4 — closure PARTIAL**.
 - Application SemVer: **not assigned yet**; no release tag exists.
 - Target stable release: **v1.0.0 only after G12 acceptance**.
 
