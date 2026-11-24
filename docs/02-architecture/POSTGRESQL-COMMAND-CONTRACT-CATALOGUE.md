@@ -164,8 +164,8 @@ A proposed row in this catalogue does not satisfy the gate by itself.
 
 ## 9. Verification status
 
-- Individual logical commands enumerated: **48**.
-- Contract rows with proposed request/scope/data/lock/idempotency/audit/outcome: **48**.
+- Individual logical commands enumerated: **54** (CMD-001..054).
+- Contract rows with proposed request/scope/data/lock/idempotency/audit/outcome: **54**.
 - Physical PostgreSQL signatures verified: **0**.
 - Vercel routes verified: **0**.
 - Role/grant matrix approved: **No**.
@@ -180,7 +180,7 @@ Update this catalogue, API contracts, command boundary, permission registry, RBA
 
 ## Function security and EXECUTE ACL dependency
 
-See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md). The 54 operations are assigned provisional F1/F2/F5/F6 classes, not deployed function names or grants. The INVOKER/direct-DML compatibility blocker applies to protected mutation functions and must be resolved before any function is exposed.
+See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md) v0.2.0. The 54 operations are assigned provisional F1/F2/F5/F6 classes, not deployed function names or grants. The INVOKER/direct-DML compatibility blocker applies to protected mutation functions and must be resolved before any function is exposed.
 
 ## NLA-001 notification command extension — proposed IDs CMD-049..054
 
