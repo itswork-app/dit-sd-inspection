@@ -791,12 +791,12 @@ These cases are mapped to LOCK-GRAPH-001 LG-41..LG-45. They are deterministic co
 
 ### Resolver test execution prerequisite — 2026-11-24
 
-PO has selected candidate L05 as the primary mechanism for technical approval review. TC-NOTIF-042..051 remain PLANNED / NOT EXECUTED until Engineering/Database/Security approve the concrete primitive/key, transaction-scoped lifetime, writer participation, canonical order, timeout/retry and bounded contention profile. If L05 is rejected, the cases must be re-baselined against the approved alternative; do not test a mixed L05 + SERIALIZABLE design. This selection does not activate G10 or authorize database/runtime testing.
+PO has selected candidate L05 as the primary mechanism for technical approval review. TC-NOTIF-042..053 remain PLANNED / NOT EXECUTED until Engineering/Database/Security approve the concrete primitive/key, transaction-scoped lifetime, writer participation, canonical order, timeout/retry and bounded contention profile. If L05 is rejected, the cases must be re-baselined against the approved alternative; do not test a mixed L05 + SERIALIZABLE design. This selection does not activate G10 or authorize database/runtime testing.
 
 
 ### NRL-T01..T12 execution controls — 2026-11-24
 
-[NLA-L05-TDR-001 v0.1.0](../02-architecture/NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) defines the concurrency schedules and required outcomes for NRL-T01..T10, including a READ COMMITTED stale-snapshot control and `pg_locks` inspection. These tests remain PLANNED / NOT EXECUTED until G10 is activated, exact DDL/functions/grants and deployed isolation are approved, and an isolated PostgreSQL environment is available. Do not claim runtime or concurrency certification from this document.
+[NLA-L05-TDR-001 v0.1.2](../02-architecture/NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) defines the concurrency schedules and required outcomes for NRL-T01..T12, including a READ COMMITTED stale-snapshot control and `pg_locks` inspection. These tests remain PLANNED / NOT EXECUTED until G10 is activated, exact DDL/functions/grants and deployed isolation are approved, and an isolated PostgreSQL environment is available. Do not claim runtime or concurrency certification from this document.
 
 
 ### L05 review response — snapshot and time linearization cases — 2026-11-24
