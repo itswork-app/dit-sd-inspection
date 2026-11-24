@@ -1,11 +1,11 @@
 # CMD-011–020 Product Decision and Engineering Review Package
 
 **Document ID:** CMD-011-020-DECISION-PACKAGE-001  
-**Version:** 0.2.3  
+**Version:** 0.2.4  
 **Status:** PO PRODUCT DECISIONS APPROVED; ENGINEERING / SECURITY REVIEW OPEN  
 **Date:** 2026-11-24  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
-**Parent references:** AGENTS.md v1.2.0; DGA-001; MIB-001; IRG-001; DECISION-REGISTER; LOCK-PROTOCOL-DECISION-RESOLUTION-001; LOCK-GRAPH-001; LOCK-MANIFEST-001; CMD-011–020 Detailed Contract Review v0.2.0  
+**Parent references:** AGENTS.md v1.2.0; DGA-001; MIB-001; IRG-001; DECISION-REGISTER; LOCK-PROTOCOL-DECISION-RESOLUTION-001; LOCK-GRAPH-001; LOCK-MANIFEST-001; TECH-RESOLUTION-LPR-001 v0.1.0; CMD-011–020 Detailed Contract Review v0.3.6  
 **Gate:** G9 NOT READY; G10 NOT AUTHORIZED
 
 ---
@@ -240,3 +240,8 @@ Record each response in the Decision Register; this table is a working response 
 ## 10. T-07 state compatibility correction — 2026-11-24
 
 The earlier candidate wording is superseded and the table above now carries the controlling T-07 state set directly. The only session states are `DRAFT`, `ACTIVE`, `PAUSED`, `CLOSED`; `CLOSE_REQUESTED` is an action/event, not a state. Session creation selects `DRAFT`. Korlap may request closure within scope; Super Admin performs final closure after gates. Any implementation or test using `PLANNED` or persisted `CLOSE_REQUESTED` is non-conforming.
+
+
+## 11. Current technical source synchronization — 2026-11-24
+
+Current technical references: CMD-011–020 Detailed Contract Review v0.3.6; PostgreSQL Command Contract Catalogue v0.4.1; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.4; LOCK-GRAPH-001 v0.4.6; LOCK-MANIFEST-001 v0.4.7; TECH-RESOLUTION-LPR-001 v0.1.0. Product decisions remain approved; all technical decisions and gates retain their OPEN/NOT EXECUTED states.
