@@ -282,12 +282,12 @@ T-19 read-only tree audit on 2026-11-24 found 54 blobs on `docs/t17-instrument-g
 
 | Requirement ID | Requirement | Authority | Design reference | Verification | Status |
 |---|---|---|---|---|---|
-| NOTIF-001 | Notification intent is durable and created atomically with source event/audit | INS-015; INS-016; T-18 | NLA-001 §3, §8; notification_outbox | TC-NOTIF-001..003 | DESIGN PROPOSED; REVIEW OPEN |
+| NOTIF-001 | Notification intent is durable and created atomically with source event/audit | INS-015; INS-016; T-18 | NLA-001 v0.1.2 §3, §8; notification_outbox | TC-NOTIF-001..003, TC-NOTIF-022 | DESIGN PROPOSED; REVIEW OPEN |
 | NOTIF-002 | In-app inbox is recipient-self scoped; source resource is re-authorized | INS-015 | NLA-001 §4.3, §5, §9 | TC-NOTIF-004..006, TC-NOTIF-018 | DESIGN PROPOSED; SECURITY REVIEW OPEN |
-| NOTIF-003 | Delivery and read state are independent; retries are idempotent | INS-015 | NLA-001 §3.2, §4.4–4.5, §7 | TC-NOTIF-007..011, TC-NOTIF-015 | DESIGN PROPOSED; PROVIDER/WORKER REVIEW OPEN |
-| NOTIF-004 | Policy configuration is versioned, validated and audited | INS-015 | NLA-001 §4.1, §8–9 | TC-NOTIF-012, TC-NOTIF-016 | DESIGN PROPOSED; PO/SECURITY APPROVAL OPEN |
-| NOTIF-005 | SLA reminders/escalations are idempotent and never mutate inspection state | INS-015 | NLA-001 §4.6, §7 | TC-NOTIF-013..014 | DESIGN PROPOSED; POLICY REVIEW OPEN |
-| NOTIF-006 | Channels are in-app, optional push and important email; no WhatsApp MVP | INS-015 | NLA-001 §2, §6 | TC-NOTIF-008, TC-NOTIF-015..017 | PO DIRECTION APPROVED; PROVIDER/OPERATIONS REVIEW OPEN |
+| NOTIF-003 | Delivery and read state are independent; retries are idempotent | INS-015 | NLA-001 §3.2, §4.4–4.5, §7 | TC-NOTIF-007..011, TC-NOTIF-015, TC-NOTIF-021..024, TC-NOTIF-026 | DESIGN PROPOSED; PROVIDER/WORKER REVIEW OPEN |
+| NOTIF-004 | Policy configuration is versioned, validated and audited | INS-015 | NLA-001 §4.1, §8–9 | TC-NOTIF-012, TC-NOTIF-016, TC-NOTIF-020 | DESIGN PROPOSED; PO/SECURITY APPROVAL OPEN |
+| NOTIF-005 | SLA reminders/escalations are idempotent and never mutate inspection state | INS-015 | NLA-001 §4.6, §7 | TC-NOTIF-013..014, TC-NOTIF-025 | DESIGN PROPOSED; POLICY REVIEW OPEN |
+| NOTIF-006 | Channels are in-app, optional push and important email; no WhatsApp MVP | INS-015 | NLA-001 §2, §6 | TC-NOTIF-008, TC-NOTIF-015..017, TC-NOTIF-023..024 | PO DIRECTION APPROVED; PROVIDER/OPERATIONS REVIEW OPEN |
 
 ## T-13 batch print traceability update
 
@@ -364,3 +364,17 @@ T-13 requires a durable batch identifier and per-document outcomes. The physical
 | REL-001 | Production release authority must be enforced by approved repository/provider control-plane protections, immutable artifact provenance, required checks, environment approvals and separation of duties; no product command may bypass them | MIB-001; repository administrator; Operations/Security | CMD-045–048 Detailed Contract Review §7; DGA-B15 | Protected branch/environment, required CI, artifact digest, approver/operator SoD, deployment and recovery evidence | BLOCKED — RELEASE GOVERNANCE NOT VERIFIED |
 
 These requirements are governance/architecture traceability records, not implementation authorization. All related tests remain PLANNED / NOT EXECUTED.
+
+
+## Notification command-control traceability addendum — 2026-11-24
+
+| Requirement ID | Requirement | Authority | Design reference | Verification | Status |
+|---|---|---|---|---|---|
+| NOTIF-007 | CMD-052/053 workers use a least-privilege workload identity and durable owner/token-hash/generation/expiry fencing; stale workers cannot finalize after lease reclaim | T-18; LPR-08; Security/Operations | NLA-001 v0.1.2 §4.2/4.4/9/14; CMD-049–054 review v0.1.1 §8–9; LOCK-MANIFEST-001 | TC-NOTIF-021/022; lease reclaim, stale finalizer, partial fan-out replay | PROPOSED; WORKER IDENTITY/ACL APPROVAL OPEN |
+| NOTIF-008 | Provider callbacks are accepted only through INT-NOTIF-001 with provider authentication, freshness, known delivery reference, durable event deduplication and monotonic status transitions | T-18; provider security authority | NLA-001 v0.1.2 §9/14; API and Transaction Contracts §INT-NOTIF-001 | TC-NOTIF-023/024/026; signature/replay, unknown reference, out-of-order callback and UNKNOWN reconciliation | PROPOSED; PROVIDER SELECTION/AUTHENTICATION OPEN |
+| NOTIF-009 | CMD-051 publishes only a validated immutable policy version using server-canonical hash and expected-current-version comparison; no draft CRUD or role grant is inferred | INS-015; T-18 | NLA-001 v0.1.2 §10/14; CMD-049–054 review v0.1.1 §7; permission registry | TC-NOTIF-012/020; schema allowlist, stale publish, concurrent version allocation, immutability | PROPOSED; PERMISSION/SCOPE/SoD APPROVAL OPEN |
+| NOTIF-010 | CMD-054 uses one database-derived UTC instant per evaluation; no caller-supplied evaluation_time; due checks remain pinned to policy version | INS-015; T-18 | NLA-001 v0.1.2 §7/14; CMD-049–054 review v0.1.1 §10 | TC-NOTIF-013/014/025; repeated tick, time spoof rejection, due boundary | PROPOSED; SLA CLOCK/POLICY APPROVAL OPEN |
+| NOTIF-011 | Notification content and operational metadata are minimized; no evidence, message body, token, secret, signed URL or full provider response enters general audit/logs; T-10 controls retention/disposition | T-10; INS-016 | NLA-001 v0.1.2 §8/14; Audit Event Catalogue; Evidence Privacy Specification | TC-NOTIF-016 and privacy/retention review | BLOCKED — INSTITUTIONAL T-10 APPROVAL |
+| NOTIF-012 | Inbox reads are recipient-self only; read_at is set once; first transition emits one notification.read event; delivery and source business state remain independent | INS-015; INS-016; T-15 | NLA-001 v0.1.2 §5/8/14; CMD catalogue CMD-049/050; RLS catalogue | TC-NOTIF-005/007/019/024 | PROPOSED; RLS/AUDIT IMPLEMENTATION VERIFICATION OPEN |
+
+All notification cases TC-NOTIF-001..026 remain PLANNED / NOT EXECUTED. These requirements do not approve any route, function, worker, provider, permission grant, schema object or production activation.
