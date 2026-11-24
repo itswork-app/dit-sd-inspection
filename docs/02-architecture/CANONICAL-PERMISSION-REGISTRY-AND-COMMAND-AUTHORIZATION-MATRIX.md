@@ -1,7 +1,7 @@
 # Canonical Permission Registry and Command Authorization Matrix
 
 **Status:** Draft for Product Owner and security review — NOT approved for implementation  
-**Version:** 0.1.0 | **Package:** M/N | **Date:** 2026-11-24  
+**Version:** 0.2.0 | **Package:** M/N | **Date:** 2026-11-24  
 **Authority:** T-15, T-17, T-18; legacy RBAC catalogue and privileged command inventory
 
 ## 1. Purpose and mandatory rules
