@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.9
+**Version:** 0.4.10
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -390,4 +390,4 @@ CMD-001–010 are candidate-normalized at documentation level. The effective gra
 
 ## 20. Current CMD-001–010 source refresh — 2026-11-24
 
-The current candidate overlay is CMD-001–010 Detailed Contract Review v0.3.4 §9; LOCK-MANIFEST-001 v0.4.10; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.6; DGA-001 v1.11.12; QA Catalogue v0.3.2. The older §15 gap narrative is historical and superseded by §§19–20. Candidate design only; LPR-01/LPR-07/LPR-11 remain OPEN and 0/54 certified.
+The current candidate overlay is CMD-001–010 Detailed Contract Review v0.3.4 §9; LOCK-MANIFEST-001 v0.4.12; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.8; DGA-001 v1.11.14; QA Catalogue v0.3.3. The older §15 gap narrative is historical and superseded by §§19–20. Candidate design only; LPR-01/LPR-07/LPR-11 remain OPEN and 0/54 certified.
