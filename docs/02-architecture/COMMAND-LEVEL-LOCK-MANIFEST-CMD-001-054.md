@@ -613,7 +613,7 @@ PO has selected Option A, the global transaction-scoped audience guard (candidat
 
 ## 7.10 L05 technical protocol proposal — 2026-11-24
 
-[NLA-L05-TDR-001 v0.1.2](NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) proposes `pg_advisory_xact_lock(int,int)` with one reserved global key pair, READ COMMITTED and separate lock/read statements. It defines mandatory participation for all eligibility-changing writers including CMD-051, timeout/retry boundaries, FK/unique/trigger/helper review and NRL-T01..T12. Key constants, transaction isolation in deployed paths, command-level writer mapping, timeout/retry values and audience/performance bounds remain TBD. This proposal does not admit L05 or certify any resolver path. 0/40 resolver-certified; 0/50 application lock-certified.
+[NLA-L05-TDR-001 v0.1.2](NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) proposes `pg_advisory_xact_lock(int,int)` with one reserved global key pair, READ COMMITTED and separate lock/read statements. It defines mandatory participation for all eligibility-changing writers including CMD-051, timeout/retry boundaries, FK/unique/trigger/helper review and NRL-T01..T13. Key constants, transaction isolation in deployed paths, command-level writer mapping, timeout/retry values and audience/performance bounds remain TBD. This proposal does not admit L05 or certify any resolver path. 0/40 resolver-certified; 0/50 application lock-certified.
 
 
 ## 7.11 L05 source-event path mapping — 2026-11-24
