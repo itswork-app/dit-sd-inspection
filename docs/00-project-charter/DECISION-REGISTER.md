@@ -57,7 +57,7 @@ Only explicitly approved decisions are marked APPROVED.
 
 Proposed or illustrative decisions are not approved until explicitly accepted.
 
-**Open product-semantic questions (not decisions):** POQ-001 v0.1.0 requests explicit Product Owner direction on notification recipient eligibility snapshot timing, notification SLA clock semantics, and whether a separate dismiss/archive action is excluded from the initial release or requires a new scoped design. No answer is approved or implied. Record any response here as a dated decision before updating dependent specifications.
+**POQ-001 disposition (2026-11-24): CLOSED — all three Product Owner questions approved.** POQ-01 = Option C (hybrid event-time candidate audience with dispatch-time account/channel revalidation and no recipient widening); POQ-02 = Option C (versioned per-policy elapsed/business-time choice, initial default `ELAPSED_UTC`; quiet hours defer delivery only and do not pause SLA); POQ-03 = Option A (dismiss/archive excluded from MVP; recipient-owned set-once `read_at` only; no dismiss command or permission). See the dated decision record below. These approvals settle product semantics only and do not approve technical execution, institutional policy, implementation or release.
 
 ## Product Owner decisions — Package T (2026-11-23)
 
@@ -203,3 +203,16 @@ The Product Owner approved the following product/domain decisions in response to
 | CMD-020 — instrument publication | Reaffirm T-17: Super Admin with explicit `instrument.publish` may publish after server-side validation; `instrument.manage` alone is insufficient; published version and children are immutable; corrections create a new version; assignments/sessions remain pinned; same idempotency key returns the original result and a different key against an already-published version returns an immutable/already-published outcome without a duplicate publication event. | T-17 remains controlling and is not reopened. Exact command, hash, ACL, publication atomicity and audit behavior require Engineering/Security/QA review. |
 
 **Authority and status boundary:** These decisions close the Product Owner decision response for the product-semantic portions of CMD-011–020. They do not close DGA-B10/B18/B19/B21, certify any lock manifest, or authorize source code, SQL, migrations, CI, automated/concurrency tests, live database inspection, deployment or merge. LPR-01 and LPR-07–LPR-11 remain with Engineering/Security/Database/QA/Operations as specified in the decision package. T-10 institutional records/legal/privacy decisions and other external authorities remain outstanding where applicable.
+
+
+## Product Owner decisions — POQ-001 notification semantics (2026-11-24)
+
+**Approval record:** The Product Owner explicitly approved the three recommended options on 2026-11-24. These decisions close POQ-01 through POQ-03 at Product Owner authority level only.
+
+| ID | Decision | State | Qualification / remaining dependency |
+|---|---|---|---|
+| POQ-01 | **APPROVED — Option C (hybrid recipient eligibility).** At source-event time, persist the deterministic candidate audience and its authorized source scope/checkpoint. Before each external send, revalidate current account status, channel eligibility, consent/revocation and mandatory security restrictions. Revalidation may suppress an original candidate but must never add a recipient outside the persisted event-time candidate audience. Retries reuse the same immutable candidate audience/checkpoint. | PO APPROVED | Exact selector grammar, durable snapshot representation/checkpoint, partial fan-out/retry semantics, current-scope revalidation and security controls require Engineering/Security review and cross-document implementation design. |
+| POQ-02 | **APPROVED — Option C (per-policy SLA semantics).** Each immutable policy version declares elapsed-time or business-time semantics. Initial release default is `ELAPSED_UTC`. Quiet hours delay eligible channel delivery only and do not pause or stop the SLA clock. | PO APPROVED | Business-time calendars/time zones, pause/reset conditions, named SLA start events, and any policy-specific exceptions require explicit design and Security/Operations review. Do not activate unapproved calendars or pause rules. |
+| POQ-03 | **APPROVED — Option A (dismiss/archive excluded from MVP).** Initial release exposes recipient-owned set-once `read_at` only. No dismiss/archive command, permission, browser write or UX action is in MVP scope. `dismissed_at`, if retained in a physical proposal, is dormant and has no behavior. | PO APPROVED | Remove dismissal from MVP command/API/permission/UX contracts; any future inclusion requires a separately scoped change request and review. |
+
+These decisions are effective 2026-11-24 for documentation and design reconciliation. They do not approve selector implementation, SLA worker execution, schema/RLS/grants, providers, institutional retention/privacy policy, G9 scope freeze, G10 implementation authorization, tests, deployment or merge.
