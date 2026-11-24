@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.83
+**Version:** 1.11.84
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/notification-resolver-lock-closure`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -836,3 +836,11 @@ NREG-010/011 remain PARTIAL_STATIC_REVIEW only; all eleven event candidates rema
 ### Current CMD-031/032 evidence-control pointers — 2026-11-24
 
 The controlling static technical reconciliation is NLA-EVENT-TECH-RECON-001 v0.1.7. The targeted accountable evidence matrix is TECH-RESOLUTION-LPR-001 v0.1.11 §18. The lock protocol decision status is LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.14. These references do not change blocker status: LPR-01/LPR-07/LPR-09/LPR-11 OPEN; LPR-10 NOT EXECUTED; F-03/F-04/F-05/F-07 OPEN; resolver 0/40; application lock 0/50; G9 NOT READY; G10 NOT ACTIVE.
+
+## Inspection draft-context proposal checkpoint — 2026-11-24
+
+[INSPECTION-DRAFT-001](../02-architecture/INSPECTION-DRAFT-CONTEXT-AND-REVISION-LIFECYCLE-PROPOSAL-001.md) v0.1.0 provides a bounded candidate design for the previously unphysicalized mutable draft context required by CMD-028 and CMD-032. It separates mutable working payload from immutable submitted revisions and maps the proposal to the actual IFP/Standing Bracket journey: initial claim, draft save, evidence capture, online submit, reviewer return/correction, approval and privileged reopen.
+
+Static cross-references were added to CMD-021–030 v0.3.1, CMD-031–040 v0.2.1, physical schema v0.4.5 and cross-command reconciliation v0.8.45. This is documentation synchronization only. The candidate relation is NOT ADMITTED and the 48-table inventory is unchanged. PRD/Decision Register semantics are not changed.
+
+Remaining blockers: Product Owner/operational decision on next Inspector and claim ownership after return/reopen; claim release/resume/reassignment semantics; evidence carry-forward across revisions; Database/Engineering approval of relation, FK/unique constraints, strict payload schema and one-time evidence binding; Security approval of RLS/ACL/function boundary; complete lock graph and adversarial QA. No runtime evidence or test execution exists. DGA-B10 remains OPEN; G9 NOT READY; G10 NOT ACTIVE. No code, SQL, migration, grant, RLS change, CI/test execution, live database inspection, deployment or merge was performed.
