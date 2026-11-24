@@ -1,7 +1,7 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.4.8
+**Version:** 0.4.9
 **Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Parent:** LOCK-GRAPH-001 v0.4.6  
@@ -23,15 +23,15 @@ Root `AGENTS.md` v1.2.0 was re-read from the target branch at the start of this 
 | Source | Reviewed snapshot version / identity | Use in this reconciliation |
 |---|---|---|
 | MIB-001 | v1.0.1 | Authority, gates and documentation-phase boundary |
-| DGA-001 | v1.9.10 | Active evidence-backed gap queue and gate disposition |
+| DGA-001 | v1.11.10 | Active evidence-backed gap queue and gate disposition |
 | IRG-001 | v1.0.1 | Phase and authorization governance |
 | Decision Register | Current branch revision | Approved PO decisions and institutional dependencies |
-| PostgreSQL Command Contract Catalogue | v0.3.1 | Canonical logical CMD-001–054 operation inventory and proposed contracts |
+| PostgreSQL Command Contract Catalogue | v0.4.1 | Canonical logical CMD-001–054 operation inventory and proposed contracts |
 | Physical Database Schema and Integrity Specification | v0.3.0 | Proposed entities, constraints, indexes and transaction invariants |
-| LOCK-GRAPH-001 | v0.3.9 | Candidate resource ranks, cross-command conflicts and planned race scenarios |
-| CONCURRENCY-001 | v0.1.2 | Aggregate token, idempotency and worker-fencing mismatches |
-| LOCK-PROTOCOL-DECISION-RESOLUTION-001 | v0.2.3 | LPR decision state and static reconciliation checkpoint |
-| Detailed command reviews | Seven current command-range documents; CMD-001–010 review v0.2.0 at snapshot time | Per-command source-stated operations and dependencies |
+| LOCK-GRAPH-001 | v0.4.6 | Candidate resource ranks, cross-command conflicts and planned race scenarios |
+| CONCURRENCY-001 | v0.1.3 | Aggregate token, idempotency and worker-fencing mismatches |
+| LOCK-PROTOCOL-DECISION-RESOLUTION-001 | v0.3.4 | LPR decision state and static reconciliation checkpoint |
+| Detailed command reviews | Seven current command-range documents; CMD-001–010 review v0.3.3 at this checkpoint | Per-command source-stated operations and dependencies |
 
 This replaces the stale historical snapshot labels in the original v0.3.2 review method (including DGA v1.4.0, catalogue/physical schema v0.2.0 and lock graph v0.1.0). Version refresh is a traceability correction only; it does not imply those sources or any command lock manifest are approved.
 
@@ -47,7 +47,7 @@ Evidence is static documentation inspection only. No PostgreSQL catalog, query p
 
 ## 3. Legacy manifest notation and candidate-rank crosswalk
 
-The CMD-001–048 rows below retain the compact rank labels used by the earlier LOCK-GRAPH-001 v0.3.2 extraction. Those labels are **legacy inventory notation**, not the current candidate ranks in LOCK-GRAPH-001 v0.4.3 / LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.2. They preserve source-order observations for audit traceability and must not be used as executable lock instructions.
+CMD-001–010 now have a separate candidate-normalized overlay in §7 and in CMD-001–010 Detailed Contract Review v0.3.3. CMD-011–048 retain legacy inventory notation pending per-command normalization. Those labels preserve source-order observations and must not be used as executable lock instructions.
 
 | Legacy label in CMD-001–048 rows | Legacy meaning | Current candidate rank mapping | Reconciliation rule |
 |---|---|---|---|
@@ -62,24 +62,24 @@ The CMD-001–048 rows below retain the compact rank labels used by the earlier 
 | L80 | Dependent child aggregate | L100 | Identify exact mutable child aggregate and per-command sub-order |
 | L90 | Append-only facts | L110 | Confirm append-only event/audit/revision/attempt identity and unique arbiter |
 
-The current candidate ranks are L00 idempotency, L10 shared invariant, L20 canonical identity, L30 project/session, L40 instrument/version, L50 assignment/membership, L60 canonical unit, L70 association, L80 claim, L90 inspection, L100 dependent mutable aggregates, and L110 append-only facts. These remain proposals, not an approved lock order. The current hierarchy has no explicit resource class for mutable account identity or authorization grants (app_users, user_roles, user_scope_grants); CMD-001–007 therefore cannot be rank-normalized until LPR-11 is resolved.
+The current candidate ranks include L00 idempotency, L10 shared invariant, L15 principal/account, L16 user-role, L17 user-scope grant, L18 mutable authorization catalog (conditional), L20 canonical identity, L30 project/session, L40 instrument/version, L50 assignment/operational grouping, L55 assignment membership, L60 canonical unit, L70 association, L80 claim, L90 inspection, L100 dependent mutable aggregates, and L110 append-only facts. These remain proposals, not an approved lock order. CMD-001–010 are candidate-normalized against these ranks in §7; LPR-01/LPR-07/LPR-11 approval and physical evidence remain open.
 
-CMD-001–048 legacy labels are intentionally not mechanically rewritten in this checkpoint because that would conceal unresolved source-order conflicts and the L40/L70 one-to-many mappings. They remain OPEN for per-command normalization. CMD-049–054 use explicit resource/transaction descriptions below rather than legacy rank labels. A dash means the source does not specify a row lock; it does not mean implicit database locking is absent.
+CMD-011–048 legacy labels are intentionally not mechanically rewritten in this checkpoint because that would conceal unresolved source-order conflicts and the L40/L70 one-to-many mappings. They remain OPEN for per-command normalization. CMD-049–054 use explicit resource/transaction descriptions below rather than legacy rank labels. A dash means the source does not specify a row lock; it does not mean implicit database locking is absent.
 
 ## 4. CMD-001–054 command-level inventory
 
 | Command | Logical operation | Source-stated lock/resource sequence | Shared invariant / competing path | Constraint or final arbiter stated in source | Status / unresolved manifest item |
 |---|---|---|---|---|---|
-| CMD-001 | request-account-access | L0 → own app_users identity/upsert; no other user's row | Concurrent first request for same Auth identity | Unique auth_user_id / upsert conflict path | PARTIAL — exact account-request canonical entity/lifecycle and implicit conflict lock details open |
-| CMD-002 | approve-account | L0 → target app_users → account_decisions/audit | Approve vs reject; competing decision for same target | Conditional source-state transition | PARTIAL — actor/target authorization revalidated under lock; exact account row version not defined |
+| CMD-001 | request-account-access | Candidate: L00 → L15 caller `app_users`; absent row uses unique `auth_user_id` insert/upsert arbiter | Concurrent first request; CMD-002/003 decision | Unique `auth_user_id`; canonical request-state arbiter | CANDIDATE-NORMALIZED — account-request entity/lifecycle and implicit UPSERT/trigger edges OPEN |
+| CMD-002 | approve-account | Candidate: L00 → conditional L10 capacity rows if login-enabled eligibility changes → L15 actor/target principals sorted → L16/L17 actor authority rows → L18 catalog; L110 decision/audit | CMD-003 same-target race; authority revoke; capacity-changing account lifecycle | Conditional target-account state transition + unique decision identity | CANDIDATE-NORMALIZED — account state table, affected-project set, version and decision uniqueness OPEN |
 | CMD-003 | reject-account | L0 → target app_users → account_decisions/audit | Reject vs approve for same target | Conditional source-state transition | PARTIAL — same aggregate protocol as CMD-002 must be identical; row version absent |
-| CMD-004 | grant-role | L0 → L10 project_capacity_settings when Inspector eligibility changes → target/user_role rows → L90 | CMD-005, CMD-014, CMD-015, CMD-016 and account eligibility reduction | Role/scope interval uniqueness; exact exclusion strategy open | PARTIAL — capacity-first applies only when Inspector predicate affected; all eligibility paths must be enumerated |
-| CMD-005 | revoke-role | L0 → L10 capacity row for Inspector eligibility reduction → target user_roles row → L90 | CMD-004 grant, CMD-014/015 membership, CMD-016 cap; account suspension/expiry | Conditional lifecycle update; row_version not in physical schema | BLOCKED — request expected_version has no approved physical token; capacity path must include every eligibility-reducing operation |
+| CMD-004 | grant-role | Candidate: L00 → L10 if Inspector eligibility changes → L15 actor/target sorted → L16 actor/target role rows sorted → L17 delegation scope rows → L18 catalog → L110 audit | CMD-005/014/015/016; account eligibility; concurrent grantor revocation | Unique/exclusion principal-role-scope interval arbiter | CANDIDATE-NORMALIZED — role scope, interval constraint, capacity row and catalog mutability OPEN |
+| CMD-005 | revoke-role | Candidate: L00 → L10 if Inspector eligibility reduction → L15 actor/target sorted → L16 actor authority + exact target grant sorted → L17 delegation scope → L18 catalog → L110 audit | CMD-004/014/015/016; account suspension/expiry; duplicate revoke | Conditional target-grant lifecycle update | CANDIDATE-NORMALIZED — `expected_version` lacks physical `user_roles.row_version`; last-admin and revocation representation OPEN |
 | CMD-006 | grant-scope | L0 → target principal and relevant scope/grant rows in deterministic order → L90 | CMD-007 revoke and overlapping grant for same user/scope/kind/ref/interval | No-overlap active grant constraint/strategy not finalized | PARTIAL — exact parent/scope table rank and same-class sort key open |
-| CMD-007 | revoke-scope | L0 → exact user_scope_grants row → L90 | CMD-006 grant and concurrent revocation | Lifecycle update; no hard delete; physical version field absent | BLOCKED — expected_version mismatch; grantor scope revalidation and dependent-work policy open |
-| CMD-008 | create-project | L0 → unique normalized project-code arbitration → project insert → L90 | Concurrent same normalized project code | Unique normalized code constraint | PARTIAL — insert path is constraint-arbitrated; exact normalized-key implementation remains schema review |
-| CMD-009 | update-project | L0 → L30 project row/CAS → L90 | CMD-010 close; CMD-011 session creation and all project-scoped child writers | Row version/CAS proposed, physical version field gap | BLOCKED — expected_version lacks approved physical token; project closure fence must share parent lock |
-| CMD-010 | close-project | L0 → L30 project row → dependent blockers in deterministic order → L90 | Every child command/worker creating or advancing project work; CMD-009 | Conditional CLOSED transition; dependency constraints not complete | BLOCKED — closure dependency inventory and child-writer lock protocol incomplete; preflight alone insufficient |
+| CMD-007 | revoke-scope | Candidate: L00 → conditional L10 if revocation changes T-14 → L15 principals sorted → L16 if needed → L17 actor authority + exact target grant sorted → L18 if needed → L30/L50 scope parent only if required → L110 audit | CMD-006 grant; concurrent revoke; protected commands using grant | Conditional lifecycle update of exact scope grant | CANDIDATE-NORMALIZED — physical version token, expiry and authorization freshness OPEN |
+| CMD-008 | create-project | Candidate: L00 → L15 actor → L16/L17 authority → L18 catalog → L30 unique normalized-code arbiter + project insert; initialize default capacity row in same transaction as a new project | Concurrent same normalized code; capacity-row bootstrap | Unique normalized project code; unique project capacity row | CANDIDATE-NORMALIZED — normalization/collation, capacity bootstrap and trigger/FK edges OPEN |
+| CMD-009 | update-project | Candidate: L00 → L15 actor → L16/L17 project authority → L18 catalog → L30 project `FOR NO KEY UPDATE` + CAS | CMD-010 close; CMD-011–054 project child writers/finalizers | Project row lock + approved CAS token | CANDIDATE-NORMALIZED — project row_version/updated metadata absent; timezone semantics OPEN |
+| CMD-010 | close-project | Candidate: L00 → conditional L10 if T-14 eligibility changes → L15 actor → L16/L17 project.close authority → L18 catalog → L30 project `FOR NO KEY UPDATE`; evaluate blockers behind parent fence | CMD-009; CMD-011–054 child writers/finalizers | Project parent fence + complete blocker predicates; no cascade | CANDIDATE-NORMALIZED — closure gates, T-14 effect, pending work, row_version and child-fence coverage OPEN |
 | CMD-011 | create-session | L0 → L30 project row (FOR KEY SHARE or approved equivalent) → session insert → L90 | CMD-010 project close; duplicate session creation | Unique project/code constraint | PARTIAL — exact lock mode must be reconciled with project close and child mutation protocol |
 | CMD-012 | update-session | L0 → session row → parent project → assignment/time dependencies → L90 | CMD-013 transition/close; CMD-014/015 assignment work | Deterministic dependency locks or approved exclusion constraint | BLOCKED — source order session then parent differs from proposed parent-first child gate; session row_version missing |
 | CMD-013 | transition-session | L0 → session row → closure dependencies in deterministic order → L90 | CMD-012; assignment/member changes; all session child writers | Session aggregate serialization; dependency set incomplete | BLOCKED — parent/session ordering and complete closure blocker set unresolved; row_version missing |
@@ -287,3 +287,22 @@ Current linked candidate sources: LOCK-GRAPH-001 v0.4.5; LOCK-PROTOCOL-DECISION-
 
 
 **Parent reference note:** this manifest was refreshed against LOCK-GRAPH-001 v0.4.6; the source-version table in §7 is a dated review snapshot, not a live version pointer. Subsequent parent edits require a new explicit review checkpoint.
+
+
+## 7. CMD-001–010 candidate-normalized lock overlay — 2026-11-24
+
+The authoritative per-command candidate sequence and revalidation contract is **CMD-001–010 Detailed Contract Review v0.3.3 §9**. The ten inventory rows above now point to that overlay. This is a candidate documentation normalization only.
+
+### 7.1 Shared ordering rules
+
+- L00 idempotency precedes domain locks.
+- L10 capacity rows, where the T-14 predicate can change, precede L15–L18 and are sorted by project UUID. A locator read may identify candidate projects; the set must be revalidated after L10. A late newly discovered capacity row requires abort/retry.
+- L15 principal rows are sorted by user UUID; actor and target are not actor-first.
+- L16 user-role grants, L17 user-scope grants, and conditional L18 role/permission catalogue rows use declared immutable tuple/key ordering.
+- L30 project/session parents follow identity/authorization ranks; project before session. Project child writers use candidate FOR SHARE; project updates/closure use candidate FOR NO KEY UPDATE. Exact PostgreSQL compatibility and all hidden lock edges remain open.
+- L50 scope/operational grouping rows follow parent locks. L110 facts are appended only after mutable-state validation.
+- A new project may bootstrap its T-14 capacity row in the same transaction as project creation. This is a narrowly scoped new-aggregate initialization exception: the project and capacity row are not externally visible until commit; the unique parent/capacity constraints and trigger/FK lock edges still require Database review.
+
+### 7.2 Normalization count and residuals
+
+**10/54 command manifests candidate-normalized at documentation level; 0/54 technically approved or lock-complete certified.** CMD-011–054 remain pending their own per-command normalization. The candidate hierarchy is not yet proven acyclic. No physical PostgreSQL inventory, transaction trace or concurrency test was executed.
