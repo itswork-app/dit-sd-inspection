@@ -257,3 +257,7 @@ Use COMMAND-AUTHORIZATION-VERIFICATION-MATRIX.md as the companion crosswalk for 
 ## 15. Canonical permission registry dependency
 
 The proposed single permission vocabulary, legacy-code disposition, command-to-permission/scope/RLS/audit/test matrix and role-class constraints are maintained in ../02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md. Do not add permission strings ad hoc in route or SQL design. Until PO/security approval and exact grant/test reconciliation, the registry is a design proposal only; no seed, EXECUTE grant, RLS mutation policy or implementation is authorized.
+
+## Individual PostgreSQL command contract dependency
+
+See [PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) for 48 proposed command/read contracts. It does not replace the approved T-18 architecture or authorize implementation. Function signatures are deliberately not fabricated because deployed types/functions have not been inspected; exact route paths, database role grants, RLS predicates, SECURITY DEFINER review and staging verification remain open.
