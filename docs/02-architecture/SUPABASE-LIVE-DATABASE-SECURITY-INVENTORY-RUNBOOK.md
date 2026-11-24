@@ -140,6 +140,7 @@ from pg_proc p
 join pg_namespace n on n.oid = p.pronamespace
 join pg_language l on l.oid = p.prolang
 where n.nspname not in ('pg_catalog','information_schema')
+  and p.prokind in ('f','p','w')
 order by n.nspname, p.proname, identity_arguments;
 
 select grantee, routine_schema, routine_name,
@@ -175,7 +176,8 @@ where c.relkind = 'S'
   and n.nspname not in ('pg_catalog','information_schema')
 order by n.nspname, c.relname;
 
-select schemaname, viewname, viewowner, definition
+select schemaname, viewname, viewowner,
+       md5(definition) as definition_md5
 from pg_views
 where schemaname not in ('pg_catalog','information_schema')
 order by schemaname, viewname;
