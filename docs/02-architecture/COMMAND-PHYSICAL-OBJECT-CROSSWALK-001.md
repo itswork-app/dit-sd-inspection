@@ -1,7 +1,7 @@
 # Command Physical Object Crosswalk — CMD-001–054
 
 **Document ID:** CMD-PHYSICAL-CROSSWALK-001  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Date:** 2026-11-24  
 **Status:** Source-derived physical read/write proposal — Engineering / Database / Security review required; NOT approved for implementation  
 **Parent:** LOCK-NORMALIZATION-001 v0.1.0; LOCK-MANIFEST-001 v0.4.24  
