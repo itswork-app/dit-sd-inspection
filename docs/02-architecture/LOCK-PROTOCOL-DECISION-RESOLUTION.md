@@ -1,7 +1,7 @@
 # Lock Protocol Decision Resolution — LPR-01–LPR-11
 
 **Document ID:** LOCK-PROTOCOL-DECISION-RESOLUTION-001  
-**Version:** 0.3.2  
+**Version:** 0.3.3  
 **Status:** PO product decisions LPR-02–LPR-06 APPROVED; technical lock protocol remains OPEN / NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** Candidate global lock protocol for CMD-001–054 and asynchronous finalizers  
@@ -270,3 +270,8 @@ Until LPR-11 is resolved, CMD-001–007 cannot receive normalized candidate-rank
 - **0.3.0 — 2026-11-24:** Added LPR-11 to resolve the previously unclassified `app_users`, `user_roles` and `user_scope_grants` lock classes and their ordering against T-14 capacity and project/session parent fences. Added an explicit static gap analysis for CMD-001–007. No rank or technical protocol was approved.
 - **0.3.1 — 2026-11-24:** Reordered §11.2 beneath the §11.1 reconciliation rules for correct document hierarchy and clarified the unresolved identity/authorization rank gap. No decision status changed.
 - **0.3.2 — 2026-11-24:** Added the CMD-011–015 project/session parent-fence cross-check, including PostgreSQL row-lock compatibility implications for CMD-011 versus CMD-010. Parent-fence design remains OPEN; no lock mode was approved.
+
+
+## 13. Engineering/Security technical resolution package — 2026-11-24
+
+[TECH-RESOLUTION-LPR-001](ENGINEERING-SECURITY-TECHNICAL-RESOLUTION-PACKAGE-LPR-001-011.md) v0.1.0 provides a concrete review proposal for LPR-01 and LPR-07–LPR-11. It proposes L15/L16/L17 identity and authorization ranks (with L18 policy-catalogue treatment), a project-before-session parent fence using child FOR SHARE and parent mutation FOR NO KEY UPDATE, T-14 capacity-first participation, worker lease fencing/callback boundaries, a normalized 54-row manifest schema and an adversarial test plan. All technical items remain OPEN; LPR-10 remains NOT EXECUTED. This addendum does not approve any lock primitive, rank, function, trigger, ACL, worker principal, migration or test result. It also records the required T-07 correction: session states remain DRAFT/ACTIVE/PAUSED/CLOSED and CLOSE_REQUESTED is an action/event only.
