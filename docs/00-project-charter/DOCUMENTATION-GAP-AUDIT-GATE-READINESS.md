@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.10.0
+**Version:** 1.10.1
 **Audit date:** 2026-11-24  
 **Branch reviewed:** `docs/audit-lock-and-identity-reconciliation`  
 **Authority:** Master Implementation Blueprint MIB-001  
@@ -274,7 +274,7 @@ LOCK-MANIFEST-001 v0.3.10 now declares LOCK-GRAPH-001 v0.3.8 as its parent; LOCK
 
 ## CMD-001–010 lock normalization checkpoint — 2026-11-24
 
-A row-level resource/lock overlay has been added to LOCK-MANIFEST-001 v0.4.0 and reconciled with CMD-001–010 Detailed Contract Review v0.3.0. The overlay identifies:
+A row-level resource/lock overlay has been added to LOCK-MANIFEST-001 v0.4.1 and reconciled with CMD-001–010 Detailed Contract Review v0.3.0. The overlay identifies:
 - CMD-001 account-request/upsert and unique Auth identity arbitration;
 - CMD-002/003 shared target-account transition and terminal-decision race;
 - CMD-004/005 T-14 capacity-first eligibility changes and role grant/revoke rows;
@@ -285,3 +285,9 @@ A row-level resource/lock overlay has been added to LOCK-MANIFEST-001 v0.4.0 and
 **New critical finding:** the current L00–L110 candidate hierarchy has no explicit class for mutable app_users, user_roles or user_scope_grants. No rank was invented. LPR-11 and DGA-B21 record the decision and evidence required before CMD-001–007 can be rank-normalized. CMD-009/010 parent-fence completeness, physical row-version fields, and project closure blocker coverage also remain open.
 
 **Disposition:** DGA-B18 remains PARTIAL; DGA-B19 remains OPEN; DGA-B21 is OPEN. 54/54 command IDs are inventoried; 0/54 are certified lock-complete. LPR-01 and LPR-07–LPR-11 remain open/not executed. G3/G4/G5/G7/G9 remain NOT READY; G10 NOT AUTHORIZED. No SQL, migration, live database inspection, CI, tests, deployment or merge occurred.
+
+## Controlled-document version synchronization — 2026-11-24
+
+Final versions for this checkpoint: LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.1; LOCK-GRAPH-001 v0.4.1; LOCK-MANIFEST-001 v0.4.1; CMD-001–010 Detailed Contract Review v0.3.0; DGA-001 v1.10.1. The manifest source snapshot table records the exact pre-edit source revisions reviewed at the start of this checkpoint (DGA v1.9.10, graph v0.3.9, protocol v0.2.3, CMD-001–010 review v0.2.0), not the post-edit versions.
+
+**Disposition:** DGA-B18 PARTIAL; DGA-B19 OPEN; DGA-B21 OPEN. 54/54 command IDs inventoried; 0/54 certified lock-complete. LPR-01 and LPR-07–LPR-11 remain open/not executed. G3/G4/G5/G7/G9 NOT READY; G10 NOT AUTHORIZED. No CI, tests, SQL, migrations, live database inspection, deployment or merge occurred.
