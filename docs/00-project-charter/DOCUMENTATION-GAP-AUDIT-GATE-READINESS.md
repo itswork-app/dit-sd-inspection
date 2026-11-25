@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.99
+**Version:** 1.12.0
 **Audit date:** 2026-11-25  
 **Branch reviewed:** `main`  
 **Reviewed HEAD:** `e62fc88fb2e2a0cca26c6c9bcde5eb5cc53f2208` (post-PR #16 main baseline, 2026-11-25)  
@@ -991,3 +991,12 @@ NLA-001 v0.1.22 §15.5 records the blocking delivery-state graph gap: the curren
 Canonical `main` advanced to `e62fc88fb2e2a0cca26c6c9bcde5eb5cc53f2208` after PR #16 (F05-T3 candidate suppression/retry specification) merged. The merged diff is documentation-only across five Markdown paths. NLA-L05-TDR-001 v0.1.12, NLA-001 v0.1.22, QA v0.7.1 and RTM v0.1.30 are present on `main`.
 
 Post-merge evidence: PR #16 merged; no combined commit statuses and no workflow runs were returned for the merge commit (CI/workflow evidence ABSENT, not PASS). No runtime tests were executed; QA remains PLANNED / NOT EXECUTED. The retryable-provider-failure transition gap remains OPEN and no new delivery state/transition is approved. F05-T3 remains OPEN; F05-T4/T5 and F-04 remain OPEN; G9 NOT READY; G10 NOT ACTIVE; production readiness NOT VERIFIED. No implementation, SQL, migration, grants/RLS, provider configuration, deployment or data mutation occurred.
+
+
+## F05-T4 append-only audit evidence — candidate specification (2026-11-25)
+
+The F05-T4 candidate logical evidence contract is documented in NLA-L05-TDR-001 v0.1.13 §17. It separates dedicated append-only delivery-attempt history, candidate suppression/reschedule outcomes bound to the original immutable candidate, and material security/governance events in the canonical audit stream. It defines a minimum logical evidence envelope, trusted user/worker/provider provenance, lease-generation fencing, end-to-end correlation, server/database UTC timestamps, additive corrections and privacy exclusions. It explicitly does not admit a physical suppression-evidence table, schema/ACL, stable literal reason-code catalogue, hash chain, WORM archive or retention schedule.
+
+Cross-document synchronization: NLA-001 v0.1.23 §26; Audit Event Catalogue §F05-T4 notification attempt/outcome evidence boundary; QA v0.7.2 TC-NOTIF-095..099; RTM v0.1.31 NOTIF-019; RAID v0.1.28 D-026. All new QA cases remain PLANNED / NOT EXECUTED. T-10 institutional classification, purpose, retention, legal hold, disposition, audit access/export and network metadata remain BLOCKED; no retention duration or purge policy is inferred.
+
+**F05-T4 disposition: OPEN — LOGICAL CANDIDATE CONTRACT ONLY.** Security/Engineering approval, Database physical enforcement and ordering review, stable reason-code approval, provider callback evidence and written T-10 institutional policy remain outstanding. F05-T1..T3 and F05-T5/F-04 remain OPEN; resolver certification 0/40; application lock certification 0/50; global lock graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE. No source code, SQL, migration, grants/RLS, provider changes, live database, runtime tests, deployment or data mutation occurred or was authorized.
