@@ -1,6 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { readSupabasePublicConfig } from "@/lib/env";
+import { getRequestId } from "@/lib/api/errors";
+import { logEvent } from "@/lib/observability/logger";
 
 export async function updateSession(request: NextRequest) {
   const config = readSupabasePublicConfig(process.env);
@@ -27,8 +29,13 @@ export async function updateSession(request: NextRequest) {
   try {
     await supabase.auth.getClaims();
   } catch {
-    // Refresh is best-effort here. Protected handlers independently verify claims
-    // and fail closed when identity cannot be established.
+    // Refresh is best-effort for public navigation. Do not serialize provider
+    // errors; protected handlers independently verify claims and fail closed.
+    logEvent("warn", "auth.session_refresh.unavailable", {
+      requestId: getRequestId(request),
+      component: "auth",
+      outcome: "unavailable"
+    });
   }
   return response;
 }
