@@ -23,11 +23,12 @@ The repository has an approved Vercel + Supabase architecture but no application
 ## Security and operational constraints
 
 - The current foundation exposes no business mutation endpoints and connects no production data.
-- Public Supabase configuration is optional for the bootstrap build; when configured, URL and publishable key must be supplied together and HTTPS is mandatory except localhost development.
+- Public Supabase configuration is optional for the bootstrap build. When configured, the URL and publishable key must be supplied together.
+- The Supabase URL must be an HTTPS project origin outside local development. Reject embedded credentials, non-root paths, query strings and fragments; allow HTTP only for explicit loopback development hosts.
+- Only the public publishable key may be exposed to the browser. Service-role and secret keys remain server-only and are not part of this foundation.
 - Any protected route must verify claims server-side and enforce authorization at the authoritative server/database boundary.
 - The proxy refreshes sessions but is not, by itself, an authorization policy.
 - Never trust client-provided actor, role, permission, tenant, project, location, session or unit scope.
-- Never expose service-role credentials in browser bundles, public env vars, logs or commits.
 - Do not add schema, grants, RLS or privileged RPCs until their exact authorization and transaction contracts are reviewed.
 
 ## Consequences
@@ -39,7 +40,7 @@ The repository has an approved Vercel + Supabase architecture but no application
 
 ## Verification
 
-CI executes ESLint, TypeScript, Vitest and a production Next.js build. The first successful run is the evidence that this foundation compiles; it is not evidence of production readiness or business feature correctness.
+CI executes ESLint, TypeScript, Vitest and a production Next.js build. The environment parser has unit cases for absent/partial configuration, HTTPS origin validation, whitespace normalization, embedded credentials, URL path/query/fragment rejection, insecure non-local URLs and loopback development URLs. These tests are specified in source but remain NOT VERIFIED until CI executes them successfully. A successful foundation CI run is not evidence of production readiness or business feature correctness.
 
 ## References
 
