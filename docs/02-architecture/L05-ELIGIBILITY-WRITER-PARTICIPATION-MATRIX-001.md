@@ -1,10 +1,10 @@
 # L05 Eligibility-Writer Participation Matrix
 
 **Document ID:** NLA-L05-WRITER-MATRIX-001  
-**Version:** 0.1.4  
+**Version:** 0.1.5  
 **Status:** STATIC INVENTORY — INCOMPLETE; NOT CERTIFIED  
 **Date:** 2026-11-24  
-**Inputs:** NLA-L05-TDR-001 v0.1.7; LOCK-MANIFEST-001 v0.4.30; PostgreSQL Command Contract Catalogue v0.4.8; Function Security & EXECUTE Grant Design v0.3.3; physical schema proposal v0.4.4
+**Inputs:** NLA-L05-TDR-001 v0.1.9; LOCK-MANIFEST-001 v0.4.32; PostgreSQL Command Contract Catalogue v0.4.8; Function Security & EXECUTE Grant Design v0.3.3; physical schema proposal v0.4.4
 
 ## 1. Purpose and decision boundary
 
@@ -94,3 +94,10 @@ TDR v0.1.8 proposes only ROLE_SCOPE and EVENT_PARTICIPANT selector clauses, but 
 **Required intake per exact event token:** event type; source CMD/worker; source transaction boundary; grammar version; allowed clause kinds; participant-to-canonical-principal mapping; scope binding and cardinality; dependency references; dispatch profile; and effective policy interval. Composite/conditional CMD declarations must be split before they enter the enabled event registry.
 
 **Writer-matrix effect:** the candidate grammar narrows the allowed selector language but does not establish the actual dependency universe. Every registry dependency must be joined to command writers and non-command paths (direct DML, SECURITY DEFINER, triggers/cascades, imports, sync, repair, expiry, admin and scheduled jobs). Any unregistered dependency or writer invalidates certification. Status remains INCOMPLETE; 0 writers certified to participate in L05.
+
+
+## 9. Event-to-selector dependency crosswalk — 2026-11-25
+
+[NLA-L05-EVENT-SELECTOR-REGISTRY-001](L05-EVENT-TO-SELECTOR-REGISTRY-001.md) v0.1.1 maps CMD-001–040 source declarations, the eleven PO-approved specification candidates, candidate ROLE_SCOPE/EVENT_PARTICIPANT clause families, conceptual participant/scope bindings, and the logical writer domains that must be reconciled.
+
+Use the crosswalk to derive the exact selector dependency universe; do not treat its logical resource classes as physical columns or an exhaustive deployed writer list. The selector grammar remains a review candidate, no event is enabled, and no writer is certified to acquire L05. Exact function/trigger/FK/helper/import/expiry/repair entrypoints, ownership, ACL, bypass prevention and complete lock graph remain OPEN. Resolver certification 0/40; application lock certification 0/50; G9 NOT READY; G10 NOT ACTIVE.
