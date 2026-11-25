@@ -1,7 +1,7 @@
 # Notification Audience Guard — Technical Decision Record
 
 **Document ID:** NLA-L05-TDR-001  
-**Version:** 0.1.12  
+**Version:** 0.1.13  
 **Status:** PO-APPROVED CANDIDATE — technical approval pending Engineering, Database and Security  
 **Date:** 2026-11-25  
 **Decision authority:** Product Owner candidate selection recorded in NLA-RESOLVER-LOCK-001 §11  
@@ -358,7 +358,7 @@ POQ-04 is approved at Product Owner level. The following technical items are man
 | F05-T1 Selector grammar and allowlist | Versioned, typed grammar with explicit event-type allowlist; permitted selector kinds; role and scope identifiers; named actor/self/target semantics; boolean composition; null/missing-field behavior; effective-time rules; deterministic canonicalization; overlap/dedup semantics; maximum depth/cardinality; invalid-selector fail-closed behavior; policy-version pin | NLA-001 §5 gives only broad selector examples. Exact grammar, dependency columns and bounds are not defined. | Engineering + Security; PO only if product behavior changes |
 | F05-T2 Dispatch authorization matrix | For each selector/event type, identify which captured qualification predicates are rechecked at dispatch, which current security predicates are always rechecked, and which transition-specific parent/scope checks apply. Distinguish recipient qualification from independent authorization to receive/open the notice. | Generic current-scope wording is insufficient. Role-revoke and project/session-close notices can be suppressed by the very transition they announce unless an event-specific rule is explicit. | Security + Engineering |
 | F05-T3 Suppression/retry state machine | Enumerate stable reason codes and classify each as terminal, retryable, or policy-reschedulable; define retry owner, attempt ceiling/backoff/expiry, checkpoint handling, and permitted recovery triggers. Reactivation may only resume an original snapshot candidate and must re-run every current mandatory check. | POQ-04 permits retry after account reactivation for the same candidate but does not define timing, state transition, retry limits or interaction with consent/channel/policy changes. | Engineering + Security + Operations |
-| F05-T4 Audit evidence | Define append-only event/attempt records, reason-code taxonomy, correlation IDs, actor/worker identity, policy and snapshot references, timestamps, outcome transitions, integrity/retention controls and data-minimization rules. | Auditable suppression is required but exact evidence contract and immutability proof are not specified. | Security + Engineering + Records/Privacy authority |
+| F05-T4 Audit evidence | Define append-only event/attempt records, reason-code taxonomy, correlation IDs, actor/worker identity, policy and snapshot references, timestamps, outcome transitions, integrity/retention controls and data-minimization rules. | Logical evidence envelope and provenance/correlation/privacy candidate contract documented in §17; physical representation, stable literal reason codes, integrity mechanism and T-10 policy remain unapproved. | Security + Engineering + Database + Records/Privacy authority |
 | F05-T5 Atomicity and snapshot binding | Prove source mutation, canonical event, audit, idempotency outcome, outbox intent, pinned policy reference and complete immutable candidate set share the approved transaction boundary and captured audience_evaluated_at. | Candidate snapshot relation/header remains NOT ADMITTED; producer paths and writer participation remain uncertified. | Engineering + Database + Security |
 
 ### Event-specific hazards requiring explicit review
@@ -644,3 +644,61 @@ F05-T3 remains OPEN until:
 This artifact is an inventory/review candidate only. It does not convert the eleven PO-approved specification candidates into an enabled allowlist, resolve any NREG participant or scope, approve grammar v1, admit L05 or its key, or certify a producer/writer path. Composite/conditional CMD declarations remain unresolved; all eleven NREG rows remain PARTIAL STATIC REVIEW / NOT ENABLED. F05-T1..T5 remain OPEN; selector dependency universe remains NOT FROZEN; writers certified 0; resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
 
 The new crosswalk is a traceability aid for Engineering/Security/Database review. Exact source function/worker boundaries, physical columns, implicit FK/trigger/helper edges, all non-command writers, suppression reason codes, retry budgets, audit/retention approvals and atomic snapshot proof remain required. No SQL, migration, grants, RLS, runtime test or implementation is authorized.
+
+## 17. F05-T4 append-only audit evidence contract — candidate (2026-11-25)
+
+**Disposition: candidate specification for Security/Engineering/Records-Privacy review; not a physical schema or implementation approval.** This section refines the F05-T4 acceptance item in §4.2.4. It does not select a new table, command, provider, retention period, hash-chain design or deletion mechanism.
+
+### 17.1 Evidence classes and ownership
+
+1. **Delivery attempt evidence** belongs in the proposed dedicated `notification_delivery_attempts` history. Each actual provider attempt and its final classified outcome is one immutable evidence item. Routine retries and provider callbacks must not each create a general `audit_events` row.
+2. **Candidate suppression/reschedule evidence** records each decision that changes a candidate/channel's dispatch eligibility or schedules a permitted reconsideration. It must remain linked to the same original candidate and checkpoint. Its final physical representation (dedicated append-only outcome rows or an approved extension of an existing notification history) remains a Database decision; no new table is admitted here.
+3. **Security/governance audit evidence** remains in the canonical `audit_events` stream for policy publication/retirement, privileged administration, manual UNKNOWN reconciliation, terminal operational intervention and other catalogue-approved material actions. Preserve the existing one-time `notification.read` event rule.
+4. **Operational telemetry** may aggregate queue age, retry counts and sanitized error classes. It is not the authoritative evidence ledger and must not replace durable attempt/outcome records.
+
+### 17.2 Required logical evidence envelope
+
+Each attempt/outcome evidence item must carry, where applicable and without inventing unavailable identifiers:
+
+- stable evidence ID and evidence kind/version;
+- canonical source event ID and outbox ID;
+- immutable candidate identity and source-scope reference (logical candidate only; candidate relation remains NOT ADMITTED);
+- pinned policy-version ID and canonical policy digest/reference;
+- logical delivery ID, recipient reference, channel and monotonic attempt number;
+- end-to-end correlation ID, server request/operation ID and safe idempotency reference (never the raw idempotency key);
+- actor provenance: initiating user principal and trusted role/scope context where a human action exists; or the approved workload identity for worker actions;
+- worker lease generation/fencing token reference for worker-owned transitions;
+- controlled outcome class, stable reason-code reference, retry classification and sanitized error code;
+- provider reference only when available and safe as an opaque identifier; never raw credentials or full provider payload;
+- database/server UTC timestamps for decision/attempt start, completion and durable recording, with client timestamps treated only as untrusted diagnostics.
+
+A field may be absent only when its event kind makes it inapplicable or the source does not yet exist; absence must not be filled by inference. Exact physical nullability, foreign keys, uniqueness and ordering constraints require Database review.
+
+### 17.3 Provenance, correlation and state integrity
+
+- User actor identity must be derived from the authenticated server context; a browser-supplied actor, role, scope, worker ID or provider identity is never authoritative.
+- Worker identity must be authenticated by the approved internal workload mechanism and bound to the current lease generation. A stale worker cannot append a success, failure, suppression, retry-schedule or reconciliation outcome after losing its lease.
+- Provider callback evidence must be admitted only after provider-specific authentication, freshness, reference binding and replay/deduplication checks. Callback claims are not trusted actor identity.
+- Every attempt/outcome must link to the original source event → outbox → immutable candidate → pinned policy → logical delivery → attempt/checkpoint chain. A retry continues the original correlation lineage; it does not create a new candidate or reset the checkpoint.
+- A duplicate idempotent request must resolve to the same durable outcome and must not create contradictory evidence. A legitimate new attempt has a distinct monotonically increasing attempt number.
+- Decision/attempt times are server/database controlled UTC instants. Ordering must be established by an approved persisted sequence/constraint or a deterministic per-delivery ordering rule; timestamps alone must not be treated as a concurrency-safe sequence.
+- Corrections are additive, linked compensating evidence. Committed evidence is never edited in place or silently removed.
+
+### 17.4 Reason taxonomy and privacy boundary
+
+F05-T3 outcome classes remain the source for suppression/retry classification: policy suppression, quiet-hour deferral, account/channel/consent/security/scope restriction, transient provider failure, permanent rejection, UNKNOWN pending reconciliation, lease loss and invalid/replayed callback. F05-T4 requires stable machine-readable reason codes and an exhaustive mapping from each reason to terminal, retryable, policy-reschedulable or no-transition behavior. The literal code catalogue and its owners remain OPEN; this document does not invent final production code strings or budgets.
+
+Evidence must exclude message bodies, inspection/evidence content, raw user notes, passwords, JWTs, cookies, API/service-role credentials, signed URLs, raw idempotency keys, full provider responses and unnecessary personal/network metadata. Use opaque references, allow-listed attributes and sanitized error classes. IP/device/network metadata is omitted unless T-10 explicitly approves purpose, fields, access and retention.
+
+### 17.5 Append-only and integrity controls
+
+The candidate contract requires no UPDATE/DELETE path for committed attempt/outcome evidence for application, browser or worker principals; append through an approved server-side path only. Any correction is a new linked evidence item. Database ownership/provider administrators remain privileged trust boundaries and require independently governed platform evidence.
+
+Integrity verification must include duplicate/missing evidence detection, referential/correlation-chain reconciliation, attempt-number continuity and stale-lease rejection. A hash chain, signed checkpoint or external WORM archive is not assumed or approved by this section; any such control requires a separate design for canonical serialization, concurrency, key custody, recovery, cost and institutional approval. Do not describe database append-only grants or hashes as absolute tamper-proofing.
+
+### 17.6 T-10 boundary and F05-T4 exit criteria
+
+T-10 remains BLOCKED pending written institutional records/legal/privacy/security approval for classification, purpose, retention triggers/duration, archive, deletion/disposition, legal hold, access/export and network metadata. No retention duration, purge schedule, legal basis, IP collection or irreversible disposition may be inferred. Until that approval exists, these values remain OPEN / NOT SET and no retention implementation is authorized.
+
+F05-T4 may close only after Security and Engineering approve the logical contract and stable reason taxonomy; Database approves physical append-only enforcement, constraints, ordering and access model; Records/Privacy authority supplies the T-10 decisions; and QA cases TC-NOTIF-095..099 are mapped to the admitted design. Execution still requires G10 and an authorized isolated environment. F05-T4 remains OPEN; F-05 remains OPEN; G9 NOT READY; G10 NOT ACTIVE.
+

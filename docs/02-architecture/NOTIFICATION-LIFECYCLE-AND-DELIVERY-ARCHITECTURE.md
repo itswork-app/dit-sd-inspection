@@ -1,7 +1,7 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.22  
+**Version:** 0.1.23  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
@@ -569,3 +569,11 @@ The PO decision is recorded in DECISION-REGISTER.md. NLA-EVENT-REGISTRY-001 v0.1
 The Product Owner approved exactly eleven first-batch event candidate intents for registry specification and technical review only. The decision is recorded in `docs/00-project-charter/DECISION-REGISTER.md`; the draft inventory is [NLA-EVENT-REGISTRY-001](NOTIFICATION-EVENT-REGISTRY-001.md) v0.1.0. The approved set is account.approved, account.rejected, role.revoked, project.closed, final session.closed, assignment.created, assignment.changed, inspection.submitted, inspection.returned_for_correction, inspection.approved and inspection.reopened.
 
 All eleven rows remain `UNRESOLVED — NOT ENABLED`. This PO decision does not establish canonical source contracts, event fields, recipient mappings, selectors, dispatch profiles, channels, templates, grants, publication or implementation. `account.requested` remains deferred, neither approved nor rejected. `session.close_requested` is not the final `session.closed`; `inspection_revision.created` is not a second approved notice. F-05/F-04/F-03/F-07 remain OPEN; G9 NOT READY; G10 NOT ACTIVE.
+
+## 26. F05-T4 append-only audit evidence refinement — 2026-11-25
+
+NLA-L05-TDR-001 v0.1.13 §17 defines the candidate logical evidence envelope for notification attempts and suppression/reconciliation outcomes. Delivery attempts remain in dedicated append-only `notification_delivery_attempts`; security/governance actions remain in canonical `audit_events`; routine retries/callbacks do not flood the general audit stream. Candidate suppression/reschedule evidence must preserve the original source-event/outbox/candidate/policy/delivery/checkpoint correlation chain. Its final physical representation remains a Database decision and the candidate snapshot relation/header remains NOT ADMITTED.
+
+Actor provenance is server-derived for users, authenticated for internal workers and provider-validated for callbacks. Worker lease-generation fencing prevents stale outcomes. Timestamps are server/database UTC instants; they do not alone establish concurrency-safe ordering. Committed evidence is corrected additively, never updated/deleted in place. Message bodies, inspection/evidence content, tokens, credentials, signed URLs, raw idempotency keys and full provider responses are excluded.
+
+Stable literal reason codes, physical constraints/ACL, integrity verification mechanism, and the exact evidence representation remain subject to Security/Engineering/Database review. T-10 classification, retention, legal hold, disposition, audit access/export and network metadata remain BLOCKED pending written institutional approval; no duration or purge policy is set. TC-NOTIF-095..099 are specification cases only. F05-T4 and F-05 remain OPEN; G9 NOT READY; G10 NOT ACTIVE.
