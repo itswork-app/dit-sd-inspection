@@ -4,7 +4,7 @@
 **Version:** 0.1.12  
 **Status:** DRAFT — PO INTENT APPROVED FOR SPECIFICATION/REVIEW ONLY; ALL ROWS UNRESOLVED / NOT ENABLED; NREG-001..011 PARTIAL STATIC REVIEW ONLY  
 **Date:** 2026-11-25  
-**Baseline:** `main` at `78688451524900cc58343d05469251806ce415de`  
+**Baseline:** `main` at `1c26ca1cbb2e38111695c23706ffca881c20b669`  
 **Authority:** PRD-001, Decision Register PO event-candidate decision (2026-11-24), NLA-EVENT-TRIAGE-001 v0.1.3, CMD source-event map. This document does not supersede them.
 
 ## 1. Purpose and binding interpretation
@@ -117,7 +117,7 @@ This checkpoint does not approve any recipient, role, permission grant, event sc
 
 ## 9. L05 event-to-selector crosswalk intake — 2026-11-25
 
-[NLA-L05-EVENT-SELECTOR-REGISTRY-001](L05-EVENT-TO-SELECTOR-REGISTRY-001.md) v0.1.1 is the companion static crosswalk for all CMD-001–040 declarations and the eleven first-batch candidate rows. It records candidate selector kinds, unresolved trusted participant/scope mappings, POQ-04 dispatch invariants and the logical eligibility-writer dependency domains.
+[NLA-L05-EVENT-SELECTOR-REGISTRY-001](L05-EVENT-TO-SELECTOR-REGISTRY-001.md) v0.1.2 is the companion static crosswalk for all CMD-001–040 declarations and the eleven first-batch candidate rows. It records candidate selector kinds, unresolved trusted participant/scope mappings, POQ-04 dispatch invariants and the logical eligibility-writer dependency domains.
 
 This cross-reference does not change any NREG row. NREG-001..011 remain PARTIAL STATIC REVIEW / UNRESOLVED / NOT ENABLED; 0 technically admitted and 0 enabled. No event, selector, recipient, role, permission, scope, channel, schema or dispatch profile is approved by the crosswalk. F-05/F-04/F-03/F-07 remain OPEN; resolver 0/40; application locks 0/50; global graph NOT PROVEN ACYCLIC; G9 NOT READY; G10 NOT ACTIVE.
 
