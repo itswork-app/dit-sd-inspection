@@ -161,3 +161,17 @@ The 20 November BA provides a real output example: 460 Standing Bracket samples 
 - TC-BRK-BA-004: preserve BA date, inspection location, supplier, instrument, and signatory labels from the approved BA configuration; do not hardcode the sample names or date.
 
 These are designed tests, not executed tests. The Product Owner has confirmed the 23-November document as the official Standing Bracket instrument source; this does not establish missing photo rules or prove the test cases have been executed.
+
+
+## T-17 — Instrument configuration governance verification (design only)
+
+- CFG-001-001: reject an unsupported field type or validation primitive; no dynamic code/expression execution occurs.
+- CFG-001-002: validate checklist section/item ordering, applicability, expected values and evidence-slot definitions as one versioned declarative configuration.
+- CFG-001-003: an authorized Super Admin with `instrument.publish` can publish a valid draft without a second-person approval; an unauthorized actor or missing permission is denied.
+- CFG-001-004: publication and audit record are atomic; forced audit failure leaves the draft unpublished and creates no partial publication.
+- CFG-001-005: published version and child configuration cannot be edited/deleted; corrections require a new version.
+- CFG-001-006: active sessions/assignments and historical revisions retain their pinned version after a newer version is published or an older version is deactivated.
+- CFG-001-007: deactivation is separately permissioned, reasoned and audited and does not rewrite historical records.
+- CFG-001-008: catalog administration/publication does not grant inspection access across projects; unit access still requires project association, session, assignment and permission.
+
+These are verification specifications only. No test execution is claimed.
