@@ -142,3 +142,23 @@ An account contributes once to the combined Inspector cap only when its login is
 4. Super Admin determines team count and the personnel assigned to each team. A user cannot create or select their own team membership, role or operational assignment.
 5. An account counts toward the Inspector cap only when it is enabled, has an active Inspector role grant, and has at least one currently effective operational Inspector assignment in governed project/session scope. Count once per account.
 6. Role, team and assignment changes are authorized, effective-dated where applicable, and audited. Revocation/suspension removes eligibility according to the canonical capacity predicate.
+
+
+## 12. T-17/T-18 permission catalogue reconciliation
+
+The table in Section 7 is the initial legacy vocabulary, not the complete command-boundary permission catalogue. It must not be treated as an exhaustive or authoritative list for implementation. T-17 explicitly establishes separate `instrument.manage`, `instrument.publish` and `instrument.deactivate` permissions; publication and deactivation are distinct privileged actions. T-18 requires every state-changing command to have a narrow explicit permission and scope predicate.
+
+The current command inventory uses additional identifiers including `account.request`, `account.approve`, `role.manage`, `project.manage`, `session.transition`, `capacity.manage`, `unit.register`, `unit.associate`, `unit.association.end`, `unit.identity.resolve`, `evidence.upload`, `sync.apply`, `document.generate`, `attendance.upload`, `attendance.verify` and `report.read`. These identifiers are not all present in the legacy Section 7 catalogue. Conversely, legacy identifiers such as `account.review`, `role.assign`, `scope.assign`, `config.manage`, `report.view`, `report.validate`, `document.upload` and `audit.view` have not been formally mapped to the newer command identifiers. In particular, legacy `audit.view` combines read/export and must be split or explicitly constrained before it can satisfy T-15 least-privilege requirements; `document.upload` must be reconciled with separate `attendance.upload` and `attendance.verify` commands.
+
+**Required before implementation:** publish one canonical permission registry with immutable permission codes, human-readable capability, resource/action, required scope type, assignable principal class, grant/revoke authority, separation-of-duties constraints and linked command/function. Record explicit mapping or retirement for every legacy code. Add separate least-privilege permissions for evidence read/export and audit read/export; confirm project-close authority; do not infer these from Super Admin role alone. Do not silently alias old and new codes or grant broad permissions to make commands pass.
+
+No final role-to-permission matrix, SQL permission seed, RLS grant, command EXECUTE grant or runtime test is approved by this reconciliation. Permission-code reconciliation remains OPEN.
+
+
+## 13. Canonical permission registry reference
+
+The single proposed permission vocabulary and command mapping is maintained in [Canonical Permission Registry and Command Authorization Matrix](../02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md). Section 7 in this document remains a legacy vocabulary snapshot and is not authoritative for new command implementation. The registry's legacy mappings, code semantics, role-to-permission matrix, grant/revoke authority and SoD rules require explicit PO/security approval. Until then, no permission seed or new role grants are authorized.
+
+## Command authorization verification reference
+
+The proposed command-family mapping and planned verification cases are maintained in ../02-architecture/COMMAND-AUTHORIZATION-VERIFICATION-MATRIX.md. This matrix does not approve role-to-permission grants or legacy aliases. The role/grantor authority, SoD, exact scope predicates, per-table RLS and per-function EXECUTE grants remain subject to PO/security review.
