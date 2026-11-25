@@ -19,6 +19,11 @@ describe("resolveVerifiedIdentity", () => {
     await expect(resolveVerifiedIdentity(client)).resolves.toEqual({ status: "unauthenticated" });
   });
 
+  it("treats a rejected refresh credential as an expired session", async () => {
+    const client = clientWith({ data: null, error: { name: "AuthApiError", status: 400 } });
+    await expect(resolveVerifiedIdentity(client)).resolves.toEqual({ status: "unauthenticated" });
+  });
+
   it("treats an invalid JWT as unauthenticated", async () => {
     const client = clientWith({ data: null, error: { name: "AuthInvalidJwtError" } });
     await expect(resolveVerifiedIdentity(client)).resolves.toEqual({ status: "unauthenticated" });
