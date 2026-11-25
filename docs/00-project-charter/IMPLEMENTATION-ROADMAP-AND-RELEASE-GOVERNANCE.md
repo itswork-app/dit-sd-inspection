@@ -1,12 +1,12 @@
 # Implementation Roadmap and Release Governance
 
 **Document ID:** IRG-001  
-**Version:** 1.0.5  
-**Status:** CONTROLLED PLAN — PRE-IMPLEMENTATION  
+**Version:** 1.0.6  
+**Status:** CONTROLLED PLAN — STAGED FOUNDATION IMPLEMENTATION  
 **Date:** 2026-11-25  
 **Authority:** MIB-001, AGENTS.md, approved Decision Register and ADRs  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
-**G10 implementation activation:** NOT ACTIVE — pending verified G9 and the required G10 activation record
+**G10-F1 foundation implementation:** ACTIVE — bounded synthetic-data foundation scope only; full-system G10 and later business-feature stages remain gated
 
 ## 1. Purpose
 
@@ -299,3 +299,19 @@ The latest controlled main baseline is `779f46c45444f7878d2128869288e986ff6b0b7a
 The next work is documentation and independent evidence closure, not feature coding: complete F-04 physical writer/bypass inventory; prove F-03 lock acyclicity and certify resolver paths; close F05-T1..T5 with technical/physical approvals and T-10 institutional decisions; complete SES-001 command/SoD/atomicity/QA contracts; close source instrument authority and remaining DGA blockers; reconcile schema/RLS/functions and operational controls; then conduct independent G9 review.
 
 **Current status:** G9 NOT READY; G10 NOT ACTIVE; I0–I7 NOT STARTED / NOT AUTHORIZED. QA remains PLANNED / NOT EXECUTED; CI/workflow evidence is ABSENT where unavailable. No implementation activity is permitted until G9 passes and a separate G10 activation record is approved. Production changes and deployment require separate authorization.
+
+
+## 12. Current staged implementation status — 2026-11-25
+
+This status index supersedes earlier roadmap status snapshots in §§3, 4, 8, 10 and 11 wherever they describe G10 as inactive or implementation as wholly unauthorized. Historical decision records and their original dates remain preserved.
+
+- G9-F1 foundation scope: **FROZEN**.
+- G10-F1 foundation implementation: **ACTIVE**, under root AGENTS.md §3.2, for the bounded foundation scope using synthetic/test data on a dedicated feature branch.
+- Full-system G9: **NOT READY**. Full-system G10 and later business-feature implementation: **NOT AUTHORIZED**; applicable feature-entry gates remain open.
+- PR #31 (RBAC-003 governance and reconciliation): **MERGED** to main at `44dce2cbcc052c6e909e1b0a080062a5b60d94eb`.
+- PR #30 (foundation bootstrap): **OPEN / NOT MERGED**. Integrated branch head is `0537ef51bccacfa277a6eeab3ccaef4a0cd45979`; it is based on current main with zero commits behind at the reconciliation checkpoint.
+- Exact-head CI run #60 completed as **failure**, but the job exposed no steps and its log artifact was unavailable. Root cause is undetermined; this is neither a quality-check PASS nor evidence of a source-level test failure.
+- `package-lock.json` is absent. Repository lint, typecheck, Vitest, migration validation and production build are **NOT VERIFIED** on the exact PR head. Do not merge until authentic dependency locking and reproducible exact-head checks pass, followed by maintainer review.
+- Production readiness remains **NOT VERIFIED**. No production data, hosted database mutation, deployment, business command, business schema, grants/RLS or privileged RPC is authorized by this foundation status.
+
+**Current implementation disposition:** continue only with bounded foundation hardening and verification. Preserve all later feature-entry gates.
