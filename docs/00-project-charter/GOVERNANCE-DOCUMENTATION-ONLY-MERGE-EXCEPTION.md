@@ -23,15 +23,25 @@ A PR is not eligible if it contains application source code, executable scripts,
 Every eligible PR must satisfy all of the following:
 
 1. The PR is explicitly labelled and described as documentation-only and references GOV-MERGE-001.
-2. The reviewer audits the entire diff, not only the PR title or summary.
+2. The maintainer audits the entire diff, not only the PR title or summary.
 3. The diff is limited to the approved project scope and reconciles with the current SSOT, approved PO decisions, and controlled-document versioning.
 4. No unresolved blocking review comments or known material contradictions remain.
-5. The PR is not a Draft and has the required review approval(s).
+5. The PR is not a Draft and has a recorded review decision before merge.
 6. Available required checks must pass. If no CI checks are configured or reported, this absence must be recorded; it must not be represented as a passing CI result. A documented static validation may supplement, but not impersonate, CI.
 7. The merge uses the repository's configured protections and an approved merge method. No bypass, force-push, or protection weakening is permitted.
 8. After merge, verify the resulting commit, changed files, default-branch state, and that no prohibited artifact entered the branch.
 
 If any control cannot be verified, do not merge that PR.
+
+## Solo-maintainer review exception
+
+The Product Owner confirmed on 2026-11-25 that this repository is operated as a solo-maintainer project and approved this narrow adjustment:
+
+- The same maintainer account may perform and record the full-diff self-review and maintainer merge decision for an eligible documentation-only PR.
+- This self-review is a maintainer attestation, **not** an independent GitHub review approval. It must never be represented as independent approval.
+- The review record must identify the reviewed head SHA, enumerate the diff scope, record findings and disposition, and state CI/check status accurately.
+- This exception applies only to GOV-MERGE-001 documentation-only PRs. It does not authorize self-approval for code, SQL, migrations, database/security policy, provider, deployment, or release changes.
+- If GitHub branch protection or repository rules require an independent approval or another unmet condition, the PR must remain unmerged. Do not bypass, weaken, or disable that protection. Resolve repository settings through the normal authorized path or obtain a genuinely independent reviewer.
 
 ## Explicit prohibitions remain in force
 
@@ -47,8 +57,10 @@ G9 remains **NOT READY**. G10 remains **NOT ACTIVE** until its separately requir
 
 ## Scope and duration
 
-This exception applies only to documentation-only merges for this repository, from the date of approval until superseded or revoked by an explicit Product Owner governance decision. It does not automatically approve any existing PR. Each PR requires independent eligibility and review.
+This exception applies only to documentation-only merges for this repository, from the date of approval until superseded or revoked by an explicit Product Owner governance decision. It does not automatically approve any existing PR. Each PR requires separate eligibility and review under this policy.
 
 ## Audit record
 
-The approval was given explicitly by the Product Owner in the project conversation on 2026-11-25: “Ya setuju”, in response to the proposed narrow documentation-only merge exception.
+The initial documentation-only merge exception was approved explicitly by the Product Owner in the project conversation on 2026-11-25: “Ya setuju”, in response to the proposed narrow documentation-only merge exception.
+
+The solo-maintainer review adjustment was approved explicitly by the Product Owner in the project conversation on 2026-11-25: “Iya saya solo”, in response to the request to revise the independent-review requirement for a solo-maintainer repository.
