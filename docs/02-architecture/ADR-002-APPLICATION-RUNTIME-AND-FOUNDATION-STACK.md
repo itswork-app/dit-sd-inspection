@@ -50,7 +50,8 @@ The repository has an approved Vercel + Supabase architecture but no application
 ## Consequences
 
 - Vercel-compatible web runtime with minimal operational footprint.
-- Strong compile-time checks and focused unit testing from the first commit.\n- Server-side code has a reusable verified-identity primitive without prematurely introducing role or permission semantics.
+- Strong compile-time checks and focused unit testing from the first commit.
+- Server-side code has a reusable verified-identity primitive without prematurely introducing role or permission semantics.
 - Google OAuth has a complete SSR callback and sign-out lifecycle; login is deliberately separated from account approval and role assignment.
 - Auth SSR is prepared without requiring live provider credentials for local bootstrap.
 - API callers receive a predictable error envelope and can correlate a response with bounded privacy-safe diagnostic events. Proxy refresh failures emit a generic unavailable event without provider details.
