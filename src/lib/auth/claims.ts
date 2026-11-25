@@ -39,7 +39,7 @@ export async function resolveVerifiedIdentity(
     const { data, error } = await client.auth.getClaims();
 
     if (error) {
-      if (error.status === 401 || (error.name && unauthenticatedErrorNames.has(error.name))) {
+      if (error.status === 401 || (error.status === 400 && error.name === "AuthApiError") || (error.name && unauthenticatedErrorNames.has(error.name))) {
         return { status: "unauthenticated" };
       }
       return { status: "unavailable" };
