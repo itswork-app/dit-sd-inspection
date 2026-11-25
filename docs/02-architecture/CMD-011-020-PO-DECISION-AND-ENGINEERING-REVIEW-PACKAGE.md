@@ -1,14 +1,17 @@
 # CMD-011–020 Product Decision and Engineering Review Package
 
 **Document ID:** CMD-011-020-DECISION-PACKAGE-001  
-**Version:** 0.2.4  
+**Version:** 0.2.5  
 **Status:** PO PRODUCT DECISIONS APPROVED; ENGINEERING / SECURITY REVIEW OPEN  
 **Date:** 2026-11-24  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
 **Parent references:** AGENTS.md v1.2.0; DGA-001; MIB-001; IRG-001; DECISION-REGISTER; LOCK-PROTOCOL-DECISION-RESOLUTION-001; LOCK-GRAPH-001; LOCK-MANIFEST-001; TECH-RESOLUTION-LPR-001 v0.1.0; CMD-011–020 Detailed Contract Review v0.3.6  
-**Gate:** G9 NOT READY; G10 NOT AUTHORIZED
+**Gate:** G9 NOT READY; G10 NOT ACTIVE — pending verified G9 and the separate G10 activation record
 
 ---
+
+**Current gate clarification (2026-11-25):** Product Owner conditional implementation authorization was received on 2026-11-24. G9 remains NOT READY; G10 remains NOT ACTIVE pending verified G9 and a separate G10 activation record. Any dated historical authorization wording in this document is not the current gate status. No implementation is authorized by this document.
+
 
 ## 1. Purpose and decision boundary
 
