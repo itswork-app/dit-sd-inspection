@@ -713,14 +713,14 @@ F05-T4 may close only after Security and Engineering approve the logical contrac
 For each eventually admitted notification-producing source transition, the following logical facts must become durable together or not at all:
 
 1. the authoritative source-domain mutation and its resulting canonical state/version;
-2. exactly one canonical source event bound to that committed transition;
+2. the exact canonical source event instance(s) admitted by that producer contract, with explicit event cardinality and no duplicate event identity;
 3. the required canonical audit evidence for the critical mutation;
 4. the durable idempotency outcome for the command execution;
-5. one outbox intent bound to the source event;
+5. the corresponding outbox intent(s), each bound to its exact admitted source event instance;
 6. the exact immutable policy-version reference applicable to the event;
 7. the complete event-time candidate recipient/scope set, including an explicit completed-snapshot boundary and its initial fan-out checkpoint state.
 
-The source event, audit, idempotency outcome, outbox, policy pin and candidate snapshot must share the same approved database transaction as the source mutation. A partial commit is invalid: no source mutation without its required event/audit/idempotency/outbox/snapshot, and no notification intent or candidate snapshot for a source mutation that rolls back. Audit-write failure fails closed for the critical mutation under T-15. The exact event/audit cardinality and idempotency object remain governed by their canonical contracts.
+Every admitted source event instance, required audit evidence, idempotency outcome, corresponding outbox intent, policy pin and complete candidate snapshot must share the same approved database transaction as the source mutation. If the producer contract admits multiple event instances, their exact cardinality and per-event outbox/snapshot binding must be explicit; this section does not infer one event per command. A partial commit is invalid: no source mutation without its required event/audit/idempotency/outbox/snapshot, and no notification intent or candidate snapshot for a source mutation that rolls back. Audit-write failure fails closed for the critical mutation under T-15. The exact event/audit cardinality and idempotency object remain governed by their canonical contracts.
 
 A fully evaluated empty candidate set is distinct from a missing, partial, failed or unresolved snapshot. Empty is admissible only when the exact approved event/policy contract permits it and the resolver has completed successfully. Unknown selector, unresolved participant/scope, incomplete dependency registration, resolver error or snapshot-integrity failure aborts the entire source transaction; it must not be converted into an empty audience or fallback audience.
 
@@ -728,12 +728,12 @@ A fully evaluated empty candidate set is distinct from a missing, partial, faile
 
 The following sequence expresses required data dependencies only. It does not assign numeric lock ranks or supersede the canonical lock manifest/graph:
 
-1. Authenticate and authorize the command using trusted server context; establish the durable idempotency identity without trusting a client actor, role, scope or event payload.
+1. Authenticate and authorize the command using trusted server context; derive the idempotency lookup identity from the canonical command contract, never from a client actor, role or scope claim. A previously completed idempotency result may be returned; do not commit a standalone success outcome or source-event claim before the source transaction.
 2. Enter the approved source-command transaction and acquire every required serialization guard/fence in the separately approved global order. Candidate L05 must not be treated as admitted until Engineering/Database/Security approve its primitive, key, participation and graph position.
 3. Immediately after the approved audience-serialization point, capture one database-controlled UTC `audience_evaluated_at`. This exact instant is reused for every effective-time predicate, policy-effective interval and candidate-eligibility evaluation in the transaction. Do not substitute transaction-start time, client time, per-row timestamps or a later second clock read.
 4. Resolve the exact canonical event token, producer contract, immutable policy version and event-specific selector/dispatch registry entries. Missing, ambiguous, expired or unsupported references fail closed; never fall back to the latest policy or rebuild from current membership after commit.
 5. Evaluate the complete candidate audience and authorized source-scope evidence against the serialized pre-mutation state at that one captured instant, using only the event's approved selector/dependency mapping. Canonicalize and deduplicate under the eventually approved identity/scope rules; do not invent those physical keys here.
-6. Apply the source mutation and persist the canonical event, audit evidence, idempotency result, outbox intent, policy pin, complete immutable candidate snapshot and initial checkpoint as one transaction. The event and snapshot must identify the same source operation and captured instant.
+6. Apply the source mutation and persist the exact admitted canonical event instance(s), required audit evidence, idempotency result, corresponding outbox intent(s), policy pin(s), complete immutable candidate snapshot(s) and initial checkpoint(s) as one transaction. The event and snapshot must identify the same source operation and captured instant.
 7. Commit once. No provider/network I/O, email/push call, browser callback or external side effect occurs while the database transaction is open.
 
 The logical sequence is not a certified global lock order. Exact guard acquisition, source-parent locks, FK/unique/trigger/helper edges, worker interaction and lock timeout/retry remain governed by the full lock manifests and F-04/R-037 review. A command path is not certified merely because this sequence is documented.
