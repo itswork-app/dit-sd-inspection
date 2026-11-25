@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.14.0
+**Version:** 1.14.1
 **Audit date:** 2026-11-25  
 **Branch reviewed:** `docs/rbac-003-account-role-scope-governance` (documentation branch based on main)  
 **Reviewed baseline HEAD:** `d4d49b0fe3e26257d0fd765085d5fc84d0eecfd1` (main commit used to create this documentation branch, 2026-11-25)  
@@ -1076,7 +1076,7 @@ This addendum is the current status index for the staged foundation decision and
 
 ## RBAC-003 Product Owner decision and cross-document audit — 2026-11-25
 
-The Product Owner approved all eleven RBAC-003 recommendations without amendment. The canonical decision is recorded in [Decision Register — RBAC-003](DECISION-REGISTER.md), with the controlled semantics in [RBAC-003 — Account Lifecycle, Role and Scope Governance](../02-architecture/RBAC-003-ACCOUNT-LIFECYCLE-AND-ROLE-SCOPE-GOVERNANCE.md) v0.1.0. The functional design is reconciled in RBAC and Authorization v0.2.0; the canonical permission registry is v0.3.0; the Command Authorization Verification Matrix is v0.4.3; CMD-001–010 Detailed Contract Review is v0.4.0; RTM-001 is v0.2.0; SSOT-AUDIT-001 is v0.1.7.
+The Product Owner approved all eleven RBAC-003 recommendations without amendment. The canonical decision is recorded in [Decision Register — RBAC-003](DECISION-REGISTER.md), with the controlled semantics in [RBAC-003 — Account Lifecycle, Role and Scope Governance](../02-architecture/RBAC-003-ACCOUNT-LIFECYCLE-AND-ROLE-SCOPE-GOVERNANCE.md) v0.1.0. The functional design is reconciled in RBAC and Authorization v0.2.0; the canonical permission registry is v0.3.0; the Command Authorization Verification Matrix is v0.4.3; CMD-001–010 Detailed Contract Review is v0.4.0; RTM-001 is v0.2.0; SSOT-AUDIT-001 is v0.1.8 (latest gate/provenance summary corrected 2026-11-25).
 
 - DGA-B22 records PO semantic closure and keeps physical/technical design open.
 - DGA-B09 is PARTIAL: PO direction is approved, but the canonical permission registry, role/grantor ceiling matrix, SoD matrix, legacy mapping and command permission assignments are not certified.
