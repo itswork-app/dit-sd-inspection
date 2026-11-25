@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { isSupabaseConfigured } from "@/lib/env";
 
 const foundationItems = [
@@ -24,13 +25,13 @@ export default function HomePage() {
   return (
     <main className="workspace">
       <header className="topbar">
-        <a className="brand" href="/" aria-label="Dit. SD Inspection home">
+        <Link className="brand" href="/" aria-label="Dit. SD Inspection home">
           <span className="brand-mark">SD</span>
           <span>
             <strong>Dit. SD Inspection</strong>
             <small>Digital inspection workspace</small>
           </span>
-        </a>
+        </Link>
         <span className="environment-pill">
           <span className="status-dot" />
           FOUNDATION
