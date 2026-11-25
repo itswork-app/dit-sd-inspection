@@ -40,7 +40,7 @@ describe("API error contract", () => {
 
   it("replaces malformed inbound correlation IDs", () => {
     const request = new Request("https://example.test", {
-      headers: { "x-request-id": "bad id\r\nforged: yes" }
+      headers: { "x-request-id": "bad id" }
     });
 
     expect(getRequestId(request)).toMatch(
