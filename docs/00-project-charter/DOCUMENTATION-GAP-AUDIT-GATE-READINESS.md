@@ -1,10 +1,10 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.12.0
+**Version:** 1.13.0
 **Audit date:** 2026-11-25  
 **Branch reviewed:** `main`  
-**Reviewed HEAD:** `b51aeabfab3470e19a5b97a277154233ca041fcf` (post-PR #17 main baseline, 2026-11-25)  
+**Reviewed HEAD:** `4c72c9a0bf634e6c8f58f40527b5662c612b1da2` (post-PR #18 main baseline, 2026-11-25)  
 **Authority:** Master Implementation Blueprint MIB-001  
 **Status:** AUDIT IN PROGRESS — GATE IMPLEMENTATION NOT READY  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
@@ -1000,3 +1000,12 @@ The F05-T4 candidate logical evidence contract is documented in NLA-L05-TDR-001 
 Cross-document synchronization: NLA-001 v0.1.23 §26; Audit Event Catalogue §F05-T4 notification attempt/outcome evidence boundary; QA v0.7.2 TC-NOTIF-095..099; RTM v0.1.31 NOTIF-019; RAID v0.1.28 D-026. All new QA cases remain PLANNED / NOT EXECUTED. T-10 institutional classification, purpose, retention, legal hold, disposition, audit access/export and network metadata remain BLOCKED; no retention duration or purge policy is inferred.
 
 **F05-T4 disposition: OPEN — LOGICAL CANDIDATE CONTRACT ONLY.** Security/Engineering approval, Database physical enforcement and ordering review, stable reason-code approval, provider callback evidence and written T-10 institutional policy remain outstanding. F05-T1..T3 and F05-T5/F-04 remain OPEN; resolver certification 0/40; application lock certification 0/50; global lock graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE. No source code, SQL, migration, grants/RLS, provider changes, live database, runtime tests, deployment or data mutation occurred or was authorized.
+
+
+## F05-T5 atomicity and immutable snapshot binding — candidate specification (2026-11-25)
+
+NLA-L05-TDR-001 v0.1.14 §18 defines the candidate logical atomic boundary for each notification-producing source transition: source mutation, canonical event, required audit evidence, idempotency outcome, outbox intent, immutable policy-version pin, complete candidate recipient/scope set and initial checkpoint commit together or roll back together. One database-controlled UTC `audience_evaluated_at` is captured at the approved audience-serialization point and reused for all effective-time and policy-effective predicates. Provider I/O remains outside the transaction; fan-out and retries consume only the committed snapshot.
+
+Cross-document synchronization: NLA-001 v0.1.24 §27; L05 Event-to-Selector Registry v0.1.4 §14; QA v0.7.3 TC-NOTIF-100..105; RTM v0.1.32 NOTIF-020; RAID v0.1.29 D-026/R-037. The six new QA cases are PLANNED / NOT EXECUTED.
+
+**F05-T5 disposition: OPEN — LOGICAL TRANSACTION-BOUNDARY CANDIDATE ONLY.** Exact source producers/finalizers, physical snapshot/header and identity/scope keys, policy pin and uniqueness representation, lock protocol/rank, complete writer participation, Database/Security approval and deterministic isolated-database evidence remain outstanding. A complete empty snapshot must remain distinguishable from missing/partial/failed materialization. F05-T1..T4 and F-04 remain OPEN; resolver certification 0/40; application lock certification 0/50; global lock graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE. No source code, SQL, migration, grants/RLS, live DB, runtime tests, provider configuration, deployment or data mutation occurred or was authorized.
