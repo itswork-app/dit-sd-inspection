@@ -1,11 +1,11 @@
 # L05 Event-to-Selector Registry — Candidate v1
 
 **Document ID:** NLA-L05-EVENT-SELECTOR-REGISTRY-001  
-**Version:** 0.1.4  
+**Version:** 0.1.5  
 **Status:** STATIC CROSSWALK / REVIEW CANDIDATE — NOT APPROVED, NO EVENT ENABLED  
 **Date:** 2026-11-25  
-**Baseline:** `main` at `4c72c9a0bf634e6c8f58f40527b5662c612b1da2`  
-**Authority:** AGENTS.md v1.2.3; Decision Register POQ-01 and POQ-04; NLA-L05-TDR-001 v0.1.14; NLA-EVENT-REGISTRY-001 v0.1.13; NLA-EVENT-TRIAGE-001 v0.1.3; L05 source-event map v0.1.1; L05 writer matrix v0.1.5.
+**Baseline:** `main` at `fe1b376d9027f9dd4d1688f23321a9f4b3a417ff` (post-PR #21, 2026-11-25)  
+**Authority:** AGENTS.md v1.2.3; Decision Register POQ-01 and POQ-04; NLA-L05-TDR-001 v0.1.14; NLA-EVENT-REGISTRY-001 v0.1.13; NLA-EVENT-TRIAGE-001 v0.1.3; L05 source-event map v0.1.1; L05 writer matrix v0.1.6.
 
 ## 1. Purpose and decision boundary
 
@@ -283,3 +283,12 @@ NLA-L05-TDR-001 v0.1.14 §18 defines a candidate logical atomicity contract: sou
 This crosswalk does not identify an admitted producer, physical relation/header, candidate key, digest, uniqueness constraint, lock rank or writer certification. Each of the eleven candidate event rows still needs an exact source-command/finalizer, transaction boundary, participant/scope/dependency mapping, policy pin and event-specific approval. Composite/conditional command declarations remain unresolved and no event is enabled.
 
 F05-T5 remains OPEN pending Engineering producer inventory, Database physical/atomicity approval, Security provenance and fail-closed review, complete eligibility-writer serialization proof and deterministic isolated-database evidence. TC-NOTIF-100..105 remain PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 15. F-04 physical writer inventory boundary — 2026-11-25
+
+The companion [L05 Eligibility-Writer Participation Matrix](L05-ELIGIBILITY-WRITER-PARTICIPATION-MATRIX-001.md) is v0.1.6 and now explicitly records the current repository evidence boundary. This repository baseline has no application source tree, executable migration history or deployed database catalog snapshot. Live database inspection is not authorized under the current pre-G10 execution boundary.
+
+Accordingly, the CMD-001–040 declarations and logical writer domains in this crosswalk are not proof of actual deployed writers. The exact RPC/function/trigger/cascade/job/import/sync/repair/admin/emergency writer inventory, principal/owner/ACL, selector dependency join and direct-DML bypass proof remain unavailable. F-04 remains OPEN; zero writers certified. No selector or event is technically admitted or enabled.
+
+The 40/40 source declaration inventory, 11 PO-approved candidate intents, F05-T1/T2/T5 static cross-references and candidate transaction semantics do not raise certification counts. Resolver certification remains 0/40; application lock certification 0/50; global graph acyclicity NOT PROVEN; G9 NOT READY; G10 NOT ACTIVE. This section does not authorize live database inspection, SQL, migration, grants/RLS, source implementation or runtime testing.
