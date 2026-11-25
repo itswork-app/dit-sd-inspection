@@ -3,7 +3,7 @@
 **Document ID:** NLA-001  
 **Version:** 0.1.24  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
-**Date:** 2026-11-24  
+**Date:** 2026-11-25  
 **Product authority:** INS-015 — APPROVED  
 **Related controls:** INS-016 / T-15, T-18, T-10, MIB-001, DGA-001  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)  
