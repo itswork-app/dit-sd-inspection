@@ -2,7 +2,7 @@
 
 **Document ID:** MIB-001  
 **Status:** CONTROLLED BASELINE — DOCUMENTATION PHASE  
-**Version:** 1.0.11  
+**Version:** 1.0.12  
 **Last reviewed:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
@@ -231,6 +231,8 @@ This blueprint is a governance/navigation artifact. It does not authorize code, 
 - DGA-B10/B11/B13/B14 remain open or partial pending independent technical review, permission/worker approval, institutional T-10 decisions, provider evidence and test traceability.
 - No migrations, SQL, grants, live database changes, provider configuration or implementation are authorized.
 
+
+> **Historical checkpoint note:** Sections 13–15 below preserve dated snapshots from before the Product Owner's conditional implementation authorization was recorded. Their older G10 NOT AUTHORIZED / NOT GRANTED wording is historical and is superseded by §16 and the current gate fields at the top of this document.
 
 ## 13. Cross-document audit and authority request control — 2026-11-24
 
