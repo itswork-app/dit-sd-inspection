@@ -1,7 +1,7 @@
 # Notification Audience Guard — Technical Decision Record
 
 **Document ID:** NLA-L05-TDR-001  
-**Version:** 0.1.11  
+**Version:** 0.1.12  
 **Status:** PO-APPROVED CANDIDATE — technical approval pending Engineering, Database and Security  
 **Date:** 2026-11-25  
 **Decision authority:** Product Owner candidate selection recorded in NLA-RESOLVER-LOCK-001 §11  
@@ -561,6 +561,76 @@ F05-T2 remains OPEN until:
 - TC-NOTIF-055..059 and TC-NOTIF-062/069 are mapped to the final profiles and remain unexecuted until authorized G10 test conditions exist.
 
 Until then, the table is a review aid only: all eleven NREG rows remain NOT ENABLED, no dispatch profile is approved, and F-05 remains OPEN.
+
+## 4.2.7 F05-T3 — suppression and retry state machine (candidate; not approved)
+
+**Status: PARTIAL CANDIDATE — NOT APPROVED FOR IMPLEMENTATION.** This specification separates deterministic eligibility suppression, safe transient transport retry, ambiguous provider acceptance and terminal failure. It preserves the immutable POQ-01 candidate audience and POQ-04 transition outcomes. It does not select a provider, set numeric retry budgets, approve reason codes, or change the canonical delivery-state graph.
+
+### A. Non-negotiable invariants
+
+1. Candidate membership, authorized source scope, policy pin and fan-out checkpoint are immutable after the source transaction commits. A suppression or retry outcome never deletes, replaces, widens, reconstructs or reorders that snapshot.
+2. A retry operates only on the same original candidate and same logical delivery/channel under the same pinned event/policy references. It cannot create a second source event, outbox intent, notification or candidate.
+3. Before each external attempt, re-run POQ-01 account status, channel eligibility, consent/revocation and mandatory security checks, plus only the event-specific scope/parent predicates in the approved dispatch profile.
+4. POQ-04 account reactivation may permit reconsideration of the same original candidate only. It cannot clear unrelated consent, channel, scope, policy or security suppression; it cannot reset the checkpoint or add a recipient.
+5. Quiet hours defer eligible channel delivery only. They do not pause, stop or reset the pinned SLA clock under POQ-02.
+6. Provider I/O occurs outside database transactions. Each attempt is bounded by a valid worker lease; stale/reclaimed workers cannot finalize. Attempt evidence is append-only and sanitized.
+7. Ambiguous provider acceptance is `UNKNOWN`, not success and not a safe blind retry. Reconcile through provider idempotency/status capability where available; otherwise apply only an explicitly approved duplicate-tolerant recovery rule. Exactly-once external delivery is not claimed.
+8. Delivery/suppression/retry state is separate from inbox read state and source business state. A notification failure never changes inspection, project, session, assignment or evidence state.
+
+### B. Outcome classes — candidate taxonomy
+
+These are semantic classes for review. The exact persisted status values and stable reason-code strings remain unapproved.
+
+| Candidate reason family | Candidate outcome class | Candidate reschedule/retry condition | Open control |
+|---|---|---|---|
+| Account not enabled / suspended / expired | SUPPRESSED — POLICY_RESCHEDULABLE only for the POQ-04 account transition case | Reconsider only after authoritative reactivation; reuse the same candidate and checkpoint; rerun every current mandatory check | Exact account state mapping, reschedule trigger/owner and policy-effective window |
+| Quiet hours / channel delivery window | DEFERRED — POLICY_RESCHEDULABLE | Resume at the next allowed time under the pinned policy; SLA clock continues | Time-zone source, boundary handling and channel policy details |
+| Channel unavailable / subscription invalid | SUPPRESSED or TERMINAL_FAILURE depending on authoritative channel state | No retry unless the pinned policy explicitly allows rescheduling after the channel becomes eligible | Temporary versus permanent channel-state taxonomy and reactivation trigger |
+| Consent revoked / opt-out | SUPPRESSED — classification unresolved | No automatic retry or reactivation inference; any later consent change must be evaluated under an explicitly approved consent policy | Whether later re-consent can reschedule the same candidate; authoritative consent evidence |
+| Mandatory security restriction | SUPPRESSED — fail closed | No retry unless the authoritative security control explicitly clears the restriction and the pinned profile permits reconsideration | Security owner, clearance evidence and retry authority |
+| Event-specific current-scope / parent predicate fails | SUPPRESSED — classification unresolved | Only an explicit event-specific profile may authorize rescheduling; never substitute another candidate | Per-event profile and POQ-04 exception mapping |
+| Pinned policy unavailable/invalid or snapshot integrity fails | TERMINAL / QUARANTINE candidate | No fallback to a newer policy, current membership query or rebuilt audience | Exact integrity incident and operational recovery procedure |
+| Provider transient transport/service failure before acceptance is known | RETRYABLE_FAILURE candidate | Bounded exponential backoff with jitter; preserve logical delivery identity; numeric ceiling/age/backoff require Operations approval | Provider classification, retry budget, lease and overload behavior |
+| Provider rate limit | RETRYABLE_FAILURE candidate | Respect a provider-authenticated retry instruction only after provider selection and validation; apply approved global ceiling | Provider-specific response trust and cap |
+| Provider permanent rejection (e.g. invalid destination or rejected payload) | TERMINAL_FAILURE or SUPPRESSED candidate | No automatic retry unless corrected input is authorized through a separate controlled path; do not mutate the original event snapshot | Provider-specific permanent-error mapping and correction authority |
+| Provider acceptance may have occurred but result is unknown | UNKNOWN — RECONCILIATION_REQUIRED | Reconcile by stable provider reference/idempotency; do not blind resend | Provider capability and bounded/manual reconciliation procedure |
+| Worker lease lost / stale generation | No delivery outcome inferred from stale worker | Reclaim only through the current lease protocol; stale worker cannot commit an attempt result | Lease reclaim schedule, stale-worker fencing and monitoring |
+| Invalid callback / replay / unknown provider reference | CALLBACK_REJECTED — no delivery-state transition | No retry; authenticate, validate freshness/reference and deduplicate callback | Provider-specific callback authentication and durable dedup mechanism |
+
+### C. Candidate logical state progression
+
+The existing NLA-001 proposal defines these transitions: `PENDING → SENDING | SUPPRESSED | EXPIRED`; `SENDING → SENT | FAILED | UNKNOWN`; `SENT → DELIVERED` or provider-confirmed `FAILED`; `UNKNOWN` advances only after provider reconciliation; `SUPPRESSED → PENDING` only where the pinned policy explicitly permits rescheduling; terminal `DELIVERED / FAILED / EXPIRED` states do not regress.
+
+**Blocking state-graph gap:** the current NLA-001 state progression does not explicitly define the legal transition for a retryable provider failure after `SENDING`. It does not say whether a retryable failure enters a distinct `RETRY_WAIT` state or returns to `PENDING` with a guarded `next_attempt_at`. This TDR does not choose either transition or add a physical status. NLA-001, TDR, command contracts, QA and the proposed schema must reconcile this before F05-T3 can close. Until then, no retryable-failure state transition is admitted for implementation.
+
+### D. Retry ownership, budgets and checkpoints
+
+- The delivery worker is the candidate owner of provider attempts under the approved internal workload identity and lease. Whether a scheduler only wakes due work or can transition a retry state is unresolved and must be explicit.
+- Operations must approve maximum attempts, maximum age/horizon, exponential-backoff parameters, jitter, lock/statement budgets, dead-letter threshold, alert thresholds and manual reconciliation SLA. No numeric value is invented here.
+- The retry attempt must preserve the original event/outbox/candidate/policy references, logical delivery identity, channel and correlation chain. Attempt number is monotonic within that logical delivery.
+- Reclaim after lease expiry increments the lease generation; a stale worker cannot finalize, suppress, mark success, or schedule another attempt.
+- Suppression of one candidate/channel does not stop other valid candidates/channels from progressing. A partial fan-out checkpoint advances only for durably finalized items and never resets because one item is suppressed or retried.
+- An unknown provider outcome blocks blind duplicate dispatch until reconciliation or an explicitly approved duplicate-tolerant decision.
+- Retry exhaustion or age expiry produces a durable terminal/dead-letter disposition and an operational alert; it does not delete the original notification intent or rewrite the source business state.
+
+### E. Append-only evidence and privacy
+
+Each attempt requires durable, append-only evidence of logical delivery reference, attempt number, safe idempotency reference, start/finish time, worker correlation/lease generation, outcome class, sanitized reason/error code, retryable classification and provider reference where available. Suppression/reconciliation transitions must be correlated to the pinned policy and original candidate without copying message bodies, evidence, tokens, credentials or full provider responses into logs/audit.
+
+Routine attempt records belong in the dedicated append-only delivery-attempt history. Do not emit a general audit event for every routine retry. Security-relevant administration, policy changes, manual reconciliation and terminal operational interventions remain auditable under the approved audit catalogue. T-10 classification, retention, legal hold and disposition remain unresolved institutional controls.
+
+### F. Closure evidence and open decisions
+
+F05-T3 remains OPEN until:
+- stable reason codes and exhaustive terminal/retryable/policy-reschedulable classifications are approved by Engineering/Security/Operations;
+- the retryable-failure transition gap in the NLA-001 state graph is resolved consistently across TDR, NLA-001, command contracts, candidate schema and QA;
+- account reactivation, consent re-grant, channel re-enable, security-clearance and scope/parent transitions have explicit reschedule ownership and eligibility rules, without widening the original snapshot;
+- provider transient/permanent/unknown classifications and callback reconciliation are based on a selected provider's verified capabilities;
+- attempt ceiling, retry horizon, backoff/jitter, dead-letter, alert and manual-reconciliation budgets are approved by Operations;
+- append-only evidence, correlation, privacy minimization and T-10 retention dependencies are resolved;
+- TC-NOTIF-056/063/064 and relevant provider/lease cases are mapped to the final state machine and remain PLANNED / NOT EXECUTED until authorized G10 execution.
+
+**Disposition:** candidate state/reason taxonomy only. No stable code, retry budget, worker/scheduler authority, provider behavior, physical status, table, command, migration or runtime transition is approved. F05-T3 remains OPEN; F-05 remains OPEN; G9 NOT READY; G10 NOT ACTIVE.
 
 **Mandatory dispatch-profile fields:** account eligibility predicate; channel capability predicate; consent/revocation predicate; mandatory security predicate; current role/scope predicate (including whether it is intentionally omitted for a transition notice); parent-state predicate (including whether it is intentionally omitted for closure notices); retry classification; and suppression reason mapping. Each predicate must be versioned and auditable.
 
