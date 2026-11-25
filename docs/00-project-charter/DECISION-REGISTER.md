@@ -396,7 +396,7 @@ The Product Owner approves the following product semantics:
 
 1. Create the application identity row on the first successful Google sign-in after Supabase Auth identity verification. A newly created application account starts as `PENDING`; authentication alone never grants operational access.
 2. Keep the application identity/current account state separate from request and decision history. The logical model comprises `app_users`, `account_requests` and append-only `account_decisions`. Physical schema, keys, constraints and projections remain subject to Engineering/Database/Security review.
-3. Account states are `PENDING`, `APPROVED`, `REJECTED`, `SUSPENDED` and `DISABLED`. Only explicit authorized decisions may transition state. `REJECTED` may return to `PENDING) only through a new request; `DISABLED` never reactivates automatically.
+3. Account states are `PENDING`, `APPROVED`, `REJECTED`, `SUSPENDED` and `DISABLED`. Only explicit authorized decisions may transition state. `REJECTED` may return to `PENDING` only through a new request; `DISABLED` never reactivates automatically.
 4. A rejected user may submit a new request. Each request and decision remains separately recorded; no historical request or decision is overwritten or hard-deleted.
 5. Rejection requires a structured category and bounded explanatory reason. The exact category vocabulary and character bounds are technical/schema details to be specified without weakening the mandatory-reason rule.
 6. Duplicate pending requests do not create parallel active requests; an already approved account does not obtain additional role/scope from another account-approval request. Additional authority follows the explicit role/scope grant workflows.
