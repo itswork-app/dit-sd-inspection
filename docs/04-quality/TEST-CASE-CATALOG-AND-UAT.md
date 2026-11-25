@@ -23,9 +23,6 @@ Each executed case records ID, build SHA, environment, preconditions, steps, exp
 - TC-CAP-003: Capacity accepts 1 and 100, rejects 0 and 101, and accepts valid intermediate values below and above default 50.
 - TC-CAP-004: Capacity reduction below current active Inspector count is rejected.
 - TC-CAP-005: Concurrent Inspector activations cannot exceed configured capacity.
-- TC-LOAD-001: Representative workload at 10/25/50/75/100 concurrent users.
-- TC-LOAD-002: 100-user mixed workload records throughput, p50/p95/p99 latency, errors, database resource use, and media upload performance.
-- TC-LOAD-003: Under 100-user test, no lost acknowledged writes, duplicate claims/revisions, authorization bypass, or transaction corruption.
 
 ## 4. Inspection lifecycle
 - TC-INSP-001: Inspector sees only active assigned session/assignment.
