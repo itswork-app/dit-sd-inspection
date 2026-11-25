@@ -98,6 +98,28 @@ describe("parseJsonRequest", () => {
     expect(result).toEqual({ ok: false, code: "PAYLOAD_TOO_LARGE" });
   });
 
+  it("accepts a bounded JSON body delivered in many small stream chunks", async () => {
+    const title = "x".repeat(10_000);
+    const payload = new TextEncoder().encode(JSON.stringify({ title }));
+    const body = new ReadableStream<Uint8Array>({
+      start(controller) {
+        for (const byte of payload) controller.enqueue(Uint8Array.of(byte));
+        controller.close();
+      }
+    });
+    const request = new Request("https://example.test/api/foundation", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body,
+      duplex: "half"
+    } as RequestInit & { duplex: "half" });
+
+    await expect(parseJsonRequest(request, isCreateNoteInput, payload.byteLength)).resolves.toEqual({
+      ok: true,
+      data: { title }
+    });
+  });
+
   it("does not wait for a stalled stream cancellation hook after exceeding the limit", async () => {
     const body = new ReadableStream<Uint8Array>({
       start(controller) {
