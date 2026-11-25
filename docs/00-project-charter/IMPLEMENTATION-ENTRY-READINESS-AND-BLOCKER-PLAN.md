@@ -1,10 +1,10 @@
 # Implementation Entry Readiness and Remaining Blocker Plan
 
 **Document ID:** IER-001  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Status:** CONTROLLED READINESS PLAN — NOT AN IMPLEMENTATION AUTHORIZATION  
 **Date:** 2026-11-25  
-**Repository baseline:** `main` at `779f46c45444f7878d2128869288e986ff6b0b7a`  
+**Repository baseline:** `main` at `7b57e200130807b3ac5adafb323794afd284691f`  
 **Authority:** Root `AGENTS.md`, MIB-001, DGA-001, Decision Register, approved PRD/ADR, RTM-001, RAID-001 and QA Catalogue  
 **Current gates:** G9 NOT READY; G10 NOT ACTIVE
 
@@ -18,8 +18,8 @@ The approved product scope remains the IFP and Standing Bracket inspections for 
 
 At the time of this audit:
 - Canonical branch: `main`.
-- Main HEAD: `779f46c45444f7878d2128869288e986ff6b0b7a`.
-- PRs #14–#19 are merged; PR #18 records F05-T4 and PR #19 records F05-T5.
+- Main HEAD at audit time: `7b57e200130807b3ac5adafb323794afd284691f` (post-PR #22).
+- PRs #14–#22 are merged; PR #18 records F05-T4, PR #19 records F05-T5, PR #20–#21 reconcile readiness/audit, and PR #22 reconciles F-04 writer-matrix evidence boundaries.
 - Main contains NLA-001 v0.1.24, NLA-L05-TDR-001 v0.1.14 and QA Catalogue v0.7.3.
 - RTM-001 v0.1.32 and RAID-001 v0.1.29 contain F05-T4/T5 traceability.
 - Notification event candidates remain specification/review-only: 11 candidates, 0 technically admitted, 0 enabled.
@@ -125,3 +125,10 @@ G10 requires a separate explicit record after G9:
 ## 10. Change control
 
 Any change to approved product semantics requires a new Product Owner decision. Any institutional retention/privacy/records decision requires the relevant authorized institution. Technical admission requires Engineering, Database and Security evidence. Never turn a candidate proposal, planned test, static inventory or self-review into a certification claim.
+
+
+## 11. F-03 / F-04 / SES-001 technical closure control — 2026-11-25
+
+[PTCM-001 — Pre-Implementation Technical Closure Matrix](PRE-IMPLEMENTATION-TECHNICAL-CLOSURE-MATRIX.md) v0.1.0 now decomposes the remaining F-03 lock-order contradictions into nine explicit conflict classes and eight evidence exit artifacts; F-04 into a physical writer/bypass evidence package and writer-by-writer certification record; and SES-001 into ten technical decisions. This matrix is a controlled closure aid, not an approval or closure of any blocker.
+
+Current verified baseline after PR #22: `main` at `7b57e200130807b3ac5adafb323794afd284691f`. The F-03 graph remains NOT PROVEN ACYCLIC; resolver certification 0/40; application lock certification 0/50; F-04 writer certification 0; SES-001 technical contract OPEN. QA remains PLANNED / NOT EXECUTED; CI/workflow evidence ABSENT where no checks/runs are returned. G9 NOT READY; G10 NOT ACTIVE.

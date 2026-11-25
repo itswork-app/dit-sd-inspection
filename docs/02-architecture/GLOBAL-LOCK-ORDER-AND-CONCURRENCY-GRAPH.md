@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.24
+**Version:** 0.4.25
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-24  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -593,3 +593,12 @@ CMD-031/032/033/034/037 now have partial candidate ordering proposals; CMD-035/0
 CMD-032 reopen remains serialized through the same inspection aggregate but its one-active-draft arbiter is BLOCKED because the physical mutable draft-context representation is not defined. Do not infer a draft table, revision identifier or unique key.
 
 This pointer does not resolve the reviewer assignment/SoD matrix or the differing candidate parent/assignment/claim/inspection lock orders. Exact lock modes, FK/unique/trigger/helper edges, worker participation and acyclicity remain unverified. No graph edge is certified by the proposal. Resolver 0/40; application lock 0/50; global graph NOT PROVEN ACYCLIC; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 31. F-03 closure decomposition and current evidence boundary — 2026-11-25
+
+[PTCM-001 — Pre-Implementation Technical Closure Matrix](../00-project-charter/PRE-IMPLEMENTATION-TECHNICAL-CLOSURE-MATRIX.md) v0.1.0 consolidates the existing graph contradictions into F03-C01..C09 and defines F03-E01..E08 exit evidence. It does not resolve or approve a candidate rank or graph edge.
+
+The nine conflict classes cover: (1) CMD-022–027 canonical identity/association/claim ordering, including CMD-023 and CMD-026 contradictory recipes; (2) CMD-009–016 parent/session/child writer fence; (3) CMD-004/005/014/015/016 T-14 capacity writer coverage; (4) CMD-014/018–021 instrument/assignment order; (5) CMD-026–034 claim/inspection/revision/review/evidence ordering; (6) CMD-035 sync operation transaction boundary; (7) CMD-036–040 worker/finalizer/print/attendance boundaries; (8) CMD-049–054 notification/L05/worker/provider boundaries; and (9) all unverified physical FK/unique/trigger/cascade/deferred/helper edges.
+
+These are source-level contradictions and missing proofs, not reproduced deadlocks. No graph edge is certified by this addendum. LPR-01 and LPR-07–LPR-11 remain OPEN; LPR-10 NOT EXECUTED; resolver certification 0/40; application lock certification 0/50; graph NOT PROVEN ACYCLIC; G9 NOT READY; G10 NOT ACTIVE.
