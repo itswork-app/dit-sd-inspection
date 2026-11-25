@@ -4,6 +4,8 @@ export type ApiErrorCode =
   | "FORBIDDEN"
   | "NOT_FOUND"
   | "CONFLICT"
+  | "PAYLOAD_TOO_LARGE"
+  | "UNSUPPORTED_MEDIA_TYPE"
   | "TOO_MANY_REQUESTS"
   | "INTERNAL"
   | "SERVICE_UNAVAILABLE";
@@ -14,6 +16,8 @@ const ERROR_DEFINITIONS: Record<ApiErrorCode, { status: number; message: string 
   FORBIDDEN: { status: 403, message: "The requested action is not permitted." },
   NOT_FOUND: { status: 404, message: "The requested resource was not found." },
   CONFLICT: { status: 409, message: "The request conflicts with the current resource state." },
+  PAYLOAD_TOO_LARGE: { status: 413, message: "The request body is too large." },
+  UNSUPPORTED_MEDIA_TYPE: { status: 415, message: "The request content type is not supported." },
   TOO_MANY_REQUESTS: { status: 429, message: "Too many requests. Try again later." },
   INTERNAL: { status: 500, message: "An unexpected error occurred." },
   SERVICE_UNAVAILABLE: { status: 503, message: "The service is temporarily unavailable." }
