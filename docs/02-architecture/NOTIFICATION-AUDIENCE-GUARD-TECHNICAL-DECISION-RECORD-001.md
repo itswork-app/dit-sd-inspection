@@ -3,7 +3,7 @@
 **Document ID:** NLA-L05-TDR-001  
 **Version:** 0.1.9  
 **Status:** PO-APPROVED CANDIDATE — technical approval pending Engineering, Database and Security  
-**Date:** 2026-11-24  
+**Date:** 2026-11-25  
 **Decision authority:** Product Owner candidate selection recorded in NLA-RESOLVER-LOCK-001 §11  
 **Parent design:** NLA-RESOLVER-LOCK-001 v0.1.11  
 **Scope:** PostgreSQL transaction serialization for event-time notification audience resolution; CMD-001–040 source-event paths, CMD-051 policy publication, CMD-052 fan-out and CMD-054 escalation
