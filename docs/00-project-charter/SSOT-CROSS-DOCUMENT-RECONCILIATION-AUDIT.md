@@ -1,7 +1,7 @@
 # SSOT Cross-Document Reconciliation Audit — Dit. SD Inspection
 
 **Document ID:** SSOT-AUDIT-001  
-**Version:** 0.1.9  
+**Version:** 0.2.0  
 **Status:** STATIC CROSS-DOCUMENT AUDIT COMPLETED — CLOSURE PARTIAL  
 **Initial audit date:** 2026-11-24  
 **Latest reconciliation:** 2026-11-25  
@@ -238,3 +238,14 @@ This addendum updates the live repository/PR evidence after the RBAC-003 documen
 - No hosted Supabase operation, SQL migration application, production data operation, deployment or later business-feature implementation is evidenced or authorized by this checkpoint.
 
 **Current gate disposition:** G9-F1 foundation scope FROZEN; G10-F1 foundation implementation ACTIVE only for bounded synthetic-data work; full-system G9 NOT READY; full-system G10 and later business-feature entry NOT AUTHORIZED; production readiness NOT VERIFIED. PR #30 remains NOT READY TO MERGE pending authentic lockfile, reproducible exact-head quality checks and maintainer review.
+
+
+## 14. Current foundation branch and CI-capacity checkpoint — 2026-11-25
+
+- Current branch: `feat/foundation-bootstrap-v1-rebased`; HEAD `ca933fe47c4ee44cf2eba262eb80522c6075bfbf`.
+- PR #30 remains OPEN / NOT MERGED; compare to main is 103 commits ahead, 0 behind, 45 changed files.
+- MIB-001 v1.0.17, IRG-001 v1.0.6 and DGA-001 v1.14.3 are the current governance pointers.
+- The latest HEAD has no usable GitHub Actions verification result returned. The Product Owner suspects quota exhaustion; this has not been independently established. No rerun was attempted during this continuation.
+- Static code review is not test execution. `package-lock.json` remains absent and lint, typecheck, Vitest, migration validation and production build remain NOT VERIFIED.
+
+**Gate status:** G9-F1 FROZEN; G10-F1 ACTIVE for bounded synthetic-data foundation only; full-system G9 NOT READY; later feature gates open; production readiness NOT VERIFIED. PR #30 is NOT READY TO MERGE.
