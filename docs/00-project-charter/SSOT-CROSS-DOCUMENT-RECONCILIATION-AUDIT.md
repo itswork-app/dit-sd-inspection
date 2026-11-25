@@ -213,6 +213,7 @@ The Product Owner approved all eleven RBAC-003 recommendations without amendment
 The cross-document reconciliation now records:
 - RTM-001 AUTH-001/AUTH-002/RBAC-005 trace first verified Google sign-in, PENDING account state, separate request/decision history, role classes, delegation ceiling, SoD, last-administrator protection, explicit non-inheriting scopes and revocation semantics.
 - CMD-001–007 detailed contract review v0.4.0 incorporates the approved product semantics while retaining technical proposal status.
+- RBAC and Authorization functional design v0.2.0, Canonical Permission Registry v0.3.0 and Command Authorization Verification Matrix v0.4.3 are synchronized to RBAC-003; the permission matrix and all database/security controls remain unapproved.
 - DGA-001 v1.14.0 records DGA-B22 as PO semantic closure with technical design open; DGA-B09 remains PARTIAL, DGA-B10 OPEN and DGA-B21 PARTIAL.
 - RTM requirement RBAC-003 remains the self-review/self-approval prohibition; Decision Register decision RBAC-003 is a distinct artifact identifier. References must qualify the artifact namespace.
 - T-14 Inspector capacity is unchanged. The approved combined 1–100/default-50 predicate remains controlling.
