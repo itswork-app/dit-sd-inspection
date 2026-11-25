@@ -124,7 +124,7 @@ This cross-reference does not change any NREG row. NREG-001..011 remain PARTIAL 
 
 ## 10. F05-T1 structural grammar clarification — 2026-11-25
 
-NLA-L05-TDR-001 v0.1.10 §4.2.5.1 clarifies the candidate grammar's exact structure, closed-key/type validation, duplicate JSON-key rejection, null/missing semantics, trusted participant/scope cardinality, canonical clause ordering and fail-closed behavior. NLA-L05-EVENT-SELECTOR-REGISTRY-001 v0.1.3 cross-references that specification.
+NLA-L05-TDR-001 v0.1.11 §4.2.5.1 clarifies the candidate grammar's exact structure, closed-key/type validation, duplicate JSON-key rejection, null/missing semantics, trusted participant/scope cardinality, canonical clause ordering and fail-closed behavior. NLA-L05-EVENT-SELECTOR-REGISTRY-001 v0.1.3 cross-references that specification.
 
 This does not alter any NREG row or convert PO specification intent into technical admission. All eleven rows remain PARTIAL_STATIC_REVIEW; canonical event contract, recipient mapping, selector, dispatch profile and publication remain UNRESOLVED / NOT ENABLED. Candidate-intent tokens are not a runtime allowlist. No role/scope IDs, participant fields, per-event clause allowlists, dependency columns, policy digest, snapshot key or physical schema are approved. F05-T1 and F-04 remain OPEN; G9 NOT READY; G10 NOT ACTIVE.
 
