@@ -19,6 +19,8 @@ The repository has an approved Vercel + Supabase architecture but no application
 6. Use the Next.js 16 proxy entry point to refresh Supabase sessions. Keep service-role/secret keys out of browser code; foundation code uses only the public publishable key.
 7. Use Vitest for focused unit tests and ESLint + TypeScript + Next.js production build as the initial CI quality gate.
 8. Keep the application a modular monolith. Do not introduce microservices, an ORM, a client-side state framework, or UI component framework until a demonstrated need exists.
+9. Apply baseline browser security headers globally: nosniff, frame denial, strict-origin-when-cross-origin referrer policy, and least-privilege camera/microphone/geolocation permissions. Emit HSTS only on the Vercel production environment.
+10. Expose a minimal, non-sensitive health endpoint with no-store caching and a machine-readable service status.
 
 ## Security and operational constraints
 
@@ -30,6 +32,8 @@ The repository has an approved Vercel + Supabase architecture but no application
 - The proxy refreshes sessions but is not, by itself, an authorization policy.
 - Never trust client-provided actor, role, permission, tenant, project, location, session or unit scope.
 - Do not add schema, grants, RLS or privileged RPCs until their exact authorization and transaction contracts are reviewed.
+- A Content-Security-Policy is intentionally deferred until the application adopts a nonce-compatible strategy for Next.js runtime scripts and styles; do not ship a policy that silently breaks the app or rely on unsafe-inline as a shortcut.
+- Camera access remains permitted for same-origin application use because evidence capture may require it. Microphone and geolocation are disabled by default.
 
 ## Consequences
 
@@ -37,10 +41,11 @@ The repository has an approved Vercel + Supabase architecture but no application
 - Strong compile-time checks and focused unit testing from the first commit.
 - Auth SSR is prepared without requiring live provider credentials for local bootstrap.
 - Database and business workflows remain deliberately absent until their feature-entry gates are closed.
+- Security headers provide a baseline hardening layer but do not replace authentication, authorization, RLS, CSP or a production security review.
 
 ## Verification
 
-CI executes ESLint, TypeScript, Vitest and a production Next.js build. The environment parser has unit cases for absent/partial configuration, HTTPS origin validation, whitespace normalization, embedded credentials, URL path/query/fragment rejection, insecure non-local URLs and loopback development URLs. These tests are specified in source but remain NOT VERIFIED until CI executes them successfully. A successful foundation CI run is not evidence of production readiness or business feature correctness.
+CI executes ESLint, TypeScript, Vitest and a production Next.js build. The environment parser has unit cases for absent/partial configuration, HTTPS origin validation, whitespace normalization, embedded credentials, URL path/query/fragment rejection, insecure non-local URLs and loopback development URLs. The health endpoint has tests for its status/body timestamp contract and no-store/nosniff headers. These tests are specified in source but remain NOT VERIFIED until CI executes them successfully. A successful foundation CI run is not evidence of production readiness or business feature correctness.
 
 ## References
 
