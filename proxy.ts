@@ -1,8 +1,11 @@
 import { type NextRequest } from "next/server";
+import { getRequestId } from "@/lib/api/errors";
 import { updateSession } from "@/lib/supabase/proxy";
 
 export async function proxy(request: NextRequest) {
-  return updateSession(request);
+  const response = await updateSession(request);
+  response.headers.set("X-Request-Id", getRequestId(request));
+  return response;
 }
 
 export const config = {
