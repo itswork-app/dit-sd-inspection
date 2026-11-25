@@ -1,11 +1,11 @@
 # L05 Event-to-Selector Registry — Candidate v1
 
 **Document ID:** NLA-L05-EVENT-SELECTOR-REGISTRY-001  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Status:** STATIC CROSSWALK / REVIEW CANDIDATE — NOT APPROVED, NO EVENT ENABLED  
 **Date:** 2026-11-25  
 **Baseline:** `main` at `78688451524900cc58343d05469251806ce415de`  
-**Authority:** AGENTS.md v1.2.3; Decision Register POQ-01 and POQ-04; NLA-L05-TDR-001 v0.1.8; NLA-EVENT-REGISTRY-001 v0.1.10; NLA-EVENT-TRIAGE-001 v0.1.2; L05 source-event map v0.1.0; L05 writer matrix v0.1.4.
+**Authority:** AGENTS.md v1.2.3; Decision Register POQ-01 and POQ-04; NLA-L05-TDR-001 v0.1.9; NLA-EVENT-REGISTRY-001 v0.1.11; NLA-EVENT-TRIAGE-001 v0.1.3; L05 source-event map v0.1.1; L05 writer matrix v0.1.5.
 
 ## 1. Purpose and decision boundary
 
