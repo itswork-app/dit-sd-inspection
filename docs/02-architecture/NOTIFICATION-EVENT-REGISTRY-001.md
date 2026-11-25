@@ -3,7 +3,7 @@
 **Document ID:** NLA-EVENT-REGISTRY-001  
 **Version:** 0.1.11  
 **Status:** DRAFT — PO INTENT APPROVED FOR SPECIFICATION/REVIEW ONLY; ALL ROWS UNRESOLVED / NOT ENABLED; NREG-001..011 PARTIAL STATIC REVIEW ONLY  
-**Date:** 2026-11-24  
+**Date:** 2026-11-25  
 **Baseline:** `main` at `78688451524900cc58343d05469251806ce415de`  
 **Authority:** PRD-001, Decision Register PO event-candidate decision (2026-11-24), NLA-EVENT-TRIAGE-001 v0.1.3, CMD source-event map. This document does not supersede them.
 
