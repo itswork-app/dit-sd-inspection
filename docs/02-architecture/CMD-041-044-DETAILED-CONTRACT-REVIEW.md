@@ -1,11 +1,14 @@
 # CMD-041–044 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security/institutional review required; NOT approved for implementation  
-**Document version:** 0.1.1  
+**Document version:** 0.1.2  
 **Date:** 2026-11-24  
 **Scope:** CMD-041 through CMD-044  
 **Repository phase:** Documentation / SSOT maturation  
-**Controls:** T-05 actual-report metric definition; T-10 institutional records/privacy gate; T-15 append-only audit direction; T-18 command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
+**Controls:** T-05 actual-report metric definition; T-10 institutional records/privacy gate; T-15 append-only audit direction; T-18 command boundary; G9 NOT READY; G10 NOT ACTIVE — pending verified G9 and the separate G10 activation record.
+
+**Current gate clarification (2026-11-25):** Product Owner conditional implementation authorization was received on 2026-11-24. G9 remains NOT READY; G10 remains NOT ACTIVE pending verified G9 and a separate G10 activation record. Any dated historical authorization wording in this document is not the current gate status. No implementation is authorized by this document.
+
 
 ## 1. Purpose, authority and non-authority
 
