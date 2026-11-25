@@ -17,6 +17,7 @@ Only explicitly approved decisions are marked APPROVED.
 | PRD-004 | No access to legacy source code is assumed | CONFIRMED | Reconstruct from supplied references |
 | RBAC-001 | Google sign-in; new users require approval and role assignment | APPROVED | No self-role elevation |
 | RBAC-002 | Multi-role accounts allowed with explicit operational assignment | APPROVED | Scope by session/location/instrument; no self-review |
+| RBAC-003 | Account lifecycle, role delegation, scope governance and revocation semantics | APPROVED | PO-approved 2026-11-25; technical permission matrix, schema, RLS, locks, concurrency and tests remain open; see RBAC-003 controlled specification |
 | WF-001 | Reviewer returns corrections to Inspector; Inspector resubmits | APPROVED | Immutable version history |
 | WF-002 | Reopening approved inspection requires authority, reason, and audit | APPROVED | Explicit permission required |
 | SES-001 | Each unit inspection attempt is bound to exactly one session; a returned inspection may be ABORTED only when a detected error cannot be corrected/reinspected because the physical unit has already been packed and prepared for shipment; Inspector requests and Admin/Korlap approves | APPROVED | Normal returned corrections remain with the same Inspector in the original active session; ABORTED is terminal and is not approval/completion; a later session uses a new attempt |
@@ -379,3 +380,38 @@ G9-F1 — FOUNDATION SCOPE FROZEN: repository/app bootstrap, development configu
 G10-F1 — FOUNDATION IMPLEMENTATION ACTIVE: after merge of the PR recording this decision, implementation of the bounded foundation scope is authorized on a dedicated feature branch. This is not full-system G9 completion or blanket activation of all business features. F-03/F-04, command authorization, worker/provider security, physical RLS/grants and unresolved domain contracts remain feature-entry gates. No executable business mutation may bypass its required contract/security/transaction review.
 
 Solo-maintainer model: the Product Owner is the sole maintainer and accountable engineering decision owner. Documented self-review plus automated checks and post-merge verification are required; independent reviewer availability is not a blocker. No test or runtime result may be reported PASS unless actually executed and evidenced.
+
+
+## Product Owner decision — RBAC-003 account lifecycle, role governance and scope governance (2026-11-25)
+
+**Decision ID:** RBAC-003  
+**Status:** APPROVED BY PRODUCT OWNER — all eleven recommendations accepted without amendment.  
+**Authority:** Product Owner / sole repository maintainer  
+**Effective date:** 2026-11-25  
+**Controlled specification:** [RBAC-003 — Account Lifecycle, Role and Scope Governance](../02-architecture/RBAC-003-ACCOUNT-LIFECYCLE-AND-ROLE-SCOPE-GOVERNANCE.md) v0.1.0
+
+The Product Owner approves the following product semantics:
+
+### A. Account lifecycle
+
+1. Create the application identity row on the first successful Google sign-in after Supabase Auth identity verification. A newly created application account starts as `PENDING`; authentication alone never grants operational access.
+2. Keep the application identity/current account state separate from request and decision history. The logical model comprises `app_users`, `account_requests` and append-only `account_decisions`. Physical schema, keys, constraints and projections remain subject to Engineering/Database/Security review.
+3. Account states are `PENDING`, `APPROVED`, `REJECTED`, `SUSPENDED` and `DISABLED`. Only explicit authorized decisions may transition state. `REJECTED` may return to `PENDING) only through a new request; `DISABLED` never reactivates automatically.
+4. A rejected user may submit a new request. Each request and decision remains separately recorded; no historical request or decision is overwritten or hard-deleted.
+5. Rejection requires a structured category and bounded explanatory reason. The exact category vocabulary and character bounds are technical/schema details to be specified without weakening the mandatory-reason rule.
+6. Duplicate pending requests do not create parallel active requests; an already approved account does not obtain additional role/scope from another account-approval request. Additional authority follows the explicit role/scope grant workflows.
+
+### B. Role governance
+
+7. Global roles and project-scoped roles are distinct authority classes. Role grants must state their scope explicitly; multiple roles per account remain allowed under RBAC-002.
+8. Grant authority follows a strict delegation ceiling: an actor may grant/revoke only authority within the actor's explicitly delegated effective authority. No authority may be self-created or escalated through delegation.
+9. Self-approval, self-role-grant and self-scope-assignment are prohibited. The active administrator set must not be reduced to zero by an ordinary operation; recovery uses a separately controlled, reasoned and audited break-glass process.
+
+### C. Scope governance and revocation
+
+10. Scope inheritance is not implicit. Project, session, location, team, assignment and other operational scopes must be explicit and checked at the authoritative server/database boundary.
+11. Revocation removes authority for subsequent protected commands after authoritative revalidation. Existing assignments, sessions, inspection history and evidence are not silently deleted, aborted, reassigned or rewritten. Any workflow transition for work already in progress must follow its own approved domain contract and audit trail.
+
+**Existing T-14 capacity decision is unchanged and is not reopened.** Its approved 1–100 combined capacity (default 50), distinct-account counting predicate and serialization requirement remain controlling.
+
+**Implementation boundary:** RBAC-003 approves product semantics only. It does not approve a physical schema, role/permission seed, route/RPC, PostgreSQL grant, RLS policy, SECURITY DEFINER function, lock mode, concurrency proof, production access or executable business mutation. CMD-001–007 must be reconciled to these semantics; canonical permission and object-privilege matrices, LPR-11/lock certification, version-token parity, RLS and negative/concurrency tests remain open. No implementation or test result is implied.
