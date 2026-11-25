@@ -125,7 +125,7 @@ PO-approved T-16 option B: one normalized serial per instrument type across all 
 | `idempotency_records` | `id`, `actor_id`, `command_type`, `scope_key`, `idempotency_key`, `request_hash`, `result_reference`, `status`, `expires_at` | Unique `(actor_id, command_type, scope_key, idempotency_key)`; same key/different hash rejected; retention > maximum offline retry window |
 | `sync_batches` | `id`, `actor_id`, `device_id`, `batch_key`, `payload_hash`, `status`, `acknowledged_at` | Unique actor/device/batch key; replay safe; conflict records retained |
 
-INS-016 audit scope and retention remain subject to explicit approval. The table design above is a proposed implementation structure, not approval of the audit policy.
+The INS-016 audit control direction is PO-approved under T-15 option A. The table design above remains a proposed implementation structure; detailed technical approval and T-10 institutional classification, retention, deletion/disposition, legal-hold and network-metadata controls remain pending.
 
 ## 4. Critical indexes and database constraints
 
@@ -178,7 +178,7 @@ Immutable after transition:
 - reviewer decisions;
 - generated document outputs;
 - print events;
-- audit events once INS-016 is approved and its retention policy finalized.
+- audit events according to PO-approved INS-016/T-15, after detailed technical review; production retention and disposition remain subject to T-10 institutional approval.
 
 Corrections create a new version or append-only event. Do not update historical rows to make them appear current.
 
@@ -187,7 +187,7 @@ Corrections create a new version or append-only event. Do not update historical 
 These are not silently resolved by engineering:
 1. Reconcile PO-approved T-16 option B (instrument type + normalized serial across all projects) into the final unit/project association model; confirm any institution-approved exception and instrument-specific normalization/case-sensitivity policy before migration.
 2. Confirm exact Inspector capacity counting predicate (active Inspector role grant versus additionally assigned active project).
-3. Approve INS-016 audit event scope, access, retention, export, and legal hold.
+3. Complete technical review of INS-016 event scope/access/export and obtain T-10 institutional approval for classification, retention, deletion/disposition and legal hold.
 4. Approve privacy classification, evidence retention/deletion, and institutional legal basis.
 5. Confirm official instrument source and version content before publishing production instrument versions.
 6. Approve exact session and assignment effective-time semantics.
