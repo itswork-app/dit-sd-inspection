@@ -1,10 +1,10 @@
 # L05 Source-Event Path Mapping — Review Artifact
 
 **Document ID:** NLA-L05-SOURCE-MAP-001  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Status:** STATIC INVENTORY — NOT CERTIFIED  
 **Date:** 2026-11-24  
-**Source:** LOCK-MANIFEST-001 §7.7, branch `docs/notification-resolver-lock-closure`  
+**Source:** LOCK-MANIFEST-001 v0.4.32 §7.7, canonical `main` baseline at `78688451524900cc58343d05469251806ce415de`  
 **Purpose:** Map every CMD-001–040 canonical event declaration to its actual event-producing transaction boundary, documented candidate lock path and required L05 insertion point.
 
 ## 1. Review conclusion
@@ -99,3 +99,10 @@ The actual wrapper must be VOLATILE and use separate internal SQL commands under
 | G9 / G10 | NOT READY / NOT ACTIVE |
 
 This artifact is a static documentation mapping only. It does not authorize code, SQL, migration, grants, RLS, live database inspection, runtime tests, deployment or merge.
+
+
+## 7. Event-to-selector registry cross-reference — 2026-11-25
+
+[NLA-L05-EVENT-SELECTOR-REGISTRY-001](L05-EVENT-TO-SELECTOR-REGISTRY-001.md) v0.1.1 consumes this CMD-001–040 source declaration inventory and adds the separate product-triage, candidate selector, participant/scope, and writer-dependency crosswalk. Composite declarations remain unresolved and no event is enabled.
+
+This source map continues to be a design-level producer/lock-path inventory only. The 40/40 declaration count is not 40 certified transaction paths. CMD-035 and CMD-036–040 still require operation/finalizer resolution; source lock sequences normalized after L05 remain 0/40; resolver paths certified 0/40; application lock certification 0/50; global acyclicity NOT PROVEN.
