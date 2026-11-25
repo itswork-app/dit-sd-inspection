@@ -32,6 +32,7 @@ export default function HomePage() {
             <small>Digital inspection workspace</small>
           </span>
         </Link>
+        <Link className="auth-link" href="/login">Sign in</Link>
         <span className="environment-pill">
           <span className="status-dot" />
           FOUNDATION
