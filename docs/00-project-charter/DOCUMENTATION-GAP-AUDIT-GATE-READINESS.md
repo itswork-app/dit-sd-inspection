@@ -1,9 +1,10 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.91
-**Audit date:** 2026-11-24  
-**Branch reviewed:** `docs/notification-resolver-lock-closure`  
+**Version:** 1.11.92
+**Audit date:** 2026-11-25  
+**Branch reviewed:** `main`  
+**Reviewed HEAD:** `1a288960d4a6026312493d1ca5d3348193b779df` (post-merge verification, 2026-11-25)  
 **Authority:** Master Implementation Blueprint MIB-001  
 **Status:** AUDIT IN PROGRESS — GATE IMPLEMENTATION NOT READY  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
@@ -905,3 +906,43 @@ This supersedes the generic “abort unfinished work” interpretation. ABORTED 
 PO semantics are approved; technical design remains a G9 prerequisite. The candidate workflow separates Inspector request from Admin/Korlap decision, binds both to the exact returned revision/session, and permits ABORTED only after approval. Rejection leaves the attempt in RETURNED_FOR_CORRECTION for WF-001. CMD-027 remains release-only. Pending requests block FINAL_CLOSE; requester and approver must be different principals.
 
 Outstanding blockers: command IDs, explicit permissions/delegation/SoD, packed-state evidence acceptance and retention, request/decision persistence and constraints, atomic inspection + conditional claim + event + audit + idempotency, RLS/T-18 ACL, lock/fence proof, and QA execution. Do not mark G9 ready or G10 active.
+
+
+## Post-merge SSOT baseline verification — 2026-11-25
+
+**Canonical branch:** `main`  
+**Reviewed HEAD:** `1a288960d4a6026312493d1ca5d3348193b779df`  
+**Integration PR:** [#11 — reconciled inspection SSOT baseline](https://github.com/itswork-app/dit-sd-inspection/pull/11) — MERGED 2026-11-25.
+
+### Integration scope
+
+PR #11 integrated the reconciled Phase 0 / SSOT documentation onto a clean branch created directly from `main`. Its reviewed change inventory contains 79 Markdown paths. The PR scope explicitly excludes application source, executable scripts, SQL, migrations, schema changes, grants/RLS, CI workflow changes, provider configuration, secrets, deployment and data mutation. The stacked ancestry of earlier documentation PRs was not carried into the integration branch.
+
+### Post-merge verification evidence
+
+- Repository default branch remains `main`; the current canonical HEAD is the exact commit stated above.
+- PR #11 is closed and merged.
+- No combined commit status entries were returned for the merge commit: **CI STATUS ABSENT — NOT PASS**.
+- No PR-triggered workflow runs were returned for the merge commit: **WORKFLOW EVIDENCE ABSENT — NOT PASS**.
+- No formal GitHub review submissions or unresolved inline review threads were returned for PR #11.
+- A maintainer self-review attestation was recorded in the PR conversation under GOV-MERGE-001. It is not an independent GitHub approval.
+- No branch-protection bypass is claimed. This verification does not establish that all repository protection settings or required checks have been independently verified.
+
+### Gate and technical-evidence preservation
+
+This integration changes the location of the documentation baseline, not its approval or execution state:
+
+- G9 remains **NOT READY**; G10 remains **NOT ACTIVE**.
+- Production readiness remains **NOT VERIFIED**.
+- QA cases remain **PLANNED / NOT EXECUTED** unless a separate exact execution record proves otherwise.
+- Resolver certification remains **0/40**; application lock certification remains **0/50**.
+- The global lock graph remains **NOT PROVEN ACYCLIC**.
+- Candidate snapshot relation/header remains **NOT ADMITTED**.
+- DGA-B15 remains **NOT VERIFIED**; absent CI/workflow evidence is not treated as passing evidence.
+- No source code, SQL, migration, grants/RLS, live database inspection, provider change, deployment, test execution or production data operation was performed by this post-merge check.
+
+### Next closure work
+
+Continue the existing DGA closure sequence without reopening approved PO semantics or treating documentation integration as technical closure. Prioritize authoritative IFP / Standing Bracket source and annex reconciliation, BA and attendance authority, institutional T-10 privacy/records decisions, T-12 provider ownership evidence, and the still-open command/permission/physical-schema/concurrency contracts. For SES-001, preserve the approved narrow packed-unit ABORT exception: same Inspector and originating active session for practical correction; exceptional ABORT only after Reviewer return, shipment-ready packed/boxed condition, reasoned Inspector request and explicit Admin/Korlap approval. Generic incomplete or hanging attempts remain ineligible.
+
+**Disposition:** post-merge documentation baseline verified at the stated `main` HEAD. This update does not close any DGA blocker, certify a technical control, freeze scope, activate G10 or authorize implementation.
