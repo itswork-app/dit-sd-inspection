@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.27  
+**Version:** 0.1.28  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -464,3 +464,12 @@ R-017, I-013 and D-010 remain OPEN — BLOCKING for command identity, authorizat
 The approved business exception now has a candidate two-step technical design. The request/decision workflow is separate from CMD-027 claim release. Key additional risks are stale revision approval, requester/approver identity confusion, unverified packed-state evidence, concurrent correction versus approval, and partial claim/inspection/audit mutation. The current command/schema/lock contracts do not yet prove these cases.
 
 R-017, I-013 and D-010 remain OPEN — BLOCKING. Engineering/Database/Security must validate the request/decision record, exact command and permission mapping, role/delegation/SoD, evidence acceptance, atomic write set, RLS/T-18, lock/fence protocol and test evidence. No new RAID ID is assigned; no G9/G10 status changes.
+
+
+## D-026 / F05-T4 append-only evidence refinement — 2026-11-25
+
+The candidate logical audit evidence envelope is now documented in NLA-L05-TDR-001 v0.1.13 §17 and cross-referenced by NLA-001 v0.1.23 §26, the Audit Event Catalogue and RTM NOTIF-019. It separates dedicated append-only delivery-attempt evidence, candidate suppression/reschedule outcomes and material security/governance events in the general audit stream. It requires trusted actor/worker provenance, lease-generation fencing, original-candidate correlation, server timestamps, additive correction and privacy minimization.
+
+**D-026 remains OPEN — BLOCKING.** The exact suppression/outcome physical representation, schema/ACL/ordering/integrity controls, stable literal reason codes, provider callback verification and technical sign-offs remain unresolved. T-10 institutional classification, purpose, retention, legal hold, disposition, audit access/export and network metadata remain BLOCKED; no retention period or purge schedule is approved.
+
+TC-NOTIF-095..099 are PLANNED / NOT EXECUTED. No new RAID ID is assigned; R-037 remains OPEN — CRITICAL and is not resolved by this audit-evidence specification. G9 NOT READY; G10 NOT ACTIVE. No implementation, SQL, migration, grants, RLS, provider configuration, test execution or deployment is authorized.
