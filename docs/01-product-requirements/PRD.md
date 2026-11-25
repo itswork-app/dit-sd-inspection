@@ -1,9 +1,11 @@
 # Product Requirements Document — Dit. SD Inspection
 
 Status: Draft — Product Owner validation required  
-Version: 0.2.1  
+Version: 0.2.2  
 Release target: Production  
 Scope baseline: IFP and Standing Bracket only
+
+**Identifier namespace clarification:** `SES-001` in this PRD/RTM requirement catalogue is the project/session/location/instrument/team planning requirement. `SES-001` in the Decision Register is the separate Product Owner decision for session-bound inspection attempts and the narrow packed-unit ABORT exception. Cite the artifact name with the ID; do not resolve either reference by the bare ID alone.
 
 ## 1. Product purpose
 
