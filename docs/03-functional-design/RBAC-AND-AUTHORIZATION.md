@@ -35,7 +35,7 @@ A user may hold more than one role, but each action must resolve the exact effec
 
 Every protected backend operation evaluates all of:
 
-- authenticated user is active;
+- Supabase Auth identity is valid and login-enabled; application account status is APPROVED;
 - user has the required permission;
 - user has the required role;
 - an active assignment grants the requested session/location/instrument scope;
@@ -91,7 +91,9 @@ The following is a proposed permission vocabulary; exact role-to-permission mapp
 
 Proposed logical entities:
 
-- `users`
+- `app_users`
+- `account_requests`
+- append-only `account_decisions`
 - `roles`
 - `permissions`
 - `user_roles`
@@ -100,6 +102,7 @@ Proposed logical entities:
 - `sessions`
 - `operational_assignments`
 - `assignment_members`
+- `user_scope_grants`
 - `audit_events`
 
 Avoid storing authorization as client-editable profile metadata. Use constrained identifiers and relational membership records. RLS policies should be tested for both allowed and denied access, including direct API requests.
@@ -112,7 +115,7 @@ Audit events are append-only. Administrative users may view/export but cannot ed
 
 ## 10. Security acceptance
 
-- Pending/rejected/suspended users cannot read operational data.
+- PENDING/rejected/suspended/disabled users cannot read operational data; only login-enabled APPROVED accounts may proceed to role/scope authorization.
 - User cannot self-assign or elevate role/scope.
 - Cross-location access is denied unless explicitly assigned.
 - Inspector self-approval is denied by backend and database policy.
@@ -144,8 +147,8 @@ An account contributes once to the combined Inspector cap only when it is login-
 3. Registration alone grants no inspection access, role, permission, team membership or operational assignment and does not count toward Inspector capacity.
 4. Super Admin approves or rejects the access request. Role grants, permission grants, scope grants, team membership and operational assignment are separate explicit actions; approval does not imply any of them.
 5. Super Admin determines team count and personnel assigned to each team. A user cannot create or select their own team membership, role or operational assignment.
-5. An account counts toward the Inspector cap only when it is enabled, has an active Inspector role grant, and has at least one currently effective operational Inspector assignment in governed project/session scope. Count once per account.
-6. Role, team and assignment changes are authorized, effective-dated where applicable, and audited. Revocation/suspension removes eligibility according to the canonical capacity predicate.
+6. An account counts toward the Inspector cap only when it is login-enabled, in APPROVED account state, has an active Inspector role grant and has at least one currently effective operational Inspector assignment in governed project/session scope. Count once per account.
+7. Role, team and assignment changes are authorized, effective-dated where applicable, and audited. Revocation/suspension/disable removes eligibility according to the canonical capacity predicate.
 
 
 ## 12. T-17/T-18 permission catalogue reconciliation
