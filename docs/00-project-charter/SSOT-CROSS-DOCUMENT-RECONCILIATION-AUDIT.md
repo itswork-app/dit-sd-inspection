@@ -1,14 +1,16 @@
 # SSOT Cross-Document Reconciliation Audit — Dit. SD Inspection
 
 **Document ID:** SSOT-AUDIT-001  
-**Version:** 0.1.5  
+**Version:** 0.1.6  
 **Status:** STATIC CROSS-DOCUMENT AUDIT COMPLETED — CLOSURE PARTIAL  
 **Audit date:** 2026-11-24  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Branch:** `docs/audit-lock-and-identity-reconciliation`  
 **PR:** #3 — Draft / Open  
 **Authority snapshot reviewed:** AGENTS.md v1.2.1; MIB-001 v1.0.8; DGA-001 v1.11.28; IRG-001 v1.0.3  
-**Implementation authorization:** NOT GRANTED
+**Implementation authorization (historical source snapshot):** NOT GRANTED
+
+> **Current status clarification:** This audit's original authorization wording reflects the source snapshot before the Product Owner's conditional implementation authorization was recorded on 2026-11-24. See §11 for the current controlling status: conditional authorization received; G9 NOT READY; G10 NOT ACTIVE.
 
 ## 1. Executive result
 
@@ -191,3 +193,14 @@ This addendum supersedes only current-source navigation and status pointers; his
 [EVID-EXT-001](EXTERNAL-INSPECTION-EVIDENCE-REGISTER-001.md) v0.1.0 records the six supplied inspection artifacts and the Product Owner's evidence acceptance and serial-number clarification. DGA-B01..B03 now reflect evidence receipt and the completed PO interpretation subcomponents. The 20 Nov SB batch, 23 Nov IFP visit, 23 Nov SB individual checklist and 24 Nov IFP individual checklist are separate events. The 13-row 3TB75B-prefixed serial list is accepted as a correct example per PO clarification; serial strings remain source-exact.
 
 This evidence checkpoint does not establish controlled-source provenance, full 460-row annex reconciliation, signatory delegation, actual attendance verification, T-10 institutional policy, or authenticity of blank/unclear signature fields. AUTH-01 and AUTH-02 remain pending for matters reserved to institutional authority. G1 remains NOT READY pending source/authority closure; G9 remains NOT READY; G10 remains NOT AUTHORIZED. No runtime, CI, independent review or implementation evidence is claimed.
+
+
+## 11. Current authorization and gate status — 2026-11-25
+
+The authorization fields and gate statements in §§1, 3 and 9 are preserved as historical audit snapshots from their stated source dates. The current controlling state is:
+
+- Product Owner conditional implementation authorization: **RECEIVED (2026-11-24)**.
+- G9 scope freeze: **NOT READY**; the technical, institutional, security, database, lock, provider and operational evidence blockers remain open.
+- G10 implementation activation: **NOT ACTIVE** pending verified G9 and a separate G10 activation record.
+- Production readiness: **NOT VERIFIED**.
+- GOV-MERGE-001 permits qualifying documentation-only PRs only; it does not activate G10, freeze scope or authorize implementation.
