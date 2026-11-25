@@ -1,7 +1,7 @@
 # ADR-002 — Application Runtime and Foundation Stack
 
 - Status: ACCEPTED FOR G9-F1/G10-F1 FOUNDATION
-- Version: 1.2.0
+- Version: 1.3.0
 - Decision date: 2026-11-25
 - Decision owner: Product Owner
 - Implementation owner: Solo maintainer with AI engineering partner
@@ -31,8 +31,8 @@ The repository has an approved Vercel + Supabase architecture but no application
 - Public Supabase configuration is optional for the bootstrap build. When configured, the URL and publishable key must be supplied together.
 - The Supabase URL must be an HTTPS project origin outside local development. Reject embedded credentials, non-root paths, query strings and fragments; allow HTTP only for explicit loopback development hosts.
 - Only the public publishable key may be exposed to the browser. Service-role and secret keys remain server-only and are not part of this foundation.
-- Any protected route must verify claims server-side and enforce authorization at the authoritative server/database boundary.
-- The proxy refreshes sessions but is not, by itself, an authorization policy.
+- Any protected route must verify claims server-side and enforce authorization at the authoritative server/database boundary. `getVerifiedIdentity()` is the foundation identity primitive: it uses `auth.getClaims()`, accepts only a non-empty `claims.sub`, and distinguishes unauthenticated sessions from unavailable/configuration/provider outcomes. It does not assign roles or authorize resources.
+- The proxy refreshes sessions but is not, by itself, an authorization policy. A successful proxy refresh does not authorize a request; server handlers must independently resolve verified claims. Never derive identity from client input or unverified cookie/session payloads.
 - Never trust client-provided actor, role, permission, tenant, project, location, session or unit scope.
 - Do not add schema, grants, RLS or privileged RPCs until their exact authorization and transaction contracts are reviewed.
 - A Content-Security-Policy is intentionally deferred until the application adopts a nonce-compatible strategy for Next.js runtime scripts and styles; do not ship a policy that silently breaks the app or rely on unsafe-inline as a shortcut.
@@ -45,7 +45,7 @@ The repository has an approved Vercel + Supabase architecture but no application
 ## Consequences
 
 - Vercel-compatible web runtime with minimal operational footprint.
-- Strong compile-time checks and focused unit testing from the first commit.
+- Strong compile-time checks and focused unit testing from the first commit.\n- Server-side code has a reusable verified-identity primitive without prematurely introducing role or permission semantics.
 - Auth SSR is prepared without requiring live provider credentials for local bootstrap.
 - API callers receive a predictable error envelope and can correlate a response with future privacy-safe diagnostics.
 - Local database development has a standard migration directory and a deterministic repository-level filename validator without creating speculative business tables.
@@ -54,7 +54,7 @@ The repository has an approved Vercel + Supabase architecture but no application
 
 ## Verification
 
-CI is configured to execute ESLint, TypeScript, migration filename validation, Vitest (including Node's built-in test runner for migration validation) and a production Next.js build. The environment parser has unit cases for absent/partial configuration, HTTPS origin validation, whitespace normalization, embedded credentials, URL path/query/fragment rejection, insecure non-local URLs and loopback development URLs. The health endpoint has tests for its status/body timestamp contract and no-store/nosniff headers. The API error contract has tests for HTTP mapping, safe public envelopes, no-store/security headers and malformed/missing correlation IDs. The migration validator has Node test cases for an empty foundation directory, valid names, malformed names, invalid calendar timestamps and duplicate timestamps. These tests are specified in source but remain NOT VERIFIED until they execute successfully. Supabase CLI startup/reset has not been executed, and no migration has been applied. A successful foundation CI run is not evidence of production readiness or business feature correctness.
+CI is configured to execute ESLint, TypeScript, migration filename validation, Vitest (including Node's built-in test runner for migration validation) and a production Next.js build. The environment parser has unit cases for absent/partial configuration, HTTPS origin validation, whitespace normalization, embedded credentials, URL path/query/fragment rejection, insecure non-local URLs and loopback development URLs. The health endpoint has tests for its status/body timestamp contract and no-store/nosniff headers. The API error contract has tests for HTTP mapping, safe public envelopes, no-store/security headers and malformed/missing correlation IDs. The migration validator has Node test cases for an empty foundation directory, valid names, malformed names, invalid calendar timestamps and duplicate timestamps. The verified-identity resolver has unit cases for a verified subject, missing session, invalid JWT, malformed subject, provider errors and thrown exceptions. These tests are specified in source but remain NOT VERIFIED until they execute successfully. Supabase CLI startup/reset has not been executed, and no migration has been applied. A successful foundation CI run is not evidence of production readiness or business feature correctness.
 
 ## References
 
