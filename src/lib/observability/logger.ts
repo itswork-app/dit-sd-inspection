@@ -14,6 +14,24 @@ export type SafeLogContext = {
 };
 
 const REQUEST_ID_PATTERN = /^[A-Za-z0-9._:-]{8,128}$/;
+const LOG_LEVELS = new Set<LogLevel>(["info", "warn", "error"]);
+const LOG_EVENTS = new Set<LogEvent>([
+  "api.request.completed",
+  "auth.identity.unavailable",
+  "auth.session_refresh.unavailable"
+]);
+const LOG_COMPONENTS = new Set<NonNullable<SafeLogContext["component"]>>([
+  "api",
+  "auth",
+  "runtime",
+  "supabase"
+]);
+const LOG_OUTCOMES = new Set<NonNullable<SafeLogContext["outcome"]>>([
+  "success",
+  "denied",
+  "failure",
+  "unavailable"
+]);
 
 /**
  * Emits a bounded structured event. Only explicitly allow-listed diagnostic
@@ -25,6 +43,8 @@ export function logEvent(
   event: LogEvent,
   context: SafeLogContext = {}
 ): void {
+  if (!LOG_LEVELS.has(level) || !LOG_EVENTS.has(event)) return;
+
   const record: {
     timestamp: string;
     level: LogLevel;
@@ -43,8 +63,12 @@ export function logEvent(
   if (context.requestId && REQUEST_ID_PATTERN.test(context.requestId)) {
     record.requestId = context.requestId;
   }
-  if (context.component) record.component = context.component;
-  if (context.outcome) record.outcome = context.outcome;
+  if (context.component && LOG_COMPONENTS.has(context.component)) {
+    record.component = context.component;
+  }
+  if (context.outcome && LOG_OUTCOMES.has(context.outcome)) {
+    record.outcome = context.outcome;
+  }
   if (
     Number.isInteger(context.statusCode) &&
     context.statusCode !== undefined &&
