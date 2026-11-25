@@ -75,7 +75,7 @@ No `user_id`, `auth_user_id`, actor, role, approval status, account status or sc
 {
   "outcome": "ACCEPTED",
   "request_id": "uuid",
-  "approval_status": "PENDING",
+  "account_status": "PENDING",
   "replayed": false,
   "correlation_id": "uuid"
 }
@@ -139,7 +139,7 @@ Decision is fixed by the command; caller cannot submit an alternate decision val
 {
   "outcome": "APPROVED",
   "target_user_id": "uuid",
-  "approval_status": "APPROVED",
+  "account_status": "APPROVED",
   "decision_id": "uuid",
   "replayed": false,
   "correlation_id": "uuid"
@@ -192,7 +192,8 @@ Decision is fixed by the command; caller cannot submit an alternate decision val
   "schema_version": 1,
   "idempotency_key": "opaque-client-generated-key",
   "target_user_id": "uuid",
-  "reason": "non-empty rejection rationale"
+  "reason_category": "allowlisted-category",
+  "reason": "non-empty, length-bounded rejection rationale"
 }
 ```
 
@@ -202,7 +203,7 @@ Decision is fixed by the command; caller cannot submit an alternate decision val
 {
   "outcome": "REJECTED",
   "target_user_id": "uuid",
-  "approval_status": "REJECTED",
+  "account_status": "REJECTED",
   "decision_id": "uuid",
   "replayed": false,
   "correlation_id": "uuid"
@@ -386,7 +387,7 @@ Decision is fixed by the command; caller cannot submit an alternate decision val
   "schema_version": 1,
   "idempotency_key": "opaque-client-generated-key",
   "target_user_id": "uuid",
-  "scope_type": "PROJECT|SESSION|LOCATION|TEAM|ASSIGNMENT",
+  "scope_type": "PROJECT|SESSION|LOCATION|INSTRUMENT|TEAM|ASSIGNMENT",
   "scope_id": "uuid",
   "grant_kind": "ROLE|PERMISSION",
   "grant_ref": "canonical-role-or-permission-code",
