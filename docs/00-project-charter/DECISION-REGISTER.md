@@ -409,7 +409,7 @@ The Product Owner approves the following product semantics:
 
 ### C. Scope governance and revocation
 
-10. Scope inheritance is not implicit. Project, session, location, team, assignment and other operational scopes must be explicit and checked at the authoritative server/database boundary.
+10. Scope inheritance is not implicit. Project, session, location, instrument, team, assignment and other operational scopes must be explicit and checked at the authoritative server/database boundary.
 11. Revocation removes authority for subsequent protected commands after authoritative revalidation. Existing assignments, sessions, inspection history and evidence are not silently deleted, aborted, reassigned or rewritten. Any workflow transition for work already in progress must follow its own approved domain contract and audit trail.
 
 **Existing T-14 capacity decision is unchanged and is not reopened.** Its approved 1–100 combined capacity (default 50), distinct-account counting predicate and serialization requirement remain controlling.
