@@ -1,10 +1,10 @@
 # Pre-Implementation Technical Closure Matrix — F-03, F-04 and SES-001
 
 **Document ID:** PTCM-001  
-**Version:** 0.1.1  
+**Version:** 0.1.2  
 **Status:** CONTROLLED STATIC CLOSURE MATRIX — REVIEW REQUIRED; NOT APPROVED FOR IMPLEMENTATION  
 **Date:** 2026-11-25  
-**Repository baseline:** `main` at `0db79d376face690b353d466a18129b6dd0ae5b2`  
+**Repository baseline:** `main` at `18ac4f91484a1afa5e7e5bf35fe9c7b6debfaaa5`  
 **Authority:** AGENTS.md v1.2.3; MIB-001; DGA-001; LOCK-GRAPH-001 v0.4.25; LOCK-MANIFEST-001 v0.4.32; LOCK-NORMALIZATION-001 v0.1.1; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.14; NLA-L05-TDR-001 v0.1.14; NLA-L05-WRITER-MATRIX-001 v0.1.6; SES-001 Decision Register; QA v0.7.3  
 **Gate:** G9 NOT READY; G10 NOT ACTIVE
 
@@ -183,6 +183,6 @@ No source of truth should claim technical closure until the same approved decisi
 Any change to approved SES-001 semantics requires a new PO decision. Any institutional evidence/records/retention decision requires the authorized institutional owner. Technical approval requires accountable Engineering, Database, Security and QA review. Static inventories, candidate ranks, diagrams and planned tests are not certifications.
 
 
-## 9. Post-PR #23 baseline reconciliation — 2026-11-25
+## 9. Post-PR #24 baseline reconciliation — 2026-11-25
 
-PTCM-001 v0.1.1 is reviewed against `main` at `0db79d376face690b353d466a18129b6dd0ae5b2`, after PR #23 merged. Its referenced LOCK-GRAPH-001 baseline is v0.4.25. The underlying F-03/F-04/SES-001 dispositions are unchanged: F-03 NOT PROVEN ACYCLIC; F-04 0 writers certified; SES-001 technical contract OPEN; QA PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE. This version update reconciles document provenance only and does not close evidence requirements or authorize implementation.
+PTCM-001 v0.1.2 is reviewed against `main` at `18ac4f91484a1afa5e7e5bf35fe9c7b6debfaaa5`, after PR #24 merged. Its referenced LOCK-GRAPH-001 baseline is v0.4.25. The underlying F-03/F-04/SES-001 dispositions are unchanged: F-03 NOT PROVEN ACYCLIC; F-04 0 writers certified; SES-001 technical contract OPEN; QA PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE. This version update reconciles document provenance only and does not close evidence requirements or authorize implementation.
