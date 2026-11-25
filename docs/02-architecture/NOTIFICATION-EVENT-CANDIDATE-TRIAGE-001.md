@@ -1,10 +1,10 @@
 # Notification Event Candidate Triage — Product Workflow Audit
 
 **Document ID:** NLA-EVENT-TRIAGE-001  
-**Version:** 0.1.2  
+**Version:** 0.1.3  
 **Status:** STATIC TRIAGE — 11 FIRST-BATCH CANDIDATES PO-APPROVED FOR SPECIFICATION/REVIEW ONLY; NO EVENT ENABLED  
-**Date:** 2026-11-24  
-**Branch:** `docs/notification-resolver-lock-closure`  
+**Date:** 2026-11-25  
+**Baseline:** `main` at `78688451524900cc58343d05469251806ce415de`  
 **Authority:** PRD-001, approved Decision Register, CMD contracts and controlled instrument sources. This document does not supersede them.
 
 ## 1. Purpose and scope boundary
@@ -174,9 +174,16 @@ No source code, SQL, migration, grant/revoke, RLS, live DB, runtime test, deploy
 - `docs/02-architecture/NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md` §§4.2.4–4.2.6.
 - `docs/02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md` §5 (role/grant matrix NOT APPROVED).
 - `docs/00-project-charter/DECISION-REGISTER.md` POQ-001 and POQ-04.
-- Root `AGENTS.md` v1.2.2.
+- Root `AGENTS.md` v1.2.3.
 
 
 ## 11. PO decision update — 2026-11-24
 
 The Product Owner approved all eleven first-batch candidates listed in §5 for specification and technical review only. The canonical decision is recorded in `docs/00-project-charter/DECISION-REGISTER.md`; the controlled draft registry is `NLA-EVENT-REGISTRY-001 v0.1.0`. This does not enable any event or approve recipients, channels, physical fields, role grants, selectors, dispatch profiles, implementation or tests. All registry rows remain UNRESOLVED — NOT ENABLED. `account.requested` remains deferred, neither approved nor rejected. F-05/F-04/F-03/F-07 remain OPEN; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 12. L05 event-to-selector registry candidate prepared — 2026-11-25
+
+The next controlled action recorded in §8 has been completed as a documentation-only review artifact: [NLA-L05-EVENT-SELECTOR-REGISTRY-001](L05-EVENT-TO-SELECTOR-REGISTRY-001.md) v0.1.1 maps the CMD-001–040 source declarations and the eleven PO-approved specification candidates to candidate selector families, unresolved participant/scope bindings, POQ-04 dispatch invariants and logical writer dependencies.
+
+The artifact does not enable events or resolve the unknowns identified by this triage. P-class candidates outside the approved eleven (including `account.requested` and `instrument.version_published`) remain deferred, neither approved nor rejected. U tokens remain unresolved; O/X rows remain excluded from ordinary matching under current evidence. Next action is Engineering/Security/Database review of the crosswalk and closure of F05-T1..T5/F-04 evidence, not implementation. G9 NOT READY; G10 NOT ACTIVE; resolver 0/40; application locks 0/50; global graph NOT PROVEN ACYCLIC; QA PLANNED / NOT EXECUTED.

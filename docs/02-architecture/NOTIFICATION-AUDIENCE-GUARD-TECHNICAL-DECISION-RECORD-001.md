@@ -1,9 +1,9 @@
 # Notification Audience Guard — Technical Decision Record
 
 **Document ID:** NLA-L05-TDR-001  
-**Version:** 0.1.8  
+**Version:** 0.1.9  
 **Status:** PO-APPROVED CANDIDATE — technical approval pending Engineering, Database and Security  
-**Date:** 2026-11-24  
+**Date:** 2026-11-25  
 **Decision authority:** Product Owner candidate selection recorded in NLA-RESOLVER-LOCK-001 §11  
 **Parent design:** NLA-RESOLVER-LOCK-001 v0.1.11  
 **Scope:** PostgreSQL transaction serialization for event-time notification audience resolution; CMD-001–040 source-event paths, CMD-051 policy publication, CMD-052 fan-out and CMD-054 escalation
@@ -451,3 +451,12 @@ The table below distinguishes event-time recipient qualification from dispatch-t
 **Mandatory dispatch-profile fields:** account eligibility predicate; channel capability predicate; consent/revocation predicate; mandatory security predicate; current role/scope predicate (including whether it is intentionally omitted for a transition notice); parent-state predicate (including whether it is intentionally omitted for closure notices); retry classification; and suppression reason mapping. Each predicate must be versioned and auditable.
 
 **Decision boundary:** this matrix does not override the NLA baseline that disabled, suspended or expired accounts are ineligible for dispatch. The precise account-reactivation reschedule rule, terminal/retryable reason catalog and scope/security exceptions remain approval inputs. A conflict between mandatory security and delivery of a transition notice must fail closed and be escalated for explicit Security/PO resolution, not silently bypassed.
+
+
+## 16. L05 event-to-selector registry crosswalk — 2026-11-25
+
+[NLA-L05-EVENT-SELECTOR-REGISTRY-001](L05-EVENT-TO-SELECTOR-REGISTRY-001.md) v0.1.1 now provides the static CMD-001–040 event-to-selector crosswalk, the eleven PO-approved first-batch candidate mappings, candidate grammar v1, logical scope/participant questions, and F-04 eligibility-writer dependency intake.
+
+This artifact is an inventory/review candidate only. It does not convert the eleven PO-approved specification candidates into an enabled allowlist, resolve any NREG participant or scope, approve grammar v1, admit L05 or its key, or certify a producer/writer path. Composite/conditional CMD declarations remain unresolved; all eleven NREG rows remain PARTIAL STATIC REVIEW / NOT ENABLED. F05-T1..T5 remain OPEN; selector dependency universe remains NOT FROZEN; writers certified 0; resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
+
+The new crosswalk is a traceability aid for Engineering/Security/Database review. Exact source function/worker boundaries, physical columns, implicit FK/trigger/helper edges, all non-command writers, suppression reason codes, retry budgets, audit/retention approvals and atomic snapshot proof remain required. No SQL, migration, grants, RLS, runtime test or implementation is authorized.

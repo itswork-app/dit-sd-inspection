@@ -1,10 +1,10 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.92
+**Version:** 1.11.93
 **Audit date:** 2026-11-25  
 **Branch reviewed:** `main`  
-**Reviewed HEAD:** `1a288960d4a6026312493d1ca5d3348193b779df` (post-merge verification, 2026-11-25)  
+**Reviewed HEAD:** `78688451524900cc58343d05469251806ce415de` (post-PR #12 main baseline, 2026-11-25)  
 **Authority:** Master Implementation Blueprint MIB-001  
 **Status:** AUDIT IN PROGRESS — GATE IMPLEMENTATION NOT READY  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
@@ -946,3 +946,12 @@ This integration changes the location of the documentation baseline, not its app
 Continue the existing DGA closure sequence without reopening approved PO semantics or treating documentation integration as technical closure. Prioritize authoritative IFP / Standing Bracket source and annex reconciliation, BA and attendance authority, institutional T-10 privacy/records decisions, T-12 provider ownership evidence, and the still-open command/permission/physical-schema/concurrency contracts. For SES-001, preserve the approved narrow packed-unit ABORT exception: same Inspector and originating active session for practical correction; exceptional ABORT only after Reviewer return, shipment-ready packed/boxed condition, reasoned Inspector request and explicit Admin/Korlap approval. Generic incomplete or hanging attempts remain ineligible.
 
 **Disposition:** post-merge documentation baseline verified at the stated `main` HEAD. This update does not close any DGA blocker, certify a technical control, freeze scope, activate G10 or authorize implementation.
+
+
+## L05 event-to-selector registry candidate v1 — F-05/F-04 intake (2026-11-25)
+
+[NLA-L05-EVENT-SELECTOR-REGISTRY-001](../02-architecture/L05-EVENT-TO-SELECTOR-REGISTRY-001.md) v0.1.1 is now present as a static CMD-001–040 event-to-selector crosswalk. It maps the eleven PO-approved specification candidates, the candidate ROLE_SCOPE/EVENT_PARTICIPANT grammar, conceptual participant/scope questions, POQ-04 dispatch invariants and logical eligibility-writer domains. Cross-references were synchronized in NLA-L05-TDR-001 v0.1.9, NLA-L05-WRITER-MATRIX-001 v0.1.5, NLA-EVENT-REGISTRY-001 v0.1.11, NLA-EVENT-TRIAGE-001 v0.1.3 and NLA-L05-SOURCE-MAP-001 v0.1.1.
+
+**Disposition is unchanged:** the crosswalk is a review candidate, not an enabled allowlist or technical approval. NREG-001..011 remain PARTIAL STATIC REVIEW / UNRESOLVED / NOT ENABLED; F05-T1..T5 and F-04 remain OPEN; selector dependency universe is not frozen; writers certified 0; resolver certification 0/40; application lock certification 0/50; global lock graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; QA PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE. No technical gate is advanced.
+
+No Product Owner decision was changed. POQ-04's five approved transition outcomes remain binding, including pre-transition candidate selection, exact-selector-only participants, suppression without widening and retry reuse of the original candidate/checkpoint. The approved narrow SES-001 packed-unit ABORT policy is untouched. No source code, SQL, migration, grants/RLS, live database, provider, runtime test, deployment or production data operation was performed or authorized.
