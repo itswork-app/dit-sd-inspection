@@ -39,7 +39,7 @@ Supplied evidence is treated as available baseline evidence. It must not be desc
 | H-008 | Medium | Physical ERD invariants, serial normalization, assignment temporal constraints, and evidence-to-revision linkage require final constraint-level review. | Remains open before migrations. |
 | H-009 | Medium | Trusted command boundary between Vercel server functions and PostgreSQL RPC is not finalized. | Remains open before API implementation. |
 | H-010 | Medium | BA/attendance authority, report headline definition, project reconciliation, and exact session transitions are not fully approved. | Remains open for Product Owner decisions. |
-| H-011 | Medium | Audit INS-016 remains PROPOSED; it is not an approved policy. | Keep status PROPOSED until explicit decision. |
+| H-011 | Medium | Historical finding: INS-016 was PROPOSED at the time of this audit. | Superseded by PO approval T-15 option A (2026-11-24); technical design, implementation, tests and T-10 institutional controls remain open. |
 | H-012 | Medium | 100 concurrent authenticated users is a load-test target, not proven capacity or an unconditional latency guarantee. | Keep as test target; establish measurable thresholds and run representative tests later. |
 
 ## 4. Capacity contract after correction
@@ -78,7 +78,7 @@ Before scope freeze, the following traceability work remains:
 - Map each instrument checklist item and each photo slot to stable requirement IDs and corresponding positive/negative tests.
 - Resolve the minimum Inspector capacity parameter and align test boundaries.
 - Ensure each unresolved decision is visibly marked OPEN in PRD, Decision Register, RTM, RAID, and relevant detailed specification.
-- Confirm that no proposed policy (including INS-016) is treated as approved in test acceptance criteria.
+- Confirm that test acceptance criteria distinguish PO-approved INS-016 policy (T-15 option A) from unapproved implementation, technical verification and T-10 institutional retention/privacy controls.
 
 ## 7. Scope-freeze blockers
 
@@ -95,7 +95,7 @@ The following must be resolved or explicitly accepted by the authorized Product 
 9. Final ERD constraints, serial normalization/uniqueness, temporal assignment semantics, and evidence-revision binding.
 10. Final API trusted-command boundary and privileged operation model.
 11. Numeric performance thresholds and representative load profile; 100 concurrent-user test remains required.
-12. Explicit disposition of INS-016 audit proposal and remaining operational/document authority decisions.
+12. Reconcile the T-15 INS-016 policy approval with remaining technical, implementation, test and institutional authority decisions.
 
 ## 8. Audit conclusion
 
