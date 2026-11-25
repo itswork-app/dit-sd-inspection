@@ -178,7 +178,7 @@ Tests are specified only; none have been executed.
 
 ## 11. Open approvals and dependencies
 
-1. **INS-016 remains a draft proposal, not approved.** Product Owner and institution must explicitly approve the audit event policy and append-only requirement.
+1. **INS-016 policy direction is PO APPROVED under T-15 option A (2026-11-24).** The detailed technical design, institutional records/privacy/security approvals, implementation and tests remain pending; T-10 institutional classification, retention, deletion/disposition and legal-hold controls are not approved by T-15.
 2. Records/privacy/legal owner must approve audit classification, retention duration, deletion/disposition, legal hold, and access/export authority.
 3. Security owner must approve whether IP/network metadata is collected and its retention.
 4. Project Sponsor must decide whether independent immutable/WORM archive is required and fund it if selected.
