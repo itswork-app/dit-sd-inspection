@@ -1,10 +1,10 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.97
+**Version:** 1.11.98
 **Audit date:** 2026-11-25  
 **Branch reviewed:** `main`  
-**Reviewed HEAD:** `f3248037c5754ca537c033422d3e247be34f931d` (post-PR #14 main baseline, 2026-11-25)  
+**Reviewed HEAD:** `bf2caaa5ccb6225ab12e18724015039b453830df` (post-PR #14 main baseline, 2026-11-25)  
 **Authority:** Master Implementation Blueprint MIB-001  
 **Status:** AUDIT IN PROGRESS — GATE IMPLEMENTATION NOT READY  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
@@ -975,3 +975,12 @@ NLA-L05-TDR-001 v0.1.11 §4.2.6.1 adds an eleven-row candidate dispatch review m
 Synchronized references: NLA-L05-EVENT-SELECTOR-REGISTRY-001 v0.1.3, NLA-EVENT-REGISTRY-001 v0.1.13, RTM-001 v0.1.29 and QA Catalogue v0.7.0. TC-NOTIF-069 now includes all eleven NREG profiles and unresolved-row fail-closed controls. All QA remains PLANNED / NOT EXECUTED.
 
 **F05-T2 disposition: OPEN — CANDIDATE MATRIX ONLY.** No event-specific dispatch profile is approved; all eleven NREG candidates remain UNRESOLVED / NOT ENABLED. No recipient, role, scope, suppression reason, retry classification, current-scope predicate or resource permission is inferred. F05-T3/T4/T5 and F-04 remain OPEN; writer certification 0; resolver certification 0/40; application lock certification 0/50; global lock graph NOT PROVEN ACYCLIC; snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE. RAID cross-reference refresh remains outstanding. No code, SQL, migration, grants/RLS, live DB, runtime test, provider change, deployment or data mutation was performed or authorized.
+
+
+## F05-T3 suppression/retry state machine — candidate specification (2026-11-25)
+
+NLA-L05-TDR-001 v0.1.12 §4.2.7 records candidate outcome classes for policy suppression, account reactivation, quiet-hour deferral, channel/consent/security/scope restrictions, transient provider failure, permanent rejection, ambiguous provider acceptance and worker lease loss. It preserves the immutable POQ-01 audience/checkpoint and POQ-04 same-candidate reactivation rule; POQ-02 quiet hours remain delivery deferral only and do not pause SLA.
+
+NLA-001 v0.1.22 §15.5 records the blocking delivery-state graph gap: the current progression has no explicit legal transition for a retryable provider failure after SENDING. No new status or transition is approved. QA v0.7.1 strengthens TC-NOTIF-063/064; RTM v0.1.30 updates NOTIF-018. All QA remains PLANNED / NOT EXECUTED.
+
+**F05-T3 disposition: OPEN — CANDIDATE TAXONOMY ONLY.** Stable reason codes, classification for consent/channel/security/scope, retry owner, scheduler boundary, numeric attempt/age/backoff/dead-letter/alert budgets, provider-specific handling, UNKNOWN reconciliation and T-10 retention remain unresolved. F05-T4/T5 and F-04 remain OPEN; writer certification 0; resolver 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE. No provider, code, SQL, migration, grants/RLS, live database, runtime test, deployment or data mutation was performed or authorized.
