@@ -3,6 +3,7 @@ import { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { readSupabasePublicConfig } from "@/lib/env";
 import { updateSession } from "./proxy";
+import { proxy as rootProxy } from "../../../proxy";
 
 vi.mock("@supabase/ssr", () => ({ createServerClient: vi.fn() }));
 vi.mock("@/lib/env", () => ({ readSupabasePublicConfig: vi.fn() }));
@@ -22,6 +23,15 @@ describe("updateSession", () => {
     });
     vi.mocked(createServerClient).mockReturnValue({ auth: { getClaims } } as never);
     getClaims.mockResolvedValue({ data: null, error: null });
+  });
+
+  it("propagates one request ID to downstream context and the response", async () => {
+    const incoming = request();
+    const response = await rootProxy(incoming);
+    const requestId = incoming.headers.get("x-request-id");
+
+    expect(requestId).toMatch(/^[A-Za-z0-9._:-]{8,128}$/);
+    expect(response.headers.get("X-Request-Id")).toBe(requestId);
   });
 
   it("skips Supabase when public configuration is absent", async () => {
