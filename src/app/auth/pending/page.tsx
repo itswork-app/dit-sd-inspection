@@ -27,8 +27,8 @@ export default async function PendingAccessPage({ searchParams }: PendingPagePro
           <>
             <p className="eyebrow">IDENTITY VERIFIED</p>
             <h1 id="pending-title">Akses operasional belum aktif</h1>
-            <p className="auth-description">Identitas Google berhasil diverifikasi dan sesi server telah dibuat. Akun tetap memerlukan persetujuan serta penetapan role sebelum fitur inspeksi dapat digunakan.</p>
-            <p className="auth-note">Tidak ada role atau hak akses yang diberikan otomatis melalui proses login.</p>
+            <p className="auth-description">Identitas Google berhasil diverifikasi dan sesi server telah dibuat. Mekanisme persetujuan akun dan penetapan role belum diintegrasikan ke fondasi ini, sehingga aplikasi belum dapat menetapkan hak akses operasional.</p>
+            <p className="auth-note">Login tidak memberikan role atau hak akses operasional secara otomatis.</p>
             {params.error === "signout" ? <p className="auth-error" role="alert">Sesi belum berhasil diakhiri. Silakan coba kembali.</p> : null}
             <form action={signOutAction}><button className="auth-button auth-button-secondary" type="submit">Keluar dari akun</button></form>
           </>
