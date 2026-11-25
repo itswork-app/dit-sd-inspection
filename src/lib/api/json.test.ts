@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { parseJsonRequest } from "./json";
+import { parseJsonRequest, type JsonBodyValidator } from "./json";
 
 type CreateNoteInput = { title: string };
 
@@ -57,7 +57,7 @@ describe("parseJsonRequest", () => {
   });
 
   it("contains exceptions thrown by a validator", async () => {
-    const validator = vi.fn(() => {
+    const validator: JsonBodyValidator<unknown> = vi.fn(() => {
       throw new Error("private validation details");
     });
     const result = await parseJsonRequest(jsonRequest("{}"), validator);
@@ -102,7 +102,8 @@ describe("parseJsonRequest", () => {
   });
 
   it("rejects invalid UTF-8", async () => {
-    const body = new Uint8Array([0xc3, 0x28]);
+    const body = new ArrayBuffer(2);
+    new Uint8Array(body).set([0xc3, 0x28]);
     const result = await parseJsonRequest(jsonRequest(body), isCreateNoteInput);
 
     expect(result).toEqual({ ok: false, code: "BAD_REQUEST" });
