@@ -525,7 +525,7 @@ The table below distinguishes event-time recipient qualification from dispatch-t
 
 ## 16. L05 event-to-selector registry crosswalk — 2026-11-25
 
-[NLA-L05-EVENT-SELECTOR-REGISTRY-001](L05-EVENT-TO-SELECTOR-REGISTRY-001.md) v0.1.1 now provides the static CMD-001–040 event-to-selector crosswalk, the eleven PO-approved first-batch candidate mappings, candidate grammar v1, logical scope/participant questions, and F-04 eligibility-writer dependency intake.
+[NLA-L05-EVENT-SELECTOR-REGISTRY-001](L05-EVENT-TO-SELECTOR-REGISTRY-001.md) v0.1.2 now provides the static CMD-001–040 event-to-selector crosswalk, the eleven PO-approved first-batch candidate mappings, candidate grammar v1, logical scope/participant questions, and F-04 eligibility-writer dependency intake.
 
 This artifact is an inventory/review candidate only. It does not convert the eleven PO-approved specification candidates into an enabled allowlist, resolve any NREG participant or scope, approve grammar v1, admit L05 or its key, or certify a producer/writer path. Composite/conditional CMD declarations remain unresolved; all eleven NREG rows remain PARTIAL STATIC REVIEW / NOT ENABLED. F05-T1..T5 remain OPEN; selector dependency universe remains NOT FROZEN; writers certified 0; resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
 
