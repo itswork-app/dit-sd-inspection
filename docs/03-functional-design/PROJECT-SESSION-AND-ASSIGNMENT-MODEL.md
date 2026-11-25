@@ -1,6 +1,6 @@
 # Project, Session, Target, and Assignment Model
 
-**Status:** Draft v0.1.0 — requires Product Owner validation  
+**Status:** Draft v0.3.0 — Product Owner semantics approved; technical and institutional validation pending  
 **Package:** C — Functional and Operational Design
 
 ## 1. Core hierarchy
@@ -132,3 +132,54 @@ Changes to target, schedule, location, instrument, assignment, and team membersh
 ## Super Admin authority for team structure and staffing (PO clarification, 2026-11-24)
 
 Super Admin controls the number of teams created for the project/session and the personnel assigned to each team. Personnel must first have registered application accounts; registration does not automatically place a person on a team or grant an operational role. Super Admin approves the account and assigns role(s), permissions, scope, team membership, and the operational assignment. Users cannot self-enroll into teams or self-assign inspection work. Team size and staffing are explicit planning data and must respect the approved combined Inspector cap and session/location/instrument plan.
+
+## Product Owner decision update — closure, capacity and instrument deactivation (2026-11-24)
+
+### Closed project/session fence — LPR-04
+
+- Once a project or session is CLOSED, no new normal mutation or finalization is accepted, including child creation, assignment changes, claim acquisition/release, inspection changes, evidence/document finalization, attendance verification or worker completion that advances scoped work.
+- Closure must serialize against every child writer and asynchronous finalizer. A preflight completeness read is advisory; the closure transaction must revalidate the gates under the approved parent-fence protocol.
+- Reopening requires an explicit privileged workflow, recorded reason and audit. No ordinary transition silently reopens CLOSED state.
+- Existing work is preserved as historical evidence; no automatic deletion or mutation is implied by closure.
+
+### Inspector capacity — LPR-05 / T-14
+
+The already approved T-14 predicate remains authoritative: count distinct login-enabled accounts with an active Inspector role grant and at least one currently effective operational Inspector assignment within the governed project/session scope. Count each account once. Registration alone, pending/rejected/suspended/disabled accounts and expired role grants do not count. Team membership/assignment, role grant/revoke/expiry, account disable/suspension and capacity changes must share one serialization point whenever they can change the qualifying population. The combined 1–100 cap/default 50 and existing no-silent-deactivation rule remain unchanged.
+
+### Instrument deactivation — LPR-06
+
+Deactivation blocks new assignment selection. An already-pinned session/assignment continues to reference its exact immutable historical instrument version by default. A safety withdrawal may override continued use only through a separately authorized, reasoned and audited workflow identifying affected sessions and required operational action. Deactivation must never rewrite historical instrument snapshots.
+
+**Approval boundary:** these are PO-approved product semantics. Exact parent/child lock order, all eligibility-changing paths, safety-withdrawal authority, database enforcement and concurrency tests remain open for Engineering/Security and relevant institutional/operational owners. No implementation or tests are claimed.
+
+
+## Product Owner decision synchronization — CMD-011–017 (2026-11-24)
+
+The Product Owner approved the CMD-011–017 product semantics recorded in the Decision Register and [CMD-011–020 decision package](../02-architecture/CMD-011-020-PO-DECISION-AND-ENGINEERING-REVIEW-PACKAGE.md). This section is normative for product behavior and supersedes conflicting draft examples in this document; it does not approve physical schema, lock protocol, permissions/grants or implementation.
+
+### Session creation and lifecycle
+- CMD-011 creates a session in server-selected `DRAFT` state, only while the canonical project lifecycle permits session creation. Do not add `PLANNED` as a persisted session state.
+- Store time instants in UTC. Interpret local user input against the project's canonical IANA timezone; reject nonexistent or ambiguous DST local times unless an explicit disambiguation contract is later approved.
+- Session overlap is not prohibited by default.
+- Preserve T-07 session states exactly: `DRAFT`, `ACTIVE`, `PAUSED`, `CLOSED`. `CLOSED` is terminal in ordinary flow.
+- Korlap may activate, pause, resume or request closure only within assigned scope and explicit permission. A closure request is an action/event, not a new state. Final closure is a separate authorized action by Super Admin after gate validation. Reopening requires a privileged, reasoned and audited workflow.
+- Session code is immutable. Metadata updates are allowlisted, reasoned, and cannot reinterpret schedules after dependent work references the session.
+
+### Assignment and membership
+- CMD-014 is create-only and creates the complete initial roster atomically. Server chooses the initial published state only after validation.
+- Assignment intervals use half-open `[start,end)` semantics.
+- Reject overlapping effective membership only when it creates duplicate/conflicting Inspector eligibility in the same governed project/session scope.
+- CMD-015 records a separate `effective_at` for each membership end, requires a reason, ends history rather than hard-deleting it, and never deletes/reassigns/invalidates submitted inspections because a member is removed.
+- Behavior for removal while a claim or in-progress workflow is active remains an operational decision; do not silently orphan or transfer work.
+
+### Target plans
+- Normal target plans are session-scoped. Project-wide plans require a separately justified Product Owner change.
+- Draft actions are `CREATE_DRAFT`, `REPLACE_DRAFT_ALLOCATIONS` and `PUBLISH`. Published plans are immutable; corrections create a new version.
+- Allocation uniqueness is `(target_plan_id, assignment_id, target_date)`; duplicates and zero quantity are rejected. Quantity units/ranges and draft concurrency enforcement remain technical contract items.
+
+### Instrument creation/configuration/publication
+- CMD-018 creates a draft/inactive instrument that cannot be selected for assignment until a version is published. Code normalization direction is NFKC, trim surrounding whitespace, invariant uppercase for the approved ASCII alphabet, reject internal whitespace/control characters and enforce uniqueness on normalized value. Alphabet, collation and implementation require Engineering/Security approval.
+- CMD-019 replaces the complete draft declarative configuration atomically; omitted children are removed from draft only. Published snapshots are immutable. Each save has a meaningful change summary. Executable expressions, dynamic code, arbitrary regex execution and unbounded recursion are excluded.
+- CMD-020 reaffirms T-17: Super Admin needs explicit `instrument.publish`; `instrument.manage` alone is insufficient. Publication is server-validated; published version and children are immutable; corrections create a new version; sessions/assignments stay pinned. Exact hash, ACL, atomicity and lock design remain technical review items.
+
+**Approval boundary:** Product semantics above are PO APPROVED. Engineering/Security/Database/QA and institutional/operational authorities retain their separate decisions. No implementation or verification is claimed.
