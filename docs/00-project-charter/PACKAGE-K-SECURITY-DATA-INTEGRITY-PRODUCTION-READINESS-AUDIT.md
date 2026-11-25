@@ -101,10 +101,10 @@ Required:
 ### K-04 — Audit trail policy is not fully approved
 **Severity:** HIGH
 
-INS-016 remains PROPOSED in Decision Register. Architecture documents describe append-only audit coverage, but final event catalogue, retention, access/export authority, tamper resistance, and operational review are not approved.
+At the time of this audit, INS-016 was PROPOSED in the Decision Register. It was subsequently PO-approved under T-15 option A (2026-11-24). Detailed technical design, implementation, tests, tamper-resistance verification and T-10 institutional classification/retention/legal-hold controls remain open.
 
 Required:
-- obtain explicit approval for INS-016;
+- complete technical reconciliation and verification for PO-approved INS-016, and obtain the separate T-10 institutional approvals;
 - define event schema, correlation IDs, before/after fields with data minimization, reason requirements, and immutable write path;
 - restrict update/delete at database privileges and policy level, not only UI;
 - define retention, export, legal hold, and audit access;
@@ -225,7 +225,7 @@ Required:
 | Private evidence storage | CONSISTENT AT PRINCIPLE LEVEL | Limits, retention, deletion, object recovery open |
 | Immutable revisions | CONSISTENT AT PRINCIPLE LEVEL | Physical constraints and tests open |
 | Transactional claims/approval | CONSISTENT AT PRINCIPLE LEVEL | Concrete lock/index strategy open |
-| Audit trail | PARTIAL | INS-016 approval and retention open |
+| Audit trail | PARTIAL | T-15 PO policy approval recorded; technical implementation/verification and T-10 institutional retention remain open |
 | Backup/restore | PARTIAL | RPO/RTO and successful drill absent |
 | Provider production readiness | OPEN | Plans, region, quotas, ownership unverified |
 | Offline sync | PARTIAL | Idempotency retention/conflict details open |
@@ -238,7 +238,7 @@ Before scope freeze, prepare:
 1. Physical Schema and Database Constraint Specification.
 2. Table-by-Table RLS Policy Catalogue and Authorization Test Matrix.
 3. Privileged Command Boundary ADR and command transaction specifications.
-4. Audit Event Catalogue and INS-016 approval record.
+4. T-15 INS-016 approval record, detailed technical design and institutional-control evidence.
 5. Evidence Retention, Deletion, and Object Recovery Policy.
 6. Backup/Restore and Disaster Recovery Runbook with approved RPO/RTO.
 7. Environment, Secrets, Provider Quota, and Operations Ownership Plan.
