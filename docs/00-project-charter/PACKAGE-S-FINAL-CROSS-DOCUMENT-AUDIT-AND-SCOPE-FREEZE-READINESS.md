@@ -1,5 +1,7 @@
 # Package S — Final Cross-Document Audit and Scope-Freeze Readiness
 
+> **Historical snapshot note:** The original audit and §9.15–§9.16 were produced before/around the 2026-11-24 conditional authorization transition. The original “Implementation authorization: NOT GRANTED” field and older G10 NOT AUTHORIZED statements are preserved historical records, not current status. Current state is PO CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED; G9 NOT READY; G10 NOT ACTIVE. See §9.17.
+
 **Status:** Audit completed — NOT READY FOR SCOPE FREEZE  
 **Implementation authorization:** NOT GRANTED  
 **Repository:** itswork-app/dit-sd-inspection  
@@ -367,3 +369,14 @@ The §9.15 value of 391 distinct test identifiers remains a valid historical tex
 ### Gate disposition
 
 G1–G8 retain the current DGA dispositions; G9 remains NOT READY; G10 remains NOT AUTHORIZED; G11/G12 remain NOT STARTED. This addendum improves current cross-document navigation and traceability only. It does not close S-01..S-12, establish scope freeze, or replace independent G9 review.
+
+
+## 9.17 Current authorization and gate status — 2026-11-25
+
+This addendum supersedes only the authorization and gate-status pointers in the historical snapshot above; it does not rewrite the evidence boundary or findings of the original audit.
+
+- Product Owner conditional implementation authorization: **RECEIVED (2026-11-24)**.
+- G9 scope freeze: **NOT READY**; institutional, source-authority, command, schema, security, lock and operational evidence blockers remain open.
+- G10 implementation activation: **NOT ACTIVE**; it requires verified G9 and a separate approved G10 activation record.
+- Production readiness: **NOT VERIFIED**.
+- The GOV-MERGE-001 exception permits only qualifying documentation-only PR merges under its separate review controls; it does not authorize implementation or waive G9/G10.
