@@ -1,10 +1,10 @@
 # L05 Eligibility-Writer Participation Matrix
 
 **Document ID:** NLA-L05-WRITER-MATRIX-001  
-**Version:** 0.1.5  
+**Version:** 0.1.6  
 **Status:** STATIC INVENTORY — INCOMPLETE; NOT CERTIFIED  
 **Date:** 2026-11-25  
-**Inputs:** NLA-L05-TDR-001 v0.1.9; LOCK-MANIFEST-001 v0.4.32; PostgreSQL Command Contract Catalogue v0.4.8; Function Security & EXECUTE Grant Design v0.3.3; physical schema proposal v0.4.4
+**Inputs:** NLA-L05-TDR-001 v0.1.14; NLA-L05-EVENT-SELECTOR-REGISTRY-001 v0.1.4; L05 source-event map v0.1.1; LOCK-MANIFEST-001 v0.4.32; PostgreSQL Command Contract Catalogue v0.4.8; Function Security & EXECUTE Grant Design v0.3.3; physical schema proposal v0.4.8
 
 ## 1. Purpose and decision boundary
 
@@ -98,6 +98,27 @@ TDR v0.1.8 proposes only ROLE_SCOPE and EVENT_PARTICIPANT selector clauses, but 
 
 ## 9. Event-to-selector dependency crosswalk — 2026-11-25
 
-[NLA-L05-EVENT-SELECTOR-REGISTRY-001](L05-EVENT-TO-SELECTOR-REGISTRY-001.md) v0.1.1 maps CMD-001–040 source declarations, the eleven PO-approved specification candidates, candidate ROLE_SCOPE/EVENT_PARTICIPANT clause families, conceptual participant/scope bindings, and the logical writer domains that must be reconciled.
+[NLA-L05-EVENT-SELECTOR-REGISTRY-001](L05-EVENT-TO-SELECTOR-REGISTRY-001.md) v0.1.4 maps CMD-001–040 source declarations, the eleven PO-approved specification candidates, candidate ROLE_SCOPE/EVENT_PARTICIPANT clause families, conceptual participant/scope bindings, and the logical writer domains that must be reconciled.
 
 Use the crosswalk to derive the exact selector dependency universe; do not treat its logical resource classes as physical columns or an exhaustive deployed writer list. The selector grammar remains a review candidate, no event is enabled, and no writer is certified to acquire L05. Exact function/trigger/FK/helper/import/expiry/repair entrypoints, ownership, ACL, bypass prevention and complete lock graph remain OPEN. Resolver certification 0/40; application lock certification 0/50; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 10. Post-F05-T5 writer inventory boundary — 2026-11-25
+
+The current crosswalk is NLA-L05-EVENT-SELECTOR-REGISTRY-001 v0.1.4, with candidate selector grammar hardening (F05-T1), dispatch review (F05-T2) and atomic source-event/snapshot binding (F05-T5). This matrix now points to those versions; the update is a documentation pointer reconciliation only.
+
+The repository's current `main` contains project documentation, `AGENTS.md` and `README.md`, but no application source tree, executable migration history or deployed database catalog snapshot. The current governance boundary also does not authorize live database inspection. Consequently, the following cannot be truthfully enumerated or certified from repository evidence: actual deployed RPC/function names, SECURITY DEFINER ownership/search_path/EXECUTE ACL, trigger/cascade/deferred-constraint inventory, PostgREST grants, scheduled job definitions, import/sync/repair scripts, support/admin entrypoints, emergency mutation paths or direct-DML bypasses.
+
+**F-04 remains OPEN — NOT CERTIFIED.** The command-level rows and non-command writer classes in §2 are logical inventory candidates, not a complete physical writer inventory. No writer is certified. Do not convert a class name into an assumed deployed entrypoint, infer a Supabase object from the proposed schema, or treat the 40/40 source declaration map as writer coverage.
+
+### 10.1 Required evidence package for physical inventory
+
+When the required read-only environment access is separately authorized, capture and review an immutable inventory tied to the exact deployed migration/schema revision:
+1. Supabase/PostgreSQL catalog extracts for schemas, tables, columns, constraints, indexes, triggers, trigger functions, policies, grants, roles and function metadata.
+2. PostgREST-exposed RPC inventory plus all internal functions reachable from those entrypoints; record owner, SECURITY DEFINER/INVOKER, volatility, pinned search_path, EXECUTE grants and nested calls.
+3. Scheduled jobs, queue workers, webhook/provider callbacks, imports, sync, backfills, support/admin scripts, repair/reconciliation and emergency procedures, with owner and execution identity.
+4. Per-selector dependency columns and relations from the approved exact selector registry; join every dependency to all mutating entrypoints and implicit FK/trigger/helper edges.
+5. A writer-by-writer evidence row: deployed name, source revision, principal, mutation set, transaction boundary, first lock, L05 acquisition point, retry semantics, bypass control, reviewer and evidence reference.
+6. Negative authorization evidence proving browser/ordinary roles cannot mutate protected eligibility rows outside reviewed wrappers.
+
+Until this package exists, resolver certification remains 0/40, application lock certification 0/50, writer certification 0, global lock graph NOT PROVEN ACYCLIC, G9 NOT READY and G10 NOT ACTIVE.
