@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.28  
+**Version:** 0.1.29  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -473,3 +473,14 @@ The candidate logical audit evidence envelope is now documented in NLA-L05-TDR-0
 **D-026 remains OPEN — BLOCKING.** The exact suppression/outcome physical representation, schema/ACL/ordering/integrity controls, stable literal reason codes, provider callback verification and technical sign-offs remain unresolved. T-10 institutional classification, purpose, retention, legal hold, disposition, audit access/export and network metadata remain BLOCKED; no retention period or purge schedule is approved.
 
 TC-NOTIF-095..099 are PLANNED / NOT EXECUTED. No new RAID ID is assigned; R-037 remains OPEN — CRITICAL and is not resolved by this audit-evidence specification. G9 NOT READY; G10 NOT ACTIVE. No implementation, SQL, migration, grants, RLS, provider configuration, test execution or deployment is authorized.
+
+
+## D-026 / R-037 F05-T5 atomicity and snapshot-binding refinement — 2026-11-25
+
+NLA-L05-TDR-001 v0.1.14 §18 now defines the candidate logical transaction boundary for source mutation, canonical event, audit, idempotency outcome, outbox, pinned policy, complete immutable candidate set and initial checkpoint. It requires one database-controlled `audience_evaluated_at` captured at the approved serialization point, fail-closed rollback for incomplete/ambiguous snapshots, idempotent replay and post-commit fan-out from the committed snapshot only. NLA-001 v0.1.24 §27, the selector crosswalk v0.1.4 §14, QA TC-NOTIF-100..105 and RTM NOTIF-020 are synchronized.
+
+**D-026 remains OPEN — BLOCKING.** Exact producer/finalizer transactions, physical snapshot/header, identity and scope keys, policy-pin representation, uniqueness/completeness/ordering constraints, ACL/RLS, stable reason codes, provider callback controls and T-10 approvals remain unresolved.
+
+**R-037 remains OPEN — CRITICAL.** The transaction sequence is a logical dependency contract, not a certified lock order. Candidate L05 remains unadmitted; resolver certification remains 0/40, application lock certification 0/50, global graph acyclicity NOT PROVEN, and no eligibility writer is certified by this documentation update. No lock rank/key, physical relation, SQL, migration, grant/RLS or runtime behavior is approved.
+
+TC-NOTIF-100..105 remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE. No implementation or test execution is authorized.
