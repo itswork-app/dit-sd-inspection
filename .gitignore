@@ -10,3 +10,7 @@ coverage/
 .DS_Store
 .vercel/
 *.tsbuildinfo
+
+# Supabase CLI local state (never commit)
+supabase/.temp/
+supabase/.branches/
