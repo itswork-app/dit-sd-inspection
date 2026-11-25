@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.29  
+**Version:** 0.1.30  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -484,3 +484,8 @@ NLA-L05-TDR-001 v0.1.14 §18 now defines the candidate logical transaction bound
 **R-037 remains OPEN — CRITICAL.** The transaction sequence is a logical dependency contract, not a certified lock order. Candidate L05 remains unadmitted; resolver certification remains 0/40, application lock certification 0/50, global graph acyclicity NOT PROVEN, and no eligibility writer is certified by this documentation update. No lock rank/key, physical relation, SQL, migration, grant/RLS or runtime behavior is approved.
 
 TC-NOTIF-100..105 remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE. No implementation or test execution is authorized.
+
+
+## F-03 / F-04 / SES-001 closure control synchronization — 2026-11-25
+
+PTCM-001 v0.1.0 now provides a single evidence-oriented closure index for the existing F-03, F-04 and SES-001 risks/dependencies; it does not create replacement IDs or close existing RAID entries. F-03 retains unresolved lock-order conflicts and unverified physical lock edges; F-04 retains zero certified eligibility writers and unproven direct-DML/privileged bypass prevention; SES-001 retains open technical command/SoD/evidence/atomicity/lock/RLS/QA decisions. Existing D-010, I-013, R-017 and R-037 remain OPEN/BLOCKING or CRITICAL as already recorded. QA remains PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE. No implementation, SQL, migration, live database inspection or runtime test is implied.
