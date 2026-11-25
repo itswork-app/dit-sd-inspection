@@ -125,11 +125,11 @@ The exact definition of active administrator, recovery operator eligibility, dua
 
 ### 5.1 Explicit scope only
 
-Scope grants must identify the exact target scope and grant kind. Supported scope concepts may include project, session, location, team and assignment, but the canonical mapping and parent relationships must be explicit.
+Scope grants must identify the exact target scope and grant kind. Supported scope concepts may include project, session, location, instrument, team and assignment, but the canonical mapping and parent relationships must be explicit.
 
 There is no implicit inheritance:
 - project scope does not automatically grant session scope;
-- session scope does not automatically grant location/team/assignment scope;
+- session scope does not automatically grant location/instrument/team/assignment scope;
 - location or team membership does not silently grant a role;
 - an Inspector role does not by itself create an effective operational assignment.
 
@@ -181,7 +181,7 @@ The following are required before any CMD-001–007 implementation can pass its 
 - duplicate first-login, duplicate request and approve-vs-reject race tests;
 - append-only decision and grant-history integrity tests;
 - last-active-administrator protection and break-glass recovery tests;
-- explicit non-inheritance tests across project/session/location/team/assignment;
+- explicit non-inheritance tests across project/session/location/instrument/team/assignment;
 - revoke-vs-protected-command concurrency tests proving a deterministic authorization boundary;
 - T-14 capacity races across account, role, scope, team, assignment and cap changes;
 - direct browser DML denial, RLS isolation and exact function EXECUTE ACL verification;
