@@ -1,6 +1,6 @@
 # Inspection Lifecycle, Unit Claims, Review, and Revision
 
-**Status:** Draft v0.1.0 — requires Product Owner validation  
+**Status:** Draft v0.2.0 — requires Product Owner validation  
 **Package:** C — Functional and Operational Design
 
 ## 1. Scope
@@ -114,3 +114,13 @@ Submission is blocked if required checklist items, required photos, serial ident
 A normalized serial is unique within its instrument type across all projects. The uniqueness key excludes project ID; the same serial string may exist for a different instrument type. Claiming a unit resolves the canonical instrument-type identity while all inspection access remains constrained by project, session, assignment and role scope. A same-type duplicate detected across projects is a controlled conflict requiring authorized resolution, reason and audit; do not silently create a second canonical unit, merge records or erase historical inspections.
 
 Every evidence item remains linked to the exact immutable inspection revision and instrument version. Preserve its original metadata, checksum, uploader, capture/upload timestamps and immutable storage object identity. Do not overwrite finalized evidence; replacement creates a new evidence record and audit event. Historical revision/evidence relationships remain readable and unchanged.
+
+## Product Owner decision update — mandatory claim and canonical unit (2026-11-24)
+
+- The canonical physical unit key is (instrument_type, serial_normalized) and is global across projects. Project/session/assignment authorization remains independently scoped; canonical identity does not grant cross-project access.
+- Every normal inspection workflow requires a valid active claim before draft mutation, evidence finalization, submission or review progression. Claim ownership must bind to the exact canonical unit and applicable project association/assignment context.
+- No implicit or client-selected bypass is permitted. Any administrative correction or historical migration exception must use a separately permissioned server-side path with explicit reason, actor, scope and append-only audit evidence. The exception must not create a second active claim or silently rewrite historical ownership.
+- Claim expiry/release prevents further normal writes until a valid claim is reacquired through the approved recovery path; preserve existing draft and evidence for authorized recovery.
+- Same-type serial collisions across projects are controlled conflicts requiring authorized review, reason and audit. Never silently merge units, overwrite records or discard inspection history. Different instrument types may reuse the same normalized serial.
+
+**Approval boundary:** LPR-02/LPR-03 are PO-approved product semantics. Canonicalization algorithm, unique constraints, lock primitives, exact exception permission, command contracts and concurrency tests remain subject to Engineering/Security review. No implementation or test execution is claimed.

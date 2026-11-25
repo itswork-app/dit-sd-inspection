@@ -23,7 +23,7 @@ Reviewed the current PR #2 document inventory across project governance, product
 | AUD-F-008 | Medium | Exact API transport and privileged operation boundary (Vercel server functions vs PostgreSQL RPC) remain undecided. | OPEN before endpoint implementation. |
 | AUD-F-009 | Medium | Numeric performance SLOs and photo workload profile are not established; 100 concurrent users is a test target, not a demonstrated capability. | OPEN until representative load tests on selected plan. |
 | AUD-F-010 | Medium | BA signatory policy, attendance verification authority, report count/reconciliation rules, and some session transitions remain unresolved. | OPEN for document/workflow freeze. |
-| AUD-F-011 | Medium | At the time of this audit, INS-016 was proposed in the Decision Register while PRD/RTM described audit capability more broadly. | Superseded at PO-policy level by T-15 option A (2026-11-24); reconcile detailed technical controls and retain T-10 institutional retention/privacy approvals as open gates. |
+| AUD-F-011 | Medium | Audit INS-016 is proposed in Decision Register, while PRD/RTM describe audit capability at broader requirement level. | Keep audit coverage and retention policy explicitly pending Product Owner approval. |
 | AUD-F-012 | Low | Package D/E artifacts are drafts and no UI, database migration, automated tests, RLS policy, or load test has been implemented/executed. | Correctly retain Phase 0 status; do not represent plans as test evidence. |
 
 ## 3. Capacity contract after correction

@@ -1,7 +1,7 @@
 # Security Threat Model — Dit. SD Inspection
 
 Status: Initial threat model — security review required  
-Version: 0.1.0
+Version: 0.1.1
 
 ## 1. Assets to protect
 
@@ -76,3 +76,18 @@ Monitor authentication failures, permission denials, unusual exports, repeated c
 - MFA/session policy and institutional identity requirements.
 - Malware scanning feasibility.
 - Security incident owner and response SLA.
+
+
+## Notification lifecycle threats and controls — 2026-11-24
+
+| Threat | Abuse/failure path | Required control | Verification |
+|---|---|---|---|
+| Cross-recipient inbox disclosure | Guessing notification IDs, forged cursor or project-role inference | Recipient-self RLS and command predicate; cursor integrity-bound to actor/filter; non-enumerating errors; no global admin inbox path | TC-NOTIF-018; TC-RLS-024-045; TC-FN-SEC-025-064 |
+| Stale worker finalization | Worker continues after lease expiry and another worker reclaims the item | Owner + token-hash + monotonic generation + expiry checked on every finalizer | TC-NOTIF-021 |
+| Provider callback spoof/replay | Attacker submits forged, stale or replayed delivery status | INT-NOTIF-001 provider signature/freshness verification, known provider reference, durable event deduplication and monotonic transitions | TC-NOTIF-023/024 |
+| Ambiguous provider acceptance | Provider accepted a send but worker timed out/crashed, causing duplicate retry | Persist UNKNOWN; provider idempotency/reconciliation where supported; no blind retry until safe | TC-NOTIF-026 |
+| Recipient drift during delayed fan-out | Membership changes between source event and recipient resolution/retry | PO/Security-approved event-time vs fan-out-time semantics, deterministic snapshot/checkpoint and current eligibility revalidation | TC-NOTIF-022; R-034 |
+| Policy privilege escalation | Caller widens selector/scope or publishes without authority | Versioned schema allowlist, exact scope grant, grantor ceiling, SoD, server-canonical hash/version | TC-NOTIF-020; TC-FN-SEC-025-066 |
+| Secret/payload leakage | Provider credentials, message body, evidence or full callback payload logged | Safe payload allowlist, secret-manager isolation, redacted errors/attempt records and no message body in general audit | TC-NOTIF-016; TC-NOTIF-023 |
+
+These controls are design requirements only. Worker principal, provider, role grants, callback secret custody, policy administrator, recipient eligibility decision and T-10 retention/privacy approvals remain open. No test was executed.

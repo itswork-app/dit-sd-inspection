@@ -64,11 +64,11 @@ Drafted seven technical design documents:
 - Security threat model.
 - Performance and operations baseline, including 100-user concurrent load-test approach.
 
-Package D is not approved and does not authorize feature implementation. Exact physical schema, transport choices, offline storage, media limits/retention, provider plan, numerical performance thresholds, backup objectives, and operational ownership remain open.
+Package D remains a design baseline and does not authorize feature implementation. T-16 canonical serial uniqueness/association direction, T-17 instrument publication governance and T-18 command-boundary architecture are PO-approved and documented. Exact physical constraints, command grants/RLS, offline storage safeguards, media limits/retention, provider plan, numerical performance thresholds, backup objectives and operational ownership remain open.
 
 ## Package L — Physical Database Schema and Integrity
 
-Drafted physical PostgreSQL table catalogue, constraints, indexes, transaction invariants, serial identity proposal, immutable inspection/evidence linkage, and configurable instrument schema/versioning. PO confirmation remains open for serial uniqueness; Inspector capacity counting predicate is PO-approved under T-14 option A. No migrations were created or executed.
+Drafted physical PostgreSQL table catalogue, constraints, indexes, transaction invariants, canonical serial identity and project-association model, immutable inspection/evidence linkage, and configurable instrument schema/versioning. T-16 option B serial uniqueness and T-14 option A capacity predicate are PO-approved; association/FK and constraint design require technical review plus institutional serial normalization/exception policy. No migrations were created or executed.
 
 ## Package M — Table-by-Table RLS Policy Catalogue
 
@@ -76,7 +76,7 @@ Drafted deny-by-default access matrix for every Package L table and private Stor
 
 ## Package N — Privileged Command Boundary
 
-Drafted Vercel route + caller-JWT PostgreSQL command-function pattern, transactional command catalogue, idempotency and security requirements. Approval remains open; no RPC or route was implemented.
+Drafted Vercel route + caller-JWT PostgreSQL command-function pattern, transactional command catalogue, idempotency and security requirements. T-18 option A is PO-approved; command-specific grants, RLS, function review and verification remain open. No RPC or route was implemented.
 
 ## Package O — Evidence Privacy, Retention, Deletion and Recovery
 
@@ -126,23 +126,23 @@ Package E is a design/test-planning package only. No UI implementation or test e
 
 ## Package R — Audit Event Catalogue and Governance
 
-Created `docs/02-architecture/AUDIT-EVENT-CATALOGUE-AND-GOVERNANCE.md`, defining canonical audit event fields, business/security/governance event families, critical transaction fail-closed behavior, append-only controls, privacy-safe payloads, retention/legal hold, access/export auditing, and verification requirements. At the time of this initial documentation update, INS-016 was an unapproved draft proposal; it was subsequently PO-approved under T-15 option A (2026-11-24). No schema, trigger, policy, or application code has been implemented; no tests have been executed. T-10 institutional classification, retention, legal hold and disposition controls remain blocked.
+Created `docs/02-architecture/AUDIT-EVENT-CATALOGUE-AND-GOVERNANCE.md`, defining canonical audit event fields, business/security/governance event families, critical transaction fail-closed behavior, append-only controls, privacy-safe payloads, retention/legal hold, access/export auditing, and verification requirements. INS-016 remains an unapproved draft proposal. No schema, trigger, policy, or application code has been implemented; no tests have been executed.
 
 New Standing Bracket evidence was also reconciled into the instrument specification and verification matrix. The 23-November sample form contains 19 visible checklist rows (6 physical + 13 accessories); earlier screenshot transcription also contains 19 visible rows. Exact source mapping, controlled checklist authority, signatory policy, and photo-slot requirements remain open.
 
 
 ## Package S — Final Cross-Document Audit and Scope-Freeze Readiness
 
-Created `docs/00-project-charter/PACKAGE-S-FINAL-CROSS-DOCUMENT-AUDIT-AND-SCOPE-FREEZE-READINESS.md`. The current 45-file PR change inventory and principal governance, product, functional, architecture, UX, and QA documents were reviewed. Architectural direction is broadly consistent, but the disposition is **NOT READY FOR SCOPE FREEZE** and **FEATURE IMPLEMENTATION NOT AUTHORIZED**. The report records 9 blocker findings and 3 high findings, including instrument source authority, BA/attendance authority, session lifecycle, offline/device protection, privacy/retention, provider/recovery verification, schema/RLS/command approval, the then-pending INS-016 audit policy, reporting semantics, performance thresholds, and CI/repository controls. T-15 option A subsequently PO-approved the INS-016 policy; technical implementation, verification and T-10 institutional controls remain open. No implementation or environment tests were executed.
+Created `docs/00-project-charter/PACKAGE-S-FINAL-CROSS-DOCUMENT-AUDIT-AND-SCOPE-FREEZE-READINESS.md`. The current 45-file PR change inventory and principal governance, product, functional, architecture, UX, and QA documents were reviewed. Architectural direction is broadly consistent, but the disposition is **NOT READY FOR SCOPE FREEZE** and **FEATURE IMPLEMENTATION NOT AUTHORIZED**. The report records 9 blocker findings and 3 high findings, including instrument source authority, BA/attendance authority, session lifecycle, offline/device protection, privacy/retention, provider/recovery verification, schema/RLS/command approval, INS-016 audit approval, reporting semantics, performance thresholds, and CI/repository controls. No implementation or environment tests were executed.
 
 
 ## Package T — Product Owner decision closure
 
 - Decision closure pack: `docs/00-project-charter/PACKAGE-T-PO-DECISION-CLOSURE-PACK.md`.
 - Package T converts Package S findings into 18 explicit PO decision records, with recommendations, options, cost/effort, risks and consequences of deferral.
-- Package T decisions T-01 through T-08 have explicit PO outcomes recorded in the Decision Register. T-01 Standing Bracket source is confirmed; official IFP source and SB photo/evidence rules remain outstanding. T-02 institutional signatory authority remains outstanding. T-09 option B is now PO APPROVED: limited offline draft editing only for already claimed units, with online-only claim/finalization/approval/admin actions and idempotent conflict-safe synchronization. Device/browser support, local-data protection, retention/purge and recovery remain open; T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; written policy remains BLOCKED pending institutional authority. T-11 option B is PO APPROVED: current mainstream stable browsers with explicit exclusions; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED: alternative provider-ownership arrangement subject to written institutional definition/approval. Actual ownership, billing, custodians, region, quotas and recovery evidence remain BLOCKED. T-13 is PO APPROVED option B: individual and bounded batch printing with per-document outcomes, failed-only retry, atomic reprint sequence and no claim of physical paper output. Detailed design/test evidence remains pending. T-14 is PO APPROVED option A; T-15 through T-18 have PO direction approved. Their detailed design, technical review, institutional gates, implementation and verification remain OPEN/BLOCKED as applicable. Recommendations are not approvals.
+- Package T decisions T-01 through T-08 have explicit PO outcomes recorded in the Decision Register. T-01 Standing Bracket source is confirmed; official IFP source and SB photo/evidence rules remain outstanding. T-02 institutional signatory authority remains outstanding. T-09 option B is now PO APPROVED: limited offline draft editing only for already claimed units, with online-only claim/finalization/approval/admin actions and idempotent conflict-safe synchronization. Device/browser support, local-data protection, retention/purge and recovery remain open; T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; written policy remains BLOCKED pending institutional authority. T-11 option B is PO APPROVED: current mainstream stable browsers with explicit exclusions; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED: alternative provider-ownership arrangement subject to written institutional definition/approval. Actual ownership, billing, custodians, region, quotas and recovery evidence remain BLOCKED. T-13 is PO APPROVED option B: individual and bounded batch printing with per-document outcomes, failed-only retry, atomic reprint sequence and no claim of physical paper output. Detailed design/test evidence remains pending. T-14 through T-18 have PO direction approved. T-16 association design, T-17 publication governance and T-18 command boundary are documented; technical review, institutional policy and implementation evidence remain OPEN/BLOCKED. Recommendations are not approvals.
 - Scope freeze remains NOT READY; feature implementation remains NOT AUTHORIZED.
-- PR #2 is a documentation-only foundation PR and is eligible for consideration only under GOV-MERGE-001 after full-diff audit, independent review approval, available-check evidence, repository merge-control verification and post-merge verification. This does not mark scope freeze ready, G9 ready, G10 active or implementation authorized.
+- PR #2 remains draft and must not be merged until mandatory gates are closed and verified.
 
 
 ### Package T T-09 — offline scope decision (2026-11-23)
@@ -181,3 +181,15 @@ PO approved option A on 2026-11-24. Canonical count: distinct enabled login acco
 ## PO clarification — registration-first and Super Admin-controlled staffing (2026-11-24)
 
 Record the lifecycle as registration first, then Super Admin approval and explicit role/scope/team/assignment configuration. Registration alone grants no access or Inspector capacity eligibility. Super Admin determines team count and assigns personnel to each team; users cannot self-assign. Carry this rule through identity/RBAC, session/team model, database invariants, API commands, acceptance criteria and tests. This clarification does not authorize implementation or close remaining institutional/scope-freeze blockers.
+
+
+## Package T — T-17 Product Owner decision update (2026-11-24)
+
+T-17 / CFG-001 is **PO APPROVED option A**: Super Admin may directly publish a validated instrument version without second-person approval. Publication is a privileged server-side command requiring explicit `instrument.publish`, trusted actor derivation, bounded declarative schema validation, atomic publication/audit, immutable published version, session/assignment version pinning and exact historical snapshots. Deactivation is separate and audited. IFP and Standing Bracket remain initial catalog configurations, not permanent catalog limits. This decision is product governance only; schema/RLS/command/QA design is documented and requires cross-document technical review and executable verification. No coding, migration or test execution was performed.
+
+T-18 is PO APPROVED option A (2026-11-24): Vercel server routes + caller-JWT PostgreSQL command functions, database-derived actor, explicit authorization/scope checks, direct browser DML denied, least-privilege grants, idempotency and atomic mutation/audit. This selects the architecture only; command-specific design, RLS/grants, T-16 association reconciliation and verification remain open. Feature implementation remains NOT AUTHORIZED.
+
+
+## Package T — T-18 Product Owner decision (2026-11-24)
+
+PO approved option A: Vercel server route + caller-JWT PostgreSQL command-function pattern. All protected state changes must pass through validated server routes and narrowly scoped database commands. PostgreSQL derives actor identity from the caller JWT; client-supplied actor, role and scope are not trusted. Protected-table browser direct DML is denied. Authorization, state, scope, assignment, separation-of-duties, idempotency and concurrency checks are enforced server-side; business mutation and required audit/event writes are atomic and fail closed. Service-role secrets are not exposed to browsers; SECURITY DEFINER functions require pinned search_path and least-privilege review. This is architecture approval, not implementation authorization. T-16 association design is documented for technical review; institutional serial policy and other Package K/institutional gates remain open; scope freeze NOT READY and feature implementation NOT AUTHORIZED.

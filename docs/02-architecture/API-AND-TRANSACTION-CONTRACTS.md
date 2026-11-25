@@ -1,7 +1,7 @@
 # API and Transaction Contracts — Dit. SD Inspection
 
 Status: Application command design draft — endpoint implementation not authorized  
-Version: 0.1.0
+Version: 0.2.2
 
 ## 1. Contract principles
 
@@ -32,7 +32,7 @@ Version: 0.1.0
 | Documents | `generate-approved-pdf`, `record-print`, `record-print-batch` | Generate snapshot PDF; record individual or bounded batch print actions with per-document outcomes |
 | Reporting | `get-actual-report`, `get-target-report` | Read distinct actual/target dimensions |
 
-These are logical command names, not a finalized REST URL contract. Batch print is an orchestration of independently authorized per-document print commands; it is not a single all-or-nothing print-success transaction. Batch print is an orchestration of independently authorized per-document print commands; it is not a single all-or-nothing print-success transaction.
+These are logical command names, not a finalized REST URL contract. Batch print is an orchestration of independently authorized per-document print commands; it is not a single all-or-nothing print-success transaction.
 
 ## 3. Standard request envelope
 
@@ -104,10 +104,11 @@ For validation or conflict errors, return a stable code, safe message, and relev
 - Never mutate submitted revision payload.
 
 ### Change Inspector capacity
-- Lock the global capacity settings row.
+- Lock the governed project's capacity settings row; this single row serializes the combined two-location cap.
 - Validate new capacity as an integer in [1, 100]; default is 50.
-- Count distinct active Inspector accounts across both locations.
-- Reject a reduction below current active count.
+- Count distinct enabled login accounts that have an active Inspector role grant and at least one currently effective operational Inspector assignment in the governed project/session scope; count each account once across both locations and multiple assignments/roles.
+- Exclude pending, rejected, suspended, disabled and expired-role accounts.
+- Reject a reduction below the current qualifying count; never silently deactivate accounts.
 - Update capacity and append audit event in the same transaction.
 
 ### Print and batch-print transaction (PO-approved T-13 option B)
@@ -126,13 +127,15 @@ For validation or conflict errors, return a stable code, safe message, and relev
 
 - `AUTH_REQUIRED`, `ACCOUNT_NOT_APPROVED`, `PERMISSION_DENIED`, `SCOPE_DENIED`
 - `RESOURCE_NOT_FOUND`, `INVALID_STATE_TRANSITION`, `STALE_VERSION`
-- `ACTIVE_CLAIM_EXISTS`, `ASSIGNMENT_OVERLAP`, `INSPECTOR_CAPACITY_EXCEEDED`
-- `VALIDATION_FAILED`, `EVIDENCE_NOT_READY`, `SYNC_CONFLICT`
-- `IDEMPOTENCY_KEY_REUSED`, `RATE_LIMITED`, `INTERNAL_ERROR`
+- `ACTIVE_CLAIM_EXISTS`, `ASSIGNMENT_OVERLAP`, `INSPECTOR_CAPACITY_EXCEEDED`, `CANONICAL_UNIT_CONFLICT`, `UNIT_ASSOCIATION_REQUIRED`, `INSTRUMENT_MISMATCH`
+- `VALIDATION_FAILED`, `EVIDENCE_NOT_READY`, `EVIDENCE_INVALID`, `AUDIT_WRITE_FAILED`, `SYNC_CONFLICT`
+- `IDEMPOTENCY_KEY_REUSED`, `RATE_LIMITED`, `RETRYABLE_FAILURE`, `INTERNAL_ERROR`
+
+These codes are a proposed stable baseline to reconcile with every PostgreSQL function and route response; they are not yet an approved exhaustive enum. Unauthorized callers must not receive resource-existence details.
 
 ## 8. Open decisions
 
-- Exact transport: server route, database RPC, or hybrid per command.
+- **T-18 PO APPROVED option A (2026-11-24):** all protected browser-facing state-changing commands use a Vercel server route that verifies the Supabase caller session and forwards the caller JWT to a narrowly scoped PostgreSQL command function. PostgreSQL derives actor identity with auth.uid() and performs permission, role, project association, session, assignment, state and separation-of-duties checks inside the transaction. Protected-table browser INSERT/UPDATE/DELETE is denied; exact command-specific EXECUTE grants and RLS policies remain design/review gates.
 - REST path naming and API versioning.
 - Authentication/session refresh strategy.
 - Idempotency retention and conflict resolution UX.
@@ -154,6 +157,70 @@ All commands that create/enable an Inspector role grant, establish an effective 
 
 ## T-16 — Serial identity and evidence transaction rules (PO-approved option B, 2026-11-24)
 
-`claim-unit` must resolve the canonical unit using `(instrument_id, serial_normalized)` across all projects; project ID is not part of the uniqueness key. Different instrument types may reuse the same serial. Before creating a unit, the command must atomically check/lock the canonical key and route a same-type cross-project collision to controlled conflict resolution rather than create a duplicate or silently merge records. Authorization remains project/session/assignment scoped even when the canonical unit is shared across projects. Conflict resolution requires an authorized actor, explicit reason, deterministic outcome and append-only audit.
+`claim-unit` must resolve the canonical unit using `(instrument_type, serial_normalized)` across all projects; neither project ID nor instrument catalog-row ID is part of the uniqueness key. Different instrument types may reuse the same serial. Before creating a unit, the command must atomically check/lock the canonical key and route a same-type cross-project collision to controlled conflict resolution rather than create a duplicate or silently merge records. Authorization remains project/session/assignment scoped even when the canonical unit is shared across projects. Conflict resolution requires an authorized actor, explicit reason, deterministic outcome and append-only audit.
 
 Evidence commands must bind each evidence record to the exact immutable inspection revision and instrument version. Preserve checksum, uploader, capture/upload timestamps and immutable storage object identity. Finalized evidence cannot be overwritten in place; replacement creates a new evidence record/object and audit event while retaining the original history. All checks and writes must be transactional/idempotent as applicable. This contract is not implemented or tested yet.
+
+
+## T-18 — Approved transport and privilege boundary reconciliation
+
+The former open transport choice is closed at Product Owner level. The selected flow is Browser/PWA → Vercel server route → PostgreSQL command function with the authenticated caller JWT. The route validates request/session and forwards caller identity; it must not replace the caller JWT with a service-role identity for user-initiated commands. PostgreSQL derives the actor from `auth.uid()`, resolves the approved/enabled application account, and validates permission, role, project association, session, assignment, resource state and separation of duties before mutation.
+
+Browser-facing anon/authenticated roles receive no direct INSERT/UPDATE/DELETE on protected business or governance tables. Reads remain independently RLS-scoped. Only narrow, explicitly granted command functions may mutate protected state. Every critical mutation and its required audit event commit atomically; audit failure rolls back the mutation. Protected writes use PO-approved narrow SECURITY DEFINER wrappers under T-18 Option A, with fixed empty search_path, schema-qualified references, strict input validation, a dedicated least-privileged NOLOGIN owner and exact minimal EXECUTE grants. Each function still requires individual review and verification.
+
+## T-16 — Canonical unit association command context
+
+A canonical unit is resolved by `(instrument_type, serial_normalized)` across projects. The project is not part of the uniqueness key. `register-canonical-unit` creates or resolves the canonical identity; `associate-unit-to-project` and `end-unit-project-association` manage durable project-membership episodes; `resolve-unit-identity-conflict` handles same-instrument serial collisions without cloning or silently merging canonical units. Claim, draft, submit, review, evidence and document commands must bind to the exact association + project + same-project assignment and must not infer authorization from unit ID alone. The global active-claim invariant serializes claims across projects.
+
+These decisions are design-only. Exact endpoint payloads, grant matrix, institutional serial normalization/exception policy, migrations and tests remain open; no implementation is claimed.
+
+
+## Command-by-command closure requirements (T-18)
+
+The command list in this document is a capability inventory, not yet a complete route/RPC contract. Before implementation, each logical command must have its own versioned request and response schema, permission code, server-derived actor rule, project/session/assignment scope predicate, state-transition guard, lock set/order, idempotency scope and request hash, audit event type, typed outcome/error mapping, retry semantics and positive/negative/concurrency test references.
+
+The inventory must include, in addition to the currently enumerated commands: instrument deactivation; evidence access and export; project closure; audit read and export; and bounded batch-print orchestration. Batch print remains a per-document sequence of independently authorized/idempotent print commands, not an atomic all-or-nothing mutation. Permission codes for the additional privileged operations must be explicitly confirmed in the permission catalogue rather than inferred from broad Super Admin status.
+
+T-14 capacity commands use the exact approved qualifying-account predicate and the project capacity-settings row lock across both locations. T-16 unit commands require canonical serial-key arbitration, durable project association and global active-claim serialization. No command may infer operational authorization from global catalog authority or canonical unit identity alone.
+
+## PostgreSQL individual command contract catalogue
+
+The 48-operation draft contract catalogue is maintained in [PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md). It defines proposed request allowlists, actor/scope/SoD, physical read/write references, lock/idempotency/audit rules and typed outcomes per logical command. Its names and fields are proposals, not approved REST routes or PostgreSQL signatures. See its explicit blockers for T-10, T-12, T-16, Storage, project closure and ERD-only objects. No implementation is authorized by the catalogue.
+
+## Function execution model and database ACL gate
+
+The route-to-RPC contract must follow [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md). User commands preserve the caller JWT. Do not use service_role to work around authenticated table ACLs. The SECURITY INVOKER versus protected-table DML boundary must be resolved before RPC implementation.
+
+## NLA-001 — Notification lifecycle and worker transaction contracts (proposed)
+
+### Recipient inbox read
+- `list-own-notifications` is a read-only query restricted to `recipient_user_id = auth.uid()` with cursor/filter binding to the actor. It does not reveal source-resource details outside the recipient's scope.
+- `mark-notification-read` accepts only the notification identifier, is idempotent and sets `read_at` once using database UTC; no expected_version is required because notifications has no row-version field. The first transition emits one notification.read event atomically; duplicate/no-op requests emit no duplicate event. It cannot update delivery state or business state.
+
+### Policy publication
+- CMD-051 is publish-only: it validates a submitted candidate document, computes its canonical hash server-side, compares optional expected_current_version_id, serializes version allocation for the exact policy/scope and creates a new immutable notification_policy_versions row. Persisted draft CRUD is excluded from this command; any draft workflow requires a separately approved command/schema. Publishing and its audit event are atomic. Existing outbox rows retain their pinned policy version.
+
+### Outbox fan-out
+- The originating domain command writes its domain event, audit event and minimal outbox intent atomically. Failure to persist audit or outbox intent rolls back that source command.
+- Internal fan-out claims a bounded lease using lease_owner, lease_token_hash, lease_generation and lease_expires_at, materializes the immutable event-time candidate-audience snapshot/checkpoint, deduplicates within that fixed audience and creates one inbox row and per-channel delivery projection idempotently. Dispatch-time revalidation may suppress but never widen the audience. Partial progress remains PROCESSING and resumes through unique arbiters. No provider I/O occurs in the transaction.
+
+### Provider dispatch and retry
+- Worker claims a delivery lease using the same owner/token-hash/generation/expiry fencing tuple, appends an attempt record and performs provider I/O outside a database transaction. Completion is guarded/idempotent. Use provider idempotency where supported; otherwise represent ambiguous acceptance as UNKNOWN and reconcile before claiming success. Provider callbacks enter only through separately authenticated integration boundary INT-NOTIF-001, not a browser RPC.
+- Retry is bounded and policy-controlled; routine delivery failure never blocks or rolls back the underlying business command.
+
+### SLA/reminder/escalation
+- Evaluate policy-version-pinned thresholds using one database-derived UTC instant per transaction and the policy's declared elapsed/business-time mode; initial-release default is ELAPSED_UTC. Quiet hours defer channel delivery only and do not pause the SLA clock; no caller evaluation_time is accepted. Append one unique escalation event per notification/policy/step/type. Enqueue another notification only after recipient scope is revalidated. Never change source business state.
+
+Worker identity, scheduler authentication, database role, function owner and exact EXECUTE ACL remain a separate T-18 security approval. CMD-052..054 must not be browser-callable.
+
+
+## Notification integration boundary — INT-NOTIF-001 (proposal)
+
+INT-NOTIF-001 is the provider callback ingress used by CMD-053's external delivery lifecycle. It is a separate server-side integration route, not a CMD ID, user permission or browser-callable PostgreSQL RPC. The selected provider must supply a verifiable signature/authentication mechanism and stable event identity. The ingress must validate signature and freshness, resolve only a known provider_message_ref, apply an allowlisted monotonic delivery-state transition, deduplicate provider event IDs through an approved durable mechanism, and reject replay/unknown references without revealing unrelated deliveries. It must never update notifications.read_at or source business state. Provider choice, callback credentials, event dedup persistence and exact route/function ACL remain unapproved.
+
+
+## POQ-01..03 API contract reconciliation — 2026-11-24
+
+- CMD-052 fan-out uses the persisted event-time candidate audience and its authorized scope/checkpoint. Dispatch-time account/channel/consent/revocation checks can suppress candidates only; no retry may widen the audience.
+- CMD-054 applies the immutable policy version's SLA mode. Initial-release default is ELAPSED_UTC; quiet hours defer delivery only and do not pause/reset the SLA clock. Business calendars and pause/reset behavior require explicit policy definitions.
+- Dismiss/archive is excluded from MVP. Only recipient-owned set-once read_at is exposed; no API route or command may mutate dismissed_at.

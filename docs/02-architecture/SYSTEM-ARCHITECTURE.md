@@ -81,7 +81,7 @@ Preferred: isolated development, staging, and production environments where plan
 ## 8. Architecture decisions still open
 
 - Exact frontend framework and package versions.
-- Whether any privileged operation requires a Vercel server function versus a PostgreSQL RPC; choose per operation after threat and transaction analysis.
+- **T-18 PO APPROVED option A (2026-11-24):** protected writes use individually reviewed narrow SECURITY DEFINER PostgreSQL command wrappers owned by a dedicated least-privileged NOLOGIN role; read-only/scoped paths use SECURITY INVOKER and RLS where feasible. Vercel routes forward the verified caller JWT; PostgreSQL derives the actor and enforces authorization/atomicity. Browser direct DML remains denied. Exact owners, signatures, grants, live inventory and verification remain open.
 - Local offline storage technology, encryption, retention, and supported browsers.
 - PDF generation location and library.
 - Notification delivery mechanism.
@@ -97,3 +97,15 @@ Before implementation:
 - Approve evidence lifecycle and offline threat model.
 - Validate provider plan, quotas, backup/restore, and deployment isolation.
 - Approve measurable performance SLOs after baseline profiling.
+
+
+## T-18 — Approved command trust boundary
+
+The selected state-changing request path is Browser/PWA → Vercel server route → PostgreSQL command function using the authenticated caller JWT. The Vercel route verifies the session and validates request shape; PostgreSQL derives the actor from `auth.uid()` and enforces approval, permission, role, project association, session, assignment, state and separation of duties within the transaction. Protected-table direct browser DML is denied. Business mutation and required audit append are atomic and fail closed. Service-role credentials are never exposed to the browser and are not a blanket identity for user-initiated commands.
+
+This is an approved architecture direction, not an implementation claim. Every SECURITY DEFINER function still requires per-function owner/search_path/ACL/threat review. Command-specific EXECUTE grants, RLS policies, live role inventory and runtime tests remain gates. See [T-18 Execution Model Security Review](T18-EXECUTION-MODEL-SECURITY-REVIEW.md).
+
+
+## T-19 repository implementation evidence
+
+The T-19 read-only audit found that the inspected documentation branch contains no application source/configuration files and the default branch contains only README.md. Therefore the approved Vercel + Supabase architecture and T-18 Option A remain target design, not verified runtime implementation. Do not infer route handlers, caller-JWT forwarding, server/browser client separation, migrations, PostgreSQL functions, grants/RLS or CI coverage from documentation alone. Confirm the canonical application repository/branch before implementation audit. See [T-19 Repository Runtime Architecture Audit](T19-REPOSITORY-RUNTIME-ARCHITECTURE-AUDIT.md). Scope freeze remains NOT READY; implementation remains NOT AUTHORIZED.

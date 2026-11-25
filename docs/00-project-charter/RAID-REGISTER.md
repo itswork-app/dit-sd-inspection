@@ -1,5 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
+**Document ID:** RAID-001  
+**Version:** 0.1.27  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -72,11 +74,11 @@ Owner convention: accountable role is recorded; named individuals are not invent
 
 | ID | Type | Description | Impact | Response | Accountable role | Status |
 |---|---|---|---|---|---|---|
-| R-013 | Risk | Audit history may be incomplete or exposed if event writes, access controls, retention, or export governance are not approved and enforced | Critical | Implement and verify PO-approved INS-016 atomic append/fail-closed and least-privilege controls; obtain T-10 institutional classification, retention, deletion/disposition, legal-hold and network-metadata decisions before production | Project Sponsor / CTO / Records Owner | OPEN |
+| R-013 | Risk | Audit history may be incomplete or exposed if event writes, access controls, retention, or export governance are not approved and enforced | Critical | Approve INS-016, transactional append semantics, least-privilege access, privacy-safe payloads, retention/legal hold, and verification before implementation | Project Sponsor / CTO / Records Owner | OPEN |
 
 | I-010 | Issue | Audit retention duration, legal-hold authority, audit-reader roles, export permission, and network metadata policy remain unresolved | High | Obtain institutional security, privacy, records, and legal decisions | Project Sponsor / Records Owner | OPEN |
 
-| D-008 | Dependency | PO-approved INS-016/T-15 audit policy plus technically reviewed trusted transactional command boundary and verified atomic audit integration | Audit implementation and security release gate | Product Owner / CTO | BLOCKED |
+| D-008 | Dependency | T-15 audit policy and T-18 command architecture are PO-approved; command/schema/RLS grants and executable atomicity verification remain required | Audit implementation and security release gate | CTO / Engineering Lead | BLOCKED (technical verification) |
 
 
 ## Package S — Cross-document audit findings
@@ -93,7 +95,7 @@ Owner convention: accountable role is recorded; named individuals are not invent
 
 | ID | Type | Description | Impact | Likelihood | Mitigation / response | Accountable role | Status |
 |---|---|---|---|---|---|---|---|
-| D-019 | Dependency | Package T decisions T-01..T-18 require explicit PO and, where applicable, institutional authority/evidence before the corresponding scope-freeze gates can close | High | High | Track each decision in `PACKAGE-T-PO-DECISION-CLOSURE-PACK.md`; record approve/reject/defer/need-evidence outcome; update Decision Register and affected specifications; do not infer approval | Product Owner / Institutional Authority | Open |
+| D-019 | Dependency | Package T decisions T-01..T-18 require recorded PO outcomes and, where applicable, separate institutional authority/evidence before corresponding scope-freeze gates can close | High | High | Preserve approved PO outcomes in the Decision Register; track residual technical and institutional gates separately; update affected specifications and verification evidence; do not treat PO approval as implementation or institutional approval | Product Owner / Institutional Authority | Open |
 | R-020 | Risk | Recommendations in Package T could be mistaken for approved policy | High | Medium | Preserve explicit state labels; only Decision Register entries with explicit approval count as approved; keep PR #2 draft and implementation unauthorized | Product Owner / Engineering Lead | Open |
 | D-021 | Dependency | Institutional source evidence, records/privacy direction and provider operational evidence are outside the documentation baseline and remain unverified | High | High | Obtain source documents and written approvals; verify actual provider settings, backup/restore and recovery ownership before production gate | Institutional Authority / Operations Owner | Blocked |
 
@@ -110,7 +112,7 @@ Product Owner explicitly approved T-01=A, T-02=B, T-03=C and T-04=A, then T-05=A
 - T-07 Super Admin session creation/configuration and scoped Korlap operation are PO-approved; state/permission implementation and tests remain open.
 - T-08 Korlap attendance verification within assigned scope is PO-approved; separate permissions and verification tests remain open.
 
-The Decision Register and affected specifications have been updated and fetched back for verification. T-05 through T-09 are PO-approved; T-10 option B is PO APPROVED as the required formal institutional records/legal/privacy review path; written institutional policy remains BLOCKED. T-11 option B is PO APPROVED for current mainstream stable browsers with explicit exclusions; exact device/OS/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; institutional ownership arrangement and provider/recovery verification remain BLOCKED. T-13 is PO APPROVED option B (individual + bounded batch printing); detailed implementation and tests remain pending. T-14 is PO APPROVED option A; T-15 through T-18 have PO direction approved, while detailed design, technical review, institutional gates and verification remain OPEN/BLOCKED as applicable. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
+The Decision Register and affected specifications have been updated and fetched back for verification. T-05 through T-09 are PO-approved; T-10 option B is PO APPROVED as the required formal institutional records/legal/privacy review path; written institutional policy remains BLOCKED. T-11 option B is PO APPROVED for current mainstream stable browsers with explicit exclusions; exact device/OS/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; institutional ownership arrangement and provider/recovery verification remain BLOCKED. T-13 is PO APPROVED option B (individual + bounded batch printing); detailed implementation and tests remain pending. T-14 is PO APPROVED option A; T-15 through T-18 have PO direction approved; residual design and institutional gates remain OPEN/BLOCKED. Scope freeze remains NOT READY; G10 is NOT ACTIVE pending separate gate activation.
 
 
 ## Package T T-09 decision update (2026-11-23)
@@ -134,7 +136,7 @@ Residual risks/dependencies remain OPEN/BLOCKED: browser/device support, local-d
 The 100 concurrent authenticated-user load-test target remains the required acceptance profile, tested at 10/25/50/75/100 concurrent users. This is a test target, not a demonstrated production capacity or SLA. Numeric latency/error-rate SLOs remain OPEN pending workload definition, provider plan/region/quota verification and baseline measurement. No implementation, compatibility test or load test is claimed as executed.
 
 
-| R-014 | Alternative provider-ownership arrangement may lack clear legal owner, billing authority, custodian continuity or exit rights | High | Medium | Obtain institutionally approved written ownership/billing/custodian/region/exit arrangement; name primary and secondary recovery contacts; verify access and offboarding | Project Sponsor / Institutional Authority | OPEN |
+| R-036 | Alternative provider-ownership arrangement may lack clear legal owner, billing authority, custodian continuity or exit rights | High | Medium | Obtain institutionally approved written ownership/billing/custodian/region/exit arrangement; name primary and secondary recovery contacts; verify access and offboarding | Project Sponsor / Institutional Authority | OPEN |
 
 ### T-13 mitigation — print batch integrity
 
@@ -154,4 +156,311 @@ Product Owner approved T-15 option A: INS-016 append-only audit events, atomic a
 
 ### T-16 — Cross-project serial collision and evidence lineage risk (2026-11-24)
 
-**Risk:** A project-local unit model may create duplicate physical identities across projects, while a global serial rule may incorrectly reject a serial reused by another instrument type. Evidence may also become detached from the exact revision/version or be overwritten. **Control:** PO-approved key `(instrument_id, serial_normalized)` across projects; preserve project-scoped authorization via explicit project associations; permit reuse across different instrument types; route same-type conflicts to authorized, reasoned and audited resolution; bind immutable evidence to exact revision/version and prohibit in-place replacement. **Status:** Design reconciliation, institution-approved exception policy, implementation and tests remain OPEN.
+**Risk:** A project-local unit model may create duplicate physical identities across projects, while a global serial rule may incorrectly reject a serial reused by another instrument type. Evidence may also become detached from the exact revision/version or be overwritten. **Control:** PO-approved key `(instrument_type, serial_normalized)` across projects; preserve project-scoped authorization via explicit project associations; permit reuse across different instrument types; route same-type conflicts to authorized, reasoned and audited resolution; bind immutable evidence to exact revision/version and prohibit in-place replacement. **Status:** Design reconciliation, institution-approved exception policy, implementation and tests remain OPEN.
+
+
+## Package T — T-17 publication governance update (2026-11-24)
+
+**D-022 — Dependency — CFG-001 publication authorization reconciliation.** Product Owner approved option A: Super Admin may directly publish a version after server-side schema validation; no second-person approval is required. The explicit `instrument.publish` permission, trusted actor derivation, atomic publication + audit, immutable published version, session/assignment version pinning, historical snapshot retention, and separate audited deactivation are now documented across schema, RLS, command and QA artifacts. **Status:** PO direction approved; cross-document technical review and implementation evidence OPEN. No migration, code or test execution claimed.
+
+**R-023 — Risk — instrument configuration privilege or history drift.** A broad configuration editor or mutable published version could alter inspection meaning or allow privilege escalation. **Mitigation:** bounded allowlists; deny arbitrary executable configuration; server-side authorization; atomic publication/audit; immutable versions and exact snapshots; explicit scoped operational authorization independent of global Super Admin administration. **Status:** Design direction documented; cross-document technical review and verification OPEN.
+
+
+## T-18 — Privileged command boundary risk and control (2026-11-24)
+
+**D-024 — Architecture decision — PO APPROVED option A.** Standardize Vercel server routes + caller-JWT PostgreSQL command functions. The server verifies caller session and validates request; PostgreSQL derives actor from JWT and enforces account, permission, role, scope, state and separation-of-duties checks. Deny browser direct DML to protected tables. Require least-privilege command grants, idempotency/concurrency controls and atomic business mutation + event/audit; audit failure rolls back. SECURITY DEFINER exceptions require pinned search_path and function-level review; no browser service-role credential. **Residual status:** architecture choice approved; command catalogue and table-by-table grants/RLS require technical review; T-16 association design is documented but needs technical review; command-specific verification remains OPEN. No implementation authorization.
+
+**R-024 — Privileged command bypass or confused-deputy risk.** A route that trusts client actor/scope, uses service-role credentials indiscriminately, exposes generic RPC writes, or omits atomic audit could bypass authorization or corrupt state. **Mitigation:** caller-JWT propagation, database-derived actor, server-side permission/scope checks, direct-DML denial, command-specific least-privilege grants, pinned/reviewed SECURITY DEFINER only where necessary, idempotency, concurrency control and atomic audit. **Status:** architecture direction approved; design and security verification remain OPEN. No code, migration or test execution claimed.
+
+
+## Documentation Gate Audit — DGA-001 (2026-11-24)
+
+**D-025 — Dependency — Documentation gap closure.** The evidence-backed [Documentation Gap Audit — Gate Implementation Readiness](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) is the active closure queue for G1–G9. It records source authority, institutional approvals, permission/command completeness, ERD-only entities, exact RLS/grants, runtime JWT proof, offline/device security, report/notification lifecycle, provider/restore/SLO and CI evidence gaps. **Status: OPEN / BLOCKING SCOPE FREEZE.** Each DGA-Bxx item must be closed with referenced evidence or an explicitly authorized exclusion/deferment and compensating control; a status-only edit is insufficient.
+
+**R-025 — Risk — premature implementation gate entry.** Entering implementation with incomplete source authority, unresolved command contracts, unapproved institutional policy or unverified security/operations controls may cause architectural rework or production data exposure. **Mitigation:** enforce MIB-001 G0–G12 and DGA-001; no implementation until G9 scope freeze and separate G10 authorization. **Status: OPEN / CRITICAL.**
+
+## NLA-001 / T-13 design risks and dependencies — 2026-11-24
+
+| ID | Type | Description | Impact | Mitigation / response | Accountable role | Status |
+|---|---|---|---|---|---|---|
+| D-026 | Dependency | INS-015 notification lifecycle is PO-approved; exact selector grammar, event-time recipient/scope snapshot representation, policy permission/SoD, worker identity/ACL, provider callback capability, retry horizons and T-10 retention/privacy remain unresolved | Scope freeze and notification implementation | NLA-001 v0.1.4; candidate notification_outbox_recipients is NOT ADMITTED; reconcile schema/RLS/ERD/command/lock/QA and obtain accountable approvals/provider evidence; execute tests only after G10 | PO / Security / Institution / Operations / Engineering | OPEN — BLOCKING |
+| R-026 | Risk | External notification providers have at-least-once/ambiguous acceptance behavior; retries or unauthenticated/replayed callbacks can duplicate delivery, corrupt status or silently lose notices | High | Transactional outbox, unique recipient/channel arbiters, append-only attempt evidence, owner/token-hash/generation/expiry fencing, INT-NOTIF-001 signature/freshness/replay validation, UNKNOWN state and backlog/dead-letter monitoring | Engineering / Security / Operations | MITIGATING BY DESIGN; PROVIDER/WORKER VERIFICATION OPEN |
+| D-027 | Dependency | T-13 batch print decision requires physical batch persistence and append-only per-document outcomes to be reconciled with RLS, commands and tests | Scope freeze and print implementation | Include `print_batches`; link `print_events`; review lock/projection/retry contract and failure/concurrency tests | PO / Engineering / Security | DESIGN RECORDED; REVIEW OPEN |
+
+## Lock protocol PO decision and technical dependencies — 2026-11-24
+
+| ID | Type | Description | Impact | Mitigation / response | Accountable role | Status |
+|---|---|---|---|---|---|---|
+| D-028 | Dependency | LPR-02–LPR-06 product semantics are PO-approved, but canonical lock rank, exact command manifests, implicit PostgreSQL lock paths, physical constraints, function/trigger graph and effective privileges remain unapproved/unverified | G3/G4/G5/G7/G9 and implementation entry | Complete Engineering/Security review of LPR-01 and LPR-07–LPR-11; reconcile all 54 manifests; obtain authorized isolated concurrency evidence for LPR-10 | Engineering / Security / Database / QA | OPEN — BLOCKING; 10/54 CANDIDATE-NORMALIZED, 0/54 CERTIFIED |
+| R-027 | Risk | A command or asynchronous finalizer may acquire shared resources in conflicting order or bypass a shared invariant, causing deadlocks, stale finalization, duplicate claims or capacity/closure races | Critical | Enforce one approved total order; require complete per-command/worker manifests; include trigger/FK/unique-index/helper-function lock edges; use fencing and adversarial concurrency tests before implementation | Engineering / Security / QA | OPEN — CRITICAL |
+| R-028 | Risk | Canonical unit identity or T-14 eligibility may be implemented inconsistently across commands, causing duplicate physical units or over/under-counted Inspector capacity | High | Use the exact Decision Register predicates; centralize normalization/eligibility semantics; enumerate every competing writer and verify shared constraints/serialization | Engineering / Database / Security | MITIGATING BY SPECIFICATION; IMPLEMENTATION/VERIFICATION OPEN |
+
+The PO decisions recorded in LPR-02–LPR-06 are product direction only. They do not close D-028/R-027/R-028 or authorize implementation. G9 remains NOT READY; G10 remains NOT AUTHORIZED.
+
+
+## CMD-011–020 Product Owner decision closure — 2026-11-24
+
+**D-029 — Dependency — CMD-011–020 product semantics approved; technical physicalization remains open.** The Product Owner approved the recommended product semantics for CMD-011–020. Decision Register and the v0.2.0 decision package record the approval, including compatibility with T-07, T-14 and T-17. **Residual work:** synchronize command contracts, logical/physical data model, concurrency tokens, permission/security review and QA traceability; obtain Engineering/Security/Database/QA and institutional/operational decisions within their authority. **Accountable:** Engineering lead / Security / Database / QA; PO remains owner of product changes. **Status:** PO DECISION COMPLETE; TECHNICAL / INSTITUTIONAL DEPENDENCIES OPEN.
+
+**R-029 — Risk — approved product semantics may be implemented inconsistently across command, schema, permission and QA artifacts.** A stale candidate enum, ambiguous membership effective time, project-wide target plan, weak instrument normalization, mutable published configuration or unproven closure/capacity serialization could create inconsistent behavior or data integrity defects. **Mitigation:** maintain this crosswalk; preserve T-07/T-14/T-17; do not infer physical columns or lock modes; require static cross-document review and authorized tests before gate closure. **Accountable:** Engineering / Security / Database / QA. **Status:** MITIGATING BY DOCUMENTATION; VERIFICATION OPEN.
+
+
+## Engineering/Security lock and concurrency technical resolution — 2026-11-24
+
+| ID | Type | Description | Impact | Mitigation / response | Accountable role | Status |
+|---|---|---|---|---|---|---|
+| D-030 | Dependency | LPR-01 and LPR-07–LPR-11 need accountable Engineering/Database/Security/QA/Operations review; CMD-001–010 are now candidate-normalized in the detailed review/manifest/graph, while CMD-011–054 still require per-command normalization; proposed identity ranks, parent-fence modes, worker trust and concurrency suite are not approved/evidenced | G3/G4/G5/G7/G9 | Review TECH-RESOLUTION-LPR-001; record explicit approve/reject/amend per LPR; inspect exact PostgreSQL object/privilege graph; normalize CMD-011–054 after review of the CMD-001–010 overlay; execute authorized isolated concurrency suite | Engineering / Database / Security / QA / Operations | OPEN — BLOCKING |
+| R-030 | Risk | Unapproved parent lock modes, unverified identity/authorization lock coverage, implicit trigger/FK/index edges or stale worker finalizers can cause deadlock, authorization race, closure race, capacity drift or duplicate side effects | Critical | Approve one effective total order; require parent-first fencing and worker generation checks; validate all paths and constraints; prove with adversarial tests on exact schema/commit | Engineering / Security / QA | OPEN — CRITICAL |
+| R-031 | Risk | Stale CMD-011–020 decision-package wording may cause implementation to persist non-T-07 session states PLANNED or CLOSE_REQUESTED | High | Decision package v0.2.4 explicitly supersedes candidate state wording; T-07 controls DRAFT/ACTIVE/PAUSED/CLOSED; CLOSE_REQUESTED is action/event only; add static test/traceability check | Engineering / QA | MITIGATING BY DOCUMENTATION; VERIFICATION OPEN |
+
+
+## CMD-001–010 lock normalization checkpoint — 2026-11-24
+
+D-030 remains OPEN/BLOCKING. The first ten command manifests now have a candidate resource order, lock-mode proposal where applicable, actor/target/grantor revalidation, T-14 capacity conditionality, competing-command map and planned test anchors. This reduces documentation ambiguity but does not approve the technical graph, close DGA-B18/B19/B21, or provide execution evidence. Continue with CMD-011–020 after reviewing this baseline; keep 0/54 certified until authority review and evidence exist.
+
+
+**Current normalization references:** CMD-001–010 Detailed Contract Review v0.3.4; LOCK-MANIFEST-001 v0.4.10; LOCK-GRAPH-001 v0.4.8; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.6; QA Catalogue v0.3.2; DGA-001 v1.11.12. All remain proposals / planned evidence except the documentation normalization itself.
+
+
+**Final reviewed source snapshot for CMD-001–010 checkpoint:** CMD detail v0.3.4; LOCK-MANIFEST-001 v0.4.13; LOCK-GRAPH-001 v0.4.10; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.8; Cross-Command Reconciliation v0.8.8; QA Catalogue v0.3.3; DGA-001 v1.11.15. D-030/R-030 remain OPEN; no implementation or concurrency evidence is claimed.
+
+
+
+## CMD-045–048 Product Owner disposition — 2026-11-24
+
+Product Owner approved CMD-045–048 Control-Plane Resolution Proposal v0.1.0. The application-surface design ambiguity is CLOSED: the four IDs remain for traceability but are not executable application commands; no app permission, route, RPC, function, table, worker or generic CRUD is permitted. Their responsibilities are assigned to institutional records governance, institutional incident response, provider-native/secret-management operations and protected source-control/deployment systems respectively.
+
+This decision closes the application-feature design question only. It does not close external dependencies D-031 through D-033 or critical risk R-033 until accountable owners supply objective evidence. DGA-B04/B05/B15 remain open; G9 remains NOT READY; G10 remains NOT ACTIVE. The former proposed app-command acceptance tests are no longer an application implementation backlog; control-plane verification requirements remain in the RTM and detailed review.
+
+
+## CMD-045–048 blocked-command review — 2026-11-24
+
+| ID | Type | Description | Impact | Mitigation / response | Accountable role | Status |
+|---|---|---|---|---|---|---|
+| D-031 | Dependency | CMD-045 retention/legal-hold cannot be designed as an executable command until T-10 institutional records/legal/privacy/security policy defines record classes, retention triggers, hold authority/precedence, disposition and backup/object treatment | G1/G4/G5/G8/G9; risk of unlawful or irreversible disposition | Obtain written institutional policy; define versioned policy and hold/disposition lifecycle; prove hold-vs-disposition concurrency and audit evidence before any implementation | Institutional records/legal/privacy/security owners | BLOCKED |
+| R-032 | Risk | A generic security-incident command without an approved case owner, need-to-know scope, evidence chain-of-custody and break-glass process could expose sensitive incident data or create unauthorized response powers | Critical | Decide product-owned vs external incident system; approve incident taxonomy, roles, scope, evidence and response lifecycle; keep command unavailable until physical/security review | Security owner / Institution / PO | OPEN — BLOCKING |
+| D-032 | Dependency | CMD-047 provider configuration lacks T-12 named account/billing owners, custodians, region, plan, secret-manager and rotation/recovery evidence | G4/G8/G9 and provider continuity | Complete signed ownership/RACI and provider evidence; approve server-side secret references, environment isolation, rotation, audit redaction and rollback | Sponsor / Institution / Operations / Security | BLOCKED |
+| D-033 | Dependency | CMD-048 release management has no verified release operator, branch/ruleset, required CI, protected environment, artifact provenance or deployment SoD evidence | G4/G8/G9 | Verify GitHub rulesets, CI and Vercel protected environments; define immutable artifact provenance, approval, rollback and schema compatibility; decide whether product-side command is unnecessary | Repository administrator / Operations / Security | OPEN — BLOCKING |
+| R-033 | Risk | Implementing CMD-047/048 as generic application CRUD/actions could bypass provider-native controls, expose credentials or allow deployment without independent approval | Critical | Prefer narrowly scoped provider/repository control planes; prohibit raw secrets and browser credentials; require exact allowlists, SoD, immutable evidence and independent review | Engineering / Security / Operations | OPEN — CRITICAL |
+
+CMD-045–048 Detailed Contract Review v0.1.0 records the present safe-unavailable behavior and required closure evidence. This documentation does not close DGA-B04/B05/B15, authorize any provider setup, or establish incident/release control-plane ownership. All subcases remain PLANNED / NOT EXECUTED.
+
+
+## CMD-049–054 notification contract closure dependencies — 2026-11-24
+
+| ID | Type | Description | Impact | Mitigation / response | Accountable role | Status |
+|---|---|---|---|---|---|---|
+| D-034 | Dependency | CMD-052/053 worker identity, scheduler trust, database role, function owner, exact EXECUTE ACL, lease-token custody and monotonic fencing have no approved runtime principal or evidence | G4/G7/G9; stale worker or privilege escalation risk | Security/Operations approve a non-login least-privilege workload identity, exact owner/ACL, token handling, generation fencing, rate limits and isolated verification | Security / Operations / Engineering | OPEN — BLOCKING |
+| D-035 | Dependency | INT-NOTIF-001 provider callback ingress requires a selected provider, signature/freshness model, stable event identity, durable deduplication and provider-message mapping | Delivery state integrity and provider operations | Select provider only after T-12 ownership/cost/capability evidence; define callback authentication, replay defense, monotonic transitions and failure reconciliation | Provider owner / Security / Operations | OPEN — BLOCKING |
+| D-036 | Dependency | CMD-051 policy publish requires an approved notification.policy.manage grant, scope, grantor ceiling, policy schema/selector allowlist and SoD; persisted draft CRUD is excluded | G5/G9; unauthorized global policy mutation | PO/Security approve exact policy schema, role/scope/grantor matrix and publish authority; any draft workflow requires separate command/schema approval | PO / Security | OPEN — BLOCKING |
+| R-034 | Risk | Event-time audience semantics are PO-approved, but the durable recipient/scope snapshot is not admitted; if fan-out retries re-resolve current role/assignment membership, recipients may be added, omitted or exposed outside the original event scope | High | Persist immutable event-time recipient/scope candidates and snapshot hash/count before source transaction commit; retries consume only that set; dispatch-time revalidation may suppress only; never widen audience | PO / Security / Engineering / Database | OPEN — BLOCKING |
+| R-035 | Risk | Ambiguous provider acceptance followed by blind retry may duplicate a sensitive notification; callbacks may arrive late or out of order | High | Keep UNKNOWN until safe reconciliation, use provider idempotency where supported, authenticate INT-NOTIF-001, enforce monotonic transitions and alert on unresolved age | Engineering / Security / Operations | MITIGATING BY DESIGN; VERIFICATION OPEN |
+
+CMD-049–054 Detailed Contract Review v0.1.1 and NLA-001 v0.1.2 resolve several documentation-level mismatches only. D-034..D-036 and R-034..R-035 remain open; no worker, provider, role, grant, route, table, SQL or test execution is authorized by this register update.
+
+
+## Identifier uniqueness audit correction — 2026-11-24
+
+The final documentation audit detected a duplicate risk identifier. R-014 remains assigned to the project-wide scope-freeze risk. The alternative provider-ownership continuity risk is now R-036. The risk description, impact, likelihood, mitigation, owner and OPEN status are unchanged. RAID identifiers are unique within this register.
+
+
+## Cross-document governance audit checkpoint — 2026-11-24
+
+The static audit in [SSOT-AUDIT-001](SSOT-CROSS-DOCUMENT-RECONCILIATION-AUDIT.md) reconciled the current DGA, RTM, Decision Register, Package S and Package T status without changing the authority or risk meaning of existing entries.
+
+- Existing 53 unique RAID identifiers are retained; no risk, assumption, issue or dependency is marked closed by this documentation audit.
+- D-031..D-036 remain institutional/provider/worker/policy dependencies as recorded.
+- R-032..R-036 remain open or verification-open; documentation mitigations do not establish technical or operational closure.
+- T-10 and T-12 PO decisions approve governance paths only; institutional/provider evidence remains outstanding.
+- RTM T-13 print verification now maps to TC-PRINT-001..007 and TC-PRINT-BATCH-001..008; no test has been executed.
+- Package S §9.15 remains historical; §9.16 is the current inventory snapshot. Package T v0.1.1 remains a historical decision pack, with the Decision Register as current PO authority.
+
+No RAID owner has been replaced with an invented person or institution. No new risk is assigned without evidence of a distinct risk beyond the existing DGA/RAID register. The PO and authority requests are tracked in POQ-001 and AUTH-001.
+
+**Status:** RAID review remains OPEN for the existing dependencies and risks. No external approval, technical certification, implementation, test, merge or release evidence is implied.
+
+
+## Notification audience snapshot lock-order risk — 2026-11-24
+
+| ID | Type | Description | Impact | Mitigation / response | Accountable role | Status |
+|---|---|---|---|---|---|---|
+| R-037 | Risk | POQ-01 event-time audience snapshot persistence may introduce implicit FK KEY SHARE locks to app_users and project/session/location/assignment rows after a source command, CMD-052 or CMD-054 already holds higher-ranked aggregate/queue/policy locks; this may invert L15/L16/L17/L30/L50/L55 order and create deadlocks or inconsistent eligibility snapshots | Critical | Keep notification_outbox_recipients candidate-only until every source event/worker path, competing account/scope writer and implicit FK/index/trigger/helper edge is mapped; define one event-time linearization and canonical order; prove the full graph acyclic and execute deterministic opposing-transaction tests before G9 | Engineering / Database / Security / QA | OPEN — CRITICAL |
+
+
+### R-037 resolver lock-set refinement — 2026-11-24
+
+The source event declaration inventory is complete at 40/40 in LOCK-MANIFEST-001 §7.7. The remaining gap is complete recipient-resolver lock-set coverage: 0/40 source paths certified. [NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001](../02-architecture/NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) v0.1.5 proposes a global L05 audience guard or a SERIALIZABLE predicate snapshot and records required writer participation, FK pre-acquisition and adversarial tests. These are alternatives for review, not approved controls. R-037 remains OPEN — CRITICAL until the event-time linearization, selected mechanism, exact FK graph, every eligibility-changing writer, acyclicity and authorized runtime evidence are closed. 0/50 application lock-certified; G9 NOT READY; G10 NOT ACTIVE.
+
+
+### R-037 decision update — 2026-11-24
+
+PO has selected candidate L05 (global transaction-scoped audience guard) as the primary mechanism for technical approval review; Option B SERIALIZABLE remains contingency-only. See [NLA-RESOLVER-LOCK-001 v0.1.6](../02-architecture/NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md) §11. R-037 remains OPEN — CRITICAL pending Engineering/Database/Security approval of the exact PostgreSQL primitive/key, rank/order, complete eligibility-writer participation, FK/trigger/helper edges, timeout/retry, contention bounds and graph acyclicity. This PO selection does not authorize implementation or admit L05 as a canonical rank. Resolver certification 0/40; application lock certification 0/50; G9 NOT READY; G10 NOT ACTIVE.
+
+
+### R-037 technical protocol checkpoint — 2026-11-24
+
+[NLA-L05-TDR-001 v0.1.0](../02-architecture/NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) proposes a transaction-scoped two-key PostgreSQL advisory lock at candidate L05. Exact key pair/registry, deployed READ COMMITTED configuration, complete writer mapping, helper ACL, FK/unique/trigger graph, numeric lock/transaction/retry budgets, audience cap, SLO and acyclicity evidence remain OPEN. R-037 remains OPEN — CRITICAL; no technical approval or implementation authorization is inferred. Resolver certification 0/40; application lock certification 0/50.
+
+
+### R-037 PO decision — 2026-11-24
+
+The Product Owner approved NLA-L05-TDR-001 v0.1.1 as the preferred technical candidate for Engineering/Database/Security review. This is candidate-direction approval only. L05 remains unadmitted; R-037 remains OPEN — CRITICAL until technical approvals, complete 40-source resolver lock coverage, FK/trigger graph, acyclicity proof and concurrency evidence are complete. No implementation authorization is created.
+
+
+## R-037 current L05 technical baseline — 2026-11-24
+
+Current candidate sources: NLA-001 v0.1.10; NLA-RESOLVER-LOCK-001 v0.1.10; NLA-L05-TDR-001 v0.1.4; LOCK-MANIFEST-001 v0.4.30; LOCK-GRAPH-001 v0.4.23; source map v0.1.0; writer matrix v0.1.2; QA Catalogue v0.4.6; DGA-001 v1.11.61.
+
+CMD-031–040 candidate lock overlay is partial and does not close R-037. Resolver paths remain 0/40 certified, application lock certification 0/50, graph acyclicity NOT PROVEN, candidate snapshot relation/header NOT ADMITTED, NRL tests PLANNED / NOT EXECUTED. Exact writer participation, selector dependency set, FK/trigger/helper graph, worker/lease rank, attendance aggregate/version and numeric contention SLOs remain open. R-037 remains OPEN — CRITICAL; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## R-037 / D-026 F-05 technical validation update — 2026-11-24
+
+The POQ-04 product-decision dependency is resolved, but static review identifies five technical blockers tracked as F05-T1..T5 in NLA-L05-TDR-001 v0.1.7 §4.2.4: selector grammar and dependency universe; event-specific dispatch authorization; suppression/retry state machine; append-only audit evidence; and atomic snapshot binding. A blanket current-active-parent dispatch predicate could suppress project/session closure notices, while a broad selector can introduce undiscovered writer/lock dependencies. These are material security and concurrency risks, not cosmetic documentation gaps.
+
+**D-026 update:** exact selector grammar, candidate snapshot representation, worker identity/ACL, policy permission/SoD, provider callbacks and T-10 retention/privacy remain unresolved. Writer matrix v0.1.3 is incomplete; no writer is certified to participate in L05.
+
+**R-037 update:** POQ-04 does not close the concurrency risk. Resolver certification remains 0/40; application lock certification 0/50; global graph acyclicity NOT PROVEN; candidate snapshot relation/header NOT ADMITTED. Selector-to-column dependency mapping is now an explicit prerequisite to complete the physical writer inventory and F-04 closure.
+
+QA v0.4.9 adds TC-NOTIF-060..064; TC-NOTIF-055..064 all remain PLANNED / NOT EXECUTED. R-037 remains OPEN — CRITICAL; D-026 remains OPEN — BLOCKING. G9 NOT READY; G10 NOT ACTIVE. No implementation, SQL, migration, grants, RLS, runtime test or deployment is authorized by this update.
+
+
+## D-026 / R-037 selector registry and dispatch profile update — 2026-11-24
+
+TDR v0.1.8 proposes a constrained selector grammar and event-specific dispatch matrix. These are candidate specifications only. New dependency is an exact event-to-selector registry: the CMD source map is not sufficient because several commands declare alternative or conditional event types. No composite event may be enabled by wildcard or prefix. Each exact token needs source transaction, grammar version, allowed clauses, trusted participant mapping, scope binding, dependency list and dispatch profile.
+
+The eight-clause maximum is provisional and requires Engineering/Operations resource validation plus Security/PO approval. Role-key and scope-binding references are not yet reconciled to canonical SSOT registries. Transition dispatch exceptions for role revoke, assignment-member end and project/session close require explicit Security approval and reconciliation with inbox/source-resource RLS.
+
+D-026 remains OPEN — BLOCKING. R-037 remains OPEN — CRITICAL. Selector dependency universe and complete writer inventory remain unproven; resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED. TC-NOTIF-055..070 remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE.
+
+
+## D-026 / R-037 event-candidate PO decision update — 2026-11-24
+
+The Product Owner approved eleven first-batch notification event intents for specification and technical review only. NLA-EVENT-REGISTRY-001 v0.1.0 records these candidates; no row is technically admitted or enabled. This resolves the PO decision dependency for the first batch but does not close selector grammar/dependency, source contract, dispatch, retry, audit, atomicity, lock certification or writer-inventory risks. 
+
+D-026 remains OPEN — BLOCKING. R-037 remains OPEN — CRITICAL. F-05/F-04/F-03/F-07 remain OPEN; resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED. TC-NOTIF-073/074 PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE.
+
+
+## D-026 / R-037 CMD-002/003 account-event reconciliation — 2026-11-24
+
+NLA-EVENT-TECH-RECON-001 v0.1.0 partially reconciles `account.approved` and `account.rejected` against CMD-002/003. The command transaction and proposed account/decision/audit/idempotency objects are documented, but exact event schema/version and participant projection, pending-applicant snapshot eligibility versus dispatch-time enabled-account suppression, terminal decision uniqueness/CAS, non-command account eligibility writers, conditional T-14/L05 ordering, and event/outbox/snapshot dedup remain open.
+
+**D-026:** registry technical admission remains blocked; both rows remain NOT ENABLED. The candidate event participant cannot be inferred from `target_user_id` or `account_decisions.user_id` without an approved event contract and selector.
+
+**R-037:** account writer coverage remains partial; L05 is a candidate only; 0 writers certified, resolver 0/40, application lock 0/50, graph NOT PROVEN ACYCLIC, candidate snapshot relation/header NOT ADMITTED. RTM-001 v0.1.14 adds NOTIF-024/025; QA Catalogue v0.5.4 adds TC-NOTIF-075/076, all PLANNED / NOT EXECUTED. TC-NOTIF-073/074 remain PLANNED / NOT EXECUTED. D-026 remains OPEN — BLOCKING; R-037 remains OPEN — CRITICAL; G9 NOT READY; G10 NOT ACTIVE.
+
+
+**Verification trace:** NOTIF-024/025 and TC-NOTIF-075/076 now explicitly track account event participant/state predicates and terminal decision/atomicity/writer proof. All remain OPEN / PLANNED / NOT EXECUTED as applicable; D-026 remains OPEN — BLOCKING and R-037 OPEN — CRITICAL.
+
+
+## D-026 / R-037 CMD-005 role-revocation event update — 2026-11-24
+
+NLA-EVENT-TECH-RECON-001 v0.1.1 partially reconciles NREG-003 `role.revoked`. POQ-04 pre-revoke snapshot and post-revoke suppression semantics are explicit, but exact participant projection, role state/effective-time representation, physical CAS token, last-admin/recovery and delegation authority, conditional Inspector-cap effect and complete L05/L10 writer coverage remain open.
+
+RTM-001 v0.1.15 adds NOTIF-026/027; QA Catalogue v0.5.5 adds TC-NOTIF-077/078, all PLANNED / NOT EXECUTED. D-026 remains OPEN — BLOCKING; R-037 remains OPEN — CRITICAL; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; no writer certified; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## D-026 / R-037 CMD-010/013 closure-event update — 2026-11-24
+
+NLA-EVENT-TECH-RECON-001 v0.1.2 partially reconciles NREG-004 `project.closed` and NREG-005 final `session.closed`. POQ-04 pre-close snapshot semantics are explicit, but the project/session closure blocker graph, physical CAS tokens, parent/child lock compatibility, complete child-writer/finalizer inventory, exact participant/scope projection and event-specific dispatch remain open. `session.close_requested` is not an approved event token.
+
+RTM-001 v0.1.16 adds NOTIF-028..030; QA Catalogue v0.5.6 adds TC-NOTIF-079..081, all PLANNED / NOT EXECUTED. D-026 remains OPEN — BLOCKING; R-037 remains OPEN — CRITICAL; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## D-026 / R-037 CMD-014/015 assignment-event update — 2026-11-24
+
+NLA-EVENT-TECH-RECON-001 v0.1.3 partially reviews `assignment.created` and `assignment.changed`. New-member snapshot selection, added/ended/retained event semantics, active-work orphaning policy, assignment/member constraints and full L05/L10/T-14 writer coverage remain open. No recipient is inferred from the initial roster or retained membership.
+
+RTM-001 v0.1.17 adds NOTIF-031..034; QA Catalogue v0.5.7 adds TC-NOTIF-082..085, all PLANNED / NOT EXECUTED. D-026 remains OPEN — BLOCKING; R-037 remains OPEN — CRITICAL; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## D-026 / R-037 CMD-029/030 inspection-event update — 2026-11-24
+
+NLA-EVENT-TECH-RECON-001 v0.1.4 partially reviews submission and return events. `inspection_revision.created` is not a second approved notice; Reviewer assignment source is absent; responsible Inspector mapping from revision author/current assignment remains unresolved; review decision uniqueness and inspection-first lock-order conflicts remain open.
+
+RTM-001 v0.1.18 adds NOTIF-035..038; QA Catalogue v0.5.8 adds TC-NOTIF-086..089, all PLANNED / NOT EXECUTED. D-026 remains OPEN — BLOCKING; R-037 remains OPEN — CRITICAL; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## D-026 / R-037 CMD-031/032 approval/reopen event update — 2026-11-24
+
+NLA-EVENT-TECH-RECON-001 v0.1.7 partially reviews NREG-010 `inspection.approved` and NREG-011 `inspection.reopened`. Approval is bound to one exact current immutable submitted revision, but the persisted Reviewer assignment, responsible-Inspector recipient mapping and terminal-decision uniqueness arbiter remain unadmitted. CMD-030 return and CMD-031 approval must serialize on the same inspection aggregate and one terminal decision per revision.
+
+Reopen requires explicit `inspection.reopen` authority, exact scope and mandatory reason; the role/grant/SoD matrix and next-action owner remain unresolved. Mutable draft persistence/state vocabulary and active claim/association/evidence/document finalizer blocker graph are incomplete. Historical approved revisions, evidence, generated documents and print events must remain immutable.
+
+RTM-001 v0.1.19 adds NOTIF-039..043; QA Catalogue v0.5.9 adds TC-NOTIF-090..094, all PLANNED / NOT EXECUTED. D-026 remains OPEN — BLOCKING; R-037 remains OPEN — CRITICAL; resolver 0/40; application lock 0/50; graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## D-026 / R-037 technical source cross-check — 2026-11-24
+
+Physical schema v0.4.4 states the one-terminal-decision-per-revision invariant in the `review_events` description but does not name a concrete unique index/constraint or review-round sequence. The invariant is therefore not yet physically enforced by evidenced schema. Source-event path map v0.1.0 and CMD lock manifest v0.4.30 retain inspection-first candidate recipes, while global graph §30 proposes authorization/parent/assignment/optional-claim before inspection; this ordering conflict remains unresolved. No lock certification or event admission follows from the documentation update.
+
+## Inspection draft-context lifecycle risks and dependencies — 2026-11-24
+
+### New risk
+
+| ID | Type | Description | Impact | Likelihood | Mitigation / response | Accountable role | Status |
+|---|---|---|---|---|---|---|---|
+| R-016 | Risk | Mutable draft state, immutable submitted revisions, correction/reopen, evidence linkage and claim ownership are conflated or implemented inconsistently, causing lost field work or mutation of approved history | Critical | Medium | Review INSPECTION-DRAFT-001 with PO, operational owner, Engineering, Database and Security; admit one active draft-context invariant; define claim ownership and evidence carry-forward; prove atomic submit/return/reopen, lock graph and adversarial recovery tests before G9 | Product Owner / Operational Owner / CTO / Database / Security | OPEN — BLOCKING |
+
+### New issue
+
+| ID | Issue | Required resolution | Accountable role | Status |
+|---|---|---|---|---|
+| I-010 | The command and physical schema do not yet define a single durable mutable draft context across initial claim, correction and approved reopen | Review candidate INSPECTION-DRAFT-001; decide active-context lifecycle, context owner/claim resume, evidence carry-forward, physical constraints and command write sets; then synchronize PRD/Decision Register, schema, RLS, lock manifest, RTM and QA | Product Owner / Operational Owner / Engineering / Database / Security | OPEN — BLOCKING |
+
+### New dependency
+
+| ID | Dependency | Needed for | Accountable role | Status |
+|---|---|---|---|---|
+| D-008 | Approved inspection draft-context, claim-resume and evidence carry-forward decisions | Freeze CMD-026/028/029/030/032/033/034 contracts and G9 scope review | Product Owner / Operational Owner / Database / Security | OPEN — BLOCKING |
+
+### Verification trace
+
+INS-021, REV-003, REV-004 and EVD-004 are added to RTM-001 v0.1.22 as candidate/baselined-product-direction trace rows with physical approval still open. INSPECTION-DRAFT-001 v0.1.0 contains IDC-01..20 design acceptance scenarios; these are not yet formal executed tests. R-016, I-010 and D-008 remain OPEN — BLOCKING. No PO decision, institutional evidence policy, claim ownership, evidence reuse, schema admission, implementation authority or gate status is inferred.
+
+
+## Session-bound unit inspection and abort — SES-001 (2026-11-24)
+
+### New risk
+| ID | Type | Description | Impact | Likelihood | Mitigation / response | Accountable role | Status |
+|---|---|---|---|---|---|---|---|
+| R-017 | Risk | Inspection drafts, claims, evidence or returned corrections cross session boundaries, or a returned inspection is incorrectly aborted without the narrow packed-unit exception and Admin/Korlap approval, causing ambiguous ownership or loss of required correction | Critical | Medium | Enforce immutable inspection.session_id; prohibit cross-session resume/reassignment; require WF-001 correction when possible; permit ABORT only after Reviewer return, packed/shipment-ready condition, Inspector request and Admin/Korlap approval; atomically preserve history and conditionally release claim; test authorization, retries and races | Product Owner / Operational Owner / Engineering / Database / Security / QA | OPEN — BLOCKING |
+
+### New issue
+| ID | Issue | Required resolution | Accountable role | Status |
+|---|---|---|---|---|
+| I-013 | CMD-026/027 and session-close contracts do not yet define a certified atomic abort lifecycle for an incomplete unit attempt | Decide whether CMD-027 can perform full abort or a dedicated command is required; define ABORTED state, immutable session binding, claim release, event/audit/idempotency, lock order, RLS/ACL and new-attempt uniqueness; synchronize PRD/schema/commands/QA | Product Owner / Operational Owner / Engineering / Database / Security | OPEN — BLOCKING |
+
+### Dependency
+| ID | Dependency | Needed for | Accountable role | Status |
+|---|---|---|---|---|
+| D-010 | Certified session-bound inspection and abort contract, including returned-but-unresolved work at session close | Freeze CMD-026/027/028/029/030/032 and session-close contract; G9 scope review | Operational Owner / Engineering / Database / Security / QA | OPEN — BLOCKING |
+
+SES-001 product semantics are PO APPROVED. R-017, I-013 and D-010 remain OPEN — BLOCKING until physical, command, lock, security and QA evidence is accepted. No implementation, test execution or gate transition is implied.
+
+
+## CMD-013 FINAL_CLOSE cross-lifecycle risk reconciliation — 2026-11-24
+
+The static cross-lifecycle audit confirms that session closure remains a critical unresolved integration point. Keep the existing session/lock risks and dependencies OPEN — BLOCKING; this addendum does not close or downgrade R-017, I-013, or D-010.
+
+- CMD-013 cannot be certified until the complete blocker predicate covers inspection/review, required evidence finalization, required document generation and print reconciliation, and the institutionally approved attendance condition.
+- Per-unit abort under SES-001 cannot be used to bypass required documents, printing, attendance, or review.
+- All session-scoped writers and asynchronous finalizers capable of changing the predicate must be fenced against FINAL_CLOSE.
+- The full 54-command resource/lock inventory, CMD-026 lock-order contradiction, parent/child fence protocol and global lock graph acyclicity proof remain unresolved.
+- Notifications remain asynchronous/non-blocking unless a future approved policy changes that behavior.
+
+No new risk/dependency ID is assigned by this note. G9 remains NOT READY; G10 NOT ACTIVE; relevant QA remains PLANNED / NOT EXECUTED.
+
+## SES-001 — packed-unit ABORT clarification (2026-11-24)
+
+The PO clarification narrows ABORT to an exceptional disposition: Reviewer has returned the inspection for an identified error, but the physical unit is already packed/boxed and prepared for shipment so correction/reinspection is impracticable. Inspector requests; Admin/Korlap explicitly approves or rejects. If correction is practically possible, WF-001 correction/resubmission remains the required path.
+
+Until approved, the returned attempt remains unresolved. Approved ABORT is terminal and preserves submitted revision, Reviewer return, evidence and audit history; it is not approval, inspection completion, good/defective classification or print completion. A later inspection uses a new session-bound inspection_id. CMD-013 cannot create/approve/bulk-abort. Do not treat every unfinished attempt as eligible for ABORT.
+
+R-017, I-013 and D-010 remain OPEN — BLOCKING for command identity, authorization/SoD, reason and packed-state evidence policy, atomicity, lock/RLS/schema and QA evidence. No implementation or test execution is implied.
+
+## SES-001 — technical abort workflow risk/dependency refinement (2026-11-24)
+
+The approved business exception now has a candidate two-step technical design. The request/decision workflow is separate from CMD-027 claim release. Key additional risks are stale revision approval, requester/approver identity confusion, unverified packed-state evidence, concurrent correction versus approval, and partial claim/inspection/audit mutation. The current command/schema/lock contracts do not yet prove these cases.
+
+R-017, I-013 and D-010 remain OPEN — BLOCKING. Engineering/Database/Security must validate the request/decision record, exact command and permission mapping, role/delegation/SoD, evidence acceptance, atomic write set, RLS/T-18, lock/fence protocol and test evidence. No new RAID ID is assigned; no G9/G10 status changes.

@@ -1,6 +1,6 @@
 # Audit Event Catalogue and Governance
 
-**Status:** Design draft — pending Product Owner, institutional security, privacy, and records approval  
+**Status:** Design draft — T-15 audit direction PO APPROVED; institutional security, privacy, records and implementation verification remain open  
 **Package:** R  
 **Date:** 2026-11-23  
 **Implementation status:** Not implemented; no database migration, trigger, policy, export, or tamper-evidence control has been deployed or tested.
@@ -91,11 +91,12 @@ The catalogue below defines required event families. Exact event keys and payloa
 - `evidence.uploaded`, `evidence.downloaded`, `evidence.access_denied`, `evidence.deletion_requested`, `evidence.deleted`
 - `inspection_revision.created`, `inspection_revision.superseded`
 
-### 4.4 Documents, reporting, and attendance
-- `pdf.generated`, `pdf.regenerated`, `document.printed`, `document.reprinted`
+### 4.4 Documents, reporting, attendance, and notifications
+- `pdf.generated`, `pdf.regenerated`, `document.printed`, `document.reprinted`, `document.print_batch_created`, `document.print_batch_completed`, `document.print_batch_partial`
 - `ba.generated`, `ba.issued`, `ba.signed_copy_uploaded`, `ba.status_changed`
 - `attendance.generated`, `attendance.printed`, `attendance.uploaded`, `attendance.replaced`, `attendance.verified`
 - `report.generated`, `report.exported`, `report.approved`
+- `notification.policy_published`, `notification.read`, `notification.escalation_evaluated`, `notification.escalation_enqueued`
 
 ### 4.5 Security, privacy, and operations
 - `audit.exported`, `audit.accessed`, `audit.search_performed`
@@ -178,18 +179,18 @@ Tests are specified only; none have been executed.
 
 ## 11. Open approvals and dependencies
 
-1. **INS-016 policy direction is PO APPROVED under T-15 option A (2026-11-24).** The detailed technical design, institutional records/privacy/security approvals, implementation and tests remain pending; T-10 institutional classification, retention, deletion/disposition and legal-hold controls are not approved by T-15.
+1. **Superseded by T-15 (2026-11-24): INS-016 is PO APPROVED option A.** Append-only audit records, atomic critical mutation + audit, fail-closed behavior, privacy-safe event context and least-privilege read/export are approved product/technical direction. Institutional classification, retention, legal hold, disposition, network metadata and final export authority remain external approvals under T-10.
 2. Records/privacy/legal owner must approve audit classification, retention duration, deletion/disposition, legal hold, and access/export authority.
 3. Security owner must approve whether IP/network metadata is collected and its retention.
 4. Project Sponsor must decide whether independent immutable/WORM archive is required and fund it if selected.
 5. Database schema review must finalize indexes, partitioning, event payload schema, foreign-key/deletion strategy, and event sequencing.
-6. Package N must approve the trusted command boundary and transactional audit-write implementation.
+6. T-18 has PO-approved the trusted caller-JWT command architecture; command-by-command contracts, RLS/EXECUTE grants, transactional audit implementation and security verification remain open.
 7. Provider operational audit capabilities and retention must be verified against the actual plan.
 8. Named accountable operational roles and incident escalation must be confirmed.
 
 ## 12. Scope and implementation gate
 
-This package is a governance and architecture specification only. It does not authorize migrations, triggers, application code, external archive procurement, or production configuration. Implementation may begin only after the audit policy, privacy/records obligations, Package L schema, Package M RLS, and Package N command boundary are approved and reconciled.
+This package is a governance and architecture specification only. It does not authorize migrations, triggers, application code, external archive procurement, or production configuration. Implementation may begin only after the PO-approved T-15 audit direction is reconciled with institutional T-10 privacy/records obligations, Package L schema technical review, Package M RLS/grants, and the detailed T-18 Package N command contracts are approved and reconciled.
 
 
 
@@ -210,3 +211,36 @@ This package is a governance and architecture specification only. It does not au
 The earlier statement that INS-016 awaits Product Owner approval is superseded by the T-15 decision dated 2026-11-24. INS-016 is **PO APPROVED (A)**; institutional records/privacy/security approvals and implementation evidence remain OPEN/BLOCKED as specified above.
 
 This remains a design/governance document. No migrations, triggers, application code, archive procurement, or production configuration are authorized or claimed.
+
+
+## Permission registry linkage
+
+Audit read and export are separate proposed permissions (audit.read and audit.export) in ../02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md. Evidence read/export is also separated. These codes remain subject to PO/security approval and do not authorize global access by role name. Every access/export command must be audited; institutional T-10 retention, legal hold, disposition, network metadata and final reader/export authority remain open.
+
+## NLA-001 notification audit linkage
+
+- Policy draft/publish/retire and security-relevant configuration changes are recorded in `audit_events` with actor, scope, policy key/version/hash and reason.
+- Escalation decisions are recorded append-only in `notification_escalation_events` and linked to audit evidence where policy requires.
+- Routine provider delivery attempts are recorded in `notification_delivery_attempts`; do not flood the general audit stream with every retry. Operational telemetry may summarize retry/backlog/error metrics.
+- The first successful set-once recipient read transition emits one `notification.read` event atomically with read_at; duplicate/no-op acknowledgements and inbox page reads do not emit general audit events. Do not log message bodies or sensitive payloads.
+- Delivery/provider events never mutate inspection/project/session state. T-10 controls for retention, legal hold, audit read/export and disposition remain blocked.
+
+
+## NLA-001 notification audit reconciliation — 2026-11-24
+
+The canonical event mapping is limited to the existing notification events: notification.policy_published, notification.read, notification.escalation_evaluated and notification.escalation_enqueued. CMD-050 emits notification.read only on the first successful set-once read transition; the audit event and read_at update are atomic, and duplicate/no-op acknowledgements do not append another event. Inbox page access is not a general audit event. Routine provider attempts and callback status updates remain in dedicated notification delivery/attempt state and privacy-safe operational telemetry; do not flood the general audit stream with every retry or callback.
+
+No notification message body, evidence, full provider response, credential, token or signed URL may be placed in general audit metadata. T-10 institutional classification, retention, legal hold, disposition and audit export authority remain blocked. This is a documentation proposal, not a deployed audit control.
+
+
+## CMD-044 candidate event disposition — 2026-11-24
+
+The existing canonical event vocabulary includes audit.exported, audit.accessed and audit.search_performed. The following CMD-044 lifecycle events are mentioned only as candidates and are NOT admitted to the canonical event catalogue until T-10 and institutional records/security approval defines their use, payload classification, retention and access:
+
+- audit.export_requested
+- audit.export_approved
+- audit.export_rejected
+- audit.export_downloaded
+- audit.export_failed
+
+Do not emit or rely on these event names as implemented behavior. If dual control is not institutionally required, approval/rejection events may be unnecessary; do not create approval records by assumption. Export request, approval, generation, download, failure and disposition evidence must be mapped to one canonical event vocabulary before CMD-044 implementation. audit.exported remains the existing catalogue event but does not itself authorize export.

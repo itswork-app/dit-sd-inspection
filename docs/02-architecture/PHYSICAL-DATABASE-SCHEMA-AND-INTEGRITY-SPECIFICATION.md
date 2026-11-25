@@ -1,9 +1,14 @@
 # Physical Database Schema and Integrity Specification
 
 **Status:** Engineering specification draft — approval required before migrations  
-**Version:** 0.1.0  
+**Version:** 0.4.8  
 **Package:** L — Physical Data Model and Integrity  
 **Date:** 2026-11-23
+
+
+## Schema/RLS reconciliation reference
+
+The proposed physical schema and RLS catalogues are reconciled at 48/48 table names: the original 41 plus `print_batches` and six explicit notification lifecycle tables. The ambiguous ERD-only `notification_events` placeholder is removed. This is a documentation design inventory only; it does not establish live schema existence, deployed RLS or grants.
 
 ## 1. Purpose and implementation boundary
 
@@ -61,13 +66,13 @@ Auth mapping: `app_users.auth_user_id` references `auth.users(id)`. Do not store
 | `target_plans` | `id`, `project_id`, `version`, `status` | Unique `(project_id, version)`; published plans immutable |
 | `target_allocations` | `id`, `target_plan_id`, `assignment_id`, `target_date`, `quantity` | Nonnegative integer quantity; unique allocation key as defined by target dimension; never rewrites actual activity |
 
-**Inspector capacity counting predicate remains a Product Owner confirmation blocker.** The policy says distinct active Inspector accounts, not assignment rows. The implementation must choose whether the counted set is (a) approved + active accounts with an active Inspector role grant, or (b) those accounts additionally assigned to an active project. Do not ship either interpretation silently. Whichever is approved must be counted once globally for the project across both locations and enforced atomically during account/role/assignment activation and cap changes.
+**Superseded by T-14 PO APPROVED option A (2026-11-24).** Count distinct enabled login accounts with an active Inspector role grant and at least one currently effective operational Inspector assignment in the governed project/session scope. Count each account once across roles and assignments; exclude pending, rejected, suspended, disabled and expired-role accounts. Enforce the combined cap atomically across both locations (1–100, default 50); reject a reduction below the current qualifying count rather than silently deactivating accounts. See the T-14 decision block below.
 
 ### 3.3 Extensible instrument catalogue and configuration
 
 | Table | Key columns | Required constraints / indexes |
 |---|---|---|
-| `instruments` | `id`, `code`, `name`, `description`, `status`, `created_by` | Unique immutable code; status ACTIVE/INACTIVE/ARCHIVED; Super Admin command controls lifecycle |
+| `instruments` | `id`, `instrument_type`, `code`, `name`, `description`, `status`, `created_by` | `instrument_type` is a unique, immutable canonical type key; `code` is a unique catalog code; status ACTIVE/INACTIVE/ARCHIVED; Super Admin command controls lifecycle |
 | `instrument_versions` | `id`, `instrument_id`, `version_number`, `status`, `schema_version`, `published_at`, `published_by` | Unique `(instrument_id, version_number)`; DRAFT/PUBLISHED/RETIRED; published rows immutable |
 | `checklist_sections` | `id`, `instrument_version_id`, `code`, `label`, `sort_order` | Unique code/order within version; FK |
 | `checklist_items` | `id`, `section_id`, `code`, `label`, `answer_type`, `sort_order`, `required`, `applicability_rule`, `validation_config` | Unique code/order within section; answer_type allowlist; declarative validation only |
@@ -83,12 +88,14 @@ Every assignment/session binds to one published instrument version. Every inspec
 
 | Table | Key columns | Required constraints / indexes |
 |---|---|---|
-| `units` | `id`, `project_id`, `instrument_id`, `serial_raw`, `serial_normalized`, `normalization_version`, `status` | Unique `(instrument_id, serial_normalized)` when serial is present, enforced across all projects; retain raw input; normalization version required |
-| `inspections` | `id`, `unit_id`, `assignment_id`, `status`, `current_revision_no`, `row_version` | Unit/assignment project+instrument consistency; one active inspection lifecycle per unit subject to authorized reopen/reinspection rules |
+| `units` | `id`, `instrument_type`, `serial_raw`, `serial_normalized`, `normalization_version`, `status` | Canonical physical identity; no `project_id` or catalog-row identity in the uniqueness key; FK to `instruments.instrument_type`; unique `(instrument_type, serial_normalized)` for non-null serial; retain raw input and normalization version |
+| `unit_project_associations` | `id`, `unit_id`, `project_id`, `status`, `associated_at`, `associated_by`, `association_reason`, `ended_at`, `ended_by`, `end_reason` | Status ACTIVE/ENDED/REVOKED; valid start/end interval; FK to canonical unit and project; partial unique ACTIVE `(unit_id, project_id)`; unique `(id, unit_id, project_id)` for composite references; no hard delete |
+| `unit_identity_conflicts` | `id`, `instrument_type`, `serial_normalized`, `serial_raw_submitted`, `proposed_project_id`, `candidate_unit_id`, `reported_by`, `status`, `resolution`, `resolved_by`, `resolution_reason`, `created_at`, `resolved_at` | Durable controlled duplicate workflow keyed by canonical type + normalized serial; candidate FK; reasoned/audited resolution; never creates a second canonical unit by itself |
+| `inspections` | `id`, `unit_id`, `unit_project_association_id`, `project_id`, `assignment_id`, `status`, `current_revision_no`, `row_version` | Composite FK proves association matches unit+project and assignment belongs to same project; command proves instrument match and active association; one active inspection lifecycle per canonical unit subject to authorized reopen/reinspection rules |
 | `inspection_revisions` | `id`, `inspection_id`, `revision_no`, `instrument_version_id`, `snapshot_hash`, `author_id`, `submitted_at`, `payload_snapshot` | Unique `(inspection_id, revision_no)`; immutable after submission; instrument version must match assignment snapshot |
 | `checklist_responses` | `id`, `inspection_revision_id`, `checklist_item_id`, `answer`, `note`, `answered_by`, `answered_at` | Unique `(inspection_revision_id, checklist_item_id)`; item belongs to revision's instrument version; answer conforms to item schema |
 | `specification_responses` | `id`, `inspection_revision_id`, `specification_field_id`, `observed_value`, `note` | Unique per revision/field; field belongs to exact version |
-| `unit_claims` | `id`, `unit_id`, `assignment_id`, `inspector_id`, `status`, `claimed_at`, `expires_at`, `released_at`, `row_version` | Partial unique index on `unit_id` for ACTIVE claim; valid expiry; transaction lock for acquisition/expiry takeover |
+| `unit_claims` | `id`, `unit_id`, `unit_project_association_id`, `project_id`, `assignment_id`, `inspector_id`, `status`, `claimed_at`, `expires_at`, `released_at`, `row_version` | Composite FKs prove association and assignment share project+unit; partial unique index on canonical `unit_id` for ACTIVE claim across projects; valid expiry; unit-row lock for acquisition/expiry takeover |
 | `review_events` | `id`, `inspection_revision_id`, `reviewer_id`, `decision`, `reason`, `created_at` | Append-only; decision constrained; author != reviewer for approve; one terminal decision per revision unless explicit workflow permits |
 | `inspection_events` | `id`, `inspection_id`, `event_type`, `actor_id`, `from_state`, `to_state`, `reason`, `created_at` | Append-only; state update and event insert in same transaction |
 
@@ -102,7 +109,7 @@ Every assignment/session binds to one published instrument version. Every inspec
 - Empty/unknown serials do not receive a shared normalized key; they require a separate authorized identification workflow.
 - If an official instrument-specific rule differs, it must be configured/versioned and tested before use.
 
-PO-approved T-16 option B: one normalized serial per instrument type across all projects. Enforce the unique key `(instrument_id, serial_normalized)` for non-null normalized serials; project ID must not be part of this uniqueness key. The data model must support an existing physical unit being referenced by project-scoped inspection activity without creating a second same-type unit identity. A same-type cross-project collision must enter controlled review with reason and audit; never silently merge or discard history. Reinspection must link to the canonical unit identity and follow an authorized new inspection/reopen path. This is a design invariant, not an executed migration.
+PO-approved T-16 option B: one normalized serial per canonical `instrument_type` across all projects. Enforce unique `(instrument_type, serial_normalized)` for non-null serials; project ID and catalog-row `instrument_id` are not part of the key. `instruments.instrument_type` is the stable, unique, immutable type identifier referenced by `units` and `unit_identity_conflicts`. Assignment/catalog configuration continues to use `instrument_id`; trusted commands verify that the assignment's catalog row resolves to the same `instrument_type` as the canonical unit. `units` therefore has no `project_id`. `unit_project_associations` records durable project membership episodes; inspections and claims reference the exact association and same-project assignment through composite foreign keys. An association may be ended without rewriting historical inspections. A same-type cross-project collision opens a controlled conflict record; only an authorized, reasoned and audited resolution may associate the candidate canonical unit with the project. Never create a second same-type canonical unit, silently merge records or rewrite historical inspection rows. Reinspection follows the authorized lifecycle and preserves revision/evidence history. This is a design invariant, not an executed migration.
 
 #### Active claim and assignment overlap
 
@@ -118,14 +125,21 @@ PO-approved T-16 option B: one normalized serial per instrument type across all 
 |---|---|---|
 | `evidence_assets` | `id`, `inspection_id`, `inspection_revision_id`, `slot_definition_id`, `object_key`, `sha256`, `byte_size`, `mime_type`, `upload_status`, `uploaded_by` | Unique object key; checksum format; nonnegative size; slot belongs to exact instrument version; immutable finalized object identity |
 | `documents` | `id`, `project_id`, `inspection_revision_id`, `document_type`, `template_version`, `source_hash`, `output_hash`, `object_key`, `status` | Unique generation key per source revision/template/type where appropriate; immutable generated artifact |
-| `print_events` | `id`, `document_id`, `actor_id`, `sequence_no`, `client_print_signal`, `created_at` | Unique `(document_id, sequence_no)`; append-only; signal does not claim physical printer confirmation |
+| `print_batches` | `id`, `actor_id`, `project_id`, `session_id`, `location_id`, `requested_count`, `status`, `request_hash`, `retry_of_batch_id`, `created_at`, `completed_at` | Positive bounded count; unique actor/idempotency scope; batch status reconciled from per-document outcomes; no claim of physical printer confirmation |
+| `print_events` | `id`, `batch_id`, `document_id`, `actor_id`, `sequence_no`, `attempt_no`, `outcome`, `failure_code`, `client_print_signal`, `idempotency_key`, `created_at` | Unique `(document_id, sequence_no)`; append-only; batch reference nullable for individual print; outcome required; failed-only retry appends new attempt; signal does not claim physical printer confirmation |
 | `attendance_records` | `id`, `project_id`, `session_id`, `status` | One logical attendance record per defined session/scope |
 | `attendance_documents` | `id`, `attendance_record_id`, `object_key`, `sha256`, `uploaded_by`, `status` | Append-only replacement versions; replacement reason required |
 | `audit_events` | `id`, `actor_id`, `action`, `target_type`, `target_id`, `scope`, `correlation_id`, `created_at`, `metadata` | Append-only at DB privilege level; indexes by actor/time, target/time, correlation ID |
 | `idempotency_records` | `id`, `actor_id`, `command_type`, `scope_key`, `idempotency_key`, `request_hash`, `result_reference`, `status`, `expires_at` | Unique `(actor_id, command_type, scope_key, idempotency_key)`; same key/different hash rejected; retention > maximum offline retry window |
 | `sync_batches` | `id`, `actor_id`, `device_id`, `batch_key`, `payload_hash`, `status`, `acknowledged_at` | Unique actor/device/batch key; replay safe; conflict records retained |
+| `notification_policy_versions` | `id`, `policy_key`, `version_no`, `scope_type`, `scope_id`, `schema_version`, `policy_document`, `policy_hash`, `status`, `effective_from`, `effective_until`, `created_by`, `published_by`, timestamps | Unique policy/scope/version; strict versioned allowlist validation; published immutable; one effective version per scope/time; DRAFT reserved for a separately approved workflow and not written by CMD-051 |
+| `notification_outbox` | `id`, `source_event_id`, `event_type`, `scope_type`, `scope_id`, `policy_version_id`, `safe_payload`, `status`, `attempt_count`, `next_attempt_at`, `lease_owner`, `lease_token_hash`, `lease_generation`, `lease_expires_at`, `last_error_code`, `created_at`, `processed_at` | Unique source-event/policy; server-issued token hash + monotonic fencing generation; short `SKIP LOCKED` claim; bounded retry/dead-letter; no provider I/O in transaction |
+| `notifications` | `id`, `outbox_id`, `recipient_user_id`, project/session/location/assignment scope, `event_type`, `priority`, `title_key`, `body_key`, `safe_payload`, `created_at`, `expires_at`, `read_at`, `dismissed_at` (reserved) | Unique `(outbox_id, recipient_user_id)`; self-only read; set-once `read_at` with no row-version token; dismissal excluded from MVP by POQ-03; dismissed_at dormant with no command or browser mutation; safe minimal payload; source resource re-authorized on navigation |
+| `notification_deliveries` | `id`, `notification_id`, `channel`, `status`, `attempt_count`, `next_attempt_at`, `last_attempt_at`, `sent_at`, `delivered_at`, `lease_owner`, `lease_token_hash`, `lease_generation`, `lease_expires_at`, `provider_message_ref`, `last_error_code`, timestamps | Unique `(notification_id, channel)`; delivery state independent of inbox read state; lease fencing on every finalizer; provider callback transitions validated/idempotent |
+| `notification_delivery_attempts` | `id`, `delivery_id`, `attempt_no`, `idempotency_key`, `started_at`, `finished_at`, `outcome`, `provider_message_ref`, `safe_error_code`, `retryable`, `worker_correlation_id` | Unique delivery/attempt and idempotency key; append-only; sanitized provider metadata only |
+| `notification_escalation_events` | `id`, `notification_id`, `policy_version_id`, `step_no`, `event_type`, `due_at`, `evaluated_at`, `recipient_resolution_ref`, `outbox_id`, `outcome`, `reason_code` | Unique notification/policy/step/event; append-only; no business-state mutation |
 
-The INS-016 audit control direction is PO-approved under T-15 option A. The table design above remains a proposed implementation structure; detailed technical approval and T-10 institutional classification, retention, deletion/disposition, legal-hold and network-metadata controls remain pending.
+T-15 / INS-016 audit event scope and append-only/atomicity direction are PO-approved. Institutional classification, retention, legal hold, disposition, network metadata and final audit-reader/export authority remain subject to external approval under T-10. The table design above is a proposed implementation structure, not an implemented schema.
 
 ## 4. Critical indexes and database constraints
 
@@ -134,26 +148,29 @@ Required before production migration:
 2. Unique project-scoped codes for locations, sessions, teams.
 3. Unique `instruments(code)`.
 4. Unique `instrument_versions(instrument_id, version_number)`.
-5. Unique `units(project_id, instrument_id, serial_normalized)` for non-null serial keys.
-6. Partial unique `unit_claims(unit_id)` where status = ACTIVE.
-7. Unique `inspection_revisions(inspection_id, revision_no)`.
-8. Unique `checklist_responses(inspection_revision_id, checklist_item_id)`.
-9. Unique `specification_responses(inspection_revision_id, specification_field_id)`.
-10. Unique `print_events(document_id, sequence_no)`.
-11. Unique idempotency scope key.
-12. Index all foreign keys used for RLS scope predicates, review queues, project/session dashboards, and evidence lookup.
-13. CHECK constraints for positive revision numbers, valid intervals, enumerated statuses, capacity 1..100, and nonnegative quantities/sizes.
-14. Composite FKs or trusted transaction assertions for project/instrument/version/revision consistency.
+5. Partial unique `units(instrument_type, serial_normalized)` for non-null serial keys; project ID and catalog-row ID are excluded.
+6. Partial unique `unit_project_associations(unit_id, project_id)` where status = ACTIVE; retain ended association episodes.
+7. Unique `unit_project_associations(id, unit_id, project_id)` to support composite inspection/claim FKs.
+8. Partial unique `unit_claims(unit_id)` where status = ACTIVE, enforcing one physical-unit claim across projects.
+9. Unique `inspection_revisions(inspection_id, revision_no)`.
+10. Unique `checklist_responses(inspection_revision_id, checklist_item_id)`.
+11. Unique `specification_responses(inspection_revision_id, specification_field_id)`.
+12. Unique `print_events(document_id, sequence_no)`.
+13. Unique idempotency scope key.
+14. Index all foreign keys used for RLS scope predicates, review queues, project/session dashboards, and evidence lookup.
+15. CHECK constraints for positive revision numbers, valid intervals, enumerated statuses, capacity 1..100, and nonnegative quantities/sizes.
+16. Composite FKs or trusted transaction assertions for project/instrument/version/revision/association consistency.
 
 ## 5. Transactional invariants
 
 | Command | Lock / atomicity requirement | Invariant |
 |---|---|---|
-| Approve account / grant Inspector role | Lock project capacity row before counting and granting | Global cap cannot be exceeded; count predicate awaits PO confirmation |
+| Approve account / grant Inspector role | Lock project capacity row before counting and granting | T-14 PO-approved qualifying-account predicate is applied atomically; global combined cap cannot be exceeded |
 | Change capacity | Lock capacity row | New integer 1..100; reject below current count; never silently deactivate |
 | Publish instrument version | Lock instrument catalog row | Version number unique; immutable published version |
 | Bind assignment to instrument | Validate published version | Assignment cannot bind draft/retired version |
-| Claim unit | Lock unit/claim key | At most one active claim |
+| Register/associate/resolve unit | Lock canonical serial key and unit row | One canonical unit per instrument+normalized serial; association/conflict outcome audited |
+| Claim unit | Lock canonical unit row, then association and assignment | At most one active claim for a physical unit across projects; association and assignment must share project |
 | Save draft | Compare row_version | Stale writes rejected; no silent overwrite |
 | Submit inspection | Lock inspection aggregate | Validation + revision insert + state transition + event + idempotency result atomic |
 | Review | Lock inspection aggregate | Correct state/version; no self-review; event and transition atomic |
@@ -178,16 +195,16 @@ Immutable after transition:
 - reviewer decisions;
 - generated document outputs;
 - print events;
-- audit events according to PO-approved INS-016/T-15, after detailed technical review; production retention and disposition remain subject to T-10 institutional approval.
+- audit events under PO-approved T-15 append-only controls; retention disposition remains governed by institutional T-10 policy.
 
 Corrections create a new version or append-only event. Do not update historical rows to make them appear current.
 
 ## 7. Unresolved Product Owner / institutional decisions
 
 These are not silently resolved by engineering:
-1. Reconcile PO-approved T-16 option B (instrument type + normalized serial across all projects) into the final unit/project association model; confirm any institution-approved exception and instrument-specific normalization/case-sensitivity policy before migration.
-2. Confirm exact Inspector capacity counting predicate (active Inspector role grant versus additionally assigned active project).
-3. Complete technical review of INS-016 event scope/access/export and obtain T-10 institutional approval for classification, retention, deletion/disposition and legal hold.
+1. Complete technical review of the T-16 canonical unit + `unit_project_associations` + conflict workflow, composite FK implementation and project-scoped RLS; obtain institution-approved serial-normalization and exception policy before migration.
+2. Implement and verify the T-14 PO-approved qualifying Inspector predicate and atomic combined-cap enforcement; the PO decision itself is closed.
+3. Implement T-15-approved audit append/atomicity and least-privilege access; obtain institutional approval for retention, legal hold, disposition, network metadata and final audit-reader/export authority.
 4. Approve privacy classification, evidence retention/deletion, and institutional legal basis.
 5. Confirm official instrument source and version content before publishing production instrument versions.
 6. Approve exact session and assignment effective-time semantics.
@@ -197,7 +214,7 @@ These are not silently resolved by engineering:
 
 No migration may be written until:
 - the Product Owner resolves the items in Section 7 that affect constraints;
-- table-by-table RLS catalogue and privileged command boundary are approved;
+- T-18 command architecture is PO APPROVED; complete the table-by-table RLS/grant catalogue, command-specific EXECUTE grants, direct-DML denial matrix and any SECURITY DEFINER function review;
 - evidence retention and object recovery contracts are approved;
 - all enum/status transitions are reconciled with functional workflow docs.
 
@@ -213,8 +230,8 @@ Before production:
 ## 9. Package L disposition
 
 **Physical data model:** DRAFT COMPLETE FOR REVIEW.  
-**Resolved by this package:** schema catalogue, integrity boundaries, instrument extensibility primitives, serial normalization proposal, active-claim uniqueness, revision/evidence linkage, critical index/transaction requirements.  
-**Still blocked:** Product Owner confirmation items in Section 7; RLS catalogue; privileged command boundary; evidence/privacy policy; backup/restore plan.  
+**Resolved by this package:** schema catalogue, integrity boundaries, instrument extensibility primitives, canonical serial identity and project-association design, active-claim uniqueness, revision/evidence linkage, critical index/transaction requirements.  
+**Still blocked:** Product Owner confirmation items in Section 7; detailed table-by-table RLS/grant catalogue and command-specific function review (T-18 architecture approved); evidence/privacy policy; backup/restore plan.  
 **Implementation authorization:** NOT GRANTED.  
 **Migrations/tests executed:** NONE.
 
@@ -232,6 +249,194 @@ The account lifecycle must precede staffing: a registered/authenticated identity
 
 ## T-16 — Approved serial and evidence integrity invariant (2026-11-24)
 
-The canonical serial uniqueness key is `(instrument_id, serial_normalized)` across all projects; project ID is deliberately excluded. Different instrument types may reuse the same serial string. Null/unknown serial handling remains a separate authorized identification workflow and must not be represented by a shared empty key. A duplicate within the same instrument type is not silently merged: block creation of a second canonical unit and route the conflict to authorized resolution with reason and append-only audit. The project association model must permit project-scoped inspection history to reference the canonical unit identity while preserving project/session scope.
+The canonical serial uniqueness key is `(instrument_type, serial_normalized)` across all projects; project ID and catalog-row ID are deliberately excluded. `instrument_type` is a stable immutable key on the instrument catalogue and is referenced by canonical units. Different instrument types may reuse the same serial string. Null/unknown serial handling remains a separate authorized identification workflow and must not be represented by a shared empty key. A duplicate within the same instrument type is not silently merged: block creation of a second canonical unit and route the conflict to authorized resolution with reason and append-only audit. The project association model must permit project-scoped inspection history to reference the canonical unit identity while preserving project/session scope.
 
 Every evidence record must reference the exact immutable inspection revision and instrument version and a valid slot/item in that version. Preserve original metadata, checksum, uploader, capture time, upload time and immutable storage object identity. Finalized evidence objects are never overwritten in place. Replacement creates a new evidence record/object identity and audit event; historical revision/evidence links remain intact. Database constraints, transaction locking, RLS/command authorization and tests must enforce these rules together. No migration or runtime implementation is claimed.
+
+
+## T-17 — Publication authority and lifecycle invariants (PO APPROVED A)
+
+- `instrument_versions` may transition DRAFT → PUBLISHED only through the trusted `publish-instrument-version` command. The command derives `published_by` from the authenticated caller, requires explicit `instrument.publish` held by an authorized Super Admin, validates every field type/validation primitive and cross-reference against server allowlists, and rejects arbitrary executable content.
+- The publication row and corresponding append-only audit event are committed atomically. Audit failure rolls back publication. A published version and its child configuration are immutable; corrections require a new version.
+- Deactivation is a separate privileged, reasoned and audited lifecycle action. It prevents future selection but does not delete, rewrite, or invalidate historical version references.
+- Each operational assignment/session references one published version. New publication does not automatically alter existing assignments or historical inspection revisions. Rebinding/migration of an existing assignment is not implied by T-17 and requires a separately specified, authorized workflow.
+- `published_by`, publication time, version number, schema version, change summary and configuration snapshot/hash must be retained. Database-level constraints/triggers and command authorization must prevent direct browser mutation and post-publication edits.
+
+**T-16 dependency status (updated 2026-11-24):** canonical unit/project association, composite FK and global claim semantics are now specified in the reconciliation block below. The Product Owner's uniqueness decision is approved; the relational design still requires technical review and institution-approved serial normalization/exception policy before migration. No migration or test execution is claimed.
+
+
+## T-18 database privilege alignment (PO APPROVED option A, 2026-11-24)
+
+The selected command architecture requires the database privilege model to deny browser-facing anon/authenticated roles direct INSERT/UPDATE/DELETE on protected business and governance tables. Expose only narrowly scoped command functions with explicit EXECUTE grants; keep ordinary reads under RLS. Derive actor from the caller JWT at the PostgreSQL boundary and validate permission, role, project association, session, assignment, state and separation-of-duties within the command transaction. Protected writes use the PO-approved narrow SECURITY DEFINER command-wrapper model, subject to individual function review, dedicated least-privileged NOLOGIN ownership, fixed empty search_path, schema-qualified references, strict validation, exact-signature EXECUTE grants, PUBLIC/anon denial and effective-privilege/RLS analysis. SECURITY INVOKER remains preferred for scoped reads and non-elevated helpers. The architecture decision is approved, but exact grants/policies and executable verification remain pending. No migration or test execution is claimed.
+
+
+## T-16 — Reconciled canonical unit / project association contract
+
+The canonical `units` table is project-independent. Its candidate key is `(instrument_type, serial_normalized)` for known serials. The stable `instrument_type` FK is resolved from the instrument catalogue; assignment `instrument_id` remains a configuration reference and must resolve to the same type in the trusted command. Project-specific visibility and work are represented only by `unit_project_associations`; no RLS policy or command may infer association from `unit_id` alone. Each association episode is durable and auditable. The model allows one unit to be associated with multiple projects, but the partial unique active claim index on `unit_id` prevents concurrent claims of that physical item across any projects.
+
+`inspections` and `unit_claims` carry `unit_id`, `unit_project_association_id`, and `project_id`; composite foreign keys prove the association belongs to that unit and project and the assignment belongs to that same project. A trusted command additionally proves assignment instrument equals the unit instrument and the association is ACTIVE at claim/start. Historical inspection rows retain their association ID when an association ends. The physical unit record is never cloned to create a project-local copy.
+
+`unit_identity_conflicts` captures same-instrument normalized-serial collisions. Conflict resolution either creates an association to the verified existing canonical unit or closes/rejects the report with reason; it cannot create a second canonical unit or silently merge/retarget historical records. No institution-specific duplicate exception is permitted until the external exception policy is approved.
+
+**Constraint correction:** the previous project-scoped unique index `units(project_id, instrument_id, serial_normalized)` and the subsequent `(instrument_id, serial_normalized)` candidate key are withdrawn. Both contradicted the controlling PO key `(instrument_type, serial_normalized)`. The canonical key is now explicit and independent of project and instrument-catalog row identity; association constraints remain as specified above. The schema remains design-only; no migration has been created or executed.
+
+## PostgreSQL function privilege compatibility gate
+
+See [T-18 Execution Model Security Review](T18-EXECUTION-MODEL-SECURITY-REVIEW.md) and [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md). T-18 Option A resolves the architecture-level conflict by selecting narrow SECURITY DEFINER wrappers for protected writes and SECURITY INVOKER for scoped reads where feasible. This is not blanket approval: each function's owner, memberships, effective privileges, RLS interaction, search_path, signature, caller-JWT path and exact EXECUTE ACL must be reviewed and verified before exposure. No broad table DML is permitted as a shortcut; no live ACL or runtime path has been verified.
+
+## Notification and print persistence design addendum — NLA-001 / T-13
+
+The six notification tables above are proposed by [Notification Lifecycle and Delivery Architecture](NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md) v0.1.4. `notification_events` is not a physical entity and must not be added. Source mutation + domain event + audit + outbox intent are atomic; fan-out and provider delivery are asynchronous. Delivery attempts and escalation history are append-only. Read state is stored only on recipient-owned `notifications` rows. CMD-050 has no row-version field; CMD-052/053 use separate lease fencing fields, not a business row-version token. INT-NOTIF-001 is a provider callback ingress and adds no table to the current 48-table proposal.
+
+T-13 requires durable batch identity and per-document outcomes. `print_batches` stores batch lifecycle and request identity; `print_events` stores every per-document attempt/outcome and optional batch reference. Batch status/counts are reconciled from latest per-document outcomes. Retry is failed-only and appends attempts; it never overwrites prior outcomes or claims physical printer success.
+
+All constraints, exact composite FKs, partial indexes, enum/check definitions and transaction/locking details remain subject to technical review before any migration. T-10 retention/disposition remains institutionally blocked.
+
+
+## CMD-011–020 Product Owner semantics — physicalization boundary (2026-11-24)
+
+The Product Owner has approved the product-semantic invariants in the Decision Register for CMD-011–020. This physical specification must conform to those invariants, but this approval is not a physical schema approval and does not authorize migrations.
+
+| Approved semantic invariant | Physical implication to reconcile | Current boundary |
+|---|---|---|
+| Session initial state is T-07 `DRAFT`; states remain DRAFT/ACTIVE/PAUSED/CLOSED | Session state CHECK/enum and command transition validation must use the canonical state vocabulary; no `PLANNED` or `CLOSE_REQUESTED` persisted state | Exact DDL/constraint and transition function remain unapproved |
+| Session times are UTC instants interpreted from project IANA timezone; DST-invalid/ambiguous local inputs rejected | Define timestamp type/precision and preserve project timezone source; validate input before persistence | No new timezone column or conversion function is approved by this addendum |
+| Session code immutable; metadata changes reasoned; dependent-work schedule changes rejected | Immutable identity rule, reason/audit payload, dependent-work predicate | Exact trigger/command enforcement and `sessions.row_version` remain open |
+| CMD-014 roster creation atomic; half-open assignment intervals | Assignment/member constraints and transaction boundary | Parent fences, exclusion/unique constraints and lock order require Engineering/DB review |
+| CMD-015 per-member effective_at; end history not delete; preserve submitted inspections | Membership history fields and FK/delete behavior must support end-dating and historical references | Exact column names, retention and active-claim behavior remain unresolved |
+| T-14 capacity predicate unchanged | Same qualifying-account predicate and one serialization point across every eligibility-changing writer | Existing capacity row and version semantics require technical validation |
+| CMD-017 session-scoped plans; unique allocation key; reject zero quantity; immutable published plans | Unique key on (target_plan_id, assignment_id, target_date), quantity CHECK, immutable publication boundary | Quantity units/range, project-wide exception and draft CAS remain open |
+| CMD-018 normalized instrument code unique; draft/inactive until publication | Persist or deterministically compute normalized code; unique constraint and assignment-selectability rule | Permitted ASCII alphabet, collation and normalization implementation require Engineering/Security approval |
+| CMD-019 complete declarative draft replacement; published snapshots immutable | Child reconciliation and immutable snapshot/hash representation | Schema allowlist, bounds, stable child keys, hash and CAS remain open |
+| CMD-020 T-17 explicit publish permission and immutable version pinning | Publication row/event, immutable child snapshot and assignment/session version references | Existing T-17 design remains subject to exact function/ACL/constraint review |
+
+**No inferred DDL:** This table records semantic obligations and missing physical decisions. It deliberately does not invent column names, data types, indexes, constraints, triggers, lock modes or migration order. G3/G5/G9 remain NOT READY; G10 NOT ACTIVE.
+
+
+## NLA-001 physical field reconciliation — 2026-11-24
+
+The notification physical proposal uses one canonical minimized payload field, safe_payload, for outbox and inbox records. The outbox and delivery queue projections carry the same logical lease tuple: lease_owner, lease_token_hash, monotonic lease_generation and lease_expires_at. The opaque lease token is returned only to the authenticated internal worker; raw tokens are never persisted or logged. Completion, failure, retry and dead-letter transitions validate the current owner, token hash, generation and expiry.
+
+The notifications table intentionally has no row_version for CMD-050. Its read_at field is set once by a recipient-owned guarded update. dismissed_at remains dormant and is not exposed or mutated because POQ-03 excludes dismiss/archive from MVP. The provider callback ingress INT-NOTIF-001 uses the existing delivery projection and an approved durable deduplication mechanism; this addendum does not create a seventh notification table or claim live schema verification.
+
+All columns, constraints, indexes, policies and functions remain proposed until Engineering/Database/Security review and separate G10 authorization.
+
+
+## POQ-01..03 schema reconciliation — 2026-11-24
+
+The Product Owner approved: (1) a durable event-time candidate-audience snapshot/checkpoint, with dispatch-time revalidation permitted only to suppress candidates and never to widen the audience; (2) versioned per-policy elapsed/business-time SLA semantics with ELAPSED_UTC as the initial-release default and quiet hours that defer delivery only; and (3) exclusion of dismiss/archive from MVP. The physical schema must still define and review the exact snapshot/checkpoint representation, policy mode fields and constraints. A dormant dismissed_at column is not an MVP capability. All remain proposed pending Engineering/Database/Security review and G10.
+
+
+## Candidate-only physical object annex — CMD-035/036/038/039/040 (2026-11-24)
+
+**Status:** DESIGN CANDIDATES ONLY — NOT PART OF THE CANONICAL 48-TABLE INVENTORY; NOT APPROVED FOR DDL OR IMPLEMENTATION.
+
+The following candidate objects are introduced by DURABLE-OPERATION-LEDGER-AND-ARTIFACT-LIFECYCLE-PROPOSAL-001 v0.1.0 solely to make the schema gap explicit. They must not be treated as existing or approved physical tables.
+
+| Candidate object | Owning command / worker | Purpose | Admission status |
+|---|---|---|---|
+| sync_batch_operations | CMD-035 | Durable per-operation manifest, semantic hash, expected version and terminal result | NOT ADMITTED; batch partial-commit/replay contract and FK/retention open |
+| device_bindings (candidate family; final name TBD) | CMD-035 trusted device enrollment/revocation boundary | User/device binding, trust state and revocation; no private key storage | NOT ADMITTED; identity, attestation and recovery authority open |
+| document_template_versions | Privileged template publication workflow; exact command ID/permission TBD | Immutable approved template version/hash and renderer compatibility | NOT ADMITTED; product approval and template governance open |
+| document_generation_jobs | CMD-036 + internal renderer worker | Durable asynchronous generation intent, source/template identity and lease | NOT ADMITTED; source FK model and worker identity/ACL open |
+| document_generation_attempts | Internal renderer worker | Append-only sanitized attempt outcomes and output provenance | NOT ADMITTED; attempt retention and worker ACL open |
+| print_batch_items | CMD-038 | Immutable requested item manifest and stable item identity | NOT ADMITTED; request/result identity and FK design open |
+| print_batch_item_results | CMD-038 | Durable per-item outcome and retry history | NOT ADMITTED; authoritative attempt identity vs print_events open |
+| attendance_verification_events | CMD-040 | Append-only decision bound to exact attendance document version/checksum | NOT ADMITTED; institutional authority, SoD and retention open |
+
+### CMD-044 audit-export candidate objects — NOT ADMITTED (2026-11-24)
+
+**T-10 BLOCKED.** The following are future-review candidates only; they are not approved tables, not part of the canonical 48-table inventory, and must not be created while T-10 remains unresolved.
+
+| Candidate object | Purpose | Minimum candidate integrity controls | Admission blockers |
+|---|---|---|---|
+| `audit_export_jobs` | Durable request/job state, actor, approved purpose/policy reference, normalized filter hash, request idempotency, snapshot watermark, status and worker lease fencing | Unique actor/idempotency key; same key/hash replays same job; same key/different hash rejected; legal state transitions; lease owner/token-hash/generation/expiry; no client-controlled actor/scope | T-10 authority/purpose, dual control, job lifecycle, worker identity and retention |
+| `audit_export_manifests` | Immutable export manifest for exact ordered event selection, schema/policy version, scope/filter hash, snapshot/watermark, record count and canonical manifest hash | One immutable manifest per finalized job; canonical serialization version; ordered event identity/range or immutable manifest reference; checksum and count reconciliation | Event projection/classification, canonical hash format, snapshot semantics |
+| `audit_export_artifacts` | Private object metadata: opaque storage reference, format, byte count, content checksum, encryption/key reference, generated timestamp and integrity state | Unique artifact identity; private bucket only; object-key not user-controlled; checksum verified after upload; no public URL; artifact metadata append/finalize path | Approved storage region/provider, encryption/key custody, download authorization, expiry, retention/legal hold and deletion proof |
+
+Do not create a generic `export_requests` framework, polymorphic artifact table, or worker principal by assumption. Approval/download decision records, if dual control is required, need a separately approved model and must not be silently folded into the three candidates. A download permission is not inferred from `audit.export`; exact authority and permission vocabulary remain T-10 decisions.
+
+The candidate object count above is not a revised table count. Package L's canonical inventory remains 48 proposed tables until Product, Engineering, Database, Security and institutional approvals admit a concrete model and the physical schema, RLS, permission registry, ERD, command contracts, indexes/FKs and QA catalogue are updated together.
+
+Do not add a generic polymorphic source FK, generic worker table or generic device credential store without explicit review. Do not reuse notification_outbox for document generation. Do not claim candidate names exist in a deployed database. T-10 retention/legal hold remains externally blocked.
+
+
+## POQ-01 candidate recipient snapshot relation — NOT ADMITTED (2026-11-24)
+
+The six notification tables remain the current canonical proposal. POQ-01 requires a durable event-time candidate recipient and source-scope snapshot; the current six-table model does not explicitly persist that set. The following seventh notification relation is a candidate only and is excluded from the canonical 48-table inventory until Engineering, Database and Security approve it.
+
+| Candidate relation | Candidate fields | Candidate integrity |
+|---|---|---|
+| `notification_outbox_recipients` | `outbox_id`, `recipient_user_id`, `project_id?`, `session_id?`, `location_id?`, `assignment_id?`, `scope_snapshot_hash`, `resolved_at` | Unique/PK `(outbox_id, recipient_user_id)`; FK to outbox and app user; composite FK or trusted assertion for scope hierarchy; immutable after audience snapshot finalization; canonical sorted snapshot hash/count reconciled to outbox header |
+
+Candidate outbox-header fields (NOT ADMITTED additions): `audience_snapshot_version`, `audience_snapshot_hash`, `audience_snapshot_count`, and `audience_snapshot_completed_at`. These are required to reconcile candidate-row count and canonical digest before an outbox is claimable; exact types/checks and hash serialization remain open.
+
+Candidate transaction requirements:
+- Recipient identity and scope are resolved against source-event-time authorization state, not current membership at retry time.
+- Candidate rows and the snapshot completion marker/hash/count are persisted in the same transaction as the source event and outbox intent, or through another formally approved immutable event-time snapshot mechanism that cannot widen the audience.
+- CMD-052 reads candidate rows deterministically and idempotently materializes `notifications`; existing `(outbox_id, recipient_user_id)` uniqueness remains a second arbiter.
+- External channel eligibility is revalidated at dispatch; it may suppress a candidate's channel delivery but may not add a recipient or rewrite the immutable snapshot.
+- No browser SELECT/INSERT/UPDATE/DELETE, no authenticated user grant, no generic worker table and no service_role impersonation.
+
+Numeric fan-out bound, transaction latency/lock budget, exact scope FKs, canonical hash format, outbox snapshot header fields, RLS/ACL, workload identity and recovery behavior remain OPEN. This candidate is NOT ADMITTED, creates no migration authority, and does not change the current 48-table parity count.
+
+## Candidate-only annex — inspection draft context (2026-11-24)
+
+**Source:** [INSPECTION-DRAFT-001](INSPECTION-DRAFT-CONTEXT-AND-REVISION-LIFECYCLE-PROPOSAL-001.md) v0.1.0.  
+**Status:** NOT ADMITTED; excluded from the canonical 48-table inventory and ERD until Product Owner, Engineering, Database and Security approval.
+
+Candidate relation `inspection_draft_contexts` separates mutable in-progress work from immutable submitted `inspection_revisions`. The candidate fields, integrity rules, active-context uniqueness, strict versioned JSONB payload, source-draft linkage, and one-time evidence-to-revision binding are specified in INSPECTION-DRAFT-001.
+
+Candidate impacts requiring admission review:
+- `inspections.active_draft_context_id` pointer with same-inspection proof;
+- `inspection_revisions.source_draft_context_id` unique linkage;
+- `evidence_assets.draft_context_id` during upload/finalization and one-time `inspection_revision_id` binding at submit;
+- CMD-026 initial context creation, CMD-028 patch semantics, CMD-029 atomic sealing/materialization, CMD-030 correction context, CMD-032 reopen context, and CMD-033/034 draft-context reference;
+- RLS/ACL, append-only history, parent/claim/evidence/finalizer locks and adversarial QA.
+
+This annex adds no admitted table and does not change the 48-table count. No DDL, migration, grant, RLS change, runtime inspection or test was performed. Evidence carry-forward, next Inspector/claim owner and claim lifecycle remain open; do not infer them.
+
+
+## SES-001 candidate physical integrity addendum — 2026-11-24
+
+**Authority:** PO-approved SES-001. Candidate-only; canonical 48-table inventory is unchanged and no new entity, column, enum value, index or constraint is admitted by this addendum.
+
+Candidate inspection aggregate additions/invariants:
+- immutable non-null session_id FK to the exact originating session for every inspection attempt;
+- same-session consistency across inspection, operational assignment, claim, draft context, evidence intent/finalization and submitted revisions;
+- ABORTED terminal state for an incomplete attempt, with no legal transition back to ACTIVE, SUBMITTED, APPROVED or REOPENED;
+- abort atomically seals active draft context, terminates/releases active claim, records event/audit/idempotency and preserves all prior revisions/evidence;
+- final session close is rejected while unresolved inspection attempts remain;
+- later session may create a distinct new attempt for the same canonical unit, while concurrent active-claim uniqueness and global canonical identity remain enforced.
+
+Database must resolve the historical-attempt key/uniqueness strategy, FK graph, abort writer and lock participation, CMD-027 reuse versus dedicated abort command, same-session composite constraints and RLS/ACL. Do not infer a concrete enum/table/index or alter the canonical inventory until the design is approved and G9/G10 gates permit it. SES-001 does not authorize DDL, migration, grants, RLS or implementation.
+
+
+### SES-001 historical attempt identity clarification (candidate only)
+
+An `inspections` row represents one inspection attempt and is immutably bound to one session_id. After an attempt reaches ABORTED, a later session must create a new `inspections.id` for the same canonical unit; it must not update the old row's session_id or reactivate its draft. The previous ABORTED inspection, revisions, evidence and events remain historical. Return correction and authorized reopen within the same originating session remain new draft contexts on the same inspection aggregate. The existing phrase “one active inspection lifecycle per canonical unit” must be interpreted as at most one nonterminal inspection attempt per canonical unit, while allowing multiple historical terminal attempts. Exact partial unique/exclusion constraints and terminal-state vocabulary require Database/Engineering/Security approval; canonical 48-table inventory remains unchanged and no DDL is admitted.
+
+## Candidate integrity requirements — packed-unit ABORT request/decision (2026-11-24)
+
+**Proposal only; no physical object is admitted and no migration is authorized.**
+
+The current physical inventory describes unit_claims, review_events and inspection_events, but it does not yet provide an admitted request/approval record that can preserve the Inspector request, Admin/Korlap decision, decision reason, evidence references and idempotent outcome as one auditable lifecycle.
+
+Database review should compare:
+- a dedicated append-only request/decision record with explicit request and decision facts; versus
+- a bounded request aggregate with immutable terminal decision fields plus append-only inspection_events and audit_events.
+
+Do not silently overload review_events: its existing decision vocabulary and reviewer authority are for inspection review, not Admin/Korlap abort disposition. Do not overload CMD-027 or treat a claim release as the ABORT decision.
+
+Minimum logical integrity requirements (names/types/constraints are intentionally not assigned):
+1. Each request binds to one inspection, immutable session, exact submitted revision and exact Reviewer RETURN decision.
+2. Requester and approver identities are server-derived; requester != approver.
+3. At most one pending ABORT request exists for an inspection at a time; historical rejected/approved requests remain retained.
+4. Decision is immutable once terminal; approval and rejection both carry server time, actor and mandatory reason.
+5. Evidence references point only to finalized private objects authorized for the exact inspection/session; evidence bytes remain in Storage, not database rows.
+6. Approval can transition only the exact still-current returned revision to terminal ABORTED. A stale revision/request cannot be approved.
+7. If an active claim exists, its release is part of the approval transaction; no claim is released on request or rejection.
+8. Request/decision, inspection transition, conditional claim release, domain event, audit and idempotency outcome have all-or-nothing transaction semantics.
+9. Historical inspection/revision/evidence records are never deleted, rewritten or automatically reused by a later attempt.
+
+Exact table/column names, enum values, FK/partial-unique/CAS strategy, event vocabulary, evidence policy, RLS and command function grants remain OPEN. The canonical table count and physical schema inventory are unchanged.
