@@ -2,7 +2,7 @@
 
 **Document ID:** MIB-001  
 **Status:** CONTROLLED BASELINE — STAGED FOUNDATION IMPLEMENTATION  
-**Version:** 1.0.16  
+**Version:** 1.0.17  
 **Last reviewed:** 2026-11-25  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
@@ -41,7 +41,7 @@ If two documents at the same authority level conflict, implementation is blocked
 - PostgreSQL is the single source of truth for application data.
 - Architecture: modular monolith unless measured evidence justifies another topology.
 - Engineering priority: cost-first lifecycle optimization without waiving security, privacy, integrity, backup, recovery, or reliability.
-- Repository: this repository is intended to hold both documentation and implementation. Documentation remains the only authorized work product in the current phase.
+- Repository: this repository is intended to hold both documentation and implementation. Documentation remains authoritative; G10-F1 also authorizes only the bounded foundation source-code and development-configuration work defined in AGENTS.md §3.2, using synthetic/test data on a dedicated branch. Later business-feature implementation and production operations remain gated.
 
 ## 3. Non-negotiable engineering invariants
 
@@ -289,7 +289,7 @@ PTCM-001 consolidates the evidence-oriented closure work for F-03, F-04 and the 
 **Gate disposition remains unchanged:** PO CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED; G9 NOT READY; G10 NOT ACTIVE; implementation NOT STARTED / NOT AUTHORIZED. The next permitted work remains documentation, read-only repository inspection and static consistency analysis. No source code, SQL, migration, grants/RLS, live database inspection, provider change, runtime test, deployment or production data mutation is authorized.
 
 
-## 18. Staged implementation gate update — 2026-11-25
+## 19. Staged implementation gate update — 2026-11-25
 
 PR #26 (merge commit 4ef6fb49fcd4c4e83cc4a328a1e2125f96f6dcc2) records Product Owner decision PO-2026-11-25-IMPLEMENTATION-RESPONSIBILITY-001 and activates G9-F1/G10-F1. The Product Owner owns institutional authorization, coordination and compliance; separate institutional approval artifacts are not a prerequisite for bounded engineering development. This is not a claim that an external institution has issued written approval.
 
