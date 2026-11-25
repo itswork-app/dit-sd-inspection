@@ -1,9 +1,9 @@
 # Command Authorization Verification Matrix
 
-**Status:** Design draft — PO/security review required; not implementation authority  
-**Version:** 0.4.2  
-**Date:** 2026-11-24  
-**Depends on:** T-15, T-16, T-17, T-18; Canonical Permission Registry v0.2.0; RLS and Authorization Design; Privileged Command Boundary and Transaction Specification
+**Status:** Design draft — RBAC-003 product semantics PO-APPROVED; technical/security verification design OPEN; not implementation authority  
+**Version:** 0.4.3  
+**Date:** 2026-11-25  
+**Depends on:** Decision Register RBAC-003; T-14, T-15, T-16, T-17, T-18; Canonical Permission Registry v0.3.0; RBAC-003 Account Lifecycle, Role and Scope Governance; RLS and Authorization Design; Privileged Command Boundary and Transaction Specification
 
 
 ## Physical schema/RLS reconciliation dependency
@@ -14,7 +14,7 @@ See [Physical Schema ↔ RLS ↔ Command Reconciliation](PHYSICAL-SCHEMA-RLS-COM
 
 This matrix converts the current logical command-family inventory into a reviewable authorization and verification contract. It bridges the PO-approved architecture direction and later API/RPC design. It does not claim that route names, PostgreSQL function names, physical table names, grants, RLS policies or executable tests are finalized.
 
-The Canonical Permission Registry v0.1.0 remains a draft. Permission semantics, legacy mappings, role grants, grant/revoke authority, scope predicates and SoD rules require explicit PO/security review. A permission appearing below is a proposed mapping, not an approved grant.
+The Canonical Permission Registry v0.3.0 remains a draft. RBAC-003 approves account lifecycle, global/project role classes, delegation ceiling, self-service prohibitions, last-administrator protection, explicit non-inheriting scopes and revocation effects. Exact permission codes, legacy mappings, role-to-permission grants, technical grantor authority, scope predicates, RLS and SoD implementation remain open. A permission appearing below is a proposed mapping, not an approved grant.
 
 **Hard boundary:** documentation only. No code, SQL, migration, permission seed, GRANT/REVOKE, RLS policy, RPC, deployment, runtime test, CI change or merge is authorized or performed.
 
@@ -25,9 +25,9 @@ The Canonical Permission Registry v0.1.0 remains a draft. Permission semantics, 
 | Transport | Browser/PWA → Vercel Server Route → PostgreSQL command function | T-18 option A PO-approved |
 | Request | Versioned envelope; strict allowlisted fields; method/content-type/size/schema validation; reject unknown privileged fields | Exact per-command schemas TBD |
 | Authentication | Verify Supabase session; forward caller JWT; reject missing, invalid, expired or revoked session | Architecture approved; implementation absent |
-| Actor | PostgreSQL derives subject from auth.uid(); resolve active/approved app_users; never trust actor/role/scope in payload | Required |
+| Actor | PostgreSQL derives subject from auth.uid(); resolve the verified app_users identity and require account_status=APPROVED for operational commands; never trust actor/role/scope in payload | RBAC-003 semantics approved; physical enforcement open |
 | Permission | Resolve canonical code and active grant from database state at transaction time | Registry v0.1.0 draft; grants unapproved |
-| Scope | Derive from persisted project/session/location/assignment/resource relationships; payload IDs are selectors, never proof of authority | Exact predicates need PO/security and schema review |
+| Scope | Derive exact explicit project/session/location/instrument/team/assignment/resource scope from persisted relationships; no implicit inheritance; payload IDs are selectors, never proof of authority | RBAC-003 semantics approved; exact predicates and physical mapping open |
 | SoD | Evaluate actor/subject/reviewer/approver/grantor relationships in the same transaction; multiple roles never bypass SoD | Command-specific conditions below; some authority remains open |
 | Direct DML | Browser anon/authenticated roles have no INSERT/UPDATE/DELETE on protected business/governance tables; RLS default deny; reads separately scoped | Design only; exact grants/RLS not deployed |
 | RPC grants | Specific EXECUTE grant per function and caller role; no generic update-any-row or arbitrary SQL RPC | Function inventory/grants TBD |
@@ -44,14 +44,14 @@ Object names below are logical resource/data classes from current architecture a
 
 | ID / family | Logical commands | Proposed permission | Actor, scope and SoD contract | Data/RLS/grant review | Atomic audit | Planned tests |
 |---|---|---|---|---|---|---|
-| CA-01 Account access | request-account-access | account.request | Auth UID maps only to own request; applicant cannot set role/status/scope | app_users and request/decision records (exact request table TBD); self-only read; command-only writes | account.requested | 001 |
-| CA-02 Account decision | approve/reject/suspend/reactivate-account | account.approve | Global identity authority; actor != subject; reasoned append-only decision | app_users, account_decisions; protected DML denied; narrow RPC EXECUTE | account.* | 002 |
-| CA-03 Role/permission grant | grant-role/revoke-role | role.manage | Grantor authority and target-role ceiling; no self-grant/elevation; T-14 capacity lock for Inspector eligibility | user_roles, permissions, role_permissions, project_capacity_settings; exact grantor policy TBD | role.*, permission.changed | 003–004 |
-| CA-04 Scope grant | grant-scope/revoke-scope | scope.manage | Explicit target principal/project/session/location/team; no self-assignment; delegation authority required | user_scope_grants, assignment_members; command-only writes | scope.changed | 005 |
+| CA-01 Account access | request-account-access | account.request | Verified Auth UID maps only to own PENDING app identity; request is separate; applicant cannot set role/status/scope | app_users, account_requests and append-only account_decisions logical model; physical keys/constraints TBD; self-only read; command-only writes | account.requested | 001 |
+| CA-02 Account decision | approve/reject-account; separate account-state commands | account.approve | Explicit global identity authority; actor != target; eligible PENDING request; rejection category + bounded reason; append-only decision; no implicit role/scope grant | app_users, account_requests, account_decisions; protected DML denied; narrow RPC EXECUTE | account.* | 002 |
+| CA-03 Role/permission grant | grant-role/revoke-role | role.manage | Global/project role class explicit; effective grantor delegation ceiling; no self-grant; protect last active administrator; T-14 capacity fence for Inspector eligibility | user_roles, permissions, role_permissions, project_capacity_settings; exact grantor policy, physical history and token TBD | role.*, permission.changed | 003–004 |
+| CA-04 Scope grant | grant-scope/revoke-scope | scope.manage | Explicit target principal/project/session/location/instrument/team/assignment; no self-assignment; grantor delegation ceiling; no implicit inheritance | user_scope_grants, assignment_members; exact parent/type map and command-only writes | scope.changed | 005 |
 | CA-05 Project lifecycle | create/update-project; close-project | project.manage; project.close | Project-scoped closure; session, inspection, document and actual/target reconciliation gates; reason/confirmation; closure authority still open for approval | projects and related resources; dependency graph/table list TBD | project.created/updated/closed | 006–007 |
 | CA-06 Session lifecycle | create/update-session; transition-session | session.manage; session.transition | PO semantics: T-07 states DRAFT/ACTIVE/PAUSED/CLOSED; Korlap may activate/pause/resume/request closure only in assigned scope; Super Admin final closure after gates; CLOSED terminal in ordinary flow; reopen privileged/reasoned/audited. Exact permission grants/transition matrix remain open | sessions, projects; project/session RLS; command-only writes | session.*; CLOSE_REQUESTED action/event only | 008 |
 | CA-07 Assignment/staffing | publish-assignment/change-assignment-members | assignment.manage | Exact project/session/location/instrument; no self-assignment; overlap/staffing rules; published instrument required | operational_assignments, assignment_members; command-only writes | assignment.* | 009 |
-| CA-08 Inspector capacity | change-inspector-capacity | capacity.manage | Governed project settings; 1..100; reject below distinct enabled account + active Inspector grant + effective operational assignment count; serialize with role/assignment eligibility | project_capacity_settings, user_roles, assignment_members; one settings-row lock | capacity.limit_changed | 010 |
+| CA-08 Inspector capacity | change-inspector-capacity | capacity.manage | Governed project settings; 1..100; reject below distinct login-enabled APPROVED account + active Inspector grant + effective operational assignment count; serialize with every account/role/scope/team/assignment eligibility change | project_capacity_settings, user_roles, assignment_members; one shared serialization point; technical writer proof open | capacity.limit_changed | 010 |
 | CA-09 Target planning | create/update/publish target plan/allocation | target.manage | Authorized project/session planner; published target immutable; target never mutates actuals | target_plans, target_allocations; exact RLS/planner authority TBD | target.* | 011 |
 | CA-10 Instrument governance | create-instrument/save-instrument-draft; publish-instrument-version; deactivate-instrument | instrument.manage; instrument.publish; instrument.deactivate | Super Admin global catalog only; separate permissions; declarative allowlist; T-17 A direct publication without second approver; immutable published version; reasoned deactivation; no operational membership implied | instruments, instrument_versions, checklist_sections/items, specification_fields, evidence_slot_definitions, instrument_version_publications; browser DML denied; RPC grants TBD | instrument.* | 012–014 |
 | CA-11 Canonical unit identity | register-canonical-unit | unit.register | Canonical key (instrument_type, serial_normalized); identity lookup cannot reveal project activity; conflict never duplicates or silently merges | units; no unaffiliated serial enumeration; command-only writes | unit.registered / identity_conflict_opened | 015 |
@@ -169,8 +169,8 @@ The physical schema specification and ERD remain authoritative for actual table 
 - RLS/grants/RPCs deployed: **No evidence / not performed**.
 - Runtime/security/concurrency tests executed: **No**.
 - Permission registry approved: **No; draft only**.
-- Scope freeze: **NOT READY**.
-- Implementation authorization: **NOT GRANTED**.
+- Full-system G9 scope freeze: **NOT READY**; G9-F1 foundation scope is frozen.
+- G10-F1 foundation implementation: **ACTIVE** for bounded synthetic-data foundation scope only; later business-feature activation remains gated.
 
 ## 9. Change control
 
@@ -200,3 +200,19 @@ The notification authorization boundary is aligned to NLA-001 v0.1.2 and CMD-049
 - CMD-052..054 are internal-only worker/scheduler operations with a separate workload identity and exact EXECUTE ACL still pending.
 - INT-NOTIF-001 is a provider-authenticated server integration ingress, not a CMD ID or browser RPC.
 - No provider, worker principal, database role, function owner, grant, route or live RLS behavior is verified. TC-NOTIF-001..026 and the notification function-security cases remain PLANNED / NOT EXECUTED.
+
+
+## 10. RBAC-003 Product Owner semantic alignment — 2026-11-25
+
+Decision Register RBAC-003 is PO-APPROVED without amendment. This matrix adopts the following semantics for command authorization and verification:
+
+- First verified Google sign-in provisions one PENDING application identity. Authentication does not confer operational access.
+- Identity, access requests and approve/reject decisions are separate logical records; request and decision history is preserved and decisions are append-only.
+- Approval/rejection is performed by an authorized distinct actor. Rejection requires a structured category and bounded reason. Account approval never implicitly grants roles, scopes, teams or assignments.
+- Global and project-scoped roles are distinct. Grant/revoke authority is bounded by the actor's effective delegation ceiling. Self-approval, self-role-grant and self-scope-assignment are denied.
+- Ordinary operations must preserve at least one active administrator; any break-glass recovery is a separate reasoned and audited workflow.
+- Project, session, location, instrument, team and assignment scopes are explicit and non-inheriting.
+- Revocation denies subsequent protected commands after server/database revalidation while preserving existing assignments, sessions, inspection history and evidence; no silent abort, reassignment or history rewrite.
+- T-14 remains unchanged: only login-enabled APPROVED accounts with an active Inspector role and at least one currently effective operational Inspector assignment count; all eligibility-changing writers must share the approved serialization point.
+
+**Open technical verification:** exact permission-code and role-to-permission mapping; grantor/SoD matrix; physical account/request/decision/role/scope schema; last-admin break-glass controls; RLS/grants/function ACL; LPR-11 lock order and acyclic graph proof; authorization freshness; capacity writer inventory; and negative/concurrency test execution. This matrix remains a design proposal and no permission grant or runtime behavior is certified.

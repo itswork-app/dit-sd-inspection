@@ -1,19 +1,19 @@
 # CMD-001–010 Detailed Contract Review
 
-**Status:** Engineering contract review — proposal only; PO/security review required; NOT approved for implementation  
-**Version:** 0.3.5  
-**Date:** 2026-11-24  
+**Status:** Engineering contract review — RBAC-003 product semantics PO-APPROVED; command contracts, canonical permissions and technical/security controls remain PROPOSAL ONLY; NOT approved for implementation  
+**Version:** 0.4.0  
+**Date:** 2026-11-25  
 **Scope:** CMD-001 through CMD-010  
-**Controls:** T-15 append-only audit direction; T-18 Option A command boundary; G9 NOT READY; G10 NOT ACTIVE — pending verified G9 and the separate G10 activation record.
+**Controls:** RBAC-003 PO-approved product semantics; T-14 Inspector capacity; T-15 append-only audit direction; T-18 Option A command boundary; full-system G9 NOT READY; G10-F1 foundation-only ACTIVE; business feature-entry gates remain applicable.
 
-**Current gate clarification (2026-11-25):** Product Owner conditional implementation authorization was received on 2026-11-24. G9 remains NOT READY; G10 remains NOT ACTIVE pending verified G9 and a separate G10 activation record. Any dated historical authorization wording in this document is not the current gate status. No implementation is authorized by this document.
+**Current gate clarification (2026-11-25):** G9-F1 foundation scope is frozen and G10-F1 foundation implementation is active under root AGENTS.md §3.2. Full-system G9 remains NOT READY; business-feature entry gates remain open. RBAC-003 approves product semantics only and does not authorize executable CMD-001–007 business mutations, SQL, schema, grants/RLS or production changes.
 
 
 ## 1. Purpose and non-authority
 
 This document expands the existing PostgreSQL Command Contract Catalogue for CMD-001–010. It is a documentation-only review artifact. It does not authorize source changes, SQL, migrations, function creation, grants/revokes, live database changes, deployment, or merge.
 
-The canonical command catalogue remains the ID and permission-code source. This document identifies contract details and unresolved decisions; it does not approve permission seeding, role grants, route exposure, function ownership, or EXECUTE ACLs.
+The canonical command catalogue remains the ID and permission-code source. RBAC-003 is the authoritative PO decision for account lifecycle, role delegation, scope inheritance and revocation semantics. This document reconciles those semantics into CMD-001–007; it does not approve permission seeding, physical role grants, route exposure, function ownership, RLS, or EXECUTE ACLs.
 
 ## 2. Shared contract envelope
 
@@ -75,7 +75,7 @@ No `user_id`, `auth_user_id`, actor, role, approval status, account status or sc
 {
   "outcome": "ACCEPTED",
   "request_id": "uuid",
-  "approval_status": "PENDING",
+  "account_status": "PENDING",
   "replayed": false,
   "correlation_id": "uuid"
 }
@@ -85,25 +85,26 @@ No `user_id`, `auth_user_id`, actor, role, approval status, account status or sc
 
 - Caller must be authenticated and map to exactly one own Auth-backed application identity.
 - The command can create/update only the caller's own request/profile state; it cannot grant role, permission, project membership or scope.
-- Existing approved, suspended, rejected or pending account behavior must be explicitly decided. The catalogue currently lists `ALREADY_PENDING`, but does not fully define all repeat-state outcomes.
+- Account lifecycle is governed by RBAC-003: `app_users` is created on first successful verified Google sign-in with `PENDING` status; each access request is a separate `account_requests` record and each approve/reject outcome is an append-only `account_decisions` record. A pending request is not duplicated; an approved account does not obtain additional authority through another account-approval request; a rejected account may submit a new request.
 - A request for another UID or any privilege-bearing field is rejected; never silently honor client-supplied identity.
 
 ### Physical read/write set
 
 - Read: authenticated identity mapping in `app_users`; idempotency record.
-- Write: `app_users` only if the canonical account-request lifecycle assigns profile/request fields there; `idempotency_records`; `audit_events`.
-- **Model gap:** no dedicated account-request entity is listed. Confirm whether `app_users` is created at Auth signup or first request, and whether a separate request state/history table is required. Do not infer a table.
+- Read: the caller's existing `app_users` identity created by the verified first-sign-in provisioning path; idempotency record.
+- Write: one `account_requests` record for the access request; `idempotency_records`; `audit_events`. `account_decisions` is written only by CMD-002/003.
+- **Logical model approved; physical design open:** RBAC-003 approves the separation of identity, request history and decision history. First-login identity provisioning is a distinct path from CMD-001; exact columns, keys, uniqueness, FKs, indexes, state projection and migration strategy require Database/Engineering/Security review.
 
 ### Transaction, lock and audit
 
-- Resolve own `app_users` row by unique `auth_user_id`; serialize concurrent first requests with the unique constraint/upsert conflict path, not a client-selected UID.
-- Persist request state, idempotency result and `account.requested` audit event atomically.
+- Resolve exactly one existing `app_users` row by the verified JWT subject / unique `auth_user_id`; reject an absent or ambiguous identity rather than accepting a client-selected UID. Concurrent first access requests serialize on the approved active-request/idempotency uniqueness arbiter.
+- Persist the new request, idempotency result and `account.requested` audit event atomically. First-login identity provisioning and its unique Auth-subject arbiter are separately specified.
 - No lock on another user's row.
 - Audit failure rolls back any profile/request mutation.
 
 ### Typed outcomes
 
-`ACCEPTED`, `ALREADY_PENDING`, `ALREADY_APPROVED` (if PO approves this outcome), `AUTH_REQUIRED`, `VALIDATION_FAILED`, `IDEMPOTENCY_KEY_REUSED`, `INTERNAL_AUDIT_FAILURE`.
+`ACCEPTED`, `ALREADY_PENDING`, `ALREADY_APPROVED`, `AUTH_REQUIRED`, `VALIDATION_FAILED`, `IDEMPOTENCY_KEY_REUSED`, `INTERNAL_AUDIT_FAILURE`. Exact stable mapping to existing catalogue outcomes remains subject to API/QA reconciliation.
 
 ### Test additions
 
@@ -139,7 +140,7 @@ Decision is fixed by the command; caller cannot submit an alternate decision val
 {
   "outcome": "APPROVED",
   "target_user_id": "uuid",
-  "approval_status": "APPROVED",
+  "account_status": "APPROVED",
   "decision_id": "uuid",
   "replayed": false,
   "correlation_id": "uuid"
@@ -150,14 +151,14 @@ Decision is fixed by the command; caller cannot submit an alternate decision val
 
 - Require authenticated active approved approver with global identity-administration authority; exact role/grant source must be approved in the canonical permission registry.
 - Actor must not equal target user.
-- Target must exist, be eligible for approval and not be disabled/suspended/rejected under the final account-state transition table.
+- Target must exist and be in `PENDING` state with an eligible active request. `REJECTED` can return to `PENDING` only through a new request; `SUSPENDED` and `DISABLED` are not approvable through the ordinary request path. Any reinstatement/recovery is a separate explicitly authorized workflow.
 - Do not infer authority from display title or client role claim.
 - The decision must be performed by a distinct actor; self-approval is a hard denial.
 
 ### Physical read/write set
 
 - Read: target `app_users`; actor `app_users` and effective authorization grants; idempotency record.
-- Write: target `app_users.approval_status` and decision metadata; append `account_decisions`; `idempotency_records`; `audit_events`.
+- Write: target `app_users` current account status; append `account_decisions` linked to the exact `account_requests` row; update the request's current disposition only if the physical model uses a mutable projection; `idempotency_records`; `audit_events`.
 - Preserve prior decisions; do not overwrite decision history.
 
 ### Transaction, lock and audit
@@ -192,7 +193,8 @@ Decision is fixed by the command; caller cannot submit an alternate decision val
   "schema_version": 1,
   "idempotency_key": "opaque-client-generated-key",
   "target_user_id": "uuid",
-  "reason": "non-empty rejection rationale"
+  "reason_category": "allowlisted-category",
+  "reason": "non-empty, length-bounded rejection rationale"
 }
 ```
 
@@ -202,7 +204,7 @@ Decision is fixed by the command; caller cannot submit an alternate decision val
 {
   "outcome": "REJECTED",
   "target_user_id": "uuid",
-  "approval_status": "REJECTED",
+  "account_status": "REJECTED",
   "decision_id": "uuid",
   "replayed": false,
   "correlation_id": "uuid"
@@ -213,13 +215,13 @@ Decision is fixed by the command; caller cannot submit an alternate decision val
 
 - Same global identity authority and actor != target SoD requirement as CMD-002.
 - Target must be in a rejectable state. Rejection is a state transition, not deletion.
-- Reason is mandatory and length-bounded; final minimum/maximum and any reason taxonomy require PO/privacy approval.
+- Rejection requires a structured category and a non-empty, length-bounded explanation. The category vocabulary and exact min/max bounds are technical/schema details to be specified; the mandatory category-plus-reason rule is PO-approved.
 - No role, scope or permission is implicitly revoked/granted by this command unless a separately approved lifecycle rule explicitly requires it.
 
 ### Physical read/write set
 
 - Read: target `app_users`; actor authorization; idempotency record.
-- Write: target `app_users.approval_status`; append `account_decisions`; `idempotency_records`; `audit_events`.
+- Write: target `app_users` current account status; append `account_decisions` linked to the exact `account_requests` row; update a request disposition projection only if the approved physical model requires it; `idempotency_records`; `audit_events`.
 - Decision history is append-only.
 
 ### Transaction, lock and audit
@@ -278,9 +280,9 @@ Decision is fixed by the command; caller cannot submit an alternate decision val
 ### Authorization, scope and SoD
 
 - Target account must be approved and active.
-- Grantor must hold `role.manage` and be within an explicit delegation ceiling for the requested role and scope.
+- Grantor must hold the exact canonical permission and be within an explicit, effective delegation ceiling for the requested role and scope. An actor may never delegate authority exceeding the actor's own effective authority.
 - Self-grant is denied.
-- Global vs project-scoped role semantics must be explicit; `project_id` must not be ambiguously optional for roles that require scope.
+- Global roles and project-scoped roles are distinct authority classes. Each role definition must declare its class; project scope is mandatory for project-scoped roles and forbidden/ignored only where the canonical role definition explicitly declares a global role. No implicit project or child-scope inheritance is allowed.
 - Role code must resolve to an enabled canonical role; caller cannot supply permission bundles.
 - Inspector grants invoke the same T-14 qualifying-account capacity predicate as assignment eligibility changes and cap updates.
 
@@ -344,7 +346,7 @@ Decision is fixed by the command; caller cannot submit an alternate decision val
 ### Authorization and invariants
 
 - Caller must have revocation authority over the exact role and scope; grantor ceiling/revocation delegation must be checked.
-- Protect last-admin/recovery principal according to a formally approved recovery rule; do not hardcode an assumed exception.
+- An ordinary revoke must not remove the last active administrator. No hard delete is permitted. Recovery must use a separately controlled, reasoned and audited break-glass process; its operator eligibility, activation, expiry and dual-control details remain technical/security design work.
 - Revoke ends validity/status; it never deletes grant history.
 - Revoke of already-revoked/expired grant returns a stable no-op/state outcome and must not emit duplicate success events.
 - Revoking Inspector eligibility must serialize against capacity-changing commands even if the cap is not being lowered.
@@ -358,7 +360,7 @@ Decision is fixed by the command; caller cannot submit an alternate decision val
 ### Transaction, locks and audit
 
 - Lock capacity row first for any Inspector eligibility reduction, then role row.
-- Compare `expected_version` if optimistic concurrency is retained; physical `user_roles` currently does not explicitly list a version column, so either add one to the approved schema or remove this request field.
+- The request currently carries `expected_version`, but physical `user_roles` has no approved version column. Do not implement this field until Database/Engineering either adds and verifies a concurrency token or removes/replaces the request field through controlled contract change.
 - Persist revoke state, idempotency and `role.revoked` audit event atomically.
 
 ### Typed outcomes
@@ -386,7 +388,7 @@ Decision is fixed by the command; caller cannot submit an alternate decision val
   "schema_version": 1,
   "idempotency_key": "opaque-client-generated-key",
   "target_user_id": "uuid",
-  "scope_type": "PROJECT|SESSION|LOCATION|TEAM|ASSIGNMENT",
+  "scope_type": "PROJECT|SESSION|LOCATION|INSTRUMENT|TEAM|ASSIGNMENT",
   "scope_id": "uuid",
   "grant_kind": "ROLE|PERMISSION",
   "grant_ref": "canonical-role-or-permission-code",
@@ -416,8 +418,8 @@ Decision is fixed by the command; caller cannot submit an alternate decision val
 
 - Target must be approved and active; target/scope references must exist and be compatible.
 - Grantor must have `scope.manage` for the exact parent scope and cannot delegate authority beyond their own effective grant ceiling.
-- Self-assignment is denied under current authorization test catalogue; confirm whether any narrowly defined self-service scope exception exists before approval.
-- Scope inheritance is never implicit. Parent-to-child inheritance rules must be explicit and permission-specific.
+- Self-scope assignment is prohibited; no exception is approved by RBAC-003.
+- Scope inheritance is never implicit. A grant applies only to the exact declared scope and any separately approved explicit mapping; project scope does not silently confer session/location/team/assignment authority.
 - Role and permission grants must not share an ambiguous untyped reference. The request above makes the discriminant explicit; confirm canonical model compatibility.
 
 ### Physical read/write set
@@ -480,14 +482,14 @@ Decision is fixed by the command; caller cannot submit an alternate decision val
 
 - Caller must be authorized to revoke the exact grant under the same delegation ceiling and scope rules used for CMD-006.
 - Revocation cannot widen access, rewrite history or delete the grant.
-- Define impact on already-open sessions/assignments and cached authorization: effective access should be re-evaluated at command time; revocation propagation/claims invalidation is a separate explicit contract.
+- After revocation, subsequent protected commands must revalidate current server/database authorization and deny the revoked scope. Existing assignments, sessions, inspection history and evidence remain intact; revocation does not silently abort, delete, reassign or rewrite in-progress work. Exact in-flight transaction serialization, cache invalidation and session-token freshness remain technical contracts.
 - Revoke of inactive/expired grant must return a stable no-op/state outcome.
 
 ### Physical read/write set
 
 - Read: `user_scope_grants` target; actor effective grant; idempotency record; dependent assignment/session references only if approved revocation policy requires them.
 - Write: `user_scope_grants` lifecycle fields; `idempotency_records`; `audit_events`.
-- Physical schema does not currently state a `version` field; align expected_version with the eventual schema.
+- Physical schema does not currently state a `version` field while the candidate request carries `expected_version`; align the request and physical concurrency token before implementation.
 
 ### Transaction, locks and audit
 
@@ -714,12 +716,12 @@ The confirmation token is not an authorization credential. If retained, its issu
 
 | Finding | Affected command(s) | Required resolution | Gate |
 |---|---|---|---|
-| Account request has no dedicated request entity; lifecycle placement in `app_users` is unclear | CMD-001 | PO/architecture decide Auth signup vs first request, pending-state owner and history model | Blocks final request schema |
-| Account decision state machine and eligible source states are incomplete | CMD-002/003 | Approve complete account transition matrix and duplicate decision semantics | Blocks final transition contract |
-| Role history/overlap and version representation not fully physicalized | CMD-004/005 | Define uniqueness/interval constraints, immutable grant history, version column and last-admin recovery rule | Blocks schema freeze |
+| Account request physical schema and first-login provisioning path are not yet specified | CMD-001 | RBAC-003 has approved verified first-sign-in creation of a PENDING app_users identity and separate account_requests/account_decisions history; Engineering/Database must specify provisioning, keys, constraints and request transaction | Blocks final request schema |
+| Account product state machine and repeat-request semantics are PO-approved; physical transition and race enforcement remain open | CMD-002/003 | Implement conditional state transitions and append-only decisions for the RBAC-003 matrix; specify unique decision/request constraints, version token and capacity serialization | Blocks final transition contract |
+| Role history/overlap and version representation not fully physicalized | CMD-004/005 | RBAC-003 approves no hard delete and last-active-admin protection; Engineering/Database must define uniqueness/interval constraints, immutable grant history, physical version token and separate break-glass mechanism | Blocks schema freeze |
 | Inspector revoke must share capacity serialization point with grants and cap changes | CMD-004/005 | Align all eligibility-affecting commands on the same project capacity lock and predicate | Blocks concurrency approval |
-| `permission_or_role_ref` is ambiguous | CMD-006 | Use explicit grant-kind discriminator and validate scope compatibility/inheritance | Blocks final request schema |
-| Scope grant revocation/cache invalidation semantics are unspecified | CMD-006/007 | Define authorization freshness and effects on active assignments/sessions | Blocks security acceptance |
+| Scope reference compatibility and canonical mapping remain open | CMD-006 | The candidate request already separates `grant_kind` from `grant_ref`; reconcile the discriminator with the canonical permission/role registry, exact scope-type map and parent compatibility. RBAC-003 prohibits implicit inheritance and self-assignment | Blocks final request schema |
+| Scope revocation product semantics are PO-approved; technical freshness/linearization remains open | CMD-006/007 | Revalidate subsequent protected commands and preserve active assignments/sessions/history; specify in-flight command serialization, cache/session freshness and exact revocation token | Blocks security acceptance |
 | Project status on create must not bypass lifecycle | CMD-008 | Choose server default and allowed initial state | Blocks final request schema |
 | Project optimistic version fields absent from current physical summary | CMD-009/010 | Add approved version/update metadata or change contract to a fully specified alternative | Blocks physical-schema parity |
 | Project closure dependencies and concurrency protocol are not approved | CMD-010 | PO + institution define closure blockers, child-command fencing and reopen authority | Blocks CMD-010 contract completion |
@@ -780,7 +782,7 @@ No candidate rank or lock primitive is approved by this checkpoint. No source co
 
 1. Derive actor identity exclusively from the caller JWT / `auth.uid()`; client actor, role, permission, approval, or scope fields are forbidden.
 2. Validate the request envelope and derive the canonical semantic request hash. Claim or resolve L00 idempotency before domain locks. A same-key/same-hash replay returns the durable result only after current authorization is revalidated; a different hash rejects.
-3. If a command can change the T-14 qualifying Inspector population, acquire every affected `project_capacity_settings` serialization row at L10 in ascending project UUID order before L15–L18. The affected project set may be discovered by a non-locking locator read, but must be recomputed after the capacity locks; if it changed, abort/retry rather than acquire a new lower-rank L10 row late. Whether account approval/rejection or project/session closure changes the T-14 predicate must be resolved against the approved account/project/session state model; do not assume.
+3. If a command can change the T-14 qualifying Inspector population, acquire every affected `project_capacity_settings` serialization row at L10 in ascending project UUID order before L15–L18. The affected project set may be discovered by a non-locking locator read, but must be recomputed after the capacity locks; if it changed, abort/retry rather than acquire a new lower-rank L10 row late. RBAC-003 plus T-14 define the account-state eligibility: only login-enabled `APPROVED` accounts can qualify; `PENDING`, `REJECTED`, `SUSPENDED` and `DISABLED` accounts do not count. Approval/rejection/suspension/disable and Inspector role/scope/assignment changes must use L10 whenever they change the qualifying population.
 4. Acquire all required principal rows at L15 in ascending immutable user UUID order. Include both actor and target when both are involved. A nonexistent self-account row in CMD-001 is arbitrated by the unique `auth_user_id` constraint/upsert path, not by pretending a row lock exists.
 5. Acquire the exact authorization rows required for the decision: L16 `user_roles` by (user_id, role_id, grant_id); then L17 `user_scope_grants` by (user_id, scope_type, scope_id, grant_kind, grant_ref, grant_id); then L18 role/permission catalogue rows by stable primary key. L18 must be immutable/frozen during ordinary commands or governed by a separately approved mutation protocol. The lock set must include the actor's grantor ceiling and any target grants whose state is part of the invariant.
 6. Acquire project/session/scope resource rows at L30, then operational grouping rows at L50, only after L10–L18. For multiple parents, project before session and stable UUID order within a class. Child writers use project/session `FOR SHARE`; project state changes/closure use project `FOR NO KEY UPDATE`; session state changes use project `FOR SHARE` then session `FOR NO KEY UPDATE`. These are candidate modes requiring PostgreSQL-version and effective-call-graph review.
@@ -792,13 +794,13 @@ No candidate rank or lock primitive is approved by this checkpoint. No source co
 
 | Command | Candidate ordered resources and lock modes | Required post-lock revalidation | Competing paths / final arbiter | Open evidence |
 |---|---|---|---|---|
-| CMD-001 request-account-access | L00 idempotency; L15 caller's `app_users` row if it exists; otherwise unique `auth_user_id` INSERT/UPSERT arbiter | JWT subject maps to exactly one own Auth identity; request lifecycle allows create/update; no privilege fields accepted | Concurrent first request, duplicate retry, CMD-002/003 decision; unique auth_user_id plus one canonical request lifecycle | Whether request state belongs in app_users or a dedicated request/history entity; UPSERT update predicate, trigger/FK edges, exact pending/repeat outcomes |
-| CMD-002 approve-account | L00; L10 capacity rows only if approved account-state transition can change T-14 eligibility; L15 actor + target app_users sorted; L16 actor role grants; L17 actor scope grants if applicable; L18 permission/role catalogue; target account decision row at L110 insert | Actor remains active and holds global account-approval authority; actor != target; target remains in an approvable source state; any affected capacity project set is unchanged; account transition is valid | CMD-003 reject race and duplicate CMD-002; target app_users row conditional state transition / unique decision identity | Complete account state/terminal-decision model; whether approval changes login-enabled predicate; actor grantor source; version token and decision uniqueness |
-| CMD-003 reject-account | Same order and exact shared target-account protocol as CMD-002; L10 only if this transition can change T-14 eligibility | Same actor/target/authority checks; target remains rejectable; mandatory reason; no implicit role/scope revocation unless separately approved | CMD-002 approval race; target app_users conditional transition and immutable account_decisions identity | Rejectable states; whether rejection can affect an already qualifying account; no implicit cascade; version and unique decision constraint |
-| CMD-004 grant-role | L00; L10 for Inspector-eligibility-changing grant (all affected project capacity rows sorted); L15 actor + target principals sorted; L16 actor delegation grants + target role set in tuple order; L17 relevant actor scope/delegation grants; L18 role/permission catalogue; insert target user_roles at L16 under the already-held principal/catalogue locks | Actor active and authorized for exact role/scope within delegation ceiling; target approved/enabled; role enabled; interval valid; self-grant denied; Inspector predicate and capacity rechecked under L10 | CMD-005 revoke, duplicate/overlapping grants, CMD-014/015 membership, CMD-016 cap, account eligibility changes; unique/exclusion arbiter for principal-role-scope interval | Role scope semantics, grant history, exact interval exclusion, capacity row existence, permission bundle mutability, role_permissions freeze and version strategy |
-| CMD-005 revoke-role | L00; L10 for Inspector eligibility reduction; L15 actor + target principal sorted; L16 actor authority rows + exact target user_role row sorted; L17 relevant delegation scope rows; L18 role catalogue if mutable | Actor may revoke exact grant and has revocation ceiling; target grant remains active/revocable; last-admin/recovery protection; Inspector count and role validity rechecked; already-revoked is stable no-op | CMD-004 grant, concurrent revoke, CMD-014/015/016, account suspension; exact user_roles row conditional update | `expected_version` currently has no physical `user_roles.row_version`; do not implement until schema defines a token or request field is removed; revocation representation and last-admin policy open |
-| CMD-006 grant-scope | L00; L10 if the grant can change T-14 qualifying eligibility (e.g. approved Inspector role/scope mapping); L15 actor + target principals sorted; L16 if role-grant authority is involved; L17 actor delegation rows + target duplicate-check rows sorted; L18 role/permission catalogue; L30 project/session scope parent; L50 location/team/assignment scope target as applicable | Actor has authority for exact parent scope and grant kind/ref; target active; fixed scope-type mapping; target exists, belongs to expected parent and is operationally grantable; no implicit inheritance; no overlap | CMD-007 revoke, duplicate overlapping grants, concurrent scope-parent closure/change, CMD-004/005 where role semantics overlap; unique/exclusion constraint on user + scope + kind/ref + interval | Exact scope-type-to-table map and parent chain; whether ROLE=Inspector changes T-14; self-assignment exception; interval exclusion and grantor-ceiling physical representation |
-| CMD-007 revoke-scope | L00; L10 if this scope revocation changes T-14 qualifying eligibility; L15 actor + target principal sorted; L16 if role-derived authority required; L17 actor delegation rows + exact target grant row sorted; L18 catalogue only if its mutability affects interpretation; L30/L50 scope parent only if needed to prove current revocation authority/lifecycle | Actor may revoke the exact grant under current delegation ceiling; target grant remains active; scope identity matches; revocation effective time and authorization cache semantics are explicit | CMD-006 grant, duplicate revokes, protected commands relying on grant; conditional lifecycle update on exact grant | Physical row_version absent while request carries expected_version; grant expiry/effective-time semantics; active assignment/session impact and authorization freshness |
+| CMD-001 request-account-access | L00 idempotency; L15 caller's existing app_users identity; account_requests active-request/idempotency uniqueness arbiter. First-login app_users provisioning uses the unique auth_user_id arbiter in its separate verified identity path | JWT subject maps to exactly one existing own Auth identity; request lifecycle permits a new request; no privilege fields accepted | Concurrent first access request, duplicate retry, CMD-002/003 decision; active-request uniqueness and one canonical account request per logical attempt | Physical columns/keys/FKs/unique constraints for the PO-approved app_users + account_requests + append-only account_decisions logical model; first-login provisioning path, request-state projection and idempotent repeat outcomes |
+| CMD-002 approve-account | L00; L10 capacity rows only if approved account-state transition can change T-14 eligibility; L15 actor + target app_users sorted; L16 actor role grants; L17 actor scope grants if applicable; L18 permission/role catalogue; target account decision row at L110 insert | Actor remains active and holds global account-approval authority; actor != target; target remains in an approvable source state; any affected capacity project set is unchanged; account transition is valid | CMD-003 reject race and duplicate CMD-002; target app_users row conditional state transition / unique decision identity | Physical state/version token and immutable decision uniqueness; exact permission source and actor grantor ceiling; capacity serialization when a transition changes the approved T-14 eligibility predicate |
+| CMD-003 reject-account | Same order and exact shared target-account protocol as CMD-002; L10 only if this transition can change T-14 eligibility | Same actor/target/authority checks; target remains rejectable; mandatory reason; no implicit role/scope revocation unless separately approved | CMD-002 approval race; target app_users conditional transition and immutable account_decisions identity | Physical request/decision uniqueness and state/version token; reason category enum and bounds; explicit no-cascade enforcement; capacity serialization if a qualifying Inspector population can change |
+| CMD-004 grant-role | L00; L10 for Inspector-eligibility-changing grant (all affected project capacity rows sorted); L15 actor + target principals sorted; L16 actor delegation grants + target role set in tuple order; L17 relevant actor scope/delegation grants; L18 role/permission catalogue; insert target user_roles at L16 under the already-held principal/catalogue locks | Actor active and authorized for exact role/scope within delegation ceiling; target approved/enabled; role enabled; interval valid; self-grant denied; Inspector predicate and capacity rechecked under L10 | CMD-005 revoke, duplicate/overlapping grants, CMD-014/015 membership, CMD-016 cap, account eligibility changes; unique/exclusion arbiter for principal-role-scope interval | Physical role/scope representation, append-only grant history, exact interval exclusion, capacity row existence, permission bundle immutability/governance and concurrency-token strategy |
+| CMD-005 revoke-role | L00; L10 for Inspector eligibility reduction; L15 actor + target principal sorted; L16 actor authority rows + exact target user_role row sorted; L17 relevant delegation scope rows; L18 role catalogue if mutable | Actor may revoke exact grant and has revocation ceiling; target grant remains active/revocable; last-admin/recovery protection; Inspector count and role validity rechecked; already-revoked is stable no-op | CMD-004 grant, concurrent revoke, CMD-014/015/016, account suspension; exact user_roles row conditional update | `expected_version` has no approved physical `user_roles.row_version`; revocation representation, last-admin break-glass mechanics, immutable grant history and token strategy remain technical/security design work |
+| CMD-006 grant-scope | L00; L10 if the grant can change T-14 qualifying eligibility (e.g. approved Inspector role/scope mapping); L15 actor + target principals sorted; L16 if role-grant authority is involved; L17 actor delegation rows + target duplicate-check rows sorted; L18 role/permission catalogue; L30 project/session scope parent; L50 location/team/assignment scope target as applicable | Actor has authority for exact parent scope and grant kind/ref; target active; fixed scope-type mapping; target exists, belongs to expected parent and is operationally grantable; no implicit inheritance; no overlap | CMD-007 revoke, duplicate overlapping grants, concurrent scope-parent closure/change, CMD-004/005 where role semantics overlap; unique/exclusion constraint on user + scope + kind/ref + interval | Exact scope-type-to-table map and parent chain; whether a particular explicit scope grant changes T-14 eligibility; interval exclusion, grantor-ceiling physical representation and deterministic lock order |
+| CMD-007 revoke-scope | L00; L10 if this scope revocation changes T-14 qualifying eligibility; L15 actor + target principal sorted; L16 if role-derived authority required; L17 actor delegation rows + exact target grant row sorted; L18 catalogue only if its mutability affects interpretation; L30/L50 scope parent only if needed to prove current revocation authority/lifecycle | Actor may revoke the exact grant under current delegation ceiling; target grant remains active; scope identity matches; revocation effective time and authorization cache semantics are explicit | CMD-006 grant, duplicate revokes, protected commands relying on grant; conditional lifecycle update on exact grant | Physical row_version absent while request carries expected_version; grant expiry/effective-time semantics, exact in-flight transaction ordering, cache/session freshness and enforcement that active assignments/sessions/history are preserved |
 | CMD-008 create-project | L00; L15 actor principal; L16 actor project-creation grant; L17 if global authority is represented by scope grant; L18 permission catalogue; L30 normalized project-code unique arbiter + project insert; create the default T-14 capacity row in the same transaction as a new project (bootstrap-only child creation) | Actor retains global project-create authority; normalized code/timezone valid; status is server-selected DRAFT; capacity default is exactly T-14 approved default; project and capacity row are both committed or neither | Concurrent same normalized code; project creation and capacity initialization; unique normalized-code constraint and unique project-capacity key | Code normalization/collation; physical capacity table/key/default; hidden trigger/FK lock edges; whether capacity row is created in same transaction or via approved migration/backfill |
 | CMD-009 update-project | L00; L15 actor principal; L16 actor project.manage grant; L17 project-scope grant if required; L18 catalogue if mutable; L30 project row `FOR NO KEY UPDATE` (candidate) and CAS predicate | Actor still has project authority; project remains editable; patch is non-empty and allowlisted; code/status immutable; expected aggregate token matches; timezone change does not reinterpret persisted instants | CMD-010 close, CMD-011 session creation, every project child writer; project row lock + approved CAS/version constraint | Physical projects row_version/updated_at/updated_by absent; timezone change semantics and lock-timeout/retry policy |
 | CMD-010 close-project | L00; L10 if project/session closure changes the T-14 predicate; L15 actor principal; L16 actor project.close grant; L17 exact project scope grant; L18 catalogue if mutable; L30 project row `FOR NO KEY UPDATE`; then evaluate blockers while parent fence is held. Lock session rows `FOR NO KEY UPDATE` in UUID order only if closure explicitly mutates/serializes session state; no implicit cascade is allowed | Actor retains project.close authority; project is closable; closure dependency set is complete; all child writers/finalizers obey the project parent `FOR SHARE` fence; pending durable intents are accounted for; project remains unchanged through CAS | CMD-009 update; CMD-011–054 project-scoped child writers/finalizers; project parent fence is the serialization gate, with exact blocker predicates/constraints as secondary arbiters | PO/institutional closure blocker set; T-14 closure effect; project row_version absent; pending worker/outbox policy; child-writer coverage and all implicit lock edges |
@@ -828,5 +830,22 @@ No candidate rank or lock primitive is approved by this checkpoint. No source co
 All listed cases remain PLANNED / NOT EXECUTED. Exact barriers, transaction isolation, SQLSTATE assertions, lock diagnostics and test fixtures must be approved by QA/Engineering before execution.
 
 ### 9.5 Candidate normalization disposition
+
+CMD-001–010 are **candidate-normalized at documentation level** against L00/L10/L15–L18/L30/L50/L110. RBAC-003 closes the Product Owner semantic decisions for account lifecycle, role classes/delegation, self-service prohibitions, last-admin protection, explicit scopes and revocation effects for CMD-001–007. This does not approve the command contracts, physical schema, canonical permission registry, grantor matrix, row-version strategy, RLS/ACL, lock modes, effective graph or tests. They are not technically approved, not proven acyclic, not verified against physical PostgreSQL objects and not lock-complete certified. The authoritative manifest count remains 54/54 inventoried, 0/54 certified.
+
+## 10. RBAC-003 Product Owner semantic reconciliation — 2026-11-25
+
+The Product Owner approved RBAC-003 without amendment. This section records how that decision constrains CMD-001–007; it is not a technical approval.
+
+- **CMD-001:** first verified Google sign-in creates the \`PENDING\` application identity. The logical history model separates \`app_users\`, \`account_requests\` and append-only \`account_decisions\`. Pending duplicates reuse the active request; approved accounts do not gain authority through repeat account approval; rejected accounts may submit a new request.
+- **CMD-002/003:** approval/rejection are distinct-actor decisions; actor != target. Approval applies to an eligible pending request. Rejection requires a structured category and bounded explanation. Every decision is append-only. Neither command silently grants/revokes roles or scopes.
+- **CMD-004/005:** global and project-scoped roles are distinct; grantor authority is bounded by an explicit effective delegation ceiling; self-grant is denied; no hard delete; ordinary revoke protects the last active administrator. Any break-glass recovery is separate, reasoned and audited.
+- **CMD-006/007:** scope grants are explicit and non-inheriting; self-assignment is denied. Revocation denies subsequent protected commands after server-side revalidation while preserving existing assignments, sessions, inspection history and evidence. It does not silently abort or reassign work.
+- **T-14:** the approved combined Inspector capacity predicate is unchanged. Only login-enabled APPROVED accounts with an active Inspector role and an effective operational assignment qualify; all other account states are excluded. Every writer changing that population must serialize through the same approved capacity fence.
+- **Still open:** canonical permission/role/grantor/SoD matrix; physical identity/request/decision/role/scope schema; account recovery and break-glass mechanism; exact row-version/CAS tokens; RLS/grants/function ACL; LPR-11 and full lock graph; route/RPC contracts; concurrency/negative QA and actual execution evidence.
+
+Change history:
+- **0.4.0 — 2026-11-25:** Reconciled RBAC-003 PO-approved semantics into CMD-001–007 and the candidate lock manifest. No command, schema, permission registry, grant, RLS, function, lock protocol or implementation was technically approved.
+
 
 CMD-001–010 are **candidate-normalized at documentation level** against L00/L10/L15–L18/L30/L50/L110. They are not technically approved, not proven acyclic, not verified against physical PostgreSQL objects and not lock-complete certified. The authoritative manifest count remains 54/54 inventoried, 0/54 certified.

@@ -1,22 +1,25 @@
 # SSOT Cross-Document Reconciliation Audit — Dit. SD Inspection
 
 **Document ID:** SSOT-AUDIT-001  
-**Version:** 0.1.6  
+**Version:** 0.1.8  
 **Status:** STATIC CROSS-DOCUMENT AUDIT COMPLETED — CLOSURE PARTIAL  
-**Audit date:** 2026-11-24  
+**Initial audit date:** 2026-11-24  
+**Latest reconciliation:** 2026-11-25  
 **Repository:** `itswork-app/dit-sd-inspection`  
-**Branch:** `docs/audit-lock-and-identity-reconciliation`  
-**PR:** #3 — Draft / Open  
+**Original audit branch:** `docs/audit-lock-and-identity-reconciliation`  
+**Latest reconciliation branch:** `docs/rbac-003-account-role-scope-governance`  
+**Original audit PR:** #3 — Draft / Open  
+**Latest reconciliation PR:** #31 — Open  
 **Authority snapshot reviewed:** AGENTS.md v1.2.1; MIB-001 v1.0.8; DGA-001 v1.11.28; IRG-001 v1.0.3  
 **Implementation authorization (historical source snapshot):** NOT GRANTED
 
-> **Current status clarification:** This audit's original authorization wording reflects the source snapshot before the Product Owner's conditional implementation authorization was recorded on 2026-11-24. See §11 for the current controlling status: conditional authorization received; G9 NOT READY; G10 NOT ACTIVE.
+> **Current status clarification:** §§1, 3 and 9 preserve the original audit's historical source snapshot. The current controlling state is recorded in §11 and updated by §12: Product Owner conditional implementation authorization RECEIVED; G9-F1 foundation scope FROZEN; G10-F1 foundation implementation ACTIVE for the bounded synthetic-data foundation scope; full-system G9 NOT READY; full-system G10 and later business-feature entry NOT AUTHORIZED; production readiness NOT VERIFIED.
 
 ## 1. Executive result
 
 A static cross-document reconciliation was completed against the source versions listed in this audit's authority snapshot: DGA-001, RTM-001, RAID-001, Decision Register, Package S, Package T, MIB-001, IRG-001 and the QA catalogue.
 
-The audit confirms that the authority hierarchy and the current implementation boundary are consistent: Product Owner decisions govern product semantics within PO authority; institutional decisions remain with the authorized institutional owners; technical approvals and runtime evidence remain with Engineering, Database, Security, QA and Operations; G9 is NOT READY and G10 is NOT AUTHORIZED.
+The audit confirms that the authority hierarchy remains consistent: Product Owner decisions govern product semantics within PO authority; institutional decisions remain with the authorized institutional owners; technical approvals and runtime evidence remain with Engineering, Database, Security, QA and Operations. The current implementation boundary is G9-F1 FROZEN and G10-F1 ACTIVE only for the bounded synthetic-data foundation scope; full-system G9 remains NOT READY, later business-feature entry and full-system G10 remain gated, and production readiness is NOT VERIFIED.
 
 Two documentation reconciliation actions are recorded in this checkpoint:
 1. Package S §9.15 is retained as a historical snapshot and superseded for current counts/status by a new §9.16 addendum.
@@ -113,8 +116,8 @@ Counts are static text-level results. They do not prove semantic completeness, r
 | Official IFP source; SB evidence/photo rules; BA signatory authority | DGA-B01..B03; IFP-001..002; BRK-001..002; DOC-S-001; R-001/R-008; I-001..003 | Controlled instrument source and institutional owner; PO for product interpretation |
 | Data classification, legal basis, retention, legal hold, deletion/disposition, audit export | DGA-B04/B13; RET-001; NOTIF-011; EVD-003; AUD-S-001; D-031; R-011 | Institutional records/legal/privacy/security authorities |
 | Provider ownership, region, plan, billing, quotas, custodians, recovery | DGA-B05/B06/B08; PROV-001; OPS-003/004/005; D-032; D-006/007; R-006/R-010/R-012 | Sponsor/institution/Operations and actual provider evidence |
-| Canonical permission, grantor ceiling, SoD and exact object ACL/RLS | DGA-B09/B11/B12; RBAC-004; SEC-001..005; D-034/D-036 | PO for product role intent; Security/Database for grants, RLS, function ownership and ACL |
-| 54 command contracts, routes/RPCs, read/write sets and lock manifests | DGA-B10/B17/B18/B19/B20/B21; SEC-004/005; API-001/002; D-028/D-030; R-027/R-030 | Engineering/Database/Security/QA; PO only for product semantics |
+| Canonical permission, grantor ceiling, SoD and exact object ACL/RLS | DGA-B09/B11/B12/B22; Decision Register RBAC-003; RTM RBAC-005; RBAC-004; SEC-001..005; D-034/D-036 | PO for approved role/scope semantics; Engineering/Security/Database for permission mapping, grants, RLS, function ownership and ACL |
+| 54 command contracts, routes/RPCs, read/write sets and lock manifests | DGA-B10/B17/B18/B19/B20/B21/B22; Decision Register RBAC-003; RTM AUTH-001/AUTH-002/RBAC-005; SEC-004/005; API-001/002; D-028/D-030; R-027/R-030 | Engineering/Database/Security/QA; PO only for product semantics |
 | Notification policy, audience timing, worker identity and callback security | DGA-B13; NOTIF-007..012; D-034..D-036; R-034/R-035 | PO for audience/SLA product semantics; Security/Operations/provider owner for policy authority, worker and callback controls |
 | Project closure parent-fence and print-batch projection/retry/concurrency | DGA-B14; T-06/T-13; DOC-001; D-027/D-028; print batch QA | PO for product semantics; Engineering/Database/Security/QA for transaction and concurrency approval |
 | CI, rulesets, release operator, artifact provenance and protected environments | DGA-B15; REL-001; D-033/R-033 | Repository administrator, Security and Operations |
@@ -140,7 +143,7 @@ Counts are static text-level results. They do not prove semantic completeness, r
 - G7: PARTIAL; test catalogue is planned, not executed.
 - G8: NOT READY; provider, ownership, region, quotas, SLO, restore and incident evidence remain.
 - G9: NOT READY.
-- G10: NOT AUTHORIZED.
+- G10-F1: FOUNDATION IMPLEMENTATION ACTIVE under AGENTS.md §3.2; full-system G10 and later business-feature entry remain gated.
 - G11: NOT STARTED.
 - G12: NOT STARTED.
 
@@ -200,7 +203,24 @@ This evidence checkpoint does not establish controlled-source provenance, full 4
 The authorization fields and gate statements in §§1, 3 and 9 are preserved as historical audit snapshots from their stated source dates. The current controlling state is:
 
 - Product Owner conditional implementation authorization: **RECEIVED (2026-11-24)**.
-- G9 scope freeze: **NOT READY**; the technical, institutional, security, database, lock, provider and operational evidence blockers remain open.
-- G10 implementation activation: **NOT ACTIVE** pending verified G9 and a separate G10 activation record.
+- G9-F1 foundation scope: **FROZEN**; full-system G9: **NOT READY** because technical, source, security, database, lock, provider and operational evidence blockers remain open.
+- G10-F1 foundation implementation: **ACTIVE** under root AGENTS.md §3.2 for the bounded synthetic-data foundation scope only; full-system G10 and later business-feature activation remain gated.
 - Production readiness: **NOT VERIFIED**.
-- GOV-MERGE-001 permits qualifying documentation-only PRs only; it does not activate G10, freeze scope or authorize implementation.
+- GOV-MERGE-001 permits qualifying documentation-only PRs only; it does not expand G10-F1 scope or activate later business features.
+
+
+## 12. RBAC-003 account lifecycle and authorization governance reconciliation — 2026-11-25
+
+The Product Owner approved all eleven RBAC-003 recommendations without amendment. The approval is recorded in the Decision Register and specified in [RBAC-003 — Account Lifecycle, Role and Scope Governance](../02-architecture/RBAC-003-ACCOUNT-LIFECYCLE-AND-ROLE-SCOPE-GOVERNANCE.md) v0.1.0.
+
+The cross-document reconciliation now records:
+- RTM-001 AUTH-001/AUTH-002/RBAC-005 trace first verified Google sign-in, PENDING account state, separate request/decision history, role classes, delegation ceiling, SoD, last-administrator protection, explicit non-inheriting scopes and revocation semantics.
+- CMD-001–007 detailed contract review v0.4.0 incorporates the approved product semantics while retaining technical proposal status.
+- RBAC and Authorization functional design v0.2.0, Canonical Permission Registry v0.3.0 and Command Authorization Verification Matrix v0.4.3 are synchronized to RBAC-003; the permission matrix and all database/security controls remain unapproved.
+- DGA-001 v1.14.0 records DGA-B22 as PO semantic closure with technical design open; DGA-B09 remains PARTIAL, DGA-B10 OPEN and DGA-B21 PARTIAL.
+- RTM requirement RBAC-003 remains the self-review/self-approval prohibition; Decision Register decision RBAC-003 is a distinct artifact identifier. References must qualify the artifact namespace.
+- T-14 Inspector capacity is unchanged. The approved combined 1–100/default-50 predicate remains controlling.
+
+**Residual technical blockers:** canonical permission and role/grantor/SoD matrix; physical identity/request/decision/role/scope schema; account recovery and break-glass procedure; exact row-version tokens; RLS/grants/function ACL; LPR-11 and acyclic lock graph proof; capacity writer-set certification; authorization freshness; and negative/concurrency QA. No SQL, migration, grant, RLS, application code, CI, automated test, live database inspection, concurrency proof or production operation was performed by this documentation audit.
+
+**Current gate status:** G9-F1 foundation scope FROZEN; G10-F1 foundation implementation ACTIVE for the bounded synthetic-data scope; full-system G9 NOT READY; later business-feature gates remain open; production readiness NOT VERIFIED.

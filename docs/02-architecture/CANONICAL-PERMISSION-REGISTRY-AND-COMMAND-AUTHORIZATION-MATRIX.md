@@ -1,8 +1,8 @@
 # Canonical Permission Registry and Command Authorization Matrix
 
-**Status:** Draft for Product Owner and security review — NOT approved for implementation  
-**Version:** 0.2.5 | **Package:** M/N | **Date:** 2026-11-24  
-**Authority:** T-15, T-17, T-18; legacy RBAC catalogue and privileged command inventory
+**Status:** Draft technical registry — RBAC-003 product semantics PO-APPROVED; exact permission/grant/RLS design NOT approved for implementation  
+**Version:** 0.3.0 | **Package:** M/N | **Date:** 2026-11-25  
+**Authority:** Decision Register RBAC-003; RBAC-001/002; T-14, T-15, T-17, T-18; legacy RBAC catalogue and privileged command inventory
 
 ## 1. Purpose and mandatory rules
 
@@ -16,7 +16,7 @@ This is the proposed single registry for permission identifiers. It resolves voc
 6. Evidence read/export and audit read/export are distinct permissions. Export is independently authorized and audited.
 7. Browser direct INSERT/UPDATE/DELETE on protected business, governance, membership, configuration, evidence, audit and idempotency tables is denied. Mutations use Vercel route → caller-JWT PostgreSQL command function.
 8. Unknown permission, missing/ambiguous scope, inactive account, expired grant or failed required audit append means DENY / fail closed.
-9. No role-to-permission matrix is approved by this document. Exact role grants, grantor authority, delegation and scope semantics remain PO/security review items.
+9. RBAC-003 approves product semantics for account lifecycle, global/project role classes, delegation ceiling, self-grant/self-assignment prohibition, last-active-administrator protection, explicit non-inheriting scopes and revocation effects. This draft still does not approve the exact role-to-permission matrix, permission seed, grantor authority mapping, RLS, PostgreSQL EXECUTE grants or implementation.
 
 ## 2. Proposed canonical permission registry
 
@@ -24,10 +24,10 @@ All codes are proposed unless explicitly identified as T-17 decisions. Immutable
 
 | Permission code | Capability | Scope class | Grant authority and constraints | Command families | Required audit family |
 |---|---|---|---|---|---|
-| account.request | Submit own pending access request | SELF | Authenticated applicant; cannot set status, role or scope | request-account-access | account.requested |
-| account.approve | Approve/reject/suspend/reactivate account | GLOBAL_IDENTITY | Super Admin; actor != subject; reasoned decision | approve/reject/suspend/reactivate-account | account.* |
-| role.manage | Grant/revoke roles and permission bundles | GLOBAL_IDENTITY / PROJECT | Super Admin; no self-grant; administer target role only; SoD | grant-role/revoke-role | role.*, permission.changed |
-| scope.manage | Grant/revoke project/session/location/team scope | RESOURCE_SCOPE | Super Admin; no self-assignment; validate target | grant-scope/revoke-scope | scope.changed |
+| account.request | Submit own pending access request | SELF | Authenticated applicant; one active pending request; cannot set status, role or scope | request-account-access | account.requested |
+| account.approve | Approve/reject an eligible access request; separate authorized account-state transitions | GLOBAL_IDENTITY | Explicit global identity authority; actor != subject; append-only decision; rejection category + bounded reason; no implicit role/scope grant | approve/reject/suspend/disable/reinstate-account (candidate command mapping) | account.* |
+| role.manage | Grant/revoke roles and permission bundles | GLOBAL_IDENTITY / PROJECT | Exact effective grantor delegation ceiling; no self-grant; global/project role class explicit; protect last active administrator; SoD | grant-role/revoke-role | role.*, permission.changed |
+| scope.manage | Grant/revoke project/session/location/instrument/team/assignment scope | RESOURCE_SCOPE | Exact effective grantor delegation ceiling; no self-assignment; exact scope only; no implicit inheritance; validate target/parent compatibility | grant-scope/revoke-scope | scope.changed |
 | project.manage | Create/update project metadata | PROJECT | Super Admin; unique code and valid state | create-project/update-project | project.created/updated |
 | project.close | Final project closure | PROJECT | Explicit Super Admin authority; gates, reconciliation, reason and confirmation | close-project | project.closed |
 | session.manage | Create/update session configuration | PROJECT_SESSION | Super Admin; project scope | create-session/update-session | session.created/updated |
@@ -141,7 +141,7 @@ The following are constraints, not grants.
 | Super Admin | Explicit global administration permissions; T-17 catalog permissions separately granted | Automatic operational assignment, unrestricted evidence/audit export, SoD bypass, unrestricted DB access |
 | Security/Records/Platform custodian | security.review / retention.manage / provider.manage / release.manage under named authority | Ordinary operational data access or blanket Super Admin equivalence |
 
-No role-to-permission grant is approved. PO and institutional security must confirm grant matrix, delegation, scope types, role combinations, SoD and break-glass process.
+RBAC-003 product semantics are PO-approved. No role-to-permission grant is approved. The exact grant matrix, canonical delegation/SoD implementation, role combinations, last-admin break-glass procedure and technical scope predicates remain open for PO/Security/Engineering review.
 
 ## 6. RLS and database grant contract
 
@@ -155,9 +155,10 @@ T-15 requires critical permission/command events to be appended atomically with 
 
 ## 8. Approval and closure checklist
 
-- [ ] PO approves canonical code set and semantics.
+- [x] PO approves RBAC-003 product semantics for account lifecycle, role classes, delegation ceiling, self-service prohibitions, last-admin protection, explicit scopes and revocation behavior.
+- [ ] PO/Security approves the exact canonical permission code set and any new/retired code semantics.
+- [ ] PO/Security approves the exact role-to-permission, grantor/delegation and SoD matrix.
 - [ ] PO approves/rejects each legacy mapping and retirement.
-- [ ] PO approves role-to-permission and delegation matrix.
 - [ ] PO confirms project-close, evidence read/export, audit read/export, security and platform custodian authority.
 - [ ] Institution approves T-10 records/privacy/security matters.
 - [ ] Every command maps to exact permission and scope predicate.
@@ -173,11 +174,11 @@ T-15 requires critical permission/command events to be appended atomically with 
 
 ## Individual command contract reference
 
-The [PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) expands the registry's 28 logical families into 54 proposed operations (CMD-001..054): 48 original domain operations plus six NLA-001 notification operations. The original 48 have individual contract test IDs; notification operations have lifecycle tests TC-NOTIF-001..018 and authorization tests TC-CMD-AUTHZ-024-037..040. This does not approve any permission semantics, role grant, grantor authority, RPC signature or EXECUTE grant. The registry remains a PO/security review draft and is not permission-seed authority.
+The [PostgreSQL Command Contract Catalogue](POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) expands the registry's 28 logical families into 54 proposed operations (CMD-001..054): 48 original domain operations plus six NLA-001 notification operations. The original 48 have individual contract test IDs; notification operations have lifecycle tests TC-NOTIF-001..018 and authorization tests TC-CMD-AUTHZ-024-037..040. This does not approve any permission semantics, role grant, grantor authority, RPC signature or EXECUTE grant. The registry remains a technical PO/security review draft and is not permission-seed authority.
 
 ## Function ACL and caller execution model
 
-See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md). Permission grants and PostgreSQL EXECUTE grants are different: the former authorize a business action; the latter permit function invocation. Neither implies the other. Registry v0.1.0 remains a PO/security draft; no role mapping or EXECUTE grant is approved.
+See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md). Permission grants and PostgreSQL EXECUTE grants are different: the former authorize a business action; the latter permit function invocation. Neither implies the other. Registry v0.3.0 remains a technical PO/security draft; no role mapping or EXECUTE grant is approved.
 
 ## NLA-001 permission extension
 
@@ -245,3 +246,21 @@ The durable-object proposal is reconciled to the existing permission vocabulary 
 ## POQ-01 candidate audience snapshot permission boundary — 2026-11-24
 
 The candidate relation notification_outbox_recipients does not create a new user permission. It is not browser-readable or browser-writable. CMD-052 remains an internal workload operation and has no authenticated-user permission. The source-domain command may persist the event-time candidate snapshot only through its own separately reviewed narrow transaction boundary; CMD-052 may read only candidates for the currently claimed outbox under valid lease fencing. No role grant, worker identity, EXECUTE ACL or RLS policy is approved by this addendum.
+
+
+## RBAC-003 account, role and scope semantic reconciliation — 2026-11-25
+
+The Product Owner approved RBAC-003 without amendment. This registry must conform to the following product semantics:
+
+1. First successful verified Google sign-in creates one PENDING application identity. Authentication is not operational authorization.
+2. Account identity, access requests and approve/reject decisions are separate logical records. Request and decision history is preserved; account_decisions is append-only.
+3. Account states are PENDING, APPROVED, REJECTED, SUSPENDED and DISABLED. Rejected accounts may submit a new request; disabled accounts do not reactivate automatically.
+4. Account approval does not implicitly grant roles, permissions, scopes, team membership or operational assignments.
+5. Global and project-scoped roles are distinct. A project-scoped role requires explicit project scope.
+6. Grant/revoke authority is bounded by the actor's own effective delegation ceiling. Self-approval, self-role-grant and self-scope-assignment are denied.
+7. Ordinary operations must not remove the last active administrator. Emergency recovery is a separate, reasoned and audited break-glass process.
+8. Scope grants are explicit and non-inheriting, including project, session, location, instrument, team and assignment scopes.
+9. Revocation denies subsequent protected commands after authoritative server/database revalidation while preserving existing assignments, sessions, inspection history and evidence. No silent abort/reassignment or history rewrite is allowed.
+10. T-14 capacity is unchanged: only login-enabled APPROVED accounts with an active Inspector role and at least one effective operational assignment qualify; every eligibility-changing path must share the same serialization point.
+
+**Technical boundary remains open:** the exact permission codes and role-to-permission matrix, grantor/SoD mapping, physical account/request/decision/role/scope schema, account recovery/break-glass procedure, row-version tokens, RLS, grants, function ACL, lock graph, capacity writer inventory and negative/concurrency QA. This update does not approve a permission seed, grant, RLS policy, RPC, SQL, migration or implementation.
