@@ -232,20 +232,6 @@ The canonical event mapping is limited to the existing notification events: noti
 
 No notification message body, evidence, full provider response, credential, token or signed URL may be placed in general audit metadata. T-10 institutional classification, retention, legal hold, disposition and audit export authority remain blocked. This is a documentation proposal, not a deployed audit control.
 
-## F05-T4 notification attempt/outcome evidence boundary — 2026-11-25
-
-The candidate notification evidence contract in [NLA-L05-TDR-001](NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) §17 distinguishes three evidence classes:
-
-- `notification_delivery_attempts`: dedicated append-only attempt/result history, including safe delivery/correlation references, worker lease generation, controlled outcome/reason classification and server timestamps;
-- candidate suppression/reschedule outcome evidence: append-only decisions bound to the original event, outbox, immutable candidate, pinned policy and checkpoint; exact physical representation is NOT ADMITTED pending Database review;
-- `audit_events`: material security/governance actions such as policy publication, privileged administration, manual UNKNOWN reconciliation and terminal operational intervention. Routine retry attempts and callbacks do not each create a general audit event.
-
-User identity/role/scope must derive from trusted server authentication context. Worker identity and lease generation must be authenticated and fenced. Provider callback claims require provider-specific authentication, freshness, reference binding and replay/deduplication. A callback payload is not actor provenance.
-
-The logical evidence envelope excludes message bodies, inspection/evidence content, credentials, tokens, signed URLs, raw idempotency keys, full provider responses and unapproved network/device metadata. Corrections are linked additive evidence; committed records have no application/browser/worker UPDATE or DELETE path. This is a candidate control contract, not proof of deployed append-only privileges or tamper resistance. Hash chains, signed checkpoints and WORM archives are not assumed.
-
-T-10 institutional classification, purpose, retention, legal hold, disposition, audit read/export and network metadata remain BLOCKED; no retention duration or purge schedule is defined. No schema, grants, RLS, provider or runtime control is approved by this note.
-
 
 
 ## CMD-044 candidate event disposition — 2026-11-24
@@ -259,3 +245,17 @@ The existing canonical event vocabulary includes audit.exported, audit.accessed 
 - audit.export_failed
 
 Do not emit or rely on these event names as implemented behavior. If dual control is not institutionally required, approval/rejection events may be unnecessary; do not create approval records by assumption. Export request, approval, generation, download, failure and disposition evidence must be mapped to one canonical event vocabulary before CMD-044 implementation. audit.exported remains the existing catalogue event but does not itself authorize export.
+
+## F05-T4 notification attempt/outcome evidence boundary — 2026-11-25
+
+The candidate notification evidence contract in [NLA-L05-TDR-001](NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) §17 distinguishes three evidence classes:
+
+- `notification_delivery_attempts`: dedicated append-only attempt/result history, including safe delivery/correlation references, worker lease generation, controlled outcome/reason classification and server timestamps;
+- candidate suppression/reschedule outcome evidence: append-only decisions bound to the original event, outbox, immutable candidate, pinned policy and checkpoint; exact physical representation is NOT ADMITTED pending Database review;
+- `audit_events`: material security/governance actions such as policy publication, privileged administration, manual UNKNOWN reconciliation and terminal operational intervention. Routine retry attempts and callbacks do not each create a general audit event.
+
+User identity/role/scope must derive from trusted server authentication context. Worker identity and lease generation must be authenticated and fenced. Provider callback claims require provider-specific authentication, freshness, reference binding and replay/deduplication. A callback payload is not actor provenance.
+
+The logical evidence envelope excludes message bodies, inspection/evidence content, credentials, tokens, signed URLs, raw idempotency keys, full provider responses and unapproved network/device metadata. Corrections are linked additive evidence; committed records have no application/browser/worker UPDATE or DELETE path. This is a candidate control contract, not proof of deployed append-only privileges or tamper resistance. Hash chains, signed checkpoints and WORM archives are not assumed.
+
+T-10 institutional classification, purpose, retention, legal hold, disposition, audit read/export and network metadata remain BLOCKED; no retention duration or purge schedule is defined. No schema, grants, RLS, provider or runtime control is approved by this note.
