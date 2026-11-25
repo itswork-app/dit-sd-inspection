@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.6.7
+Version: 0.6.8
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -1040,7 +1040,7 @@ These cases extend TC-SESSION-001 and TC-INS-DRAFT-021..027. They do not establi
 
 Extend the existing CMD-013 / TC-SESSION-002..008 coverage to prove:
 - FINAL_CLOSE rejects any nonterminal assigned inspection attempt, active claim, active draft context, pending review, returned correction or unresolved authorized reopen.
-- A hanging unit can be resolved only by its explicit authorized per-unit abort; CMD-027 claim release alone does not satisfy the gate.
+- A returned attempt can be resolved without correction only through the SES-001 packed-unit exception: exact Reviewer return, shipment-ready packed/boxed unit making correction/reinspection impracticable, Inspector request, and explicit Admin/Korlap approval. A generic hanging/incomplete attempt is not abort-eligible and remains a FINAL_CLOSE blocker; CMD-027 claim release alone does not satisfy the gate.
 - Abort is terminal, preserves attempt/revision/evidence/audit history, and does not count as inspected, approved, good, defective or printed.
 - A pending evidence upload intent, unverified object or required evidence finalizer blocks closure; client-declared metadata cannot satisfy finalization.
 - Required completed-unit document generation and print work must reach a reconciled terminal success before closure; queued/processing/failed/uncertain required outcomes block.
