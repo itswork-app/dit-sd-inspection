@@ -1,0 +1,13 @@
+# Local Supabase CLI configuration for development only.
+# Do not add hosted project references, credentials, or production settings here.
+project_id = "dit-sd-inspection"
+
+[db]
+port = 54322
+shadow_port = 54320
+
+[db.migrations]
+enabled = true
+
+[db.seed]
+enabled = false
