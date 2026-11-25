@@ -4,7 +4,7 @@
 **Version:** 1.12.0
 **Audit date:** 2026-11-25  
 **Branch reviewed:** `main`  
-**Reviewed HEAD:** `e62fc88fb2e2a0cca26c6c9bcde5eb5cc53f2208` (post-PR #16 main baseline, 2026-11-25)  
+**Reviewed HEAD:** `b51aeabfab3470e19a5b97a277154233ca041fcf` (post-PR #17 main baseline, 2026-11-25)  
 **Authority:** Master Implementation Blueprint MIB-001  
 **Status:** AUDIT IN PROGRESS — GATE IMPLEMENTATION NOT READY  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
