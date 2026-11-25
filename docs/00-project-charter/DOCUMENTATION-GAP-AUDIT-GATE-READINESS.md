@@ -1,20 +1,20 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.13.4
+**Version:** 1.13.5
 **Audit date:** 2026-11-25  
 **Branch reviewed:** `main`  
-**Reviewed HEAD:** `18ac4f91484a1afa5e7e5bf35fe9c7b6debfaaa5` (post-PR #24 main baseline, 2026-11-25)  
+**Reviewed HEAD:** `d46f198c2e832bc0f240ca0b784b8ad981358329` (main baseline after PR #27, 2026-11-25)  
 **Authority:** Master Implementation Blueprint MIB-001  
 **Status:** AUDIT IN PROGRESS — GATE IMPLEMENTATION NOT READY  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
-**G10 implementation activation:** NOT ACTIVE — pending verified G9 and the required G10 activation record
+**G10-F1 foundation implementation:** ACTIVE (2026-11-25, following PR #26); full-system G10 and later business-feature stages remain gated
 
-**Current gate interpretation (2026-11-24):** Dated addenda below that say “G10 NOT AUTHORIZED” are historical snapshots from before the Product Owner's conditional implementation authorization. The current controlling state is: conditional PO authorization received; G9 NOT READY; G10 NOT ACTIVE. Implementation remains prohibited until G9 is verified and a separate G10 activation record is approved.
+**Current gate interpretation (2026-11-25):** Historical sections below that say “G10 NOT ACTIVE” or “implementation not authorized” are dated snapshots superseded for the bounded foundation scope by the 2026-11-25 staged decision. Current state: G9-F1 foundation scope FROZEN; G10-F1 foundation implementation ACTIVE; full-system G9 NOT READY; later business-feature gates remain open; production readiness NOT VERIFIED.
 
 ## 1. Executive conclusion
 
-The documentation baseline is substantial, but the repository is **not yet ready to enter implementation**. This audit found unresolved source authority, institutional approvals, design-to-contract gaps, ERD/physical-schema discrepancies, incomplete command-level contracts, unverified operational/provider assumptions, and absent implementation/runtime evidence.
+The documentation baseline is substantial, but the repository is **not ready for full-system or later business-feature implementation**. The separately frozen G9-F1/G10-F1 foundation scope is active and may proceed with synthetic data under AGENTS.md §3.2. This audit found unresolved source authority, institutional approvals, design-to-contract gaps, ERD/physical-schema discrepancies, incomplete command-level contracts, unverified operational/provider assumptions, and absent implementation/runtime evidence.
 
 This is not a claim that every possible gap has been found. It is the current evidence-backed gap register from the reviewed documents. A clean document inventory, a large test catalogue, or PO approval of an architectural direction is not equivalent to implementation readiness.
 
@@ -1058,3 +1058,16 @@ G9-F1 FOUNDATION SCOPE FROZEN: bootstrap, development configuration, CI, authent
 G10-F1 FOUNDATION IMPLEMENTATION ACTIVE after merge of the governing decision PR. The staged authorization does not close full-system G9 and does not authorize production data, deployment or unresolved business command handlers. F-03/F-04, command-level authorization, worker/provider security, physical RLS/grants and unresolved business contracts remain feature-entry gates. No runtime evidence is inferred from this documentation decision.
 
 The sole maintainer may self-review under the repository's solo-maintainer model, with full-diff inspection, actual automated checks and post-merge verification. This clarification supersedes only the previous treatment of separate institutional approvals as a blanket prerequisite for engineering development; it does not erase those responsibilities or production constraints.
+
+
+## 2026-11-25 staged foundation status reconciliation
+
+This addendum is the current status index for the staged foundation decision and supersedes historical gate labels above where they conflict.
+
+- G9-F1 foundation scope: **FROZEN**.
+- G10-F1 foundation implementation: **ACTIVE**, following merge of the governing decision in PR #26.
+- Foundation implementation branch: `feat/foundation-bootstrap-v1`; PR #28 is OPEN and unmerged.
+- Full-system G9: **NOT READY**. This DGA remains the evidence-backed gap-closure queue for later features and production readiness.
+- F-03/F-04, command-level authorization, notification worker/provider security, physical RLS/grants and unresolved business contracts remain feature-entry gates.
+- Foundation work is limited to synthetic/test data in isolated development environments. No production data/evidence collection, deployment, live mutation or production-readiness claim is authorized by this staged status.
+- PR #28 CI has not executed any workflow steps because no hosted runner was allocated; this is not a test failure and is not a PASS. Runtime/type/test/build verification remains pending.
