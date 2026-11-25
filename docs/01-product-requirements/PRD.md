@@ -1,7 +1,7 @@
 # Product Requirements Document — Dit. SD Inspection
 
 Status: Draft — Product Owner validation required  
-Version: 0.1.0  
+Version: 0.2.1  
 Release target: Production  
 Scope baseline: IFP and Standing Bracket only
 
@@ -102,7 +102,11 @@ Users may hold multiple roles, but operational authority requires explicit assig
 2. Reviewer either returns the inspection with explicit correction reasons or approves it.
 3. Returned inspection goes back to Inspector; Reviewer does not silently edit Inspector data.
 4. Inspector corrects and resubmits as a new revision; history remains available.
-5. Approved inspection can be reopened only by an authorized role with reason and audit record.
+5. Correction is performed only by the Inspector who authored the returned revision and only within the original active session bound to that inspection attempt.
+6. A returned error may enter the exceptional ABORT path only when the physical unit is already packed/boxed and prepared for shipment so correction/reinspection is impracticable. The Inspector must submit an ABORT request with a reason; Admin/Korlap must explicitly approve or reject it. Only approval makes the attempt terminal ABORTED.
+7. If the unit remains practically accessible, the same Inspector follows the normal correction/resubmission path in the original active session. A generic incomplete or hanging attempt is not eligible for ABORT.
+8. ABORTED is not inspection approval, completion, a good/defective classification, or print completion. It preserves the returned revision and history; a later session requires a new inspection attempt with a distinct inspection_id. The old attempt is never reactivated.
+9. Approved inspection can be reopened only by an authorized role with reason and audit record, subject to the same originating-session boundary.
 
 ### 6.5 PDF and print
 1. Approved inspection becomes eligible for final PDF generation.
@@ -116,7 +120,7 @@ Users may hold multiple roles, but operational authority requires explicit assig
 9. Direct printer integration is not included in the initial release.
 
 ### 6.6 Session closure
-Super Admin is the final project-closure authority. Project closure is explicit and non-automatic and is allowed only after all sessions are closed; no unresolved claims, drafts, corrections or pending reviews remain; required inspections, final PDFs, print events, BA and attendance artifacts are complete and verified; and actual-versus-target reconciliation is reviewed. The closer records confirmation/reason and the system records an audit event. No date-based auto-close. Any exception requires separately permissioned override, reason and audit. Session and project closure are distinct.
+Super Admin is the final project-closure authority. Project closure is explicit and non-automatic and is allowed only after all sessions are closed; no unresolved claims, drafts, corrections or pending reviews remain; required inspections, final PDFs, print events, BA and attendance artifacts are complete and verified; and actual-versus-target reconciliation is reviewed. At session FINAL_CLOSE, every unit attempt must have an allowed terminal outcome. A returned correction remains a blocker unless it is corrected/resubmitted or qualifies for the SES-001 packed-unit exception and its ABORT request is explicitly approved by Admin/Korlap. Generic incomplete/hanging work cannot be aborted. ABORTED remains a non-completion and does not satisfy unrelated evidence, document, print, attendance or project-close requirements. The closer records confirmation/reason and the system records an audit event. No date-based auto-close. Any exception requires separately permissioned override, reason and audit. Session and project closure are distinct.
 
 ## 7. Functional requirement groups
 
@@ -135,6 +139,7 @@ Super Admin is the final project-closure authority. Project closure is explicit 
 | INS-004 | Pre-submit validation | Must | Incomplete or conflicted inspection cannot submit |
 | REV-001 | Reviewer return/approval | Must | Return reason and approval actor/time are recorded |
 | REV-002 | Immutable revision history | Must | Corrections create new revision; previous submissions remain readable |
+| INS-022 | Session-bound inspection attempt and exceptional packed-unit ABORT | Must | One inspection attempt belongs to one session; same Inspector corrects returned work in that active session; ABORT only after Reviewer return, shipment-ready packing, Inspector request and Admin/Korlap approval; later session creates a new inspection_id |
 | DOC-001 | Approved PDF generation | Must | PDF matches approved data and template snapshot |
 | DOC-002 | Print/reprint event tracking | Must | Only authorized officer prints approved documents; count and actor are recorded |
 | DOC-003 | BA and attendance document workflows | Must | Exact templates/authority must be approved before implementation |
@@ -283,3 +288,13 @@ All personnel must first register/authenticate to create an application account.
 Within a given instrument type, a normalized serial number identifies one canonical physical unit across all projects. The uniqueness rule does not cross instrument types. A same-type duplicate discovered in another project is a controlled conflict and must be reviewed by an authorized person with a recorded reason and audit trail; the application must not silently merge or discard prior records. Project/session access remains independently scoped.
 
 Evidence is permanently associated with the exact immutable inspection revision and instrument version. Preserve original metadata, checksum, uploader, capture/upload timestamps and storage object identity. Evidence cannot be overwritten in place; a replacement is a new evidence record with a corresponding audit event. These requirements are approved product direction; source-based exception policy and implementation/UAT remain pending.
+
+## 6.7 Product Owner decisions — lock protocol semantics (2026-11-24)
+
+1. **Canonical unit:** one physical unit is identified globally by instrument type plus normalized serial number. Same-type collisions across projects require authorized, reasoned and audited conflict resolution; different instrument types may reuse a serial. Project/session/assignment access remains independently scoped.
+2. **Mandatory claim:** a valid active claim is required for every normal inspection workflow. Any administrative correction or historical migration exception must use a separately permissioned, reasoned and audited path; no implicit bypass.
+3. **Project/session closure:** CLOSED rejects new normal mutations and finalization. Reopening requires an explicit privileged workflow, reason and audit. Closure is not a date-based automatic transition.
+4. **Inspector capacity:** apply the exact approved T-14 qualifying predicate and one shared serialization point for all eligibility/capacity-changing paths. T-14's combined 1–100 cap/default 50 remains controlling.
+5. **Instrument deactivation:** block new assignment selection while preserving the immutable version already pinned to existing sessions. An explicit safety withdrawal may override continued use through an authorized, reasoned and audited workflow.
+
+These are Product Owner product decisions only. They do not approve the global database lock order, physical constraints, SQL/functions/privileges, RLS, implementation or tests. LPR-01 and LPR-07–LPR-10 remain open; G9 remains NOT READY and G10 NOT ACTIVE — pending verified G9 and the required separate G10 activation record.
