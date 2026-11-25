@@ -50,7 +50,7 @@ Purpose: Link product intent to specifications, implementation units, and verifi
 | DOC-005 | Standing Bracket serial-number annex is generated from inspection records with condition and evidence references | Supplied Standing Bracket annex sample | Standing Bracket Instrument Specification; Reports and Documents | TC-DOC-009, TC-DOC-016 | DESIGN DRAFT |
 | DOC-006 | IFP PDF preserves approved checklist, serial identities, Ya/Tdk answers, and signature area | Supplied `Pemeriksaan Barang.pdf` sample | IFP Instrument Specification; Reports and Documents | TC-DOC-017 | RECONCILED TO SAMPLE / TEMPLATE APPROVAL OPEN |
 | RPT-001 | Actual and Target reports are distinct; actual dates are never rewritten | RPT decisions | Reports, Documents, Printing, Attendance, and Audit | Reconciliation/date-integrity tests | BASELINED |
-| AUD-001 | Audit coverage and controls require explicit approval before implementation | INS-016 proposal | Reports, Documents, Printing, Attendance, and Audit | Audit coverage/tamper tests | PROPOSED |
+| AUD-001 | Audit coverage and controls follow the approved append-only INS-016 policy; implementation requires separate technical and institutional gates | INS-016 / T-15 option A | Reports, Documents, Printing, Attendance, and Audit | Audit coverage/tamper tests | PO APPROVED — IMPLEMENTATION GATED |
 | OPS-002 | Production includes tested backup/restore, monitoring, deployment, and rollback | Engineering Governance | Performance and Operations Baseline | Restore drill and rollback evidence | REQUIRED; detail pending |
 | PERF-001 | System is designed and load-tested for 100 concurrent authenticated users | PRD §14 | Performance and Operations Baseline | Load test at 10/25/50/75/100 users; latency, error, resource, and integrity report | BASELINED; thresholds pending |
 | DATA-001 | PostgreSQL model preserves scoped relational integrity and immutable inspection revisions | PRD, functional decisions | Data Model and ERD | Migration, constraint, and immutability tests | DESIGN DRAFT |
@@ -155,7 +155,7 @@ Audit outcome: documentation review completed; security posture not tested/certi
 
 ## Package R — Audit event catalogue and governance
 
-| AUD-001 | Material business, security, and governance actions use a canonical event envelope with actor, active role, scope, resource, outcome, and timestamp | Audit Event Catalogue and Governance | AUD-T01..T12 | DESIGN DRAFT; INS-016 approval pending |
+| AUD-001 | Material business, security, and governance actions use a canonical event envelope with actor, active role, scope, resource, outcome, and timestamp | Audit Event Catalogue and Governance | AUD-T01..T12 | DESIGN DRAFT; T-15 PO policy approved, technical review and implementation pending |
 | AUD-002 | Critical state changes and their audit event commit atomically; audit append failure rolls back the protected mutation | Audit Event Catalogue and Governance; Privileged Command Boundary | AUD-T01..T03 | DESIGN DRAFT |
 | AUD-003 | Audit history is append-only for application roles; corrections use compensating events | Audit Event Catalogue and Governance; RLS Catalogue | AUD-T03, AUD-T11 | DESIGN DRAFT |
 | AUD-004 | Audit payloads exclude secrets, signed URL tokens, raw media, and unnecessary personal data | Audit Event Catalogue and Governance; Evidence Privacy and Retention | AUD-T09 | DESIGN DRAFT |
@@ -170,7 +170,7 @@ New source evidence: the 23-November Standing Bracket form and 20-November BA ar
 | INS-S-001 | Standing Bracket controlled source checklist and item mapping must be approved | Standing Bracket Instrument Specification; Package S | Controlled source/version and Product Owner/institution approval | BLOCKED |
 | DOC-S-001 | BA signatory, attendance verification, and report reconciliation authority must be approved | Reports, Documents, Printing, Attendance, and Audit Design; Package S | Approved document governance and UAT | BLOCKED |
 | OFF-S-001 | Offline/device/local data protection contract must be approved | Offline Sync and Recovery; Package S | Approved device matrix, retention, encryption, conflict and recovery acceptance | BLOCKED |
-| AUD-S-001 | INS-016 audit policy and institutional governance must be approved or explicitly deferred | Audit Event Catalogue and Governance; Package S | Formal approval/deferment with compensating controls | BLOCKED |
+| AUD-S-001 | T-10 institutional classification, retention, deletion/disposition, legal-hold and network-metadata controls require authorized institutional approval | T-10 decision; Evidence Privacy/Retention specification | Written institutional approval and controlled policy record | BLOCKED |
 | OPS-S-001 | Provider, region, quota, billing, backup and restore capability must be verified | Packages O/P/Q; Package S | Provider capability sheet, approved budget/region, successful restore drill | BLOCKED |
 
 ## Package T decision traceability
