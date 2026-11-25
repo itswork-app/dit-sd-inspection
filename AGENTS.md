@@ -47,7 +47,7 @@ Not permitted without separate explicit authorization:
 - SQL execution, migrations, grants/revokes, RLS or live database changes;
 - creating/changing Supabase or Vercel resources;
 - production/staging deployment or data mutation;
-- merge to protected/default branch;
+- merge to protected/default branch, except for documentation-only PRs that satisfy GOV-MERGE-001 in docs/00-project-charter/GOVERNANCE-DOCUMENTATION-ONLY-MERGE-EXCEPTION.md and the controls below;
 - handling or requesting secrets in chat.
 
 A general “continue” instruction does not override this boundary.
@@ -168,3 +168,15 @@ Never claim “100% ready”, “production-grade”, “passed” or “verifie
 - Approved PRD, ADRs, RTM, RAID and detailed architecture/security/QA documents.
 
 ---
+
+### 3.2 Product Owner-approved documentation-only merge exception — GOV-MERGE-001 (2026-11-25)
+
+The Product Owner approved a narrow exception to the pre-G10 default-branch merge prohibition. A PR may be merged to the default branch before G10 only when its complete diff is documentation/governance-only and every control in docs/00-project-charter/GOVERNANCE-DOCUMENTATION-ONLY-MERGE-EXCEPTION.md is satisfied.
+
+This exception:
+- does not activate G10, mark G9 ready, freeze scope, or authorize implementation;
+- does not permit source code, scripts, SQL, migrations, database/RLS/grant changes, provider resources, deployment, release, secrets, or data mutation;
+- does not automatically approve any existing PR; each PR requires an independent full-diff audit, required review approval, available checks, and post-merge verification;
+- must not be used to bypass branch protection or required repository controls.
+
+If the PR contains any prohibited artifact, has unresolved blocking findings, lacks required approval, or any mandatory control cannot be verified, do not merge it. If checks are absent, record them as absent—not as passing. G9 remains NOT READY; G10 remains NOT ACTIVE; production readiness remains NOT VERIFIED.
