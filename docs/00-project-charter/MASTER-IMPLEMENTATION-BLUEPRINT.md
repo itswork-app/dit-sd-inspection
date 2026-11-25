@@ -2,7 +2,7 @@
 
 **Document ID:** MIB-001  
 **Status:** CONTROLLED BASELINE — DOCUMENTATION PHASE  
-**Version:** 1.0.13  
+**Version:** 1.0.14  
 **Last reviewed:** 2026-11-25  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
@@ -278,3 +278,12 @@ Canonical approval record: [Decision Register — Product Owner conditional impl
 Post-PR #19 main baseline: `779f46c45444f7878d2128869288e986ff6b0b7a`; PRs #14–#19 merged. F05-T1..T5 are synchronized candidate specifications, not technical closure. F-04 writer certification remains zero; F-03 resolver certification remains 0/40, application lock certification 0/50 and global graph acyclicity NOT PROVEN. SES-001 business semantics are approved, but technical command/security/physical/QA closure remains outstanding. QA is PLANNED / NOT EXECUTED; CI evidence is ABSENT where unavailable.
 
 **Current gate state:** G9 NOT READY; G10 NOT ACTIVE; implementation NOT STARTED / NOT AUTHORIZED. All work must continue under the current root AGENTS.md boundary.
+
+
+## 18. Post-PR #23 SSOT and gate checkpoint — 2026-11-25
+
+The verified canonical `main` baseline after PR #23 is `0db79d376face690b353d466a18129b6dd0ae5b2`. PR #23 is merged and its six documentation files are present on `main`. The current readiness references are DGA-001 v1.13.3, IER-001 v0.1.2, PTCM-001 v0.1.1, LOCK-GRAPH-001 v0.4.25, RAID-001 v0.1.30 and RTM-001 v0.1.33.
+
+PTCM-001 consolidates the evidence-oriented closure work for F-03, F-04 and the PO-approved SES-001 packed-unit ABORT semantics. It does not itself approve a technical lock protocol, certify any eligibility writer, assign command IDs or admit physical schema. Current dispositions remain: F-03 NOT PROVEN ACYCLIC; F-04 0 writers certified; resolver paths 0/40 certified; application command lock certification 0/50; SES-001 technical contract OPEN; QA PLANNED / NOT EXECUTED. CI/workflow evidence is ABSENT where no checks/runs are returned.
+
+**Gate disposition remains unchanged:** PO CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED; G9 NOT READY; G10 NOT ACTIVE; implementation NOT STARTED / NOT AUTHORIZED. The next permitted work remains documentation, read-only repository inspection and static consistency analysis. No source code, SQL, migration, grants/RLS, live database inspection, provider change, runtime test, deployment or production data mutation is authorized.
