@@ -4,8 +4,8 @@
 **Version:** 0.1.2  
 **Status:** STATIC CROSSWALK / REVIEW CANDIDATE — NOT APPROVED, NO EVENT ENABLED  
 **Date:** 2026-11-25  
-**Baseline:** `main` at `78688451524900cc58343d05469251806ce415de`  
-**Authority:** AGENTS.md v1.2.3; Decision Register POQ-01 and POQ-04; NLA-L05-TDR-001 v0.1.10; NLA-EVENT-REGISTRY-001 v0.1.11; NLA-EVENT-TRIAGE-001 v0.1.3; L05 source-event map v0.1.1; L05 writer matrix v0.1.5.
+**Baseline:** `main` at `1c26ca1cbb2e38111695c23706ffca881c20b669`  
+**Authority:** AGENTS.md v1.2.3; Decision Register POQ-01 and POQ-04; NLA-L05-TDR-001 v0.1.10; NLA-EVENT-REGISTRY-001 v0.1.12; NLA-EVENT-TRIAGE-001 v0.1.3; L05 source-event map v0.1.1; L05 writer matrix v0.1.5.
 
 ## 1. Purpose and decision boundary
 
@@ -264,4 +264,4 @@ This clarification does not fill the unresolved per-event bindings in this cross
 - no candidate identity key, scope serialization, policy digest or physical snapshot representation is admitted;
 - the eleven PO-approved tokens remain specification/review candidates only and all remain NOT ENABLED.
 
-F05-T1 remains OPEN pending Engineering/Security review, canonical role/scope registries, exact per-event mappings and dependency columns, a machine-reviewable positive/negative validation corpus, and synchronized RTM/RAID/QA evidence. F-04 writer certification remains 0; resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; G9 NOT READY; G10 NOT ACTIVE. No implementation, SQL, migration, grants/RLS, live DB, runtime test or deployment is authorized.
+F05-T1 remains OPEN pending Engineering/Security review, canonical role/scope registries, exact per-event mappings and dependency columns, a machine-reviewable positive/negative validation corpus, and synchronized RTM/QA evidence and outstanding RAID cross-reference. F-04 writer certification remains 0; resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; G9 NOT READY; G10 NOT ACTIVE. No implementation, SQL, migration, grants/RLS, live DB, runtime test or deployment is authorized.
