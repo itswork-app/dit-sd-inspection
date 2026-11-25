@@ -1,7 +1,7 @@
 # Notification Audience Guard — Technical Decision Record
 
 **Document ID:** NLA-L05-TDR-001  
-**Version:** 0.1.13  
+**Version:** 0.1.14  
 **Status:** PO-APPROVED CANDIDATE — technical approval pending Engineering, Database and Security  
 **Date:** 2026-11-25  
 **Decision authority:** Product Owner candidate selection recorded in NLA-RESOLVER-LOCK-001 §11  
@@ -702,3 +702,79 @@ T-10 remains BLOCKED pending written institutional records/legal/privacy/securit
 
 F05-T4 may close only after Security and Engineering approve the logical contract and stable reason taxonomy; Database approves physical append-only enforcement, constraints, ordering and access model; Records/Privacy authority supplies the T-10 decisions; and QA cases TC-NOTIF-095..099 are mapped to the admitted design. Execution still requires G10 and an authorized isolated environment. F05-T4 remains OPEN; F-05 remains OPEN; G9 NOT READY; G10 NOT ACTIVE.
 
+
+
+## 18. F05-T5 atomic source-event and immutable snapshot binding — candidate (2026-11-25)
+
+**Disposition: candidate transaction-boundary contract for Engineering/Database/Security review; not a physical schema, lock certification or implementation approval.** This section refines F05-T5 in §4.2.4 and RTM NOTIF-020. It does not admit a candidate snapshot relation/header, event/outbox key, digest algorithm, SQL function, lock rank, grant, RLS policy or migration.
+
+### 18.1 Atomicity invariant
+
+For each eventually admitted notification-producing source transition, the following logical facts must become durable together or not at all:
+
+1. the authoritative source-domain mutation and its resulting canonical state/version;
+2. exactly one canonical source event bound to that committed transition;
+3. the required canonical audit evidence for the critical mutation;
+4. the durable idempotency outcome for the command execution;
+5. one outbox intent bound to the source event;
+6. the exact immutable policy-version reference applicable to the event;
+7. the complete event-time candidate recipient/scope set, including an explicit completed-snapshot boundary and its initial fan-out checkpoint state.
+
+The source event, audit, idempotency outcome, outbox, policy pin and candidate snapshot must share the same approved database transaction as the source mutation. A partial commit is invalid: no source mutation without its required event/audit/idempotency/outbox/snapshot, and no notification intent or candidate snapshot for a source mutation that rolls back. Audit-write failure fails closed for the critical mutation under T-15. The exact event/audit cardinality and idempotency object remain governed by their canonical contracts.
+
+A fully evaluated empty candidate set is distinct from a missing, partial, failed or unresolved snapshot. Empty is admissible only when the exact approved event/policy contract permits it and the resolver has completed successfully. Unknown selector, unresolved participant/scope, incomplete dependency registration, resolver error or snapshot-integrity failure aborts the entire source transaction; it must not be converted into an empty audience or fallback audience.
+
+### 18.2 Candidate transaction sequence — logical, not a lock-order approval
+
+The following sequence expresses required data dependencies only. It does not assign numeric lock ranks or supersede the canonical lock manifest/graph:
+
+1. Authenticate and authorize the command using trusted server context; establish the durable idempotency identity without trusting a client actor, role, scope or event payload.
+2. Enter the approved source-command transaction and acquire every required serialization guard/fence in the separately approved global order. Candidate L05 must not be treated as admitted until Engineering/Database/Security approve its primitive, key, participation and graph position.
+3. Immediately after the approved audience-serialization point, capture one database-controlled UTC `audience_evaluated_at`. This exact instant is reused for every effective-time predicate, policy-effective interval and candidate-eligibility evaluation in the transaction. Do not substitute transaction-start time, client time, per-row timestamps or a later second clock read.
+4. Resolve the exact canonical event token, producer contract, immutable policy version and event-specific selector/dispatch registry entries. Missing, ambiguous, expired or unsupported references fail closed; never fall back to the latest policy or rebuild from current membership after commit.
+5. Evaluate the complete candidate audience and authorized source-scope evidence against the serialized pre-mutation state at that one captured instant, using only the event's approved selector/dependency mapping. Canonicalize and deduplicate under the eventually approved identity/scope rules; do not invent those physical keys here.
+6. Apply the source mutation and persist the canonical event, audit evidence, idempotency result, outbox intent, policy pin, complete immutable candidate snapshot and initial checkpoint as one transaction. The event and snapshot must identify the same source operation and captured instant.
+7. Commit once. No provider/network I/O, email/push call, browser callback or external side effect occurs while the database transaction is open.
+
+The logical sequence is not a certified global lock order. Exact guard acquisition, source-parent locks, FK/unique/trigger/helper edges, worker interaction and lock timeout/retry remain governed by the full lock manifests and F-04/R-037 review. A command path is not certified merely because this sequence is documented.
+
+### 18.3 Binding and completeness requirements
+
+- **One producer execution:** each event instance is attributable to one exact canonical source-command/finalizer execution and one committed source transition. A projection, audit row or post-commit query is not a substitute for the producer transaction.
+- **One captured instant:** source eligibility, role/grant/membership effective intervals, event-time participant/scope resolution and policy-effective selection use the same `audience_evaluated_at`. The persisted reference is the exact instant used by the resolver.
+- **One immutable policy pin:** persist the exact immutable policy version/reference selected for the event. Policy publication/retirement racing the producer must have one approved serialization outcome; a later retry never substitutes a newer policy.
+- **Complete candidate snapshot:** persist every selected candidate and only its authorized selected scope evidence, together with an explicit snapshot-complete boundary. A worker must not observe or fan out a partially materialized set. Exact candidate identity, scope encoding, row/header relation, digest/count fields and constraints remain Database decisions.
+- **Stable correlation:** source operation, canonical event, outbox, policy pin, candidate snapshot, logical delivery and initial checkpoint must be reconcilable without relying on timestamps alone. Exact IDs, uniqueness keys and digest serialization remain unapproved until the physical contract is admitted.
+- **Idempotent replay:** replay of the same command/idempotency identity returns the original durable outcome and references; it must not create a second source event, outbox, policy pin or candidate snapshot. A genuinely new source command creates its own independently bound snapshot.
+- **Post-commit immutability:** fan-out and every retry consume the exact committed snapshot and checkpoint. They may record append-only suppression/attempt outcomes and advance only the approved checkpoint; they may not re-resolve membership, replace recipients/scopes, reset the checkpoint or mutate the source event.
+- **Failure atomicity:** any failure before commit—including audit, idempotency, event, outbox, policy-pin, candidate insert, uniqueness, FK, serialization or integrity failure—rolls back all source-transaction facts. A lost client response after commit is resolved by idempotency replay, not by creating a second event.
+
+### 18.4 Concurrency and failure cases requiring proof
+
+1. Two source commands competing with role/grant, assignment membership, scope, account eligibility, policy publication/retirement and project/session lifecycle writers must serialize under one approved protocol; no mixed-time candidate set is allowed.
+2. A writer that commits while the producer waits at the approved audience guard must be reflected consistently according to the single captured instant and approved PostgreSQL command/snapshot semantics.
+3. Concurrent fan-out workers cannot observe an incomplete candidate set or advance a checkpoint past an uncommitted/unfinished candidate.
+4. Duplicate source-command replay, transaction retry after deadlock/serialization failure and lost commit acknowledgement must converge on one durable idempotent outcome.
+5. A provider timeout or ambiguous external acceptance occurs only after database commit and is handled by F05-T3/F05-T4; it cannot roll back or recreate the source event/snapshot.
+6. Any stale worker/lease generation is unable to mutate the committed candidate set or finalize a conflicting checkpoint.
+
+### 18.5 Physical and governance decisions deliberately not made
+
+This candidate does not choose the snapshot table/header, candidate identity key, source/outbox foreign keys, policy-pin columns, unique constraints, ordering/sequence primitive, canonical serialization/digest, empty-snapshot representation, initial checkpoint encoding, RLS/ACL, trigger/helper behavior, exact PostgreSQL isolation configuration, lock key/rank, timeout/retry budgets or provider mechanism. It does not certify any source path or eligibility writer.
+
+Database must map the logical envelope to exact DDL and FK/unique/index/trigger/helper dependencies. Engineering must identify every producer/finalizer and idempotency boundary. Security must review trusted identity, policy pin, scope minimization and fail-closed behavior. All source and non-command eligibility writers must be reconciled to the approved lock graph before any resolver path is certified. T-10 remains a separate institutional dependency; no retention or purge policy is inferred.
+
+### 18.6 F05-T5 closure evidence
+
+F05-T5 remains OPEN until all of the following are supplied and approved:
+
+- Engineering identifies every exact producer transaction/finalizer for every candidate event and proves source mutation, event, audit, idempotency, outbox, policy pin and complete snapshot are inside that transaction.
+- Database approves the physical snapshot/header representation, FK/unique/index/trigger/helper graph, ordering/completeness constraints and atomic rollback behavior.
+- Security approves trusted actor/event projection, policy pinning, scope binding, fail-closed semantics, worker visibility and no-widening controls.
+- Engineering/Database/Security approve one global serialization protocol and demonstrate all relevant eligibility-changing writers participate; resolver coverage must be evidence-backed, not inferred from static inventory.
+- The one captured database instant is proven to be taken at the approved serialization point and reused by all effective-time predicates.
+- Idempotency replay, concurrent writers, partial-write injection, commit-ack loss, policy publication race, empty-versus-incomplete snapshot, fan-out visibility and rollback cases have deterministic isolated-database evidence.
+- TC-NOTIF-100..105 are mapped to the admitted physical contract and executed only after G10 activation in the authorized isolated environment.
+- TDR, NLA-001, event/selector registry, source map, writer matrix, lock manifests/graph, RTM, RAID, DGA and QA are synchronized; no unresolved contradiction remains.
+
+**Current disposition:** F05-T5 remains OPEN — CANDIDATE TRANSACTION-BOUNDARY CONTRACT ONLY. F-05/F-04 remain OPEN; resolver certification 0/40; application lock certification 0/50; global graph acyclicity NOT PROVEN; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE. No implementation, SQL, migration, grants/RLS, runtime test, provider setup, deployment or data mutation is authorized by this section.
