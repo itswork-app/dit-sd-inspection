@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.30  
+**Version:** 0.1.31  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -618,3 +618,10 @@ NOTIF-022 now references NLA-L05-TDR-001 v0.1.11 §§4.2.6–4.2.6.1, the curren
 ## F05-T3 suppression/retry traceability refresh — 2026-11-25
 
 NOTIF-018 now points to TDR v0.1.12 §4.2.7 and NLA-001 v0.1.22's retry/state reconciliation. The candidate reason taxonomy distinguishes policy suppression, bounded transient retry, terminal failure and ambiguous provider acceptance. A state-graph gap remains: the current NLA-001 delivery transitions do not define the legal return path for a retryable provider failure. Numeric retry budgets, stable reason codes, reschedule ownership, provider-specific classifications and T-10 retention remain OPEN. TC-NOTIF-056/063/064 remain PLANNED / NOT EXECUTED; F05-T3 remains OPEN; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## F05-T4 append-only evidence traceability refresh — 2026-11-25
+
+NOTIF-019 now points to NLA-L05-TDR-001 v0.1.13 §17, NLA-001 v0.1.23 §26 and Audit Event Catalogue §“F05-T4 notification attempt/outcome evidence boundary”. Verification expands to TC-NOTIF-064 and TC-NOTIF-095..099 for immutable attempt/outcome history, end-to-end correlation/provenance, worker lease fencing, callback validation, idempotent attempt ordering and privacy minimization.
+
+The evidence envelope is a logical candidate only: the suppression/reschedule physical representation, schema constraints, ordering/ACL and integrity mechanism remain subject to Database/Security/Engineering approval. T-10 classification, retention, legal hold, disposition, audit access/export and network metadata remain BLOCKED pending written institutional approval. No retention period or purge schedule is set. NOTIF-019 remains OPEN; F05-T4/F-05 remain OPEN; all QA remains PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE.
