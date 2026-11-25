@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.14.3
+**Version:** 1.14.4
 **Audit date:** 2026-11-25  
 **Branch reviewed:** `feat/foundation-bootstrap-v1-rebased` (foundation branch integrated with current main)  
 **Reviewed baseline HEAD:** `ca933fe47c4ee44cf2eba262eb80522c6075bfbf` (foundation branch HEAD at the 2026-11-25 documentation and static-review checkpoint)  
@@ -1113,3 +1113,20 @@ This addendum updates repository/implementation evidence only. It does not close
 - `package-lock.json` is still absent. No authentic dependency lock was generated. Lint, typecheck, Vitest, migration checks and production build remain NOT VERIFIED on the current head.
 
 **Disposition:** continue with CI-independent static foundation review and documentation reconciliation only. G9-F1 remains FROZEN; G10-F1 remains ACTIVE for synthetic-data foundation scope; full-system G9 remains NOT READY; later feature gates remain open; production readiness remains NOT VERIFIED. PR #30 is NOT READY TO MERGE.
+
+## 20. CI-independent static review checkpoint — 2026-11-25
+
+**Review baseline:** foundation branch commit `6108a45fac2d1cad185143986809fdf89ca71568` (107 commits ahead of `main`, zero behind at the time of review). This is a documentation/source review checkpoint, not a claim that the current branch HEAD remains this SHA after this addendum.
+
+A CI-independent static review revisited the authentication claims resolver, server-only identity helper, Supabase SSR clients, proxy session refresh and request correlation, OAuth callback and sign-out, pending-access boundary, environment validation, structured logger, bounded JSON parser, health endpoint, migration validator, package scripts and CI workflow.
+
+Findings:
+- The reviewed foundation continues to separate verified identity from authorization; successful Google authentication does not grant operational access.
+- Proxy refresh remains best-effort for public navigation; protected handlers must independently verify identity and fail closed.
+- The reviewed callback uses a fixed same-origin redirect path and generic error response; provider details are not exposed.
+- The JSON parser enforces the actual streamed byte limit, strict UTF-8 and a caller-supplied type guard.
+- No additional source-code defect was sufficiently established by static inspection to justify a speculative patch without executable verification.
+- `package-lock.json` is absent. The configured workflow currently uses `npm install`; dependency resolution is therefore not reproducible from a committed lockfile.
+- Lint, TypeScript, migration validation, Vitest, Node migration tests and production build remain NOT VERIFIED on the exact current HEAD. No CI quota exhaustion diagnosis is asserted.
+
+**Disposition:** keep PR #30 open and unmerged until an authentic generated lockfile is committed and exact-HEAD checks are executed and reviewed. No source behavior, database schema, grants/RLS, privileged RPC, production data or deployment scope is expanded by this checkpoint.
