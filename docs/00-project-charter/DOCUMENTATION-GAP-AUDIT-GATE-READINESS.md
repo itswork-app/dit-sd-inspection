@@ -1,10 +1,10 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.98
+**Version:** 1.11.99
 **Audit date:** 2026-11-25  
 **Branch reviewed:** `main`  
-**Reviewed HEAD:** `bf2caaa5ccb6225ab12e18724015039b453830df` (post-PR #15 main baseline, 2026-11-25)  
+**Reviewed HEAD:** `e62fc88fb2e2a0cca26c6c9bcde5eb5cc53f2208` (post-PR #16 main baseline, 2026-11-25)  
 **Authority:** Master Implementation Blueprint MIB-001  
 **Status:** AUDIT IN PROGRESS — GATE IMPLEMENTATION NOT READY  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
@@ -984,3 +984,10 @@ NLA-L05-TDR-001 v0.1.12 §4.2.7 records candidate outcome classes for policy sup
 NLA-001 v0.1.22 §15.5 records the blocking delivery-state graph gap: the current progression has no explicit legal transition for a retryable provider failure after SENDING. No new status or transition is approved. QA v0.7.1 strengthens TC-NOTIF-063/064; RTM v0.1.30 updates NOTIF-018. All QA remains PLANNED / NOT EXECUTED.
 
 **F05-T3 disposition: OPEN — CANDIDATE TAXONOMY ONLY.** Stable reason codes, classification for consent/channel/security/scope, retry owner, scheduler boundary, numeric attempt/age/backoff/dead-letter/alert budgets, provider-specific handling, UNKNOWN reconciliation and T-10 retention remain unresolved. F05-T4/T5 and F-04 remain OPEN; writer certification 0; resolver 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE. No provider, code, SQL, migration, grants/RLS, live database, runtime test, deployment or data mutation was performed or authorized.
+
+
+## Post-PR #16 main verification — 2026-11-25
+
+Canonical `main` advanced to `e62fc88fb2e2a0cca26c6c9bcde5eb5cc53f2208` after PR #16 (F05-T3 candidate suppression/retry specification) merged. The merged diff is documentation-only across five Markdown paths. NLA-L05-TDR-001 v0.1.12, NLA-001 v0.1.22, QA v0.7.1 and RTM v0.1.30 are present on `main`.
+
+Post-merge evidence: PR #16 merged; no combined commit statuses and no workflow runs were returned for the merge commit (CI/workflow evidence ABSENT, not PASS). No runtime tests were executed; QA remains PLANNED / NOT EXECUTED. The retryable-provider-failure transition gap remains OPEN and no new delivery state/transition is approved. F05-T3 remains OPEN; F05-T4/T5 and F-04 remain OPEN; G9 NOT READY; G10 NOT ACTIVE; production readiness NOT VERIFIED. No implementation, SQL, migration, grants/RLS, provider configuration, deployment or data mutation occurred.
