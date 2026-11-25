@@ -64,3 +64,19 @@ This exception applies only to documentation-only merges for this repository, fr
 The initial documentation-only merge exception was approved explicitly by the Product Owner in the project conversation on 2026-11-25: “Ya setuju”, in response to the proposed narrow documentation-only merge exception.
 
 The solo-maintainer review adjustment was approved explicitly by the Product Owner in the project conversation on 2026-11-25: “Iya saya solo”, in response to the request to revise the independent-review requirement for a solo-maintainer repository.
+
+
+## 2026-11-25 staged G9-F1 / G10-F1 gate reconciliation
+
+This addendum reconciles GOV-MERGE-001 with the later Product Owner staged-gate decision recorded in root `AGENTS.md` §3.2 and the Decision Register.
+
+GOV-MERGE-001 was originally approved as a narrow documentation-only merge path before implementation activation. It remains applicable to documentation-only PRs and its merge controls remain binding: complete diff audit, maintainer self-review attestation where applicable, accurate reporting of available/absent checks, normal merge protections, no bypass and post-merge verification.
+
+The pre-G10 statements in the original decision are historical and are superseded only to the extent they conflict with the later staged decision:
+- G9-F1 foundation scope is frozen.
+- G10-F1 foundation implementation is ACTIVE following the governing decision merge (PR #26).
+- Bounded foundation source code and development-only work may proceed on dedicated feature branches using synthetic data.
+- Full-system G9 remains NOT READY; later business features, unresolved command handlers, production data, deployment and production operations remain gated.
+- GOV-MERGE-001 itself does not activate G10 and is not the source of implementation authorization.
+
+No branch-protection bypass or automatic merge authorization is created by this reconciliation.

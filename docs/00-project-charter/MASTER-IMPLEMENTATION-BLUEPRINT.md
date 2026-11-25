@@ -2,7 +2,7 @@
 
 **Document ID:** MIB-001  
 **Status:** CONTROLLED BASELINE — STAGED FOUNDATION IMPLEMENTATION  
-**Version:** 1.0.15  
+**Version:** 1.0.16  
 **Last reviewed:** 2026-11-25  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
@@ -15,7 +15,7 @@
 
 This document is the navigation and control plane for the project's implementation-ready specification. It does not replace the approved PRD, Decision Register, ADRs, detailed domain specifications, security contracts, or test catalogue. It identifies their authority, dependencies, required evidence, and release gates.
 
-The repository contains authoritative documentation and is now authorized to receive application implementation. G9-F1/G10-F1 authorize the bounded foundation scope described in root AGENTS.md and the Decision Register. Source code is to be created on the dedicated implementation branch.
+The repository contains authoritative documentation and is authorized to receive bounded G9-F1/G10-F1 foundation implementation. The staged authorization permits foundation source code on a dedicated branch using synthetic data; it does not authorize unresolved business mutations, production data or deployment.
 
 ### 1.1 Source-of-truth precedence
 
@@ -192,19 +192,19 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 
 - Repository intent: **DOCUMENTATION AND APPLICATION IN ONE REPOSITORY — CONFIRMED BY PRODUCT OWNER**
 - Documentation gap audit: **DGA-001 v1.11.29 RECORDED; blocking closure IN PROGRESS**
-- Mandatory agent instructions: **AGENTS.md v1.2.2 — READ BEFORE EVERY WORK SESSION/TASK**
+- Mandatory agent instructions: **AGENTS.md v1.2.5 — READ BEFORE EVERY WORK SESSION/TASK**
 - Implementation roadmap: **IRG-001 v1.0.4 — CONTROLLED PLAN, NOT AUTHORIZATION**
 - SemVer policy: **2.0.0 adopted; application version not assigned before release**
-- Active implementation gate: **NOT READY — see DGA-001**
-- Current phase: **DOCUMENTATION / SSOT MATURATION**
-- Application source code: **INTENTIONALLY NOT STARTED**
+- Full-system implementation readiness: **NOT READY — see DGA-001; G10-F1 foundation implementation ACTIVE**
+- Current phase: **STAGED FOUNDATION IMPLEMENTATION — G9-F1 / G10-F1**
+- Application source code: **FOUNDATION BOOTSTRAP IN PROGRESS on feat/foundation-bootstrap-v1; runtime verification pending**
 - T-18 hybrid execution model: **PO-APPROVED DESIGN; implementation conformance NOT VERIFIED**
 - Notification product semantics: **POQ-01..03 APPROVED; engineering/security/institutional closure OPEN**
 - Live Supabase inspection: **NOT EXECUTED**
 - CI, runtime, restore, performance and UAT evidence: **NOT EXECUTED**
-- Scope freeze: **NOT READY**
+- Foundation scope freeze: **G9-F1 FROZEN; full-system G9 NOT READY**
 - Product Owner authorization: **CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)**
-- G10 implementation activation: **NOT ACTIVE — pending verified G9 and the required G10 activation record**
+- G10 implementation activation: **G10-F1 ACTIVE (2026-11-25, following PR #26); later business-feature stages remain gated**
 - Production readiness: **NOT VERIFIED**
 
 ## 11. Immediate next actions
