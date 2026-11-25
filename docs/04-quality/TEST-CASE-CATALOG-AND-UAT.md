@@ -848,7 +848,7 @@ These cases supplement TC-NOTIF-055..059. They are derived from the PO-approved 
 
 ### F-05 selector grammar and event-specific dispatch profile tests — 2026-11-24
 
-These acceptance cases target TDR v0.1.11 §4.2.5–4.2.6.1. The F05-T1 structural profile is still a review candidate, not an approved runtime contract. All cases remain PLANNED / NOT EXECUTED.
+These acceptance cases target TDR v0.1.12 §§4.2.5–4.2.7. The F05-T1 structural profile is still a review candidate, not an approved runtime contract. All cases remain PLANNED / NOT EXECUTED.
 
 | Test ID | Scenario | Expected result / invariant | Status |
 |---|---|---|---|
