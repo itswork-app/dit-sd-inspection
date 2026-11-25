@@ -121,6 +121,16 @@ describe("parseJsonRequest", () => {
     expect(result).toEqual({ ok: false, code: "BAD_REQUEST" });
   });
 
+  it("rejects a body stream that is already locked", async () => {
+    const request = jsonRequest("{}");
+    const reader = request.body?.getReader();
+
+    const result = await parseJsonRequest(request, isCreateNoteInput);
+    expect(result).toEqual({ ok: false, code: "BAD_REQUEST" });
+
+    reader?.releaseLock();
+  });
+
   it("rejects an empty body", async () => {
     const result = await parseJsonRequest(jsonRequest(null), isCreateNoteInput);
     expect(result).toEqual({ ok: false, code: "BAD_REQUEST" });
