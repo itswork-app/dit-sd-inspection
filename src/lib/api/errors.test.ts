@@ -29,6 +29,8 @@ describe("API error contract", () => {
     ["FORBIDDEN", 403],
     ["NOT_FOUND", 404],
     ["CONFLICT", 409],
+    ["PAYLOAD_TOO_LARGE", 413],
+    ["UNSUPPORTED_MEDIA_TYPE", 415],
     ["TOO_MANY_REQUESTS", 429],
     ["INTERNAL", 500],
     ["SERVICE_UNAVAILABLE", 503]
