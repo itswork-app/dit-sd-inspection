@@ -1,10 +1,10 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.93
+**Version:** 1.11.95
 **Audit date:** 2026-11-25  
 **Branch reviewed:** `main`  
-**Reviewed HEAD:** `78688451524900cc58343d05469251806ce415de` (post-PR #12 main baseline, 2026-11-25)  
+**Reviewed HEAD:** `1c26ca1cbb2e38111695c23706ffca881c20b669` (post-PR #13 main baseline, 2026-11-25)  
 **Authority:** Master Implementation Blueprint MIB-001  
 **Status:** AUDIT IN PROGRESS — GATE IMPLEMENTATION NOT READY  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
@@ -955,3 +955,14 @@ Continue the existing DGA closure sequence without reopening approved PO semanti
 **Disposition is unchanged:** the crosswalk is a review candidate, not an enabled allowlist or technical approval. NREG-001..011 remain PARTIAL STATIC REVIEW / UNRESOLVED / NOT ENABLED; F05-T1..T5 and F-04 remain OPEN; selector dependency universe is not frozen; writers certified 0; resolver certification 0/40; application lock certification 0/50; global lock graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; QA PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE. No technical gate is advanced.
 
 No Product Owner decision was changed. POQ-04's five approved transition outcomes remain binding, including pre-transition candidate selection, exact-selector-only participants, suppression without widening and retry reuse of the original candidate/checkpoint. The approved narrow SES-001 packed-unit ABORT policy is untouched. No source code, SQL, migration, grants/RLS, live database, provider, runtime test, deployment or production data operation was performed or authorized.
+
+
+## F05-T1 selector grammar structural hardening — candidate specification (2026-11-25)
+
+NLA-L05-TDR-001 v0.1.10 §4.2.5.1 adds a precise candidate-only validation profile for grammar v1. It defines exact object keys and JSON types, duplicate JSON-key rejection before lossy parsing, required/null/missing semantics, trusted participant and source-scope cardinality failure behavior, OR/conjunction semantics, exact canonical identifier comparison, deterministic clause ordering, exact duplicate-clause equality, and the boundary between PO-approved candidate-intent tokens and a runtime-publishable allowlist.
+
+The controlled updates are synchronized in NLA-EVENT-REGISTRY-001 v0.1.12, NLA-L05-EVENT-SELECTOR-REGISTRY-001 v0.1.2 and QA Catalogue v0.6.9 (TC-NOTIF-065..067) and RTM-001 v0.1.28 (NOTIF-016/021). The QA additions are test-definition refinements only; all cases remain PLANNED / NOT EXECUTED. RAID cross-reference refresh remains outstanding.
+
+**F05-T1 disposition: OPEN — CANDIDATE SPECIFICATION ONLY.** This static clarification does not approve canonical role/scope registries, any per-event selector clause, participant source field, SOURCE_EVENT_SCOPE cardinality, dependency column, candidate identity key, policy digest, physical snapshot representation or event publication. The eleven NREG candidates remain UNRESOLVED / NOT ENABLED. Engineering/Security review and a machine-reviewable validation corpus are still required; PO review is required only if approved product semantics would change.
+
+F-04 remains OPEN; no writer is certified; resolver certification 0/40; application lock certification 0/50; global lock graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE; production readiness NOT VERIFIED. No code, SQL, migration, grants/RLS, live database, runtime test, provider change, deployment or production data operation was performed or authorized.

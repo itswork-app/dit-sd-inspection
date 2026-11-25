@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.27  
+**Version:** 0.1.28  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -455,7 +455,7 @@ The CMD-031–040 candidate overlay is partial and does not certify any resolver
 
 | Requirement ID | Requirement / invariant | Authority | Design / control reference | Verification | Status |
 |---|---|---|---|---|---|
-| NOTIF-016 | Every enabled notification event uses a versioned, deterministic, bounded selector grammar and explicit event allowlist; selector dependencies map to all eligibility-changing writers | POQ-01; POQ-04; Security/Engineering | NLA-L05-TDR-001 v0.1.7 §4.2.4 F05-T1; NLA-001 v0.1.13 §21; writer matrix v0.1.3 | TC-NOTIF-060/061; selector negative controls and selector-to-column/writer inventory | OPEN — SELECTOR GRAMMAR / DEPENDENCY UNIVERSE NOT FROZEN |
+| NOTIF-016 | Every enabled notification event uses a versioned, deterministic, bounded selector grammar and explicit event allowlist; selector dependencies map to all eligibility-changing writers | POQ-01; POQ-04; Security/Engineering | NLA-L05-TDR-001 v0.1.10 §§4.2.5–4.2.5.1; NLA-001 v0.1.13 §21; writer matrix v0.1.5 | TC-NOTIF-060/061/065/066/067; positive/negative structural corpus and selector-to-column/writer inventory | OPEN — SELECTOR GRAMMAR / DEPENDENCY UNIVERSE NOT FROZEN |
 | NOTIF-017 | Dispatch revalidation distinguishes event-time recipient qualification from current delivery/security authorization and defines transition-specific parent/scope behavior | POQ-01; POQ-04; Security | NLA-L05-TDR-001 v0.1.7 §4.2.4 F05-T2; NLA-001 v0.1.13 §21 | TC-NOTIF-055/057/058/059/062; closure and revoke notice cases | OPEN — SECURITY/ENGINEERING VALIDATION REQUIRED |
 | NOTIF-018 | Suppression/retry uses an exhaustive reason/state model; account reactivation can reconsider only the same immutable candidate and cannot clear unrelated restrictions or widen the audience | POQ-01; POQ-04 | NLA-L05-TDR-001 v0.1.7 §4.2.4 F05-T3; NLA-001 v0.1.13 §21 | TC-NOTIF-056/063; bounded retry, consent/channel/re-suspension negative controls | OPEN — RETRY/STATE CONTRACT NOT DEFINED |
 | NOTIF-019 | Suppression and retry outcomes are append-only, correlated, privacy-minimized and auditable | INS-016; T-10; Security/Records/Privacy | NLA-L05-TDR-001 v0.1.7 §4.2.4 F05-T4; NLA-001 v0.1.13 §21 | TC-NOTIF-064; audit integrity, provenance, retention and minimization review | OPEN — AUDIT CONTRACT / INSTITUTIONAL RETENTION REVIEW REQUIRED |
@@ -468,10 +468,10 @@ All TC-NOTIF-055..064 remain PLANNED / NOT EXECUTED. These requirements do not a
 
 | Requirement ID | Requirement / invariant | Authority | Design reference | Verification | Status |
 |---|---|---|---|---|---|
-| NOTIF-021 | Every enabled event has an exact canonical event-to-selector registry entry binding source transaction, grammar version, allowed clause kinds, participant/scope mapping, dependencies and dispatch profile; composite/conditional event declarations are split before enablement | INS-015; POQ-01; POQ-04; Security/Engineering | NLA-L05-TDR-001 v0.1.8 §4.2.5; NLA-001 v0.1.14 §22; source map v0.1.0 | TC-NOTIF-067/068; exact-token registry review and dependency completeness | OPEN — REGISTRY NOT ESTABLISHED |
+| NOTIF-021 | Every enabled event has an exact canonical event-to-selector registry entry binding source transaction, grammar version, allowed clause kinds, participant/scope mapping, dependencies and dispatch profile; composite/conditional event declarations are split before enablement | INS-015; POQ-01; POQ-04; Security/Engineering | NLA-L05-TDR-001 v0.1.10 §§4.2.5–4.2.5.1; NLA-L05-EVENT-SELECTOR-REGISTRY-001 v0.1.2; NLA-EVENT-REGISTRY-001 v0.1.12; source map v0.1.1 | TC-NOTIF-065..068; exact-token registry, closed-structure and dependency completeness review | OPEN — REGISTRY NOT ESTABLISHED |
 | NOTIF-022 | Dispatch authorization is a versioned event-specific profile that separates event-time qualification from account/channel/consent/security/current-scope/parent-state checks; transition notices cannot be accidentally suppressed by revoked-role, ended-membership or active-parent predicates | POQ-04; INS-015; Security | NLA-L05-TDR-001 v0.1.8 §4.2.6; NLA-001 v0.1.14 §22 | TC-NOTIF-062/063/069; Security review of transition matrix and source-resource reauthorization | OPEN — SECURITY/ENGINEERING APPROVAL REQUIRED |
 
-TC-NOTIF-065..070 supplement TC-NOTIF-055..064. All TC-NOTIF-055..070 remain PLANNED / NOT EXECUTED. Grammar v1, eight-clause bound, event registry and dispatch profiles are review candidates only. No implementation, SQL, migration, grants, RLS, runtime testing or G10 activation is approved.
+TC-NOTIF-065..070 supplement TC-NOTIF-055..064. All TC-NOTIF-055..070 remain PLANNED / NOT EXECUTED. Grammar v1's exact structural profile, eight-clause bound, candidate-intent event list and dispatch profiles are review candidates only; no runtime event allowlist is admitted. No implementation, SQL, migration, grants, RLS, runtime testing or G10 activation is approved.
 
 
 ## PO-approved event-candidate specification traceability — 2026-11-24
@@ -603,3 +603,8 @@ Trace this behavior through the session-bound inspection lifecycle, Reviewer ret
 | SES-001 packed-unit ABORT | Reviewer RETURN → Inspector request → Admin/Korlap approve/reject → terminal ABORTED only on approval; rejection returns to WF-001 correction path | Two logical protected actions; exact command identities and persistence object remain unassigned; CMD-027 remains release-only; CMD-013 remains final-close only | Exact returned revision/session binding, requester != approver, scoped authority, packed-state evidence, stale-version denial, atomic claim/state/audit/idempotency, FINAL_CLOSE race | PO semantics APPROVED; technical contract CANDIDATE; physical/security/lock/QA evidence OPEN |
 
 No command, permission or physical object is admitted by this trace row.
+
+
+## F05-T1 structural grammar traceability refresh — 2026-11-25
+
+NOTIF-016 now points to NLA-L05-TDR-001 v0.1.10 §§4.2.5–4.2.5.1 and the strengthened TC-NOTIF-065..067 acceptance definitions. NOTIF-021 now points to the current TDR, NLA-L05-EVENT-SELECTOR-REGISTRY-001 v0.1.2, NLA-EVENT-REGISTRY-001 v0.1.12 and current source map. This is a specification/traceability update only. F05-T1 remains OPEN pending Engineering/Security approval and completed per-event mappings; all candidate events remain NOT ENABLED; tests remain PLANNED / NOT EXECUTED; F-04 writer certification remains 0; G9 NOT READY; G10 NOT ACTIVE.
