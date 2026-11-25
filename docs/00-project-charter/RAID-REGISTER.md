@@ -1,0 +1,157 @@
+# RAID Register — Dit. SD Inspection
+
+Status: Draft — review required  
+Baseline: Phase 0, 2026-11-23  
+Owner convention: accountable role is recorded; named individuals are not invented.
+
+## Risks
+
+| ID | Type | Description | Impact | Likelihood | Mitigation / response | Accountable role | Status |
+|---|---|---|---|---|---|---|---|
+| R-001 | Risk | Official IFP or Standing Bracket checklist/photo requirements are incomplete or differ from screenshots | High | Medium | Obtain authorized, current instrument documents; reconcile every item and obtain Product Owner sign-off before PRD freeze | Product Owner | OPEN |
+| R-002 | Risk | Legacy screenshots do not expose all edge cases, validations, or document layouts | High | High | Maintain a reference inventory and gap log; request missing screens and sample outputs; label assumptions explicitly | Product Owner | OPEN |
+| R-003 | Risk | Offline capture and later synchronization can cause duplicate claims, lost evidence, or conflicting edits | Critical | Medium | Define idempotency, local persistence, server reconciliation, conflict handling, recovery and destructive-action rules; test device-loss scenarios | CTO / Engineering Lead | OPEN |
+| R-004 | Risk | Incorrect RLS or assignment scoping exposes records across locations or roles | Critical | Medium | Threat model, deny-by-default policies, server-side authorization, negative tests, and independent policy review | CTO / Engineering Lead | OPEN |
+| R-005 | Risk | Photo/video evidence increases storage and egress beyond the cost-first operating envelope | High | Medium | Establish file limits, formats, retention, lifecycle, quotas, and usage alerts before production; keep evidence private | CTO / Engineering Lead | OPEN |
+| R-006 | Risk | Free-tier quotas or plan restrictions interrupt production operations | High | Medium | Verify current provider terms/quotas and upgrade triggers; production plan approval must precede go-live | CTO / Engineering Lead + Project Sponsor | OPEN |
+| R-007 | Risk | Report target allocation is mistaken for actual inspection activity | High | Medium | Separate actual-event facts from versioned target allocations in schema, APIs, UI, and report tests | CTO / Engineering Lead | MITIGATING |
+| R-008 | Risk | Wet-signature, BA signatory, attendance verification, or print responsibilities are ambiguous | High | Medium | Confirm authority, signatory blocks, document lifecycle, and verification responsibilities in PRD | Product Owner | OPEN |
+| R-009 | Risk | A single Inspector is assigned to overlapping work across locations | Medium | Medium | Enforce schedule-overlap validation and explicit scoped assignments; capacity is configurable from 1 to 100 (default 50), counting distinct Inspectors combined across both locations | Super Admin / Product Owner | MITIGATING |
+| R-010 | Risk | Production backup exists but restore has not been proven | Critical | Medium | Define RPO/RTO, backup schedule, restore runbook, and conduct restore drills before release | CTO / Engineering Lead | OPEN |
+| R-011 | Risk | Evidence or personal data is retained, disclosed, or deleted contrary to institutional requirements | Critical | Medium | Approve data classification, legal basis, retention schedule, legal hold, access and deletion workflow before collection | Project Sponsor / Records Owner | OPEN |
+| R-012 | Risk | Provider region, quota, billing or plan limits are unknown and may interrupt production | High | Medium | Verify actual account plan, region, quotas, overage behavior, budget owner and alert thresholds before go-live | Project Sponsor / CTO | OPEN |
+| R-015 | Risk | Batch printing may produce duplicate, missing or falsely successful print records during partial failure/retry | High | Medium | Use bounded batches, per-document outcomes, failed-only retry, immutable document-version linkage and atomic print ordinals; verify with concurrency and failure-injection tests | CTO / Engineering Lead | OPEN |
+
+## Assumptions
+
+| ID | Assumption | Validation required | Accountable role | Status |
+|---|---|---|---|---|
+| A-001 | The two initial instruments remain IFP and Standing Bracket | Confirmed by current project baseline; changes require scope approval | Product Owner | BASELINED |
+| A-002 | There are two inspection locations | Confirm exact official location names and whether fixed for the full project | Product Owner | OPEN |
+| A-003 | Inspector capacity is configurable from 1 to 100 (default 50), up to 100 people total across both locations | Confirmed by user on 2026-11-23; minimum 1, default 50, global hard maximum 100 | Product Owner | CONFIRMED |
+| A-004 | Google sign-in is the identity entry point | Confirm institutional account policy and account recovery requirements | Product Owner / Super Admin | OPEN |
+| A-005 | Supabase and Vercel are the approved platform baseline | Confirm plan eligibility, institutional procurement, quotas, and data/privacy requirements | Project Sponsor / CTO | OPEN |
+| A-006 | The supplied screenshots/workflow descriptions are reference material, not complete formal specifications | Validate against authorized source documents and sample outputs | Product Owner | OPEN |
+
+## Issues
+
+| ID | Issue | Required resolution | Accountable role | Status |
+|---|---|---|---|---|
+| I-001 | Complete official IFP checklist and photo slots are not yet validated against controlled source documents | Obtain authoritative checklist and approve exact wording, order, required/conditional status | Product Owner | OPEN |
+| I-002 | Standing Bracket checklist and photo-slot inventory may be incomplete | Obtain full source and approve exact items | Product Owner | OPEN |
+| I-003 | BA signatory blocks and signing authority are not fully specified | Confirm parties, number/order of signatories, titles, and configuration authority | Product Owner | OPEN |
+| I-004 | Attendance verification workflow still requires implementation/test evidence | Implement Korlap verifier permission scoped to assigned location; separate upload and verify actions | Engineering Lead | OPEN |
+| I-005 | Report metric contract and project closure require implementation/test evidence | Implement distinct actual counts and Super Admin final closure gates with audited reconciliation | Engineering Lead | OPEN |
+| I-006 | Approved session authority/state machine requires implementation/test evidence | Enforce Super Admin creation/configuration; scoped Korlap transitions; privileged reopen path | Engineering Lead | OPEN |
+| I-007 | Evidence limits, retention, deletion, and privacy rules are unresolved | Approve retention schedule, access, legal basis, and deletion workflow | Project Sponsor / Product Owner | OPEN |
+| I-008 | Backup/PITR and Storage object recovery capability is not verified against the actual provider plan | Verify provider contract, implement object recovery strategy, approve RPO/RTO, and pass isolated restore drill | Project Sponsor / CTO | OPEN |
+| I-009 | Production region, provider quotas, billing ownership, and environment separation are not confirmed | Complete provider capability sheet, institutional region decision, budget approval, and staging/production setup | Project Sponsor | OPEN |
+
+## Dependencies
+
+| ID | Dependency | Needed for | Accountable role | Status |
+|---|---|---|---|---|
+| D-001 | Authorized IFP and Standing Bracket instrument/checklist documents | PRD and test-case freeze | Product Owner | BLOCKED |
+| D-002 | Approved reference screenshots, sample PDFs, BA, and attendance documents | UX and document parity | Product Owner | PARTIAL |
+| D-003 | Named project sponsor, Product Owner, and operational approvers | Governance and sign-off | Project Sponsor | OPEN |
+| D-004 | Supabase/Vercel organization ownership, billing owner, and production plan decision | Deployment and operations design | Project Sponsor | OPEN |
+| D-005 | Institutional privacy, retention, and data-handling requirements | Security architecture and production approval | Project Sponsor | OPEN |
+| D-006 | Approved backup/PITR and Storage object recovery entitlement | Disaster recovery readiness | Project Sponsor / CTO | OPEN |
+| D-007 | Approved production region, provider plan, quotas, and billing owner | Production environment and go-live | Project Sponsor | OPEN |
+
+## Review rules
+
+- Review RAID at each package gate and before scope freeze.
+- A risk is not closed merely because a mitigation is documented; closure requires evidence.
+- Assumptions must be validated or explicitly accepted as residual assumptions before they become implementation contracts.
+- Any new risk, issue, or dependency receives a stable ID and an accountable role.
+- No person or organization is assigned as an owner without explicit confirmation.
+
+
+## Package R — Audit governance additions
+
+| ID | Type | Description | Impact | Response | Accountable role | Status |
+|---|---|---|---|---|---|---|
+| R-013 | Risk | Audit history may be incomplete or exposed if event writes, access controls, retention, or export governance are not approved and enforced | Critical | Implement and verify PO-approved INS-016 atomic append/fail-closed and least-privilege controls; obtain T-10 institutional classification, retention, deletion/disposition, legal-hold and network-metadata decisions before production | Project Sponsor / CTO / Records Owner | OPEN |
+
+| I-010 | Issue | Audit retention duration, legal-hold authority, audit-reader roles, export permission, and network metadata policy remain unresolved | High | Obtain institutional security, privacy, records, and legal decisions | Project Sponsor / Records Owner | OPEN |
+
+| D-008 | Dependency | PO-approved INS-016/T-15 audit policy plus technically reviewed trusted transactional command boundary and verified atomic audit integration | Audit implementation and security release gate | Product Owner / CTO | BLOCKED |
+
+
+## Package S — Cross-document audit findings
+
+| ID | Type | Description | Impact | Mitigation / response | Accountable role | Status |
+|---|---|---|---|---|---|---|
+| R-014 | Risk | Scope freeze or implementation begins while authoritative instrument, privacy, operations, security, and workflow decisions remain open | Critical | Enforce Package S freeze checklist; no implementation until blockers are approved or explicitly deferred with compensating controls | Product Owner / Project Sponsor / CTO | OPEN |
+| I-011 | Issue | Session creation/state transitions, offline device contract, report semantics, and UAT/pilot/rollback ownership remain unresolved | High | Resolve through explicit PO decisions and update all affected docs and tests | Product Owner | OPEN |
+| I-012 | Issue | CI execution, branch protection, and provider quota state were not verified in Package S | High | Inspect live repository settings and workflow runs before merge | CTO / Repository Administrator | OPEN |
+| D-009 | Dependency | Controlled instrument documents and institutional records/privacy/security approvals | Scope freeze and implementation authorization | Product Owner / Project Sponsor | BLOCKED |
+
+
+## Package T decision-closure dependencies
+
+| ID | Type | Description | Impact | Likelihood | Mitigation / response | Accountable role | Status |
+|---|---|---|---|---|---|---|---|
+| D-019 | Dependency | Package T decisions T-01..T-18 require explicit PO and, where applicable, institutional authority/evidence before the corresponding scope-freeze gates can close | High | High | Track each decision in `PACKAGE-T-PO-DECISION-CLOSURE-PACK.md`; record approve/reject/defer/need-evidence outcome; update Decision Register and affected specifications; do not infer approval | Product Owner / Institutional Authority | Open |
+| R-020 | Risk | Recommendations in Package T could be mistaken for approved policy | High | Medium | Preserve explicit state labels; only Decision Register entries with explicit approval count as approved; keep PR #2 draft and implementation unauthorized | Product Owner / Engineering Lead | Open |
+| D-021 | Dependency | Institutional source evidence, records/privacy direction and provider operational evidence are outside the documentation baseline and remain unverified | High | High | Obtain source documents and written approvals; verify actual provider settings, backup/restore and recovery ownership before production gate | Institutional Authority / Operations Owner | Blocked |
+
+
+## Package T — partial decision closure update (2026-11-23)
+
+Product Owner explicitly approved T-01=A, T-02=B, T-03=C and T-04=A, then T-05=A, T-06=A, T-07=A and T-08=A on 2026-11-23.
+- T-01 Standing Bracket source is confirmed by Product Owner: `Pemeriksaan Barang_SB.pdf`, 19 rows (6 physical + 13 accessories). Official IFP source and SB photo/evidence rules remain outstanding.
+- T-02 template configurability is PO-approved; institutional authorization of actual signatory roles/identities and final BA template remains an external dependency.
+- T-03 configurable executive-summary signature behavior is PO-approved; approved template determines whether a signature is required.
+- T-04 PDF-only initial client delivery is PO-approved; client portal is deferred from initial scope.
+- T-05 distinct actual report counts are PO-approved; report metric implementation and tests remain open.
+- T-06 Super Admin final project closure after gates/reconciliation is PO-approved; implementation and tests remain open.
+- T-07 Super Admin session creation/configuration and scoped Korlap operation are PO-approved; state/permission implementation and tests remain open.
+- T-08 Korlap attendance verification within assigned scope is PO-approved; separate permissions and verification tests remain open.
+
+The Decision Register and affected specifications have been updated and fetched back for verification. T-05 through T-09 are PO-approved; T-10 option B is PO APPROVED as the required formal institutional records/legal/privacy review path; written institutional policy remains BLOCKED. T-11 option B is PO APPROVED for current mainstream stable browsers with explicit exclusions; exact device/OS/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; institutional ownership arrangement and provider/recovery verification remain BLOCKED. T-13 is PO APPROVED option B (individual + bounded batch printing); detailed implementation and tests remain pending. T-14 is PO APPROVED option A; T-15 through T-18 have PO direction approved, while detailed design, technical review, institutional gates and verification remain OPEN/BLOCKED as applicable. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
+
+
+## Package T T-09 decision update (2026-11-23)
+
+T-09 is **PO APPROVED option B**: limited offline draft editing only after an online claim. Offline claim, approval, final submit, role/assignment changes, session administration and privileged actions are prohibited. Sync must be authenticated, idempotent, reauthorize on the server, reject stale conflicts, preserve both sides and require server-confirmed required media before final submit.
+
+Residual risks/dependencies remain OPEN/BLOCKED: browser/device support, local-data encryption/protection, shared-device logout, local retention/purge and recovery controls; institutional privacy/records approval under T-10. PO approval does not mean offline persistence is safe to activate in production. Scope freeze remains NOT READY and implementation remains NOT AUTHORIZED.
+
+
+## Package T-10 — Product Owner decision (2026-11-23)
+
+**Decision: PO APPROVED option B — formal institutional records/legal/privacy review before defining the evidence policy.** The project must obtain a documented review by the institution's authorized records, legal and privacy functions before approving data classification, permitted personal information and processing purpose, accepted evidence formats, per-file/per-inspection/per-project limits, retention periods and triggers, legal-hold authority, deletion eligibility/approval/audit, private access rules, backup/restore and post-deletion treatment, and any local/offline copy controls.
+
+**Important boundary:** this is Product Owner approval of the governance path, not institutional legal/records approval and not approval of any numeric limit, retention period, lawful basis, deletion schedule or production evidence collection. Until the authorized institutional review supplies written direction, retain all such values as OPEN/NOT SET; do not invent limits or retention durations, enable irreversible deletion, or authorize production evidence collection. T-10 remains BLOCKED for scope freeze and production activation pending that external evidence. No implementation or tests are claimed.
+
+
+## Package T-11 — Product Owner decision (2026-11-23)
+
+**Decision: PO APPROVED option B — support current mainstream browser versions with explicit exclusions.** Inspector field workflow uses current stable Chrome on Android; Korlap, Reviewer, Super Admin and Print Officer use current stable Chrome or Edge on desktop. Tablet support is conditional on responsive, camera, upload and PDF/print validation. Obsolete/unsupported browser releases, embedded in-app browsers and modified browsers are excluded. Exact OS/device minimums and browser build numbers must be recorded from actual UAT devices; this decision does not invent exact version numbers.
+
+The 100 concurrent authenticated-user load-test target remains the required acceptance profile, tested at 10/25/50/75/100 concurrent users. This is a test target, not a demonstrated production capacity or SLA. Numeric latency/error-rate SLOs remain OPEN pending workload definition, provider plan/region/quota verification and baseline measurement. No implementation, compatibility test or load test is claimed as executed.
+
+
+| R-014 | Alternative provider-ownership arrangement may lack clear legal owner, billing authority, custodian continuity or exit rights | High | Medium | Obtain institutionally approved written ownership/billing/custodian/region/exit arrangement; name primary and secondary recovery contacts; verify access and offboarding | Project Sponsor / Institutional Authority | OPEN |
+
+### T-13 mitigation — print batch integrity
+
+PO approved individual and bounded batch printing. Risk R-015 remains OPEN until per-document outcome persistence, failed-only retry, immutable document-version linkage and atomic sequence allocation are implemented and verified. The PO decision does not authorize implementation before the overall scope-freeze gate.
+
+
+### R-016 — Inspector capacity predicate drift
+
+**Risk:** UI, API and database may calculate qualifying Inspector accounts differently, allowing over-capacity or incorrect rejection. **Control:** T-14 PO-approved canonical predicate: distinct enabled login accounts with an active Inspector role grant and at least one currently effective operational Inspector assignment within governed project/session scope; deduplicate assignments/roles and exclude pending, rejected, suspended, disabled and expired-role accounts. Enforce atomically against combined cap 1–100 (default 50). **Status:** Open until design consistency, implementation and concurrency tests are verified.
+
+
+
+## T-15 — audit policy decision update (2026-11-24)
+
+Product Owner approved T-15 option A: INS-016 append-only audit events, atomic audit + critical mutation, fail-closed rollback on audit failure, actor/role/scope/action/time/correlation/idempotency/privacy-safe context, auditable sensitive evidence access/export and least-privilege audit access. Update R-013 mitigation and D-008 dependency accordingly: Product Owner policy approval is no longer pending, but D-008 remains BLOCKED until command/schema/RLS implementation design is reconciled and verified. I-010 remains OPEN for institutional retention/legal-hold/classification, audit-reader/export authority and network metadata policy under T-10. This decision does not close the risk or authorize implementation; no code/tests are claimed.
+
+
+### T-16 — Cross-project serial collision and evidence lineage risk (2026-11-24)
+
+**Risk:** A project-local unit model may create duplicate physical identities across projects, while a global serial rule may incorrectly reject a serial reused by another instrument type. Evidence may also become detached from the exact revision/version or be overwritten. **Control:** PO-approved key `(instrument_id, serial_normalized)` across projects; preserve project-scoped authorization via explicit project associations; permit reuse across different instrument types; route same-type conflicts to authorized, reasoned and audited resolution; bind immutable evidence to exact revision/version and prohibit in-place replacement. **Status:** Design reconciliation, institution-approved exception policy, implementation and tests remain OPEN.

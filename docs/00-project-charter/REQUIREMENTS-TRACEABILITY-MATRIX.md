@@ -1,0 +1,239 @@
+# Requirements Traceability Matrix — Dit. SD Inspection
+
+Status: Baseline draft — requirements require source validation  
+Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
+
+## Requirement ID convention
+
+- **GOV:** governance and project constraints.
+- **AUTH:** authentication and account lifecycle.
+- **RBAC:** roles, permissions, and assignment scope.
+- **SES:** project/session/location/team/target management.
+- **INS:** inspection and instrument behavior.
+- **EVD:** photo/video evidence.
+- **OFF:** offline operation and synchronization.
+- **REV:** review, correction, and approval.
+- **DOC:** PDF, print, BA, and attendance.
+- **RPT:** reporting and dashboards.
+- **AUD:** audit and notifications.
+- **OPS:** deployment and production operations.
+
+## Traceability baseline
+
+| Requirement ID | Requirement statement | Source / decision | Specification | Verification evidence | Status |
+|---|---|---|---|---|---|
+| GOV-001 | Release target is production | MGT-001 | Project Charter | Production readiness checklist | APPROVED |
+| GOV-002 | Optimize lifecycle cost without waiving security, privacy, integrity, backup, or reliability | MGT-002 | ADR-001, Engineering Governance | Cost and security review | APPROVED |
+| GOV-003 | Use Supabase + Vercel; GitHub for source control/CI | TECH-001, TECH-003 | ADR-001 | Architecture/deployment review | APPROVED |
+| GOV-004 | Supabase PostgreSQL is sole primary source of truth | TECH-002 | ADR-001 | Data-flow and architecture tests | APPROVED |
+| GOV-005 | Non-SaaS replacement; initial rollout includes IFP and Standing Bracket, while the platform supports future Super Admin-configured instrument types | PRD-001..003, CFG-001 | PRD; Physical Database Schema and Integrity Specification | Scope audit and configuration UAT | BASELINED; sign-off pending |
+| CAP-001 | Configurable Inspector capacity ranges from 1 to 100; default 50, total across both locations combined | Decision Register OPS-001 | RBAC and Authorization; Project, Session, Target, and Assignment Model | Capacity range, audit, and atomic concurrency tests | BASELINED |
+| AUTH-001 | Google sign-in; new accounts await approval and role assignment | Authentication decisions | RBAC and Authorization | Auth lifecycle tests | BASELINED |
+| RBAC-001 | Users may hold multiple roles only with explicit scoped assignments | RBAC decisions | RBAC and Authorization | Positive/negative authorization tests | BASELINED |
+| RBAC-002 | Operational authority is scoped by session, location, instrument, and assignment | RBAC decisions | RBAC and Authorization | RLS/API authorization tests | BASELINED |
+| RBAC-003 | Self-review and self-approval are prohibited | WF decisions | RBAC and Authorization; Inspection Lifecycle | Negative workflow tests | BASELINED |
+| SES-001 | Project targets and official assignments are centrally governed | Planning decisions | Project, Session, Target, and Assignment Model | Role, target, and audit tests | BASELINED |
+| SES-002 | Overlapping assignments across different locations are prevented | Assignment decisions | Project, Session, Target, and Assignment Model | Conflict/concurrency tests | BASELINED |
+| SES-003 | Session cannot close while configured operational/document gates remain incomplete | Session closure decisions | Project, Session, Target, and Assignment Model | Closure-gate tests | BASELINED |
+| INS-001 | Active inspections bind to frozen instrument/checklist versions | Configuration decisions | Inspection Lifecycle; instrument specs | Snapshot/version immutability tests | BASELINED |
+| INS-002 | Default OK presentation is not automatic verification | Inspection decisions | PRD; instrument specs | UI and validation tests | BASELINED |
+| INS-003 | Serial number identifies unit; duplicate active claims are prevented | Claim decisions | Inspection Lifecycle and Claims | Concurrency and uniqueness tests | BASELINED |
+| INS-004 | Required checklist/evidence validation blocks incomplete submission | Inspection decisions | Inspection Lifecycle and Claims | Positive/negative submission tests | BASELINED |
+| EVD-001 | Evidence and media state are preserved and linked to inspection revision | Evidence decisions | Offline Sync and Recovery; Inspection Lifecycle | Storage integrity and sync tests | BASELINED |
+| OFF-001 | Offline drafts synchronize idempotently with conflict detection | Offline decisions | Offline, Sync, and Recovery | Offline/retry/conflict/recovery tests | DESIGN DRAFT |
+| REV-001 | Reviewer returns work with reason; Inspector corrects and resubmits | WF-001..003 | Inspection Lifecycle and Claims | Revision lifecycle tests | BASELINED |
+| REV-002 | Submitted revisions are immutable; approved work reopens only with authority and reason | WF-004..006 | Inspection Lifecycle and Claims | Immutability/reopen tests | BASELINED |
+| DOC-001 | PDF is generated from approved revision; print events and reprints are recorded | Document decisions | Reports, Documents, Printing, Attendance, and Audit | PDF snapshot and print-event tests | BASELINED |
+| DOC-002 | Wet signatures remain in scope; digital signature is not assumed | Document decisions | Reports and Documents | Template review and UAT | BASELINED |
+| DOC-003 | BA and attendance have distinct lifecycle and authority | Document decisions and supplied BA/attendance samples | Reports, Documents, Printing, Attendance, and Audit | TC-DOC-005, TC-DOC-007, TC-DOC-008 | DETAIL OPEN |
+| DOC-004 | BA instrument summary reconciles sample, good, and defective counts from source inspections | Supplied BA sample | Reports, Documents, Printing, Attendance, and Audit | TC-DOC-006, TC-DOC-007 | DESIGN DRAFT |
+| DOC-005 | Standing Bracket serial-number annex is generated from inspection records with condition and evidence references | Supplied Standing Bracket annex sample | Standing Bracket Instrument Specification; Reports and Documents | TC-DOC-009, TC-DOC-016 | DESIGN DRAFT |
+| DOC-006 | IFP PDF preserves approved checklist, serial identities, Ya/Tdk answers, and signature area | Supplied `Pemeriksaan Barang.pdf` sample | IFP Instrument Specification; Reports and Documents | TC-DOC-017 | RECONCILED TO SAMPLE / TEMPLATE APPROVAL OPEN |
+| RPT-001 | Actual and Target reports are distinct; actual dates are never rewritten | RPT decisions | Reports, Documents, Printing, Attendance, and Audit | Reconciliation/date-integrity tests | BASELINED |
+| AUD-001 | Audit coverage and controls follow the approved append-only INS-016 policy; implementation requires separate technical and institutional gates | INS-016 / T-15 option A | Reports, Documents, Printing, Attendance, and Audit | Audit coverage/tamper tests | PO APPROVED — IMPLEMENTATION GATED |
+| OPS-002 | Production includes tested backup/restore, monitoring, deployment, and rollback | Engineering Governance | Performance and Operations Baseline | Restore drill and rollback evidence | REQUIRED; detail pending |
+| PERF-001 | System is designed and load-tested for 100 concurrent authenticated users | PRD §14 | Performance and Operations Baseline | Load test at 10/25/50/75/100 users; latency, error, resource, and integrity report | BASELINED; thresholds pending |
+| DATA-001 | PostgreSQL model preserves scoped relational integrity and immutable inspection revisions | PRD, functional decisions | Data Model and ERD | Migration, constraint, and immutability tests | DESIGN DRAFT |
+| DATA-002 | Physical schema defines instrument catalog/versioning, instrument-type-wide serial identity across projects, claims, immutable revisions, evidence links, and transaction invariants | Package L; PO-approved T-16 option B | Physical Database Schema and Integrity Specification | Global serial uniqueness, concurrency, canonical-unit association, evidence-link and immutability tests | DESIGN UPDATE REQUIRED; IMPLEMENTATION OPEN |
+| CFG-001 | Super Admin can create/configure/version supported instrument types without code changes; active sessions and history retain frozen versions | Decision Register CFG-001 | PRD; Data Model and ERD; Physical Database Schema and Integrity Specification | Instrument configuration UAT; version freeze and historical snapshot tests | APPROVED; DESIGN DRAFT |
+| SEC-001 | All exposed application data and evidence access are protected by server authorization and RLS | ADR-001, security decisions | RLS and Authorization Design; Security Threat Model | RLS matrix and negative authorization tests | DESIGN DRAFT |
+| SEC-002 | Every application table and private Storage object class has an explicit deny-by-default policy and role/scope access matrix | Package M | Table-by-Table RLS Policy Catalogue | Staging RLS, RPC, view, and Storage positive/negative test matrix | DRAFT COMPLETE; REVIEW/EXECUTION OPEN |
+| EVD-002 | Evidence uses private storage, verified upload lifecycle, and immutable originals | ADR-001, evidence decisions | Evidence Storage and Media Lifecycle | Upload, checksum, access-control, and recovery tests | DESIGN DRAFT |
+| EVD-003 | Evidence privacy, classification, retention, legal hold, deletion and recovery are controlled and institutionally approved | Package O | Evidence Privacy, Retention, Deletion and Recovery Specification | Access, hold, expiry, deletion, object recovery and audit tests | DRAFT; INSTITUTIONAL APPROVAL BLOCKED |
+| OPS-003 | Database and object backups have approved RPO/RTO and proven restore procedures | Package P | Backup, Restore and Disaster Recovery Plan | Isolated PostgreSQL + Storage restore drill and checksum reconciliation | DRAFT; PROVIDER VERIFICATION BLOCKED |
+| OPS-004 | Production region, environments, secrets, quotas, billing and provider ownership are governed | Package Q | Production Environment, Secrets and Provider Governance | Environment isolation, secret scan, quota sheet, deployment/rollback and account review | DRAFT; SPONSOR APPROVAL BLOCKED |
+| API-001 | Critical commands are idempotent and transactionally enforce claims, submission, approval, and capacity | Functional decisions | API and Transaction Contracts | Duplicate/retry/concurrency/transaction tests | DESIGN DRAFT |
+| API-002 | Every privileged mutation executes through a trusted Vercel route and narrowly scoped PostgreSQL command boundary; browser direct DML is denied | Package N | Privileged Command Boundary and Transaction Specification | Forged-actor, direct-DML, RPC grant, and concurrency tests | DRAFT COMPLETE; APPROVAL OPEN |
+
+## Instrument-specific traceability (pending official source validation)
+
+| Requirement ID | Instrument | Requirement area | Known source coverage | Verification plan | Status |
+| IFP-001 | IFP | Checklist categories and 49 checklist statements across five categories | Reconciled against supplied two-page `Pemeriksaan Barang.pdf` sample report and legacy screenshots | Confirm controlled authority/version and current validity; retain exact text/order from sample | RECONCILED TO SAMPLE / AUTHORITY OPEN |
+| IFP-002 | IFP | Ten identified photo-slot labels | Legacy reference screenshots; sample PDF does not establish photo-slot completeness or mandatory status | Confirm full slot list, required rules, exceptions, and PDF placement | PARTIAL / COMPLETENESS OPEN |
+| BRK-001 | Standing Bracket | Checklist categories and item list | 19 visible checklist rows from supplied screenshots; serial-number annex sample separately reconciled; complete authoritative list not established | Confirm full checklist, grouping, text, and response rules | PARTIAL / SOURCE VALIDATION OPEN |
+| BRK-002 | Standing Bracket | Five identified photo-slot labels | Legacy reference descriptions; completeness/mandatory status unverified | Verify complete list and required rules | DRAFTED / SOURCE VALIDATION OPEN |
+| PRD-001 | Product | Product scope, journeys, functional/non-functional requirements | PRD v0.1.0 | Product Owner review | DRAFTED / REVIEW REQUIRED |
+| AC-001 | Product | Observable acceptance criteria | Acceptance Criteria v0.1.0 | Map to test cases and UAT evidence | DRAFTED / REVIEW REQUIRED |
+
+## Instrument verification matrix
+
+| ID | Requirement | Specification | Verification | Status |
+|---|---|---|---|---|
+| QA-INS-001 | Every identified IFP checklist item has stable ID and category-based verification | IFP Instrument Specification | TC-IFP-CHK-001..004; Instrument Requirements Verification Matrix | DESIGN DRAFT |
+| QA-INS-002 | IFP model-specific specification fields are verified against frozen configuration | IFP Instrument Specification | TC-IFP-SP-001 | DESIGN DRAFT |
+| QA-INS-003 | IFP evidence slots are verified without assuming unapproved mandatory status | IFP Instrument Specification | TC-IFP-PH-001 | DESIGN DRAFT |
+| QA-INS-004 | All 19 visible Standing Bracket rows have provisional trace IDs and test coverage | Standing Bracket Instrument Specification | TC-BRK-CHK-001..002 | PARTIAL / SOURCE VALIDATION OPEN |
+| QA-INS-005 | Standing Bracket evidence labels have test coverage without assuming completeness | Standing Bracket Instrument Specification | TC-BRK-PH-001 | PARTIAL / SOURCE VALIDATION OPEN |
+| QA-INS-006 | Instrument versioning, historical snapshots, serial handling, concurrency, and PDF parity are verified | Instrument specifications; architecture | TC-INSTR-001..008 | DESIGN DRAFT |
+
+## Package C design artifacts
+
+- `docs/03-functional-design/RBAC-AND-AUTHORIZATION.md`
+- `docs/03-functional-design/PROJECT-SESSION-AND-ASSIGNMENT-MODEL.md`
+- `docs/03-functional-design/INSPECTION-LIFECYCLE-AND-CLAIMS.md`
+- `docs/03-functional-design/OFFLINE-SYNC-AND-RECOVERY.md`
+- `docs/03-functional-design/REPORTS-DOCUMENTS-AND-AUDIT.md`
+
+All are design drafts, not formal Product Owner approvals. Open decisions are explicitly retained in each document.
+
+## Package O/P/Q — Privacy, recovery, and production operations
+
+- `docs/02-architecture/EVIDENCE-PRIVACY-RETENTION-DELETION-AND-RECOVERY.md`
+- `docs/02-architecture/BACKUP-RESTORE-AND-DISASTER-RECOVERY-PLAN.md`
+- `docs/02-architecture/PRODUCTION-ENVIRONMENT-SECRETS-AND-PROVIDER-GOVERNANCE.md`
+
+These documents define proposed controls and release gates. Retention periods, RPO/RTO, provider plans/quotas, region, and named operational owners remain unapproved or unverified.
+
+## Package L/M/N — Database integrity, RLS, and trusted command artifacts
+
+- `docs/02-architecture/PRIVILEGED-COMMAND-BOUNDARY-AND-TRANSACTION-SPECIFICATION.md`
+
+Package N proposes the Vercel route + caller-JWT PostgreSQL command-function pattern. This is not yet approved or implemented.
+
+## Package L/M — Database integrity and authorization policy artifacts
+
+- `docs/02-architecture/PHYSICAL-DATABASE-SCHEMA-AND-INTEGRITY-SPECIFICATION.md`
+- `docs/02-architecture/TABLE-BY-TABLE-RLS-POLICY-CATALOGUE.md`
+
+These are design artifacts only. They do not constitute migrations, deployed RLS, or executed security tests.
+
+## Package D technical architecture artifacts
+
+- `docs/02-architecture/SYSTEM-ARCHITECTURE.md`
+- `docs/02-architecture/DATA-MODEL-AND-ERD.md`
+- `docs/02-architecture/RLS-AND-AUTHORIZATION-DESIGN.md`
+- `docs/02-architecture/EVIDENCE-STORAGE-AND-MEDIA-LIFECYCLE.md`
+- `docs/02-architecture/API-AND-TRANSACTION-CONTRACTS.md`
+- `docs/02-architecture/SECURITY-THREAT-MODEL.md`
+- `docs/02-architecture/PERFORMANCE-AND-OPERATIONS-BASELINE.md`
+
+Package D is a technical design draft, not an implementation authorization. Physical schema, provider plans, offline storage, media limits, numeric SLOs, and operations ownership remain subject to review and approval.
+
+## Package K — Security, Data Integrity & Production Readiness Audit
+
+- `docs/00-project-charter/PACKAGE-K-SECURITY-DATA-INTEGRITY-PRODUCTION-READINESS-AUDIT.md`
+
+Audit outcome: documentation review completed; security posture not tested/certified; production readiness not ready.
+
+## Change-control rules
+
+- Every new requirement receives a stable ID; IDs are never reused.
+- Every approved requirement must link to an authorized source or decision.
+- Every implementation PR references requirement IDs.
+- Every implemented requirement links to code paths/PRs; verified requirements link to test results or UAT evidence.
+- Changes to approved requirements require impact analysis across UX, data, authorization, audit, migration, reporting, tests, and operations.
+- Unknown source details remain OPEN; do not fill gaps with assumptions.
+
+## Package E — UX and Quality traceability
+
+| ID | Requirement | Design / Test Artifact | Verification | Status |
+| UX-001 | Role-based information architecture and scoped navigation | Information Architecture and Navigation | Role-based navigation and scope tests | DESIGN DRAFT |
+| UX-002 | Mobile-first inspection flows with explicit save/sync states | Screen Flows and Wireframe Specification | Mobile E2E and usability UAT | DESIGN DRAFT |
+| UX-003 | Consistent responsive and accessible UI components | Design System and Responsive UX | Responsive, keyboard, contrast, and screen-reader checks | DESIGN DRAFT |
+| QA-001 | Layered quality gates for functional, security, data integrity, and recovery | Test Strategy and Quality Gates | CI and release evidence | DESIGN DRAFT |
+| QA-002 | Traceable test cases for authorization, capacity, lifecycle, offline, documents, and reporting | Test Case Catalog and UAT | Executed test records and Product Owner sign-off | CATALOG DRAFT |
+
+## Package R — Audit event catalogue and governance
+
+| AUD-001 | Material business, security, and governance actions use a canonical event envelope with actor, active role, scope, resource, outcome, and timestamp | Audit Event Catalogue and Governance | AUD-T01..T12 | DESIGN DRAFT; T-15 PO policy approved, technical review and implementation pending |
+| AUD-002 | Critical state changes and their audit event commit atomically; audit append failure rolls back the protected mutation | Audit Event Catalogue and Governance; Privileged Command Boundary | AUD-T01..T03 | DESIGN DRAFT |
+| AUD-003 | Audit history is append-only for application roles; corrections use compensating events | Audit Event Catalogue and Governance; RLS Catalogue | AUD-T03, AUD-T11 | DESIGN DRAFT |
+| AUD-004 | Audit payloads exclude secrets, signed URL tokens, raw media, and unnecessary personal data | Audit Event Catalogue and Governance; Evidence Privacy and Retention | AUD-T09 | DESIGN DRAFT |
+| AUD-005 | Audit access/export, legal holds, retention disposition, and security administration are permissioned and audited | Audit Event Catalogue and Governance | AUD-T08, AUD-T10 | DESIGN DRAFT; institutional approval pending |
+
+New source evidence: the 23-November Standing Bracket form and 20-November BA are reconciled in the Standing Bracket Instrument Specification and Instrument Requirements Verification Matrix. The Product Owner confirmed the 23-November document as the official Standing Bracket instrument source on 2026-11-23. Its 19-row checklist (6 physical + 13 accessories) is the project baseline; the earlier screenshot transcription remains a separate observation to be mapped without silent merging. The BA sample supports serial-annex/count-reconciliation requirements but does not approve signatory policy.
+
+## Package S — Final audit disposition
+
+| ID | Requirement / gate | Audit artifact | Verification / approval evidence | Status |
+| GOV-005-S | Cross-document baseline must be reconciled before scope freeze | Package S — Final Cross-Document Audit and Scope-Freeze Readiness | Approved closure of S-01..S-12 and completed scope-freeze checklist | NOT READY |
+| INS-S-001 | Standing Bracket controlled source checklist and item mapping must be approved | Standing Bracket Instrument Specification; Package S | Controlled source/version and Product Owner/institution approval | BLOCKED |
+| DOC-S-001 | BA signatory, attendance verification, and report reconciliation authority must be approved | Reports, Documents, Printing, Attendance, and Audit Design; Package S | Approved document governance and UAT | BLOCKED |
+| OFF-S-001 | Offline/device/local data protection contract must be approved | Offline Sync and Recovery; Package S | Approved device matrix, retention, encryption, conflict and recovery acceptance | BLOCKED |
+| AUD-S-001 | T-10 institutional classification, retention, deletion/disposition, legal-hold and network-metadata controls require authorized institutional approval | T-10 decision; Evidence Privacy/Retention specification | Written institutional approval and controlled policy record | BLOCKED |
+| OPS-S-001 | Provider, region, quota, billing, backup and restore capability must be verified | Packages O/P/Q; Package S | Provider capability sheet, approved budget/region, successful restore drill | BLOCKED |
+
+## Package T decision traceability
+
+The detailed PO decision closure register is maintained in `docs/00-project-charter/PACKAGE-T-PO-DECISION-CLOSURE-PACK.md`. Decision IDs T-01 through T-18 cover authoritative instrument masters, BA signatories, executive-summary signature, client report delivery, actual report metrics, project closure, session authority, attendance verification, offline scope, evidence privacy/retention, device/performance baseline, provider operations, print workflow, Inspector capacity semantics, INS-016 audit policy, serial/evidence integrity, CFG-001 publication governance and privileged command boundary.
+
+These IDs are decision-tracking references, not implementation-complete requirements. T-01 through T-04 have explicit PO outcomes recorded in the Decision Register and detailed Package T update; T-01 Standing Bracket source is confirmed; official IFP source and SB photo/evidence rules remain outstanding. T-02 institutional signatory authority remains outstanding. T-05 through T-09 are PO APPROVED (2026-11-23); T-10 option B is PO APPROVED as a formal institutional records/legal/privacy review path; written institutional policy remains BLOCKED. T-11 option B is PO APPROVED for current mainstream stable browsers with explicit exclusions; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED as an alternative provider-ownership arrangement subject to formal institutional definition and approval; actual ownership, billing, region, provider capability and recovery evidence remain BLOCKED. T-13 is PO APPROVED option B (individual + bounded batch printing); T-14 is PO APPROVED option A; T-15 is PO APPROVED option A; T-16 is PO APPROVED option B (2026-11-24); T-17 detailed publication governance and T-18 privileged command boundary remain OPEN/BLOCKED. T-09 option B approves limited offline editing only for already claimed drafts; device/local-data safeguards remain open. Each decision must be reconciled into the relevant requirement/specification and verification case. PO approval does not replace institutional approval or implementation verification.
+
+## Package T — accepted PO decisions and traceability (2026-11-23)
+
+| Decision | Approved direction | Traceability follow-up | Residual gate |
+|---|---|---|---|
+| T-01 | Official approved institutional source documents are authoritative master; SB source confirmed by PO | Trace SB's 19 official rows to source and preserve provenance; reconcile earlier screenshot; confirm IFP source and SB photo rules | PARTIALLY CLOSED: IFP source and SB photo/evidence rules remain OPEN |
+| T-02 | BA signatory blocks configurable per approved template | Verify variable party count, organization, role/title, order and required/optional behavior | Institutional signatory authority and approved template remain OPEN |
+| T-03 | Executive-summary signature configurable per template; default none unless required | Verify configured signature/no-signature variants in PDF tests | PO direction closed; institutional template governs |
+| T-04 | PDF-only client delivery for initial release; portal deferred | Verify permission-controlled PDF access/distribution and mark portal out of initial scope | PO direction closed; portal needs change request |
+| T-05 | Distinct actual counts: Inspected, Submitted, Approved, Completed | Verify metric definitions, timestamp/filter labels and Completed formula | PO APPROVED; implementation/test pending |
+| T-06 | Super Admin final project closure after gates and actual/target reconciliation | Test all blockers, explicit reason/confirmation, audit, and no date auto-close | PO APPROVED; implementation/test pending |
+| T-07 | Super Admin creates/configures sessions; Korlap transitions within scope/permissions; CLOSED terminal normally | Test role/scope/state transitions and privileged reopening | PO APPROVED; implementation/test pending |
+| T-08 | Korlap verifies attendance within assigned scope; upload never auto-verifies | Test separated permissions, scope, audit and verification state | PO APPROVED; implementation/test pending |
+| T-09 | Option B: offline editing only for already claimed drafts; no offline claim/approval/final submit/admin | Verify idempotent sync, server authorization recheck, visible conflict preservation, pending evidence gating and prohibited offline commands | PO APPROVED; device/local-data safeguards and implementation/tests pending |
+
+T-01 through T-08 are partial decision closures, not blanket closure of Package S. Remaining decisions and evidence dependencies remain active. Do not mark scope freeze ready based on these partial closures.
+
+## Package T-10 — Product Owner decision (2026-11-23)
+
+**Decision: PO APPROVED option B — formal institutional records/legal/privacy review before defining the evidence policy.** The project must obtain a documented review by the institution's authorized records, legal and privacy functions before approving data classification, permitted personal information and processing purpose, accepted evidence formats, per-file/per-inspection/per-project limits, retention periods and triggers, legal-hold authority, deletion eligibility/approval/audit, private access rules, backup/restore and post-deletion treatment, and any local/offline copy controls.
+
+**Important boundary:** this is Product Owner approval of the governance path, not institutional legal/records approval and not approval of any numeric limit, retention period, lawful basis, deletion schedule or production evidence collection. Until the authorized institutional review supplies written direction, retain all such values as OPEN/NOT SET; do not invent limits or retention durations, enable irreversible deletion, or authorize production evidence collection. T-10 remains BLOCKED for scope freeze and production activation pending that external evidence. No implementation or tests are claimed.
+
+## T-11 traceability update
+| Requirement | PO decision | Verification | Status |
+| Supported browser baseline | T-11 option B: current stable Chrome Android for Inspector; current stable Chrome/Edge desktop for other operational/admin roles; explicit exclusions | TC-COMP-001..006 | PO APPROVED; execution pending |
+| Tablet compatibility | Conditional on responsive, camera, upload and PDF/print validation | TC-COMP-004 | Validation pending |
+| Concurrent load profile | 100 concurrent authenticated users; staged 10/25/50/75/100 | TC-LOAD-001..002 | Target approved; execution pending |
+| Numeric performance SLO | Set only after workload/provider verification and baseline measurement | Performance baseline and load evidence | OPEN |
+
+| OPS-005 | Provider ownership arrangement must be institutionally defined and approved; account/billing owners, custodians, region authority and recovery roles must be evidenced | Package T-12; Package Q/P | Signed ownership/governance record, provider capability sheet, named recovery contacts, successful PostgreSQL + Storage restore drill | PO option C APPROVED; institutional/provider verification BLOCKED |
+
+### T-13 — Print workflow decision (PO approved 2026-11-23)
+
+T-13 option B is PO APPROVED. Traceable acceptance requirements AC-DOC-008 through AC-DOC-012 and test cases TC-PRINT-001 through TC-PRINT-007 cover permissioned individual/batch print, per-document outcomes, failed-only retry, atomic reprint sequence, exact document-version linkage, and the boundary that application print events do not prove physical paper output. Detailed implementation and test execution remain pending.
+
+
+T-13 option B is PO APPROVED. Traceable acceptance requirements AC-DOC-008 through AC-DOC-012 and test cases TC-DOC-009 through TC-DOC-015 cover permissioned individual/batch print, per-document outcomes, failed-only retry, atomic reprint sequence, exact document-version linkage, and the boundary that application print events do not prove physical paper output. Detailed implementation and test execution remain pending.
+
+
+## T-14 traceability — Inspector capacity predicate (PO-approved 2026-11-24)
+
+Trace the canonical predicate across UI, server commands, PostgreSQL transactions, authorization and QA: distinct enabled login account + active Inspector role grant + at least one currently effective operational Inspector assignment in governed project/session scope. Exclude pending, rejected, suspended, disabled and expired-role accounts; deduplicate across assignments/roles. Preserve combined cap 1–100, default 50, atomic enforcement, invalid-value rejection and no silent deactivation on cap reduction. Test execution remains pending.
+
+
+## Registration and Super Admin staffing traceability
+
+Trace registration → pending account → Super Admin approval → role/permission/scope grant → Super Admin team membership and operational assignment. Registration alone grants no access and no capacity eligibility. Super Admin controls team count and team staffing; self-assignment is prohibited. Verification must cover UI, API, database constraints, RLS/privileged commands and audit events. Inspector cap eligibility remains the T-14 distinct enabled account + active Inspector role + effective operational assignment predicate.
+
+
+
+## T-15 traceability — approved INS-016 audit policy (2026-11-24)
+
+Trace critical business/security/governance commands to an append-only audit event committed atomically with the state mutation. Audit-write failure must fail closed and roll back the mutation. Trace actor, active role, scope, action/event, timestamp, correlation/idempotency reference and privacy-safe change context through command contract, database schema, RLS/grants and QA. Sensitive evidence access/export must be auditable; ordinary application roles cannot alter or delete audit events; audit read/export is least-privilege. T-10 institutional decisions still govern classification, retention, deletion/disposition, legal hold and network metadata. PO approval is recorded; implementation, institutional approvals and test execution remain pending.
+
+
+## T-16 traceability update (PO-approved option B, 2026-11-24)
+
+Trace T-16 through PRD INS-002, canonical unit identity in the ERD, physical unique key `(instrument_id, serial_normalized)` across all projects, claim-unit transaction behavior, controlled cross-project duplicate resolution, immutable evidence-to-revision/instrument-version linkage, audit events, and TC-UNIT-016/TC-EVD-016 tests. Different instrument types may reuse the same serial. Project authorization must remain scoped even where the canonical unit is referenced by multiple projects. All design reconciliation, implementation and test execution remain pending.
