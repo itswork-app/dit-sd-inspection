@@ -1,11 +1,11 @@
 # L05 Event-to-Selector Registry — Candidate v1
 
 **Document ID:** NLA-L05-EVENT-SELECTOR-REGISTRY-001  
-**Version:** 0.1.1  
+**Version:** 0.1.2  
 **Status:** STATIC CROSSWALK / REVIEW CANDIDATE — NOT APPROVED, NO EVENT ENABLED  
 **Date:** 2026-11-25  
 **Baseline:** `main` at `78688451524900cc58343d05469251806ce415de`  
-**Authority:** AGENTS.md v1.2.3; Decision Register POQ-01 and POQ-04; NLA-L05-TDR-001 v0.1.9; NLA-EVENT-REGISTRY-001 v0.1.11; NLA-EVENT-TRIAGE-001 v0.1.3; L05 source-event map v0.1.1; L05 writer matrix v0.1.5.
+**Authority:** AGENTS.md v1.2.3; Decision Register POQ-01 and POQ-04; NLA-L05-TDR-001 v0.1.10; NLA-EVENT-REGISTRY-001 v0.1.11; NLA-EVENT-TRIAGE-001 v0.1.3; L05 source-event map v0.1.1; L05 writer matrix v0.1.5.
 
 ## 1. Purpose and decision boundary
 
@@ -251,3 +251,17 @@ No test may be described as passing from this registry. Runtime/concurrency exec
 5. Update NREG rows, the writer matrix, command lock manifests, RTM, DGA and QA only after accountable-owner review; keep every row NOT ENABLED until all admission evidence is complete.
 
 No SQL, migration, grant, RLS, source code, provider change, live database inspection, runtime test, deployment or production data operation is performed or authorized by this document.
+
+
+## 12. F05-T1 structural grammar hardening cross-reference — 2026-11-25
+
+NLA-L05-TDR-001 v0.1.10 §4.2.5.1 now specifies a more precise **candidate-only** structural profile for grammar v1: exact object keys and JSON types, duplicate-key rejection before lossy parsing, null/missing behavior, participant/scope cardinality failures, OR and conjunction semantics, exact identifier matching, deterministic clause ordering and duplicate-clause equality, and the distinction between PO-approved candidate-intent tokens and a runtime-publishable event allowlist.
+
+This clarification does not fill the unresolved per-event bindings in this crosswalk. In particular:
+- no canonical role key or scope ID is admitted;
+- no NREG row receives an approved ROLE_SCOPE or EVENT_PARTICIPANT clause;
+- no ACTOR/TARGET/AFFECTED_MEMBER source field or SOURCE_EVENT_SCOPE cardinality is approved;
+- no candidate identity key, scope serialization, policy digest or physical snapshot representation is admitted;
+- the eleven PO-approved tokens remain specification/review candidates only and all remain NOT ENABLED.
+
+F05-T1 remains OPEN pending Engineering/Security review, canonical role/scope registries, exact per-event mappings and dependency columns, a machine-reviewable positive/negative validation corpus, and synchronized RTM/RAID/QA evidence. F-04 writer certification remains 0; resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; G9 NOT READY; G10 NOT ACTIVE. No implementation, SQL, migration, grants/RLS, live DB, runtime test or deployment is authorized.
