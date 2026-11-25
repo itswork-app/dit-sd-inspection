@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.6.9
+Version: 0.7.0
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -848,7 +848,7 @@ These cases supplement TC-NOTIF-055..059. They are derived from the PO-approved 
 
 ### F-05 selector grammar and event-specific dispatch profile tests — 2026-11-24
 
-These acceptance cases target TDR v0.1.10 §4.2.5–4.2.6. The F05-T1 structural profile is still a review candidate, not an approved runtime contract. All cases remain PLANNED / NOT EXECUTED.
+These acceptance cases target TDR v0.1.11 §4.2.5–4.2.6.1. The F05-T1 structural profile is still a review candidate, not an approved runtime contract. All cases remain PLANNED / NOT EXECUTED.
 
 | Test ID | Scenario | Expected result / invariant | Status |
 |---|---|---|---|
@@ -856,10 +856,10 @@ These acceptance cases target TDR v0.1.10 §4.2.5–4.2.6. The F05-T1 structural
 | TC-NOTIF-066 | Submit nested logic, NOT, wildcard, arbitrary JSON path, SQL/expression text, client principal/scope IDs, unknown/missing keys, duplicate JSON object keys, null required values, wrong JSON types, unknown version or more than eight clauses | Parser/validator rejects before lossy object-map conversion; no policy version becomes effective; no default, coercion, partial selector or last-key-wins behavior; sanitized rejection is auditable | PLANNED / NOT EXECUTED |
 | TC-NOTIF-067 | Evaluate ACTOR/TARGET/AFFECTED_MEMBER and SOURCE_EVENT_SCOPE bindings with missing, null, ambiguous, multi-valued, cross-parent or untrusted event data | Publication rejects incomplete per-event mapping; participant must resolve to one trusted canonical principal; scope cardinality must be explicitly declared; no client identity, inferred actor, default scope or partial outbox/snapshot is accepted | PLANNED / NOT EXECUTED |
 | TC-NOTIF-068 | Event token is composite, conditional, unknown, prefix-matched or absent from the exact event registry | No wildcard/prefix fallback; ambiguous composite token is not enabled; transaction fails atomically without a partial candidate snapshot | PLANNED / NOT EXECUTED |
-| TC-NOTIF-069 | Role-revocation, assignment-member-end and project/session-close dispatch | Each pinned dispatch profile follows its transition-specific rule; no blanket revoked-role/current-membership/active-parent predicate suppresses the notice; opening source resource still requires independent authorization | PLANNED / NOT EXECUTED |
+| TC-NOTIF-069 | Validate event-specific dispatch profiles for all eleven NREG candidates, including role-revoke/self-revoke, account rejection, assignment-member end and project/session closure; include unresolved-row negative controls | Only an approved exact event profile is usable; POQ-04 transition behavior is preserved; unresolved participant/profile rows fail closed; no blanket revoked-role/current-membership/active-parent predicate, implicit recipient substitution or resource-access grant | PLANNED / NOT EXECUTED |
 | TC-NOTIF-070 | Multiple matching clauses select same recipient with overlapping/different authorized scopes | One canonical recipient candidate is produced; only scopes explicitly selected by matching clauses are retained; deduplication and scope serialization are deterministic and cannot widen authorization | PLANNED / NOT EXECUTED |
 
-**Execution control:** TC-NOTIF-065..070 require Security/Engineering approval of grammar v1, PO approval only for any product-semantic change, exact event registry, dispatch profiles and canonical candidate/scope serialization. The candidate-intent list is not a runtime allowlist. Runtime execution requires G10 activation and the authorized isolated PostgreSQL environment. No test result is implied.
+**Execution control:** TC-NOTIF-065..070 require Security/Engineering approval of grammar v1 and event-specific dispatch profiles, PO approval only for any product-semantic change, exact event registry, and canonical candidate/scope serialization. The candidate-intent list is not a runtime allowlist. Runtime execution requires G10 activation and the authorized isolated PostgreSQL environment. No test result is implied.
 
 
 ### PRD scope and notification-domain guard test — 2026-11-24

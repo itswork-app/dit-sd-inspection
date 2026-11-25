@@ -1,10 +1,10 @@
 # Notification Event Registry — PO-Approved Specification Candidates
 
 **Document ID:** NLA-EVENT-REGISTRY-001  
-**Version:** 0.1.12  
+**Version:** 0.1.13  
 **Status:** DRAFT — PO INTENT APPROVED FOR SPECIFICATION/REVIEW ONLY; ALL ROWS UNRESOLVED / NOT ENABLED; NREG-001..011 PARTIAL STATIC REVIEW ONLY  
 **Date:** 2026-11-25  
-**Baseline:** `main` at `1c26ca1cbb2e38111695c23706ffca881c20b669`  
+**Baseline:** `main` at `f3248037c5754ca537c033422d3e247be34f931d`  
 **Authority:** PRD-001, Decision Register PO event-candidate decision (2026-11-24), NLA-EVENT-TRIAGE-001 v0.1.3, CMD source-event map. This document does not supersede them.
 
 ## 1. Purpose and binding interpretation
@@ -117,13 +117,20 @@ This checkpoint does not approve any recipient, role, permission grant, event sc
 
 ## 9. L05 event-to-selector crosswalk intake — 2026-11-25
 
-[NLA-L05-EVENT-SELECTOR-REGISTRY-001](L05-EVENT-TO-SELECTOR-REGISTRY-001.md) v0.1.2 is the companion static crosswalk for all CMD-001–040 declarations and the eleven first-batch candidate rows. It records candidate selector kinds, unresolved trusted participant/scope mappings, POQ-04 dispatch invariants and the logical eligibility-writer dependency domains.
+[NLA-L05-EVENT-SELECTOR-REGISTRY-001](L05-EVENT-TO-SELECTOR-REGISTRY-001.md) v0.1.3 is the companion static crosswalk for all CMD-001–040 declarations and the eleven first-batch candidate rows. It records candidate selector kinds, unresolved trusted participant/scope mappings, POQ-04 dispatch invariants and the logical eligibility-writer dependency domains.
 
 This cross-reference does not change any NREG row. NREG-001..011 remain PARTIAL STATIC REVIEW / UNRESOLVED / NOT ENABLED; 0 technically admitted and 0 enabled. No event, selector, recipient, role, permission, scope, channel, schema or dispatch profile is approved by the crosswalk. F-05/F-04/F-03/F-07 remain OPEN; resolver 0/40; application locks 0/50; global graph NOT PROVEN ACYCLIC; G9 NOT READY; G10 NOT ACTIVE.
 
 
 ## 10. F05-T1 structural grammar clarification — 2026-11-25
 
-NLA-L05-TDR-001 v0.1.10 §4.2.5.1 clarifies the candidate grammar's exact structure, closed-key/type validation, duplicate JSON-key rejection, null/missing semantics, trusted participant/scope cardinality, canonical clause ordering and fail-closed behavior. NLA-L05-EVENT-SELECTOR-REGISTRY-001 v0.1.2 cross-references that specification.
+NLA-L05-TDR-001 v0.1.11 §4.2.5.1 clarifies the candidate grammar's exact structure, closed-key/type validation, duplicate JSON-key rejection, null/missing semantics, trusted participant/scope cardinality, canonical clause ordering and fail-closed behavior. NLA-L05-EVENT-SELECTOR-REGISTRY-001 v0.1.3 cross-references that specification.
 
 This does not alter any NREG row or convert PO specification intent into technical admission. All eleven rows remain PARTIAL_STATIC_REVIEW; canonical event contract, recipient mapping, selector, dispatch profile and publication remain UNRESOLVED / NOT ENABLED. Candidate-intent tokens are not a runtime allowlist. No role/scope IDs, participant fields, per-event clause allowlists, dependency columns, policy digest, snapshot key or physical schema are approved. F05-T1 and F-04 remain OPEN; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 11. F05-T2 event-specific dispatch review — 2026-11-25
+
+NLA-L05-TDR-001 v0.1.11 §4.2.6.1 adds a candidate-only dispatch review matrix for NREG-001..011. It records POQ-01 mandatory dispatch revalidation and POQ-04 transition-specific guards, while preserving unresolved participant, source, current-scope and parent-state profile questions.
+
+No row is technically admitted and no dispatch profile is approved. All eleven rows remain PARTIAL_STATIC_REVIEW / UNRESOLVED / NOT ENABLED. In particular, the matrix does not infer recipients for assignment creation/change, inspection submit/return/approve/reopen, and does not introduce universal current-role/current-membership/active-parent predicates. F05-T2 remains OPEN pending Security/Engineering approval and the per-row evidence in §5.

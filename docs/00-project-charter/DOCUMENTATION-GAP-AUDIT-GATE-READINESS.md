@@ -1,10 +1,10 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.95
+**Version:** 1.11.97
 **Audit date:** 2026-11-25  
 **Branch reviewed:** `main`  
-**Reviewed HEAD:** `1c26ca1cbb2e38111695c23706ffca881c20b669` (post-PR #13 main baseline, 2026-11-25)  
+**Reviewed HEAD:** `f3248037c5754ca537c033422d3e247be34f931d` (post-PR #14 main baseline, 2026-11-25)  
 **Authority:** Master Implementation Blueprint MIB-001  
 **Status:** AUDIT IN PROGRESS — GATE IMPLEMENTATION NOT READY  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
@@ -966,3 +966,12 @@ The controlled updates are synchronized in NLA-EVENT-REGISTRY-001 v0.1.12, NLA-L
 **F05-T1 disposition: OPEN — CANDIDATE SPECIFICATION ONLY.** This static clarification does not approve canonical role/scope registries, any per-event selector clause, participant source field, SOURCE_EVENT_SCOPE cardinality, dependency column, candidate identity key, policy digest, physical snapshot representation or event publication. The eleven NREG candidates remain UNRESOLVED / NOT ENABLED. Engineering/Security review and a machine-reviewable validation corpus are still required; PO review is required only if approved product semantics would change.
 
 F-04 remains OPEN; no writer is certified; resolver certification 0/40; application lock certification 0/50; global lock graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE; production readiness NOT VERIFIED. No code, SQL, migration, grants/RLS, live database, runtime test, provider change, deployment or production data operation was performed or authorized.
+
+
+## F05-T2 event-specific dispatch matrix — candidate specification (2026-11-25)
+
+NLA-L05-TDR-001 v0.1.11 §4.2.6.1 adds an eleven-row candidate dispatch review matrix. It separates POQ-01 mandatory current account/channel/consent/security revalidation from event-specific current-role/scope/parent predicates; preserves POQ-04's five approved transition outcomes; and leaves unresolved event source, recipient and profile questions explicit for NREG-001/006/008/009/010/011.
+
+Synchronized references: NLA-L05-EVENT-SELECTOR-REGISTRY-001 v0.1.3, NLA-EVENT-REGISTRY-001 v0.1.13, RTM-001 v0.1.29 and QA Catalogue v0.7.0. TC-NOTIF-069 now includes all eleven NREG profiles and unresolved-row fail-closed controls. All QA remains PLANNED / NOT EXECUTED.
+
+**F05-T2 disposition: OPEN — CANDIDATE MATRIX ONLY.** No event-specific dispatch profile is approved; all eleven NREG candidates remain UNRESOLVED / NOT ENABLED. No recipient, role, scope, suppression reason, retry classification, current-scope predicate or resource permission is inferred. F05-T3/T4/T5 and F-04 remain OPEN; writer certification 0; resolver certification 0/40; application lock certification 0/50; global lock graph NOT PROVEN ACYCLIC; snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE. RAID cross-reference refresh remains outstanding. No code, SQL, migration, grants/RLS, live DB, runtime test, provider change, deployment or data mutation was performed or authorized.

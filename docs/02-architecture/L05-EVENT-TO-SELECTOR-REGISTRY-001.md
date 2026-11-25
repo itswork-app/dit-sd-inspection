@@ -1,11 +1,11 @@
 # L05 Event-to-Selector Registry — Candidate v1
 
 **Document ID:** NLA-L05-EVENT-SELECTOR-REGISTRY-001  
-**Version:** 0.1.2  
+**Version:** 0.1.3  
 **Status:** STATIC CROSSWALK / REVIEW CANDIDATE — NOT APPROVED, NO EVENT ENABLED  
 **Date:** 2026-11-25  
-**Baseline:** `main` at `1c26ca1cbb2e38111695c23706ffca881c20b669`  
-**Authority:** AGENTS.md v1.2.3; Decision Register POQ-01 and POQ-04; NLA-L05-TDR-001 v0.1.10; NLA-EVENT-REGISTRY-001 v0.1.12; NLA-EVENT-TRIAGE-001 v0.1.3; L05 source-event map v0.1.1; L05 writer matrix v0.1.5.
+**Baseline:** `main` at `f3248037c5754ca537c033422d3e247be34f931d`  
+**Authority:** AGENTS.md v1.2.3; Decision Register POQ-01 and POQ-04; NLA-L05-TDR-001 v0.1.11; NLA-EVENT-REGISTRY-001 v0.1.13; NLA-EVENT-TRIAGE-001 v0.1.3; L05 source-event map v0.1.1; L05 writer matrix v0.1.5.
 
 ## 1. Purpose and decision boundary
 
@@ -255,7 +255,7 @@ No SQL, migration, grant, RLS, source code, provider change, live database inspe
 
 ## 12. F05-T1 structural grammar hardening cross-reference — 2026-11-25
 
-NLA-L05-TDR-001 v0.1.10 §4.2.5.1 now specifies a more precise **candidate-only** structural profile for grammar v1: exact object keys and JSON types, duplicate-key rejection before lossy parsing, null/missing behavior, participant/scope cardinality failures, OR and conjunction semantics, exact identifier matching, deterministic clause ordering and duplicate-clause equality, and the distinction between PO-approved candidate-intent tokens and a runtime-publishable event allowlist.
+NLA-L05-TDR-001 v0.1.11 §4.2.5.1 now specifies a more precise **candidate-only** structural profile for grammar v1: exact object keys and JSON types, duplicate-key rejection before lossy parsing, null/missing behavior, participant/scope cardinality failures, OR and conjunction semantics, exact identifier matching, deterministic clause ordering and duplicate-clause equality, and the distinction between PO-approved candidate-intent tokens and a runtime-publishable event allowlist.
 
 This clarification does not fill the unresolved per-event bindings in this crosswalk. In particular:
 - no canonical role key or scope ID is admitted;
@@ -265,3 +265,12 @@ This clarification does not fill the unresolved per-event bindings in this cross
 - the eleven PO-approved tokens remain specification/review candidates only and all remain NOT ENABLED.
 
 F05-T1 remains OPEN pending Engineering/Security review, canonical role/scope registries, exact per-event mappings and dependency columns, a machine-reviewable positive/negative validation corpus, and synchronized RTM/QA evidence and outstanding RAID cross-reference. F-04 writer certification remains 0; resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; G9 NOT READY; G10 NOT ACTIVE. No implementation, SQL, migration, grants/RLS, live DB, runtime test or deployment is authorized.
+
+
+## 13. F05-T2 event-specific dispatch matrix cross-reference — 2026-11-25
+
+NLA-L05-TDR-001 v0.1.11 §4.2.6.1 adds an eleven-row dispatch review matrix. It separates POQ-01 mandatory current account/channel/consent/security checks from transition-specific current-role/scope/parent predicates, records the five POQ-04 approved outcomes, and explicitly leaves unresolved source/recipient/profile semantics unresolved for NREG-001/006/008/009/010/011.
+
+The matrix is a static review aid, not approved dispatch policy. All eleven NREG rows remain UNRESOLVED / NOT ENABLED. No current-role, assignment-membership or active-parent predicate may be inferred as universal; no recipient substitution or resource-access grant is permitted. Mandatory security restrictions remain fail-closed.
+
+F05-T2 remains OPEN pending Security/Engineering approval of each versioned event profile, resolution of source/recipient gaps, aligned F05-T3/T4/T5 contracts, and TC-NOTIF-055..059/062/069 acceptance evidence after G10 activation. All QA remains PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE.

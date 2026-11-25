@@ -1,7 +1,7 @@
 # Notification Audience Guard — Technical Decision Record
 
 **Document ID:** NLA-L05-TDR-001  
-**Version:** 0.1.10  
+**Version:** 0.1.11  
 **Status:** PO-APPROVED CANDIDATE — technical approval pending Engineering, Database and Security  
 **Date:** 2026-11-25  
 **Decision authority:** Product Owner candidate selection recorded in NLA-RESOLVER-LOCK-001 §11  
@@ -518,6 +518,50 @@ The table below distinguishes event-time recipient qualification from dispatch-t
 | CMD-010 project close; CMD-013 session close | Pre-close parent/scope state and selected event-time audience, committed atomically with closure | Account/channel/consent/security checks; evaluate only the explicit closure-event dispatch profile | Do not apply a blanket parent.status = ACTIVE predicate after the close event. Closure notice does not grant access to the closed resource. |
 | Ordinary non-transition event | Pre-mutation selector evaluation under the exact event registry entry | Account/channel/consent/security plus only the event-specific current role/scope checks explicitly declared in the pinned dispatch profile | No generic inference from current role labels or current parent status; no widening or substitute recipients. |
 
+## 4.2.6.1 F05-T2 — first-batch event dispatch review matrix (candidate; not approved)
+
+**Status: PARTIAL STATIC REVIEW — NOT APPROVED FOR PUBLICATION OR IMPLEMENTATION.** This matrix applies the POQ-01 mandatory revalidation boundary and the five POQ-04 transition outcomes to the eleven specification-only NREG candidates. It distinguishes established product constraints from unresolved per-event technical decisions. It does not create dispatch profiles or resolve any recipient mapping.
+
+### A. Common dispatch boundary
+
+For every candidate that is eventually admitted, the pinned event-time candidate set is immutable. Before each channel attempt, the system must re-evaluate the current account state, selected channel capability/eligibility, consent/revocation and mandatory security restrictions. These checks can suppress only an existing candidate. They cannot add, substitute, reselect, or rewrite a candidate, scope, policy pin or checkpoint. Receiving a notification never authorizes opening the referenced source resource.
+
+The exact account-state predicate, channel predicate, consent source, mandatory security rule, current role/scope predicate, parent-state predicate, suppression reason and retry classification must be specified in the event's pinned dispatch profile. No generic current-role, current-assignment, or active-parent predicate may be silently applied to every event.
+
+### B. Per-candidate review matrix
+
+| NREG / exact candidate token | Event-time candidate boundary | Mandatory dispatch checks | Transition-specific rule / prohibited inference | Technical disposition |
+|---|---|---|---|---|
+| NREG-001 — `account.approved` | Exact event registry and selector only; no target is implicit. Trusted account-request principal projection and pre/post account-state source boundary are not yet approved. | POQ-01 account/channel/consent/security revalidation applies to any future candidate. | Do not assume that a request actor, target field or newly enabled account is a recipient without an approved participant projection. Exact treatment of approved-account state at dispatch remains unresolved. | OPEN — producer, target projection, selector and account predicate unresolved; NOT ENABLED. |
+| NREG-002 — `account.rejected` | POQ-04 pre-transition account state; target is included only if the exact selector independently selects a trusted mapped participant. | Account must remain eligible under the POQ-04 approved rejection/disabled-state suppression rule; channel, consent and mandatory security checks still apply. | A rejected/disabled account is suppressed while not enabled. No reactivation may rebuild the snapshot, clear unrelated reasons or add a candidate. | POQ-04 semantics approved; exact participant/source contract and dispatch implementation unresolved; NOT ENABLED. |
+| NREG-003 — `role.revoked` | POQ-04 pre-revoke role/scope state; actor and target are selected only by their own exact registered clauses. | Account/channel/consent/security; current-scope checks only where the approved event-specific profile requires them. | Do not require the revoked role to remain effective merely to deliver the revocation notice. No implicit actor/target inclusion. | POQ-04 semantics approved; exact target mapping, current-scope predicate and profile unresolved; NOT ENABLED. |
+| NREG-004 — `project.closed` | POQ-04 pre-close project/parent state; selected candidates and closure event must share the approved atomic boundary. | Account/channel/consent/security; only the explicit closure profile's current-scope checks. | No blanket `project.status = ACTIVE` or equivalent parent-active predicate after closure. Notice does not grant project access. | POQ-04 semantics approved; exact role/scope selection and closure profile unresolved; NOT ENABLED. |
+| NREG-005 — `session.closed` | POQ-04 pre-close session/parent state; only final committed `session.closed`, never `session.close_requested`. | Account/channel/consent/security; only the explicit closure profile's current-scope checks. | No blanket active-session or active-project predicate after closure. Notice does not grant session/project access. | POQ-04 semantics approved; final producer boundary, participant mapping and closure profile unresolved; NOT ENABLED. |
+| NREG-006 — `assignment.created` | Initial roster and newly inserted members must be represented by an explicit trusted event projection consistent with POQ-01/04. Pre-mutation membership alone cannot identify newly created membership. | Account/channel/consent/security; any current assignment/scope check must be explicitly defined by the admitted profile. | Do not infer recipients by querying the post-commit roster or append every inserted member. Do not infer the actor as recipient. | OPEN — initial-roster cardinality, event-time projection and dispatch profile unresolved; NOT ENABLED. |
+| NREG-007 — `assignment.changed` | Exact added/ended/retained membership outcomes must be decomposed. POQ-04 pre-end evaluation applies to an ended member; no replacement recipient. | Account/channel/consent/security; current-scope checks only as explicitly defined for the exact change outcome. | Do not use a universal current-membership-in-the-ended-assignment requirement; do not substitute added/retained members for an ended candidate. Added-member selection remains separately unresolved. | POQ-04 member-end semantics approved; event cardinality, added-member projection and profile unresolved; NOT ENABLED. |
+| NREG-008 — `inspection.submitted` | Exact committed submitted revision and trusted assigned Reviewer mapping are required; no actor/revision-author substitution. | Account/channel/consent/security; current assignment/role/scope behavior must be explicit in the pinned profile. | Do not infer the Reviewer from the submitter, revision author or generic assignment membership. Independent authorization still applies when opening the inspection. | OPEN — Reviewer source, submit boundary, scope and dispatch predicates unresolved; NOT ENABLED. |
+| NREG-009 — `inspection.returned_for_correction` | Exact return decision/revision and trusted responsible-Inspector mapping are required. | Account/channel/consent/security; current assignment/role/scope behavior must be explicit in the pinned profile. | Do not substitute the Reviewer or return actor for the responsible Inspector. Notification does not authorize correction or access to evidence. | OPEN — responsible Inspector source, decision boundary and profile unresolved; NOT ENABLED. |
+| NREG-010 — `inspection.approved` | Exact approved revision and trusted responsible-Inspector mapping are required. | Account/channel/consent/security; current assignment/role/scope behavior must be explicit in the pinned profile. | Do not infer the Inspector from the Reviewer, approval actor or revision author. Notification does not grant access to the approved inspection. | OPEN — terminal-decision source, Inspector mapping and profile unresolved; NOT ENABLED. |
+| NREG-011 — `inspection.reopened` | No candidate selector can be admitted until the authorized next-action owner and reopen source contract are defined. | Common account/channel/consent/security checks would apply only after a candidate is validly admitted. | Do not substitute the prior Inspector, Reviewer, reopening actor or generic assignment member as next-action owner. | OPEN — next-action owner and authority unresolved; no selector/profile can be admitted; NOT ENABLED. |
+
+### C. POQ-04 preservation and conflict handling
+
+The role-revoke, account-reject/disable/suspend, assignment-member-end, project/session-close and self-revoke outcomes in DECISION-REGISTER.md POQ-04 remain binding. This matrix does not weaken them. Where the exact dispatch behavior is not established by POQ-01/POQ-04, the state is explicitly **UNRESOLVED**; Engineering/Security must not fill it by applying a universal predicate or inferring a product outcome. Any proposed change to the approved product outcomes requires explicit PO change control.
+
+Mandatory security restrictions cannot be bypassed to deliver a transition notice. If a mandatory security rule conflicts with delivery, fail closed and escalate through the approved Security/PO decision path. A notice is not an authorization grant.
+
+### D. F05-T2 closure evidence
+
+F05-T2 remains OPEN until:
+- each NREG row has an approved, versioned dispatch profile with explicit account, channel, consent, mandatory-security, current-role/scope and parent-state predicate semantics (including explicit intentional omissions);
+- all five POQ-04 outcomes have event-specific positive and negative assertions, including role revoke/self-revoke, rejected-account suppression/reactivation, assignment-member end, project close and final session close;
+- NREG-001/006/008/009/010/011 source and recipient gaps are resolved without inferred principals;
+- retry classification and suppression reason mapping are consistent with F05-T3, append-only audit with F05-T4, and immutable event-time snapshot with F05-T5;
+- Security and Engineering approvals are recorded, with PO approval only for changes to approved product behavior;
+- TC-NOTIF-055..059 and TC-NOTIF-062/069 are mapped to the final profiles and remain unexecuted until authorized G10 test conditions exist.
+
+Until then, the table is a review aid only: all eleven NREG rows remain NOT ENABLED, no dispatch profile is approved, and F-05 remains OPEN.
+
 **Mandatory dispatch-profile fields:** account eligibility predicate; channel capability predicate; consent/revocation predicate; mandatory security predicate; current role/scope predicate (including whether it is intentionally omitted for a transition notice); parent-state predicate (including whether it is intentionally omitted for closure notices); retry classification; and suppression reason mapping. Each predicate must be versioned and auditable.
 
 **Decision boundary:** this matrix does not override the NLA baseline that disabled, suspended or expired accounts are ineligible for dispatch. The precise account-reactivation reschedule rule, terminal/retryable reason catalog and scope/security exceptions remain approval inputs. A conflict between mandatory security and delivery of a transition notice must fail closed and be escalated for explicit Security/PO resolution, not silently bypassed.
@@ -525,7 +569,7 @@ The table below distinguishes event-time recipient qualification from dispatch-t
 
 ## 16. L05 event-to-selector registry crosswalk — 2026-11-25
 
-[NLA-L05-EVENT-SELECTOR-REGISTRY-001](L05-EVENT-TO-SELECTOR-REGISTRY-001.md) v0.1.2 now provides the static CMD-001–040 event-to-selector crosswalk, the eleven PO-approved first-batch candidate mappings, candidate grammar v1, logical scope/participant questions, and F-04 eligibility-writer dependency intake.
+[NLA-L05-EVENT-SELECTOR-REGISTRY-001](L05-EVENT-TO-SELECTOR-REGISTRY-001.md) v0.1.3 now provides the static CMD-001–040 event-to-selector crosswalk, the eleven PO-approved first-batch candidate mappings, candidate grammar v1, logical scope/participant questions, and F-04 eligibility-writer dependency intake.
 
 This artifact is an inventory/review candidate only. It does not convert the eleven PO-approved specification candidates into an enabled allowlist, resolve any NREG participant or scope, approve grammar v1, admit L05 or its key, or certify a producer/writer path. Composite/conditional CMD declarations remain unresolved; all eleven NREG rows remain PARTIAL STATIC REVIEW / NOT ENABLED. F05-T1..T5 remain OPEN; selector dependency universe remains NOT FROZEN; writers certified 0; resolver certification 0/40; application lock certification 0/50; global graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
 
