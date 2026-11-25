@@ -1,15 +1,15 @@
 # SSOT Cross-Document Reconciliation Audit — Dit. SD Inspection
 
 **Document ID:** SSOT-AUDIT-001  
-**Version:** 0.1.8  
+**Version:** 0.1.9  
 **Status:** STATIC CROSS-DOCUMENT AUDIT COMPLETED — CLOSURE PARTIAL  
 **Initial audit date:** 2026-11-24  
 **Latest reconciliation:** 2026-11-25  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Original audit branch:** `docs/audit-lock-and-identity-reconciliation`  
-**Latest reconciliation branch:** `docs/rbac-003-account-role-scope-governance`  
+**Latest reconciliation branch:** `feat/foundation-bootstrap-v1-rebased`  
 **Original audit PR:** #3 — Draft / Open  
-**Latest reconciliation PR:** #31 — Open  
+**Latest reconciliation PR:** #31 — Merged  
 **Authority snapshot reviewed:** AGENTS.md v1.2.1; MIB-001 v1.0.8; DGA-001 v1.11.28; IRG-001 v1.0.3  
 **Implementation authorization (historical source snapshot):** NOT GRANTED
 
@@ -224,3 +224,17 @@ The cross-document reconciliation now records:
 **Residual technical blockers:** canonical permission and role/grantor/SoD matrix; physical identity/request/decision/role/scope schema; account recovery and break-glass procedure; exact row-version tokens; RLS/grants/function ACL; LPR-11 and acyclic lock graph proof; capacity writer-set certification; authorization freshness; and negative/concurrency QA. No SQL, migration, grant, RLS, application code, CI, automated test, live database inspection, concurrency proof or production operation was performed by this documentation audit.
 
 **Current gate status:** G9-F1 foundation scope FROZEN; G10-F1 foundation implementation ACTIVE for the bounded synthetic-data scope; full-system G9 NOT READY; later business-feature gates remain open; production readiness NOT VERIFIED.
+
+
+## 13. Post-PR #31 integration and foundation verification checkpoint — 2026-11-25
+
+This addendum updates the live repository/PR evidence after the RBAC-003 documentation merge. Earlier sections remain historical snapshots and are not rewritten as if they were reviewed against the current implementation branch.
+
+- PR #31 (RBAC-003 and documentation reconciliation) is **MERGED** to main at `44dce2cbcc052c6e909e1b0a080062a5b60d94eb`.
+- PR #30 (bounded foundation bootstrap) is **OPEN / NOT MERGED**. Its branch `feat/foundation-bootstrap-v1-rebased` was integrated with the PR #31 main commit and compared at zero commits behind main at HEAD `0537ef51bccacfa277a6eeab3ccaef4a0cd45979`.
+- The foundation branch contains 41 implementation paths. This is source-presence evidence only; it does not prove successful build, runtime behavior, database security or production readiness.
+- Exact-head CI run #60 (`45615875469`) completed as failure, but the Quality checks job exposed no steps and the job-log artifact was unavailable. Root cause remains undetermined; no quality-check PASS is claimed.
+- `package-lock.json` remains absent. Lint, typecheck, Vitest, migration checks and production build remain NOT VERIFIED on the exact integrated HEAD. The newly added fragmented-stream and request-correlation regression tests have not been executed.
+- No hosted Supabase operation, SQL migration application, production data operation, deployment or later business-feature implementation is evidenced or authorized by this checkpoint.
+
+**Current gate disposition:** G9-F1 foundation scope FROZEN; G10-F1 foundation implementation ACTIVE only for bounded synthetic-data work; full-system G9 NOT READY; full-system G10 and later business-feature entry NOT AUTHORIZED; production readiness NOT VERIFIED. PR #30 remains NOT READY TO MERGE pending authentic lockfile, reproducible exact-head quality checks and maintainer review.
