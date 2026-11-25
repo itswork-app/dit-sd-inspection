@@ -1,7 +1,7 @@
 # ADR-002 — Application Runtime and Foundation Stack
 
 - Status: ACCEPTED FOR G9-F1/G10-F1 FOUNDATION
-- Version: 1.1.0
+- Version: 1.2.0
 - Decision date: 2026-11-25
 - Decision owner: Product Owner
 - Implementation owner: Solo maintainer with AI engineering partner
@@ -22,7 +22,8 @@ The repository has an approved Vercel + Supabase architecture but no application
 8. Keep the application a modular monolith. Do not introduce microservices, an ORM, a client-side state framework, or UI component framework until a demonstrated need exists.
 9. Apply baseline browser security headers globally: nosniff, frame denial, strict-origin-when-cross-origin referrer policy, and least-privilege camera/microphone/geolocation permissions. Emit HSTS only on the Vercel production environment.
 10. Expose a minimal, non-sensitive health endpoint with no-store caching and a machine-readable service status.
-11. Standardize API failures with a typed, stable error code, safe public message, HTTP status and request correlation ID. Propagate a validated `X-Request-Id` response header from the application proxy. Correlation IDs are diagnostic metadata only and must never be used as identity, authorization or resource scope.
+11. Standardize API failures with a typed, stable error code, safe public message, HTTP status and request correlation ID. Propagate a validated \`X-Request-Id\` response header from the application proxy. Correlation IDs are diagnostic metadata only and must never be used as identity, authorization or resource scope.
+12. Use the Supabase CLI migration layout for local development only. Commit a minimal \`supabase/config.toml\`, keep timestamped SQL migrations under \`supabase/migrations/\`, disable automatic seed loading, and validate migration names/timestamps/empty files in the repository quality script. Do not add a business schema migration until its physical schema, authorization, privilege, transaction/lock and QA contracts have been reviewed. The CLI version must be pinned before CI or shared-environment migration execution is enabled.
 
 ## Security and operational constraints
 
@@ -38,6 +39,8 @@ The repository has an approved Vercel + Supabase architecture but no application
 - Camera access remains permitted for same-origin application use because evidence capture may require it. Microphone and geolocation are disabled by default.
 - Inbound correlation IDs are accepted only when they match a bounded safe-character pattern; otherwise the proxy generates a UUID. They are not trusted assertions.
 - Public API errors must not expose stack traces, raw exceptions, credentials, tokens, personal data or evidence payloads. Internal logging is not introduced by this contract; any future logging must be structured and privacy-safe.
+- The local Supabase CLI configuration contains no hosted project reference or credentials. Foundation instructions prohibit linking the repository to a hosted project or invoking remote migration commands. The local CLI state directory is ignored by Git.
+- No seed SQL or sample personal/evidence data is admitted. Synthetic fixtures, if later needed, must be explicitly scoped and contain no real institutional records.
 
 ## Consequences
 
@@ -45,17 +48,20 @@ The repository has an approved Vercel + Supabase architecture but no application
 - Strong compile-time checks and focused unit testing from the first commit.
 - Auth SSR is prepared without requiring live provider credentials for local bootstrap.
 - API callers receive a predictable error envelope and can correlate a response with future privacy-safe diagnostics.
+- Local database development has a standard migration directory and a deterministic repository-level filename validator without creating speculative business tables.
 - Database and business workflows remain deliberately absent until their feature-entry gates are closed.
 - Security headers provide a baseline hardening layer but do not replace authentication, authorization, RLS, CSP or a production security review.
 
 ## Verification
 
-CI executes ESLint, TypeScript, Vitest and a production Next.js build. The environment parser has unit cases for absent/partial configuration, HTTPS origin validation, whitespace normalization, embedded credentials, URL path/query/fragment rejection, insecure non-local URLs and loopback development URLs. The health endpoint has tests for its status/body timestamp contract and no-store/nosniff headers. The API error contract has tests for HTTP mapping, safe public envelopes, no-store/security headers and malformed/missing correlation IDs. These tests are specified in source but remain NOT VERIFIED until CI executes them successfully. A successful foundation CI run is not evidence of production readiness or business feature correctness.
+CI is configured to execute ESLint, TypeScript, migration filename validation, Vitest (including Node's built-in test runner for migration validation) and a production Next.js build. The environment parser has unit cases for absent/partial configuration, HTTPS origin validation, whitespace normalization, embedded credentials, URL path/query/fragment rejection, insecure non-local URLs and loopback development URLs. The health endpoint has tests for its status/body timestamp contract and no-store/nosniff headers. The API error contract has tests for HTTP mapping, safe public envelopes, no-store/security headers and malformed/missing correlation IDs. The migration validator has Node test cases for an empty foundation directory, valid names, malformed names, invalid calendar timestamps and duplicate timestamps. These tests are specified in source but remain NOT VERIFIED until they execute successfully. Supabase CLI startup/reset has not been executed, and no migration has been applied. A successful foundation CI run is not evidence of production readiness or business feature correctness.
 
 ## References
 
 - ADR-001 — Platform Stack: Supabase + Vercel
 - AGENTS.md §3.2 — staged G9-F1/G10-F1 authorization
 - MIB-001 — Master Implementation Blueprint
+- Supabase CLI local workflow: https://supabase.com/docs/guides/local-development/cli-workflows
+- Supabase migration deployment: https://supabase.com/docs/guides/deployment/database-migrations
 - Next.js support policy: https://nextjs.org/support-policy
 - Supabase SSR guide: https://supabase.com/docs/guides/auth/server-side/creating-a-client
