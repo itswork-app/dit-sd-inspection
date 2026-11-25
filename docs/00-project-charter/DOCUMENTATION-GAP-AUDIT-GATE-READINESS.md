@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.94
+**Version:** 1.11.95
 **Audit date:** 2026-11-25  
 **Branch reviewed:** `main`  
 **Reviewed HEAD:** `1c26ca1cbb2e38111695c23706ffca881c20b669` (post-PR #13 main baseline, 2026-11-25)  
@@ -961,7 +961,7 @@ No Product Owner decision was changed. POQ-04's five approved transition outcome
 
 NLA-L05-TDR-001 v0.1.10 §4.2.5.1 adds a precise candidate-only validation profile for grammar v1. It defines exact object keys and JSON types, duplicate JSON-key rejection before lossy parsing, required/null/missing semantics, trusted participant and source-scope cardinality failure behavior, OR/conjunction semantics, exact canonical identifier comparison, deterministic clause ordering, exact duplicate-clause equality, and the boundary between PO-approved candidate-intent tokens and a runtime-publishable allowlist.
 
-The controlled updates are synchronized in NLA-EVENT-REGISTRY-001 v0.1.12, NLA-L05-EVENT-SELECTOR-REGISTRY-001 v0.1.2 and QA Catalogue v0.6.9 (TC-NOTIF-065..067). The QA additions are test-definition refinements only; all cases remain PLANNED / NOT EXECUTED.
+The controlled updates are synchronized in NLA-EVENT-REGISTRY-001 v0.1.12, NLA-L05-EVENT-SELECTOR-REGISTRY-001 v0.1.2 and QA Catalogue v0.6.9 (TC-NOTIF-065..067) and RTM-001 v0.1.28 (NOTIF-016/021). The QA additions are test-definition refinements only; all cases remain PLANNED / NOT EXECUTED. RAID cross-reference refresh remains outstanding.
 
 **F05-T1 disposition: OPEN — CANDIDATE SPECIFICATION ONLY.** This static clarification does not approve canonical role/scope registries, any per-event selector clause, participant source field, SOURCE_EVENT_SCOPE cardinality, dependency column, candidate identity key, policy digest, physical snapshot representation or event publication. The eleven NREG candidates remain UNRESOLVED / NOT ENABLED. Engineering/Security review and a machine-reviewable validation corpus are still required; PO review is required only if approved product semantics would change.
 
