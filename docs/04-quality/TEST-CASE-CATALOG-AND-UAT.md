@@ -96,8 +96,8 @@ These are designed test procedures. Execution has not started. Source authority 
 - TC-DOC-007: BA template renders configured activity/date/location narrative and authorized signatory blocks without hardcoded sample values.
 - TC-DOC-008: Multi-day attendance output creates one date-labelled attendance column per configured activity date; assignment alone does not mark a participant present.
 - TC-DOC-009: Standing Bracket serial-number annex rows reconcile to inspection records and preserve instrument, serial, condition, evidence reference, and configured paraf blocks.
-- TC-DOC-010: Annex generation does not impose the sample's 13-row count or all-good condition as a fixed rule.
-- TC-DOC-011: IFP PDF reproduces the approved checklist version, serial identities, Ya/Tdk answers, and configured signature area.
+- TC-DOC-016: Annex generation does not impose the sample's 13-row count or all-good condition as a fixed rule.
+- TC-DOC-017: IFP PDF reproduces the approved checklist version, serial identities, Ya/Tdk answers, and configured signature area.
 - TC-RPT-001: Actual report uses actual event timestamps/counts.
 - TC-RPT-002: Target report uses versioned target allocations and never rewrites actual activity.
 - TC-RPT-003: Dashboard counts reconcile with source inspection states.
@@ -146,9 +146,7 @@ These are planned cases only; not executed. 100 concurrent users is a load-test 
 Add/retain test coverage for: enabled account + active Inspector grant + effective assignment counts once; duplicate assignments/other roles still count once; missing/ineffective assignment does not count; pending/rejected/suspended/disabled/expired-role accounts are excluded; cross-location combined cap is enforced atomically under concurrent role/assignment changes; values 0 and above 100 are rejected; reducing cap below current qualifying count is rejected without deactivation. Test execution is not claimed by this documentation update.
 
 
-## T-14 — Inspector capacity test requirements (PO-approved 2026-11-24)
 
-Add/retain test coverage for: enabled account + active Inspector grant + effective assignment counts once; duplicate assignments/other roles still count once; missing/ineffective assignment does not count; pending/rejected/suspended/disabled/expired-role accounts are excluded; cross-location combined cap is enforced atomically under concurrent role/assignment changes; values 0 and above 100 are rejected; reducing cap below current qualifying count is rejected without deactivation. Test execution is not claimed by this documentation update.
 
 
 ## Registration-first and Super Admin staffing test requirements
