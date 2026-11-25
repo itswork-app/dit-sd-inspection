@@ -3,7 +3,7 @@
 **Document ID:** NLA-L05-SOURCE-MAP-001  
 **Version:** 0.1.1  
 **Status:** STATIC INVENTORY — NOT CERTIFIED  
-**Date:** 2026-11-24  
+**Date:** 2026-11-25  
 **Source:** LOCK-MANIFEST-001 v0.4.32 §7.7, canonical `main` baseline at `78688451524900cc58343d05469251806ce415de`  
 **Purpose:** Map every CMD-001–040 canonical event declaration to its actual event-producing transaction boundary, documented candidate lock path and required L05 insertion point.
 
