@@ -1,10 +1,10 @@
 # Implementation Entry Readiness and Remaining Blocker Plan
 
 **Document ID:** IER-001  
-**Version:** 0.1.2  
+**Version:** 0.1.3  
 **Status:** CONTROLLED READINESS PLAN — NOT AN IMPLEMENTATION AUTHORIZATION  
 **Date:** 2026-11-25  
-**Repository baseline:** `main` at `0db79d376face690b353d466a18129b6dd0ae5b2`  
+**Repository baseline:** `main` at `18ac4f91484a1afa5e7e5bf35fe9c7b6debfaaa5`  
 **Authority:** Root `AGENTS.md`, MIB-001, DGA-001, Decision Register, approved PRD/ADR, RTM-001, RAID-001 and QA Catalogue  
 **Current gates:** G9 NOT READY; G10 NOT ACTIVE
 
@@ -131,4 +131,4 @@ Any change to approved product semantics requires a new Product Owner decision. 
 
 [PTCM-001 — Pre-Implementation Technical Closure Matrix](PRE-IMPLEMENTATION-TECHNICAL-CLOSURE-MATRIX.md) v0.1.1 now decomposes the remaining F-03 lock-order contradictions into nine explicit conflict classes and eight evidence exit artifacts; F-04 into a physical writer/bypass evidence package and writer-by-writer certification record; and SES-001 into ten technical decisions. This matrix is a controlled closure aid, not an approval or closure of any blocker.
 
-Current verified baseline after PR #23: `main` at `0db79d376face690b353d466a18129b6dd0ae5b2`. The F-03 graph remains NOT PROVEN ACYCLIC; resolver certification 0/40; application lock certification 0/50; F-04 writer certification 0; SES-001 technical contract OPEN. QA remains PLANNED / NOT EXECUTED; CI/workflow evidence ABSENT where no checks/runs are returned. G9 NOT READY; G10 NOT ACTIVE.
+Current verified baseline after PR #24: `main` at `18ac4f91484a1afa5e7e5bf35fe9c7b6debfaaa5`. The F-03 graph remains NOT PROVEN ACYCLIC; resolver certification 0/40; application lock certification 0/50; F-04 writer certification 0; SES-001 technical contract OPEN. QA remains PLANNED / NOT EXECUTED; CI/workflow evidence ABSENT where no checks/runs are returned. G9 NOT READY; G10 NOT ACTIVE.
