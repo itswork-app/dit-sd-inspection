@@ -57,7 +57,9 @@ export async function parseJsonRequest<T>(
     return { ok: false, code: "BAD_REQUEST" };
   }
 
-  const chunks: Uint8Array[] = [];
+  // Allocate one bounded buffer instead of retaining an attacker-controlled
+  // number of tiny chunks (which could amplify memory use beyond the byte limit).
+  const bytes = new Uint8Array(maxBytes);
   let totalBytes = 0;
 
   try {
@@ -66,8 +68,7 @@ export async function parseJsonRequest<T>(
       if (done) break;
       if (!value) continue;
 
-      totalBytes += value.byteLength;
-      if (totalBytes > maxBytes) {
+      if (value.byteLength > maxBytes - totalBytes) {
         try {
           // Do not wait for an untrusted stream's cancellation hook to settle.
           void reader.cancel().catch(() => undefined);
@@ -76,7 +77,8 @@ export async function parseJsonRequest<T>(
         }
         return { ok: false, code: "PAYLOAD_TOO_LARGE" };
       }
-      chunks.push(value);
+      bytes.set(value, totalBytes);
+      totalBytes += value.byteLength;
     }
   } catch {
     return { ok: false, code: "BAD_REQUEST" };
@@ -88,16 +90,9 @@ export async function parseJsonRequest<T>(
     return { ok: false, code: "BAD_REQUEST" };
   }
 
-  const bytes = new Uint8Array(totalBytes);
-  let offset = 0;
-  for (const chunk of chunks) {
-    bytes.set(chunk, offset);
-    offset += chunk.byteLength;
-  }
-
   let parsed: unknown;
   try {
-    const text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+    const text = new TextDecoder("utf-8", { fatal: true }).decode(bytes.subarray(0, totalBytes));
     parsed = JSON.parse(text) as unknown;
   } catch {
     return { ok: false, code: "BAD_REQUEST" };
