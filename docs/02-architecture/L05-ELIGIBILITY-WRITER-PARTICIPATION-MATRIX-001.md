@@ -3,7 +3,7 @@
 **Document ID:** NLA-L05-WRITER-MATRIX-001  
 **Version:** 0.1.5  
 **Status:** STATIC INVENTORY — INCOMPLETE; NOT CERTIFIED  
-**Date:** 2026-11-24  
+**Date:** 2026-11-25  
 **Inputs:** NLA-L05-TDR-001 v0.1.9; LOCK-MANIFEST-001 v0.4.32; PostgreSQL Command Contract Catalogue v0.4.8; Function Security & EXECUTE Grant Design v0.3.3; physical schema proposal v0.4.4
 
 ## 1. Purpose and decision boundary
