@@ -196,7 +196,7 @@ For each test, record actor fixture, grants, resource fixture, request, expected
 3. Exact RLS helper implementation and reviewed SECURITY DEFINER exceptions.
 4. Direct draft-write strategy: trusted command only versus narrowly scoped client writes protected by RLS.
 5. Evidence retention/deletion and legal-hold policy.
-6. Audit event policy INS-016 approval, access, retention, and export.
+6. Reconcile PO-approved INS-016/T-15 with audit access/export RLS and grants; obtain separate T-10 institutional approval for classification, retention, deletion/disposition and legal hold.
 7. Institutional data classification and privacy/legal basis.
 
 ## 10. Release gate and disposition
