@@ -1,7 +1,7 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.22  
+**Version:** 0.1.23  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
@@ -559,6 +559,15 @@ Composite/conditional source declarations are not policy keys. Exact token and t
 The IFP instrument source remains draft; its photo-slot required status is OPEN. Standing Bracket's 19-row checklist baseline is PO-confirmed, but evidence/photo rules remain OPEN. Neither instrument checklist/evidence details nor a photo slot is a notification event. Notification payloads must not include evidence bytes or permanent evidence URLs.
 
 The PO decision is recorded in DECISION-REGISTER.md. NLA-EVENT-REGISTRY-001 v0.1.0 is a draft inventory for specification/review only. Engineering/Security/Database must complete exact event contract, participant mapping, selector dependency, deduplication, atomicity and dispatch profile review before any row can be technically admitted. F-05/F-04 remain OPEN; no physical schema, SQL, migration or runtime behavior is admitted.
+
+## 26. F05-T4 append-only audit evidence refinement — 2026-11-25
+
+NLA-L05-TDR-001 v0.1.13 §17 defines the candidate logical evidence envelope for notification attempts and suppression/reconciliation outcomes. Delivery attempts remain in dedicated append-only `notification_delivery_attempts`; security/governance actions remain in canonical `audit_events`; routine retries/callbacks do not flood the general audit stream. Candidate suppression/reschedule evidence must preserve the original source-event/outbox/candidate/policy/delivery/checkpoint correlation chain. Its final physical representation remains a Database decision and the candidate snapshot relation/header remains NOT ADMITTED.
+
+Actor provenance is server-derived for users, authenticated for internal workers and provider-validated for callbacks. Worker lease-generation fencing prevents stale outcomes. Timestamps are server/database UTC instants; they do not alone establish concurrency-safe ordering. Committed evidence is corrected additively, never updated/deleted in place. Message bodies, inspection/evidence content, tokens, credentials, signed URLs, raw idempotency keys and full provider responses are excluded.
+
+Stable literal reason codes, physical constraints/ACL, integrity verification mechanism, and the exact evidence representation remain subject to Security/Engineering/Database review. T-10 classification, retention, legal hold, disposition, audit access/export and network metadata remain BLOCKED pending written institutional approval; no duration or purge policy is set. TC-NOTIF-095..099 are specification cases only. F05-T4 and F-05 remain OPEN; G9 NOT READY; G10 NOT ACTIVE.
+
 
 
 **Current pointer synchronization — 2026-11-24:** NLA-001 v0.1.21; NLA-L05-TDR-001 v0.1.8; L05 source map v0.1.0; writer matrix v0.1.4; QA v0.5.3; L05 review v0.1.7; DGA v1.11.74; SCOPE-RECON-001 v0.1.2; NLA-EVENT-TRIAGE-001 v0.1.2. TC-NOTIF-001..072 remain PLANNED / NOT EXECUTED. This pointer refresh does not close F-05/F-04 or enable any event.
