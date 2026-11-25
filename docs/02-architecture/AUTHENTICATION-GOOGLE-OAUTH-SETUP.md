@@ -8,7 +8,7 @@
 2. Supabase redirects the browser to the application callback at `/auth/callback`.
 3. The callback exchanges the one-time authorization code through the server Supabase client. The SSR cookie adapter stores the session in HTTP-only-compatible Supabase cookies.
 4. The application independently calls `auth.getClaims()` on the server at `/auth/pending` and accepts only the verified JWT `sub` as identity.
-5. The account remains without operational access until the separately approved account-approval and role-assignment mechanism is implemented.
+5. This foundation does not grant operational access or evaluate account approval/role assignment; those authoritative mechanisms are not integrated yet.
 6. Sign-out runs as a server action through the server Supabase client.
 
 ## Supabase project configuration
