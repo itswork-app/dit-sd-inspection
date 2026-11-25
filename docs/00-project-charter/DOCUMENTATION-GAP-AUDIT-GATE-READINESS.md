@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.11.96
+**Version:** 1.11.97
 **Audit date:** 2026-11-25  
 **Branch reviewed:** `main`  
 **Reviewed HEAD:** `f3248037c5754ca537c033422d3e247be34f931d` (post-PR #14 main baseline, 2026-11-25)  
