@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.6.8
+Version: 0.6.9
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -848,18 +848,18 @@ These cases supplement TC-NOTIF-055..059. They are derived from the PO-approved 
 
 ### F-05 selector grammar and event-specific dispatch profile tests — 2026-11-24
 
-These acceptance cases target TDR v0.1.8 §4.2.5–4.2.6. They remain PLANNED / NOT EXECUTED; the grammar and dispatch profile are review candidates, not approved runtime contracts.
+These acceptance cases target TDR v0.1.10 §4.2.5–4.2.6. The F05-T1 structural profile is still a review candidate, not an approved runtime contract. All cases remain PLANNED / NOT EXECUTED.
 
 | Test ID | Scenario | Expected result / invariant | Status |
 |---|---|---|---|
-| TC-NOTIF-065 | Validate grammar v1 with each permitted clause kind and canonical ordering | ROLE_SCOPE and EVENT_PARTICIPANT are the only accepted clause kinds; canonicalization is deterministic; duplicate clauses collapse without changing the selected principal/scope set | PLANNED / NOT EXECUTED |
-| TC-NOTIF-066 | Submit nested logic, NOT, wildcard, arbitrary JSON path, SQL/expression text, client principal/scope IDs, unknown keys, duplicate keys, unknown version or more than eight clauses | Policy publication fails closed; no policy version becomes effective; sanitized rejection is auditable | PLANNED / NOT EXECUTED |
-| TC-NOTIF-067 | Evaluate actor/target/affected-member bindings with missing, ambiguous or untrusted event fields | Publication rejects an incomplete registry mapping; no caller-supplied identity is accepted; source transaction cannot create a partial outbox/snapshot | PLANNED / NOT EXECUTED |
+| TC-NOTIF-065 | Validate grammar v1 with each permitted clause kind, exact object shape, enum/type checks, canonical ordering and exact identifier comparison | Accept only the exact top-level keys and exact clause keys; accept only integer version 1, match ANY, 1–8 clauses and the two clause kinds; reject unknown/missing keys, wrong types, empty or non-canonical identifiers; deterministic fixed ordering and exact-duplicate collapse do not change selected principal/scope results | PLANNED / NOT EXECUTED |
+| TC-NOTIF-066 | Submit nested logic, NOT, wildcard, arbitrary JSON path, SQL/expression text, client principal/scope IDs, unknown/missing keys, duplicate JSON object keys, null required values, wrong JSON types, unknown version or more than eight clauses | Parser/validator rejects before lossy object-map conversion; no policy version becomes effective; no default, coercion, partial selector or last-key-wins behavior; sanitized rejection is auditable | PLANNED / NOT EXECUTED |
+| TC-NOTIF-067 | Evaluate ACTOR/TARGET/AFFECTED_MEMBER and SOURCE_EVENT_SCOPE bindings with missing, null, ambiguous, multi-valued, cross-parent or untrusted event data | Publication rejects incomplete per-event mapping; participant must resolve to one trusted canonical principal; scope cardinality must be explicitly declared; no client identity, inferred actor, default scope or partial outbox/snapshot is accepted | PLANNED / NOT EXECUTED |
 | TC-NOTIF-068 | Event token is composite, conditional, unknown, prefix-matched or absent from the exact event registry | No wildcard/prefix fallback; ambiguous composite token is not enabled; transaction fails atomically without a partial candidate snapshot | PLANNED / NOT EXECUTED |
 | TC-NOTIF-069 | Role-revocation, assignment-member-end and project/session-close dispatch | Each pinned dispatch profile follows its transition-specific rule; no blanket revoked-role/current-membership/active-parent predicate suppresses the notice; opening source resource still requires independent authorization | PLANNED / NOT EXECUTED |
 | TC-NOTIF-070 | Multiple matching clauses select same recipient with overlapping/different authorized scopes | One canonical recipient candidate is produced; only scopes explicitly selected by matching clauses are retained; deduplication and scope serialization are deterministic and cannot widen authorization | PLANNED / NOT EXECUTED |
 
-**Execution control:** TC-NOTIF-065..070 require PO/Security/Engineering approval of grammar v1, event registry, dispatch profiles and canonical candidate/scope serialization. Runtime execution requires G10 activation and the authorized isolated PostgreSQL environment. No test result is implied.
+**Execution control:** TC-NOTIF-065..070 require Security/Engineering approval of grammar v1, PO approval only for any product-semantic change, exact event registry, dispatch profiles and canonical candidate/scope serialization. The candidate-intent list is not a runtime allowlist. Runtime execution requires G10 activation and the authorized isolated PostgreSQL environment. No test result is implied.
 
 
 ### PRD scope and notification-domain guard test — 2026-11-24
