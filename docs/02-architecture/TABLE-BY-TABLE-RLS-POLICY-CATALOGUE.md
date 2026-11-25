@@ -1,9 +1,14 @@
 # Table-by-Table RLS Policy Catalogue
 
 **Status:** Security policy design draft — security review and implementation approval required  
-**Version:** 0.1.0  
+**Version:** 0.2.5
 **Package:** M — RLS and Authorization Policy Catalogue  
 **Date:** 2026-11-23
+
+
+## Physical schema reconciliation reference
+
+See [Physical Schema ↔ RLS ↔ Command Reconciliation](PHYSICAL-SCHEMA-RLS-COMMAND-RECONCILIATION.md) for the proposed 48-table crosswalk, including T-13 `print_batches` and the six NLA-001 notification tables. These are proposed policies only; no live RLS or grants are verified.
 
 ## 1. Purpose and security boundary
 
@@ -82,22 +87,31 @@ Legend:
 | `specification_fields` | R-published; R-admin | CMD | CMD | NONE | Typed values; no executable expressions |
 | `evidence_slot_definitions` | R-published; R-admin | CMD | CMD | NONE | Required status and allowed media are versioned |
 | `instrument_version_publications` | R-scope; R-admin | CMD | NONE | NONE | Append-only publication history |
-| `units` | R-scope; R-admin | CMD | CMD | NONE | Unit creation/serial normalization command only; serial uniqueness DB enforced |
+| `units` | R-scope; R-admin | CMD | CMD | NONE | Unit creation/serial normalization command only; canonical serial uniqueness DB enforced; unit ID alone grants no scope |
+| `unit_project_associations` | R-scope through matching project membership; R-admin | CMD | CMD | NONE | Durable ACTIVE/ENDED/REVOKED episodes; create/end only through reasoned audited commands; no hard delete |
+| `unit_identity_conflicts` | R-conflict-reviewer; minimum necessary project-scoped metadata only | CMD | CMD | NONE | Restricted same-instrument duplicate workflow; authorized resolution only; never exposes candidate project's inspection history |
 | `inspections` | R-scope according to Inspector/Reviewer/Korlap/Print Officer permissions; R-admin | CMD | CMD | NONE | Aggregate state changes only through commands |
 | `inspection_revisions` | R-scope; R-admin | CMD | NONE | NONE | Immutable after submission; draft snapshot handling only via command |
-| `checklist_responses` | R-scope; R-admin | CMD | CMD | NONE | Direct draft writes prohibited until a narrow, reviewed draft-write contract exists |
-| `specification_responses` | R-scope; R-admin | CMD | CMD | NONE | Same as checklist responses |
+| `checklist_responses` | R-scope; R-admin | CMD | CMD | NONE | Draft writes are command-only through T-18; browser direct DML is denied |
+| `specification_responses` | R-scope; R-admin | CMD | CMD | NONE | Draft writes are command-only through T-18; browser direct DML is denied |
 | `unit_claims` | R-scope for holder and authorized supervisors/reviewers; R-admin | CMD | CMD | NONE | Atomic claim and release command; no client expiry edits |
 | `review_events` | R-scope for assigned reviewers and authorized supervisors; R-admin | CMD | NONE | NONE | Append-only |
 | `inspection_events` | R-scope; R-admin | CMD | NONE | NONE | Append-only |
 | `evidence_assets` | R-scope; R-admin | CMD | CMD | NONE | Pending metadata managed by upload commands; finalized metadata immutable |
 | `documents` | R-scope; R-admin | CMD | CMD | NONE | Generation/finalization command only; output immutable |
-| `print_events` | R-scope for authorized print/operational roles; R-admin | CMD | NONE | NONE | Append-only sequence allocation |
+| `print_batches` | R-scope for authorized print/operational roles; R-admin | CMD | CMD | NONE | Batch metadata scoped to project/session/location; created/updated only by bounded batch command; no direct DML |
+| `print_events` | R-scope for authorized print/operational roles; R-admin | CMD | NONE | NONE | Append-only per-document attempt; batch reference must be in same authorized scope |
 | `attendance_records` | R-scope; R-admin | CMD | CMD | NONE | Lifecycle command only |
 | `attendance_documents` | R-scope; R-admin | CMD | CMD | NONE | Replacement creates new version; no overwrite of original |
 | `audit_events` | R-admin; R-scope only if a specific audit-read permission is granted | CMD | NONE | NONE | No direct client write; no update/delete for application roles |
 | `idempotency_records` | NONE | CMD | CMD | NONE | Internal command machinery; retention cleanup via controlled maintenance |
 | `sync_batches` | R-self/R-scope for own device batches only | CMD | CMD | NONE | Batch payload not exposed broadly; no cross-user read |
+| `notification_policy_versions` | NONE by default; narrowly scoped configuration read only after explicit grant approval | CMD-051 only | CMD-051 only | NONE | Published immutable; CMD-051 publish-only; no persisted draft CRUD; role/grantor/SoD grants not approved |
+| `notification_outbox` | NONE for browser roles; internal worker only | CMD | CMD | NONE | Private fan-out queue; no browser reads; internal worker privilege separately reviewed |
+| `notifications` | R-self where `recipient_user_id = auth.uid()` only | CMD-050 set-once read through trusted command; no direct DML | NONE | NONE | No R-admin/global inbox read; dismissed_at is dormant; POQ-03 excludes dismiss/archive from MVP; scope columns never widen recipient ownership |
+| `notification_deliveries` | NONE for browser roles; internal worker; narrowly scoped operations reader only if approved | CMD | CMD | NONE | Provider state not exposed to recipients; worker-only mutation |
+| `notification_delivery_attempts` | NONE for browser roles; internal worker; restricted audit/operations reader if approved | CMD | NONE | NONE | Append-only sanitized attempts; no provider secrets or message bodies |
+| `notification_escalation_events` | NONE for browser roles; internal worker only; restricted operations reader only after explicit approval | CMD | NONE | NONE | Append-only; no browser oversight access inferred from role title |
 
 **Important:** this is the complete catalogue for Package L's proposed table inventory. Any new table, view, RPC, or Storage bucket must be added to this catalogue before it is exposed. A missing row is a release blocker.
 
@@ -194,10 +208,16 @@ For each test, record actor fixture, grants, resource fixture, request, expected
 1. Final permission catalogue and which roles may read audit data.
 2. Whether Super Admin global operational read is unrestricted or permission-segmented.
 3. Exact RLS helper implementation and reviewed SECURITY DEFINER exceptions.
-4. Direct draft-write strategy: trusted command only versus narrowly scoped client writes protected by RLS.
+4. **Superseded by T-18 PO APPROVED option A (2026-11-24):** browser-facing direct DML is denied on protected business/governance tables, including draft answer/response tables. Draft persistence uses the trusted Vercel route → caller-JWT PostgreSQL command function. The remaining work is the exact table grants, command EXECUTE grants and executable verification.
 5. Evidence retention/deletion and legal-hold policy.
-6. Reconcile PO-approved INS-016/T-15 with audit access/export RLS and grants; obtain separate T-10 institutional approval for classification, retention, deletion/disposition and legal hold.
+6. **INS-016 PO APPROVED (T-15 option A):** implement append-only audit writes and atomic fail-closed critical commands; institutional retention/legal-hold/disposition and final audit-reader/export authority remain open under T-10.
 7. Institutional data classification and privacy/legal basis.
+
+
+
+## Command authorization matrix cross-reference
+
+See COMMAND-AUTHORIZATION-VERIFICATION-MATRIX.md, section 5, for the 28-family crosswalk against this catalogue's current proposed 48 tables. That crosswalk identifies registry domains for retention/legal-hold, security cases and provider/release that are not represented by current tables, plus the unresolved audit-export artifact model. These are inventory gaps, not permission to create or expose new tables. Update this catalogue before any such object is introduced or exposed. The matrix and this catalogue remain design artifacts; no RLS policy or grant is deployed or verified.
 
 ## 10. Release gate and disposition
 
@@ -220,3 +240,96 @@ Before production:
 ## T-14 — Capacity predicate and authorization consistency (PO-approved 2026-11-24)
 
 RLS and privileged capacity commands must consistently recognize a qualifying Inspector account as a distinct enabled login account with an active Inspector role grant and at least one currently effective operational Inspector assignment within the governed project/session scope. Do not count pending, rejected, suspended, disabled or expired-role accounts; do not count one account more than once for multiple roles/assignments. The global combined cap remains 1–100 (default 50) and must be enforced atomically by the privileged transaction, not by client-side/RLS count-then-write logic. No executable policy is implied by this design note.
+
+
+## T-18 — Direct-DML and command grant decision reconciliation
+
+The former open question about direct draft writes is CLOSED by T-18 option A. No browser-facing anon/authenticated role may INSERT, UPDATE or DELETE protected business/governance tables, including draft response tables, membership, assignments, instrument configuration/publication, evidence metadata, revisions, claims, audit or idempotency records. Draft writes use the trusted command boundary; ordinary reads remain independently scoped by RLS.
+
+The catalogue still requires a table-by-table privilege review, exact command-function EXECUTE grants, review of views/triggers/functions and any SECURITY DEFINER exceptions, plus positive/negative authorization tests. This document remains a policy design artifact; no executable policies or grants are deployed or verified.
+
+## Function ACL and caller-role dependency
+
+See [PostgreSQL Function Security & EXECUTE Grant Design](POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md) for the independent function EXECUTE and table ACL posture. CMD means command-only mutation, not table DML for the caller role. RLS policies do not grant SQL privileges. Exact ACL and caller-role verification remains open; no grants are deployed.
+
+## NLA-001 notification security notes
+
+- Browser callers can read only their own `notifications` rows and can mutate only their own `read_at` through the trusted CMD-050 command; POQ-03 excludes dismiss/archive from MVP, so `dismissed_at` is dormant with no command, permission or browser mutation. Direct browser DML remains denied.
+- No browser role reads or mutates outbox, delivery queue, provider attempt or escalation worker tables.
+- Policy versions require explicit config scope and `notification.policy.manage`; no role-to-permission grant is implied by title.
+- Internal worker role, owner, JWT/scheduler trust, exact EXECUTE ACL and effective privileges are a separate T-18 security blocker.
+- Every new row above requires table-specific positive/negative RLS tests and exact grants before exposure.
+
+
+### Notification least-privilege reconciliation — 2026-11-24
+
+- notifications is recipient-self SELECT only; no R-admin/global browse path is proposed. CMD-050 read acknowledgement is a trusted-command mutation with a recipient-self predicate; browser direct UPDATE remains denied.
+- notification_policy_versions is default-deny for browser roles. Any scoped configuration read requires an explicit approved grant; CMD-051 publication remains a trusted command and no role grant is implied.
+- notification_outbox, notification_deliveries, notification_delivery_attempts and notification_escalation_events are not browser-readable or browser-mutable. Internal workers require a separately approved workload identity and exact function ACL; service_role is not an assumed worker identity.
+- INT-NOTIF-001 is a server-side provider integration ingress, not a browser RPC and not a table grant.
+- Exact policies, grants, function owners, worker identity and live RLS tests remain unverified. These are design-only dispositions.
+
+
+## Final audit correction — notification mutation boundary (2026-11-24)
+
+The earlier summary phrase “approved dismiss field” was inconsistent with the canonical CMD-049–054 contract and the table-level rule that dismissed_at is dormant. It is corrected: only recipient-owned read_at is currently exposed through CMD-050; no dismiss command or browser mutation is approved.
+
+
+## POQ-03 RLS disposition — 2026-11-24
+
+Dismiss/archive is excluded from MVP by explicit Product Owner decision. There is no dismiss command, permission, browser write or UX action. The only recipient mutation in MVP is the trusted CMD-050 set-once read_at transition. Any retained dismissed_at column is dormant and must not receive a browser UPDATE policy or trusted mutation path. Worker identity, exact ACLs and live RLS verification remain open.
+
+
+## Candidate-only RLS and authorization annex — CMD-035/036/038/039/040 (2026-11-24)
+
+**Status:** Review mapping only. The matrix below does NOT add tables to the canonical 48-table inventory, does NOT create permissions, and does NOT authorize policies or grants. Candidate objects remain unadmitted pending the approvals listed in DURABLE-OPERATION-LEDGER-AND-ARTIFACT-LIFECYCLE-PROPOSAL-001 v0.1.0.
+
+| Candidate object family | Existing command/permission mapping | Browser SELECT | Browser INSERT/UPDATE/DELETE | Trusted boundary / unresolved approval |
+|---|---|---|---|---|
+| sync_batch_operations | CMD-035 / sync.apply | Own batch outcomes only if a minimal read API is approved; no raw device proof or cross-user enumeration | NONE | CMD-035 only; operation result immutability, per-operation transaction boundary and exact RLS predicate open |
+| device_bindings | CMD-035 sync.apply is not enrollment authority | Self-owned minimal status only if separately approved | NONE | Enrollment/revocation command and permission are TBD; do not infer from sync.apply |
+| document_template_versions | No approved command/permission mapped | Published safe metadata only if separately approved | NONE | Template publication command, permission, grantor ceiling and SoD are TBD; no arbitrary template upload |
+| document_generation_jobs | CMD-036 / document.generate | NONE | NONE | Internal renderer workload identity + exact function/table ACL required; document.generate authorizes request, not worker execution |
+| document_generation_attempts | CMD-036 / document.generate | NONE | NONE | Internal renderer append-only writer; sanitized operations read only if separately approved |
+| print_batch_items | CMD-038 / document.print.batch | Actor/scope-limited result read through a trusted query | NONE | CMD-038 owns immutable manifest creation; no direct browser DML |
+| print_batch_item_results | CMD-038 / document.print.batch | Actor/scope-limited result read through a trusted query | NONE | Append-only trusted per-item result path; attempt identity and retries open |
+| attendance_verification_events | CMD-040 / attendance.verify | R-scope only for authorized attendance roles, if institutional authority approves | NONE | CMD-040 trusted append-only write; uploader/verifier SoD, location/assignment proof and T-10 retention open |
+
+### Permission registry reconciliation requirement
+
+The PostgreSQL Command Contract Catalogue references canonical permission registry v0.2.2, but this review did not establish the registry's exact repository path or retrieve its authoritative content. Therefore this annex does not claim the permission registry has been updated or that the listed mappings are registry-verified. Before any candidate object is admitted, retrieve the authoritative registry and reconcile exact permission codes, resource scopes, grantor ceilings, SoD, worker principals and EXECUTE/table ACL. In particular, device enrollment and template publication require explicit authorization design; they must not inherit sync.apply or document.generate by assumption.
+
+The existing 48-table policy matrix remains the canonical proposed table inventory. These candidate rows are not live RLS policies and no grant or policy has been deployed or verified.
+
+
+## CMD-044 candidate-only RLS/ACL annex — NOT ADMITTED (2026-11-24)
+
+**T-10 BLOCKED.** The following matrix is a future review boundary only. It adds no rows to the canonical 48-table RLS catalogue and authorizes no browser SELECT, DML, GRANT, policy or worker principal.
+
+| Candidate object | Browser SELECT | Browser INSERT/UPDATE/DELETE | Internal access candidate | Required boundary before admission |
+|---|---|---|---|---|
+| audit_export_jobs | NONE by default; minimal requester-owned status projection only if T-10 approves | NONE | Narrow export coordinator/worker command only | Named requester scope, policy-version binding, idempotency and fenced lease; exact worker role/ACL open |
+| audit_export_manifests | NONE | NONE | Finalizer-only immutable insert; approved integrity verifier read | Immutable after finalization; exact event identity/projection policy and canonical serialization approved |
+| audit_export_artifacts | NONE; no object key or signed URL exposed | NONE | Finalizer writes metadata after private Storage verification; download service resolves separate access decision | Private bucket, encryption/key custody, approved region, separate download authority, expiry/retention/legal hold/deletion |
+
+No candidate object inherits access from audit.read or audit.export automatically. audit.export authorizes only the approved export request boundary if T-10 later permits it; it does not itself authorize artifact download. Worker identities must be dedicated, non-user workload principals with exact table/function ACL, no browser EXECUTE and no service_role impersonation. No direct browser DML on audit records or candidate export records is permitted.
+
+The candidate annex is excluded from the 48-table canonical inventory. T-10 authority, purpose, classification, SoD, field projection, recipient, retention/legal hold, storage provider/region, encryption/key custody and deletion evidence remain blockers.
+
+
+## POQ-01 candidate notification audience snapshot RLS/ACL — NOT ADMITTED (2026-11-24)
+
+**Candidate relation:** `notification_outbox_recipients`. This is a future-review security boundary only; it is not added to the canonical 48-table RLS inventory and no policy/grant is approved.
+
+| Access path | Candidate policy |
+|---|---|
+| Anonymous/browser SELECT | DENY |
+| Authenticated/browser SELECT | DENY, including recipient self; candidate audience is not an inbox/read API |
+| Browser INSERT/UPDATE/DELETE | DENY |
+| Source domain command transaction | Narrow server-owned command path may insert the event-time snapshot atomically with source event/outbox, only after exact T-18 function review |
+| CMD-052 workload | SELECT only for rows belonging to the claimed outbox and current fenced lease; no direct mutation of immutable recipient/scope snapshot |
+| Admin/operations | No default access; break-glass or diagnostics require separately approved purpose, scope and audit |
+
+Candidate immutable fields: outbox_id, recipient_user_id, project/session/location/assignment scope references, scope_snapshot_hash and resolved_at. The snapshot must be complete before outbox work is claimable. Candidate rows cannot be updated to replace recipients after source-event time; current dispatch restrictions are represented by channel suppression outcomes, not snapshot edits.
+
+The workload identity, function owner, exact EXECUTE ACL, caller-JWT propagation, RLS interaction and lease predicate remain T-18 review items. No worker may impersonate service_role or receive an authenticated-user permission. Candidate relation is NOT ADMITTED and does not change the canonical 48-table count.
