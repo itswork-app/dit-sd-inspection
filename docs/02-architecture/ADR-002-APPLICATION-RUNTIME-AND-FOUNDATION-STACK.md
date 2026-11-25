@@ -1,7 +1,7 @@
 # ADR-002 — Application Runtime and Foundation Stack
 
 - Status: ACCEPTED FOR G9-F1/G10-F1 FOUNDATION
-- Version: 1.5.0
+- Version: 1.6.0
 - Decision date: 2026-11-25
 - Decision owner: Product Owner
 - Implementation owner: Solo maintainer with AI engineering partner
@@ -26,7 +26,8 @@ The repository has an approved Vercel + Supabase architecture but no application
 12. Use the Supabase CLI migration layout for local development only. Commit a minimal \`supabase/config.toml\`, keep timestamped SQL migrations under \`supabase/migrations/\`, disable automatic seed loading, and validate migration names/timestamps/empty files in the repository quality script. Do not add a business schema migration until its physical schema, authorization, privilege, transaction/lock and QA contracts have been reviewed. The CLI version must be pinned before CI or shared-environment migration execution is enabled.
 13. Provide a server-only identity helper that calls Supabase `auth.getClaims()` and derives the actor identifier exclusively from the verified JWT `sub` claim. Return explicit authenticated, unauthenticated or unavailable outcomes; contain provider/configuration exceptions and never expose raw provider errors. This helper establishes identity only, not role assignment, permission evaluation or resource authorization.
 14. Implement the approved Google sign-in flow using Supabase Auth OAuth: browser initiation, same-origin callback code exchange into an SSR-managed cookie session, server-side identity re-verification after callback, and explicit sign-out. Callback errors must use fixed generic redirects and must not disclose provider details. Authentication alone does not grant operational access. The account-approval and role-assignment mechanism is not integrated in this foundation, so no operational access decision is made here. No client-controlled metadata or self-selected role may establish access.
-15. Keep proxy session refresh best-effort for public navigation: contain thrown refresh/provider exceptions without turning all public requests into failures. This is not an authentication fallback. Any protected server handler must independently call the verified-identity boundary and fail closed when identity is unavailable.\n16. Provide a minimal structured logger with a closed event vocabulary and an allow-list of diagnostic fields only. Logs may contain timestamp, level, event, validated request correlation ID, bounded component/outcome, HTTP status and duration. Do not serialize arbitrary objects, request/response bodies, URLs, headers, IP addresses, user identifiers, email addresses, tokens, evidence, raw exceptions or provider messages. Logging must never influence authorization or business state.
+15. Keep proxy session refresh best-effort for public navigation: contain thrown refresh/provider exceptions without turning all public requests into failures. This is not an authentication fallback. Any protected server handler must independently call the verified-identity boundary and fail closed when identity is unavailable.
+16. Provide a minimal structured logger with a closed event vocabulary and an allow-list of diagnostic fields only. Logs may contain timestamp, level, event, validated request correlation ID, bounded component/outcome, HTTP status and duration. Do not serialize arbitrary objects, request/response bodies, URLs, headers, IP addresses, user identifiers, email addresses, tokens, evidence, raw exceptions or provider messages. Logging must never influence authorization or business state.
 
 ## Security and operational constraints
 
@@ -41,7 +42,7 @@ The repository has an approved Vercel + Supabase architecture but no application
 - A Content-Security-Policy is intentionally deferred until the application adopts a nonce-compatible strategy for Next.js runtime scripts and styles; do not ship a policy that silently breaks the app or rely on unsafe-inline as a shortcut.
 - Camera access remains permitted for same-origin application use because evidence capture may require it. Microphone and geolocation are disabled by default.
 - Inbound correlation IDs are accepted only when they match a bounded safe-character pattern; otherwise the proxy generates a UUID. They are not trusted assertions.
-- Public API errors must not expose stack traces, raw exceptions, credentials, tokens, personal data or evidence payloads. Internal logging is not introduced by this contract; any future logging must be structured and privacy-safe.
+- Public API errors must not expose stack traces, raw exceptions, credentials, tokens, personal data or evidence payloads. Structured logging is limited to the explicit allow-list in `src/lib/observability/logger.ts`; arbitrary context and provider exception details are excluded.
 - The local Supabase CLI configuration contains no hosted project reference or credentials. Foundation instructions prohibit linking the repository to a hosted project or invoking remote migration commands. The local CLI state directory is ignored by Git.
 - No seed SQL or sample personal/evidence data is admitted. Synthetic fixtures, if later needed, must be explicitly scoped and contain no real institutional records.
 
