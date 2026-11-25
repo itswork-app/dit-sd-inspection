@@ -362,3 +362,20 @@ If the unit remains practically accessible for correction/reinspection, the norm
 ABORTED is terminal and is not a good/defective classification, inspection approval, inspection completion, or print completion. Preserve the submitted revision, Reviewer return decision, evidence and audit history. A later inspection, if required, is a new attempt with a new inspection_id and its own session binding; the ABORTED attempt is never reactivated. CMD-013 FINAL_CLOSE cannot create, approve or bulk-apply aborts and cannot use ABORT to bypass unrelated evidence, document, print or attendance requirements.
 
 The exact command identity, permission/grant and SoD matrix, reason taxonomy, evidence requirements for proving packed/shipment-ready state, atomic state/claim/audit/event/idempotency write set, lock order, schema/RLS and QA execution remain technical design work. This PO clarification does not invent a command ID or authorize implementation.
+
+
+## Product Owner decision — institutional responsibility and staged implementation (2026-11-25)
+
+Decision ID: PO-2026-11-25-IMPLEMENTATION-RESPONSIBILITY-001  
+Status: APPROVED BY PRODUCT OWNER  
+Authority: Product Owner / sole repository maintainer
+
+The Product Owner explicitly confirms that institutional authorization, coordination and compliance are the Product Owner's responsibility. Separate institutional approval artifacts are not a prerequisite for beginning the bounded engineering-development scope. This decision records responsibility allocation only; it does not represent that an external institution has issued written approval.
+
+The Product Owner accepts responsibility for ensuring applicable institutional arrangements before real institutional data/evidence is collected or processed and before production operation. Until then, development must use synthetic/test data in isolated environments. No production evidence collection, irreversible retention/deletion, legal-hold disposition or production deployment is authorized by this decision.
+
+G9-F1 — FOUNDATION SCOPE FROZEN: repository/app bootstrap, development configuration, CI, authentication shell, database foundation and development-only migrations, typed API boundary, observability baseline and automated tests using synthetic data.
+
+G10-F1 — FOUNDATION IMPLEMENTATION ACTIVE: after merge of the PR recording this decision, implementation of the bounded foundation scope is authorized on a dedicated feature branch. This is not full-system G9 completion or blanket activation of all business features. F-03/F-04, command authorization, worker/provider security, physical RLS/grants and unresolved domain contracts remain feature-entry gates. No executable business mutation may bypass its required contract/security/transaction review.
+
+Solo-maintainer model: the Product Owner is the sole maintainer and accountable engineering decision owner. Documented self-review plus automated checks and post-merge verification are required; independent reviewer availability is not a blocker. No test or runtime result may be reported PASS unless actually executed and evidenced.

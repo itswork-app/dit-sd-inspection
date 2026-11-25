@@ -1,7 +1,7 @@
 # Repository Agent Instructions — Dit. SD Inspection
 
 **Document ID:** ENG-AGENT-001  
-**Version:** 1.2.3  
+**Version:** 1.2.4  
 **Status:** MANDATORY ENGINEERING POLICY  
 **Applies to:** Every human contributor, coding agent, reviewer and automation working in this repository.
 
@@ -173,3 +173,28 @@ Never claim “100% ready”, “production-grade”, “passed” or “verifie
 ## 12. Documentation-only merge exception — GOV-MERGE-001 (2026-11-25)
 
 The Product Owner approved a narrow exception for documentation-only PRs to merge to the default branch before G10, subject to `docs/00-project-charter/GOVERNANCE-DOCUMENTATION-ONLY-MERGE-EXCEPTION.md`. Every PR requires a complete diff audit, recorded maintainer self-review attestation where the solo-maintainer exception applies (not an independent GitHub approval), available checks with absent checks reported as ABSENT, no branch-protection bypass, and post-merge verification. This exception does not automatically approve a PR and does not activate G10, mark G9 ready, freeze scope, authorize implementation or establish production readiness. Source code, scripts, SQL, migrations, schema, grants/RLS, provider changes, deployment, release, secrets and data mutation remain outside this exception.
+
+
+## 3.2 Product Owner clarification — institutional responsibility and staged implementation (2026-11-25)
+
+The Product Owner explicitly states that institutional authorization, coordination and compliance are the Product Owner's responsibility and are not to be treated as a separate institutional-approval prerequisite for beginning engineering work. Do not repeatedly request institutional approval artifacts from the Product Owner as a condition for the bounded development scope below. This is an allocation of project responsibility; it is not a claim that an external institution has issued a written approval.
+
+To keep development safe while that responsibility is managed by the Product Owner:
+- Engineering may proceed with synthetic/test data in isolated development environments.
+- Do not import, collect, expose or process real institutional personal data or inspection evidence in development until the Product Owner has completed any applicable institutional arrangements.
+- Do not enable irreversible retention/deletion, legal-hold disposition, production evidence collection, or production deployment from this decision.
+- Production data, provider ownership, operational custody and go-live remain subject to the Product Owner's separate operational authorization and applicable obligations.
+
+### Staged gate decision
+
+A bounded foundation scope freeze is recorded as G9-F1 FOUNDATION SCOPE FROZEN. It covers repository/app bootstrap, development configuration, CI, authentication shell, database foundation/migration framework, typed API boundary, observability baseline and automated tests using synthetic data only. It expressly excludes production data, production deployment, and business command handlers whose contracts or lock/security protocols remain unresolved.
+
+G10-F1 FOUNDATION IMPLEMENTATION: ACTIVE upon merge of the PR carrying this decision. Source code, development-only schema/migrations, CI and tests for the bounded foundation scope may be created on a dedicated feature branch. This staged activation supersedes the prior blanket prohibition only for G10-F1. It does not declare full-system G9 complete, does not activate all business features, and does not authorize production operations.
+
+F-03/F-04, command-level authorization, notification worker/provider security, physical RLS/grants, institutional source/evidence details and other unresolved domain work remain explicit feature-entry gates. A feature must not be coded as an executable business mutation until its command contract, authorization, transaction/lock behavior and acceptance tests are sufficiently resolved. Unresolved features may be scaffolded only as non-operational placeholders where needed by the foundation.
+
+### Solo-maintainer review model
+
+The Product Owner is the sole maintainer and accountable engineering decision owner for this repository. Independent reviewer availability is not a prerequisite for development. Each PR must still receive documented maintainer self-review, full-diff inspection, automated checks where configured, and post-merge verification. Self-review cannot turn unexecuted tests or unverified runtime behavior into PASS.
+
+Root policy version: 1.2.4. This section is the controlling exception for the staged G9-F1/G10-F1 development scope.
