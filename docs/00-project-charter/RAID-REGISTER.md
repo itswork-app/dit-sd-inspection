@@ -72,11 +72,11 @@ Owner convention: accountable role is recorded; named individuals are not invent
 
 | ID | Type | Description | Impact | Response | Accountable role | Status |
 |---|---|---|---|---|---|---|
-| R-013 | Risk | Audit history may be incomplete or exposed if event writes, access controls, retention, or export governance are not approved and enforced | Critical | Approve INS-016, transactional append semantics, least-privilege access, privacy-safe payloads, retention/legal hold, and verification before implementation | Project Sponsor / CTO / Records Owner | OPEN |
+| R-013 | Risk | Audit history may be incomplete or exposed if event writes, access controls, retention, or export governance are not approved and enforced | Critical | Implement and verify PO-approved INS-016 atomic append/fail-closed and least-privilege controls; obtain T-10 institutional classification, retention, deletion/disposition, legal-hold and network-metadata decisions before production | Project Sponsor / CTO / Records Owner | OPEN |
 
 | I-010 | Issue | Audit retention duration, legal-hold authority, audit-reader roles, export permission, and network metadata policy remain unresolved | High | Obtain institutional security, privacy, records, and legal decisions | Project Sponsor / Records Owner | OPEN |
 
-| D-008 | Dependency | Approved audit event policy and trusted transactional command boundary | Audit implementation and security release gate | Product Owner / CTO | BLOCKED |
+| D-008 | Dependency | PO-approved INS-016/T-15 audit policy plus technically reviewed trusted transactional command boundary and verified atomic audit integration | Audit implementation and security release gate | Product Owner / CTO | BLOCKED |
 
 
 ## Package S — Cross-document audit findings
@@ -110,7 +110,7 @@ Product Owner explicitly approved T-01=A, T-02=B, T-03=C and T-04=A, then T-05=A
 - T-07 Super Admin session creation/configuration and scoped Korlap operation are PO-approved; state/permission implementation and tests remain open.
 - T-08 Korlap attendance verification within assigned scope is PO-approved; separate permissions and verification tests remain open.
 
-The Decision Register and affected specifications have been updated and fetched back for verification. T-05 through T-09 are PO-approved; T-10 option B is PO APPROVED as the required formal institutional records/legal/privacy review path; written institutional policy remains BLOCKED. T-11 option B is PO APPROVED for current mainstream stable browsers with explicit exclusions; exact device/OS/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; institutional ownership arrangement and provider/recovery verification remain BLOCKED. T-13 is PO APPROVED option B (individual + bounded batch printing); detailed implementation and tests remain pending. T-14 is PO APPROVED option A; T-15 through T-18 remain OPEN/BLOCKED. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
+The Decision Register and affected specifications have been updated and fetched back for verification. T-05 through T-09 are PO-approved; T-10 option B is PO APPROVED as the required formal institutional records/legal/privacy review path; written institutional policy remains BLOCKED. T-11 option B is PO APPROVED for current mainstream stable browsers with explicit exclusions; exact device/OS/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; institutional ownership arrangement and provider/recovery verification remain BLOCKED. T-13 is PO APPROVED option B (individual + bounded batch printing); detailed implementation and tests remain pending. T-14 is PO APPROVED option A; T-15 through T-18 have PO direction approved, while detailed design, technical review, institutional gates and verification remain OPEN/BLOCKED as applicable. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
 
 
 ## Package T T-09 decision update (2026-11-23)
