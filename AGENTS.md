@@ -35,3 +35,10 @@
 - Add appropriate unit, integration, end-to-end, authorization, and scope-isolation tests.
 - Include mobile, accessibility, low-connectivity, and recovery states.
 - Do not claim completion without verification; report blockers and deferred decisions explicitly.
+
+
+## Documentation-only merge exception — GOV-MERGE-001 (2026-11-25)
+
+The Product Owner approved a narrow exception allowing documentation-only PRs to merge to the default branch before G10, subject to the full controls in docs/00-project-charter/GOVERNANCE-DOCUMENTATION-ONLY-MERGE-EXCEPTION.md. Each PR requires a full-diff audit, required review approval, available checks, no unresolved blocking findings, and post-merge verification. Missing CI checks must be reported as absent, not passing. No bypass of branch protections is permitted.
+
+This exception does not activate G10, mark G9 ready, freeze scope, or authorize implementation. Source code, scripts, SQL, migrations, database/RLS/grants, provider changes, deployment, release, secrets, and data mutation remain prohibited until separately authorized. G9 remains NOT READY; G10 remains NOT ACTIVE; production readiness remains NOT VERIFIED. The exception does not automatically approve any existing PR.
