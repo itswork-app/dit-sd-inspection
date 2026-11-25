@@ -1,7 +1,7 @@
 # Notification Audience Guard — Technical Decision Record
 
 **Document ID:** NLA-L05-TDR-001  
-**Version:** 0.1.9  
+**Version:** 0.1.10  
 **Status:** PO-APPROVED CANDIDATE — technical approval pending Engineering, Database and Security  
 **Date:** 2026-11-25  
 **Decision authority:** Product Owner candidate selection recorded in NLA-RESOLVER-LOCK-001 §11  
@@ -435,6 +435,76 @@ The source map v0.1.0 is an inventory, not this registry. Composite declarations
 ### E. Dependency mapping required for F-04
 
 Each registry entry must produce a machine-reviewable dependency list of every principal, role, grant, assignment/member, scope-parent and time-validity object consulted. The list must be reconciled to command and non-command writers, including direct DML, SECURITY DEFINER helpers, triggers, cascades, imports, repair, expiry and scheduled jobs. This mapping is a mandatory input to the writer matrix and lock graph. No selector may be published if its dependencies are not registered.
+
+### 4.2.5.1 F05-T1 structural validation and canonicalization profile — candidate only
+
+**Status: REVIEW CANDIDATE — NOT APPROVED.** This subsection makes the existing abstract grammar testable at the document-contract level. It does not admit role keys, scope IDs, event participant fields, physical columns, policy publication or runtime implementation. Engineering and Security must review it; Product Owner review is required if any proposed rule changes approved product behavior.
+
+#### F. Exact structural contract
+
+The policy document is a JSON object with exactly these top-level members:
+
+- `grammar_version`: JSON integer `1` (not a string, decimal, exponent, boolean or null).
+- `match`: exact string `ANY`.
+- `selectors`: JSON array with 1–8 clause objects.
+
+No additional top-level members are accepted. Each clause has exactly the keys for its selected `kind`:
+
+- `ROLE_SCOPE`: exactly `kind`, `role_ref`, `scope`. `role_ref` is a non-empty exact canonical role-registry key; `scope` is an object with exactly `kind` and `binding`; `scope.kind` is one of `PROJECT`, `SESSION`, `LOCATION`, `ASSIGNMENT`; `scope.binding` is exactly `SOURCE_EVENT_SCOPE`.
+- `EVENT_PARTICIPANT`: exactly `kind` and `participant`; `participant` is exactly one of `ACTOR`, `TARGET`, `AFFECTED_MEMBER`.
+
+The grammar is closed: unknown keys, missing required keys, duplicate object keys, duplicate top-level members, duplicate nested members, wrong JSON types, empty identifiers, unknown enum values, unsupported grammar versions and malformed JSON are rejected. Duplicate JSON keys must be detected by the parser before conversion into a map/object that could silently discard one value. No last-key-wins or first-key-wins behavior is permitted.
+
+#### G. Null, missing and cardinality semantics
+
+- JSON `null` is invalid for every required member. Omission is not equivalent to null, empty string, empty array, false, zero, or a default.
+- Missing event token, registry row, policy pin, participant binding, role-registry entry, scope binding or required dependency is a hard validation failure. There is no fallback selector, default role, inferred actor/target, wildcard, or partial audience.
+- A participant field mapped by an event contract must resolve to one canonical principal identity. Missing, null, malformed, ambiguous, untrusted or multi-valued participant results are invalid for that mapping. A participant may be absent from a particular event only when the exact event registry explicitly declares that participant mapping as not applicable; the clause cannot then reference it.
+- `SOURCE_EVENT_SCOPE` must resolve only from trusted canonical source-event state. Its scope kind and cardinality must be declared per event registry row. Zero, multiple, ambiguous or cross-parent scopes are not silently coerced: they fail closed unless a future approved row explicitly defines the exact cardinality and deterministic set semantics. Current NREG rows do not yet contain those approved bindings.
+- Effective-time evaluation uses the one captured `audience_evaluated_at` and the candidate half-open interval rule `[valid_from, valid_until)`. Null interval bounds are allowed only where the authoritative domain contract explicitly defines an unbounded endpoint; this grammar does not invent such a domain rule.
+
+#### H. Boolean, participant and scope semantics
+
+- Top-level `ANY` is the only boolean composition: a principal qualifies if at least one valid clause selects that principal. No implicit AND, NOT, nested expression, threshold or priority semantics exist.
+- Within one `ROLE_SCOPE` clause, role effectiveness and the exact bound scope-membership predicate are conjunctive for the same principal and the same captured instant.
+- `EVENT_PARTICIPANT` is a direct selection of the trusted principal resolved by the exact named participant mapping. It is not a role grant, scope grant, authorization bypass or proof that the principal may open the source resource.
+- `ACTOR`, `TARGET` and `AFFECTED_MEMBER` are independent participant names. No one implies another. Actor/self-revoke is represented by the event's trusted ACTOR mapping only; there is no separate SELF selector.
+- Matching a principal through multiple clauses yields one candidate identity only after the still-unapproved candidate identity key is supplied by the snapshot contract. Matching scopes are not widened: the selected scope evidence is limited to the deterministic union of scopes actually matched by valid clauses. The physical scope serialization and cross-scope deduplication key remain NOT ADMITTED.
+
+#### I. Canonicalization and equality
+
+Canonicalization is a semantic normalization profile, not an approved byte-level JSON/hash format:
+
+1. Validate the original JSON token stream first, including duplicate-key detection and exact type checks.
+2. Normalize no identifier by trimming, case folding, Unicode normalization, alias lookup or display-label conversion. Registry keys and enum tokens must match their exact registered canonical value.
+3. Remove only structurally identical duplicate clauses. Do not collapse distinct participant clauses, role references, scope kinds or bindings.
+4. Order clauses deterministically by the fixed kind order `ROLE_SCOPE` then `EVENT_PARTICIPANT`; within `ROLE_SCOPE`, compare exact `role_ref`, then `scope.kind`, then `scope.binding`; within `EVENT_PARTICIPANT`, order by `ACTOR`, `TARGET`, `AFFECTED_MEMBER`. Comparisons are exact canonical-token comparisons, not locale-sensitive display sorting.
+5. Clause equality is equality of all declared typed members after validation. A duplicate clause cannot alter the candidate or selected-scope result.
+6. Do not infer a policy digest, serialized hash format, candidate identity key, scope ordering, or physical snapshot representation from this ordering. Those remain part of F05-T5 / physical snapshot approval.
+
+#### J. Candidate event-intent allowlist boundary
+
+The PO-approved specification/review candidate set is exactly:
+
+`account.approved`, `account.rejected`, `role.revoked`, `project.closed`, `session.closed`, `assignment.created`, `assignment.changed`, `inspection.submitted`, `inspection.returned_for_correction`, `inspection.approved`, `inspection.reopened`.
+
+This is a **candidate-intent allowlist for specification work only**, not a publishable/runtime event allowlist. Each token still requires an exact canonical producer, source transaction boundary, event schema/version, event-specific permitted clause set, participant mapping, scope binding, dependency list, dispatch profile, deduplication and accountable technical approval. All eleven remain `UNRESOLVED / NOT ENABLED`. `session.close_requested`, `inspection_revision.created`, `account.requested`, composite/conditional tokens and all other CMD declarations are not admitted by implication.
+
+#### K. Event-specific clause admission remains unresolved
+
+This grammar defines the maximum candidate clause shapes only. It does not assign any clause to an NREG row. In particular, it does not decide whether an event uses `ROLE_SCOPE`, `EVENT_PARTICIPANT`, both, or neither; it does not choose role keys, participant fields, scope kind/cardinality or dependency columns. A policy must be rejected if it contains a clause not explicitly admitted by that exact event's eventually approved registry row.
+
+#### L. F05-T1 closure evidence still required
+
+F05-T1 cannot close on this document alone. Closure requires:
+- Engineering and Security review of the typed structure, parser behavior, null/missing semantics, canonicalization, equality and resource bounds;
+- PO confirmation only if the proposed semantics change an approved POQ decision;
+- canonical role and scope registries, including authoritative IDs and lifecycle/effective-time contracts;
+- all eleven event rows completed with exact event token, per-event clause allowlist, trusted participant mappings, scope source/cardinality and dependency-column list (or explicit exclusion of a candidate row through approved change control);
+- a machine-reviewable validation corpus covering valid/invalid structures, duplicate JSON keys, null/missing values, clause ordering, overlap, untrusted participant data and unknown/composite event tokens;
+- synchronized TDR, event registry, event-to-selector crosswalk, writer matrix, RTM/RAID and QA references.
+
+Until that evidence is reviewed and approved, F05-T1 remains **OPEN — CANDIDATE SPECIFICATION ONLY**; no selector is publishable, no event is enabled, and F-04 dependency certification remains 0.
 
 ## 4.2.6 F05-T2 — event-specific dispatch authorization matrix (candidate)
 
