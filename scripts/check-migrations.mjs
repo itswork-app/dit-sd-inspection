@@ -33,17 +33,17 @@ export function validateMigrationNames(fileNames) {
   for (const name of sqlFiles) {
     const match = MIGRATION_PATTERN.exec(name);
     if (!match) {
-      errors.push(\`Invalid migration filename: ${name}\`);
+      errors.push(`Invalid migration filename: ${name}`);
       continue;
     }
 
     const [, timestamp] = match;
     if (!isValidTimestamp(timestamp)) {
-      errors.push(\`Invalid migration timestamp in filename: ${name}\`);
+      errors.push(`Invalid migration timestamp in filename: ${name}`);
     }
 
     if (timestamps.has(timestamp)) {
-      errors.push(\`Duplicate migration timestamp: ${timestamp}\`);
+      errors.push(`Duplicate migration timestamp: ${timestamp}`);
     }
     timestamps.add(timestamp);
   }
@@ -61,21 +61,21 @@ async function main() {
 
   for (const entry of sqlEntries) {
     if (!entry.isFile()) {
-      errors.push(\`Migration must be a regular file: ${entry.name}\`);
+      errors.push(`Migration must be a regular file: ${entry.name}`);
       continue;
     }
 
     const sql = await readFile(path.join(migrationDirectory, entry.name), "utf8");
-    if (!sql.trim()) errors.push(\`Migration file is empty: ${entry.name}\`);
+    if (!sql.trim()) errors.push(`Migration file is empty: ${entry.name}`);
   }
 
   if (errors.length > 0) {
-    for (const error of errors) process.stderr.write(\`ERROR: ${error}\n\`);
+    for (const error of errors) process.stderr.write(`ERROR: ${error}\n`);
     process.exitCode = 1;
     return;
   }
 
-  process.stdout.write(\`Migration filename check passed (${sqlEntries.length} SQL migration(s)).\n\`);
+  process.stdout.write(`Migration filename check passed (${sqlEntries.length} SQL migration(s)).\n`);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
