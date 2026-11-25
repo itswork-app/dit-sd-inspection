@@ -18,7 +18,7 @@ The approved product scope remains the IFP and Standing Bracket inspections for 
 
 At the time of this audit:
 - Canonical branch: `main`.
-- Main HEAD: `779f46c45444f7878d2128869288e986ff6b0b7a`.
+- Main HEAD at audit time: `7b57e200130807b3ac5adafb323794afd284691f` (post-PR #22).
 - PRs #14–#22 are merged; PR #18 records F05-T4, PR #19 records F05-T5, PR #20–#21 reconcile readiness/audit, and PR #22 reconciles F-04 writer-matrix evidence boundaries.
 - Main contains NLA-001 v0.1.24, NLA-L05-TDR-001 v0.1.14 and QA Catalogue v0.7.3.
 - RTM-001 v0.1.32 and RAID-001 v0.1.29 contain F05-T4/T5 traceability.
