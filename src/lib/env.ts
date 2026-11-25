@@ -21,6 +21,14 @@ export function readSupabasePublicConfig(
     throw new Error("NEXT_PUBLIC_SUPABASE_URL must be a valid absolute URL.");
   }
 
+  if (parsedUrl.username || parsedUrl.password) {
+    throw new Error("NEXT_PUBLIC_SUPABASE_URL must not contain credentials.");
+  }
+
+  if (parsedUrl.pathname !== "/" || parsedUrl.search || parsedUrl.hash) {
+    throw new Error("NEXT_PUBLIC_SUPABASE_URL must be a project origin without a path, query or fragment.");
+  }
+
   const isLocalhost = ["localhost", "127.0.0.1", "[::1]"].includes(parsedUrl.hostname);
   if (parsedUrl.protocol !== "https:" && !(isLocalhost && parsedUrl.protocol === "http:")) {
     throw new Error("Supabase URL must use HTTPS outside local development.");
