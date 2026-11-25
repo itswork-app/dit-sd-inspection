@@ -1,7 +1,7 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.24  
+**Version:** 0.1.25  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-25  
 **Product authority:** INS-015 — APPROVED  
@@ -588,3 +588,10 @@ The producer evaluates the complete candidate set against the serialized pre-mut
 After commit, fan-out and retries consume only the committed immutable snapshot and checkpoint. They never re-resolve membership, widen/substitute recipients, reset the checkpoint or create another source event/outbox. Provider I/O remains outside the source transaction. Exact producer contracts, policy/selector registry, physical snapshot/header, uniqueness and digest format, FK/trigger/helper graph, lock rank, writer coverage and Database/Security approvals remain OPEN.
 
 TC-NOTIF-100..105 are planned acceptance cases only. F05-T5 and F-05 remain OPEN; resolver certification 0/40; application lock certification 0/50; global lock graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 28. Implementation-entry readiness cross-reference — 2026-11-25
+
+The current F05-T4/T5 candidate specifications and their remaining technical admission criteria are consolidated in [IER-001](../00-project-charter/IMPLEMENTATION-ENTRY-READINESS-AND-BLOCKER-PLAN.md) v0.1.0 and DGA-001 v1.13.1. Current linked baselines: NLA-L05-TDR-001 v0.1.14; QA v0.7.3; RTM-001 v0.1.32; RAID-001 v0.1.29.
+
+F05-T1..T5 remain OPEN; no event candidate is technically admitted or enabled. F-04 writer inventory is incomplete; F-03 resolver certification is 0/40, application lock certification 0/50 and global graph acyclicity is NOT PROVEN. F05-T3 retry transition, F05-T4 physical evidence/T-10 approval and F05-T5 producer/snapshot/lock proof remain blocking. G9 NOT READY; G10 NOT ACTIVE. This pointer does not authorize event publication, physical schema, SQL, migration, grants/RLS, provider setup or runtime behavior.

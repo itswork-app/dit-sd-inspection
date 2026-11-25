@@ -2,8 +2,8 @@
 
 **Document ID:** MIB-001  
 **Status:** CONTROLLED BASELINE — DOCUMENTATION PHASE  
-**Version:** 1.0.12  
-**Last reviewed:** 2026-11-24  
+**Version:** 1.0.13  
+**Last reviewed:** 2026-11-25  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
 **G10 implementation activation:** NOT ACTIVE — pending verified G9 and the required G10 activation record  
@@ -269,3 +269,12 @@ The Product Owner supplied an explicit written authorization to move the project
 Canonical approval record: [Decision Register — Product Owner conditional implementation authorization](DECISION-REGISTER.md).
 
 **Gate disposition:** PO CONDITIONAL AUTHORIZATION RECEIVED. G9 remains NOT READY; G10 remains NOT ACTIVE; implementation remains prohibited until the G9 scope-freeze and G10 activation records are complete. This authorization does not replace institutional, Security, Database, Operations or provider approvals. The repository root AGENTS.md remains the mandatory execution boundary until updated through the approved gate process.
+
+
+## 17. Implementation-entry blocker plan — 2026-11-25
+
+[IER-001 — Implementation Entry Readiness and Remaining Blocker Plan](IMPLEMENTATION-ENTRY-READINESS-AND-BLOCKER-PLAN.md) v0.1.0 consolidates the remaining evidence required for G9 scope freeze and the separate G10 activation. It is a navigation and sequencing artifact, not an approval or a replacement for DGA-001.
+
+Post-PR #19 main baseline: `779f46c45444f7878d2128869288e986ff6b0b7a`; PRs #14–#19 merged. F05-T1..T5 are synchronized candidate specifications, not technical closure. F-04 writer certification remains zero; F-03 resolver certification remains 0/40, application lock certification 0/50 and global graph acyclicity NOT PROVEN. SES-001 business semantics are approved, but technical command/security/physical/QA closure remains outstanding. QA is PLANNED / NOT EXECUTED; CI evidence is ABSENT where unavailable.
+
+**Current gate state:** G9 NOT READY; G10 NOT ACTIVE; implementation NOT STARTED / NOT AUTHORIZED. All work must continue under the current root AGENTS.md boundary.
