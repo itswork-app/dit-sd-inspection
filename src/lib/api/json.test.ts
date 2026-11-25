@@ -98,6 +98,28 @@ describe("parseJsonRequest", () => {
     expect(result).toEqual({ ok: false, code: "PAYLOAD_TOO_LARGE" });
   });
 
+  it("does not wait for a stalled stream cancellation hook after exceeding the limit", async () => {
+    const body = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(new Uint8Array(32));
+      },
+      cancel() {
+        return new Promise<void>(() => undefined);
+      }
+    });
+    const request = new Request("https://example.test/api/foundation", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body,
+      duplex: "half"
+    } as RequestInit & { duplex: "half" });
+
+    await expect(parseJsonRequest(request, isCreateNoteInput, 8)).resolves.toEqual({
+      ok: false,
+      code: "PAYLOAD_TOO_LARGE"
+    });
+  });
+
   it("rejects malformed Content-Length values", async () => {
     const result = await parseJsonRequest(
       jsonRequest("{}", {
