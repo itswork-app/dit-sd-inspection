@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.29  
+**Version:** 0.1.30  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -457,7 +457,7 @@ The CMD-031–040 candidate overlay is partial and does not certify any resolver
 |---|---|---|---|---|---|
 | NOTIF-016 | Every enabled notification event uses a versioned, deterministic, bounded selector grammar and explicit event allowlist; selector dependencies map to all eligibility-changing writers | POQ-01; POQ-04; Security/Engineering | NLA-L05-TDR-001 v0.1.11 §§4.2.5–4.2.5.1; NLA-001 v0.1.13 §21; writer matrix v0.1.5 | TC-NOTIF-060/061/065/066/067; positive/negative structural corpus and selector-to-column/writer inventory | OPEN — SELECTOR GRAMMAR / DEPENDENCY UNIVERSE NOT FROZEN |
 | NOTIF-017 | Dispatch revalidation distinguishes event-time recipient qualification from current delivery/security authorization and defines transition-specific parent/scope behavior | POQ-01; POQ-04; Security | NLA-L05-TDR-001 v0.1.11 §§4.2.6–4.2.6.1; NLA-L05-EVENT-SELECTOR-REGISTRY-001 v0.1.3; NLA-EVENT-REGISTRY-001 v0.1.13 | TC-NOTIF-055/057/058/059/062; closure and revoke notice cases | OPEN — SECURITY/ENGINEERING VALIDATION REQUIRED |
-| NOTIF-018 | Suppression/retry uses an exhaustive reason/state model; account reactivation can reconsider only the same immutable candidate and cannot clear unrelated restrictions or widen the audience | POQ-01; POQ-04 | NLA-L05-TDR-001 v0.1.7 §4.2.4 F05-T3; NLA-001 v0.1.13 §21 | TC-NOTIF-056/063; bounded retry, consent/channel/re-suspension negative controls | OPEN — RETRY/STATE CONTRACT NOT DEFINED |
+| NOTIF-018 | Suppression/retry uses an exhaustive reason/state model; account reactivation can reconsider only the same immutable candidate and cannot clear unrelated restrictions or widen the audience | POQ-01; POQ-04 | NLA-L05-TDR-001 v0.1.12 §4.2.7; NLA-001 v0.1.22 §§4.4–4.5/7/15.5 | TC-NOTIF-056/063/064; bounded retry, consent/channel/security/scope revalidation, UNKNOWN reconciliation and immutable-checkpoint controls | OPEN — RETRY/STATE CONTRACT NOT DEFINED |
 | NOTIF-019 | Suppression and retry outcomes are append-only, correlated, privacy-minimized and auditable | INS-016; T-10; Security/Records/Privacy | NLA-L05-TDR-001 v0.1.7 §4.2.4 F05-T4; NLA-001 v0.1.13 §21 | TC-NOTIF-064; audit integrity, provenance, retention and minimization review | OPEN — AUDIT CONTRACT / INSTITUTIONAL RETENTION REVIEW REQUIRED |
 | NOTIF-020 | Source mutation, canonical event, audit, idempotency result, outbox intent, pinned policy and complete immutable candidate set commit atomically at one captured audience_evaluated_at | POQ-01; POQ-04; T-18 | NLA-L05-TDR-001 v0.1.7 §4.2.4 F05-T5; L05 source map v0.1.0; writer matrix v0.1.3 | TC-NOTIF-055..064 plus transaction-boundary and rollback evidence | OPEN — SNAPSHOT RELATION/HEADER NOT ADMITTED; PRODUCER PATHS NOT CERTIFIED |
 
@@ -613,3 +613,8 @@ NOTIF-016 now points to NLA-L05-TDR-001 v0.1.11 §§4.2.5–4.2.5.1 and the stre
 ## F05-T2 dispatch matrix traceability refresh — 2026-11-25
 
 NOTIF-022 now references NLA-L05-TDR-001 v0.1.11 §§4.2.6–4.2.6.1, the current event-to-selector crosswalk and NREG v0.1.13. The eleven-row matrix is candidate-only; event-specific dispatch profiles remain unapproved and unresolved where the source/recipient contract is incomplete. TC-NOTIF-055..059/062/069 remain PLANNED / NOT EXECUTED. F05-T2 remains OPEN; no event is enabled; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## F05-T3 suppression/retry traceability refresh — 2026-11-25
+
+NOTIF-018 now points to TDR v0.1.12 §4.2.7 and NLA-001 v0.1.22's retry/state reconciliation. The candidate reason taxonomy distinguishes policy suppression, bounded transient retry, terminal failure and ambiguous provider acceptance. A state-graph gap remains: the current NLA-001 delivery transitions do not define the legal return path for a retryable provider failure. Numeric retry budgets, stable reason codes, reschedule ownership, provider-specific classifications and T-10 retention remain OPEN. TC-NOTIF-056/063/064 remain PLANNED / NOT EXECUTED; F05-T3 remains OPEN; G9 NOT READY; G10 NOT ACTIVE.
