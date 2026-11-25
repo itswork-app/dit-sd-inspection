@@ -24,6 +24,11 @@ export async function updateSession(request: NextRequest) {
     }
   });
 
-  await supabase.auth.getClaims();
+  try {
+    await supabase.auth.getClaims();
+  } catch {
+    // Refresh is best-effort here. Protected handlers independently verify claims
+    // and fail closed when identity cannot be established.
+  }
   return response;
 }
