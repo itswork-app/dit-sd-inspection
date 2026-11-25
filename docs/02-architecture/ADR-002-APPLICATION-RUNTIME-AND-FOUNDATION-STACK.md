@@ -68,3 +68,4 @@ CI is configured to execute ESLint, TypeScript, migration filename validation, V
 - Supabase migration deployment: https://supabase.com/docs/guides/deployment/database-migrations
 - Next.js support policy: https://nextjs.org/support-policy
 - Supabase SSR guide: https://supabase.com/docs/guides/auth/server-side/creating-a-client
+- `AUTHENTICATION-GOOGLE-OAUTH-SETUP.md` — development provider and redirect configuration runbook
