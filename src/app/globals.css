@@ -148,3 +148,5 @@ a { color: inherit; text-decoration: none; }
 .auth-note { margin: 22px 0 0; color: #a5b3c7; font-size: 11px; line-height: 1.8; }
 .auth-link { display: inline-block; color: #a9c8fa; font-size: 13px; text-decoration: underline; text-underline-offset: 4px; }
 .topbar .auth-link { text-decoration: none; }
+
+.auth-success { margin: 0 0 16px; color: #83e2b5; font-size: 12px; line-height: 1.6; }
