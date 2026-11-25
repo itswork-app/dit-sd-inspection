@@ -1,10 +1,13 @@
 # CMD-021–030 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security review required; NOT approved for implementation  
-**Version:** 0.3.5  
+**Version:** 0.3.6  
 **Date:** 2026-11-24  
 **Scope:** CMD-021 through CMD-030  
-**Controls:** T-15 append-only audit direction; T-16 canonical unit identity and association model; T-18 Option A command boundary; G9 NOT READY; G10 NOT AUTHORIZED.
+**Controls:** T-15 append-only audit direction; T-16 canonical unit identity and association model; T-18 Option A command boundary; G9 NOT READY; G10 NOT ACTIVE — pending verified G9 and the separate G10 activation record.
+
+**Current gate clarification (2026-11-25):** Product Owner conditional implementation authorization was received on 2026-11-24. G9 remains NOT READY; G10 remains NOT ACTIVE pending verified G9 and a separate G10 activation record. Any dated historical authorization wording in this document is not the current gate status. No implementation is authorized by this document.
+
 
 ## 1. Purpose, authority and source hierarchy
 
