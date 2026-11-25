@@ -1,7 +1,7 @@
 # Test Strategy and Quality Gates
 
 Status: Quality strategy draft — thresholds and environments require approval
-Version: 0.1.0
+Version: 0.1.1
 
 ## 1. Quality objectives
 Prove functional parity for approved scope, data integrity, authorization isolation, recoverability, evidence integrity, and performance for the agreed concurrency target.
@@ -19,7 +19,7 @@ Prove functional parity for approved scope, data integrity, authorization isolat
 10. UAT: field users validate approved workflow and official instrument data.
 
 ## 3. Critical invariants
-- Inspector capacity is 50–100 distinct users combined across both locations.
+- Inspector capacity is configurable from 1 to 100, default 50, counting distinct enabled accounts with an active Inspector role and at least one effective operational Inspector assignment across both locations combined, per T-14.
 - Concurrent load test target is 100 active authenticated users.
 - No duplicate active unit claim.
 - No acknowledged write is lost.
