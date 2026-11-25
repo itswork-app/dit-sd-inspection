@@ -69,7 +69,8 @@ export async function parseJsonRequest<T>(
       totalBytes += value.byteLength;
       if (totalBytes > maxBytes) {
         try {
-          await reader.cancel();
+          // Do not wait for an untrusted stream's cancellation hook to settle.
+          void reader.cancel().catch(() => undefined);
         } catch {
           // Cancellation is best-effort; the size limit remains enforced.
         }
