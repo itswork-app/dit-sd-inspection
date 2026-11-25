@@ -1,6 +1,6 @@
 # Decision Register — Dit. SD Inspection
 
-**Identifier namespace clarification:** Decision Register decision `SES-001` is the PO-approved session-bound inspection-attempt and packed-unit ABORT decision. It is distinct from PRD/RTM requirement `SES-001`, which governs project/session/location/instrument/team planning. Cross-document references must qualify the artifact name; a bare `SES-001` is ambiguous.
+**Identifier namespace clarification:** Decision Register decision `SES-001` is the PO-approved session-bound inspection-attempt and packed-unit ABORT decision. It is distinct from PRD/RTM requirement `SES-001`, which governs project/session/location/instrument/team planning. Cross-document references must qualify the artifact name; a bare `SES-001` is ambiguous. Decision Register decision `RBAC-003` is the PO-approved account lifecycle, role and scope governance decision. It is distinct from RTM requirement `RBAC-003`, which prohibits self-review and self-approval. Cross-document references must qualify the artifact name; a bare `RBAC-003` is ambiguous.
 
 Only explicitly approved decisions are marked APPROVED.
 
