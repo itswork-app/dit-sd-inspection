@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.7.2
+Version: 0.7.3
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -1093,3 +1093,19 @@ The following cases define verification expectations only. All remain PLANNED / 
 | TC-NOTIF-099 | Inject message body, inspection evidence, tokens, credentials, signed URLs, raw idempotency keys, full provider payloads and unapproved network metadata into attempt/audit fields | Sensitive values are rejected, redacted or omitted before durable logging; sanitized reason/error references remain sufficient for operations; T-10-dependent retention/disposition remains disabled until written approval | PLANNED / NOT EXECUTED |
 
 **Execution control:** these cases do not approve a physical table or ACL, hash chain, signed checkpoint, WORM archive, provider callback mechanism or retention duration. TC-NOTIF-095..099 remain PLANNED / NOT EXECUTED until the logical contract is approved and mapped to exact schema/ACL/provider controls. Runtime execution requires G10 activation and authorized isolated infrastructure.
+
+
+### F05-T5 atomicity and snapshot-binding cases — 2026-11-25
+
+The following cases are design acceptance criteria only. All remain PLANNED / NOT EXECUTED and require an admitted producer/snapshot contract, approved serialization protocol, G10 activation and an authorized isolated PostgreSQL environment.
+
+| Test ID | Scenario | Expected result / invariant | Status |
+|---|---|---|---|
+| TC-NOTIF-100 | Inject failure independently at source mutation, canonical event, audit, idempotency result, outbox intent, policy pin and candidate-snapshot persistence | The entire source transaction rolls back; no partial source state, event, audit, outbox, policy pin or snapshot becomes visible; audit failure fails closed | PLANNED / NOT EXECUTED |
+| TC-NOTIF-101 | Race source production against role/grant, assignment, scope, account eligibility, policy publication/retirement and project/session lifecycle writers | One approved serialization outcome governs the complete pre-mutation candidate set; every effective predicate and policy-effective decision uses the same captured `audience_evaluated_at`; no mixed-time or widened audience | PLANNED / NOT EXECUTED |
+| TC-NOTIF-102 | Pause a producer after acquiring the approved audience guard, commit an eligibility writer, then resume resolution | The resolver observes the writer outcome required by the approved PostgreSQL isolation/command-boundary protocol; timestamp is captured at the specified post-guard point and reused consistently | PLANNED / NOT EXECUTED |
+| TC-NOTIF-103 | Race duplicate command/idempotency replay, deadlock/serialization retry and lost client commit acknowledgement | Replay returns the original durable source/event/outbox/policy/snapshot references; no duplicate source event, outbox intent, candidate snapshot or contradictory audit result is created | PLANNED / NOT EXECUTED |
+| TC-NOTIF-104 | Compare a successfully evaluated zero-recipient result with missing, partial, unresolved or failed candidate materialization | Only a contractually permitted, explicitly complete empty snapshot is accepted; missing/partial/ambiguous/error states abort the source transaction and never fall back to a rebuilt audience | PLANNED / NOT EXECUTED |
+| TC-NOTIF-105 | Run fan-out/retry workers while candidate rows are being written or after lease reclaim; inject provider timeout after source commit | Workers see only a fully committed immutable snapshot; retries preserve candidate/policy/checkpoint lineage; provider I/O is outside the source transaction; stale workers cannot alter candidates or checkpoint | PLANNED / NOT EXECUTED |
+
+**Execution boundary:** these cases do not approve a physical table/header, digest, uniqueness key, isolation setting, L05 key/rank, SQL function, provider or migration. They must be mapped to exact admitted DDL, producer contracts and lock graph before execution. Static review is not a test pass.

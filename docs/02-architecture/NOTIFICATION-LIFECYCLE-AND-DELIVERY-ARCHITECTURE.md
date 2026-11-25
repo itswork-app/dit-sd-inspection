@@ -1,9 +1,9 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.23  
+**Version:** 0.1.24  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
-**Date:** 2026-11-24  
+**Date:** 2026-11-25  
 **Product authority:** INS-015 — APPROVED  
 **Related controls:** INS-016 / T-15, T-18, T-10, MIB-001, DGA-001  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)  
@@ -577,3 +577,14 @@ NLA-L05-TDR-001 v0.1.13 §17 defines the candidate logical evidence envelope for
 Actor provenance is server-derived for users, authenticated for internal workers and provider-validated for callbacks. Worker lease-generation fencing prevents stale outcomes. Timestamps are server/database UTC instants; they do not alone establish concurrency-safe ordering. Committed evidence is corrected additively, never updated/deleted in place. Message bodies, inspection/evidence content, tokens, credentials, signed URLs, raw idempotency keys and full provider responses are excluded.
 
 Stable literal reason codes, physical constraints/ACL, integrity verification mechanism, and the exact evidence representation remain subject to Security/Engineering/Database review. T-10 classification, retention, legal hold, disposition, audit access/export and network metadata remain BLOCKED pending written institutional approval; no duration or purge policy is set. TC-NOTIF-095..099 are specification cases only. F05-T4 and F-05 remain OPEN; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 27. F05-T5 atomicity and immutable snapshot binding — candidate (2026-11-25)
+
+NLA-L05-TDR-001 v0.1.14 §18 defines the candidate logical transaction boundary for each eventually admitted notification source event. The source-domain mutation, canonical event, required audit evidence, idempotency outcome, outbox intent, exact immutable policy-version reference, complete event-time candidate recipient/scope set and initial checkpoint must commit together or roll back together.
+
+The producer evaluates the complete candidate set against the serialized pre-mutation state using one database-controlled UTC `audience_evaluated_at`, captured immediately after the separately approved audience-serialization point. That same instant governs every effective-time predicate and policy-effective selection. A fully evaluated empty audience is distinct from an incomplete/failed snapshot; unresolved mappings or integrity errors fail the source transaction closed.
+
+After commit, fan-out and retries consume only the committed immutable snapshot and checkpoint. They never re-resolve membership, widen/substitute recipients, reset the checkpoint or create another source event/outbox. Provider I/O remains outside the source transaction. Exact producer contracts, policy/selector registry, physical snapshot/header, uniqueness and digest format, FK/trigger/helper graph, lock rank, writer coverage and Database/Security approvals remain OPEN.
+
+TC-NOTIF-100..105 are planned acceptance cases only. F05-T5 and F-05 remain OPEN; resolver certification 0/40; application lock certification 0/50; global lock graph NOT PROVEN ACYCLIC; candidate snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE.

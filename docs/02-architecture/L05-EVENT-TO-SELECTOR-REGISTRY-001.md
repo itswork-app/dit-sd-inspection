@@ -1,11 +1,11 @@
 # L05 Event-to-Selector Registry — Candidate v1
 
 **Document ID:** NLA-L05-EVENT-SELECTOR-REGISTRY-001  
-**Version:** 0.1.3  
+**Version:** 0.1.4  
 **Status:** STATIC CROSSWALK / REVIEW CANDIDATE — NOT APPROVED, NO EVENT ENABLED  
 **Date:** 2026-11-25  
-**Baseline:** `main` at `f3248037c5754ca537c033422d3e247be34f931d`  
-**Authority:** AGENTS.md v1.2.3; Decision Register POQ-01 and POQ-04; NLA-L05-TDR-001 v0.1.11; NLA-EVENT-REGISTRY-001 v0.1.13; NLA-EVENT-TRIAGE-001 v0.1.3; L05 source-event map v0.1.1; L05 writer matrix v0.1.5.
+**Baseline:** `main` at `4c72c9a0bf634e6c8f58f40527b5662c612b1da2`  
+**Authority:** AGENTS.md v1.2.3; Decision Register POQ-01 and POQ-04; NLA-L05-TDR-001 v0.1.14; NLA-EVENT-REGISTRY-001 v0.1.13; NLA-EVENT-TRIAGE-001 v0.1.3; L05 source-event map v0.1.1; L05 writer matrix v0.1.5.
 
 ## 1. Purpose and decision boundary
 
@@ -274,3 +274,12 @@ NLA-L05-TDR-001 v0.1.11 §4.2.6.1 adds an eleven-row dispatch review matrix. It 
 The matrix is a static review aid, not approved dispatch policy. All eleven NREG rows remain UNRESOLVED / NOT ENABLED. No current-role, assignment-membership or active-parent predicate may be inferred as universal; no recipient substitution or resource-access grant is permitted. Mandatory security restrictions remain fail-closed.
 
 F05-T2 remains OPEN pending Security/Engineering approval of each versioned event profile, resolution of source/recipient gaps, aligned F05-T3/T4/T5 contracts, and TC-NOTIF-055..059/062/069 acceptance evidence after G10 activation. All QA remains PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 14. F05-T5 atomic source-event and snapshot binding cross-reference — 2026-11-25
+
+NLA-L05-TDR-001 v0.1.14 §18 defines a candidate logical atomicity contract: source mutation, canonical event, required audit evidence, idempotency outcome, outbox intent, exact policy-version pin, complete immutable candidate recipient/scope set and initial checkpoint share one approved transaction and one captured `audience_evaluated_at`. An incomplete or unresolved snapshot fails the source transaction; a successfully evaluated empty audience is not equivalent to missing/partial evidence.
+
+This crosswalk does not identify an admitted producer, physical relation/header, candidate key, digest, uniqueness constraint, lock rank or writer certification. Each of the eleven candidate event rows still needs an exact source-command/finalizer, transaction boundary, participant/scope/dependency mapping, policy pin and event-specific approval. Composite/conditional command declarations remain unresolved and no event is enabled.
+
+F05-T5 remains OPEN pending Engineering producer inventory, Database physical/atomicity approval, Security provenance and fail-closed review, complete eligibility-writer serialization proof and deterministic isolated-database evidence. TC-NOTIF-100..105 remain PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE.
