@@ -132,3 +132,20 @@ Any change to approved product semantics requires a new Product Owner decision. 
 [PTCM-001 — Pre-Implementation Technical Closure Matrix](PRE-IMPLEMENTATION-TECHNICAL-CLOSURE-MATRIX.md) v0.1.2 now decomposes the remaining F-03 lock-order contradictions into nine explicit conflict classes and eight evidence exit artifacts; F-04 into a physical writer/bypass evidence package and writer-by-writer certification record; and SES-001 into ten technical decisions. This matrix is a controlled closure aid, not an approval or closure of any blocker.
 
 Current verified baseline after PR #24: `main` at `18ac4f91484a1afa5e7e5bf35fe9c7b6debfaaa5`. The F-03 graph remains NOT PROVEN ACYCLIC; resolver certification 0/40; application lock certification 0/50; F-04 writer certification 0; SES-001 technical contract OPEN. QA remains PLANNED / NOT EXECUTED; CI/workflow evidence ABSENT where no checks/runs are returned. G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 2026-11-25 — Product Owner responsibility clarification and G10-F1 foundation activation
+
+The Product Owner confirms institutional authorization, coordination and compliance are the Product Owner's responsibility. Separate institutional approval artifacts are not a prerequisite for bounded engineering development; this is not a claim that an external institution has issued written approval. Real institutional data/evidence must not be collected or processed in development until the Product Owner has completed applicable arrangements. Production evidence collection, irreversible retention/deletion, legal-hold disposition and production deployment remain outside this activation.
+
+### G9-F1 — FOUNDATION SCOPE FROZEN
+
+Included: repository/app bootstrap; development configuration; CI; authentication shell; database foundation and development-only migrations; typed API boundary; observability baseline; automated tests using synthetic data.
+
+Excluded: production operations/data; executable business mutations with unresolved command/permission/lock contracts; unverified notification workers/provider callbacks; unapproved physical RLS/grants; production evidence retention/deletion and external-provider operations.
+
+### G10-F1 — FOUNDATION IMPLEMENTATION ACTIVE
+
+Upon merge of the governing Product Owner decision PR, implementation may proceed on a dedicated feature branch for the included foundation scope. This is a staged gate, not a declaration that full-system G9 is complete. F-03/F-04 and other command/security/domain workstreams remain feature-entry gates and must be closed before implementing the affected business mutations. QA results must be recorded only after execution.
+
+The Product Owner is the sole maintainer and accountable engineering decision owner. Documented self-review, automated checks and post-merge verification remain mandatory; independent reviewer availability is not a blocker.
