@@ -3,20 +3,23 @@
 **Document ID:** SSOT-AUDIT-001  
 **Version:** 0.1.7  
 **Status:** STATIC CROSS-DOCUMENT AUDIT COMPLETED — CLOSURE PARTIAL  
-**Audit date:** 2026-11-24  
+**Initial audit date:** 2026-11-24  
+**Latest reconciliation:** 2026-11-25  
 **Repository:** `itswork-app/dit-sd-inspection`  
-**Branch:** `docs/audit-lock-and-identity-reconciliation`  
-**PR:** #3 — Draft / Open  
+**Original audit branch:** `docs/audit-lock-and-identity-reconciliation`  
+**Latest reconciliation branch:** `docs/rbac-003-account-role-scope-governance`  
+**Original audit PR:** #3 — Draft / Open  
+**Latest reconciliation PR:** #31 — Open  
 **Authority snapshot reviewed:** AGENTS.md v1.2.1; MIB-001 v1.0.8; DGA-001 v1.11.28; IRG-001 v1.0.3  
 **Implementation authorization (historical source snapshot):** NOT GRANTED
 
-> **Current status clarification:** This audit's original authorization wording reflects the source snapshot before the Product Owner's conditional implementation authorization was recorded on 2026-11-24. See §11 for the current controlling status: conditional authorization received; G9 NOT READY; G10 NOT ACTIVE.
+ > **Current status clarification:** §§1, 3 and 9 preserve the original audit's historical source snapshot. The current controlling state is recorded in §11 and updated by §12: Product Owner conditional implementation authorization RECEIVED; G9-F1 foundation scope FROZEN; G10-F1 foundation implementation ACTIVE for the bounded synthetic-data foundation scope; full-system G9 NOT READY; full-system G10 and later business-feature entry NOT AUTHORIZED; production readiness NOT VERIFIED.
 
 ## 1. Executive result
 
 A static cross-document reconciliation was completed against the source versions listed in this audit's authority snapshot: DGA-001, RTM-001, RAID-001, Decision Register, Package S, Package T, MIB-001, IRG-001 and the QA catalogue.
 
-The audit confirms that the authority hierarchy and the current implementation boundary are consistent: Product Owner decisions govern product semantics within PO authority; institutional decisions remain with the authorized institutional owners; technical approvals and runtime evidence remain with Engineering, Database, Security, QA and Operations; G9 is NOT READY and G10 is NOT AUTHORIZED.
+The audit confirms that the authority hierarchy remains consistent: Product Owner decisions govern product semantics within PO authority; institutional decisions remain with the authorized institutional owners; technical approvals and runtime evidence remain with Engineering, Database, Security, QA and Operations. The current implementation boundary is G9-F1 FROZEN and G10-F1 ACTIVE only for the bounded synthetic-data foundation scope; full-system G9 remains NOT READY, later business-feature entry and full-system G10 remain gated, and production readiness is NOT VERIFIED.
 
 Two documentation reconciliation actions are recorded in this checkpoint:
 1. Package S §9.15 is retained as a historical snapshot and superseded for current counts/status by a new §9.16 addendum.
