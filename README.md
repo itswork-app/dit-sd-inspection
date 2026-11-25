@@ -18,12 +18,12 @@ Feature parity first; controlled improvements second. The legacy application is 
 Cost-first means optimizing total lifecycle cost without waiving security, privacy, data integrity, backup/recovery, or production reliability.
 
 ## Status
-**Current phase:** Documentation / SSOT maturation. The repository is intentionally documentation-first and will contain both the authoritative documentation and the future application. Application source code is not yet authorized or started.
+**Current phase:** Staged foundation implementation (G10-F1 ACTIVE). The repository contains authoritative documentation and is now authorized to receive application implementation. Coding is authorized only for the bounded foundation scope using synthetic/test data.
 
-**Scope freeze / G9:** NOT READY  
-**Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)  
-**G10 implementation activation:** NOT ACTIVE — pending verified G9 and a separate G10 activation record  
-**Production readiness:** NOT VERIFIED
+**Scope freeze / G9-F1:** FOUNDATION SCOPE FROZEN (2026-11-25)  
+**Full-system G9:** NOT READY — business-feature gates remain open  
+**G10-F1 foundation implementation:** ACTIVE (2026-11-25; PR #26)  
+**Full-system / production readiness:** NOT VERIFIED
 
 ## Engineering instructions and delivery roadmap
 **Mandatory:** Every contributor and coding agent must read the root [AGENTS.md](AGENTS.md) before each new work session and substantive task. If it cannot be read, repository edits must stop. The file defines authority, authorization boundaries, security invariants, implementation workflow, SemVer and reporting rules.
@@ -33,7 +33,7 @@ The [Implementation Roadmap and Release Governance](docs/00-project-charter/IMPL
 ## Documentation authority and delivery gates
 Start with the [Master Implementation Blueprint](docs/00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md). It defines source-of-truth precedence, non-negotiable engineering invariants, requirement traceability, delivery gates G0–G12, production-readiness evidence, and the next documentation workstreams.
 
-The current [Documentation Gap Audit — Gate Implementation Readiness](docs/00-project-charter/DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) is the active closure queue. It records unresolved source, institutional, architecture, command, security, operations and verification gaps. Do not infer implementation readiness from document count or planned test cases.
+The current [Documentation Gap Audit — Gate Implementation Readiness](docs/00-project-charter/DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) is the active closure queue. It records unresolved source, architecture, command, security, operations and verification gaps. The Product Owner owns institutional authorization/coordination; synthetic-data foundation development is not blocked on separate institutional approval artifacts. Do not infer implementation readiness from document count or planned test cases.
 
 The [Decision Register](docs/00-project-charter/DECISION-REGISTER.md) is the index of approved and open Product Owner decisions. The [T-19 Repository Runtime Architecture Audit](docs/02-architecture/T19-REPOSITORY-RUNTIME-ARCHITECTURE-AUDIT.md) records why the current absence of application source is intentional during this phase.
 
@@ -45,4 +45,4 @@ For the complete proposed command inventory, see the [CMD-001–054 Cross-Comman
 
 The current static reconciliation is recorded in [SSOT-AUDIT-001](docs/00-project-charter/SSOT-CROSS-DOCUMENT-RECONCILIATION-AUDIT.md). Unresolved product-semantic questions are separated in [POQ-001](docs/00-project-charter/PRODUCT-OWNER-OPEN-DECISION-PACKET.md); institutional and technical evidence requests are routed in [AUTH-001](docs/00-project-charter/INSTITUTIONAL-AND-TECHNICAL-AUTHORITY-APPROVAL-PACKAGE.md). Package S §9.16 is the current inventory snapshot and §9.17 records the current authorization/gate status; Package T is a historical decision pack and the Decision Register remains the current PO authority.
 
-**Governance:** No application code, migrations, SQL execution, grants/revokes, RLS/schema changes, live database changes, provider setup, deployment, or production activation until G9 is verified and a separate G10 activation record is approved. Conditional Product Owner authorization alone does not activate G10. The narrow GOV-MERGE-001 exception applies only to fully audited documentation-only PRs and does not waive these gates.
+**Governance:** G10-F1 authorizes bounded foundation source code and development-only schema/migrations on a dedicated feature branch, using synthetic data. It does not authorize unresolved business command handlers, production data, production provider operations, deployment, release or production activation. F-03/F-04 and command/security/physical-schema contracts remain feature-entry gates. GOV-MERGE-001 continues to govern documentation-only merges; code PRs require actual automated checks and maintainer review.

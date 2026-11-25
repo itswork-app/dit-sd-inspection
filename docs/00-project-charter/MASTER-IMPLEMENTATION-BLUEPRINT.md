@@ -1,21 +1,21 @@
 # Master Implementation Blueprint — Dit. SD Inspection
 
 **Document ID:** MIB-001  
-**Status:** CONTROLLED BASELINE — DOCUMENTATION PHASE  
-**Version:** 1.0.14  
+**Status:** CONTROLLED BASELINE — STAGED FOUNDATION IMPLEMENTATION  
+**Version:** 1.0.15  
 **Last reviewed:** 2026-11-25  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
-**G10 implementation activation:** NOT ACTIVE — pending verified G9 and the required G10 activation record  
-**Scope-freeze status:** NOT READY
+**G10-F1 foundation implementation activation:** ACTIVE (2026-11-25, after PR #26); full-system G10 remains staged and feature-gated  
+**Scope-freeze status:** G9-F1 FOUNDATION SCOPE FROZEN; full-system G9 NOT READY
 
-**Current gate interpretation (2026-11-24):** Any dated historical section below that records “G10 NOT AUTHORIZED” predates the Product Owner's conditional implementation authorization. The current controlling state is conditional PO authorization received, G9 NOT READY, and G10 NOT ACTIVE. This does not authorize implementation before verified G9 and a separate approved G10 activation record.
+**Current gate interpretation (2026-11-25):** Historical sections below that record G9 NOT READY/G10 NOT ACTIVE predate the staged G9-F1/G10-F1 decision. The controlling state is G9-F1 FOUNDATION SCOPE FROZEN and G10-F1 FOUNDATION IMPLEMENTATION ACTIVE. Full-system G9 remains NOT READY; later business features and production operations remain gated.
 
 ## 1. Purpose and authority
 
 This document is the navigation and control plane for the project's implementation-ready specification. It does not replace the approved PRD, Decision Register, ADRs, detailed domain specifications, security contracts, or test catalogue. It identifies their authority, dependencies, required evidence, and release gates.
 
-The repository is intentionally documentation-first during the current phase. The same repository is intended to contain both the authoritative documentation and the application implementation when implementation is separately authorized. The absence of application source code during this phase is therefore an intentional sequencing decision, not a repository defect.
+The repository contains authoritative documentation and is now authorized to receive application implementation. G9-F1/G10-F1 authorize the bounded foundation scope described in root AGENTS.md and the Decision Register. Source code is to be created on the dedicated implementation branch.
 
 ### 1.1 Source-of-truth precedence
 
@@ -76,8 +76,8 @@ A phase is complete only when its exit evidence is recorded and reviewed. A docu
 | G6 | UX and accessibility closure | Role journeys, responsive states, offline/error/recovery states, accessibility acceptance | NOT READY |
 | G7 | Quality strategy closure | Full RTM, acceptance criteria, test cases, risk-based coverage and test data strategy | NOT READY |
 | G8 | Production operations closure | Environments, ownership, region, quotas, backups, restore, monitoring, incident response, cost envelope | NOT READY |
-| G9 | Final SSOT and scope-freeze review | Cross-document consistency, no unresolved critical ambiguity, signed scope freeze | NOT READY |
-| G10 | Implementation authorization | Verified G9, approved scope-freeze record, and separate G10 activation record; conditional PO authorization has been received but is not activation | NOT ACTIVE |
+| G9 | Final SSOT and scope-freeze review | Cross-document consistency, no unresolved critical ambiguity, signed scope freeze | Full-system NOT READY; G9-F1 foundation scope frozen |
+| G10 | Implementation authorization | Verified scope freeze and explicit activation record for the applicable implementation stage | G10-F1 foundation ACTIVE; later business-feature stages remain gated |
 | G11 | Build and verification | CI evidence, functional/security/performance/accessibility/recovery test results | NOT STARTED |
 | G12 | Production release approval | Deployment, restore/rollback proof, operational ownership, UAT and go-live acceptance | NOT STARTED |
 
@@ -287,3 +287,12 @@ The verified canonical `main` baseline after PR #23 is `0db79d376face690b353d466
 PTCM-001 consolidates the evidence-oriented closure work for F-03, F-04 and the PO-approved SES-001 packed-unit ABORT semantics. It does not itself approve a technical lock protocol, certify any eligibility writer, assign command IDs or admit physical schema. Current dispositions remain: F-03 NOT PROVEN ACYCLIC; F-04 0 writers certified; resolver paths 0/40 certified; application command lock certification 0/50; SES-001 technical contract OPEN; QA PLANNED / NOT EXECUTED. CI/workflow evidence is ABSENT where no checks/runs are returned.
 
 **Gate disposition remains unchanged:** PO CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED; G9 NOT READY; G10 NOT ACTIVE; implementation NOT STARTED / NOT AUTHORIZED. The next permitted work remains documentation, read-only repository inspection and static consistency analysis. No source code, SQL, migration, grants/RLS, live database inspection, provider change, runtime test, deployment or production data mutation is authorized.
+
+
+## 18. Staged implementation gate update — 2026-11-25
+
+PR #26 (merge commit 4ef6fb49fcd4c4e83cc4a328a1e2125f96f6dcc2) records Product Owner decision PO-2026-11-25-IMPLEMENTATION-RESPONSIBILITY-001 and activates G9-F1/G10-F1. The Product Owner owns institutional authorization, coordination and compliance; separate institutional approval artifacts are not a prerequisite for bounded engineering development. This is not a claim that an external institution has issued written approval.
+
+G9-F1 FOUNDATION SCOPE FROZEN and G10-F1 FOUNDATION IMPLEMENTATION ACTIVE cover repository/app bootstrap, development configuration, CI, authentication shell, database foundation and development-only migrations, typed API boundary, observability baseline and automated tests using synthetic data. Production data/evidence, irreversible retention/deletion, legal-hold disposition, production provider operations and deployment are excluded.
+
+Full-system G9 remains NOT READY. F-03/F-04, command-level authorization, worker/provider security, physical RLS/grants and unresolved business contracts remain feature-entry gates. No executable business mutation may be implemented until its command, authorization, transaction/lock and acceptance-test contract is resolved. Solo-maintainer self-review, actual automated checks and post-merge verification remain mandatory.
