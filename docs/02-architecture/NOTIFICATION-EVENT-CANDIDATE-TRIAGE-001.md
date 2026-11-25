@@ -3,7 +3,7 @@
 **Document ID:** NLA-EVENT-TRIAGE-001  
 **Version:** 0.1.3  
 **Status:** STATIC TRIAGE — 11 FIRST-BATCH CANDIDATES PO-APPROVED FOR SPECIFICATION/REVIEW ONLY; NO EVENT ENABLED  
-**Date:** 2026-11-24  
+**Date:** 2026-11-25  
 **Baseline:** `main` at `78688451524900cc58343d05469251806ce415de`  
 **Authority:** PRD-001, approved Decision Register, CMD contracts and controlled instrument sources. This document does not supersede them.
 
@@ -174,7 +174,7 @@ No source code, SQL, migration, grant/revoke, RLS, live DB, runtime test, deploy
 - `docs/02-architecture/NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md` §§4.2.4–4.2.6.
 - `docs/02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md` §5 (role/grant matrix NOT APPROVED).
 - `docs/00-project-charter/DECISION-REGISTER.md` POQ-001 and POQ-04.
-- Root `AGENTS.md` v1.2.2.
+- Root `AGENTS.md` v1.2.3.
 
 
 ## 11. PO decision update — 2026-11-24
