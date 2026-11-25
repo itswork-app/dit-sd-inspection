@@ -98,9 +98,9 @@ Required action: resolve physical schema and serial identity rules; approve RLS 
 ### S-09 — Audit event policy is not approved
 **Severity:** BLOCKER
 
-Package R defines an audit catalogue and fail-closed transaction design, but Decision Register INS-016 remains PROPOSED. Audit retention, readers/exporters, network metadata collection, legal hold, and independent immutable archive requirements remain open.
+At the time of this audit, Package R defined an audit catalogue and fail-closed transaction design while INS-016 remained PROPOSED. T-15 option A subsequently PO-approved the audit policy (2026-11-24). Technical reader/exporter controls, network metadata, legal hold, retention and independent immutable archive requirements remain open under their respective technical and T-10 institutional gates.
 
-Required action: explicitly approve, reject, or defer INS-016 with institutional security/privacy/records sign-off before treating audit behavior as an implementation contract.
+Required action: reconcile the PO-approved T-15 policy with the technical implementation contract and obtain separate institutional security/privacy/records approvals before production use.
 
 ### S-10 — Report delivery, report count basis, and project reconciliation remain open
 **Severity:** HIGH
@@ -131,14 +131,14 @@ Required action: verify actual GitHub rules and CI workflows and record a succes
 4. Actual inspection events are immutable facts; target allocations are separate, versioned planning data.
 5. A completed unit follows the current baseline definition: approved inspection, final PDF generation, and recorded Print Officer print action.
 6. Physical printing is never inferred from opening or downloading a PDF.
-7. Audit write and critical state mutation must be atomic if INS-016 is approved.
+7. Audit write and critical state mutation must be atomic as required by PO-approved INS-016/T-15; implementation and verification remain pending.
 8. No public evidence URL; private object access is mediated and authorized.
 9. A document/sample is reference evidence, not automatically an authoritative specification.
 10. Proposed design, approved decision, implemented control, and tested control remain distinct statuses.
 
 ## 6. Decision Register and RAID updates required
 
-Before scope freeze: convert each blocker into a tracked decision/issue with an accountable institutional role; keep INS-016 PROPOSED; keep source checklist/photo requirements OPEN until controlled source approval; keep provider/region/backup and privacy/retention dependencies OPEN until verified; clarify the active-Inspector counting predicate; decide session creation and closed-session reopening; and resolve report count/delivery/closure semantics.
+Before scope freeze: convert each blocker into a tracked decision/issue with an accountable institutional role; record INS-016 as PO APPROVED under T-15 while keeping technical implementation and T-10 institutional retention/privacy controls OPEN/BLOCKED; keep source checklist/photo requirements OPEN until controlled source approval; keep provider/region/backup dependencies OPEN until verified; clarify the active-Inspector counting predicate; decide session creation and closed-session reopening; and resolve report count/delivery/closure semantics.
 
 ## 7. Scope-freeze gate
 
@@ -151,7 +151,7 @@ Before scope freeze: convert each blocker into a tracked decision/issue with an 
 - [ ] Production region, plans, quotas, billing, operational owners, and recovery capabilities approved.
 - [ ] Physical schema and serial identity invariants approved.
 - [ ] RLS and privileged command boundary approved.
-- [ ] INS-016 audit policy approved or explicitly deferred with accepted compensating controls.
+- [x] INS-016 audit policy PO approval recorded under T-15 option A (2026-11-24). Technical design, implementation, tests and T-10 institutional controls remain open.
 - [ ] Report delivery/count/reconciliation/project closure approved.
 - [ ] Performance workload and measurable thresholds approved.
 - [ ] UAT owner, pilot scope, release/rollback criteria, and operational support owners confirmed.
