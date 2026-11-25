@@ -255,7 +255,7 @@ No SQL, migration, grant, RLS, source code, provider change, live database inspe
 
 ## 12. F05-T1 structural grammar hardening cross-reference — 2026-11-25
 
-NLA-L05-TDR-001 v0.1.10 §4.2.5.1 now specifies a more precise **candidate-only** structural profile for grammar v1: exact object keys and JSON types, duplicate-key rejection before lossy parsing, null/missing behavior, participant/scope cardinality failures, OR and conjunction semantics, exact identifier matching, deterministic clause ordering and duplicate-clause equality, and the distinction between PO-approved candidate-intent tokens and a runtime-publishable event allowlist.
+NLA-L05-TDR-001 v0.1.11 §4.2.5.1 now specifies a more precise **candidate-only** structural profile for grammar v1: exact object keys and JSON types, duplicate-key rejection before lossy parsing, null/missing behavior, participant/scope cardinality failures, OR and conjunction semantics, exact identifier matching, deterministic clause ordering and duplicate-clause equality, and the distinction between PO-approved candidate-intent tokens and a runtime-publishable event allowlist.
 
 This clarification does not fill the unresolved per-event bindings in this crosswalk. In particular:
 - no canonical role key or scope ID is admitted;
