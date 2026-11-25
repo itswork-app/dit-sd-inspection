@@ -46,6 +46,15 @@ describe("parseJsonRequest", () => {
     expect(result).toEqual({ ok: false, code: "UNSUPPORTED_MEDIA_TYPE" });
   });
 
+  it("rejects a missing content type", async () => {
+    const result = await parseJsonRequest(
+      jsonRequest("{}", {}),
+      isCreateNoteInput
+    );
+
+    expect(result).toEqual({ ok: false, code: "UNSUPPORTED_MEDIA_TYPE" });
+  });
+
   it("rejects malformed JSON without returning parser details", async () => {
     const result = await parseJsonRequest(jsonRequest("{invalid"), isCreateNoteInput);
     expect(result).toEqual({ ok: false, code: "BAD_REQUEST" });
@@ -139,6 +148,9 @@ describe("parseJsonRequest", () => {
   it("rejects invalid internal size configuration", async () => {
     await expect(
       parseJsonRequest(jsonRequest("{}"), isCreateNoteInput, 0)
+    ).rejects.toThrow(RangeError);
+    await expect(
+      parseJsonRequest(jsonRequest("{}"), isCreateNoteInput, 1024 * 1024 + 1)
     ).rejects.toThrow(RangeError);
   });
 });
