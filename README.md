@@ -18,12 +18,12 @@ Feature parity first; controlled improvements second. The legacy application is 
 Cost-first means optimizing total lifecycle cost without waiving security, privacy, data integrity, backup/recovery, or production reliability.
 
 ## Status
-**Current phase:** Staged foundation implementation (G10-F1 ACTIVE). The repository contains authoritative documentation and application implementation. Coding is authorized only for the bounded foundation scope using synthetic/test data.
+**Current phase:** Staged foundation implementation (G10-F1 ACTIVE). The repository contains authoritative documentation and is now authorized to receive application implementation. Coding is authorized only for the bounded foundation scope using synthetic/test data.
 
-**Scope freeze / G9:** NOT READY  
-**Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)  
-**G10 implementation activation:** NOT ACTIVE — pending verified G9 and a separate G10 activation record  
-**Production readiness:** NOT VERIFIED
+**Scope freeze / G9-F1:** FOUNDATION SCOPE FROZEN (2026-11-25)  
+**Full-system G9:** NOT READY — business-feature gates remain open  
+**G10-F1 foundation implementation:** ACTIVE (2026-11-25; PR #26)  
+**Full-system / production readiness:** NOT VERIFIED
 
 ## Engineering instructions and delivery roadmap
 **Mandatory:** Every contributor and coding agent must read the root [AGENTS.md](AGENTS.md) before each new work session and substantive task. If it cannot be read, repository edits must stop. The file defines authority, authorization boundaries, security invariants, implementation workflow, SemVer and reporting rules.
