@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.28  
+**Version:** 0.1.29  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -469,7 +469,7 @@ All TC-NOTIF-055..064 remain PLANNED / NOT EXECUTED. These requirements do not a
 | Requirement ID | Requirement / invariant | Authority | Design reference | Verification | Status |
 |---|---|---|---|---|---|
 | NOTIF-021 | Every enabled event has an exact canonical event-to-selector registry entry binding source transaction, grammar version, allowed clause kinds, participant/scope mapping, dependencies and dispatch profile; composite/conditional event declarations are split before enablement | INS-015; POQ-01; POQ-04; Security/Engineering | NLA-L05-TDR-001 v0.1.10 §§4.2.5–4.2.5.1; NLA-L05-EVENT-SELECTOR-REGISTRY-001 v0.1.2; NLA-EVENT-REGISTRY-001 v0.1.12; source map v0.1.1 | TC-NOTIF-065..068; exact-token registry, closed-structure and dependency completeness review | OPEN — REGISTRY NOT ESTABLISHED |
-| NOTIF-022 | Dispatch authorization is a versioned event-specific profile that separates event-time qualification from account/channel/consent/security/current-scope/parent-state checks; transition notices cannot be accidentally suppressed by revoked-role, ended-membership or active-parent predicates | POQ-04; INS-015; Security | NLA-L05-TDR-001 v0.1.8 §4.2.6; NLA-001 v0.1.14 §22 | TC-NOTIF-062/063/069; Security review of transition matrix and source-resource reauthorization | OPEN — SECURITY/ENGINEERING APPROVAL REQUIRED |
+| NOTIF-022 | Dispatch authorization is a versioned event-specific profile that separates event-time qualification from account/channel/consent/security/current-scope/parent-state checks; transition notices cannot be accidentally suppressed by revoked-role, ended-membership or active-parent predicates | POQ-04; INS-015; Security | NLA-L05-TDR-001 v0.1.11 §§4.2.6–4.2.6.1; NLA-L05-EVENT-SELECTOR-REGISTRY-001 v0.1.3; NLA-EVENT-REGISTRY-001 v0.1.13 | TC-NOTIF-055..059/062/069; per-event dispatch-profile review, unresolved-row fail-closed controls and source-resource reauthorization | OPEN — SECURITY/ENGINEERING APPROVAL REQUIRED |
 
 TC-NOTIF-065..070 supplement TC-NOTIF-055..064. All TC-NOTIF-055..070 remain PLANNED / NOT EXECUTED. Grammar v1's exact structural profile, eight-clause bound, candidate-intent event list and dispatch profiles are review candidates only; no runtime event allowlist is admitted. No implementation, SQL, migration, grants, RLS, runtime testing or G10 activation is approved.
 
@@ -608,3 +608,8 @@ No command, permission or physical object is admitted by this trace row.
 ## F05-T1 structural grammar traceability refresh — 2026-11-25
 
 NOTIF-016 now points to NLA-L05-TDR-001 v0.1.10 §§4.2.5–4.2.5.1 and the strengthened TC-NOTIF-065..067 acceptance definitions. NOTIF-021 now points to the current TDR, NLA-L05-EVENT-SELECTOR-REGISTRY-001 v0.1.2, NLA-EVENT-REGISTRY-001 v0.1.12 and current source map. This is a specification/traceability update only. F05-T1 remains OPEN pending Engineering/Security approval and completed per-event mappings; all candidate events remain NOT ENABLED; tests remain PLANNED / NOT EXECUTED; F-04 writer certification remains 0; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## F05-T2 dispatch matrix traceability refresh — 2026-11-25
+
+NOTIF-022 now references NLA-L05-TDR-001 v0.1.11 §§4.2.6–4.2.6.1, the current event-to-selector crosswalk and NREG v0.1.13. The eleven-row matrix is candidate-only; event-specific dispatch profiles remain unapproved and unresolved where the source/recipient contract is incomplete. TC-NOTIF-055..059/062/069 remain PLANNED / NOT EXECUTED. F05-T2 remains OPEN; no event is enabled; G9 NOT READY; G10 NOT ACTIVE.
