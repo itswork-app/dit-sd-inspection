@@ -1,9 +1,9 @@
 # Implementation Roadmap and Release Governance
 
 **Document ID:** IRG-001  
-**Version:** 1.0.4  
+**Version:** 1.0.5  
 **Status:** CONTROLLED PLAN — PRE-IMPLEMENTATION  
-**Date:** 2026-11-24  
+**Date:** 2026-11-25  
 **Authority:** MIB-001, AGENTS.md, approved Decision Register and ADRs  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
 **G10 implementation activation:** NOT ACTIVE — pending verified G9 and the required G10 activation record
@@ -267,7 +267,7 @@ G12 production approval is an explicit sign-off, not an automatic result of a su
 
 ## 8. Current status
 
-- Pre-implementation documentation phases 0–6: **IN PROGRESS; DGA-001 v1.11.28 blockers remain**.
+- Pre-implementation documentation phases 0–6: **IN PROGRESS; DGA-001 v1.13.1 blockers remain**.
 - POQ-01..03 notification product semantics: **APPROVED 2026-11-24; technical and institutional dependencies remain OPEN**.
 - G9 scope freeze: **NOT READY**.
 - Product Owner authorization: **CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)**.
@@ -290,3 +290,12 @@ EVID-EXT-001 v0.1.0 indexes the six Product Owner-supplied inspection artifacts.
 The Product Owner's written conditional authorization is recorded in the Decision Register and MIB-001. It authorizes transition toward implementation from zero in this repository, using the SSOT baseline; closure of G9 prerequisites; scope freeze only after critical blockers are closed; and G10 activation only after verification. After G10 activation, source code, database schema, migrations, API, frontend and automated tests may proceed on a dedicated implementation branch. Production changes, deployment and operations affecting real data require separate approval. No gate may be reported PASS without required evidence and approvals.
 
 **Current disposition:** PO conditional authorization RECEIVED; G9 NOT READY; G10 NOT ACTIVE; I0–I7 NOT STARTED. This does not waive institutional, Security, Database, Operations or provider approvals. The root AGENTS.md remains the controlling execution boundary.
+
+
+## 11. Post-PR #19 implementation-entry status — 2026-11-25
+
+The latest controlled main baseline is `779f46c45444f7878d2128869288e986ff6b0b7a`. PRs #14–#19 merged the F05-T1..T5 candidate documentation. IER-001 v0.1.0 is the consolidated closure sequence for remaining G9 evidence.
+
+The next work is documentation and independent evidence closure, not feature coding: complete F-04 physical writer/bypass inventory; prove F-03 lock acyclicity and certify resolver paths; close F05-T1..T5 with technical/physical approvals and T-10 institutional decisions; complete SES-001 command/SoD/atomicity/QA contracts; close source instrument authority and remaining DGA blockers; reconcile schema/RLS/functions and operational controls; then conduct independent G9 review.
+
+**Current status:** G9 NOT READY; G10 NOT ACTIVE; I0–I7 NOT STARTED / NOT AUTHORIZED. QA remains PLANNED / NOT EXECUTED; CI/workflow evidence is ABSENT where unavailable. No implementation activity is permitted until G9 passes and a separate G10 activation record is approved. Production changes and deployment require separate authorization.
