@@ -845,21 +845,6 @@ These cases supplement TC-NOTIF-055..059. They are derived from the PO-approved 
 
 **Execution control:** TC-NOTIF-060..064 require the approved selector grammar, event-specific dispatch matrix, suppression reason/state catalog, audit schema and F05-T1..T5 sign-offs. Runtime execution additionally requires G10 activation and the authorized isolated PostgreSQL environment. No test result is implied.
 
-### F05-T4 append-only audit evidence cases — 2026-11-25
-
-The following cases define verification expectations only. All remain PLANNED / NOT EXECUTED and require Security/Engineering/Database review, T-10 institutional approval where applicable, G10 activation and an authorized isolated environment before runtime execution.
-
-| Test ID | Scenario | Expected result / invariant | Status |
-|---|---|---|---|
-| TC-NOTIF-095 | Browser, ordinary application role or worker attempts UPDATE/DELETE of a committed notification attempt/outcome record; submit a correction | Mutation is denied; correction is represented only by a new linked evidence item; no privileged bypass is inferred | PLANNED / NOT EXECUTED |
-| TC-NOTIF-096 | Trace a delivery attempt and suppression/reconciliation outcome from source event through outbox, original candidate, pinned policy, logical delivery and checkpoint | Every applicable link resolves to the same immutable candidate and correlation lineage; no retry creates a new candidate, widens audience or resets checkpoint; missing/duplicate links are detected | PLANNED / NOT EXECUTED |
-| TC-NOTIF-097 | Forge actor/role/scope/worker identity, reuse a stale lease generation, or submit an unauthenticated/replayed provider callback | User/worker identity is server/provider-derived; stale worker cannot finalize an outcome; callback fails authentication/freshness/reference/replay checks and cannot alter delivery state | PLANNED / NOT EXECUTED |
-| TC-NOTIF-098 | Replay idempotent requests and create multiple legitimate attempts under concurrent workers | Duplicate request resolves to one durable outcome; legitimate attempt numbers are unique and monotonic per logical delivery; ordering uses the approved persisted sequence/serialization rule, not timestamp-only assumptions | PLANNED / NOT EXECUTED |
-| TC-NOTIF-099 | Inject message body, inspection evidence, tokens, credentials, signed URLs, raw idempotency keys, full provider payloads and unapproved network metadata into attempt/audit fields | Sensitive values are rejected, redacted or omitted before durable logging; sanitized reason/error references remain sufficient for operations; T-10-dependent retention/disposition remains disabled until written approval | PLANNED / NOT EXECUTED |
-
-**Execution control:** these cases do not approve a physical table or ACL, hash chain, signed checkpoint, WORM archive, provider callback mechanism or retention duration. TC-NOTIF-095..099 remain PLANNED / NOT EXECUTED until the logical contract is approved and mapped to exact schema/ACL/provider controls. Runtime execution requires G10 activation and authorized isolated infrastructure.
-
-
 
 ### F-05 selector grammar and event-specific dispatch profile tests — 2026-11-24
 
@@ -1094,3 +1079,17 @@ All cases below remain **PLANNED / NOT EXECUTED** and require approved contracts
 - **TC-INS-DRAFT-026:** Later session creates distinct inspection_id; old ABORTED attempt and evidence remain immutable and are not automatically reused.
 
 Do not mark any case executed. The evidence minimum and accepted packed/shipment proof types remain an operational/institutional approval gap.
+
+### F05-T4 append-only audit evidence cases — 2026-11-25
+
+The following cases define verification expectations only. All remain PLANNED / NOT EXECUTED and require Security/Engineering/Database review, T-10 institutional approval where applicable, G10 activation and an authorized isolated environment before runtime execution.
+
+| Test ID | Scenario | Expected result / invariant | Status |
+|---|---|---|---|
+| TC-NOTIF-095 | Browser, ordinary application role or worker attempts UPDATE/DELETE of a committed notification attempt/outcome record; submit a correction | Mutation is denied; correction is represented only by a new linked evidence item; no privileged bypass is inferred | PLANNED / NOT EXECUTED |
+| TC-NOTIF-096 | Trace a delivery attempt and suppression/reconciliation outcome from source event through outbox, original candidate, pinned policy, logical delivery and checkpoint | Every applicable link resolves to the same immutable candidate and correlation lineage; no retry creates a new candidate, widens audience or resets checkpoint; missing/duplicate links are detected | PLANNED / NOT EXECUTED |
+| TC-NOTIF-097 | Forge actor/role/scope/worker identity, reuse a stale lease generation, or submit an unauthenticated/replayed provider callback | User/worker identity is server/provider-derived; stale worker cannot finalize an outcome; callback fails authentication/freshness/reference/replay checks and cannot alter delivery state | PLANNED / NOT EXECUTED |
+| TC-NOTIF-098 | Replay idempotent requests and create multiple legitimate attempts under concurrent workers | Duplicate request resolves to one durable outcome; legitimate attempt numbers are unique and monotonic per logical delivery; ordering uses the approved persisted sequence/serialization rule, not timestamp-only assumptions | PLANNED / NOT EXECUTED |
+| TC-NOTIF-099 | Inject message body, inspection evidence, tokens, credentials, signed URLs, raw idempotency keys, full provider payloads and unapproved network metadata into attempt/audit fields | Sensitive values are rejected, redacted or omitted before durable logging; sanitized reason/error references remain sufficient for operations; T-10-dependent retention/disposition remains disabled until written approval | PLANNED / NOT EXECUTED |
+
+**Execution control:** these cases do not approve a physical table or ACL, hash chain, signed checkpoint, WORM archive, provider callback mechanism or retention duration. TC-NOTIF-095..099 remain PLANNED / NOT EXECUTED until the logical contract is approved and mapped to exact schema/ACL/provider controls. Runtime execution requires G10 activation and authorized isolated infrastructure.
