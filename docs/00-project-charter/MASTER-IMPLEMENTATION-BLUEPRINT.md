@@ -9,13 +9,13 @@
 **G10-F1 foundation implementation activation:** ACTIVE (2026-11-25, after PR #26); full-system G10 remains staged and feature-gated  
 **Scope-freeze status:** G9-F1 FOUNDATION SCOPE FROZEN; full-system G9 NOT READY
 
-**Current gate interpretation (2026-11-24):** Any dated historical section below that records “G10 NOT AUTHORIZED” predates the Product Owner's conditional implementation authorization. The current controlling state is conditional PO authorization received, G9 NOT READY, and G10 NOT ACTIVE. This does not authorize implementation before verified G9 and a separate approved G10 activation record.
+**Current gate interpretation (2026-11-25):** Historical sections below that record G9 NOT READY/G10 NOT ACTIVE predate the staged G9-F1/G10-F1 decision. The controlling state is G9-F1 FOUNDATION SCOPE FROZEN and G10-F1 FOUNDATION IMPLEMENTATION ACTIVE. Full-system G9 remains NOT READY; later business features and production operations remain gated.
 
 ## 1. Purpose and authority
 
 This document is the navigation and control plane for the project's implementation-ready specification. It does not replace the approved PRD, Decision Register, ADRs, detailed domain specifications, security contracts, or test catalogue. It identifies their authority, dependencies, required evidence, and release gates.
 
-The repository contains both authoritative documentation and application implementation. G9-F1/G10-F1 now authorize the bounded foundation implementation described in root AGENTS.md and the Decision Register. The absence of application source before this staged activation was intentional.
+The repository contains authoritative documentation and is now authorized to receive application implementation. G9-F1/G10-F1 authorize the bounded foundation scope described in root AGENTS.md and the Decision Register. Source code is to be created on the dedicated implementation branch.
 
 ### 1.1 Source-of-truth precedence
 
