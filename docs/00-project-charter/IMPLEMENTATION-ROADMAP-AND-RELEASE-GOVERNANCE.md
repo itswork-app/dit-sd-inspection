@@ -1,7 +1,7 @@
 # Implementation Roadmap and Release Governance
 
 **Document ID:** IRG-001  
-**Version:** 1.0.7  
+**Version:** 1.0.8  
 **Status:** CONTROLLED PLAN — STAGED FOUNDATION IMPLEMENTATION  
 **Date:** 2026-11-25  
 **Authority:** MIB-001, AGENTS.md, approved Decision Register and ADRs  
@@ -10,7 +10,7 @@
 
 ## 1. Purpose
 
-This roadmap defines the ordered path from documentation closure to production operation. It is a plan, not authorization to begin implementation. The repository's `AGENTS.md` is the mandatory execution instruction file; this roadmap elaborates its delivery and release process.
+This roadmap defines the ordered path from documentation closure to production operation. It is not a blanket authorization for full-system or later business-feature implementation. The separately approved G9-F1/G10-F1 decision in `AGENTS.md` currently authorizes only the bounded synthetic-data foundation scope; this roadmap elaborates delivery and release controls for that stage and all later stages.
 
 ## 2. Mandatory execution protocol
 
@@ -142,9 +142,11 @@ Required authorization record:
 - prohibited actions (e.g. production DB changes/deployments unless separately authorized);
 - rollback and change-approval authority.
 
-No implementation begins before this record exists.
+No full-system or later business-feature implementation begins before its applicable authorization record exists. The bounded G9-F1/G10-F1 foundation stage is separately ACTIVE under `AGENTS.md` §3.2; that staged authorization does not satisfy or waive later feature-entry gates.
 
-## 4. Implementation delivery phases (after G10 only)
+## 4. Implementation delivery phases
+
+The I0/I1 foundation tasks may proceed only to the extent explicitly included in the active G10-F1 scope. I2 and later phases, business command handlers, production data and operations remain gated by their own entry criteria and separate authorization. The phase list below is a roadmap, not an expansion of the active foundation authorization.
 
 ### I0 — Engineering bootstrap
 - Create application scaffold only after approved stack/runtime decisions.
