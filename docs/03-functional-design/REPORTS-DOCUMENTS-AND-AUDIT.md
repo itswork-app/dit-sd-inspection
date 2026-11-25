@@ -132,7 +132,7 @@ Proposed event coverage:
 
 Each event should record actor, active role, timestamp, action, entity reference, session/assignment scope, outcome, reason where applicable, and correlation ID. Audit log is append-only. Super Admin may view/export but not edit or delete audit records through the application.
 
-INS-016 is still a proposal until explicitly approved; this document defines a design proposal, not an approved policy.
+INS-016 policy direction is PO APPROVED under T-15 option A (2026-11-24). This document remains a design proposal, not implementation authorization; detailed technical review, tests and T-10 institutional classification/retention/legal-hold controls remain pending.
 
 ## 8. Acceptance criteria
 
