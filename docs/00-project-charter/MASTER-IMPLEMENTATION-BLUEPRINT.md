@@ -195,7 +195,7 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 - Mandatory agent instructions: **AGENTS.md v1.2.2 — READ BEFORE EVERY WORK SESSION/TASK**
 - Implementation roadmap: **IRG-001 v1.0.4 — CONTROLLED PLAN, NOT AUTHORIZATION**
 - SemVer policy: **2.0.0 adopted; application version not assigned before release**
-- Active implementation gate: **NOT READY — see DGA-001**
+- Full-system implementation readiness: **NOT READY — see DGA-001; G10-F1 foundation implementation ACTIVE**
 - Current phase: **STAGED FOUNDATION IMPLEMENTATION — G9-F1 / G10-F1**
 - Application source code: **FOUNDATION BOOTSTRAP IN PROGRESS on feat/foundation-bootstrap-v1; runtime verification pending**
 - T-18 hybrid execution model: **PO-APPROVED DESIGN; implementation conformance NOT VERIFIED**
