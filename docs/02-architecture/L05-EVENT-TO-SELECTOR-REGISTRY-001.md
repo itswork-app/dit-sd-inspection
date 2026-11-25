@@ -4,8 +4,8 @@
 **Version:** 0.1.3  
 **Status:** STATIC CROSSWALK / REVIEW CANDIDATE — NOT APPROVED, NO EVENT ENABLED  
 **Date:** 2026-11-25  
-**Baseline:** `main` at `1c26ca1cbb2e38111695c23706ffca881c20b669`  
-**Authority:** AGENTS.md v1.2.3; Decision Register POQ-01 and POQ-04; NLA-L05-TDR-001 v0.1.11; NLA-EVENT-REGISTRY-001 v0.1.12; NLA-EVENT-TRIAGE-001 v0.1.3; L05 source-event map v0.1.1; L05 writer matrix v0.1.5.
+**Baseline:** `main` at `f3248037c5754ca537c033422d3e247be34f931d`  
+**Authority:** AGENTS.md v1.2.3; Decision Register POQ-01 and POQ-04; NLA-L05-TDR-001 v0.1.11; NLA-EVENT-REGISTRY-001 v0.1.13; NLA-EVENT-TRIAGE-001 v0.1.3; L05 source-event map v0.1.1; L05 writer matrix v0.1.5.
 
 ## 1. Purpose and decision boundary
 
