@@ -46,8 +46,8 @@ Recommendations in this pack are not approvals. Explicit Product Owner approvals
 | T-14 | Inspector capacity semantics | PO APPROVED (A) | Count distinct enabled accounts with active Inspector role and effective operational assignment | High |
 | T-15 | Audit event policy INS-016 | PO APPROVED (A) | Append-only catalogue; atomic audit + critical mutation; fail-closed on audit failure | Blocker until implementation and institutional controls verified |
 | T-16 | Serial-number uniqueness and evidence/revision linkage | PO APPROVED (B) | Unique normalized serial within instrument type across all projects; immutable evidence-to-revision/version linkage and audited replacement | Blocker until schema, transaction and tests are reconciled |
-| T-17 | Instrument configuration governance CFG-001 | APPROVED DIRECTION; detailed controls OPEN | Declarative, versioned configuration with bounded supported field and validation types; no arbitrary code | Must be completed in design |
-| T-18 | Privileged command boundary | OPEN | All privileged mutations through narrowly scoped server-side commands with caller identity, authorization and atomic transactions | Blocker |
+| T-17 | Instrument configuration governance CFG-001 | PO APPROVED (A) | Super Admin publishes validated immutable versions using bounded declarative configuration and explicit `instrument.publish`; sessions/assignments pin versions | Schema, RLS, command and QA reconciliation remain open |
+| T-18 | Privileged command boundary | PO APPROVED (A) | Vercel routes + caller-JWT PostgreSQL command functions; database-derived actor, authorization/scope/SoD, browser direct DML denied, atomic mutation/event/audit/idempotency; narrow SECURITY DEFINER protected-write wrappers | Exact functions, owners, grants, RLS, threat review and QA remain open |
 
 ## 3. Detailed decision records
 
@@ -471,7 +471,7 @@ This package does not authorize:
 | T-03 | APPROVED: signature behavior configurable per report template; default none unless required | Add template configuration and PDF verification; do not hardcode a universal executive-summary signature | PO decision closed; approved template requirement still controls |
 | T-04 | APPROVED: PDF-only client report delivery in initial release | Client portal excluded from initial release; controlled PDF generation/access/distribution remains in scope | PO decision closed; later portal needs change request |
 
-PO approval does not replace institutional authorization or source evidence. T-01 through T-09 have explicit PO outcomes; T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 option B is PO APPROVED; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; the actual alternative arrangement and institutional/provider verification remain BLOCKED. T-13 is PO APPROVED option B; T-14 is PO APPROVED option A; T-15 through T-18 remain OPEN/BLOCKED. No implementation authorization is granted by these decisions.
+PO approval does not replace institutional authorization or source evidence. T-01 through T-09 have explicit PO outcomes; T-10 option B is PO APPROVED as the formal institutional records/legal/privacy review path; the resulting institutional policy remains BLOCKED pending written authority. T-11 option B is PO APPROVED; exact OS/device/browser build matrix and numeric SLOs remain open pending validation. T-12 option C is PO APPROVED; the actual alternative arrangement and institutional/provider verification remain BLOCKED. T-13 is PO APPROVED option B; T-14 is PO APPROVED option A; T-15 through T-18 have PO direction approved, while detailed technical design, institutional gates, implementation and verification remain OPEN/BLOCKED as applicable. No implementation authorization is granted by these decisions.
 
 ## 8. Product Owner decision outcomes — T-05 through T-08 (2026-11-23)
 
@@ -524,7 +524,7 @@ This PO decision approves the alternative-arrangement path only. It does not est
 ## Package T — T-13 Product Owner decision (2026-11-23)
 
 
-This is PO product direction only. Detailed batch limits, UI behavior, browser print behavior, and test evidence remain to be finalized and validated. No implementation or tests are claimed. T-14 through T-18 remain open; scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
+This is PO product direction only. Detailed batch limits, UI behavior, browser print behavior, and test evidence remain to be finalized and validated. No implementation or tests are claimed. T-14 through T-18 have PO direction approved; residual design reconciliation, institutional gates, implementation evidence and verification remain open. Scope freeze remains NOT READY and feature implementation remains NOT AUTHORIZED.
 
 
 **State after PO response (2026-11-23): PO APPROVED option B.** Initial release supports individual and batch printing. Batch size must be bounded/configurable; every document receives an independent outcome (success recorded, failed, or cancelled). Retry is limited to failed documents and must not duplicate successful print events. Reprint sequence allocation is atomic. The application records an authorized print action; it does not prove physical paper output. Direct printer integration is not included.
