@@ -1,7 +1,7 @@
 # Repository Agent Instructions — Dit. SD Inspection
 
 **Document ID:** ENG-AGENT-001  
-**Version:** 1.2.4  
+**Version:** 1.2.5  
 **Status:** MANDATORY ENGINEERING POLICY  
 **Applies to:** Every human contributor, coding agent, reviewer and automation working in this repository.
 
@@ -32,31 +32,32 @@ If two authoritative sources conflict, do not guess or implement around the conf
 
 ## 3. Current phase and hard authorization boundary
 
-Current phase: **DOCUMENTATION / SSOT MATURATION**.
+Current phase: **STAGED FOUNDATION IMPLEMENTATION — G9-F1 / G10-F1**.
 
-- Scope freeze: **NOT READY**.
+- Foundation scope freeze: **G9-F1 FROZEN**.
+- Full-system G9 scope freeze: **NOT READY**.
 - Product Owner authorization: **CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)**.
-- G9 scope freeze: **NOT READY**.
-- G10 implementation activation: **NOT ACTIVE — pending verified G9 and the required G10 activation record**.
+- Foundation implementation activation: **G10-F1 ACTIVE (2026-11-25, following merge of the governing decision in PR #26)**.
+- Full-system implementation / later business-feature activation: **NOT AUTHORIZED BY G10-F1; feature-entry gates remain applicable**.
 - Production readiness: **NOT VERIFIED**.
 
-Until a separate written G10 implementation authorization is recorded, permitted work is limited to documentation, read-only repository inspection, static consistency analysis and approved documentation updates.
+G10-F1 permits implementation only within the bounded foundation scope: repository/application bootstrap, development configuration, CI, authentication shell, development-only database foundation/migrations, typed API boundary, observability baseline and automated tests using synthetic data. Work must use a dedicated feature branch and follow IRG-001 phases and the relevant ADRs.
 
-Not permitted without separate explicit authorization:
-- application scaffolding or feature source code;
-- SQL execution, migrations, grants/revokes, RLS or live database changes;
-- creating/changing Supabase or Vercel resources;
-- production/staging deployment or data mutation;
-- merge to protected/default branch, except documentation-only PRs that satisfy GOV-MERGE-001 and its full-diff review, check, self-review-attestation and post-merge verification controls; branch-protection bypass is prohibited;
-- handling or requesting secrets in chat.
+Not permitted under G10-F1:
+- production data/evidence collection or processing real institutional personal data in development;
+- production/staging deployment, live data mutation, irreversible retention/deletion or legal-hold disposition;
+- executable business mutation handlers whose command, authorization, transaction/lock and acceptance-test contracts remain unresolved;
+- unreviewed schema, grants/RLS, privileged RPCs or provider-resource changes outside the approved foundation entry criteria;
+- handling or requesting secrets in chat;
+- bypassing branch protection or repository rules.
 
-A general “continue” instruction does not override this boundary.
+The documentation-only merge exception GOV-MERGE-001 remains a separate, narrow merge policy for documentation-only PRs; it is not the authorization source for G10-F1. Full-system G9 and later feature gates remain open.
 
 ### 3.1 Product Owner conditional authorization received — 2026-11-24
 
 The Product Owner supplied explicit written authorization to transition toward implementation from zero in this repository, using the current SSOT as the build baseline. The authorization directs the team to close G9 prerequisites, freeze scope only after critical blockers are closed, and activate G10 only after verification. After G10 activation, implementation may proceed on a dedicated branch for source code, database schema, migrations, API, frontend and automated testing. Production changes, deployment and operations affecting real data require separate approval. No gate may be marked PASS without required evidence and approvals.
 
-This is conditional authorization, not G10 activation and not a waiver of institutional, Security, Database, Operations or provider approvals. Until G9 is verified and the required G10 activation record is approved, the prohibitions above remain in force. Canonical PO approval record: `docs/00-project-charter/DECISION-REGISTER.md`.
+This paragraph records the original conditional authorization and is superseded for the bounded foundation scope by §3.2. Full-system G9/G10 and feature-entry gates remain applicable. Canonical PO approval record: `docs/00-project-charter/DECISION-REGISTER.md`.
 
 ## 4. Architecture and security invariants
 
@@ -96,9 +97,9 @@ The following POQ-001 decisions are approved in the canonical Decision Register 
 
 These approvals close Product Owner semantics only. They do not approve the durable snapshot/checkpoint schema, selector grammar, worker identity/ACL, provider callbacks, policy administration grants/SoD, T-10 privacy/retention, physical schema/RLS, tests, G9 scope freeze or G10 implementation authorization. NLA-001, CMD contracts, schema, RLS, API, RTM and QA must remain synchronized to these decisions. Current notification QA cases TC-NOTIF-001..029 are planned and NOT EXECUTED.
 
-## 6. Implementation workflow (only after G10)
+## 6. Implementation workflow (within the activated stage)
 
-Follow IRG-001 phases I0–I7 in order. Do not skip platform, identity, database or security foundations to start visible features. Each phase has explicit entry/exit criteria.
+Follow IRG-001 phases I0–I7 in order. G10-F1 authorizes only the bounded foundation stage. Do not start later business features until their individual entry gates are closed. Do not skip platform, identity, database or security foundations to start visible features. Each phase has explicit entry/exit criteria.
 
 - Use short-lived focused branches and pull requests.
 - PR description must include requirement/decision IDs, behavior, design, threat/security impact, migration impact, test results, rollback and docs updated.
@@ -197,4 +198,4 @@ F-03/F-04, command-level authorization, notification worker/provider security, p
 
 The Product Owner is the sole maintainer and accountable engineering decision owner for this repository. Independent reviewer availability is not a prerequisite for development. Each PR must still receive documented maintainer self-review, full-diff inspection, automated checks where configured, and post-merge verification. Self-review cannot turn unexecuted tests or unverified runtime behavior into PASS.
 
-Root policy version: 1.2.4. This section is the controlling exception for the staged G9-F1/G10-F1 development scope.
+Root policy version: 1.2.5. This section is the controlling authorization for the staged G9-F1/G10-F1 development scope.
