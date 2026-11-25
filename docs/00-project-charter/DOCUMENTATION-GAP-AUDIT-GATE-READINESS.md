@@ -3,8 +3,8 @@
 **Document ID:** DGA-001  
 **Version:** 1.14.0
 **Audit date:** 2026-11-25  
-**Branch reviewed:** `main`  
-**Reviewed HEAD:** `d46f198c2e832bc0f240ca0b784b8ad981358329` (main baseline after PR #27, 2026-11-25)  
+**Branch reviewed:** `docs/rbac-003-account-role-scope-governance` (documentation branch based on main)  
+**Reviewed baseline HEAD:** `d4d49b0fe3e26257d0fd765085d5fc84d0eecfd1` (main commit used to create this documentation branch, 2026-11-25)  
 **Authority:** Master Implementation Blueprint MIB-001  
 **Status:** AUDIT IN PROGRESS — FULL-SYSTEM GATE NOT READY; G9-F1/G10-F1 FOUNDATION ACTIVE  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
