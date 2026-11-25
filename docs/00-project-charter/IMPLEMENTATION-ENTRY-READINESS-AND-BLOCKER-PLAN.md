@@ -129,6 +129,6 @@ Any change to approved product semantics requires a new Product Owner decision. 
 
 ## 11. F-03 / F-04 / SES-001 technical closure control — 2026-11-25
 
-[PTCM-001 — Pre-Implementation Technical Closure Matrix](PRE-IMPLEMENTATION-TECHNICAL-CLOSURE-MATRIX.md) v0.1.1 now decomposes the remaining F-03 lock-order contradictions into nine explicit conflict classes and eight evidence exit artifacts; F-04 into a physical writer/bypass evidence package and writer-by-writer certification record; and SES-001 into ten technical decisions. This matrix is a controlled closure aid, not an approval or closure of any blocker.
+[PTCM-001 — Pre-Implementation Technical Closure Matrix](PRE-IMPLEMENTATION-TECHNICAL-CLOSURE-MATRIX.md) v0.1.2 now decomposes the remaining F-03 lock-order contradictions into nine explicit conflict classes and eight evidence exit artifacts; F-04 into a physical writer/bypass evidence package and writer-by-writer certification record; and SES-001 into ten technical decisions. This matrix is a controlled closure aid, not an approval or closure of any blocker.
 
 Current verified baseline after PR #24: `main` at `18ac4f91484a1afa5e7e5bf35fe9c7b6debfaaa5`. The F-03 graph remains NOT PROVEN ACYCLIC; resolver certification 0/40; application lock certification 0/50; F-04 writer certification 0; SES-001 technical contract OPEN. QA remains PLANNED / NOT EXECUTED; CI/workflow evidence ABSENT where no checks/runs are returned. G9 NOT READY; G10 NOT ACTIVE.
