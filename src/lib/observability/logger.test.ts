@@ -54,6 +54,20 @@ describe("logEvent", () => {
     });
   });
 
+  it("rejects invalid enum values supplied at runtime", () => {
+    const output = vi.spyOn(console, "info").mockImplementation(() => undefined);
+    const context = {
+      component: "private@example.com",
+      outcome: "email=private@example.com"
+    } as unknown as Parameters<typeof logEvent>[2];
+
+    logEvent("info", "api.request.completed", context);
+
+    const record = JSON.parse(String(output.mock.calls[0][0])) as Record<string, unknown>;
+    expect(record).not.toHaveProperty("component");
+    expect(record).not.toHaveProperty("outcome");
+  });
+
   it("does not serialize unexpected properties supplied at runtime", () => {
     const output = vi.spyOn(console, "error").mockImplementation(() => undefined);
     const context = {
