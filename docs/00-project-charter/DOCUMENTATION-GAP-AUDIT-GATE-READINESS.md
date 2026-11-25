@@ -1047,3 +1047,14 @@ The PR #23 merge is documentation-only and does not change the substantive DGA b
 ## Post-PR #24 baseline reconciliation — 2026-11-25
 
 The current `main` HEAD was independently re-fetched as `18ac4f91484a1afa5e7e5bf35fe9c7b6debfaaa5` after PR #24 merged. This corrects the reviewed-HEAD metadata in DGA-001; it does not alter any blocker disposition or claim new evidence. Product Owner conditional implementation authorization remains recorded; G9 remains NOT READY and G10 remains NOT ACTIVE. Solo-maintainer self-review is permitted only within GOV-MERGE-001 for documentation-only PRs and is not represented as independent G9 review or as a waiver of institutional, Security, Database, Operations or provider authority. No source code, SQL, migration, grant/RLS, live database operation, runtime test, deployment or data mutation is authorized by this reconciliation.
+
+
+## 2026-11-25 Product Owner responsibility clarification and staged gate disposition
+
+The Product Owner has explicitly confirmed that institutional authorization, coordination and compliance are the Product Owner's responsibility and are not a separate prerequisite for starting bounded engineering development. This clarification does not fabricate or assert an external institution's written approval. DGA-B01..B05 and any other institution-dependent obligations remain tracked for the Product Owner to manage before real institutional data/evidence collection and production operation; they are not blockers to synthetic-data foundation development.
+
+G9-F1 FOUNDATION SCOPE FROZEN: bootstrap, development configuration, CI, authentication shell, database foundation/development-only migrations, typed API boundary, observability and automated tests using synthetic data.
+
+G10-F1 FOUNDATION IMPLEMENTATION ACTIVE after merge of the governing decision PR. The staged authorization does not close full-system G9 and does not authorize production data, deployment or unresolved business command handlers. F-03/F-04, command-level authorization, worker/provider security, physical RLS/grants and unresolved business contracts remain feature-entry gates. No runtime evidence is inferred from this documentation decision.
+
+The sole maintainer may self-review under the repository's solo-maintainer model, with full-diff inspection, actual automated checks and post-merge verification. This clarification supersedes only the previous treatment of separate institutional approvals as a blanket prerequisite for engineering development; it does not erase those responsibilities or production constraints.
