@@ -1,7 +1,7 @@
 # Implementation Roadmap and Release Governance
 
 **Document ID:** IRG-001  
-**Version:** 1.0.6  
+**Version:** 1.0.7  
 **Status:** CONTROLLED PLAN — STAGED FOUNDATION IMPLEMENTATION  
 **Date:** 2026-11-25  
 **Authority:** MIB-001, AGENTS.md, approved Decision Register and ADRs  
@@ -315,3 +315,10 @@ This status index supersedes earlier roadmap status snapshots in §§3, 4, 8, 10
 - Production readiness remains **NOT VERIFIED**. No production data, hosted database mutation, deployment, business command, business schema, grants/RLS or privileged RPC is authorized by this foundation status.
 
 **Current implementation disposition:** continue only with bounded foundation hardening and verification. Preserve all later feature-entry gates.
+
+
+## 13. CI-independent foundation checkpoint — 2026-11-25
+
+The current branch `feat/foundation-bootstrap-v1-rebased` is at `ca933fe47c4ee44cf2eba262eb80522c6075bfbf`, 103 commits ahead and zero behind main at the checkpoint. PR #30 remains open and unmerged.
+
+GitHub Actions has not supplied a usable verification result for this latest head. The Product Owner suspects the Actions quota may be exhausted, but this was not independently verified. No rerun was performed. Static source review is permitted as engineering analysis but is not runtime evidence. `package-lock.json` remains absent; lint, typecheck, Vitest, migration checks and build remain NOT VERIFIED. Continue only with bounded foundation review and non-executing changes until a usable Node/npm environment and Actions capacity are available.
