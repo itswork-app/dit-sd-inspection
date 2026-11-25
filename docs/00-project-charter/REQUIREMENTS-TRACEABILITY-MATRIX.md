@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.1.32  
+**Version:** 0.1.33  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -632,3 +632,10 @@ The evidence envelope is a logical candidate only: the suppression/reschedule ph
 NOTIF-020 now references NLA-L05-TDR-001 v0.1.14 §18, NLA-001 v0.1.24 §27 and L05 Event-to-Selector Registry v0.1.4 §14. TC-NOTIF-100..105 define rollback at every logical write boundary, concurrent eligibility/policy writers, post-guard timestamp consistency, idempotent replay/commit-ack loss, empty-versus-incomplete snapshot handling and committed-snapshot-only fan-out.
 
 NOTIF-020 remains OPEN. The contract is candidate-only: no physical candidate snapshot relation/header, candidate identity key, digest/uniqueness constraints, producer transaction certification, policy pin columns, lock rank or writer path is admitted. Resolver certification remains 0/40; application lock certification 0/50; global lock graph NOT PROVEN ACYCLIC; G9 NOT READY; G10 NOT ACTIVE. TC-NOTIF-100..105 remain PLANNED / NOT EXECUTED.
+
+
+## F-03 / F-04 / SES-001 closure traceability — 2026-11-25
+
+PTCM-001 v0.1.0 is added as a controlled cross-cutting evidence index for the F-03 lock-order and concurrency requirements, F-04 eligibility-writer/selector dependency requirements, and SES-001 packed-unit ABORT requirements. It maps to LOCK-GRAPH-001 v0.4.25, LOCK-MANIFEST-001 v0.4.32, LOCK-NORMALIZATION-001 v0.1.1, NLA-L05-WRITER-MATRIX-001 v0.1.6, NLA-L05-EVENT-SELECTOR-REGISTRY-001 v0.1.5, the Decision Register SES-001 section and QA TC-INS-DRAFT-021..027 / TC-SESSION-002..008.
+
+This traceability update does not certify any lock path or writer and does not approve command identities or physical data objects. F-03 remains NOT PROVEN ACYCLIC; resolver 0/40; application lock certification 0/50; F-04 writer certification 0; SES-001 technical contract OPEN; all related QA PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE.
