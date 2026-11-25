@@ -1,7 +1,7 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.21  
+**Version:** 0.1.22  
 **Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
 **Date:** 2026-11-24  
 **Product authority:** INS-015 — APPROVED  
@@ -356,6 +356,16 @@ The Product Owner explicitly approved POQ-01 Option C, POQ-02 Option C and POQ-0
 - No dismiss/archive command, permission, browser write or UX action is included.
 - If `dismissed_at` remains in a proposed physical schema for compatibility, it is dormant and must not be exposed or mutated.
 - Future inclusion requires a separately scoped change request and renewed product, UX, security, schema and QA review.
+
+
+
+### 15.5 F05-T3 suppression/retry state reconciliation — 2026-11-25
+
+NLA-L05-TDR-001 v0.1.12 §4.2.7 records a candidate suppression/retry taxonomy aligned to the immutable POQ-01 candidate audience, POQ-04 account-reactivation boundary, POQ-02 quiet-hours/SLA semantics, append-only attempt history and explicit UNKNOWN provider outcomes.
+
+A blocking state-graph omission is recorded for review: the current delivery progression defines `SENDING → SENT | FAILED | UNKNOWN`, but does not specify how a retryable provider failure returns to a future attempt. No `RETRY_WAIT` status or `SENDING → PENDING` transition is admitted by this note. Engineering/Database/Security must choose and validate one legal transition, then synchronize the command contract, physical schema proposal, worker lease/fencing rules and QA before implementation.
+
+The following remain unresolved: stable reason-code strings and classification; reschedule rules for consent/channel/security/scope changes; retry owner and scheduler boundary; numeric attempt/age/backoff/dead-letter/alert budgets; provider-specific transient/permanent/unknown mapping; manual reconciliation SLA; and T-10 retention/disposition. No provider is selected. No state transition, physical status, table, schema, migration, grant, RLS or runtime behavior is approved by this addendum. F05-T3 remains OPEN; all QA remains PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE.
 
 ### 15.4 Remaining notification gates
 
