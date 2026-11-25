@@ -24,6 +24,7 @@ The repository has an approved Vercel + Supabase architecture but no application
 10. Expose a minimal, non-sensitive health endpoint with no-store caching and a machine-readable service status.
 11. Standardize API failures with a typed, stable error code, safe public message, HTTP status and request correlation ID. Propagate a validated \`X-Request-Id\` response header from the application proxy. Correlation IDs are diagnostic metadata only and must never be used as identity, authorization or resource scope.
 12. Use the Supabase CLI migration layout for local development only. Commit a minimal \`supabase/config.toml\`, keep timestamped SQL migrations under \`supabase/migrations/\`, disable automatic seed loading, and validate migration names/timestamps/empty files in the repository quality script. Do not add a business schema migration until its physical schema, authorization, privilege, transaction/lock and QA contracts have been reviewed. The CLI version must be pinned before CI or shared-environment migration execution is enabled.
+13. Provide a server-only identity helper that calls Supabase `auth.getClaims()` and derives the actor identifier exclusively from the verified JWT `sub` claim. Return explicit authenticated, unauthenticated or unavailable outcomes; contain provider/configuration exceptions and never expose raw provider errors. This helper establishes identity only, not role assignment, permission evaluation or resource authorization.
 
 ## Security and operational constraints
 
