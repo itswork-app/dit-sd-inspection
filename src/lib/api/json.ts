@@ -50,7 +50,13 @@ export async function parseJsonRequest<T>(
 
   if (!request.body) return { ok: false, code: "BAD_REQUEST" };
 
-  const reader = request.body.getReader();
+  let reader: ReadableStreamDefaultReader<Uint8Array>;
+  try {
+    reader = request.body.getReader();
+  } catch {
+    return { ok: false, code: "BAD_REQUEST" };
+  }
+
   const chunks: Uint8Array[] = [];
   let totalBytes = 0;
 
