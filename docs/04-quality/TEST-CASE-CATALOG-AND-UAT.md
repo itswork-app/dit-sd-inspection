@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — execution not started
-Version: 0.7.0
+Version: 0.7.1
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -833,15 +833,15 @@ POQ-04 is PO APPROVED in full. TC-NOTIF-055..059 now trace to approved product s
 
 ### F-05 technical validation cases — selector, dispatch, retry and audit (2026-11-24)
 
-These cases supplement TC-NOTIF-055..059. They are derived from the PO-approved POQ-04 semantics but require the F05-T1..T5 technical definitions and Security/Engineering approval before execution. All remain PLANNED / NOT EXECUTED.
+These cases supplement TC-NOTIF-055..059. They are derived from the PO-approved POQ-04 semantics but require the F05-T1..T5 technical definitions and Security/Engineering/Operations approval before execution. All remain PLANNED / NOT EXECUTED.
 
 | Test ID | Scenario | Expected result / invariant | Status |
 |---|---|---|---|
 | TC-NOTIF-060 | Publish or evaluate a policy with malformed, unknown, unbounded or unauthorized selector fields/operators | Selector validation fails closed; no event snapshot is created from an unapproved selector; policy version and rejection outcome are auditable; registered selector dependencies are exact | PLANNED / NOT EXECUTED |
 | TC-NOTIF-061 | Actor, target and affected member overlap across multiple selectors; include negative controls where a participant is not selected | Only principals selected by the exact event selector appear; no implicit participant append; one canonical candidate per recipient/scope; ordering/canonicalization is deterministic | PLANNED / NOT EXECUTED |
 | TC-NOTIF-062 | Project/session closure event is dispatched after parent becomes closed | Dispatch follows the explicitly approved event-specific closure-notice rule; no blanket active-parent predicate silently suppresses all intended recipients; no new recipient is added and resource access remains independently authorized | PLANNED / NOT EXECUTED |
-| TC-NOTIF-063 | Candidate is suppressed for account status, then account is reactivated; vary consent, channel, role/scope and re-suspension before retry | Retry may consider only the original immutable candidate; every mandatory current check is re-evaluated; reactivation cannot clear unrelated suppression, rebuild snapshot or reset checkpoint; bounded retry/state outcome is deterministic | PLANNED / NOT EXECUTED |
-| TC-NOTIF-064 | Multiple suppression/retry attempts occur, including terminal and retryable reasons | Each outcome is append-only, correlated to source event/outbox/candidate/policy/attempt, uses an approved reason code, records worker identity/time, excludes unnecessary sensitive payload and cannot rewrite candidate membership | PLANNED / NOT EXECUTED |
+| TC-NOTIF-063 | Candidate is suppressed for account status, then account is reactivated; vary consent, channel, role/scope and re-suspension before retry | Only the original snapshot candidate may be reconsidered after authoritative reactivation; every mandatory current check is re-evaluated; reactivation cannot clear unrelated suppression, rebuild the snapshot or reset checkpoint; retry owner/trigger and pinned-policy reschedule rule are deterministic | PLANNED / NOT EXECUTED |
+| TC-NOTIF-064 | Multiple suppression/retry attempts occur, including terminal, retryable, policy-reschedulable and ambiguous provider outcomes | Every attempt is append-only and correlated to the original event/outbox/candidate/policy/delivery/attempt; approved reason class and worker lease identity/time are recorded; UNKNOWN is reconciled before resend; no blind duplicate dispatch, sensitive payload, snapshot rewrite or candidate widening occurs | PLANNED / NOT EXECUTED |
 
 **Execution control:** TC-NOTIF-060..064 require the approved selector grammar, event-specific dispatch matrix, suppression reason/state catalog, audit schema and F05-T1..T5 sign-offs. Runtime execution additionally requires G10 activation and the authorized isolated PostgreSQL environment. No test result is implied.
 
