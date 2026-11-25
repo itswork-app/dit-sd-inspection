@@ -15,7 +15,7 @@ const foundationItems = [
   {
     number: "03",
     title: "Delivery pipeline",
-    description: "Automated lint, type, unit-test and production-build checks."
+    description: "Configured lint, type, unit-test and production-build quality checks."
   }
 ];
 
@@ -47,10 +47,10 @@ export default function HomePage() {
           dan alur inspeksi akan dibangun bertahap di atas satu sumber data yang konsisten.
         </p>
         <div className="hero-meta">
-          <span className="meta-check"><span aria-hidden="true">✓</span> App runtime online</span>
+          <span className="meta-check"><span aria-hidden="true">✓</span> Application shell loaded</span>
           <span className={supabaseConfigured ? "meta-check" : "meta-pending"}>
             <span aria-hidden="true">{supabaseConfigured ? "✓" : "○"}</span>
-            Supabase {supabaseConfigured ? "configured" : "awaiting development credentials"}
+            Supabase environment {supabaseConfigured ? "configured" : "awaiting development credentials"}
           </span>
         </div>
       </section>
