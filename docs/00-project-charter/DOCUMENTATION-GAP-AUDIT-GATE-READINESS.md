@@ -1,10 +1,10 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.14.1
-**Audit date:** 2026-11-25  
-**Branch reviewed:** `docs/rbac-003-account-role-scope-governance` (documentation branch based on main)  
-**Reviewed baseline HEAD:** `d4d49b0fe3e26257d0fd765085d5fc84d0eecfd1` (main commit used to create this documentation branch, 2026-11-25)  
+**Version:** 1.14.2
+**Audit date:** 2026-11-26  
+**Branch reviewed:** `docs/cmd-035-operation-transaction-boundary-2026-11-26` (documentation-only branch based on main)  
+**Reviewed baseline HEAD:** `44dce2cbcc052c6e909e1b0a080062a5b60d94eb` (main commit used to create this documentation branch, 2026-11-26)  
 **Authority:** Master Implementation Blueprint MIB-001  
 **Status:** AUDIT IN PROGRESS — FULL-SYSTEM GATE NOT READY; G9-F1/G10-F1 FOUNDATION ACTIVE  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
@@ -1086,3 +1086,13 @@ The Product Owner approved all eleven RBAC-003 recommendations without amendment
 - No SQL, migration, grant, RLS policy, application code, CI, automated test, live database inspection, concurrency proof or production operation was performed by this documentation update.
 
 **Disposition:** RBAC-003 PO semantics APPROVED; DGA-B09 PARTIAL; DGA-B10 OPEN; DGA-B21 PARTIAL; DGA-B22 PO SEMANTICS APPROVED / TECHNICAL DESIGN OPEN. Full-system G9 remains NOT READY; G10-F1 remains limited to foundation implementation; business-feature entry gates remain applicable.
+
+
+## CMD-035 operation transaction-boundary reconciliation — 2026-11-26
+
+The CMD-031–040 Detailed Contract Review v0.2.4, PostgreSQL Command Contract Catalogue v0.4.9, Durable Operation Ledger Proposal v0.1.1, LOCK-MANIFEST-001 v0.4.33 and LOCK-GRAPH-001 v0.4.26 now consistently recommend a separately committed batch-acceptance transaction followed by one short transaction per sync operation. This matches the existing durable per-operation result and partial-batch contract. Savepoints are limited to intra-operation error handling and are not treated as an equivalent commit model.
+
+- This is a documentation-level engineering recommendation, not a Product Owner change to T-09 and not a technical approval.
+- Device enrollment/binding/revocation, operation-ledger physical schema admission, exact event cardinality, lock-rank/implicit-edge review, RLS/ACL and adversarial concurrency evidence remain OPEN.
+- CMD-035 remains NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification remains 0/50; global graph acyclicity remains NOT PROVEN.
+- G9-F1 remains FROZEN and G10-F1 ACTIVE only for bounded foundation work. CMD-035 business mutation is outside G10-F1. No code, SQL, migration, grants/RLS, live database, automated test, CI, deployment or production data operation was performed by this documentation update.
