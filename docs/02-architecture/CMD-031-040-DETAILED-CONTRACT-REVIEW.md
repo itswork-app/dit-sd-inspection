@@ -1,11 +1,13 @@
 # CMD-031–040 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security/institutional review required; NOT approved for implementation  
-**Document version:** 0.2.3  
-**Date:** 2026-11-24  
+**Document version:** 0.2.4  
+**Date:** 2026-11-26  
 **Scope:** CMD-031 through CMD-040  
-**Repository phase:** Documentation / SSOT maturation  
-**Controls:** T-08 attendance authority; T-09 limited offline direction; T-10 institutional records/privacy gate; T-13 print batch; T-15 append-only audit; T-18 Option A command boundary; G9 NOT READY; G10 NOT ACTIVE pending verified G9 and the required separate G10 activation record.
+**Repository phase:** Staged foundation implementation G9-F1/G10-F1; CMD-031–040 business operations remain feature-gated  
+**Controls:** T-08 attendance authority; T-09 limited offline direction; T-10 institutional records/privacy gate; T-13 print batch; T-15 append-only audit; T-18 Option A command boundary; G9-F1 FROZEN; G10-F1 ACTIVE for bounded foundation only; full-system G9 NOT READY; CMD-031–040 business mutations remain outside G10-F1.
+
+**Current gate interpretation (2026-11-26):** Historical G10 labels in dated sections below are snapshots. The controlling state is G9-F1 FOUNDATION SCOPE FROZEN and G10-F1 FOUNDATION IMPLEMENTATION ACTIVE under root AGENTS.md v1.2.5. This activation does not authorize CMD-031–040 executable business mutations, their SQL/RLS/grants, privileged RPCs, workers, or production data operations; their feature-entry contracts and approvals remain open.
 
 ## 1. Purpose, authority and non-authority
 
@@ -599,7 +601,11 @@ Important physical-schema gap: the current physical specification lists sync_bat
 - Persist batch envelope durably.
 - Process operations in deterministic client sequence or an explicitly defined server order; sort inspection locks deterministically to prevent deadlocks.
 - Reauthorize every operation immediately before applying it.
-- Each operation uses its own short transaction or a clearly specified savepoint strategy. A failed operation must not erase previously committed successful operations.
+- **Recommended boundary: one short PostgreSQL transaction per operation**, after the batch envelope and ordered operation manifest have been durably accepted. Each operation targets exactly one inspection; do not hold inspection locks across multiple operations or across the whole batch.
+- Within an operation transaction, lock/arbitrate the operation identity, reauthorize the user and bound device, acquire the one target inspection aggregate in the approved resource order, compare `expected_row_version`, apply only the allowlisted patch, and atomically persist the terminal operation result, domain/audit events and idempotency outcome.
+- A business conflict or rejection is recorded as a durable terminal operation result without applying the domain mutation. An unexpected infrastructure failure rolls back that operation transaction and leaves the operation retryable/non-terminal; it must not undo earlier committed operations.
+- A savepoint may be used for local error handling inside one operation transaction, but it is **not** an alternative to the per-operation commit boundary and cannot provide independently durable results for a partially completed batch.
+- Process operations in submitted manifest order for deterministic response ordering. If bounded parallelism is later proposed, it must use separate per-operation transactions and prove same-inspection serialization; no transaction may hold locks for multiple inspections.
 - Compare expected_row_version; stale operations become explicit CONFLICTED results and preserve client data for user resolution. Never use last-write-wins.
 - A duplicate operation_id with the same semantic hash returns the original operation result. Same ID with a different hash is rejected.
 - Batch replay returns stored per-operation results after reauthorization; it must not reapply committed changes.
@@ -1223,6 +1229,7 @@ The following findings are design gaps, not implementation defects. No live data
 | C33-01 | 033 | evidence_assets has no explicit intent expiry, client_file_id, reservation/quota state or token lifecycle columns | Physical schema extension or separate intent entity; approved limits/TTL under T-10 and provider evidence |
 | C34-01 | 034 | Catalogue proposes caller-observed storage metadata; this must be corrected to server-observed metadata from server-owned object reference | Update canonical command catalogue and route/RPC contract; security review provider metadata verification |
 | C35-01 | 035 | sync_batches exists but device registry/binding/revocation and durable per-operation outcome ledger are absent | Define device identity lifecycle and per-operation persistence; align T-09, offline threat model, physical schema and RLS |
+| C35-02 | 035 | The detailed contract and ledger proposal allow either per-operation transactions or savepoints, while promising independently durable per-operation outcomes and partial-batch recovery | Adopt one short transaction per operation as the candidate engineering boundary; treat savepoints only as intra-operation error handling; obtain Engineering/Database/Security review before schema or implementation admission |
 | C36-01 | 036 | documents lacks generic source type/id, template registry/version and renderer job/outbox lifecycle | Define source-to-document FK/provenance, template version storage, job state, lease, retry, worker identity and ACL |
 | C37-01 | 037 | document version identity and print sequence counter/allocator are not fully represented by the physical schema | Define immutable document version key and lock-safe sequence allocation |
 | C38-01 | 038 | print_batches/print_events exist but full item manifest, stable item key and durable outcomes for invalid/unresolvable items are unclear | Decide whether print_batch_items is required; define worker/lease and aggregate reconciliation semantics |
@@ -1238,7 +1245,7 @@ Before these contracts can be frozen:
 1. Update PostgreSQL Command Contract Catalogue where CMD-034 currently suggests caller-supplied observed metadata; actual Storage metadata must be server-observed.
 2. Reconcile inspection lifecycle state machine, reopen behavior, revision numbering and completion projection across PRD, functional design, physical schema and reports.
 3. Reconcile evidence upload intent fields, quota reservation, private Storage authorization, finalization and orphan compensation.
-4. Reconcile T-09 offline device identity, operation allowlist, per-operation result persistence, revocation and retry horizon.
+4. Reconcile T-09 offline device identity, operation allowlist, per-operation result persistence, revocation and retry horizon; align the one-transaction-per-operation recommendation across the command contract, operation ledger and lock manifest. A savepoint-only batch model is not equivalent to independently durable operation outcomes.
 5. Reconcile document source types, template versions, immutable document versions, generation job/outbox and worker identity.
 6. Reconcile T-13 batch manifest, per-document failure outcomes, failed-only retry, lock/idempotency and aggregate status.
 7. Reconcile attendance location scope, upload/finalization, verification history, SoD and institutional authority.
