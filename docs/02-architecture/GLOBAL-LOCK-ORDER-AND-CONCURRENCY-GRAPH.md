@@ -7,7 +7,7 @@
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
 **Gate:** G3/G4/G5/G7/full-system G9 NOT READY; G9-F1 FOUNDATION SCOPE FROZEN; G10-F1 FOUNDATION ACTIVE for bounded foundation only; business-command lock protocol remains unapproved and feature-gated.
 
-**Current gate interpretation (2026-11-24):** Dated historical sections below that say “G10 NOT AUTHORIZED” are preserved snapshots from before the Product Owner's conditional implementation authorization. The current controlling state is G9 NOT READY and G10 NOT ACTIVE; implementation remains gated by verified G9 and a separate G10 activation record.
+**Current gate interpretation (2026-11-26):** Dated historical sections below that say “G10 NOT ACTIVE” or “G10 NOT AUTHORIZED” are preserved snapshots from before the staged foundation activation. The current controlling state under AGENTS.md v1.2.5 is G9-F1 FOUNDATION SCOPE FROZEN and G10-F1 FOUNDATION IMPLEMENTATION ACTIVE. Full-system G9 remains NOT READY; later business-command features, including CMD-031–040, remain feature-gated and are not authorized by G10-F1.
 
 ## 1. Executive conclusion
 
