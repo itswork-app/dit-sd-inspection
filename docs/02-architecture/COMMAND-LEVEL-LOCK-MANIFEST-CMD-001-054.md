@@ -8,6 +8,8 @@
 **Scope:** Per-command resource inventory, source-stated lock sequence, shared invariants, competing commands, constraints and unresolved ordering  
 **Gate:** G3/G4/G5/G7/full-system G9 NOT READY; G9-F1 FOUNDATION SCOPE FROZEN; G10-F1 FOUNDATION ACTIVE; CMD business-operation entry gates remain open.
 
+**Current gate interpretation (2026-11-26):** Dated G10 NOT ACTIVE labels in historical overlays remain snapshots. G10-F1 authorizes bounded foundation only; no business command lock protocol, privileged RPC, schema, RLS/grant or worker is activated by this status.
+
 ## 1. Executive conclusion
 
 This document converts the current command reviews into a 54-row lock manifest inventory. It records only resource and ordering facts that are explicitly present in the reviewed command documents, and labels missing or contradictory information as OPEN. It is not a normalized, approved lock plan.
