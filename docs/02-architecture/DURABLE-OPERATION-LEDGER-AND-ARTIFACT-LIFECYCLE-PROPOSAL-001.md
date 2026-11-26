@@ -7,6 +7,8 @@
 **Scope:** Offline sync operation outcomes, document generation jobs, print batch manifests/results, attendance document versions and verification history  
 **Gate:** G9-F1 FROZEN; G10-F1 ACTIVE for bounded foundation only; full-system G9 NOT READY; CMD-035/036/038/039/040 business mutations and workers remain feature-gated.
 
+**Current gate interpretation (2026-11-26):** Historical G10 NOT ACTIVE labels in the dated body are snapshots from before staged foundation activation. G10-F1 does not authorize these business mutations, candidate schema objects, workers or provider operations.
+
 ## 1. Purpose and boundary
 
 This proposal addresses physical objects missing from the current Package L catalogue for CMD-035, CMD-036, CMD-038, CMD-039 and CMD-040. It provides candidate data boundaries, uniqueness/idempotency rules, lifecycle invariants and RLS/worker posture for review.
