@@ -120,6 +120,74 @@ At minimum, generated output must bind to an exact approved source version/hash 
 - Worker identity and EXECUTE/table ACL are separate Security decisions; browser roles receive no queue access.
 - CMD-036 acceptance, generated, failed and retry outcomes must be auditable without exposing document content or secrets.
 
+### 3.5 Canonical generation identity and idempotency
+
+The request idempotency key and the generation identity solve different problems and must not be conflated.
+
+- **Request idempotency** identifies one caller command submission. Its scope is the authenticated actor, command, and caller-supplied idempotency key. The server computes a canonical semantic request hash. Reuse with the same hash returns the prior accepted/result reference after current read authorization; reuse with a different hash returns `IDEMPOTENCY_KEY_REUSED`.
+- **Generation identity** identifies the artifact that should exist for a specific immutable input tuple. Candidate canonical tuple: document type + typed source identity + exact immutable source version/hash + template identity/version/hash + renderer profile/version + explicitly versioned output options that can change bytes (for example locale or page profile, if supported). The server computes the stable generation key from this normalized tuple.
+- A uniqueness arbiter must prevent concurrent requests from creating two active or completed artifact identities for the same generation tuple. A second authorized request for the same tuple resolves to the existing job/document identity rather than creating a duplicate render.
+- Actor identity is an authorization/audit attribute, not part of the artifact's content identity. It must not let two authorized actors create duplicate copies merely by changing caller identity.
+- A deliberate new render after a renderer/template correction must have a materially different, immutable renderer/template version in the tuple. Do not add an opaque client nonce to bypass deduplication. If a business correction requires a second artifact for the same source/template tuple, the allowed supersession/reissue semantics require explicit Product Owner approval and a distinct versioned reason/identity.
+- The canonical hash excludes transport-only fields, timestamps, caller-supplied output metadata and fields that cannot change rendered bytes.
+
+The exact unique key, idempotency retention horizon and reissue semantics remain Engineering/Database/Product decisions; this is a candidate identity model, not an approved uniqueness constraint.
+
+### 3.6 Job state, lease and fencing protocol
+
+The following is a candidate transition model; exact enum names and retry limits remain open:
+
+`QUEUED → PROCESSING → COMPLETED`, with `PROCESSING → RETRY_WAIT → PROCESSING` for retryable failures and terminal `FAILED` or `CANCELLED` only through controlled transitions. A terminal attempt record is append-only; a job projection may change only through a compare-and-swap transition.
+
+- Claim is a short database transaction. It selects eligible queued/retry-due work, increments a monotonic lease generation/fencing counter, assigns a server-issued opaque lease token (persist only a hash where feasible), sets lease expiry and records the attempt start. Claim commits before rendering begins.
+- A worker heartbeat may extend the lease only when job ID, lease owner, token hash, generation and current unexpired lease all match. Heartbeat is a compare-and-swap update; it cannot revive an expired or superseded lease.
+- Reclaim after expiry increments the fencing generation. The previous worker is permanently stale even if it later completes rendering.
+- The worker identity is a distinct non-human workload identity. It is not `document.generate`, `authenticated`, `service_role` or a browser session. Its exact authentication, function/table privileges, Storage access, network egress and secret custody require Security/Operations approval.
+- Claim, heartbeat, retry scheduling and finalization each use bounded transactions. No source/document/job row lock is held during renderer or Storage I/O.
+- A worker may render more than once under at-least-once delivery. The invariant is one accepted immutable artifact identity and one valid finalization, not exactly-once execution of the external renderer.
+
+Lease duration, heartbeat interval, maximum attempts, backoff schedule, dead-letter policy, queue fairness and worker concurrency are deliberately unset pending workload/provider/SLO evidence.
+
+### 3.7 Rendering, object storage and guarded finalization
+
+1. The worker loads only the server-pinned immutable source snapshot/reference and immutable template version/hash. It must not re-resolve a mutable "latest" template or accept client-supplied source content at render time.
+2. It renders outside PostgreSQL transactions. Renderer input is bounded and schema-validated; template content is declarative and reviewed. Executable macros/scripts, arbitrary remote includes and unbounded network fetches are prohibited.
+3. The worker writes to a server-generated private Storage object identity using create-if-absent/immutable semantics where supported. It computes or independently verifies the output checksum and obtains server-observed object metadata. A retry must reconcile an existing object by exact generation identity and checksum; it must never overwrite an existing finalized object.
+4. Finalization runs in a short transaction and checks the current lease fencing tuple, expected job state/version, exact document/generation identity, pinned source version/hash, pinned template version/hash and server-observed output object identity/checksum/size/MIME. It appends the generation attempt outcome, updates the document/job terminal projection, appends the required audit event and records the durable result atomically.
+5. If the lease is expired/reclaimed, the source binding no longer matches, or object metadata does not match, finalization fails closed. The artifact is not exposed as GENERATED. Any orphan private object is reconciled by a separate idempotent process; no immediate delete is inferred.
+6. A failed audit append rolls back the relational finalization. The external object may remain as an orphan for reconciliation, but no successful document pointer/status may commit without its required audit event.
+
+**Source-reopen race remains a Product Owner decision.** CMD-032 requires preserving an already approved immutable revision and its historical PDF/print history, but current documentation does not settle what to do when a generation job was accepted before reopen and finishes after the inspection is reopened. Two possible policies have different user-visible outcomes: (A) permit finalization as a historical artifact bound to the still-approved immutable revision, or (B) mark the job stale/cancelled and require a separately authorized request. Do not infer either. Until this edge is decided, finalization must not silently rebind to a new draft/current revision; the race remains blocked and must fail closed or remain pending for controlled resolution.
+
+### 3.8 Retry, cancellation and uncertain outcomes
+
+- Classify failures as retryable infrastructure/provider failure, deterministic render/input failure, authorization/source invalidation, lease loss, object-integrity mismatch or audit failure. The taxonomy and retryability are server-owned.
+- Retry only when the prior attempt is known not to have finalized. If renderer/Storage completion is uncertain, first reconcile by generation identity, object key and checksum. Never blindly create a new artifact or overwrite the previous object.
+- A retry creates a new append-only attempt number and fencing generation; it does not erase prior attempt evidence.
+- Terminal failure is reached only after the approved bounded retry policy or a non-retryable condition. Dead-letter/reconciliation is explicit and observable.
+- Cancellation, if exposed, is a separately authorized command/policy. A client disconnect, browser timeout, lease expiry or source update is not itself proof that an external render stopped.
+- Access to a generated artifact is a separate scoped read decision. The generation response must not return a durable public URL or reusable signed URL.
+
+### 3.9 Required observability and acceptance evidence
+
+The worker and command should emit privacy-safe correlation fields: generation key/reference, job ID, attempt number, fencing generation, state transition, source version ID/hash, template version/hash, renderer version, duration, safe error code and output checksum. Never log source content, PDF bytes, JWTs, lease tokens, signed URLs, credentials or personal evidence payloads.
+
+Minimum test scenarios (all PLANNED / NOT EXECUTED):
+- concurrent same-tuple requests resolve to one generation identity and one durable job;
+- same caller idempotency key/same semantic request replays; changed semantic request is rejected;
+- template publication/revocation or renderer-version change cannot mutate a pinned in-flight request;
+- worker crash before render, during render, after Storage write and before finalization;
+- lease expiry/reclaim while old worker is still running; stale worker cannot finalize;
+- heartbeat racing with reclaim; only the current fencing generation remains valid;
+- duplicate renderer execution and uncertain Storage response reconcile without overwriting;
+- source revision/reopen race follows the explicit PO decision and never rebinds to a newer draft;
+- checksum, MIME, size, private bucket and object-key mismatch fail closed;
+- audit failure prevents GENERATED state; orphan object is discoverable and reconciled;
+- authorization revocation before enqueue/finalization is enforced at the defined boundary;
+- no browser identity can claim, heartbeat, retry, finalize or read the worker queue.
+
+These cases require exact physical schema, function/worker ACL, Storage policy, event cardinality and concurrency harness approval before execution. No test result is claimed.
+
 ## 4. CMD-038 — durable print batch manifest and item outcomes
 
 ### 4.1 Problem
@@ -254,73 +322,3 @@ Every candidate object requires:
 - Concurrency, replay, lease-fencing and race evidence: **NOT EXECUTED**.
 - G9: **NOT READY**.
 - G10: **NOT ACTIVE**.
-
-
-
-### 3.5 Canonical generation identity and idempotency
-
-The request idempotency key and the generation identity solve different problems and must not be conflated.
-
-- **Request idempotency** identifies one caller command submission. Its scope is the authenticated actor, command, and caller-supplied idempotency key. The server computes a canonical semantic request hash. Reuse with the same hash returns the prior accepted/result reference after current read authorization; reuse with a different hash returns `IDEMPOTENCY_KEY_REUSED`.
-- **Generation identity** identifies the artifact that should exist for a specific immutable input tuple. Candidate canonical tuple: document type + typed source identity + exact immutable source version/hash + template identity/version/hash + renderer profile/version + explicitly versioned output options that can change bytes (for example locale or page profile, if supported). The server computes the stable generation key from this normalized tuple.
-- A uniqueness arbiter must prevent concurrent requests from creating two active or completed artifact identities for the same generation tuple. A second authorized request for the same tuple resolves to the existing job/document identity rather than creating a duplicate render.
-- Actor identity is an authorization/audit attribute, not part of the artifact's content identity. It must not let two authorized actors create duplicate copies merely by changing caller identity.
-- A deliberate new render after a renderer/template correction must have a materially different, immutable renderer/template version in the tuple. Do not add an opaque client nonce to bypass deduplication. If a business correction requires a second artifact for the same source/template tuple, the allowed supersession/reissue semantics require explicit Product Owner approval and a distinct versioned reason/identity.
-- The canonical hash excludes transport-only fields, timestamps, caller-supplied output metadata and fields that cannot change rendered bytes.
-
-The exact unique key, idempotency retention horizon and reissue semantics remain Engineering/Database/Product decisions; this is a candidate identity model, not an approved uniqueness constraint.
-
-### 3.6 Job state, lease and fencing protocol
-
-The following is a candidate transition model; exact enum names and retry limits remain open:
-
-`QUEUED → PROCESSING → COMPLETED`, with `PROCESSING → RETRY_WAIT → PROCESSING` for retryable failures and terminal `FAILED` or `CANCELLED` only through controlled transitions. A terminal attempt record is append-only; a job projection may change only through a compare-and-swap transition.
-
-- Claim is a short database transaction. It selects eligible queued/retry-due work, increments a monotonic lease generation/fencing counter, assigns a server-issued opaque lease token (persist only a hash where feasible), sets lease expiry and records the attempt start. Claim commits before rendering begins.
-- A worker heartbeat may extend the lease only when job ID, lease owner, token hash, generation and current unexpired lease all match. Heartbeat is a compare-and-swap update; it cannot revive an expired or superseded lease.
-- Reclaim after expiry increments the fencing generation. The previous worker is permanently stale even if it later completes rendering.
-- The worker identity is a distinct non-human workload identity. It is not `document.generate`, `authenticated`, `service_role` or a browser session. Its exact authentication, function/table privileges, Storage access, network egress and secret custody require Security/Operations approval.
-- Claim, heartbeat, retry scheduling and finalization each use bounded transactions. No source/document/job row lock is held during renderer or Storage I/O.
-- A worker may render more than once under at-least-once delivery. The invariant is one accepted immutable artifact identity and one valid finalization, not exactly-once execution of the external renderer.
-
-Lease duration, heartbeat interval, maximum attempts, backoff schedule, dead-letter policy, queue fairness and worker concurrency are deliberately unset pending workload/provider/SLO evidence.
-
-### 3.7 Rendering, object storage and guarded finalization
-
-1. The worker loads only the server-pinned immutable source snapshot/reference and immutable template version/hash. It must not re-resolve a mutable "latest" template or accept client-supplied source content at render time.
-2. It renders outside PostgreSQL transactions. Renderer input is bounded and schema-validated; template content is declarative and reviewed. Executable macros/scripts, arbitrary remote includes and unbounded network fetches are prohibited.
-3. The worker writes to a server-generated private Storage object identity using create-if-absent/immutable semantics where supported. It computes or independently verifies the output checksum and obtains server-observed object metadata. A retry must reconcile an existing object by exact generation identity and checksum; it must never overwrite an existing finalized object.
-4. Finalization runs in a short transaction and checks the current lease fencing tuple, expected job state/version, exact document/generation identity, pinned source version/hash, pinned template version/hash and server-observed output object identity/checksum/size/MIME. It appends the generation attempt outcome, updates the document/job terminal projection, appends the required audit event and records the durable result atomically.
-5. If the lease is expired/reclaimed, the source binding no longer matches, or object metadata does not match, finalization fails closed. The artifact is not exposed as GENERATED. Any orphan private object is reconciled by a separate idempotent process; no immediate delete is inferred.
-6. A failed audit append rolls back the relational finalization. The external object may remain as an orphan for reconciliation, but no successful document pointer/status may commit without its required audit event.
-
-**Source-reopen race remains a Product Owner decision.** CMD-032 requires preserving an already approved immutable revision and its historical PDF/print history, but current documentation does not settle what to do when a generation job was accepted before reopen and finishes after the inspection is reopened. Two possible policies have different user-visible outcomes: (A) permit finalization as a historical artifact bound to the still-approved immutable revision, or (B) mark the job stale/cancelled and require a separately authorized request. Do not infer either. Until this edge is decided, finalization must not silently rebind to a new draft/current revision; the race remains blocked and must fail closed or remain pending for controlled resolution.
-
-### 3.8 Retry, cancellation and uncertain outcomes
-
-- Classify failures as retryable infrastructure/provider failure, deterministic render/input failure, authorization/source invalidation, lease loss, object-integrity mismatch or audit failure. The taxonomy and retryability are server-owned.
-- Retry only when the prior attempt is known not to have finalized. If renderer/Storage completion is uncertain, first reconcile by generation identity, object key and checksum. Never blindly create a new artifact or overwrite the previous object.
-- A retry creates a new append-only attempt number and fencing generation; it does not erase prior attempt evidence.
-- Terminal failure is reached only after the approved bounded retry policy or a non-retryable condition. Dead-letter/reconciliation is explicit and observable.
-- Cancellation, if exposed, is a separately authorized command/policy. A client disconnect, browser timeout, lease expiry or source update is not itself proof that an external render stopped.
-- Access to a generated artifact is a separate scoped read decision. The generation response must not return a durable public URL or reusable signed URL.
-
-### 3.9 Required observability and acceptance evidence
-
-The worker and command should emit privacy-safe correlation fields: generation key/reference, job ID, attempt number, fencing generation, state transition, source version ID/hash, template version/hash, renderer version, duration, safe error code and output checksum. Never log source content, PDF bytes, JWTs, lease tokens, signed URLs, credentials or personal evidence payloads.
-
-Minimum test scenarios (all PLANNED / NOT EXECUTED):
-- concurrent same-tuple requests resolve to one generation identity and one durable job;
-- same caller idempotency key/same semantic request replays; changed semantic request is rejected;
-- template publication/revocation or renderer-version change cannot mutate a pinned in-flight request;
-- worker crash before render, during render, after Storage write and before finalization;
-- lease expiry/reclaim while old worker is still running; stale worker cannot finalize;
-- heartbeat racing with reclaim; only the current fencing generation remains valid;
-- duplicate renderer execution and uncertain Storage response reconcile without overwriting;
-- source revision/reopen race follows the explicit PO decision and never rebinds to a newer draft;
-- checksum, MIME, size, private bucket and object-key mismatch fail closed;
-- audit failure prevents GENERATED state; orphan object is discoverable and reconciled;
-- authorization revocation before enqueue/finalization is enforced at the defined boundary;
-- no browser identity can claim, heartbeat, retry, finalize or read the worker queue.
-
-These cases require exact physical schema, function/worker ACL, Storage policy, event cardinality and concurrency harness approval before execution. No test result is claimed.
