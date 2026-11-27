@@ -212,13 +212,16 @@ export default async function PendingAccessPage({ searchParams }: PendingPagePro
                   : "Belum ada scope eksplisit"}
               </p>
             </div>
-            {snapshot.canManageIdentity ? (
-              <div className="rbac-actions">
-                <Link className="auth-button rbac-link-button" href="/admin/accounts">
-                  Buka Manajemen Akun &amp; RBAC
+            <div className="rbac-actions">
+              <Link className="auth-button rbac-link-button" href="/workspace">
+                Buka Workspace Operasional
+              </Link>
+              {snapshot.canManageIdentity ? (
+                <Link className="auth-button auth-button-secondary rbac-link-button" href="/admin/accounts">
+                  Manajemen Akun &amp; RBAC
                 </Link>
-              </div>
-            ) : null}
+              ) : null}
+            </div>
           </>
         )}
 
