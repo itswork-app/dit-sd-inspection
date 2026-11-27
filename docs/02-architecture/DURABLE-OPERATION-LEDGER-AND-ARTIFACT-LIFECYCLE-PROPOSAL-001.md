@@ -1,7 +1,7 @@
 # Durable Operation Ledgers and Artifact Lifecycle — CMD-035/036/038/039/040
 
 **Document ID:** DURABLE-OPERATION-LEDGER-PROPOSAL-001  
-**Version:** 0.2.0  
+**Version:** 0.3.2  
 **Date:** 2026-11-27  
 **Status:** Engineering / Database / Security / Product review proposal — NOT APPROVED FOR IMPLEMENTATION  
 **Scope:** Offline sync operation outcomes, document generation jobs, print batch manifests/results, attendance document versions and verification history  
@@ -102,6 +102,14 @@ A candidate `document_generation_jobs` object should include:
 
 A candidate `document_generation_attempts` object should preserve attempt number, job ID, worker correlation, start/finish time, outcome, sanitized error code and output hash/reference when successful. It must not store secrets, access tokens, signed URLs, full renderer responses or source document bodies.
 
+### 3.3A Inspection-session start and post-closure print policy — DOC-003
+
+For inspection-derived documents, generation eligibility requires that the source session has durably started (the session has transitioned from DRAFT through its authorized activation path) and that the exact source inspection revision is approved and immutable. A pre-start request is rejected; it must not reserve an artifact identity or enqueue a generation job. This does not require the session to remain ACTIVE indefinitely.
+
+Once a final artifact is generated, it remains immutable evidence. Only the latest finalized/current version of the logical document may receive new print/reprint actions. A later finalized version supersedes the prior version for print eligibility; the superseded artifact becomes historical-only, cannot be printed individually or in a batch, and retains all prior print events unchanged. A pending/unfinalized replacement does not make the old version eligible again. CMD-037 and CMD-038 must revalidate current-version eligibility at processing time and reject a superseded version without consuming a print sequence.
+
+Session closure does not revoke printability of the latest finalized/current version. CMD-037 may record print/reprint after `CLOSED` if the caller is currently authorized in the exact resource scope and the artifact is final/current and integrity-valid. Printing after closure does not reopen or mutate the session. DOC-003 does not authorize new generation after closure. C37-02 is CLOSED at PO semantics level; physical version identity and concurrency enforcement remain open under C37-01/C37-04. C36-02 source-reopen race remains separate and unresolved.
+
 ### 3.3 Source identity and immutable artifact provenance
 
 Avoid an unconstrained polymorphic source ID with no FK. Engineering/Database should select one of:
@@ -157,7 +165,7 @@ Lease duration, heartbeat interval, maximum attempts, backoff schedule, dead-let
 5. If the lease is expired/reclaimed, the source binding no longer matches, or object metadata does not match, finalization fails closed. The artifact is not exposed as GENERATED. Any orphan private object is reconciled by a separate idempotent process; no immediate delete is inferred.
 6. A failed audit append rolls back the relational finalization. The external object may remain as an orphan for reconciliation, but no successful document pointer/status may commit without its required audit event.
 
-**Source-reopen race remains a Product Owner decision.** CMD-032 requires preserving an already approved immutable revision and its historical PDF/print history, but current documentation does not settle what to do when a generation job was accepted before reopen and finishes after the inspection is reopened. Two possible policies have different user-visible outcomes: (A) permit finalization as a historical artifact bound to the still-approved immutable revision, or (B) mark the job stale/cancelled and require a separately authorized request. Do not infer either. Until this edge is decided, finalization must not silently rebind to a new draft/current revision; the race remains blocked and must fail closed or remain pending for controlled resolution.
+**Source-reopen race remains a separate Product Owner decision (C36-02).** DOC-003 establishes only the session-start generation gate and post-closure printability; it does not decide whether an in-flight generation accepted before reopen may finalize afterward.  CMD-032 requires preserving an already approved immutable revision and its historical PDF/print history, but current documentation does not settle what to do when a generation job was accepted before reopen and finishes after the inspection is reopened. Two possible policies have different user-visible outcomes: (A) permit finalization as a historical artifact bound to the still-approved immutable revision, or (B) mark the job stale/cancelled and require a separately authorized request. Do not infer either. Until this edge is decided, finalization must not silently rebind to a new draft/current revision; the race remains blocked and must fail closed or remain pending for controlled resolution.
 
 ### 3.8 Retry, cancellation and uncertain outcomes
 
@@ -322,3 +330,55 @@ Every candidate object requires:
 - Concurrency, replay, lease-fencing and race evidence: **NOT EXECUTED**.
 - G9: **NOT READY**.
 - G10: **NOT ACTIVE**.
+
+### 4.4 CMD-038 lifecycle reconciliation — 2026-11-27
+
+**Status:** candidate engineering contract only; no Product Owner approval of remaining policy values and no schema admission. This subsection refines §§4.2–4.3; it does not change the candidate-only status of either object.
+
+#### Durable acceptance and immutable manifest
+
+1. Batch submission is one short acceptance transaction. It authenticates the caller, validates the batch-level permission and request envelope, arbitrates actor + command + idempotency key against a server-computed canonical request hash, creates the batch envelope, persists every ordered manifest item, and commits the stored acceptance result atomically.
+2. Same key + same canonical hash replays the same batch identity and accepted manifest. Same key + different hash returns IDEMPOTENCY_KEY_REUSED; it must not create or mutate a batch.
+3. The server derives requested_count from the persisted manifest. It is not accepted from the caller. Client-supplied count, status, result, success assertion, sequence, actor identity and retry eligibility are forbidden.
+4. The accepted manifest is immutable: stable item_key, request position, original document/version request, and canonical item hash are retained even when the document cannot be resolved or authorized. A stable key is unique within a batch; request position is unique within a batch. Duplicate item keys or duplicate canonical item identity are rejected according to an explicit normalization rule; the normalization rule remains an engineering decision.
+5. The maximum item count, request-byte limit, per-actor rate limit, acceptance expiry and retention are not assigned here. The configured maximum must be evidence-based and approved before implementation; do not substitute an arbitrary number or an unbounded array.
+
+#### Item outcome authority and attempt identity
+
+- print_batch_items is the durable identity of each requested item; print_batch_item_results is the append-only history of processing attempts/outcomes. The latest eligible terminal result is a projection input, not a mutable overwrite.
+- A result attempt is identified by (batch_item_id, attempt_no) as a candidate uniqueness rule. attempt_no is an item-processing attempt ordinal only; it is not print_events.attempt_no, not sequence_no, and not a reprint count.
+- print_events remains the authoritative per-document application print/reprint event stream. A result that records a successful application print action references exactly one committed print_event; one print_event may be referenced by at most one authoritative item result. A rejected/failed item with no recorded application print action has no successful print event. Whether failed print_events rows are retained for resolvable documents, and exact audit event cardinality for rejected items, remain open (C38-03).
+- An item result is never rewritten from failed to successful. A later retry appends a new attempt/result. A successful result is terminal for that batch item and cannot be selected by a failed-only retry.
+
+#### Processing and transaction boundaries
+
+1. Batch acceptance and item processing are separate transactions. Acceptance does not claim that any item has printed.
+2. Each item is authorized and processed in its own short database transaction. Revalidate the current caller authority and exact document/version/scope at the item boundary; enqueue-time permission is not a permanent authorization grant.
+3. One item transaction locks at most one document aggregate/version and its sequence allocator. It must not hold a batch-wide lock or multiple document locks while processing items. CMD-037 candidate sequence increment, print_event, required audit fact and idempotency outcome commit atomically; audit failure rolls back that item's sequence/event/idempotency mutation.
+4. Persist the item result and its idempotency linkage in the same transaction as the item outcome. A committed success followed by a lost acknowledgement is recovered by replaying the same batch/item identity and returns the same event/sequence; it does not allocate another sequence.
+5. A process crash before item commit leaves that item uncommitted/retryable and cannot roll back prior committed items. A crash after commit but before response is resolved by reading/replaying the committed item result. No transaction or database lock spans browser rendering, PDF delivery, or physical printer I/O.
+6. Batch aggregate status/counts are derived from the immutable manifest and durable item results. They are a projection only; they must never be accepted from the caller or used as a substitute for item-level evidence. The projection update/reconciliation path must be idempotent and must not overwrite item history.
+
+#### Failed-only retry and partial recovery
+
+- A retry request identifies the prior batch and requests failed-only retry. The server derives the eligible subset from the source batch's durable results; the caller cannot submit a list of items claimed to have failed.
+- The retry creates a new batch envelope with a new batch idempotency key and a new immutable manifest containing only eligible failed items, retaining source batch/item references. Original batches, manifests and results remain unchanged.
+- Previously successful items are excluded server-side even if the caller includes their item keys or asserts that they failed. A batch with no eligible failed items returns a stable no-op/rejection outcome and creates no print event; exact response code remains open.
+- A retryable failure classification must be explicit and deterministic. Authorization denial, invalid/non-printable document, stale version, scope mismatch, audit failure and transient infrastructure failure must not be collapsed into one generic retryable state. Retry limits, backoff, expiry, cancellation and manual requeue policy remain OPEN.
+- If two retry batches race from the same partial batch, per-document sequence/idempotency arbitration prevents duplicate successful print events. Whether the product permits overlapping retry batches or serializes them at batch/item eligibility level remains C38-04.
+- A batch may remain incomplete while item results are pending. Exact PROCESSING/PARTIAL/SUCCEEDED/REJECTED terminal transition rules and stale-batch recovery authority require approval; do not infer a lease or worker principal. A worker/lease is not authorized by this proposal.
+
+#### Privacy, access and retention
+
+The accepted manifest and item results contain document identifiers, version references, safe error codes and actor/batch references only as needed for reconciliation. They must not duplicate PDF bytes, evidence, raw request bodies, tokens, or unrestricted Storage object keys. Batch-result reads require actor- and resource-scope authorization; candidate tables receive no browser DML and no broad worker/table access. Retention, expiry and legal-hold disposition remain governed by T-10 and are not set here.
+
+#### Open blockers
+
+- C38-01: candidate manifest/result objects, exact PK/FK/index/check constraints, canonical item hash and identity normalization, and admission to the physical schema/RLS/ERD.
+- C38-02: batch/item worker or synchronous orchestration model, lease/fencing (if any), recovery ownership, and whether concurrent/overlapping retry batches are permitted.
+- C38-03: authoritative attempt identity across item results, print_events.attempt_no, CMD-037 sequence_no, and audit event cardinality for failed/rejected items.
+- C38-04: PO decision on mixed-scope batches (reject vs partition), retry limits/expiry/cancellation, empty failed-only retry, and exact terminal batch-state semantics.
+- C38-05: approved numeric maximum batch size, request/rate/processing bounds and retention; no numeric values are inferred.
+- C37-01..04 remain independent CMD-037 blockers and continue to constrain CMD-038.
+
+No candidate table, function, worker, permission, RLS policy, grant, route, migration, SQL or runtime behavior is approved by this addendum.

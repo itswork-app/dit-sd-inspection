@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.28
+**Version:** 0.4.30
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-27  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -638,4 +638,17 @@ Candidate per-command lock sequence: idempotency arbitration → exact document/
 
 CMD-038 must process each item in its own short transaction, locking one document/counter at a time. Batch retries target failed items only; successful outcomes are immutable and never generate a duplicate print event. The meaning of `print_events.attempt_no` remains unresolved and cannot be a second reprint counter.
 
-**Open cross-document blockers:** C37-01 logical-document vs immutable-version identity; C37-02 historical/superseded-version reprint eligibility; C37-03 `attempt_no` semantics; C37-04 counter object/allocator and exact lock/constraint/RLS/ACL review. LG-21 remains an unexecuted concurrency scenario, not a certified graph edge. CMD-037 remains NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification 0/50; graph acyclicity NOT PROVEN. No physical object is admitted, no SQL/migration/RLS/grant or handler is authorized, and no concurrency test is claimed.
+**Open cross-document blockers:** C37-01 logical-document vs immutable-version identity/current-version arbitration; C37-03 `attempt_no` semantics; C37-04 counter object/allocator and exact lock/constraint/RLS/ACL review. C37-02 superseded-version eligibility is CLOSED at PO semantics level: only the latest finalized/current version may be printed/reprinted; superseded versions are historical-only and rejected. LG-21 remains an unexecuted concurrency scenario, not a certified graph edge. CMD-037 remains NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification 0/50; graph acyclicity NOT PROVEN. No physical object is admitted, no SQL/migration/RLS/grant or handler is authorized, and no concurrency test is claimed.
+
+## CMD-038 durable manifest and per-item transaction overlay — 2026-11-27
+
+The CMD-038 candidate protocol is now normalized as two non-overlapping phases:
+
+1. **Acceptance:** one short transaction arbitrates the batch idempotency key/hash and persists the batch envelope plus the complete immutable ordered manifest. No document sequence is allocated during acceptance.
+2. **Item processing:** one short transaction per item, with current authorization revalidation, item idempotency, one document aggregate/version and one per-document sequence allocator. It atomically records the application print event, required audit fact and item outcome/idempotency. A transaction never locks more than one document/counter. Batch status/counts are a derived, idempotent projection.
+
+The batch envelope is not held locked across item processing. A projection lock, if required, is acquired only after item transaction completion in a separate bounded operation; its exact rank and lock path remain OPEN. No lock is held across PDF delivery, browser activity or physical printer I/O. There is no physical printer integration in this contract.
+
+Failed-only retry derives eligible items from durable prior item results and creates a new immutable retry batch; successful source items are excluded server-side. Concurrent retry batches still converge on the CMD-037 per-document idempotency/sequence arbiter, but whether overlapping retries are permitted remains C38-02/C38-04. Item attempt_no is distinct from document sequence_no; its relationship to legacy print_events.attempt_no is unresolved (C38-03).
+
+No new global lock rank, object, FK/trigger edge or acyclicity claim is admitted. The effective database lock graph remains NOT PROVEN. Candidate manifest/result tables remain NOT ADMITTED; application lock certification remains 0/50; LG-21 remains PLANNED / NOT EXECUTED.

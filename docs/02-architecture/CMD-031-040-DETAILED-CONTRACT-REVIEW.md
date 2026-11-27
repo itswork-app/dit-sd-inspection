@@ -1,7 +1,7 @@
 # CMD-031–040 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security/institutional review required; NOT approved for implementation  
-**Document version:** 0.2.6  
+**Document version:** 0.2.9  
 **Date:** 2026-11-27  
 **Scope:** CMD-031 through CMD-040  
 **Repository phase:** Staged foundation implementation G9-F1/G10-F1; CMD-031–040 business operations remain feature-gated  
@@ -753,6 +753,14 @@ Rendering and Storage I/O occur outside database locks. Use a server-generated p
 
 CMD-032 requires preservation of an approved immutable revision and historical PDF/print history, but the repository does not decide whether a job accepted before reopen may finalize afterward as a historical artifact or must be stopped as stale. These policies have different business outcomes. Do not rebind to the current draft or infer either policy. Record this as C36-02 for explicit PO disposition; until resolved, the source-reopen race remains a blocker to CMD-036 certification.
 
+#### 7.6.5 Session-start generation gate and historical print — PO APPROVED DOC-003
+
+An inspection-derived document cannot be generated before its source session has started. Generation requires a durable session activation/start fact and the exact approved immutable inspection revision; a DRAFT/not-yet-started session returns `SESSION_NOT_STARTED` and must not create a generation job or artifact. This is a source eligibility gate, not a requirement that the session remain ACTIVE forever.
+
+After successful finalization, the generated artifact is immutable evidence. Of all versions for one logical document, only the latest finalized/current version is eligible for print/reprint. A later finalized version created after a permitted revision/reopen supersedes the prior version for new print actions; the prior artifact and all its existing print events remain immutable historical records but cannot be printed/reprinted again, individually or in a batch. A pending/unfinalized replacement does not restore eligibility to the older version. CMD-037 and every CMD-038 item must validate current-version eligibility at processing time.
+
+Closing the source session does not revoke print eligibility of the latest finalized/current version. Printing that version after `CLOSED` requires current `document.print` authority in exact scope and artifact integrity/final-state checks; no session reopen is required and print must not mutate session/inspection state. DOC-003 does not approve new generation after closure. C37-02 is CLOSED at PO-semantics level; exact version identity/current-version arbitration remains technical work under C37-01/C37-04. C36-02 (a generation job accepted before inspection reopen) remains a separate unresolved race; this clarification does not authorize rebinding to a new draft or decide that race.
+
 #### 7.6.5 Failure and access boundaries
 
 Classify retryable infrastructure errors separately from deterministic render/input errors, authorization/source invalidation, lease loss, object-integrity mismatch and audit failure. Retry only after reconciling uncertain external outcomes. Cancellation is not inferred from client disconnect, timeout or lease expiry. Generated artifact access remains a separate authorized read; no public or reusable signed URL is returned by the generation command. Worker identity is a distinct workload principal with separately reviewed exact ACL and Storage permissions, not a browser role, `document.generate` permission or broad `service_role`.
@@ -874,7 +882,7 @@ Define `expected_sequence` as the caller's expected current last sequence (zero 
 
 The current physical schema does not decide whether `documents.id` is a logical document or one immutable printable version, while this request carries both `document_id` and `document_version`. C37-01 remains open: choose a stable logical-document + immutable-version FK model or one-row-per-immutable-version model, then reconcile CMD-036, ERD, physical schema and API. Every print event must bind the exact immutable output version/hash.
 
-CMD-038 must use the same per-document authorization/idempotency/sequence boundary. Each batch item runs in its own short transaction and locks only one document/counter at a time. Do not hold multiple document locks across the batch. Failed-only retries append item-attempt results; a previously successful item must never create a second successful print event. C37-02 records the still-open policy for reprinting historical/superseded versions. C37-03 records the undefined meaning of `attempt_no`; it must not become a second independent reprint counter.
+CMD-038 must use the same per-document authorization/idempotency/sequence boundary. Each batch item runs in its own short transaction and locks only one document/counter at a time. Do not hold multiple document locks across the batch. Failed-only retries append item-attempt results; a previously successful item must never create a second successful print event. DOC-003/C37-02 allows only the latest finalized/current version; superseded versions are historical-only and rejected for new individual or batch print, while their prior print history remains preserved. C37-03 records the undefined meaning of `attempt_no`; it must not become a second independent reprint counter.
 
 The existing permission registry already maps `document.print` to RESOURCE_DOCUMENT and `document.print.batch` to RESOURCE_DOCUMENT_BATCH. This review does not grant new roles or infer print authority from generic Admin/Super Admin.
 
@@ -1268,12 +1276,16 @@ The following findings are design gaps, not implementation defects. No live data
 | C35-01 | 035 | sync_batches exists but device registry/binding/revocation and durable per-operation outcome ledger are absent | Define device identity lifecycle and per-operation persistence; align T-09, offline threat model, physical schema and RLS |
 | C35-02 | 035 | The detailed contract and ledger proposal allow either per-operation transactions or savepoints, while promising independently durable per-operation outcomes and partial-batch recovery | Adopt one short transaction per operation as the candidate engineering boundary; treat savepoints only as intra-operation error handling; obtain Engineering/Database/Security review before schema or implementation admission |
 | C36-01 | 036 | documents lacks generic source type/id, template registry/version and renderer job/outbox lifecycle | Define source-to-document FK/provenance, template version storage, job state, lease, retry, worker identity and ACL |
-| C36-02 | 032, 036 | CMD-032 preserves an approved immutable revision/PDF history, but CMD-036 does not define whether an in-flight generation accepted before reopen may finalize afterward | PO must choose historical-artifact finalization vs stale/cancelled generation; until then, no silent rebind and CMD-036 certification remains blocked |
+| C36-02 | 032, 036 | In-flight generation accepted before inspection reopen may race with reopen | Still OPEN: PO must choose historical-artifact finalization vs stale/cancelled generation; DOC-003 does not resolve this race; no silent rebind |
 | C37-01 | 037 | Physical schema does not resolve logical document vs immutable printable-version identity; CMD-037 accepts both document_id and document_version without a corresponding version FK/table | Choose one canonical identity model and bind each print event to exact immutable output version/hash; reconcile CMD-036, ERD, physical schema and API |
-| C37-02 | 037 | T-13/DOC-002 do not explicitly state whether historical/superseded versions remain eligible for reprint | PO disposition required; until decided, fail closed outside approved current-printable policy |
+| C37-02 | 037/038 | Superseded/replaced-version print eligibility | CLOSED — PO APPROVED (2026-11-27): only the latest finalized/current version may be printed/reprinted; superseded versions are historical-only and rejected individually/in batches. Existing print history is retained. Technical current-version identity/arbitration remains C37-01/C37-04. |
 | C37-03 | 037/038 | print_events.attempt_no is not distinguished from per-document sequence_no or batch-item retry attempts | Define/remove attempt_no; batch retry attempt identity belongs to durable item-result model and must not duplicate successful print events |
 | C37-04 | 037 | print_events has unique (document_id, sequence_no) but no concurrency-safe sequence allocator | Review per-document counter + atomic increment/event/audit/idempotency transaction; exact object/lock/index/RLS admission remains open |
-| C38-01 | 038 | print_batches/print_events exist but full item manifest, stable item key and durable outcomes for invalid/unresolvable items are unclear | Decide whether print_batch_items is required; define worker/lease and aggregate reconciliation semantics |
+| C38-01 | 038 | Candidate child manifest/result model is now the logical engineering recommendation, but is not admitted to the physical schema | Approve canonical item identity/hash, exact PK/FK/index/check/RLS/ACL and manifest/result admission; retain candidate-only status until approved |
+| C38-02 | 038 | Item orchestration/recovery ownership and lease model are undefined; overlapping retries may race | Decide synchronous vs worker processing, recovery authority, lease/fencing if needed, and whether overlapping retry batches are permitted |
+| C38-03 | 037/038 | Item attempt identity, print_events.attempt_no, CMD-037 sequence_no and failed-item audit/event cardinality are not aligned | Define one authoritative attempt identity and exact success/failure audit/event cardinality; preserve CMD-037 sequence as reprint ordinal |
+| C38-04 | 038 | Mixed-scope behavior, retry limits/expiry/cancellation, empty retry and terminal batch states are unresolved | PO must approve mixed-scope reject/partition policy and retry/terminal lifecycle semantics |
+| C38-05 | 038 | Numeric batch/request/rate/processing bounds and retention are not evidenced | Derive numeric bounds from workload/UX/provider evidence; T-10 governs retention; do not invent values |
 | C39-01 | 039 | attendance_records lacks location/assignment linkage; attendance_documents lacks upload-intent, MIME/size/version/replacement metadata | Define exact location scope relation and complete two-phase upload schema; align with T-08 and T-10 |
 | C40-01 | 040 | No explicit attendance verification history object; attendance.rejected event is not clearly in the event catalogue | Define immutable decision history, exact state machine, rejection event and re-verification rules |
 | C40-02 | 040 | Uploader/verifier SoD and actual institutional verifier authority remain unresolved | Obtain written institutional authority; do not invent or silently waive SoD |
@@ -1364,3 +1376,63 @@ PO decision SES-001 is APPROVED. CMD-030 return does not authorize cross-session
 ABORT is not a general cleanup path for incomplete or hanging work. It is eligible only after a Reviewer has returned the exact submitted revision for an identified error and the physical unit is already packed/boxed and prepared for shipment such that correction/reinspection is impracticable. The responsible Inspector must submit an ABORT request with a reason; Admin/Korlap must explicitly approve or reject it. Only an approved request may transition the attempt to terminal ABORTED. If the unit remains practically accessible, the same Inspector must correct and resubmit through WF-001 in the original active session. An incomplete/hanging attempt without the qualifying Reviewer-returned packed-unit facts remains unresolved and blocks FINAL_CLOSE.
 
 ABORTED preserves the submitted revision, Reviewer return decision, evidence and audit history; it is not approval, inspection completion, a good/defective classification or print completion. A later session must create a new inspection attempt with a distinct inspection_id. CMD-013 cannot initiate, approve or bulk-apply ABORT and cannot use it to bypass unrelated closure gates. These constraints do not resolve the CMD-032 explicit authority, claim, finalizer, lock graph, RLS/ACL or physical schema blockers. No implementation or schema admission is implied.
+
+## CMD-038 batch lifecycle reconciliation addendum — 2026-11-27
+
+**Status:** proposal only; this addendum supersedes the unresolved design question in §9.5 only at the logical-contract level. It selects a durable child manifest and append-only item-result model as the engineering candidate, not as an admitted physical schema or PO-approved policy. CMD-038 remains NOT CERTIFIED.
+
+### 9.10 Durable batch acceptance
+
+- One short acceptance transaction persists the batch envelope, the complete ordered immutable item manifest, canonical request/item hashes and the batch request idempotency result.
+- The server computes requested_count; it is not accepted from the caller. Same actor/command/key/hash replays the same batch; same key with a different hash returns IDEMPOTENCY_KEY_REUSED.
+- The manifest includes stable item_key, request position and original requested document/version identity. It retains invalid or unresolvable requests as manifest items with durable rejection outcomes; it must not silently drop them.
+- Duplicate item_key and duplicate request position are rejected. Exact canonical item identity/hash serialization remains an engineering blocker.
+- Batch size, request-byte limit, rate limit, processing deadline, retry limit and retention are OPEN. No arbitrary numeric bound is introduced.
+
+### 9.11 Per-item state and idempotency
+
+print_batch_item_results is the candidate append-only attempt/result history. Each item attempt has a monotonically increasing candidate attempt_no scoped to the batch item; this is not the per-document sequence_no and must not reuse the unresolved print_events.attempt_no semantics.
+
+Each item is independently authorized and committed in its own short transaction. The same item identity + semantic request hash returns the committed result after current read authorization. A changed semantic request cannot reuse the same idempotency identity. A committed success references exactly one print_event and its sequence; replay returns that reference without incrementing the sequence.
+
+The item result is the authoritative outcome for the requested manifest item. print_events is the authoritative per-document application print/reprint event stream. A failed/rejected item with no recorded print action has no successful print event. Exact treatment of failed print_events rows and audit cardinality for rejected items remains OPEN (C38-03).
+
+### 9.12 Failed-only retry contract
+
+- retry_failed_only is server-evaluated against the referenced source batch's durable item-result history. The caller cannot supply or assert the eligible failed-item list.
+- A retry creates a new batch identity and immutable manifest derived only from source items whose latest result is explicitly classified as retryable. It stores source batch/item references and leaves the original manifest/results immutable.
+- Successful items are excluded regardless of client-supplied item keys or claims. They cannot produce another success event through retry.
+- A retry batch requires its own batch idempotency key. Duplicate submission of that retry key/hash returns the same retry batch.
+- Retryable vs terminal failure taxonomy, maximum attempts, backoff, expiry, cancellation, empty-eligible-set response and concurrent overlapping retries are OPEN. No automatic worker, lease or cancellation semantics are inferred.
+
+### 9.13 Partial recovery and aggregate projection
+
+Batch status and counts are derived from persisted manifest items and their durable result histories. They are not caller input and do not replace item outcomes. A partial process failure cannot roll back previously committed item transactions. Recovery reads the durable manifest and resumes only items with no committed terminal success; a lost acknowledgement after item commit returns the existing result and event/sequence.
+
+The batch projection must be idempotent and safe when two processors observe the same completion. No batch-wide lock may be held while processing documents. The exact projection lock, worker/synchronous execution model, lease fencing, and terminal state machine remain open.
+
+### 9.14 Authorization, scope and concurrency refinements
+
+- Recheck batch permission at acceptance and document.print permission, exact resource scope, account status and printable document/version state for every item at processing time.
+- DOC-003 applies to CMD-038 items as well as CMD-037 individual prints: a final artifact from a session that has started remains eligible for individual or batch print after the session is CLOSED. Do not add a current-session-ACTIVE predicate. Reauthorize the actor and exact historical resource scope for every item; closure does not waive permission or artifact-integrity checks.
+- A retry does not inherit authorization from the original batch. Reauthorize the current caller and each selected item.
+- Each item transaction locks at most one document aggregate/version and its print sequence allocator. Never hold multiple document locks or a batch-wide lock across item processing.
+- Two independent batches targeting the same document serialize through CMD-037's per-document sequence/idempotency boundary. Same-key replay never allocates a new sequence; intentional reprint requires a new key under CMD-037.
+- Mixed-scope batches remain rejected unless a PO-approved partitioning rule is explicitly recorded. No cross-scope authorization is inferred.
+
+### 9.15 Audit and outcome boundaries
+
+Batch-created/completed/partial projection events are distinct from per-document document.printed/document.reprinted events. Each successful item result references one per-document print event; the event and required audit/idempotency outcome are atomic under CMD-037. A batch event never substitutes for item-level audit. Do not report physical printer success.
+
+The exact event cardinality and whether failed/rejected items create a print event or only a durable item result plus a safe audit fact remain open. An audit failure must not allow a successful print sequence/event to commit without its required audit record.
+
+### 9.16 Open blockers and certification
+
+- C38-01: manifest/result object admission, exact identity/hash/FK/index/check/RLS/ACL model.
+- C38-02: processing model, worker identity/lease fencing (if applicable), recovery ownership and overlapping retry concurrency.
+- C38-03: item attempt vs print_events.attempt_no vs CMD-037 sequence_no, and failed/rejected audit/event cardinality.
+- C38-04: PO decisions for mixed-scope handling, retry limits/expiry/cancellation, empty retry and terminal batch states.
+- C38-05: numeric batch/request/rate/processing bounds and T-10 retention.
+- C37-01..04 remain blocking dependencies.
+
+Required tests remain PLANNED / NOT EXECUTED: immutable manifest replay and key/hash mismatch; invalid/unresolvable item retention; per-item partial commit; crash before/after commit; same-document concurrent batches; overlapping failed-only retries; successful-item exclusion; projection races; audit failure; authorization revocation between enqueue and item execution; mixed-scope and over-limit rejection. CMD-038 remains NOT CERTIFIED; CMD-031–040 certification remains 0/10.
