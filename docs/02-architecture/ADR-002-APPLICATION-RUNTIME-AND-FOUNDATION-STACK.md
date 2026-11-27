@@ -1,7 +1,7 @@
 # ADR-002 — Application Runtime and Foundation Stack
 
 - Status: ACCEPTED FOR G9-F1/G10-F1 FOUNDATION
-- Version: 1.9.2
+- Version: 1.9.3
 - Decision date: 2026-11-25
 - Last verified: 2026-11-27
 - Decision owner: Product Owner
@@ -74,7 +74,9 @@ On 2026-11-27 on branch `feat/foundation-bootstrap-v1-rebased` (Node v22.12.0 / 
 - `npm run build` (`next build`, Next.js 16.4.6 Turbopack): PASS (6/6 routes + `ƒ Proxy (Middleware)` via `src/proxy.ts`).
 - Live local production-server smoke verification against development `.env` (2026-11-27): PASS for `/` (`Supabase environment configured`, baseline headers, `X-Request-Id` echo), `/api/health` (`200`, `no-store`, malformed `X-Request-Id` replaced with UUID), `/login`, unauthenticated `/auth/pending` (`307 /login?error=session` fail-closed via live `getClaims()`), and `/auth/callback` (missing/invalid synthetic code -> `307 /login?error=oauth_callback` with `no-store` and `Referrer-Policy: no-referrer` preserved via `next.config.ts`). Read-only `/auth/v1/health` and `/auth/v1/settings` returned HTTP `200`, `external.google = true`, and `/auth/v1/authorize?provider=google` returned a `302` redirect to Google OAuth2 with `client_id` and Supabase `/auth/v1/callback` (`errorCode = null`).
 
-Hosted GitHub Actions execution on PR #30 remains NOT VERIFIED because GitHub blocked job start at the billing/spending-limit layer (Check Run `140276596713`). Live interactive browser Google OAuth round trip (sign-in -> `/auth/callback` -> `/auth/pending` -> sign-out), Supabase CLI local startup/reset, and any SQL migration application remain NOT VERIFIED. A passing foundation build/test run is not evidence of full-system G9 readiness, business feature correctness, or production readiness.
+- Live interactive browser Google OAuth round trip against development `.env` (`http://localhost:3000`, 2026-11-27): **PASS** — `/login` → Google OAuth → `/auth/callback` (`307` SSR code exchange) → `/auth/pending` (`200`, `getVerifiedIdentity()` verified JWT claims, deny-by-default pending-access view) → `signOutAction` → `/login?status=signed_out`.
+
+Hosted GitHub Actions execution on PR #30 remains NOT VERIFIED because GitHub blocked job start at the billing/spending-limit layer (Check Run `140276596713`). Supabase CLI local startup/reset and any SQL migration application remain NOT VERIFIED. A passing foundation build/test/OAuth run is not evidence of full-system G9 readiness, business feature correctness, or production readiness.
 
 ## References
 
