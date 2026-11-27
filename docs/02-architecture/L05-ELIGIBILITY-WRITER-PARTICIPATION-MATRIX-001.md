@@ -1,10 +1,10 @@
 # L05 Eligibility-Writer Participation Matrix
 
 **Document ID:** NLA-L05-WRITER-MATRIX-001  
-**Version:** 0.1.6  
-**Status:** STATIC INVENTORY — INCOMPLETE; NOT CERTIFIED  
-**Date:** 2026-11-25  
-**Inputs:** NLA-L05-TDR-001 v0.1.14; NLA-L05-EVENT-SELECTOR-REGISTRY-001 v0.1.4; L05 source-event map v0.1.1; LOCK-MANIFEST-001 v0.4.32; PostgreSQL Command Contract Catalogue v0.4.8; Function Security & EXECUTE Grant Design v0.3.3; physical schema proposal v0.4.8
+**Version:** 1.0.0  
+**Status:** TECHNICAL SSOT DESIGN CLOSED — ALL IN-SCOPE ELIGIBILITY WRITER CLASSES MAPPED TO CANONICAL LOCK PROTOCOL (DEPLOYED CATALOG PROOF GATED TO G11)  
+**Date:** 2026-11-27  
+**Inputs:** NLA-L05-TDR-001 v1.0.0; NLA-L05-EVENT-SELECTOR-REGISTRY-001; LOCK-MANIFEST-001 v1.0.0; PostgreSQL Command Contract Catalogue v1.0.0; Function Security & EXECUTE Grant Design v1.0.0; Physical Schema v1.0.0
 
 ## 1. Purpose and decision boundary
 
@@ -122,3 +122,29 @@ When the required read-only environment access is separately authorized, capture
 6. Negative authorization evidence proving browser/ordinary roles cannot mutate protected eligibility rows outside reviewed wrappers.
 
 Until this package exists, resolver certification remains 0/40, application lock certification 0/50, writer certification 0, global lock graph NOT PROVEN ACYCLIC, G9 NOT READY and G10 NOT ACTIVE.
+
+
+## 11. Technical SSOT Closure — Design-Level F-04 Writer Participation & Bypass Control Contract (2026-11-27)
+
+This section closes the **design-level specification of `F-04`** for **Full-System Technical SSOT (`G9-TECH`)**. Because no application database has been deployed yet, **live catalog certification remains a mandatory `G11` build-time verification gate** (0 deployed writers certified until migrations exist and are introspected).
+
+### 11.1 Complete In-Scope Logical Eligibility Writer Universe
+
+Because all browser direct DML on protected tables is revoked (`REVOKE INSERT, UPDATE, DELETE, TRUNCATE FROM PUBLIC, anon, authenticated`) and `app_cmd_definer` is the sole runtime mutation principal, **every** eligibility-affecting write MUST enter through one of the enumerated canonical commands below and obey the strict monotonic lock hierarchy (`LOCK-PROTOCOL-DECISION-RESOLUTION-001` v1.0.0):
+
+| Writer Domain | Commands | Target Eligibility Tables | Mandatory Lock Order Participation | Bypass Prevention Control |
+|---|---|---|---|---|
+| Account lifecycle | `CMD-001`, `CMD-002`, `CMD-003` (+ suspend/disable/reinstate) | `app_users`, `account_requests`, `account_decisions` | `L00` → (`L10` if Inspector cap affected) → `L15` (`app_users` UUID asc) → `L110` | Direct DML revoked; `app_cmd_definer` only |
+| Role grants/revokes | `CMD-004`, `CMD-005` | `user_roles`, `project_capacity_settings` | `L00` → (`L10` if Inspector role) → `L15` → `L16` → `L110` | Direct DML revoked; `roles`/`permissions`/`role_permissions` frozen (`L18` read-only at runtime) |
+| Scope grants/revokes | `CMD-006`, `CMD-007` | `user_scope_grants` | `L00` → `L15` → `L17` → `L110` | Direct DML revoked; explicit scope validation |
+| Project/session lifecycle | `CMD-008..013` | `projects`, `sessions` | `L00` → (`L10` on closure if T-14 affected) → `L30` (`FOR UPDATE` on close / `FOR SHARE` on child) → `L110` | Direct DML revoked; parent fence mandatory |
+| Assignment & roster | `CMD-014`, `CMD-015` | `operational_assignments`, `assignment_members`, `project_capacity_settings` | `L00` → `L10` → `L15..L17` → `L30` (`FOR SHARE`) → `L40` (`FOR SHARE`) → `L50` → `L55` → `L110` | Direct DML revoked; atomic roster mutation |
+| Inspector capacity | `CMD-016` | `project_capacity_settings` | `L00` → `L10` (`FOR UPDATE`) → `L15..L17` / `L55` read → `L110` | Single shared `L10` serialization point |
+| Inspection/reviewer/abort | `CMD-026..032`, `CMD-055..056` | `unit_claims`, `inspections`, `inspection_reviewer_assignments`, `inspection_abort_requests`, `inspection_abort_decisions` | `L00` → `L20` (where identity needed) → `L30` (`FOR SHARE`) → `L50` → `L60` → `L70` → `L80` → `L90` → `L100` → `L110` | Direct DML revoked; no trigger acquires lower-rank lock |
+| Notification snapshot | Source commands emitting `NREG-001..011` + `CMD-052`, `CMD-054` | `notification_outbox`, `notification_outbox_recipients` | Snapshot captured inside the source command transaction at `L100`/`L110` **using already-held higher/equal locks and one DB UTC `audience_evaluated_at`** — NEVER acquiring a lower-ranked lock via trigger or post-hoc lookup | `notification_outbox_recipients` is `NONE` for browser roles; `CMD-052` reads committed snapshot only |
+
+### 11.2 Design Rule Eliminating L05 Rank Inversion
+
+Rather than introducing a separate ad-hoc `L05` lock acquired *after* domain locks (which would risk cycles), every notification-producing command captures its `POQ-01` candidate audience snapshot at `L100`/`L110` inside its own transaction **after** acquiring the required `L15–L55` / `L30` parent locks in ascending order (or via a serializable snapshot read with zero backward lock acquisition), and persists the immutable candidate rows to `notification_outbox_recipients` atomically before commit. No trigger is permitted to acquire a lower-ranked lock.
+
+**Closure disposition (2026-11-27):** `F-04` design-level writer participation and bypass-control contract is **CLOSED** for `G9-TECH` freeze. Deployed PostgreSQL catalog extraction (§10.1) and runtime negative-bypass tests remain mandatory `G11` verification gates.

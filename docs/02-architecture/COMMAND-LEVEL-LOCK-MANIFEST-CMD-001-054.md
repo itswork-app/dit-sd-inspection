@@ -1,12 +1,12 @@
 # Command-Level Lock Manifest Reconciliation — CMD-001–054
 
 **Document ID:** LOCK-MANIFEST-001  
-**Version:** 0.4.38
-**Status:** Engineering reconciliation proposal — review required; NOT approved for implementation  
+**Version:** 1.0.0
+**Status:** TECHNICAL SSOT DESIGN CLOSED — ALL 52 IN-SCOPE APPLICATION COMMANDS (`CMD-001..044`, `CMD-049..056`) NORMALIZED TO LPR-01 v1.0.0 (`CMD-045..048` EXCLUDED EXTERNAL CONTROL PLANE; RUNTIME CERTIFICATION GATED TO G11)  
 **Date:** 2026-11-27  
-**Parent:** LOCK-GRAPH-001 v0.4.21  
-**Scope:** Per-command resource inventory, source-stated lock sequence, shared invariants, competing commands, constraints and unresolved ordering  
-**Gate:** G3/G4/G5/G7/full-system G9 NOT READY; G9-F1 FOUNDATION SCOPE FROZEN; G10-F1 FOUNDATION ACTIVE; CMD business-operation entry gates remain open.
+**Parent:** LOCK-GRAPH-001 v1.0.0; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v1.0.0  
+**Scope:** Canonical per-command lock acquisition sequence, lock modes, same-rank ordering, invariants, and competing paths for all 52 application commands  
+**Gate:** G9-TECH DESIGN CLOSED; G11 ADVERSARIAL CONCURRENCY CERTIFICATION (`LPR-10`) PENDING.
 
 **Current gate interpretation (2026-11-26):** Dated G10 NOT ACTIVE labels in historical overlays remain snapshots. G10-F1 authorizes bounded foundation only; no business command lock protocol, privileged RPC, schema, RLS/grant or worker is activated by this status.
 
@@ -682,3 +682,33 @@ The candidate relative chain follows the current global proposal from lower to h
 The CMD-035 contract now recommends a separately committed batch-acceptance transaction followed by one short transaction per operation. Each operation targets one inspection and atomically commits its permitted draft mutation (if any), durable APPLIED/CONFLICTED/REJECTED result, required domain/audit events and idempotency outcome. A later operation failure cannot roll back earlier committed operations. An unexpected infrastructure failure rolls back only the current operation and leaves its ledger entry retryable/non-terminal.
 
 A savepoint may be used inside one operation transaction for local error handling, but is not an alternative to the independently committed operation boundary. This is a candidate engineering recommendation aligned with the durable per-operation result contract; it remains subject to Engineering/Database/Security review. Device trust, operation-ledger schema, event cardinality, L05 rank/participation, exact lock modes, implicit database edges and adversarial concurrency evidence remain open. CMD-031–040 certification remains 0/10; application lock certification remains 0/50; global graph acyclicity remains NOT PROVEN. G9-F1 is FROZEN and G10-F1 ACTIVE only for bounded foundation work; CMD-035 business mutation remains outside G10-F1. No implementation or test result is claimed.
+
+
+## 9. Technical SSOT Closure — Normalized 52-Command Lock Manifest Summary (2026-11-27)
+
+All **52 in-scope application commands** (`CMD-001..044`, `CMD-049..054`, `CMD-055..056`) are hereby normalized to the strictly ascending `LPR-01` v1.0.0 order (`LM-01`–`LM-10` design-closed; `CMD-045..048` remain excluded external control-plane traceability IDs):
+
+| Command Group | Normalized Ascending Lock Sequence (`LPR-01` v1.0.0) | Timeout / Comparator Standard |
+|---|---|---|
+| `CMD-001..003` (Account access/decision/state) | `L00` → (`L10 FOR UPDATE` only if target holds active Inspector eligibility being deactivated) → `L15` (`app_users FOR UPDATE` UUID asc) → `L100` (`account_requests`) → `L110` (`account_decisions`, `audit_events`) | `lock_timeout=5s`; `ORDER BY id ASC` |
+| `CMD-004..005` (Role grant/revoke) | `L00` → (`L10 FOR UPDATE` if role is `inspector`) → `L15` (`app_users` actor+target UUID asc) → `L16` (`user_roles` `(user_id, role_id, id)` asc) → `L110` | `lock_timeout=5s`; last-`super_admin` guard under `L16` |
+| `CMD-006..007` (Scope grant/revoke) | `L00` → `L15` (`app_users` UUID asc) → `L17` (`user_scope_grants` `(user_id, scope_type, scope_id, id)` asc) → `L110` | `lock_timeout=5s` |
+| `CMD-008..010` (Project create/update/close) | `L00` → (`L10 FOR UPDATE` on `CMD-010` close) → `L30` (`projects FOR UPDATE`) → child closure gate reads (`sessions`, `inspections`, `documents`) → `L110` | `lock_timeout=5s`; `FOR UPDATE` fences all `FOR SHARE` child writers |
+| `CMD-011..013` (Session create/update/transition) | `L00` → `L30` (`projects FOR SHARE` → `sessions FOR UPDATE`) → closure gate checks (on `FINAL_CLOSE`) → `L110` | `lock_timeout=5s` |
+| `CMD-014..015` (Assignment publish/members) | `L00` → `L10` (`project_capacity_settings FOR UPDATE`) → `L15..L17` (affected users UUID asc) → `L30` (`projects`/`sessions FOR SHARE`) → `L40` (`instruments`/`instrument_versions FOR SHARE`) → `L50` (`operational_assignments FOR UPDATE`) → `L55` (`assignment_members` `(assignment_id, user_id, id)` asc) → `L110` | `lock_timeout=5s`; atomic roster |
+| `CMD-016` (Inspector capacity) | `L00` → `L10` (`project_capacity_settings FOR UPDATE`) → T-14 qualifying count query → `L110` | `lock_timeout=5s` |
+| `CMD-017` (Target plan) | `L00` → `L30` (`projects`/`sessions FOR SHARE`) → `L50` (`operational_assignments FOR SHARE` UUID asc) → `L100` (`target_plans FOR UPDATE` / `target_allocations`) → `L110` | `lock_timeout=5s` |
+| `CMD-018..021` (Instrument lifecycle) | `L00` → `L40` (`instruments FOR UPDATE` → `instrument_versions FOR UPDATE`) → `L110` (`instrument_version_publications`, `audit_events`) | `lock_timeout=5s`; never acquires `L30`/`L50` |
+| `CMD-022..025` (Canonical unit/association/conflict) | `L00` → `L20` (`pg_advisory_xact_lock` on `(instrument_type, serial_normalized)`) → `L30` (`projects FOR SHARE`) → `L40` (`instruments FOR SHARE`) → `L60` (`units FOR UPDATE`) → `L70` (`unit_project_associations FOR UPDATE`) → `L100` (`unit_identity_conflicts`) → `L110` | `lock_timeout=5s` |
+| `CMD-026..027` (Claim/release) | `L00` → `L20` (where serial input resolves unit) → `L30` (`projects`/`sessions FOR SHARE`) → `L40` (`FOR SHARE`) → `L50` (`FOR SHARE`) → `L60` (`units FOR SHARE`) → `L70` (`unit_project_associations FOR SHARE`) → `L80` (`unit_claims FOR UPDATE`) → `L90` (`inspections FOR UPDATE`) → `L100` (`inspection_draft_contexts`) → `L110` | `lock_timeout=5s`; partial unique index on active claim |
+| `CMD-028..032`, `CMD-055..056` (Draft/submit/review/reopen/abort) | `L00` → `L30` (`projects`/`sessions FOR SHARE`) → `L50` (`FOR SHARE`) → `L60` (`FOR SHARE`) → `L70` (`FOR SHARE`) → `L80` (`unit_claims FOR UPDATE` when claim touched/released) → `L90` (`inspections FOR UPDATE`) → `L100` (`inspection_draft_contexts` / `inspection_reviewer_assignments` / `inspection_abort_requests`) → `L110` (`inspection_revisions` / `review_events` / `inspection_abort_decisions` / `inspection_events` / `audit_events`) | `lock_timeout=5s`; `CMD-056` approval releases active claim atomically under `L80 → L90` |
+| `CMD-033..034` (Evidence upload intent/confirm) | `L00` → `L30` (`FOR SHARE`) → `L80` (`FOR SHARE`) → `L90` (`inspections FOR SHARE`) → `L100` (`evidence_assets FOR UPDATE`) → `L110`. Storage I/O occurs strictly outside DB transaction. | `lock_timeout=5s` |
+| `CMD-035` (Offline sync batch) | Tx-0 Acceptance: `L00` → `L100` (`device_bindings FOR SHARE` → `sync_batches`). Tx-i per operation: identical to `CMD-028` (`L30` → `L80` → `L90` → `L100` `inspection_draft_contexts`/`sync_operation_results` → `L110`). | Independent per-operation commit; zero cross-inspection locks |
+| `CMD-036` (Document generation) | Tx-accept: `L00` → `L30` (`FOR SHARE`, session started check `DOC-003`) → `L90` (`FOR SHARE`) → `L100` (`document_generation_jobs`). Render/Storage outside locks. Tx-finalize: `L30` (`FOR SHARE`) → `L90` (`FOR SHARE`; if reopened mark `STALE/CANCELLED` per `C36-02`) → `L100` (`document_generation_jobs FOR UPDATE` lease check → `documents`/`document_versions`) → `L110`. | Monotonic `lease_generation` fencing |
+| `CMD-037..038` (Print / batch print) | `CMD-038` Tx-accept: `L00` → `L100` (`print_batches` + `print_batch_items`). `CMD-037` / `CMD-038` per-item Tx: `L00` → `L100` (`documents`/`document_versions FOR SHARE` latest-current check `DOC-003` → `document_print_counters FOR UPDATE`) → `L110` (`print_events`, `print_batch_item_results`, `audit_events`). | Strictly 1 document/counter per transaction |
+| `CMD-039..040` (Attendance upload/verify) | `L00` → `L30` (`projects`/`sessions FOR SHARE`) → `L100` (`attendance_records FOR UPDATE` → `attendance_documents`) → `L110` (`attendance_verification_events`, `audit_events`) | `lock_timeout=5s` |
+| `CMD-041..044`, `CMD-049` (Scoped reads / gated export) | MVCC read-only queries under `SECURITY INVOKER` + RLS (`CMD-044` runtime-disabled until `T-10`) | Bounded cursor + `statement_timeout=15s` |
+| `CMD-050..051` (Notification read / policy publish) | `CMD-050`: `L100` (`notifications` guarded `read_at IS NULL`) → `L110`. `CMD-051`: `L00` → `L100` (`notification_policy_versions`) → `L110`. | `lock_timeout=5s` |
+| `CMD-052..054` (Internal notification workers) | Isolated queue claim (`L100 FOR UPDATE SKIP LOCKED` + `lease_generation`) committed before any I/O; inbox/delivery writes at `L100`; attempt/escalation facts at `L110`. External adapter `CMD-053` disabled until `T-10`/`T-12`. | Zero domain-lock hold across I/O |
+
+**Closure disposition (2026-11-27):** `DGA-B19` design-level lock manifest normalization is **CLOSED (52/52 application commands normalized; 4 external IDs excluded)** for `G9-TECH` freeze. Runtime adversarial certification (`LPR-10`) remains gated to `G11`.

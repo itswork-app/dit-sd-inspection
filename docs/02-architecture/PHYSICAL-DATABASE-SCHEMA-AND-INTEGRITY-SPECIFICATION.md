@@ -1,7 +1,7 @@
 # Physical Database Schema and Integrity Specification
 
-**Status:** Engineering specification draft — approval required before migrations  
-**Version:** 0.4.11  
+**Status:** TECHNICAL SSOT CLOSED — READY FOR G9-TECH FREEZE (62 canonical tables reconciled with 62/62 RLS parity and CONCURRENCY-001 v1.0.0; migrations & live DB verification gated to G11)  
+**Version:** 1.0.0  
 **Package:** L — Physical Data Model and Integrity  
 **Date:** 2026-11-27
 
@@ -488,3 +488,40 @@ Candidate print_batch_item_results requirements:
 - candidate attempt_no is not print_events.attempt_no and is not CMD-037 sequence_no.
 
 The batch aggregate status/counts are derived from manifest + result rows. Exact status enum, aggregate projection storage (if any), lock/serialization strategy, RLS/ACL, worker identity/lease (if any), FK/index/check/trigger design, canonical item hash, result/audit cardinality, retry policy and retention remain OPEN. The two candidate objects remain excluded from the canonical 48-table inventory and ERD/RLS parity count.
+
+
+## 12. Technical SSOT Closure — Canonical 62-Table Admission & Integrity Contract (2026-11-27)
+
+This section supersedes prior "candidate-only / NOT ADMITTED" notices and formally admits the 14 required relational tables into the canonical physical specification, bringing the reconciled schema inventory from 48 to **62 canonical tables** (with exact **62/62 parity** in `TABLE-BY-TABLE-RLS-POLICY-CATALOGUE.md` v1.0.0). No SQL migration is executed by this documentation closure; migration authoring and live `pg_catalog` verification remain gated to `G11`.
+
+### 12.1 Newly Admitted Canonical Tables (14 tables → Total 62)
+
+| # | Table | Domain / Source | Key Columns & Enforced Integrity Constraints |
+|---:|---|---|---|
+| 49 | `account_requests` | `RBAC-003` (`CMD-001`) | `id`, `user_id` FK `app_users(id)`, `status` (`PENDING`/`APPROVED`/`REJECTED`), `requested_at`, `request_note`; partial unique index `(user_id) WHERE status = 'PENDING'` (at most one active pending request; rejected history preserved) |
+| 50 | `inspection_draft_contexts` | `INSPECTION-DRAFT-001` (`CMD-026/028/029/030/032`) | `id`, `inspection_id` FK `inspections(id)`, `session_id` FK `sessions(id)`, `base_revision_no`, `status` (`ACTIVE`/`SUBMITTED`/`ABORTED`/`SUPERSEDED`), `payload_jsonb`, `row_version BIGINT NOT NULL DEFAULT 1`; partial unique `(inspection_id) WHERE status = 'ACTIVE'` |
+| 51 | `inspection_reviewer_assignments` | `REVIEWER-ASSIGN-001` (`CMD-030/031`) | `id`, `inspection_id` FK, `reviewer_user_id` FK `app_users(id)`, `assigned_by`, `status` (`ACTIVE`/`ENDED`), `assigned_at`; explicit Reviewer ownership; `CMD-030/031` verifies `reviewer_user_id = actor` and `actor != revision.author_id` |
+| 52 | `inspection_abort_requests` | `SES-001` (`CMD-055`) | `id`, `inspection_id` FK, `session_id` FK, `returned_revision_id` FK `inspection_revisions(id)`, `return_review_event_id` FK `review_events(id)`, `requester_user_id` FK `app_users(id)`, `status` (`PENDING`/`APPROVED`/`REJECTED`), `reason`, `packed_evidence_ref`, `created_at`; partial unique `(inspection_id) WHERE status = 'PENDING'` |
+| 53 | `inspection_abort_decisions` | `SES-001` (`CMD-056`) | `id`, `abort_request_id` UNIQUE FK `inspection_abort_requests(id)`, `decider_user_id` FK `app_users(id)`, `decision` (`APPROVE`/`REJECT`), `reason`, `decided_at`; append-only; CHECK/command invariant `decider_user_id != requester_user_id` |
+| 54 | `device_bindings` | `T-09` / `DGA-B07` (`CMD-035`) | `id`, `user_id` FK `app_users(id)`, `device_fingerprint_hash`, `status` (`ACTIVE`/`REVOKED`), `bound_at`, `revoked_at`; user-owned offline device enrollment/revocation registry |
+| 55 | `sync_operation_results` | `DURABLE-LEDGER` (`CMD-035`) | `id`, `sync_batch_id` FK `sync_batches(id)`, `operation_id`, `inspection_id` FK `inspections(id)`, `outcome` (`APPLIED`/`CONFLICTED`/`REJECTED`), `resulting_row_version`, `server_conflict_snapshot`, `processed_at`; unique `(sync_batch_id, operation_id)`; append-only |
+| 56 | `document_versions` | `C37-01` / `DOC-003` (`CMD-036/037/038`) | `id`, `document_id` FK `documents(id)`, `version_no`, `source_revision_id`, `template_version_hash`, `storage_object_key`, `sha256`, `status` (`FINAL_CURRENT`/`SUPERSEDED`), `created_at`; partial unique `(document_id) WHERE status = 'FINAL_CURRENT'` (only `FINAL_CURRENT` is printable per `DOC-003`) |
+| 57 | `document_generation_jobs` | `CMD-036` / `C36-02` | `id`, `canonical_artifact_key` UNIQUE, `document_type`, `source_id`, `source_revision_id`, `template_version_hash`, `status` (`QUEUED`/`RENDERING`/`COMPLETED`/`FAILED`/`STALE_CANCELLED`), `lease_owner`, `lease_token_hash`, `lease_generation BIGINT`, `lease_expires_at`, `created_at`; marked `STALE_CANCELLED` if source reopened (`C36-02`) |
+| 58 | `document_print_counters` | `CMD-037` / `C37-04` | `document_id` PK FK `documents(id)`, `last_sequence_no BIGINT NOT NULL DEFAULT 0 CHECK (last_sequence_no >= 0)`, `updated_at`; single per-document row-lock serialization point for monotonic print sequence allocation |
+| 59 | `print_batch_items` | `CMD-038` | `id`, `print_batch_id` FK `print_batches(id)`, `item_order`, `item_key`, `document_id`, `document_version_id`, `status`; immutable ordered batch manifest; unique `(print_batch_id, item_key)` |
+| 60 | `print_batch_item_results` | `CMD-038` | `id`, `batch_item_id` FK `print_batch_items(id)`, `attempt_no`, `outcome` (`SUCCEEDED`/`FAILED`/`REJECTED`), `print_event_id` UNIQUE NULLS DISTINCT FK `print_events(id)`, `error_code`, `created_at`; append-only; unique `(batch_item_id, attempt_no)` |
+| 61 | `attendance_verification_events` | `CMD-040` / `T-08` | `id`, `attendance_record_id` FK `attendance_records(id)`, `attendance_document_id` FK `attendance_documents(id)`, `verifier_user_id` FK `app_users(id)`, `decision` (`VERIFIED`/`REJECTED`), `reason`, `decided_at`; append-only verification history |
+| 62 | `notification_outbox_recipients` | `POQ-01` / `F05-T5` / `NLA-MVP-001` | `id`, `outbox_id` FK `notification_outbox(id)`, `recipient_user_id` FK `app_users(id)`, `authorized_scope_type`, `authorized_scope_id`, `scope_snapshot_hash`, `audience_evaluated_at TIMESTAMPTZ NOT NULL`; unique `(outbox_id, recipient_user_id)`; immutable event-time candidate snapshot |
+
+### 12.2 Mandatory Column & Constraint Additions to Existing 48 Tables
+
+- **Optimistic concurrency (`CONCURRENCY-001` v1.0.0):** add `row_version BIGINT NOT NULL DEFAULT 1 CHECK (row_version >= 1)` to `app_users`, `user_roles`, `user_scope_grants`, `projects`, `sessions`, `project_capacity_settings`, `target_plans`, `instruments`, `instrument_versions`, `unit_project_associations`, `attendance_records` (joining existing `unit_claims.row_version`, `inspections.row_version`, and new `inspection_draft_contexts.row_version`).
+- **`inspections` (`SES-001` & `IDC-O10`):** add immutable `session_id UUID NOT NULL REFERENCES sessions(id)` (`ON DELETE RESTRICT`); allowed states include terminal `ABORTED`; partial unique index ensures at most one non-`ABORTED` active lifecycle per `(unit_id, session_id)` while allowing a brand-new `inspection_id` in a reopened or later session after `ABORTED`.
+- **`review_events` (`CMD-030/031`):** unique index on `(inspection_revision_id) WHERE decision IN ('RETURNED_FOR_CORRECTION', 'APPROVED')` enforcing single terminal review decision per submitted revision.
+- **`target_plans` (`CMD-017`):** add `session_id UUID NOT NULL REFERENCES sessions(id)` with unique `(session_id, version)`.
+- **`instrument_versions` (`CMD-019/020`):** add `config_hash TEXT NOT NULL` (server-computed SHA-256).
+- **`print_events` (`C37-01/C37-03`):** bind `document_version_id UUID NOT NULL REFERENCES document_versions(id)` and unique `(document_id, sequence_no)`.
+- **`notification_deliveries` (`NLA-MVP-001`):** legal status set includes `PENDING`, `SENDING`, `RETRY_WAIT`, `SENT`, `DELIVERED`, `SUPPRESSED`, `FAILED`, `UNKNOWN`, `DEAD_LETTER`, plus `lease_owner`, `lease_token_hash`, `lease_generation`, `lease_expires_at`, `attempt_count`, `next_retry_at`.
+- **`evidence_assets` (`IDC-O06`):** support immutable carry-forward linkage (`origin_evidence_asset_id UUID REFERENCES evidence_assets(id)`) so later revisions reference verified originals without duplicating or mutating storage objects.
+
+**Closure disposition (2026-11-27):** `DGA-B11` design-level physical schema & integrity specification is **CLOSED (62/62 tables)** for `G9-TECH` freeze. SQL migration authoring and live database introspection remain gated to `G11`.

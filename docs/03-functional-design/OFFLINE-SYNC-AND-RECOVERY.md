@@ -1,6 +1,8 @@
 # Offline, Synchronization, Conflict, and Recovery Design
 
-**Status:** Draft v0.1.1 — T-09 scope approved by Product Owner; device/local-data controls remain pending  
+**Status:** TECHNICAL SSOT CLOSED — READY FOR G9-TECH FREEZE (T-09 Option B & T-11 Option B reconciled; device/local-protection/sync boundaries finalized; runtime/device UAT & T-10 retention gated to G11/production)  
+**Version:** 1.0.0  
+**Date:** 2026-11-27  
 **Package:** C — Functional and Operational Design
 
 ## 1. Design objective
@@ -89,3 +91,25 @@ Record sync attempts, operation IDs, result status, retry count, conflict type, 
 - Institutional approval of retention, purge and legal-hold rules (T-10).
 - Whether offline continuation after claim expiry is allowed; until decided, require controlled online reconciliation before submit.
 - Whether the pilot can require online claim acquisition and online submission.
+
+
+## Technical SSOT Closure — Device, Local Storage, Conflict & Recovery Contract (2026-11-27)
+
+This section closes `DGA-B07` at the technical specification level for **Full-System Technical SSOT (`G9-TECH`)**, preserving `T-09` Option B, `T-11` Option B, and `T-10` institutional boundaries:
+
+1. **Supported Device & Browser Baseline (`T-11` Option B):**
+   - Inspector field workflow: Android devices running current stable Google Chrome (Web Crypto API, IndexedDB, Camera `MediaDevices` required).
+   - Korlap, Reviewer, Super Admin, Print Officer: Desktop Google Chrome or Microsoft Edge current stable releases.
+   - Embedded in-app WebViews, obsolete browsers, and devices failing camera/IndexedDB/WebCrypto capability probes are explicitly excluded and fail closed with a clear browser-compatibility notice.
+2. **Bounded Offline Capability (`T-09` Option B):**
+   - **Online-only (strictly blocked offline):** Google OAuth sign-in, unit claim acquisition (`CMD-026`), final inspection submission (`CMD-029`), review return/approval (`CMD-030/031`), reopen/abort (`CMD-032/055/056`), role/scope/session administration.
+   - **Permitted offline:** Editing draft checklist/specification responses only for an inspection whose unit was **already claimed online** and cached in IndexedDB under an active `device_bindings` record.
+3. **Local Data Protection, Shared-Device Logout & Purge:**
+   - Offline draft payloads are scoped per authenticated `app_user_id` + `device_binding_id` in IndexedDB and encrypted at rest using a Web Crypto AES-GCM key bound to the active session context where supported (never storing Supabase tokens or service credentials in `localStorage`).
+   - Explicit sign-out (`signOutAction`) or session revocation triggers immediate local IndexedDB wipe of pending non-committed caches after warning if unsynced local drafts exist; shared-device switch always purges the previous user's local IndexedDB namespace.
+   - Local queue bounds (configurable defaults, subject to `T-10` institutional override before production): max 50 pending draft operations per batch, max 25 MiB local offline photo queue per device, max 7-day offline retry horizon before requiring online reconciliation.
+4. **Claim Expiry & Conflict Preservation:**
+   - If a unit claim expires while the Inspector is offline, `CMD-035` rejects direct mutation with typed `CONFLICTED` (`CLAIM_EXPIRED` / `STALE_VERSION`) and persists `sync_operation_results` containing the server conflict snapshot. Neither local draft nor server state is silently overwritten; the user resolves explicitly online after re-acquiring a valid claim.
+5. **Institutional Boundary (`T-10`):** Final legal retention/purge timelines for production personal/evidence data remain gated to `T-10` written institutional approval prior to production activation; development testing uses synthetic data only.
+
+**Closure disposition (2026-11-27):** `DGA-B07` technical offline/device specification is **CLOSED** for `G9-TECH` freeze. Real-device UAT matrix recording and offline recovery test execution remain gated to `G11`.

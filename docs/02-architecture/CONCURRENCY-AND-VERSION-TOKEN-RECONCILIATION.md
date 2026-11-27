@@ -1,11 +1,11 @@
 | CV-06 | CMD-050 previously listed optional expected_version despite no physical row-version field | RESOLVED AT REQUEST-CONTRACT LEVEL: current catalogue and detailed review accept notification_id only; guarded set-once read_at is the state arbiter; PO/Security approval and runtime evidence remain open |
 
 **Document ID:** CONCURRENCY-001  
-**Version:** 0.1.7  
-**Status:** Engineering proposal — PO/Security review required; NOT approved for implementation  
-**Date:** 2026-11-24  
-**Scope:** CMD-001–054, physical schema, command catalogue, transaction/lock contracts, audit and QA traceability  
-**Gate:** G3 NOT READY; G5 NOT READY; G7 NOT READY; G9 NOT READY; G10 NOT ACTIVE.
+**Version:** 1.0.0  
+**Status:** TECHNICAL SSOT CLOSED — READY FOR G9-TECH FREEZE (CV-01..CV-08 resolved; runtime concurrency verification gated to G11)  
+**Date:** 2026-11-27  
+**Scope:** CMD-001–056, physical schema v1.0.0, command catalogue v1.0.0, transaction/lock contracts, audit and QA traceability  
+**Gate:** G9-TECH DESIGN CLOSED; G11 RUNTIME CONCURRENCY VERIFICATION PENDING.
 
 ## 1. Executive decision summary
 
@@ -326,3 +326,30 @@ CMD-050 no longer has an unresolved catalogue-versus-request mismatch: the curre
 ## Conditional Product Owner authorization status synchronization — 2026-11-24
 
 The Product Owner's explicit conditional implementation authorization is recorded in the canonical Decision Register. It permits transition toward implementation from zero using the SSOT baseline, subject to G9 closure and a separate G10 activation record. **Current status: G9 NOT READY; G10 NOT ACTIVE.** This status synchronization does not approve this technical proposal, any lock mode, permission, function ACL, migration or runtime behavior. Technical and institutional approval boundaries stated in this document remain unchanged.
+
+
+## 9. Technical SSOT Closure — Final Concurrency & Version-Token Contract (2026-11-27)
+
+This section closes `DGA-B17` and resolves `CV-01` through `CV-08` for **Full-System Technical SSOT (`G9-TECH`)**. Runtime CAS and adversarial concurrency testing remain gated to `G11`.
+
+### 9.1 Canonical Contract Decisions (`CV-01`–`CV-08` CLOSED)
+
+| Mismatch ID | Final Technical SSOT Rule |
+|---|---|
+| `CV-01` (`CMD-005`) | Add `user_roles.row_version BIGINT NOT NULL DEFAULT 1 CHECK (row_version >= 1)`; `expected_row_version` is **mandatory** on `CMD-005` (`revoke-role`). |
+| `CV-02` (`CMD-007`) | Add `user_scope_grants.row_version BIGINT NOT NULL DEFAULT 1 CHECK (row_version >= 1)`; `expected_row_version` is **mandatory** on `CMD-007` (`revoke-scope`). |
+| `CV-03` (`CMD-035`) | Normalize every sync operation in `CMD-035` to `expected_row_version` bound strictly to the target `inspections.row_version`; increment once per semantically applied operation. |
+| `CV-04` (`CMD-040`) | Add `attendance_records.row_version BIGINT NOT NULL DEFAULT 1`; `CMD-040` requires both `expected_row_version` (on `attendance_records`) and immutable `attendance_document_id`. |
+| `CV-05` (`CMD-030` / `CMD-031`) | Require **both** `expected_revision_no` (exact submitted revision binding) AND `expected_row_version` (aggregate `inspections.row_version` CAS); unique terminal-decision constraint on `review_events(inspection_revision_id)` remains the final DB arbiter. |
+| `CV-06` (`CMD-050`) | **No** `row_version` on `notifications`; `CMD-050` accepts `notification_id` only and performs guarded set-once `UPDATE ... SET read_at = now() WHERE id = $1 AND recipient_user_id = $actor AND read_at IS NULL`. |
+| `CV-07` (`CMD-019` / `CMD-020`) | Add `instrument_versions.row_version BIGINT NOT NULL DEFAULT 1` AND `instrument_versions.config_hash TEXT NOT NULL` (server-computed SHA-256 over canonical JSON). `CMD-019` checks `expected_row_version`; `CMD-020` checks both `expected_row_version` and `expected_draft_hash` under lock. |
+| `CV-08` (`CMD-017`) | Add `target_plans.row_version BIGINT NOT NULL DEFAULT 1` and `target_plans.session_id UUID NOT NULL REFERENCES sessions(id)`. Business `version` identifies published snapshots; `row_version` governs concurrent draft edits. |
+
+### 9.2 Complete Aggregate `row_version` Inventory & Wire Format
+
+- **Physical column standard:** `row_version BIGINT NOT NULL DEFAULT 1 CHECK (row_version >= 1)`, incremented by `+1` exactly once per successful semantic aggregate mutation; never incremented on replay, rejection, or no-op.
+- **JSON wire representation:** canonical base-10 decimal string (`expected_row_version` in requests, `row_version` in responses), parsed strictly as positive signed 64-bit integer server-side; bare `expected_version` is retired from new command schemas.
+- **Tables carrying `row_version`:** `app_users`, `user_roles`, `user_scope_grants`, `projects`, `sessions`, `project_capacity_settings`, `target_plans`, `instruments`, `instrument_versions`, `unit_project_associations`, `unit_claims`, `inspections`, `inspection_draft_contexts`, `attendance_records`.
+- **Distinct non-CAS ordering/fencing domains:** `revision_no` (`inspection_revisions`), `sequence_no` (`document_print_counters` / `print_events`), `lease_generation` + `lease_token_hash` + `lease_expires_at` (`document_generation_jobs`, `notification_outbox`, `notification_deliveries`), and `config_hash` / `snapshot_hash` (SHA-256 content hashes).
+
+**Closure disposition (2026-11-27):** `DGA-B17` technical contract is **CLOSED** for `G9-TECH` freeze. Runtime execution of §8 CAS/concurrency test cases remains gated to `G11`.
