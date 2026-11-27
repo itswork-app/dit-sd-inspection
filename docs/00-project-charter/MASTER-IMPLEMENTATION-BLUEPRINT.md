@@ -15,7 +15,7 @@
 
 This document is the navigation and control plane for the project's implementation-ready specification. It does not replace the approved PRD, Decision Register, ADRs, detailed domain specifications, security contracts, or test catalogue. It identifies their authority, dependencies, required evidence, and release gates.
 
-The repository contains authoritative documentation and is authorized to receive bounded G9-F1/G10-F1 foundation implementation. The staged authorization permits foundation source code on a dedicated branch using synthetic data; it does not authorize unresolved business mutations, production data or deployment.
+The repository contains authoritative documentation and application implementation. Root `AGENTS.md` v1.3.0 §3.3 authorizes ordered G10 full-system synthetic implementation phases `I1→I5` on dedicated feature branches using synthetic/test data in isolated local/development environments. This does not authorize real institutional data, staging/production deployment, live hosted database mutation or the separately gated external provider operations.
 
 ### 1.1 Source-of-truth precedence
 
@@ -41,7 +41,7 @@ If two documents at the same authority level conflict, implementation is blocked
 - PostgreSQL is the single source of truth for application data.
 - Architecture: modular monolith unless measured evidence justifies another topology.
 - Engineering priority: cost-first lifecycle optimization without waiving security, privacy, integrity, backup, recovery, or reliability.
-- Repository: this repository is intended to hold both documentation and implementation. Documentation remains authoritative; G10-F1 also authorizes only the bounded foundation source-code and development-configuration work defined in AGENTS.md §3.2, using synthetic/test data on a dedicated branch. Later business-feature implementation and production operations remain gated.
+- Repository: this repository holds both documentation and application implementation. Documentation remains authoritative; current implementation authorization is G10 full-system synthetic phases `I1→I5` under AGENTS.md v1.3.0 §3.3, using synthetic/test data on dedicated branches in isolated local/development environments. Production/staging operations and real institutional data remain prohibited without separate authorization.
 
 ## 3. Non-negotiable engineering invariants
 
@@ -81,7 +81,7 @@ A phase is complete only when its exit evidence is recorded and reviewed. A docu
 | G11 | Build and verification | CI evidence, functional/security/performance/accessibility/recovery test results | PARTIAL — local synthetic verification and operational rehearsals recorded; hosted CI, managed restore, staging SLO and real-device UAT remain open |
 | G12 | Production release approval | Deployment, restore/rollback proof, operational ownership, UAT and go-live acceptance | NOT VERIFIED / BLOCKED — no production deployment or real institutional data operation |
 
-No gate is passed by inference. G9 cannot pass while any blocker affecting scope, authority, safety, data integrity, or production operation remains unresolved. G10 is a separate explicit authorization and is not implied by G9.
+No gate is passed by inference. The `G9-TECH` freeze establishes the technical SSOT baseline for synthetic implementation; it does not close the separate source/institutional/provider/operational production gates or establish G12 readiness. G10 is a separate explicit authorization and is not implied by G9.
 
 ## 5. Required documentation workstreams
 
@@ -208,6 +208,10 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 - Production readiness: **NOT VERIFIED**
 
 ## 11. Immediate next actions
+
+**Current post-merge remediation sequence (2026-11-27):** (a) complete this controlled SSOT reconciliation across MIB-001, DGA-001, README, DOC-MAP-001, RTM and RAID; (b) map G11 remaining QA and external verification to exact evidence while preserving `DGA-B06`, `B07`, `B08` and `B15` as open/absent where applicable; (c) prepare G12 provider/institutional/privacy/operations and rollback evidence without staging/production actions. The post-merge baseline and findings are recorded in [PMA-001](POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md).
+
+
 
 1. Treat [DGA-001](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) v2.3.0 as the active evidence-backed register; do not collapse local verification into hosted, managed-provider, staging, UAT or production evidence.
 2. Reconcile historical status language in Package T, Package S, Decision Register, RTM and RAID without changing approved decision meaning.
