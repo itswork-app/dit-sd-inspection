@@ -191,7 +191,7 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 ## 10. Current project status
 
 - Repository intent: **DOCUMENTATION AND APPLICATION IN ONE REPOSITORY — CONFIRMED BY PRODUCT OWNER**
-- Documentation gap audit: **DGA-001 v2.3.0 — current gate and evidence register; external/runtime blockers remain open**
+- Documentation gap audit: **DGA-001 v2.4.0 — current gate and evidence register; external/runtime blockers remain open**
 - Mandatory agent instructions: **AGENTS.md v1.3.0 — READ BEFORE EVERY WORK SESSION/TASK**
 - Implementation roadmap: **IRG-001 v1.0.10 — CONTROLLED PLAN, NOT AUTHORIZATION**
 - SemVer policy: **2.0.0 adopted; application version not assigned before release**
