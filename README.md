@@ -18,12 +18,12 @@ Feature parity first; controlled improvements second. The legacy application is 
 Cost-first means optimizing total lifecycle cost without waiving security, privacy, data integrity, backup/recovery, or production reliability.
 
 ## Status
-**Current phase:** Full-System Synthetic Implementation (`G10` ACTIVE — `I1 → I5` implemented on isolated synthetic infrastructure; `G11` PARTIAL (local verification evidence recorded; hosted CI/managed restore/staging SLO/real-device UAT remain open); `G12` production readiness remains BLOCKED). Coding is authorized only for isolated local/development environments using synthetic/test data.
+**Current phase:** Full-System Synthetic Implementation (`G10` ACTIVE — `I1 → I5` implemented on isolated synthetic infrastructure; `G11` PARTIAL (local verification recorded; main-push hosted CI passed on merge commit `ae271615`, but `main` ruleset enforcement is disabled; managed restore/staging SLO/real-device UAT remain open); `G12` production readiness remains BLOCKED). Coding is authorized only for isolated local/development environments using synthetic/test data.
 
 **Scope freeze / G9-F1:** FOUNDATION SCOPE FROZEN (2026-11-25)  
 **Full-system technical SSOT (`G9-TECH`):** FROZEN (2026-11-27; `PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001` — 14/14 technical DGA blockers closed; 62 canonical tables, 62/62 RLS parity & 52 app commands reconciled)  
 **G10 full-system synthetic implementation:** ACTIVE (2026-11-27; local `I1 → I5` slices implemented: 13 SQL migrations, `62/62` `ENABLE + FORCE RLS`, `T-18` `NOLOGIN` wrappers, private Storage RLS + PDF 1.4 renderer, 68 Next.js routes, synthetic data only)  
-**G11 verification:** LOCAL SYNTHETIC SUITE PASS (unit/migration/build, SQL RLS/SoD/CAS/idempotency verifiers, multi-connection PostgreSQL concurrency races, live HTTP/JWT E2E, live Private Storage + PDF E2E, local backup/restore rehearsal, local 100-request load baseline — see `DGA-001` §23); Hosted GitHub Actions CI **ABSENT / BILLING BLOCKED (`DGA-B15`)**; managed-provider restore (`DGA-B06`), staging load test/SLO (`DGA-B08`) and real-device UAT (`DGA-B07`) **NOT EXECUTED**  
+**G11 verification:** LOCAL SYNTHETIC SUITE PASS (unit/migration/build, SQL RLS/SoD/CAS/idempotency verifiers, multi-connection PostgreSQL concurrency races, live HTTP/JWT E2E, live Private Storage + PDF E2E, local backup/restore rehearsal, local 100-request load baseline — see `DGA-001` §§22–23); main-push GitHub Actions CI **PASS on merge commit `ae271615` (run #93)**, but repository `main` ruleset **DISABLED (`DGA-B15`)**; managed-provider restore (`DGA-B06`), staging load test/SLO (`DGA-B08`) and real-device UAT (`DGA-B07`) **NOT EXECUTED**  
 **G12 production / real institutional data readiness:** NOT VERIFIED / BLOCKED (`DGA-B01..B06`, `B08`, `B15`, written `T-10`/`T-12` approvals)
 
 ## Engineering instructions and delivery roadmap
@@ -32,7 +32,9 @@ Cost-first means optimizing total lifecycle cost without waiving security, priva
 The [Implementation Roadmap and Release Governance](docs/00-project-charter/IMPLEMENTATION-ROADMAP-AND-RELEASE-GOVERNANCE.md) defines pre-implementation phases, G9/G10 authorization, implementation phases I0–I7, release controls and Semantic Versioning 2.0.0.
 
 ## Documentation authority and delivery gates
-The comprehensive directory map of all 104 controlled documents under `docs/` is provided in the [Master Documentation Index & Architecture Map](docs/README.md).
+
+The active G11 execution sequence is controlled by [G11-ECP-001 — G11 Evidence Closure Plan](docs/00-project-charter/G11-EVIDENCE-CLOSURE-PLAN.md).
+The comprehensive directory map of all 105 controlled documents under `docs/` is provided in the [Master Documentation Index & Architecture Map](docs/README.md).
 
 Start with the [Master Implementation Blueprint](docs/00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md). It defines source-of-truth precedence, non-negotiable engineering invariants, requirement traceability, delivery gates G0–G12, production-readiness evidence, and the next documentation workstreams.
 
@@ -59,7 +61,7 @@ PRs #38–#41 are merged to `main`; audited `main` HEAD is `706c654a17d415913892
 
 The local backup/restore rehearsal and local burst load baseline are documented in DGA-001 §23. They do not close managed-provider restore (`DGA-B06`) or staging SLO/load (`DGA-B08`). Real-device offline UAT (`DGA-B07`) remains NOT EXECUTED. GitHub API returned no workflow runs and no combined commit statuses for audited main HEAD; hosted CI is ABSENT/BLOCKED (`DGA-B15`), not PASS.
 
-See [PMA-001 — Post-Merge Repository Audit](docs/00-project-charter/POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md) for findings and remediation. PR #42 is the documentation-only audit/remediation review branch; its merge and CI status must be verified separately.
+See [PMA-001 — Post-Merge Repository Audit](docs/00-project-charter/POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md) for the historical post-merge findings. PR #42 is merged; current CI and G11 evidence are recorded in the checkpoint below.
 
 
 
@@ -72,3 +74,12 @@ Following PO/sole-maintainer sign-off `PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001` 
 - **Database & Security:** `13` immutable SQL migrations (`20261127050000`–`20261127090000`) provisioning `62/62` canonical `public` tables with `62/62` `ENABLE + FORCE RLS`, `T-18` `NOLOGIN NOBYPASSRLS NOINHERIT` function owners (`app_cmd_definer`/`app_worker_definer`), `CMD-001..043` / `CMD-049..052` / `CMD-054..056` wrappers, private Storage bucket `inspection-private` RLS (immutable originals, caller-JWT signed upload/download, audited `evidence.accessed` / `document.accessed`), and **zero** application surfaces for `CMD-044`, external `CMD-053` providers, or `CMD-045..048`.
 - **Local Verification Executed (PASS):** `npm run check` (ESLint `0` errors, `tsc --noEmit` `0` errors, `13` SQL migrations valid, Vitest `14/14` suites / `87/87` tests, Node `5/5` tests, Next.js 16.4.6 production build `67` routes + `ƒ Proxy`), four PostgreSQL RLS/SoD/CAS/idempotency SQL verification scripts, multi-connection PostgreSQL race suite (`scripts/verify-g11-concurrency.mjs`: `LG-01/03`, `LG-16`, `LG-21`, `LG-31`, `LG-33`, `LG-41`), live HTTP/JWT E2E (`scripts/verify-g11-http-e2e.mjs`), and live Private Storage + magic-byte + `%PDF-1.4` E2E (`scripts/verify-g11-storage-pdf-e2e.mjs`).
 - **Remaining Blockers / Not Executed:** Hosted GitHub Actions CI remains **ABSENT / BILLING BLOCKED (`DGA-B15`)**. Staging/production deployment, hosted Supabase migration, performance load tests (`DGA-B08`), managed backup/restore drills (`DGA-B06`), real-device offline UAT, and institutional/provider approvals (`DGA-B01..B05`, `T-10`, `T-12`) remain **NOT EXECUTED / BLOCKED (`G12`)**.
+
+
+## Current post-PR #42 G11 evidence checkpoint — 2026-11-27
+
+Current `main` HEAD is `ae271615bacae3c3b48eeaafee72ae1c6829fbf1`. Main-push GitHub Actions run #93 (`45965232365`) completed SUCCESS on this merge commit; its Quality checks job and `npm run check` step passed. [View run #93](https://github.com/itswork-app/dit-sd-inspection/actions/runs/45965232365).
+
+Repository ruleset `main` (ID `28208385`) is currently DISABLED. Therefore CI execution is verified, but branch enforcement is not. G11 remains PARTIAL: managed PostgreSQL + Storage restore, real-device offline UAT, staging SLO/load and remaining QA catalogue execution are still open. G12 remains NOT VERIFIED / BLOCKED.
+
+See [DGA-001 v2.4.0](docs/00-project-charter/DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) and [G11-ECP-001](docs/00-project-charter/G11-EVIDENCE-CLOSURE-PLAN.md) for the evidence boundaries, execution sequence and acceptance criteria.
