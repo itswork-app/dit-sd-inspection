@@ -1239,7 +1239,7 @@ Following explicit Product Owner approval of the final four remaining product-se
 - **`G9-F1` Foundation Scope:** **FROZEN** (`G10-F1` ACTIVE).
 - **`G9-TECH` (Full-System Technical SSOT for Synthetic-Data Implementation):** **FROZEN** by PO/sole-maintainer sign-off `PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001`; all 14 technical/engineering/security DGA blockers (`B07`, `B09..B14`, `B16..B22`) closed at design level across synchronized v1.0.0 artifacts.
 - **`G10` (Full-System Synthetic Implementation Activation):** **ACTIVE** under root `AGENTS.md` v1.3.0 §3.3; `I1→I5` implemented on isolated local/development infrastructure with synthetic data.
-- **`G11` (Build, Migration, RLS, Concurrency & QA Verification):** **PARTIAL** — local synthetic verification evidence is recorded in §§22–23; the full QA catalogue is not executed, hosted CI remains ABSENT, managed restore/staging SLO/real-device UAT remain open.
+- **`G11` (Build, Migration, RLS, Concurrency & QA Verification):** **PARTIAL** — local synthetic verification evidence is recorded in §§22–23; the full QA catalogue is not executed; main-push hosted CI passed on runs #77 and #93, but repository ruleset enforcement remains DISABLED; managed restore/staging SLO/real-device UAT remain open.
 - **`G12` (Production Release & Real Institutional Data):** **NOT VERIFIED / BLOCKED** on institutional/provider/operational items (`DGA-B01..B06`, `B08`, `B15`) and written `T-10`/`T-12` approvals for `CMD-044` and external `CMD-053` providers.
 
 ---
@@ -1261,7 +1261,7 @@ Following explicit Product Owner / sole-maintainer sign-off `PO-2026-11-27-G9-TE
 ### 22.1 Updated Gate Disposition (2026-11-27 — Post Local `G11` Synthetic Suite)
 - **`G9-F1` & `G9-TECH`:** **FROZEN** (`PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001`).
 - **`G10` (Full-System Synthetic Implementation):** **ACTIVE / LOCAL SLICES `I1 → I5` IMPLEMENTED** (isolated local synthetic stack only).
-- **`G11` (Build, Migration, RLS, Concurrency & QA Verification):** **PARTIAL — LOCAL SYNTHETIC SUITE + LOCAL OPERATIONAL REHEARSALS RECORDED** (see §§22–23). **Still OPEN / NOT EXECUTED for full `G11`:** hosted GitHub Actions CI (`DGA-B15` ABSENT/BLOCKED); remaining planned QA cases across the 413-case catalogue; managed-provider PostgreSQL + Storage restore (`DGA-B06`); approved numeric SLO and staging load test (`DGA-B08`); real-device offline UAT (`DGA-B07`). The local backup/restore rehearsal and local burst benchmark in §23 do not close their corresponding managed/staging gates.
+- **`G11` (Build, Migration, RLS, Concurrency & QA Verification):** **PARTIAL — LOCAL SYNTHETIC SUITE + LOCAL OPERATIONAL REHEARSALS RECORDED** (see §§22–23). **Still OPEN / NOT EXECUTED for full `G11`:** main-push hosted CI PASS on runs #77/#93 but `main` ruleset enforcement DISABLED (`DGA-B15`); remaining planned QA cases across the 413-case catalogue; managed-provider PostgreSQL + Storage restore (`DGA-B06`); approved numeric SLO and staging load test (`DGA-B08`); real-device offline UAT (`DGA-B07`). The local backup/restore rehearsal and local burst benchmark in §23 do not close their corresponding managed/staging gates.
 - **`G12` (Production Release & Real Institutional Data):** **NOT VERIFIED / BLOCKED** on institutional/provider/operational items (`DGA-B01..B06`, `B08`, `B15`) and written `T-10`/`T-12` approvals for `CMD-044` and external `CMD-053` providers. No real institutional data, hosted database mutation, or staging/production deployment was performed as part of this audit.
 
 ---
@@ -1287,7 +1287,7 @@ Against `next start` + local Supabase, 10 synthetic Super Admin sessions:
 **Limits of this evidence:** single burst on one local machine, no network latency, tiny dataset; benchmark setup seeds roles and activates the instrument directly through local SQL rather than through `CMD-004`/`CMD-019`. These numbers are **not** an SLO and must not be cited as production capacity. **`DGA-B08` remains OPEN** — approved numeric SLOs and a staging load test on the target provider plan are still required.
 
 ### 23.4 Gate disposition (local evidence boundary preserved)
-`G11`: PARTIAL — local synthetic suite and local backup/restore + load rehearsals are recorded; these do not establish managed-provider recovery, staging capacity/SLO, full QA completion or hosted CI. `G12`: NOT VERIFIED / BLOCKED (`DGA-B01..B06`, `B08`, `B15`, `T-10`, `T-12`). Hosted CI: ABSENT (`DGA-B15`).
+`G11`: PARTIAL — local synthetic suite and local backup/restore + load rehearsals are recorded; these do not establish managed-provider recovery, staging capacity/SLO, full QA completion or hosted CI. `G12`: NOT VERIFIED / BLOCKED (`DGA-B01..B06`, `B08`, `B15`, `T-10`, `T-12`). Hosted CI: PASS on main-push runs #77/#93; `main` ruleset enforcement DISABLED (`DGA-B15`).
 
 ## 24. Post-merge repository and documentation audit checkpoint — 2026-11-27
 
