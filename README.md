@@ -55,11 +55,11 @@ The current static reconciliation is recorded in [SSOT-AUDIT-001](docs/00-projec
 
 ## Historical foundation branch checkpoint — 2026-11-27
 
-## Post-merge audit and current evidence checkpoint — 2026-11-27
+## Historical post-merge audit checkpoint (pre-PR #42) — 2026-11-27
 
 PRs #38–#41 are merged to `main`; audited `main` HEAD is `706c654a17d415913892b64fe71de59c2a09bafe`. Current gate state: `G9-F1`/`G9-TECH` FROZEN; `G10` ACTIVE with `I1→I5` implemented on synthetic local/development infrastructure; `G11` PARTIAL; `G12` NOT VERIFIED / BLOCKED. PR #41 records 68 Next.js build routes (the 67-route count in the older feature-branch checkpoint below is historical evidence from that earlier build).
 
-The local backup/restore rehearsal and local burst load baseline are documented in DGA-001 §23. They do not close managed-provider restore (`DGA-B06`) or staging SLO/load (`DGA-B08`). Real-device offline UAT (`DGA-B07`) remains NOT EXECUTED. GitHub API returned no workflow runs and no combined commit statuses for audited main HEAD; hosted CI is ABSENT/BLOCKED (`DGA-B15`), not PASS.
+The local backup/restore rehearsal and local burst load baseline are documented in DGA-001 §23. They do not close managed-provider restore (`DGA-B06`) or staging SLO/load (`DGA-B08`). Real-device offline UAT (`DGA-B07`) remains NOT EXECUTED. The initial audit wrapper exposed only PR-triggered workflow runs and missed the main-push run. A direct Actions API query later identified main-push run #77 (`45953256570`) on `706c654`, completed SUCCESS; its Quality checks job and `npm run check` step passed. The combined commit-status endpoint returned no entries; that is not evidence that the workflow did not run.
 
 See [PMA-001 — Post-Merge Repository Audit](docs/00-project-charter/POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md) for the historical post-merge findings. PR #42 is merged; current CI and G11 evidence are recorded in the checkpoint below.
 
@@ -73,7 +73,7 @@ Following PO/sole-maintainer sign-off `PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001` 
 
 - **Database & Security:** `13` immutable SQL migrations (`20261127050000`–`20261127090000`) provisioning `62/62` canonical `public` tables with `62/62` `ENABLE + FORCE RLS`, `T-18` `NOLOGIN NOBYPASSRLS NOINHERIT` function owners (`app_cmd_definer`/`app_worker_definer`), `CMD-001..043` / `CMD-049..052` / `CMD-054..056` wrappers, private Storage bucket `inspection-private` RLS (immutable originals, caller-JWT signed upload/download, audited `evidence.accessed` / `document.accessed`), and **zero** application surfaces for `CMD-044`, external `CMD-053` providers, or `CMD-045..048`.
 - **Local Verification Executed (PASS):** `npm run check` (ESLint `0` errors, `tsc --noEmit` `0` errors, `13` SQL migrations valid, Vitest `14/14` suites / `87/87` tests, Node `5/5` tests, Next.js 16.4.6 production build `67` routes + `ƒ Proxy`), four PostgreSQL RLS/SoD/CAS/idempotency SQL verification scripts, multi-connection PostgreSQL race suite (`scripts/verify-g11-concurrency.mjs`: `LG-01/03`, `LG-16`, `LG-21`, `LG-31`, `LG-33`, `LG-41`), live HTTP/JWT E2E (`scripts/verify-g11-http-e2e.mjs`), and live Private Storage + magic-byte + `%PDF-1.4` E2E (`scripts/verify-g11-storage-pdf-e2e.mjs`).
-- **Remaining Blockers / Not Executed:** Hosted GitHub Actions CI remains **ABSENT / BILLING BLOCKED (`DGA-B15`)**. Staging/production deployment, hosted Supabase migration, performance load tests (`DGA-B08`), managed backup/restore drills (`DGA-B06`), real-device offline UAT, and institutional/provider approvals (`DGA-B01..B05`, `T-10`, `T-12`) remain **NOT EXECUTED / BLOCKED (`G12`)**.
+- **Remaining Blockers / Not Executed (historical feature-branch checkpoint):** The earlier PR #30 hosted runner attempt reported a billing/spending-limit failure. A later main-push run #77 on commit `706c654` passed. Managed backup/restore drills (`DGA-B06`), staging performance/SLO (`DGA-B08`), real-device offline UAT, and institutional/provider approvals (`DGA-B01..B05`, `T-10`, `T-12`) remain **NOT EXECUTED / BLOCKED**.
 
 
 ## Current post-PR #42 G11 evidence checkpoint — 2026-11-27
