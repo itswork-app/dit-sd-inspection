@@ -1120,3 +1120,18 @@ CMD-037 has been reconciled across Detailed Contract Review v0.2.6, PostgreSQL C
 - C37-01 remains OPEN for logical document vs immutable version identity; C37-02 for historical/superseded-version reprint eligibility; C37-03 for `attempt_no` semantics; C37-04 for counter/allocator, exact lock, constraint and RLS/ACL approval.
 
 The counter is a candidate-only object and is not admitted to the canonical 48-table inventory. The physical schema's canonical count remains unchanged. CMD-037 remains NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification 0/50; global graph acyclicity NOT PROVEN; LG-21 remains PLANNED / NOT EXECUTED. G9-F1 remains FROZEN and G10-F1 ACTIVE only for bounded foundation work; CMD-037 print mutations remain outside G10-F1. No SQL, migration, grants/RLS, handler, printer integration, automated test, CI, live database, deployment or production operation was performed.
+
+## CMD-038 batch print lifecycle reconciliation — 2026-11-27
+
+CMD-038 has been reconciled across CMD-031–040 Detailed Contract Review v0.2.7, Durable Operation Ledger Proposal v0.3.0, PostgreSQL Command Contract Catalogue v0.4.12, LOCK-MANIFEST-001 v0.4.36, LOCK-GRAPH-001 v0.4.29 and Physical Database Schema v0.4.10.
+
+- Candidate batch acceptance is one short transaction persisting the batch envelope, immutable ordered manifest and request idempotency result.
+- Every item is independently reauthorized and processed in its own short transaction; one document/counter at a time. CMD-037 sequence/event/audit/idempotency atomicity remains the per-document boundary.
+- Item results are append-only and distinct from print_events; batch counts/status are derived projections. Failed-only retries are server-derived from durable outcomes, create a new retry batch, and exclude prior successes.
+- Invalid/unresolvable requested items remain in the durable manifest and receive item-level outcomes; a count-only batch is insufficient.
+- print_batch_items and print_batch_item_results remain candidate-only and NOT ADMITTED. Canonical physical inventory remains 48 tables; no schema/RLS admission is claimed.
+- C38-01..05 remain OPEN. C37-01..04 remain open dependencies. Numeric batch limits, mixed-scope handling, retry limits/expiry/cancellation, attempt/event cardinality, worker/lease model and exact physical/security controls are unresolved.
+- CMD-038 remains NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification remains 0/50; global graph acyclicity remains NOT PROVEN; LG-21 remains PLANNED / NOT EXECUTED.
+- G9-F1 remains FROZEN and G10-F1 remains ACTIVE only for bounded foundation scope. CMD-038 business mutation and workers remain outside G10-F1.
+
+No source code, SQL, migration, route/RPC, worker, RLS/grant, live database, automated test, CI, deployment, production data or physical printer operation was performed or claimed.
