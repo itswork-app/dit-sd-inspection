@@ -1,7 +1,7 @@
 # Durable Operation Ledgers and Artifact Lifecycle — CMD-035/036/038/039/040
 
 **Document ID:** DURABLE-OPERATION-LEDGER-PROPOSAL-001  
-**Version:** 0.3.0  
+**Version:** 0.3.1  
 **Date:** 2026-11-27  
 **Status:** Engineering / Database / Security / Product review proposal — NOT APPROVED FOR IMPLEMENTATION  
 **Scope:** Offline sync operation outcomes, document generation jobs, print batch manifests/results, attendance document versions and verification history  
@@ -102,6 +102,12 @@ A candidate `document_generation_jobs` object should include:
 
 A candidate `document_generation_attempts` object should preserve attempt number, job ID, worker correlation, start/finish time, outcome, sanitized error code and output hash/reference when successful. It must not store secrets, access tokens, signed URLs, full renderer responses or source document bodies.
 
+### 3.3A Inspection-session start and post-closure print policy — DOC-003
+
+For inspection-derived documents, generation eligibility requires that the source session has durably started (the session has transitioned from DRAFT through its authorized activation path) and that the exact source inspection revision is approved and immutable. A pre-start request is rejected; it must not reserve an artifact identity or enqueue a generation job. This does not require the session to remain ACTIVE indefinitely.
+
+Once a final artifact is generated, it remains immutable historical evidence. Session closure does not revoke its printability. CMD-037 may record print/reprint after `CLOSED` if the caller is currently authorized in the exact resource scope and the exact artifact remains final and integrity-valid. Printing after closure does not reopen or mutate the session. DOC-003 does not authorize new generation after closure or decide superseded/replaced-version eligibility; the latter remains C37-02 OPEN. C36-02 source-reopen race remains separate and unresolved.
+
 ### 3.3 Source identity and immutable artifact provenance
 
 Avoid an unconstrained polymorphic source ID with no FK. Engineering/Database should select one of:
@@ -157,7 +163,7 @@ Lease duration, heartbeat interval, maximum attempts, backoff schedule, dead-let
 5. If the lease is expired/reclaimed, the source binding no longer matches, or object metadata does not match, finalization fails closed. The artifact is not exposed as GENERATED. Any orphan private object is reconciled by a separate idempotent process; no immediate delete is inferred.
 6. A failed audit append rolls back the relational finalization. The external object may remain as an orphan for reconciliation, but no successful document pointer/status may commit without its required audit event.
 
-**Source-reopen race remains a Product Owner decision.** CMD-032 requires preserving an already approved immutable revision and its historical PDF/print history, but current documentation does not settle what to do when a generation job was accepted before reopen and finishes after the inspection is reopened. Two possible policies have different user-visible outcomes: (A) permit finalization as a historical artifact bound to the still-approved immutable revision, or (B) mark the job stale/cancelled and require a separately authorized request. Do not infer either. Until this edge is decided, finalization must not silently rebind to a new draft/current revision; the race remains blocked and must fail closed or remain pending for controlled resolution.
+**Source-reopen race remains a separate Product Owner decision (C36-02).** DOC-003 establishes only the session-start generation gate and post-closure printability; it does not decide whether an in-flight generation accepted before reopen may finalize afterward.  CMD-032 requires preserving an already approved immutable revision and its historical PDF/print history, but current documentation does not settle what to do when a generation job was accepted before reopen and finishes after the inspection is reopened. Two possible policies have different user-visible outcomes: (A) permit finalization as a historical artifact bound to the still-approved immutable revision, or (B) mark the job stale/cancelled and require a separately authorized request. Do not infer either. Until this edge is decided, finalization must not silently rebind to a new draft/current revision; the race remains blocked and must fail closed or remain pending for controlled resolution.
 
 ### 3.8 Retry, cancellation and uncertain outcomes
 
