@@ -1,7 +1,7 @@
 # Repository Agent Instructions — Dit. SD Inspection
 
 **Document ID:** ENG-AGENT-001  
-**Version:** 1.2.5  
+**Version:** 1.3.0  
 **Status:** MANDATORY ENGINEERING POLICY  
 **Applies to:** Every human contributor, coding agent, reviewer and automation working in this repository.
 
@@ -32,24 +32,22 @@ If two authoritative sources conflict, do not guess or implement around the conf
 
 ## 3. Current phase and hard authorization boundary
 
-Current phase: **STAGED FOUNDATION IMPLEMENTATION — G9-F1 / G10-F1**.
+Current phase: **G10 FULL-SYSTEM SYNTHETIC IMPLEMENTATION ACTIVE (G9-TECH FROZEN — 2026-11-27)**.
 
-- Foundation scope freeze: **G9-F1 FROZEN**.
-- Full-system G9 scope freeze: **NOT READY**.
-- Product Owner authorization: **CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)**.
-- Foundation implementation activation: **G10-F1 ACTIVE (2026-11-25, following merge of the governing decision in PR #26)**.
-- Full-system implementation / later business-feature activation: **NOT AUTHORIZED BY G10-F1; feature-entry gates remain applicable**.
-- Production readiness: **NOT VERIFIED**.
+- Foundation scope freeze: **G9-F1 FROZEN** (`G10-F1` foundation runtime locally verified 2026-11-27).
+- Full-system Technical SSOT freeze: **G9-TECH FROZEN (2026-11-27)** — 14/14 technical DGA blockers (`B07`, `B09..B14`, `B16..B22`) closed across v1.0.0 baseline (`62` canonical tables / `62/62` RLS parity / `52` application commands `CMD-001..044`, `CMD-049..056`; `CMD-045..048` excluded external control plane).
+- Product Owner authorization: **G9-TECH FREEZE & G10 FULL-SYSTEM SYNTHETIC IMPLEMENTATION ACTIVATED (2026-11-27; PO/sole maintainer explicit sign-off)**.
+- Production / real institutional data readiness (`G12`): **NOT VERIFIED / BLOCKED** on external institutional/provider/operational items (`DGA-B01..B06`, `B08`, `B15`).
 
-G10-F1 permits implementation only within the bounded foundation scope: repository/application bootstrap, development configuration, CI, authentication shell, development-only database foundation/migrations, typed API boundary, observability baseline and automated tests using synthetic data. Work must use a dedicated feature branch and follow IRG-001 phases and the relevant ADRs.
+G10 Full-System Synthetic Implementation permits ordered implementation of phases `I1 → I5` on dedicated feature branches using **synthetic/test data in isolated local/development environments**: versioned local Supabase SQL migrations, `T-18` least-privileged `NOLOGIN` function owners (`app_cmd_definer`/`app_worker_definer`), RLS policies, canonical `CMD-001..043` / `CMD-049..052` / `CMD-054..056` wrappers, typed Next.js API routes, UI workflows, and automated unit/integration/RLS/concurrency tests.
 
-Not permitted under G10-F1:
+Still STRICTLY PROHIBITED under G10 Synthetic Implementation:
 - production data/evidence collection or processing real institutional personal data in development;
-- production/staging deployment, live data mutation, irreversible retention/deletion or legal-hold disposition;
-- executable business mutation handlers whose command, authorization, transaction/lock and acceptance-test contracts remain unresolved;
-- unreviewed schema, grants/RLS, privileged RPCs or provider-resource changes outside the approved foundation entry criteria;
-- handling or requesting secrets in chat;
-- bypassing branch protection or repository rules.
+- production/staging deployment, live hosted database mutation without explicit authorization, irreversible retention/deletion or legal-hold disposition;
+- enabling `CMD-044` (`export-audit`) or external notification provider dispatch adapters (`CMD-053` email/push / `INT-NOTIF-001`) before written `T-10` and `T-12` approvals;
+- creating any application surface for PO-excluded external control-plane IDs `CMD-045..048`;
+- handling or requesting secrets in chat, or committing `.env` / credentials;
+- bypassing branch protection or repository rules, or reporting unexecuted tests as PASS.
 
 The documentation-only merge exception GOV-MERGE-001 remains a separate, narrow merge policy for documentation-only PRs; it is not the authorization source for G10-F1. Full-system G9 and later feature gates remain open.
 
@@ -198,4 +196,12 @@ F-03/F-04, command-level authorization, notification worker/provider security, p
 
 The Product Owner is the sole maintainer and accountable engineering decision owner for this repository. Independent reviewer availability is not a prerequisite for development. Each PR must still receive documented maintainer self-review, full-diff inspection, automated checks where configured, and post-merge verification. Self-review cannot turn unexecuted tests or unverified runtime behavior into PASS.
 
-Root policy version: 1.2.5. This section is the controlling authorization for the staged G9-F1/G10-F1 development scope.
+Root policy version: 1.3.0. Section 3 and §3.3 below are the controlling authorization for G9-TECH / G10 full-system synthetic-data implementation.
+
+## 3.3 Product Owner sign-off — G9-TECH Freeze and G10 Full-System Synthetic Implementation (2026-11-27)
+
+On 2026-11-27, the Product Owner / sole repository maintainer explicitly approved:
+1. **G9-TECH FREEZE:** Freezing the Full-System Technical SSOT baseline (`DGA-001` v2.0.0, `SSOT-AUDIT-001` v1.0.0, `Physical Schema` v1.0.0 [62 tables], `RLS Catalogue` v1.0.0 [62/62], `Command Catalogue` v1.0.0 [52 application commands], `Permission Registry` v1.0.0, `Function Security` v1.0.0, `CONCURRENCY-001` v1.0.0, `LOCK-PROTOCOL-DECISION-RESOLUTION-001` v1.0.0, `LOCK-GRAPH-001` v1.0.0, `LOCK-MANIFEST-001` v1.0.0, `NLA-001` v1.0.0, `OFFLINE-SYNC-AND-RECOVERY.md` v1.0.0).
+2. **G10 FULL-SYSTEM SYNTHETIC IMPLEMENTATION ACTIVE:** Authorizing ordered implementation of `IRG-001` phases `I1 → I5` on dedicated feature branches using synthetic/test data in isolated local/development environments (beginning with `I1/I2` Identity, RBAC-003, Audit, Idempotency & `CMD-001..007`).
+
+All production/real-data/external gates (`DGA-B01..B06`, `B08`, `B15`, `T-10`, `T-12`, `CMD-044`, external `CMD-053` providers, and `G12`) remain strictly enforced. Every implemented slice must prove clean local PostgreSQL migration, RLS negative tests, SoD/CAS/idempotency tests, and `npm run check` PASS before progressing.

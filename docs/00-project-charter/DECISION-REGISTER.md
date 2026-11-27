@@ -430,3 +430,13 @@ The Product Owner approves the following product semantics:
 | NLA-MVP-001 | Notification scope & retry state progression for MVP Technical SSOT | **PO APPROVED (Option A)** | Admit in-app notifications, atomic event-time candidate snapshot (`notification_outbox_recipients`), and an explicit retryable delivery transition (`SENDING → RETRY_WAIT → SENDING`) into the MVP Technical SSOT. External provider dispatch adapters (`CMD-053` email/push providers and `INT-NOTIF-001` external callbacks) remain explicitly disabled and non-operational until `T-10` institutional policy and `T-12` provider credentials/ownership are approved. |
 
 **Authority boundary:** These decisions close all remaining Product Owner product-semantic open questions for Full-System Technical SSOT design. Institutional/external obligations (`DGA-B01..B06`, `DGA-B08`, `DGA-B15`) remain owned by the Product Owner per `PO-2026-11-25-IMPLEMENTATION-RESPONSIBILITY-001` and remain production/real-data gates; live database/runtime/concurrency verification remains gated to `G11` execution after implementation authorization.
+
+
+## Product Owner sign-off — G9-TECH Freeze & G10 Full-System Synthetic Implementation (2026-11-27)
+
+- **Decision ID:** `PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001`
+- **Status:** **APPROVED BY PRODUCT OWNER / SOLE MAINTAINER**
+- **Effective date:** 2026-11-27
+- **G9-TECH Freeze:** Full-System Technical SSOT baseline (`v1.0.0+` across 62 canonical tables, 62/62 RLS policies, 52 in-scope application commands, `T-18` ACLs, `CONCURRENCY-001`, `LPR-01..09/11`, `F-03`/`F-04`/`F05-T1..T5`, `SES-001`, `OFFLINE-SYNC-AND-RECOVERY.md`) is **FROZEN** for synthetic-data engineering development.
+- **G10 Activation:** **ACTIVE** for ordered `IRG-001` phases `I1 → I5` on dedicated feature branches using isolated synthetic/test data only, starting with `I1/I2` (Database foundation, `RBAC-003`, `T-15` audit, idempotency, `CMD-001..007`, API & Admin UI).
+- **Preserved Prohibitions:** No real institutional personal/evidence data, no `CMD-044` audit export, no external `CMD-053` provider dispatch, no `CMD-045..048` app surfaces, no production deployment, and no unexecuted test reported as PASS. Recorded in root `AGENTS.md` v1.3.0.
