@@ -8,7 +8,7 @@ Owner convention: accountable role is recorded; named individuals are not invent
 
 ## Risks
 
- > **Current gate/evidence overlay (2026-11-27; main `ae271615`):** `G9-F1` and `G9-TECH` are FROZEN; `G10` `I1→I5` is implemented on isolated synthetic infrastructure; `G11` is PARTIAL; `G12` is NOT VERIFIED / BLOCKED. Main-push GitHub Actions run #93 on merge commit `ae271615` passed, but repository ruleset `main` (ID `28208385`) is DISABLED. Managed restore (`DGA-B06`), staging SLO/load (`DGA-B08`) and real-device UAT (`DGA-B07`) remain open. See [G11-ECP-001](G11-EVIDENCE-CLOSURE-PLAN.md) and [PMA-001](POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md). Dated addenda below retain historical status snapshots; current gate status is governed by root `AGENTS.md` v1.3.0 §3.3 and DGA-001 v2.4.0.
+> **Current gate/evidence overlay (2026-11-27; main `ae271615`):** `G9-F1` and `G9-TECH` are FROZEN; `G10` `I1→I5` is implemented on isolated synthetic infrastructure; `G11` is PARTIAL; `G12` is NOT VERIFIED / BLOCKED. Main-push GitHub Actions run #93 on merge commit `ae271615` passed, but repository ruleset `main` (ID `28208385`) is DISABLED. Managed restore (`DGA-B06`), staging SLO/load (`DGA-B08`) and real-device UAT (`DGA-B07`) remain open. See [G11-ECP-001](G11-EVIDENCE-CLOSURE-PLAN.md) and [PMA-001](POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md). Dated addenda below retain historical status snapshots; current gate status is governed by root `AGENTS.md` v1.3.0 §3.3 and DGA-001 v2.4.0.
 
 
 
