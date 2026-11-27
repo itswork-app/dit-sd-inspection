@@ -49,7 +49,7 @@ export function NotificationsAndDocsPanel({
         setFeedback({ kind: "err", text: "Gagal menandai notifikasi sebagai telah dibaca." });
         return;
       }
-      setFeedback({ kind: "ok", text: "Notifikasi ditandai telah dibaca (set-once POQ-03)." });
+      setFeedback({ kind: "ok", text: "Notifikasi ditandai telah dibaca." });
       router.refresh();
     } catch {
       setFeedback({ kind: "err", text: "Koneksi server terputus." });
@@ -114,7 +114,7 @@ export function NotificationsAndDocsPanel({
         return;
       }
       window.open(payload.signed_download_url, "_blank", "noopener,noreferrer");
-      setFeedback({ kind: "ok", text: "Signed URL PDF 60 detik diterbitkan & diaudit (document.accessed)." });
+      setFeedback({ kind: "ok", text: "Tautan unduh PDF aman (berlaku 60 detik) telah diterbitkan." });
     } catch {
       setFeedback({ kind: "err", text: "Koneksi server terputus." });
     } finally {
@@ -132,10 +132,9 @@ export function NotificationsAndDocsPanel({
 
       <div className="admin-grid">
         <section className="admin-panel" aria-labelledby="inbox-heading">
-          <h2 id="inbox-heading">Notifikasi In-App ({notifications.length})</h2>
+          <h2 id="inbox-heading">Notifikasi Dalam Aplikasi ({notifications.length})</h2>
           <p className="rbac-meta">
-            POQ-03: hanya mendukung penandaan baca satu kali (`read_at`). Tidak ada aksi dismiss
-            atau arsip pada MVP; saluran email/push eksternal tetap nonaktif sebelum `T-10`/`T-12`.
+            Notifikasi dapat ditandai sudah dibaca satu kali dan tetap tersimpan sebagai riwayat operasional.
           </p>
           {notifications.length === 0 ? (
             <p className="rbac-meta">Kotak masuk notifikasi Anda masih kosong.</p>
@@ -150,7 +149,7 @@ export function NotificationsAndDocsPanel({
                         n.read_at ? "status-badge-approved" : "status-badge-pending"
                       }`}
                     >
-                      {n.read_at ? "READ" : `UNREAD · ${n.priority}`}
+                      {n.read_at ? "DIBACA" : `BELUM DIBACA · ${n.priority}`}
                     </span>
                   </div>
                   <p className="rbac-meta">
@@ -163,7 +162,7 @@ export function NotificationsAndDocsPanel({
                       disabled={busyId !== null}
                       onClick={() => handleMarkRead(n.id)}
                     >
-                      Tandai Sudah Dibaca (CMD-050)
+                      Tandai Sudah Dibaca
                     </button>
                   ) : null}
                 </article>
@@ -175,11 +174,11 @@ export function NotificationsAndDocsPanel({
         <section className="admin-panel" aria-labelledby="docs-heading">
           <h2 id="docs-heading">Dokumen Disetujui &amp; Cetak ({documents.length})</h2>
           <p className="rbac-meta">
-            DOC-003: hanya versi final terbaru (`is_current`) yang dapat dicetak; versi terdahulu
-            berstatus `SUPERSEDED` tersimpan permanen sebagai riwayat.
+            Hanya versi dokumen aktif terbaru yang dapat dicetak; versi terdahulu tetap tersimpan
+            sebagai riwayat arsip.
           </p>
           {documents.length === 0 ? (
-            <p className="rbac-meta">Belum ada dokumen PDF/BA dalam cakupan akses Anda.</p>
+            <p className="rbac-meta">Belum ada dokumen PDF/Berita Acara dalam cakupan akses Anda.</p>
           ) : (
             <div className="admin-list">
               {documents.map((doc) => (
@@ -193,7 +192,7 @@ export function NotificationsAndDocsPanel({
                         doc.is_current ? "status-badge-approved" : "status-badge-disabled"
                       }`}
                     >
-                      {doc.is_current ? "CURRENT" : doc.status}
+                      {doc.is_current ? "VERSI AKTIF" : doc.status}
                     </span>
                   </div>
                   <p className="rbac-meta">
@@ -206,7 +205,7 @@ export function NotificationsAndDocsPanel({
                       disabled={busyId !== null}
                       onClick={() => handleDownloadPdf(doc.id)}
                     >
-                      Unduh PDF (60s)
+                      Unduh PDF (60 dtk)
                     </button>
                     {doc.is_current ? (
                       <button
@@ -215,7 +214,7 @@ export function NotificationsAndDocsPanel({
                         disabled={busyId !== null}
                         onClick={() => handleRecordPrint(doc)}
                       >
-                        Catat Cetak (CMD-037)
+                        Catat Cetak
                       </button>
                     ) : null}
                   </div>

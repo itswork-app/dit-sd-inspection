@@ -218,7 +218,7 @@ export default async function PendingAccessPage({ searchParams }: PendingPagePro
               </Link>
               {snapshot.canManageIdentity ? (
                 <Link className="auth-button auth-button-secondary rbac-link-button" href="/admin/accounts">
-                  Manajemen Akun &amp; RBAC
+                  Manajemen Akun &amp; Peran
                 </Link>
               ) : null}
             </div>
@@ -242,8 +242,8 @@ export default async function PendingAccessPage({ searchParams }: PendingPagePro
       </section>
 
       <footer className="footer">
-        <span>Dit. SD Inspection · I1/I2 Identity &amp; RBAC-003</span>
-        <span>Access remains deny-by-default</span>
+        <span>Dit. SD Inspection · Manajemen Akses &amp; Akun</span>
+        <span>Akses operasional terbuka setelah akun disetujui</span>
       </footer>
     </main>
   );

@@ -285,7 +285,7 @@ export function AdminAccountsPanel({
 
                   {isSelf ? (
                     <p className="rbac-meta">
-                      SoD aktif: Anda tidak dapat menyetujui atau menolak akun sendiri.
+                      Anda tidak dapat menyetujui atau menolak akun Anda sendiri.
                     </p>
                   ) : (
                     <>
@@ -308,7 +308,7 @@ export function AdminAccountsPanel({
                           disabled={busyKey !== null}
                           onClick={() => handleApprove(req)}
                         >
-                          Setujui Akun (CMD-002)
+                          Setujui Akun
                         </button>
                       </div>
                       <div className="rbac-field">
@@ -349,7 +349,7 @@ export function AdminAccountsPanel({
                           disabled={busyKey !== null}
                           onClick={() => handleReject(req)}
                         >
-                          Tolak Permintaan (CMD-003)
+                          Tolak Permintaan
                         </button>
                       </div>
                     </>
@@ -363,10 +363,10 @@ export function AdminAccountsPanel({
 
       <div className="admin-grid">
         <section className="admin-panel" aria-labelledby="grant-role-heading">
-          <h2 id="grant-role-heading">Tetapkan Role (CMD-004)</h2>
+          <h2 id="grant-role-heading">Tetapkan Peran (Role)</h2>
           <form className="rbac-form" onSubmit={handleGrantRole}>
             <div className="rbac-field">
-              <label htmlFor="role-user">Pengguna (APPROVED, non-self)</label>
+              <label htmlFor="role-user">Pengguna aktif (selain diri sendiri)</label>
               <select
                 id="role-user"
                 required
@@ -382,7 +382,7 @@ export function AdminAccountsPanel({
               </select>
             </div>
             <div className="rbac-field">
-              <label htmlFor="role-code">Role kanonik</label>
+              <label htmlFor="role-code">Peran operasional</label>
               <select
                 id="role-code"
                 value={roleCode}
@@ -428,10 +428,10 @@ export function AdminAccountsPanel({
         </section>
 
         <section className="admin-panel" aria-labelledby="grant-scope-heading">
-          <h2 id="grant-scope-heading">Tetapkan Scope Eksplisit (CMD-006)</h2>
+          <h2 id="grant-scope-heading">Tetapkan Cakupan Proyek / Lokasi</h2>
           <form className="rbac-form" onSubmit={handleGrantScope}>
             <div className="rbac-field">
-              <label htmlFor="scope-user">Pengguna (APPROVED, non-self)</label>
+              <label htmlFor="scope-user">Pengguna aktif (selain diri sendiri)</label>
               <select
                 id="scope-user"
                 required
@@ -601,7 +601,7 @@ export function AdminAccountsPanel({
                   </div>
                 ) : (
                   <p className="rbac-meta">
-                    Pemisahan tugas (SoD): perubahan status/role pada akun sendiri ditolak oleh server.
+                    Perubahan status atau peran pada akun sendiri tidak diizinkan.
                   </p>
                 )}
               </article>

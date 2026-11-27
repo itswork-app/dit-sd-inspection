@@ -59,7 +59,7 @@ export default async function OperationsPage() {
   return (
     <main className="workspace">
       <AppTopbar
-        subtitle="Documents, Batch Print, Attendance, Reports & Scoped Audit (CMD-036..043)"
+        subtitle="Dokumen, Cetak, Absensi, Laporan & Audit"
         activePath="/operations"
         canManageIdentity={selfSnapshot.canManageIdentity}
       />
@@ -85,8 +85,8 @@ export default async function OperationsPage() {
       )}
 
       <footer className="footer">
-        <span>Dit. SD Inspection · CMD-036..043 · Audited Private Storage Downloads</span>
-        <span>CMD-044 audit export disabled until written T-10 approval</span>
+        <span>Dit. SD Inspection · Dokumen, Absensi &amp; Laporan Operasional</span>
+        <span>Unduhan dokumen teraudit otomatis</span>
       </footer>
     </main>
   );

@@ -4,18 +4,18 @@ import { isSupabaseConfigured } from "@/lib/env";
 const foundationItems = [
   {
     number: "01",
-    title: "Application shell",
-    description: "Next.js App Router, strict TypeScript, responsive layout and health endpoint."
+    title: "Akses & Peran Terkontrol",
+    description: "Autentikasi akun Google terverifikasi dengan persetujuan dan penetapan peran operasional."
   },
   {
     number: "02",
-    title: "Identity boundary",
-    description: "Supabase SSR client separation and verified-claims session refresh."
+    title: "Inspeksi & Bukti Lapangan",
+    description: "Scan QR/Barcode & OCR Nomor Seri, klaim unit, checklist cepat, dan unggah foto atau video kerusakan."
   },
   {
     number: "03",
-    title: "Delivery pipeline",
-    description: "Configured lint, type, unit-test and production-build quality checks."
+    title: "Dokumen & Pelaporan",
+    description: "Review hasil inspeksi, pembuatan Berita Acara PDF, absensi sesi, serta pantauan capaian target."
   }
 ];
 
@@ -29,30 +29,30 @@ export default function HomePage() {
           <span className="brand-mark">SD</span>
           <span>
             <strong>Dit. SD Inspection</strong>
-            <small>Digital inspection workspace</small>
+            <small>Portal Inspeksi Digital</small>
           </span>
         </Link>
-        <Link className="auth-link" href="/login">Sign in</Link>
+        <Link className="auth-link" href="/login">Masuk</Link>
         <span className="environment-pill">
           <span className="status-dot" />
-          FOUNDATION
+          OPERASIONAL
         </span>
       </header>
 
       <section className="hero">
-        <p className="eyebrow">ENGINEERING FOUNDATION · PHASE I0</p>
-        <h1>Inspection operations,<br /><span>built on a reliable core.</span></h1>
+        <p className="eyebrow">DIREKTORAT SEKOLAH DASAR</p>
+        <h1>Operasional inspeksi,<br /><span>terpusat dan terstruktur.</span></h1>
         <p className="hero-copy">
-          Fondasi aplikasi telah disiapkan. Identitas, batas keamanan, database,
-          dan alur inspeksi akan dibangun bertahap di atas satu sumber data yang konsisten.
+          Sistem inspeksi lapangan terintegrasi mulai dari pengelolaan proyek, sesi pemeriksaan,
+          klaim unit berbasis Nomor Seri, hingga dokumentasi dan penerbitan dokumen resmi.
         </p>
         <div className="hero-meta">
-          <span className="meta-check"><span aria-hidden="true">✓</span> Application shell loaded</span>
+          <span className="meta-check"><span aria-hidden="true">✓</span> Layanan aplikasi siap</span>
           <span className={supabaseConfigured ? "meta-check" : "meta-pending"}>
             <span aria-hidden="true">{supabaseConfigured ? "✓" : "○"}</span>
             {supabaseConfigured
-              ? "Supabase environment configured"
-              : "Supabase environment awaiting development credentials"}
+              ? "Koneksi basis data terkonfigurasi"
+              : "Menunggu konfigurasi lingkungan basis data"}
           </span>
         </div>
       </section>
@@ -60,10 +60,10 @@ export default function HomePage() {
       <section className="foundation-section" aria-labelledby="foundation-title">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">BUILD SEQUENCE</p>
-            <h2 id="foundation-title">Foundation workstreams</h2>
+            <p className="eyebrow">ALUR UTAMA</p>
+            <h2 id="foundation-title">Modul operasional inspeksi</h2>
           </div>
-          <span className="section-note">No production data connected</span>
+          <span className="section-note">Lingkungan kerja internal</span>
         </div>
         <div className="workstream-grid">
           {foundationItems.map((item) => (
@@ -77,8 +77,8 @@ export default function HomePage() {
       </section>
 
       <footer className="footer">
-        <span>Direktorat Sekolah Dasar · Internal application foundation</span>
-        <span>Development workspace</span>
+        <span>Direktorat Sekolah Dasar · Sistem Inspeksi Digital</span>
+        <span>Portal Kerja Operasional</span>
       </footer>
     </main>
   );

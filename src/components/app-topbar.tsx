@@ -29,7 +29,7 @@ export function AppTopbar({ subtitle, activePath, canManageIdentity = false }: A
     { href: "/inspections", label: "Inspeksi" },
     { href: "/operations", label: "Dokumen & Laporan" },
     { href: "/notifications", label: "Notifikasi" },
-    { href: "/admin/accounts", label: "Admin RBAC", show: canManageIdentity }
+    { href: "/admin/accounts", label: "Kelola Akun", show: canManageIdentity }
   ];
 
   return (
