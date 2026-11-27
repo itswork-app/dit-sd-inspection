@@ -105,7 +105,8 @@ const PRESET_TEMPLATES = {
       { code: "SPEC_SIZE", label: "Ukuran Layar", value_type: "TEXT", expected_value: "75", unit: "inch", required: true }
     ],
     evidence_slots: [
-      { code: "EVD_FRONT", label: "Foto Depan & Nomor Seri", required: true, allowed_media_types: ["image/jpeg", "image/png", "image/webp"] }
+      { code: "EVD_FRONT", label: "Foto Depan & Nomor Seri", required: true, allowed_media_types: ["image/jpeg", "image/png", "image/webp"] },
+      { code: "EVD_DEFECT", label: "Dokumentasi Kekurangan/Kerusakan (Foto/Video)", required: false, allowed_media_types: ["image/jpeg", "image/png", "image/webp", "video/mp4", "video/webm"] }
     ]
   },
   SB: {
@@ -123,7 +124,8 @@ const PRESET_TEMPLATES = {
       { code: "SPEC_MAT", label: "Material Rangka", value_type: "TEXT", expected_value: "Baja", unit: null, required: true }
     ],
     evidence_slots: [
-      { code: "EVD_BRACKET", label: "Foto Unit Standing Bracket", required: true, allowed_media_types: ["image/jpeg", "image/png", "image/webp"] }
+      { code: "EVD_BRACKET", label: "Foto Unit Standing Bracket", required: true, allowed_media_types: ["image/jpeg", "image/png", "image/webp"] },
+      { code: "EVD_DEFECT", label: "Dokumentasi Kekurangan/Kerusakan (Foto/Video)", required: false, allowed_media_types: ["image/jpeg", "image/png", "image/webp", "video/mp4", "video/webm"] }
     ]
   }
 } as const;

@@ -42,7 +42,7 @@ Each inspection binds to:
 - required evidence/photo slot version;
 - Inspector identity and active role.
 
-Checklist answers must be explicit. A UI default checkmark must never be treated as proof that the Inspector verified the item.
+Checklist answers must be explicit. A UI default checkmark must never be treated as proof that the Inspector verified the item. *(Superseded for MVP `PASS_FAIL`/`YES_NO` field checklists by `PO-2026-11-27-CHECKLIST-DEFAULT-OK-001` Option 1B in `DECISION-REGISTER.md`, with explicit Inspector confirmation on submit and mandatory defect explanation + photo/video evidence under `PO-2026-11-27-VIDEO-EVIDENCE-001` Option 2A.)*
 
 For each checklist item:
 - record answer and actor/time;

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { SerialScanner } from "@/components/serial-scanner";
+import { ALLOWED_EVIDENCE_MIMES, MAX_EVIDENCE_BYTES } from "@/lib/api/inspection-validators";
 import {
   enqueueDraftOperation,
   getDefaultOfflineQueueStore,
@@ -122,6 +124,29 @@ type DraftContextRow = {
   notes: string | null;
 };
 
+type AssignmentRow = {
+  id: string;
+  project_id: string;
+  session_id: string;
+  instrument_id: string;
+  instrument_version_id: string;
+  status: string;
+};
+
+type InstrumentRow = {
+  id: string;
+  code: string;
+  name: string;
+  instrument_type: string;
+};
+
+type UnitRow = {
+  id: string;
+  instrument_type: string;
+  serial_raw: string | null;
+  serial_normalized: string | null;
+};
+
 type InspectionsPanelProps = {
   inspections: InspectionRow[];
   activeClaims: ClaimRow[];
@@ -135,11 +160,24 @@ type InspectionsPanelProps = {
   checklistItems: ChecklistItemRow[];
   specFields: SpecFieldRow[];
   draftContexts: DraftContextRow[];
+  assignments: AssignmentRow[];
+  instruments: InstrumentRow[];
+  units: UnitRow[];
 };
 
-const ALLOWED_MIME_SET = new Set(["image/jpeg", "image/png", "image/webp", "application/pdf"]);
+const ALLOWED_MIME_SET = new Set<string>(ALLOWED_EVIDENCE_MIMES);
 
-function buildInitialDraftState(draftContexts: DraftContextRow[]) {
+/**
+ * PO-2026-11-27-CHECKLIST-DEFAULT-OK-001 (Option 1B):
+ * Defaults PASS_FAIL -> PASS and YES_NO -> YA when not yet recorded, so field Inspectors
+ * focus on photo/video documentation and simply uncheck items with defects/shortages.
+ */
+function buildInitialDraftState(
+  inspections: InspectionRow[],
+  checklistSections: ChecklistSectionRow[],
+  checklistItems: ChecklistItemRow[],
+  draftContexts: DraftContextRow[]
+) {
   const notesMap: Record<string, string> = {};
   const checklistMap: Record<string, Record<string, string>> = {};
   const specsMap: Record<string, Record<string, string>> = {};
@@ -159,6 +197,23 @@ function buildInitialDraftState(draftContexts: DraftContextRow[]) {
     specsMap[ctx.inspection_id] = sp;
   }
 
+  for (const insp of inspections) {
+    const existingCl = { ...(checklistMap[insp.id] ?? {}) };
+    const matchingSectionIds = new Set(
+      checklistSections
+        .filter((s) => s.instrument_version_id === insp.instrument_version_id)
+        .map((s) => s.id)
+    );
+    for (const item of checklistItems) {
+      if (!matchingSectionIds.has(item.section_id)) continue;
+      if (existingCl[item.id] === undefined) {
+        if (item.answer_type === "PASS_FAIL") existingCl[item.id] = "PASS";
+        else if (item.answer_type === "YES_NO") existingCl[item.id] = "YA";
+      }
+    }
+    checklistMap[insp.id] = existingCl;
+  }
+
   return { notesMap, checklistMap, specsMap };
 }
 
@@ -174,14 +229,23 @@ export function InspectionsPanel({
   checklistSections,
   checklistItems,
   specFields,
-  draftContexts
+  draftContexts,
+  assignments,
+  instruments,
+  units
 }: InspectionsPanelProps) {
-  const initialDrafts = buildInitialDraftState(draftContexts);
+  const initialDrafts = buildInitialDraftState(
+    inspections,
+    checklistSections,
+    checklistItems,
+    draftContexts
+  );
   const router = useRouter();
   const [busyKey, setBusyKey] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
   const [reasons, setReasons] = useState<Record<string, string>>({});
   const [draftNotes, setDraftNotes] = useState<Record<string, string>>(initialDrafts.notesMap);
+  const [defectNotes, setDefectNotes] = useState<Record<string, Record<string, string>>>({});
   const [checklistAnswers, setChecklistAnswers] = useState<Record<string, Record<string, string>>>(
     initialDrafts.checklistMap
   );
@@ -190,6 +254,8 @@ export function InspectionsPanel({
   );
   const [selectedSlotByInsp, setSelectedSlotByInsp] = useState<Record<string, string>>({});
   const [selectedTemplateByInsp, setSelectedTemplateByInsp] = useState<Record<string, string>>({});
+  const [scanAssignmentId, setScanAssignmentId] = useState(assignments[0]?.id ?? "");
+  const [scanSerial, setScanSerial] = useState("");
 
   // T-09 Offline Queue state
   const [offlineOps, setOfflineOps] = useState<OfflineSyncOperation[]>([]);
@@ -223,10 +289,102 @@ export function InspectionsPanel({
   }
 
   const inspectionById = new Map(inspections.map((i) => [i.id, i]));
+  const unitById = new Map(units.map((u) => [u.id, u]));
+  const instrumentById = new Map(instruments.map((inst) => [inst.id, inst]));
 
   async function refreshOfflineQueue() {
     const ops = await getDefaultOfflineQueueStore().getAll();
     setOfflineOps(ops);
+  }
+
+  async function handleScanRegisterAndClaim(serialOverride?: string) {
+    if (busyKey) return;
+    const rawSn = (serialOverride ?? scanSerial).trim();
+    const asgn = assignments.find((a) => a.id === scanAssignmentId);
+    if (!asgn) {
+      setFeedback({ kind: "err", text: "Pilih Penugasan Operasional (Assignment) terlebih dahulu." });
+      return;
+    }
+    if (rawSn.length < 2) {
+      setFeedback({ kind: "err", text: "Scan QR/Barcode atau ketik Nomor Seri (SN) unit minimal 2 karakter." });
+      return;
+    }
+
+    setBusyKey("scan-claim");
+    setFeedback(null);
+    try {
+      // 1. CMD-022: Register or resolve existing canonical unit in this project
+      const regRes = await fetch("/api/v1/units/register", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "idempotency-key": crypto.randomUUID()
+        },
+        body: JSON.stringify({
+          project_id: asgn.project_id,
+          instrument_id: asgn.instrument_id,
+          serial_raw: rawSn
+        })
+      });
+      const regPayload = (await regRes.json().catch(() => null)) as
+        | {
+            status?: string;
+            unit_id?: string;
+            association_id?: string;
+            serial_normalized?: string;
+            error?: { message?: string };
+          }
+        | null;
+
+      if (!regRes.ok || !regPayload?.unit_id || !regPayload.association_id) {
+        setFeedback({
+          kind: "err",
+          text: `Registrasi SN gagal (${regPayload?.status ?? regRes.status}): ${
+            regPayload?.error?.message ?? "Kemungkinan konflik lintas proyek T-16 atau izin ditolak."
+          }`
+        });
+        return;
+      }
+
+      // 2. CMD-026: Claim unit atomically into this assignment
+      const claimRes = await fetch("/api/v1/claims", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "idempotency-key": crypto.randomUUID()
+        },
+        body: JSON.stringify({
+          unit_id: regPayload.unit_id,
+          association_id: regPayload.association_id,
+          assignment_id: asgn.id,
+          claim_ttl_minutes: 120
+        })
+      });
+      const claimPayload = (await claimRes.json().catch(() => null)) as
+        | { status?: string; inspection_id?: string; error?: { message?: string } }
+        | null;
+
+      if (!claimRes.ok) {
+        setFeedback({
+          kind: "err",
+          text: `Klaim unit ${regPayload.serial_normalized ?? rawSn} ditolak (${claimPayload?.status ?? claimRes.status}): ${
+            claimPayload?.error?.message ?? "Unit mungkin sedang diklaim Inspector lain atau sesi belum aktif."
+          }`
+        });
+        return;
+      }
+
+      setScanSerial("");
+      setFeedback({
+        kind: "ok",
+        text: `SN ${regPayload.serial_normalized ?? rawSn} diklaim (${claimPayload?.status ?? "CLAIMED"}). Checklist pre-checked siap untuk dokumentasi!`
+      });
+      router.refresh();
+    } catch {
+      setFeedback({ kind: "err", text: "Koneksi server terputus saat scan & klaim unit." });
+    } finally {
+      setBusyKey(null);
+    }
   }
 
   async function callApi(
@@ -285,7 +443,20 @@ export function InspectionsPanel({
     for (const [k, v] of Object.entries(rawSp)) {
       if (v.trim() !== "") draft_specifications[k] = v.trim();
     }
-    return { draft_checklist, draft_specifications };
+
+    const defectEntries = Object.entries(defectNotes[inspectionId] ?? {})
+      .filter(([, txt]) => txt.trim() !== "")
+      .map(([itemId, txt]) => {
+        const item = checklistItems.find((i) => i.id === itemId);
+        return `${item ? item.code : itemId.slice(0, 6)}: ${txt.trim()}`;
+      });
+    const baseNote = (draftNotes[inspectionId] ?? "").trim();
+    const combinedNote = [baseNote, defectEntries.length > 0 ? `[Kekurangan] ${defectEntries.join("; ")}` : ""]
+      .filter(Boolean)
+      .join(" | ")
+      .slice(0, 2000);
+
+    return { draft_checklist, draft_specifications, combinedNote };
   }
 
   async function handleEnqueueOfflineDraft(insp: InspectionRow) {
@@ -293,14 +464,13 @@ export function InspectionsPanel({
     setBusyKey(`off-${insp.id}`);
     setFeedback(null);
     try {
-      const note = (draftNotes[insp.id] ?? "").trim();
-      const { draft_checklist, draft_specifications } = buildDraftPayloads(insp.id);
+      const { draft_checklist, draft_specifications, combinedNote } = buildDraftPayloads(insp.id);
       const op = await enqueueDraftOperation({
         inspection_id: insp.id,
         expected_row_version: insp.row_version,
         draft_checklist,
         draft_specifications,
-        notes: note || "Draft offline tersimpan lokal"
+        notes: combinedNote || "Draft offline tersimpan lokal"
       });
       await refreshOfflineQueue();
       setFeedback({
@@ -452,11 +622,14 @@ export function InspectionsPanel({
       return;
     }
     if (!ALLOWED_MIME_SET.has(file.type)) {
-      setFeedback({ kind: "err", text: `Tipe file ${file.type || "tidak dikenal"} ditolak. Gunakan JPEG/PNG/WebP/PDF.` });
+      setFeedback({
+        kind: "err",
+        text: `Tipe file ${file.type || "tidak dikenal"} ditolak. Gunakan JPEG/PNG/WebP/PDF/MP4/WebM.`
+      });
       return;
     }
-    if (file.size < 1 || file.size > 15728640) {
-      setFeedback({ kind: "err", text: "Ukuran file harus antara 1 byte dan 15 MiB." });
+    if (file.size < 1 || file.size > MAX_EVIDENCE_BYTES) {
+      setFeedback({ kind: "err", text: "Ukuran file harus antara 1 byte dan 25 MiB." });
       return;
     }
 
@@ -524,10 +697,7 @@ export function InspectionsPanel({
           "idempotency-key": crypto.randomUUID()
         },
         body: JSON.stringify({
-          evidence_asset_id: intentPayload.evidence_asset_id,
-          observed_sha256: digest,
-          observed_byte_size: file.size,
-          observed_mime: file.type
+          evidence_asset_id: intentPayload.evidence_asset_id
         })
       });
       const confirmPayload = (await confirmRes.json().catch(() => null)) as
@@ -590,6 +760,71 @@ export function InspectionsPanel({
           {feedback.text}
         </p>
       ) : null}
+
+      <section className="admin-panel" aria-labelledby="scanner-heading">
+        <div className="admin-item-header">
+          <h2 id="scanner-heading">Scan QR / Input Serial Number → Klaim Unit (INS-005 / CMD-022 → CMD-026)</h2>
+          <span className="status-badge status-badge-approved">PRIMARY KEY: (TYPE, SN)</span>
+        </div>
+        <p className="rbac-meta">
+          Arahkan kamera HP ke QR/Barcode unit (atau ketik manual SN). Jika unit belum diklaim, sistem
+          otomatis mengklaim unit atas nama Anda dan membuka form inspeksi dengan checklist default-OK (PO 1B).
+        </p>
+        {assignments.length === 0 ? (
+          <p className="rbac-meta">
+            Belum ada Penugasan Operasional (Assignment) aktif. Minta Super Admin / Korlap membuat Assignment di /workspace.
+          </p>
+        ) : (
+          <div className="rbac-form">
+            <div className="admin-inline">
+              <select
+                aria-label="Pilih Assignment"
+                className="inline-input"
+                value={scanAssignmentId}
+                onChange={(e) => setScanAssignmentId(e.target.value)}
+              >
+                {assignments.map((a) => {
+                  const inst = instrumentById.get(a.instrument_id);
+                  return (
+                    <option key={a.id} value={a.id}>
+                      {inst?.code ?? "INST"} · Asgn {a.id.slice(0, 8)}… ({a.status})
+                    </option>
+                  );
+                })}
+              </select>
+              <input
+                aria-label="Serial Number unit"
+                className="inline-input"
+                type="text"
+                value={scanSerial}
+                onChange={(e) => setScanSerial(e.target.value)}
+                placeholder="Scan atau ketik SN unit (mis. 3TB75B...)"
+              />
+              <button
+                type="button"
+                className="auth-button admin-btn-sm"
+                disabled={busyKey !== null || scanSerial.trim().length < 2}
+                onClick={() => void handleScanRegisterAndClaim()}
+              >
+                Cek SN &amp; Klaim Unit
+              </button>
+            </div>
+            <SerialScanner
+              onDetected={(detectedSn, source) => {
+                setScanSerial(detectedSn);
+                if (source === "barcode") {
+                  void handleScanRegisterAndClaim(detectedSn);
+                } else {
+                  setFeedback({
+                    kind: "ok",
+                    text: `OCR membaca SN "${detectedSn}". Periksa kesesuaian SN di kotak input lalu tekan Cek SN & Klaim Unit.`
+                  });
+                }
+              }}
+            />
+          </div>
+        )}
+      </section>
 
       <section className="admin-panel" aria-labelledby="offline-queue-heading">
         <div className="admin-item-header">
@@ -733,12 +968,14 @@ export function InspectionsPanel({
               const matchingSpecs = specFields.filter(
                 (f) => f.instrument_version_id === insp.instrument_version_id
               );
+              const unitRow = unitById.get(insp.unit_id);
+              const unitDisplay = unitRow?.serial_normalized ?? unitRow?.serial_raw ?? insp.unit_id.slice(0, 8);
 
               return (
                 <article key={insp.id} className="admin-item">
                   <div className="admin-item-header">
                     <strong>
-                      Inspeksi {insp.id.slice(0, 8)}… · Unit {insp.unit_id.slice(0, 8)}…
+                      {unitRow?.instrument_type ?? "UNIT"} · SN {unitDisplay} · Inspeksi {insp.id.slice(0, 8)}…
                     </strong>
                     <span className="status-badge">
                       {insp.status} · rev {insp.current_revision_no} · v{insp.row_version}
@@ -757,51 +994,68 @@ export function InspectionsPanel({
                             <p className="rbac-meta">
                               <strong>
                                 {sec.code} — {sec.label}
-                              </strong>
+                              </strong>{" "}
+                              (PO 1B: tercentang baik; hilangkan centang bila ada kekurangan)
                             </p>
                             {secItems.map((item) => {
-                              const currentVal = checklistAnswers[insp.id]?.[item.id] ?? "";
+                              const isBoolLike = item.answer_type === "PASS_FAIL" || item.answer_type === "YES_NO";
+                              const okValue = item.answer_type === "YES_NO" ? "YA" : "PASS";
+                              const failValue = item.answer_type === "YES_NO" ? "TIDAK" : "FAIL";
+                              const currentVal = checklistAnswers[insp.id]?.[item.id] ?? (isBoolLike ? okValue : "");
+                              const isChecked = isBoolLike && currentVal !== failValue;
+
                               return (
-                                <div key={item.id} className="checklist-row">
-                                  <label htmlFor={`ci-${insp.id}-${item.id}`} className="rbac-meta">
-                                    {item.label} {item.required ? "*" : ""}
-                                  </label>
-                                  {item.answer_type === "PASS_FAIL" || item.answer_type === "YES_NO" ? (
-                                    <select
-                                      id={`ci-${insp.id}-${item.id}`}
-                                      className="inline-input"
-                                      value={currentVal}
-                                      onChange={(e) =>
-                                        setChecklistAnswers((prev) => ({
-                                          ...prev,
-                                          [insp.id]: {
-                                            ...(prev[insp.id] ?? {}),
-                                            [item.id]: e.target.value
-                                          }
-                                        }))
-                                      }
-                                    >
-                                      <option value="">-- Pilih --</option>
-                                      {item.answer_type === "PASS_FAIL" ? (
-                                        <>
-                                          <option value="PASS">PASS</option>
-                                          <option value="FAIL">FAIL</option>
-                                        </>
-                                      ) : (
-                                        <>
-                                          <option value="YA">YA</option>
-                                          <option value="TIDAK">TIDAK</option>
-                                        </>
-                                      )}
-                                    </select>
-                                  ) : (
+                                <div key={item.id} className="admin-list">
+                                  <div className="checklist-row">
+                                    <label htmlFor={`ci-${insp.id}-${item.id}`} className="rbac-meta">
+                                      {item.label} {item.required ? "*" : ""}
+                                    </label>
+                                    {isBoolLike ? (
+                                      <label className="admin-inline rbac-meta" style={{ cursor: "pointer" }}>
+                                        <input
+                                          id={`ci-${insp.id}-${item.id}`}
+                                          type="checkbox"
+                                          checked={isChecked}
+                                          onChange={(e) => {
+                                            const nextVal = e.target.checked ? okValue : failValue;
+                                            setChecklistAnswers((prev) => ({
+                                              ...prev,
+                                              [insp.id]: {
+                                                ...(prev[insp.id] ?? {}),
+                                                [item.id]: nextVal
+                                              }
+                                            }));
+                                          }}
+                                        />
+                                        <span>{isChecked ? `${okValue} (Baik)` : `${failValue} (Ada Kekurangan)`}</span>
+                                      </label>
+                                    ) : (
+                                      <input
+                                        id={`ci-${insp.id}-${item.id}`}
+                                        className="inline-input"
+                                        type={item.answer_type === "NUMBER" ? "number" : "text"}
+                                        value={currentVal}
+                                        onChange={(e) =>
+                                          setChecklistAnswers((prev) => ({
+                                            ...prev,
+                                            [insp.id]: {
+                                              ...(prev[insp.id] ?? {}),
+                                              [item.id]: e.target.value
+                                            }
+                                          }))
+                                        }
+                                        placeholder="Isi jawaban"
+                                      />
+                                    )}
+                                  </div>
+                                  {isBoolLike && !isChecked ? (
                                     <input
-                                      id={`ci-${insp.id}-${item.id}`}
+                                      aria-label={`Keterangan kekurangan ${item.label}`}
                                       className="inline-input"
-                                      type={item.answer_type === "NUMBER" ? "number" : "text"}
-                                      value={currentVal}
+                                      type="text"
+                                      value={defectNotes[insp.id]?.[item.id] ?? ""}
                                       onChange={(e) =>
-                                        setChecklistAnswers((prev) => ({
+                                        setDefectNotes((prev) => ({
                                           ...prev,
                                           [insp.id]: {
                                             ...(prev[insp.id] ?? {}),
@@ -809,9 +1063,9 @@ export function InspectionsPanel({
                                           }
                                         }))
                                       }
-                                      placeholder="Isi jawaban"
+                                      placeholder="Wajib isi keterangan kekurangan & unggah bukti foto/video di bawah"
                                     />
-                                  )}
+                                  ) : null}
                                 </div>
                               );
                             })}
@@ -870,7 +1124,7 @@ export function InspectionsPanel({
                           className="auth-button admin-btn-sm"
                           disabled={busyKey !== null}
                           onClick={() => {
-                            const { draft_checklist, draft_specifications } = buildDraftPayloads(insp.id);
+                            const { draft_checklist, draft_specifications, combinedNote } = buildDraftPayloads(insp.id);
                             void callApi(
                               `draft-${insp.id}`,
                               "/api/v1/inspections/draft",
@@ -879,7 +1133,7 @@ export function InspectionsPanel({
                                 expected_row_version: insp.row_version,
                                 draft_checklist,
                                 draft_specifications,
-                                notes: note || "Draft diperbarui dari UI"
+                                notes: combinedNote || note || "Draft diperbarui dari UI"
                               },
                               "Draft inspeksi tersimpan di server"
                             );
@@ -914,10 +1168,10 @@ export function InspectionsPanel({
                             ))}
                           </select>
                           <label className="auth-button auth-button-secondary admin-btn-sm file-upload-label">
-                            Unggah Bukti (JPEG/PNG/WebP/PDF)
+                            Unggah Bukti Foto / Video (maks. 25 MiB)
                             <input
                               type="file"
-                              accept="image/jpeg,image/png,image/webp,application/pdf"
+                              accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,application/pdf"
                               disabled={busyKey !== null}
                               style={{ display: "none" }}
                               onChange={(e) => {
@@ -967,8 +1221,26 @@ export function InspectionsPanel({
                         type="button"
                         className="auth-button admin-btn-sm"
                         disabled={busyKey !== null}
-                        onClick={() =>
-                          callApi(
+                        onClick={() => {
+                          const sectionIds = new Set(matchingSections.map((sec) => sec.id));
+                          const missingDefectCodes = checklistItems
+                            .filter((item) => sectionIds.has(item.section_id))
+                            .filter((item) => {
+                              const val = checklistAnswers[insp.id]?.[item.id];
+                              if (val !== "FAIL" && val !== "TIDAK") return false;
+                              return !(defectNotes[insp.id]?.[item.id] ?? "").trim();
+                            })
+                            .map((item) => item.code);
+
+                          if (missingDefectCodes.length > 0) {
+                            setFeedback({
+                              kind: "err",
+                              text: `Item kekurangan (${missingDefectCodes.join(", ")}) wajib diisi keterangan kekurangannya sebelum Submit.`
+                            });
+                            return;
+                          }
+
+                          void callApi(
                             `sub-${insp.id}`,
                             "/api/v1/inspections/submit",
                             {
@@ -977,8 +1249,8 @@ export function InspectionsPanel({
                               submit_reason: reason || null
                             },
                             "Inspeksi berhasil disubmit (revisi baru dibuat)"
-                          )
-                        }
+                          );
+                        }}
                       >
                         Submit (CMD-029)
                       </button>

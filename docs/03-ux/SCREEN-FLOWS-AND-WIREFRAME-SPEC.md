@@ -32,7 +32,7 @@ Version: 0.1.0
 ## 3. Inspection workspace layout requirements
 - Show serial number and instrument/session context persistently.
 - Display checklist section progress without implying unverified items are complete.
-- Every response must be explicit; default visual state must not equal "OK".
+- Every response must be explicit; default visual state must not equal "OK". *(Superseded for MVP `PASS_FAIL`/`YES_NO` field checklists by `PO-2026-11-27-CHECKLIST-DEFAULT-OK-001` Option 1B in `DECISION-REGISTER.md`: pre-checked default-OK so Inspectors focus on documentation and uncheck non-compliant items with defect notes & photo/video evidence.)*
 - Exceptions require configured reason/note/evidence.
 - Photo slots show required/optional status, capture/upload state, preview, retry, and replace-as-new-evidence behavior.
 - Prevent submission while mandatory fields, evidence, or sync conflicts remain unresolved.
