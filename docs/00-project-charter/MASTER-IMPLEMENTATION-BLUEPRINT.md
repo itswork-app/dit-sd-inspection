@@ -197,11 +197,11 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 - SemVer policy: **2.0.0 adopted; application version not assigned before release**
 - Full-system synthetic implementation: **G10 ACTIVE; I1–I5 implemented on isolated synthetic infrastructure; G11 PARTIAL; G12 NOT VERIFIED / BLOCKED**
 - Current phase: **G10 FULL-SYSTEM SYNTHETIC IMPLEMENTATION; G11 LOCAL VERIFICATION PARTIAL**
-- Application source code: **I1–I5 implementation merged to `main` through PRs #39–#41; local verification evidence recorded in DGA-001 §§22–23; hosted Actions remain ABSENT/BLOCKED (`DGA-B15`)**
+- Application source code: **I1–I5 implementation merged to `main` through PRs #39–#41; local verification evidence recorded in DGA-001 §§22–23; hosted main-push CI passed on main commits `706c654` (run #77) and `ae271615` (run #93); repository ruleset enforcement remains DISABLED (`DGA-B15`)**
 - T-18 hybrid execution model: **PO-APPROVED DESIGN; implementation conformance NOT VERIFIED**
 - Notification product semantics: **POQ-01..03 APPROVED; G9-TECH technical design baseline FROZEN; local synthetic implementation evidence recorded; external provider dispatch and hosted/runtime verification remain gated by T-10/T-12 and G11/G12**
 - Live Supabase inspection: **NOT EXECUTED**
-- Hosted CI: **ABSENT/BLOCKED**; managed-provider DB + Storage restore: **OPEN**; staging load/SLO: **OPEN**; real-device offline UAT: **NOT EXECUTED**; production readiness: **NOT VERIFIED**
+- Hosted CI execution: **PASS** on main-push runs #77 and #93; repository ruleset enforcement: **DISABLED**; managed-provider DB + Storage restore: **OPEN**; staging load/SLO: **OPEN**; real-device offline UAT: **NOT EXECUTED**; production readiness: **NOT VERIFIED**
 - Scope freeze: **G9-F1 and G9-TECH FROZEN**
 - Product Owner authorization: **CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)**
 - G10 implementation activation: **FULL-SYSTEM SYNTHETIC IMPLEMENTATION ACTIVE (2026-11-27; PO sign-off in AGENTS.md §3.3)**
