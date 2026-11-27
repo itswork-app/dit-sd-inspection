@@ -1291,11 +1291,11 @@ Against `next start` + local Supabase, 10 synthetic Super Admin sessions:
 
 ## 24. Post-merge repository and documentation audit checkpoint — 2026-11-27
 
-The post-merge audit `PMA-001` reviewed `main` at `706c654a17d415913892b64fe71de59c2a09bafe` after PRs #38–#41. It confirmed the current gate state above and identified stale current-state summaries in MIB-001, DGA-001, README, RTM and RAID. DOC-MAP-001 was reconciled in PR #42; this DGA-001 v2.3.0 update reconciles the DGA header, executive conclusion, blocker status and the distinction between local rehearsal evidence and managed/staging acceptance evidence.
+The post-merge audit `PMA-001` initially reviewed `main` at `706c654a17d415913892b64fe71de59c2a09bafe` after PRs #38–#41. Its initial workflow-run wrapper query missed the main-push run #77; the correction is recorded in PMA-001 v1.2.0 and this DGA-001 v2.4.0. PR #42 then merged as `ae271615` with successful main-push run #93. DOC-MAP-001, MIB-001, DGA-001, RAID-001 and README now carry the current evidence state.
 
-- PRs #38–#41 are merged to `main`; PR #42 carries this audit and documentation-only remediation. Its merge status and CI must be checked separately; no merge is implied by this record.
+- PRs #38–#42 are merged to `main`; PR #42 merge commit `ae271615` has successful main-push workflow run #93. The current G11 evidence and remaining closure sequence are recorded in §25 and G11-ECP-001.
 - Local synthetic test and rehearsal results in §§22–23 are historical evidence recorded by merged PRs; this documentation update did not rerun them.
-- GitHub API returned no workflow runs and no combined commit statuses for audited `main` HEAD `706c654`. PR #42 has a separate PR-triggered CI workflow; its live status must be checked at review time and is not evidence that the audited `main` HEAD had CI.
+- The initial workflow-run wrapper exposed only PR-triggered runs and missed the main-push run on `706c654`. A direct Actions API query subsequently identified main-push run #77 (`45953256570`), completed SUCCESS; its Quality checks job and `npm run check` step passed. The combined commit-status endpoint returned no entries, which is not evidence that the Actions workflow did not run.
 - `DGA-B06`: local PostgreSQL restore rehearsal recorded; managed PostgreSQL + Storage restore remains OPEN.
 - `DGA-B07`: real-device offline UAT remains NOT EXECUTED.
 - `DGA-B08`: local burst baseline recorded; approved SLO and staging load test remain OPEN.
