@@ -156,7 +156,7 @@ async function main() {
   await runCmdAs(SA_AUTH, `public.cmd_transition_session_v1('g11-sact-001', '${sess0.session_id}', 'ACTIVATE', 1, 'Start G11')`);
 
   // =========================================================================
-  // TEST 1: LG-01/LG-03 — T-14 Inspector Capacity Race (cap=2 vs 4 concurrent additions)
+  // TEST 1: LG-01/LG-03 — T-14 Inspector Capacity Race (cap=2 vs 4 concurrent additions) [TC-CAP-005]
   // =========================================================================
   console.log("==> [LG-01/LG-03] Running 4-way concurrent T-14 Inspector capacity race (cap=2)...");
   const capRes = await runCmdAs(SA_AUTH, `public.cmd_change_inspector_capacity_v1('g11-cap-0002', '${projects[0]}', 2, 1, 'Set cap=2 for concurrency test')`);
@@ -195,7 +195,7 @@ async function main() {
   }
 
   // =========================================================================
-  // TEST 2: LG-31 — T-16 Cross-Project Canonical Serial Race (4 projects same serial)
+  // TEST 2: LG-31 — T-16 Cross-Project Canonical Serial Race (4 projects same serial) [TC-UNIT-016-003]
   // =========================================================================
   console.log("==> [LG-31] Running 4-way concurrent T-16 cross-project canonical serial race...");
   const serialRaceResults = await Promise.all(
@@ -288,7 +288,7 @@ async function main() {
   }
 
   // =========================================================================
-  // TEST 5: LG-21 — 6-Way Concurrent Monotonic Document Print Sequence Race
+  // TEST 5: LG-21 — 6-Way Concurrent Monotonic Document Print Sequence Race [TC-PRINT-005]
   // =========================================================================
   console.log("==> [LG-21] Running 6-way concurrent CMD-037 monotonic print sequence race...");
   const docRes = await runCmdAs(
