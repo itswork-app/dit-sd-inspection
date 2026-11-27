@@ -323,7 +323,7 @@ The baseline recorded in this historical checkpoint was `main` HEAD `706c654a17d
 - `G10`: **ACTIVE**; ordered `I1→I5` synthetic implementation is merged to `main` and recorded in DGA-001 §§22–23.
 - `G11`: **PARTIAL**; local test suites and local operational rehearsals are recorded in PRs #39–#41. Hosted main-push CI passed on PR #42 merge commit in run #93; repository ruleset enforcement is **DISABLED** (`DGA-B15`); managed PostgreSQL + Storage restore is **OPEN** (`DGA-B06`); staging SLO/load is **OPEN** (`DGA-B08`); real-device offline UAT is **NOT EXECUTED** (`DGA-B07`).
 - `G12`: **NOT VERIFIED / BLOCKED**; no production deployment or real institutional data operation is established.
-- `PMA-001` records the post-merge audit. PR #42 is merged. Current G11 evidence and the remaining closure sequence are recorded in DGA-001 v2.4.0 and G11-ECP-001 v1.0.1. No production action is implied by this document.
+- `PMA-001` records the post-merge audit. PR #42 is merged. Current G11 evidence and the remaining closure sequence are recorded in DGA-001 v2.4.1 and G11-ECP-001 v1.0.1. No production action is implied by this document.
 
 
 
@@ -339,4 +339,4 @@ Current disposition:
 - `G11`: **PARTIAL**; main-push CI run #93 PASS; ruleset enforcement DISABLED; managed PostgreSQL + Storage restore, real-device offline UAT, staging load/SLO and remaining QA catalogue evidence remain open.
 - `G12`: **NOT VERIFIED / BLOCKED**.
 
-The detailed execution and evidence acceptance matrix is [G11-ECP-001 — G11 Evidence Closure Plan](G11-EVIDENCE-CLOSURE-PLAN.md) v1.0.0 and the active gap queue is DGA-001 v2.4.0. This checkpoint does not authorize provider changes, staging/production deployment, real institutional data use or production operations.
+The detailed execution and evidence acceptance matrix is [G11-ECP-001 — G11 Evidence Closure Plan](G11-EVIDENCE-CLOSURE-PLAN.md) v1.0.1 and the active gap queue is DGA-001 v2.4.1. This checkpoint does not authorize provider changes, staging/production deployment, real institutional data use or production operations.
