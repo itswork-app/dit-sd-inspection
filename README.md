@@ -82,4 +82,4 @@ Current `main` HEAD is `ae271615bacae3c3b48eeaafee72ae1c6829fbf1`. Main-push Git
 
 Repository ruleset `main` (ID `28208385`) is currently DISABLED. Therefore CI execution is verified, but branch enforcement is not. G11 remains PARTIAL: managed PostgreSQL + Storage restore, real-device offline UAT, staging SLO/load and case-level execution mapping for the 558-ID QA catalogue remain open. G12 remains NOT VERIFIED / BLOCKED.
 
-See [DGA-001 v2.4.0](docs/00-project-charter/DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) and [G11-ECP-001](docs/00-project-charter/G11-EVIDENCE-CLOSURE-PLAN.md) for the evidence boundaries, execution sequence and acceptance criteria.
+See [DGA-001 v2.4.1](docs/00-project-charter/DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) and [G11-ECP-001 v1.0.1](docs/00-project-charter/G11-EVIDENCE-CLOSURE-PLAN.md) for the evidence boundaries, execution sequence and acceptance criteria.
