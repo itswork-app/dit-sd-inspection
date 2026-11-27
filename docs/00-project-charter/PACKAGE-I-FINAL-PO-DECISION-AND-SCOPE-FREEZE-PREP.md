@@ -1,7 +1,10 @@
 # Package I — Final Product Owner Decision & Scope Freeze Preparation
 
-**Status:** Decision worksheet — recommendations are NOT approvals  
-**Version:** 0.1.0  
+> [!NOTE]
+> **Historical worksheet note:** This document was an early decision preparation worksheet from 2026-11-23. PO outcomes are canonically recorded in [DECISION-REGISTER.md](DECISION-REGISTER.md) and [POQ-001](PRODUCT-OWNER-OPEN-DECISION-PACKET.md).
+
+**Status:** Historical decision worksheet — superseded by Decision Register  
+**Version:** 0.1.1  
 **Date:** 2026-11-23  
 **Branch:** docs/phase-0-foundation
 

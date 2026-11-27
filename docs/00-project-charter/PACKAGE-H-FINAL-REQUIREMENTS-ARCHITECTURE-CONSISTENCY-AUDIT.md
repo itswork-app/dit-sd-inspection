@@ -1,7 +1,10 @@
 # Package H — Final Requirements & Architecture Consistency Audit
 
-**Status:** Audit complete for current documentation baseline; scope freeze NOT approved  
-**Version:** 0.1.0  
+> [!NOTE]
+> **Historical snapshot note:** This document is a historical consistency audit from 2026-11-23 on branch `docs/phase-0-foundation`. Current cross-document reconciliation is maintained in [SSOT-AUDIT-001](SSOT-CROSS-DOCUMENT-RECONCILIATION-AUDIT.md) and [DGA-001](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md).
+
+**Status:** Historical audit snapshot — superseded by Package S and SSOT-AUDIT-001  
+**Version:** 0.1.1  
 **Branch:** `docs/phase-0-foundation`  
 **Audit date:** 2026-11-23  
 **Audit type:** Documentation-only cross-document review

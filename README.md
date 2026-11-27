@@ -31,6 +31,8 @@ Cost-first means optimizing total lifecycle cost without waiving security, priva
 The [Implementation Roadmap and Release Governance](docs/00-project-charter/IMPLEMENTATION-ROADMAP-AND-RELEASE-GOVERNANCE.md) defines pre-implementation phases, G9/G10 authorization, implementation phases I0–I7, release controls and Semantic Versioning 2.0.0.
 
 ## Documentation authority and delivery gates
+The comprehensive directory map of all 106 documents across the repository is provided in the [Master Documentation Index & Architecture Map](docs/README.md).
+
 Start with the [Master Implementation Blueprint](docs/00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md). It defines source-of-truth precedence, non-negotiable engineering invariants, requirement traceability, delivery gates G0–G12, production-readiness evidence, and the next documentation workstreams.
 
 The current [Documentation Gap Audit — Gate Implementation Readiness](docs/00-project-charter/DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) is the active closure queue. It records unresolved source, architecture, command, security, operations and verification gaps. The Product Owner owns institutional authorization/coordination; synthetic-data foundation development is not blocked on separate institutional approval artifacts. Do not infer implementation readiness from document count or planned test cases.
