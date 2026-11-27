@@ -1,7 +1,7 @@
 # Durable Operation Ledgers and Artifact Lifecycle — CMD-035/036/038/039/040
 
 **Document ID:** DURABLE-OPERATION-LEDGER-PROPOSAL-001  
-**Version:** 0.3.1  
+**Version:** 0.3.2  
 **Date:** 2026-11-27  
 **Status:** Engineering / Database / Security / Product review proposal — NOT APPROVED FOR IMPLEMENTATION  
 **Scope:** Offline sync operation outcomes, document generation jobs, print batch manifests/results, attendance document versions and verification history  
@@ -106,7 +106,9 @@ A candidate `document_generation_attempts` object should preserve attempt number
 
 For inspection-derived documents, generation eligibility requires that the source session has durably started (the session has transitioned from DRAFT through its authorized activation path) and that the exact source inspection revision is approved and immutable. A pre-start request is rejected; it must not reserve an artifact identity or enqueue a generation job. This does not require the session to remain ACTIVE indefinitely.
 
-Once a final artifact is generated, it remains immutable historical evidence. Session closure does not revoke its printability. CMD-037 may record print/reprint after `CLOSED` if the caller is currently authorized in the exact resource scope and the exact artifact remains final and integrity-valid. Printing after closure does not reopen or mutate the session. DOC-003 does not authorize new generation after closure or decide superseded/replaced-version eligibility; the latter remains C37-02 OPEN. C36-02 source-reopen race remains separate and unresolved.
+Once a final artifact is generated, it remains immutable evidence. Only the latest finalized/current version of the logical document may receive new print/reprint actions. A later finalized version supersedes the prior version for print eligibility; the superseded artifact becomes historical-only, cannot be printed individually or in a batch, and retains all prior print events unchanged. A pending/unfinalized replacement does not make the old version eligible again. CMD-037 and CMD-038 must revalidate current-version eligibility at processing time and reject a superseded version without consuming a print sequence.
+
+Session closure does not revoke printability of the latest finalized/current version. CMD-037 may record print/reprint after `CLOSED` if the caller is currently authorized in the exact resource scope and the artifact is final/current and integrity-valid. Printing after closure does not reopen or mutate the session. DOC-003 does not authorize new generation after closure. C37-02 is CLOSED at PO semantics level; physical version identity and concurrency enforcement remain open under C37-01/C37-04. C36-02 source-reopen race remains separate and unresolved.
 
 ### 3.3 Source identity and immutable artifact provenance
 
