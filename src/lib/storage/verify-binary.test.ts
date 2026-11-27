@@ -3,15 +3,19 @@ import { detectAllowedMimeFromBytes, inspectBinaryArtifact } from "./verify-bina
 import { renderMinimalPdfDocument } from "@/lib/pdf/minimal-pdf";
 
 describe("binary artifact verification & deterministic PDF 1.4 renderer", () => {
-  it("[TC-EVD-002] detects valid JPEG, PNG, WebP, and PDF magic bytes and rejects forged content", () => {
+  it("[TC-EVD-002] detects valid JPEG, PNG, WebP, MP4, WebM, and PDF magic bytes and rejects forged content", () => {
     const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00]);
     const jpg = new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46]);
     const webp = new Uint8Array([0x52, 0x49, 0x46, 0x46, 0x00, 0x00, 0x00, 0x00, 0x57, 0x45, 0x42, 0x50]);
+    const mp4 = new Uint8Array([0x00, 0x00, 0x00, 0x18, 0x66, 0x74, 0x79, 0x70, 0x69, 0x73, 0x6f, 0x6d]);
+    const webm = new Uint8Array([0x1a, 0x45, 0xdf, 0xa3, 0x9f, 0x42, 0x86, 0x81]);
     const forgedHtml = new TextEncoder().encode("<html><script>alert(1)</script></html>");
 
     expect(detectAllowedMimeFromBytes(png)).toBe("image/png");
     expect(detectAllowedMimeFromBytes(jpg)).toBe("image/jpeg");
     expect(detectAllowedMimeFromBytes(webp)).toBe("image/webp");
+    expect(detectAllowedMimeFromBytes(mp4)).toBe("video/mp4");
+    expect(detectAllowedMimeFromBytes(webm)).toBe("video/webm");
     expect(detectAllowedMimeFromBytes(forgedHtml)).toBeNull();
   });
 

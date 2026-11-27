@@ -1,10 +1,14 @@
 import { isUuid, parseRowVersionString } from "@/lib/api/command-primitives";
 
+export const MAX_EVIDENCE_BYTES = 26214400; // 25 MiB (PO-2026-11-27-VIDEO-EVIDENCE-001)
+
 export const ALLOWED_EVIDENCE_MIMES = [
   "image/jpeg",
   "image/png",
   "image/webp",
-  "application/pdf"
+  "application/pdf",
+  "video/mp4",
+  "video/webm"
 ] as const;
 
 export const ABORT_DECISIONS = ["APPROVE", "REJECT"] as const;
@@ -243,7 +247,7 @@ export function isCreateUploadIntentInput(value: unknown): value is CreateUpload
     typeof value.byte_size === "number" &&
     Number.isInteger(value.byte_size) &&
     value.byte_size >= 1 &&
-    value.byte_size <= 15728640 &&
+    value.byte_size <= MAX_EVIDENCE_BYTES &&
     typeof value.sha256 === "string" &&
     SHA256_HEX_PATTERN.test(value.sha256) &&
     isBoundedString(value.client_file_id, 4, 128)
@@ -275,7 +279,7 @@ export function isConfirmUploadInput(value: unknown): value is ConfirmUploadInpu
     typeof value.observed_byte_size === "number" &&
     Number.isInteger(value.observed_byte_size) &&
     value.observed_byte_size >= 1 &&
-    value.observed_byte_size <= 15728640 &&
+    value.observed_byte_size <= MAX_EVIDENCE_BYTES &&
     typeof value.observed_mime === "string" &&
     (ALLOWED_EVIDENCE_MIMES as readonly string[]).includes(value.observed_mime)
   );

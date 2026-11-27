@@ -37,7 +37,10 @@ export default async function InspectionsPage() {
     secRes,
     itemRes,
     specRes,
-    draftCtxRes
+    draftCtxRes,
+    assignRes,
+    instRes,
+    unitsRes
   ] = await Promise.all([
     supabase
       .from("inspections")
@@ -99,7 +102,21 @@ export default async function InspectionsPage() {
     supabase
       .from("inspection_draft_contexts")
       .select("inspection_id, draft_checklist, draft_specifications, notes")
-      .limit(100)
+      .limit(100),
+    supabase
+      .from("operational_assignments")
+      .select("id, project_id, session_id, instrument_id, instrument_version_id, status")
+      .eq("status", "PUBLISHED")
+      .limit(100),
+    supabase
+      .from("instruments")
+      .select("id, code, name, instrument_type")
+      .limit(100),
+    supabase
+      .from("units")
+      .select("id, instrument_type, serial_raw, serial_normalized")
+      .order("created_at", { ascending: false })
+      .limit(200)
   ]);
 
   const schemaMissing = Boolean(inspRes.error || claimsRes.error || revRes.error || abortRes.error);
@@ -107,7 +124,7 @@ export default async function InspectionsPage() {
   return (
     <main className="workspace">
       <AppTopbar
-        subtitle="Field Inspections, Evidence Storage, PDF & Offline Sync (T-09)"
+        subtitle="Field Scanner, Pre-Checked Checklist (1B), Photo/Video Evidence (2A) & Offline Sync"
         activePath="/inspections"
         canManageIdentity={selfSnapshot.canManageIdentity}
       />
@@ -139,6 +156,9 @@ export default async function InspectionsPage() {
             draft_specifications: (d.draft_specifications ?? {}) as Record<string, unknown>,
             notes: d.notes ?? null
           }))}
+          assignments={assignRes.data ?? []}
+          instruments={instRes.data ?? []}
+          units={unitsRes.data ?? []}
         />
       )}
 

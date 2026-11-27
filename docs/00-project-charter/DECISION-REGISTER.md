@@ -451,3 +451,11 @@ The Product Owner approves the following product semantics:
 - **Permitted:** PO-performed `supabase link`; forward-only `supabase db push` of reviewed repository migrations; synthetic accounts and data; G11 verification against staging; `pg_dump` export for restore rehearsal into isolated local databases; Vercel preview deployments bound to this project with environment variables entered by the PO in the Vercel dashboard.
 - **Prohibited:** production deployment; real institutional data; `supabase db reset --linked` or other destructive staging operations without separate per-action PO confirmation; editing applied migrations; `service_role` in app runtime; secrets in chat/logs/commits; `CMD-044`, external `CMD-053`, `CMD-045..048`.
 - **Gate effect:** none on `G12`; `DGA-B05` and `DGA-B15` remain open. Recorded in root `AGENTS.md` v1.4.0 §3.4.
+
+
+## Product Owner decisions — Field Scanner Pre-Checked Checklist (1B) & Video Damage Evidence (2A) (2026-11-27)
+
+- **Decision IDs:** `PO-2026-11-27-CHECKLIST-DEFAULT-OK-001` (Option 1B) & `PO-2026-11-27-VIDEO-EVIDENCE-001` (Option 2A)
+- **Status:** **APPROVED BY PRODUCT OWNER / SOLE MAINTAINER**
+- **Checklist Default-OK (`1B`):** Field inspection checklists for `PASS_FAIL` and `YES_NO` items default to compliant (`PASS` / `YA`) when opened so field Inspectors can focus on photo/video documentation and rapidly uncheck defective/non-compliant items with a mandatory defect note and supporting photo/video evidence. Supersedes the prior non-prechecked UI constraint in `SCREEN-FLOWS-AND-WIREFRAME-SPEC.md` §3 and `INSPECTION-LIFECYCLE-AND-CLAIMS.md` §4 for MVP field workflows.
+- **Video Damage Evidence (`2A`):** Admit `video/mp4` and `video/webm` up to `25 MiB` (`26214400` bytes) alongside existing `image/jpeg`, `image/png`, `image/webp`, and `application/pdf` into the private `inspection-private` bucket and `evidence_assets` schema, enforced via server-side SHA-256 + magic-byte inspection. Final institutional production evidence retention/size limits under `T-10` and `G12` remain preserved gates.
