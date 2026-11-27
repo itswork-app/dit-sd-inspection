@@ -1,7 +1,7 @@
 # System Architecture — Dit. SD Inspection
 
 Status: Technical design draft — approval required  
-Version: 0.1.0  
+Version: 0.1.1  
 Decision baseline: ADR-001 (Supabase + Vercel)
 
 ## 1. Architectural goals
@@ -108,4 +108,4 @@ This is an approved architecture direction, not an implementation claim. Every S
 
 ## T-19 repository implementation evidence
 
-The T-19 read-only audit found that the inspected documentation branch contains no application source/configuration files and the default branch contains only README.md. Therefore the approved Vercel + Supabase architecture and T-18 Option A remain target design, not verified runtime implementation. Do not infer route handlers, caller-JWT forwarding, server/browser client separation, migrations, PostgreSQL functions, grants/RLS or CI coverage from documentation alone. Confirm the canonical application repository/branch before implementation audit. See [T-19 Repository Runtime Architecture Audit](T19-REPOSITORY-RUNTIME-ARCHITECTURE-AUDIT.md). Scope freeze remains NOT READY; implementation remains NOT AUTHORIZED.
+The T-19 2026-11-24 snapshot found a documentation-only tree and a `main` that contained only `README.md`. The 2026-11-27 re-audit (T19-001 v1.1.0) found `main` at `44dce2c` with 102 markdown blobs (`AGENTS.md`, `README.md`, `docs/`) and still **zero** implementation/config files on the default branch. The approved Vercel + Supabase architecture and T-18 Option A remain target design, not verified runtime implementation. Do not infer route handlers, caller-JWT forwarding, server/browser client separation, migrations, PostgreSQL functions, grants/RLS or passing CI from documentation alone. Canonical repository identity is `itswork-app/dit-sd-inspection`. Full-system G9 remains NOT READY; G10-F1 authorizes only bounded foundation work on a dedicated feature branch. See [T-19 Repository Runtime Architecture Audit](T19-REPOSITORY-RUNTIME-ARCHITECTURE-AUDIT.md).

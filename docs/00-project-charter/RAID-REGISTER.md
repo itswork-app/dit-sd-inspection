@@ -1,7 +1,7 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.30  
+**Version:** 0.1.31  
 Status: Draft — review required  
 Baseline: Phase 0, 2026-11-23  
 Owner convention: accountable role is recorded; named individuals are not invented.
@@ -87,7 +87,7 @@ Owner convention: accountable role is recorded; named individuals are not invent
 |---|---|---|---|---|---|---|
 | R-014 | Risk | Scope freeze or implementation begins while authoritative instrument, privacy, operations, security, and workflow decisions remain open | Critical | Enforce Package S freeze checklist; no implementation until blockers are approved or explicitly deferred with compensating controls | Product Owner / Project Sponsor / CTO | OPEN |
 | I-011 | Issue | Session creation/state transitions, offline device contract, report semantics, and UAT/pilot/rollback ownership remain unresolved | High | Resolve through explicit PO decisions and update all affected docs and tests | Product Owner | OPEN |
-| I-012 | Issue | CI execution, branch protection, and provider quota state were not verified in Package S | High | Inspect live repository settings and workflow runs before merge | CTO / Repository Administrator | OPEN |
+| I-012 | Issue | Package S did not inspect live GitHub settings. 2026-11-27 re-audit inspected settings: no branch protection/rulesets on GitHub Free private plan; Dependabot/code/secret scanning disabled; Actions enabled but hosted runners do not start (PR #30 run fails in ~5s with no logs). Provider quota/billing still not independently verified | High | Keep DGA-B15 open until a required check actually runs to completion; raise GitHub plan or hosted-runner/billing if protection and Actions minutes are required | CTO / Repository Administrator | PARTIAL — SETTINGS INSPECTED; REQUIRED CHECKS NOT PASSED |
 | D-009 | Dependency | Controlled instrument documents and institutional records/privacy/security approvals | Scope freeze and implementation authorization | Product Owner / Project Sponsor | BLOCKED |
 
 
