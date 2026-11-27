@@ -1,12 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  enqueueDraftOperation,
+  getDefaultOfflineQueueStore,
+  loadStoredDeviceBinding,
+  purgeOfflineLocalState,
+  rebaseConflictOperation,
+  reconcileSyncResults,
+  saveStoredDeviceBinding,
+  sha256Hex,
+  type OfflineSyncOperation,
+  type StoredDeviceBinding,
+  type SyncServerOpResult
+} from "@/lib/offline/sync-queue";
 
 type InspectionRow = {
   id: string;
   unit_id: string;
   project_id: string;
+  session_id: string;
+  instrument_version_id: string;
   status: string;
   current_revision_no: number;
   row_version: string;
@@ -36,23 +51,93 @@ type AbortRow = {
   row_version: string;
 };
 
+type EvidenceAssetRow = {
+  id: string;
+  inspection_id: string;
+  slot_definition_id: string;
+  mime_type: string;
+  observed_byte_size: number | null;
+  expected_byte_size: number;
+  upload_status: string;
+  created_at: string;
+};
+
+type EvidenceSlotRow = {
+  id: string;
+  instrument_version_id: string;
+  code: string;
+  label: string;
+  required: boolean;
+};
+
+type TemplateRow = {
+  id: string;
+  document_type: string;
+  template_key: string;
+  version_no: number;
+  status: string;
+};
+
+type DeviceBindingRow = {
+  id: string;
+  label: string;
+  status: string;
+  bound_at: string;
+};
+
 type InspectionsPanelProps = {
   inspections: InspectionRow[];
   activeClaims: ClaimRow[];
   revisions: RevisionRow[];
   abortRequests: AbortRow[];
+  evidenceAssets: EvidenceAssetRow[];
+  evidenceSlots: EvidenceSlotRow[];
+  documentTemplates: TemplateRow[];
+  activeDevices: DeviceBindingRow[];
 };
+
+const ALLOWED_MIME_SET = new Set(["image/jpeg", "image/png", "image/webp", "application/pdf"]);
 
 export function InspectionsPanel({
   inspections,
   activeClaims,
   revisions,
-  abortRequests
+  abortRequests,
+  evidenceAssets,
+  evidenceSlots,
+  documentTemplates,
+  activeDevices
 }: InspectionsPanelProps) {
   const router = useRouter();
   const [busyKey, setBusyKey] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
   const [reasons, setReasons] = useState<Record<string, string>>({});
+  const [draftNotes, setDraftNotes] = useState<Record<string, string>>({});
+  const [selectedSlotByInsp, setSelectedSlotByInsp] = useState<Record<string, string>>({});
+  const [selectedTemplateByInsp, setSelectedTemplateByInsp] = useState<Record<string, string>>({});
+
+  // T-09 Offline Queue state
+  const [offlineOps, setOfflineOps] = useState<OfflineSyncOperation[]>([]);
+  const [storedDevice, setStoredDevice] = useState<StoredDeviceBinding | null>(null);
+  const [deviceLabel, setDeviceLabel] = useState("Perangkat Inspeksi Lapangan");
+
+  useEffect(() => {
+    let active = true;
+    const savedDevice = loadStoredDeviceBinding();
+    getDefaultOfflineQueueStore()
+      .getAll()
+      .then((ops) => {
+        if (!active) return;
+        setStoredDevice(savedDevice);
+        setOfflineOps(ops);
+      })
+      .catch(() => {
+        if (active) setStoredDevice(savedDevice);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const latestRevisionByInspection = new Map<string, RevisionRow>();
   for (const rev of revisions) {
@@ -60,6 +145,13 @@ export function InspectionsPanel({
     if (!existing || rev.revision_no > existing.revision_no) {
       latestRevisionByInspection.set(rev.inspection_id, rev);
     }
+  }
+
+  const inspectionById = new Map(inspections.map((i) => [i.id, i]));
+
+  async function refreshOfflineQueue() {
+    const ops = await getDefaultOfflineQueueStore().getAll();
+    setOfflineOps(ops);
   }
 
   async function callApi(
@@ -82,7 +174,7 @@ export function InspectionsPanel({
         body: JSON.stringify(body)
       });
       const payload = (await response.json().catch(() => null)) as
-        | { status?: string; error?: { code?: string; message?: string } }
+        | { status?: string; error?: { code?: string; message?: string }; document_id?: string }
         | null;
 
       if (!response.ok) {
@@ -98,11 +190,307 @@ export function InspectionsPanel({
       setFeedback({ kind: "ok", text: `${successMsg} (${payload?.status ?? "OK"}).` });
       router.refresh();
     } catch {
-      setFeedback({ kind: "err", text: "Koneksi server terputus. Tidak ada mutasi dikonfirmasi." });
+      setFeedback({
+        kind: "err",
+        text: "Koneksi server terputus. Gunakan antrean offline T-09 untuk menyimpan draft lokal."
+      });
     } finally {
       setBusyKey(null);
     }
   }
+
+  async function handleEnqueueOfflineDraft(insp: InspectionRow) {
+    if (busyKey) return;
+    setBusyKey(`off-${insp.id}`);
+    setFeedback(null);
+    try {
+      const note = (draftNotes[insp.id] ?? "").trim();
+      const op = await enqueueDraftOperation({
+        inspection_id: insp.id,
+        expected_row_version: insp.row_version,
+        draft_checklist: { saved_offline: true, updated_at: new Date().toISOString() },
+        notes: note || "Draft offline tersimpan lokal"
+      });
+      await refreshOfflineQueue();
+      setFeedback({
+        kind: "ok",
+        text: `Draft masuk antrean offline IndexedDB (${op.operation_id.slice(0, 12)}…, v${insp.row_version}).`
+      });
+    } catch (err) {
+      setFeedback({
+        kind: "err",
+        text: err instanceof Error ? err.message : "Gagal menyimpan draft ke antrean offline."
+      });
+    } finally {
+      setBusyKey(null);
+    }
+  }
+
+  async function handleRegisterDevice() {
+    if (busyKey) return;
+    setBusyKey("reg-device");
+    setFeedback(null);
+    try {
+      const ua = typeof navigator !== "undefined" ? navigator.userAgent : "unknown-browser";
+      const fingerprintHash = await sha256Hex(`${ua}|${crypto.randomUUID()}`);
+      const trimmedLabel = deviceLabel.trim() || "Perangkat Inspeksi";
+
+      const response = await fetch("/api/v1/sync/devices", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "idempotency-key": crypto.randomUUID()
+        },
+        body: JSON.stringify({
+          device_fingerprint_hash: fingerprintHash,
+          label: trimmedLabel
+        })
+      });
+      const payload = (await response.json().catch(() => null)) as
+        | { status?: string; device_id?: string; error?: { message?: string } }
+        | null;
+
+      if (!response.ok || !payload?.device_id) {
+        setFeedback({
+          kind: "err",
+          text: `Registrasi perangkat gagal (${payload?.status ?? response.status}): ${
+            payload?.error?.message ?? "Periksa status akun dan izin sinkronisasi."
+          }`
+        });
+        return;
+      }
+
+      const binding: StoredDeviceBinding = {
+        device_id: payload.device_id,
+        label: trimmedLabel,
+        fingerprint_hash: fingerprintHash,
+        registered_at: new Date().toISOString()
+      };
+      saveStoredDeviceBinding(binding);
+      setStoredDevice(binding);
+      setFeedback({ kind: "ok", text: `Perangkat terdaftar untuk T-09 sync (${binding.device_id.slice(0, 8)}…).` });
+      router.refresh();
+    } catch {
+      setFeedback({ kind: "err", text: "Gagal menghubungi server saat mendaftarkan perangkat." });
+    } finally {
+      setBusyKey(null);
+    }
+  }
+
+  async function handleSyncOfflineBatch() {
+    if (busyKey) return;
+    const activeDeviceId = storedDevice?.device_id ?? activeDevices[0]?.id ?? null;
+    if (!activeDeviceId) {
+      setFeedback({
+        kind: "err",
+        text: "Daftarkan perangkat terlebih dahulu sebelum menjalankan sinkronisasi batch T-09."
+      });
+      return;
+    }
+
+    const pendingOps = offlineOps.filter((op) => op.status === "PENDING");
+    if (pendingOps.length === 0) {
+      setFeedback({ kind: "ok", text: "Tidak ada operasi PENDING di antrean offline." });
+      return;
+    }
+
+    setBusyKey("sync-batch");
+    setFeedback(null);
+    try {
+      const response = await fetch("/api/v1/sync/batch", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "idempotency-key": crypto.randomUUID()
+        },
+        body: JSON.stringify({
+          device_id: activeDeviceId,
+          batch_key: `batch-${crypto.randomUUID()}`,
+          operations: pendingOps.map((op) => ({
+            operation_id: op.operation_id,
+            op_type: op.op_type,
+            inspection_id: op.inspection_id,
+            expected_row_version: op.expected_row_version,
+            payload: op.payload
+          }))
+        })
+      });
+
+      const payload = (await response.json().catch(() => null)) as
+        | {
+            status?: string;
+            results?: SyncServerOpResult[];
+            operations?: SyncServerOpResult[];
+            error?: { message?: string };
+          }
+        | null;
+
+      if (!response.ok) {
+        setFeedback({
+          kind: "err",
+          text: `Sinkronisasi batch ditolak (${payload?.status ?? response.status}): ${
+            payload?.error?.message ?? "Periksa perangkat aktif atau status koneksi."
+          }`
+        });
+        return;
+      }
+
+      const opResults = payload?.results ?? payload?.operations ?? [];
+      const updated = await reconcileSyncResults(opResults);
+      setOfflineOps(updated);
+      const appliedCount = updated.filter((o) => o.status === "APPLIED").length;
+      const conflictCount = updated.filter((o) => o.status === "CONFLICT").length;
+      setFeedback({
+        kind: conflictCount > 0 ? "err" : "ok",
+        text: `Batch selesai (${payload?.status ?? "OK"}): ${appliedCount} APPLIED, ${conflictCount} CONFLICT (tidak menimpa otomatis).`
+      });
+      router.refresh();
+    } catch {
+      setFeedback({ kind: "err", text: "Koneksi terputus saat sinkronisasi. Antrean lokal tetap aman." });
+    } finally {
+      setBusyKey(null);
+    }
+  }
+
+  async function handleUploadEvidence(insp: InspectionRow, file: File | null) {
+    if (!file || busyKey) return;
+    const matchingSlots = evidenceSlots.filter((s) => s.instrument_version_id === insp.instrument_version_id);
+    const slotId = selectedSlotByInsp[insp.id] ?? matchingSlots[0]?.id;
+    if (!slotId) {
+      setFeedback({ kind: "err", text: "Slot bukti instrumen tidak ditemukan untuk inspeksi ini." });
+      return;
+    }
+    if (!ALLOWED_MIME_SET.has(file.type)) {
+      setFeedback({ kind: "err", text: `Tipe file ${file.type || "tidak dikenal"} ditolak. Gunakan JPEG/PNG/WebP/PDF.` });
+      return;
+    }
+    if (file.size < 1 || file.size > 15728640) {
+      setFeedback({ kind: "err", text: "Ukuran file harus antara 1 byte dan 15 MiB." });
+      return;
+    }
+
+    setBusyKey(`ev-${insp.id}`);
+    setFeedback(null);
+    try {
+      const arrayBuf = await file.arrayBuffer();
+      const digest = await sha256Hex(arrayBuf);
+      const clientFileId = `web-${crypto.randomUUID()}`;
+
+      // 1. CMD-033: create-upload-intent -> returns signed_upload_url
+      const intentRes = await fetch("/api/v1/evidence/intent", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "idempotency-key": crypto.randomUUID()
+        },
+        body: JSON.stringify({
+          inspection_id: insp.id,
+          slot_definition_id: slotId,
+          mime_type: file.type,
+          byte_size: file.size,
+          sha256: digest,
+          client_file_id: clientFileId
+        })
+      });
+      const intentPayload = (await intentRes.json().catch(() => null)) as
+        | {
+            status?: string;
+            evidence_asset_id?: string;
+            signed_upload_url?: string | null;
+            error?: { message?: string };
+          }
+        | null;
+
+      if (!intentRes.ok || !intentPayload?.evidence_asset_id || !intentPayload.signed_upload_url) {
+        setFeedback({
+          kind: "err",
+          text: `Intent upload ditolak (${intentPayload?.status ?? intentRes.status}): ${
+            intentPayload?.error?.message ?? "Pastikan klaim aktif & bucket private tersedia."
+          }`
+        });
+        return;
+      }
+
+      // 2. Upload binary directly to private Storage via signed URL
+      const uploadRes = await fetch(intentPayload.signed_upload_url, {
+        method: "PUT",
+        headers: { "content-type": file.type },
+        body: file
+      });
+      if (!uploadRes.ok) {
+        setFeedback({
+          kind: "err",
+          text: `Unggah biner ke Private Storage gagal (HTTP ${uploadRes.status}).`
+        });
+        return;
+      }
+
+      // 3. CMD-034: server-side SHA-256 + magic-byte verification & confirm
+      const confirmRes = await fetch("/api/v1/evidence/confirm", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "idempotency-key": crypto.randomUUID()
+        },
+        body: JSON.stringify({
+          evidence_asset_id: intentPayload.evidence_asset_id,
+          observed_sha256: digest,
+          observed_byte_size: file.size,
+          observed_mime: file.type
+        })
+      });
+      const confirmPayload = (await confirmRes.json().catch(() => null)) as
+        | { status?: string; error?: { code?: string; message?: string } }
+        | null;
+
+      if (!confirmRes.ok) {
+        setFeedback({
+          kind: "err",
+          text: `Verifikasi biner server gagal (${confirmPayload?.error?.code ?? confirmPayload?.status ?? confirmRes.status}): ${
+            confirmPayload?.error?.message ?? "Magic-byte / SHA-256 tidak cocok."
+          }`
+        });
+        return;
+      }
+
+      setFeedback({
+        kind: "ok",
+        text: `Bukti terunggah & terverifikasi SHA-256/magic-byte (${confirmPayload?.status ?? "FINALIZED"}).`
+      });
+      router.refresh();
+    } catch {
+      setFeedback({ kind: "err", text: "Koneksi terputus saat mengunggah bukti." });
+    } finally {
+      setBusyKey(null);
+    }
+  }
+
+  async function handleAuditedDownloadEvidence(assetId: string) {
+    if (busyKey) return;
+    setBusyKey(`dl-${assetId}`);
+    setFeedback(null);
+    try {
+      const res = await fetch(`/api/v1/evidence/${assetId}/download`, { method: "GET" });
+      const payload = (await res.json().catch(() => null)) as
+        | { signed_download_url?: string; status?: string; error?: { message?: string } }
+        | null;
+      if (!res.ok || !payload?.signed_download_url) {
+        setFeedback({
+          kind: "err",
+          text: `Akses unduh ditolak (${payload?.status ?? res.status}): ${payload?.error?.message ?? "Tidak berwenang."}`
+        });
+        return;
+      }
+      window.open(payload.signed_download_url, "_blank", "noopener,noreferrer");
+      setFeedback({ kind: "ok", text: "Signed URL bukti 60 detik diterbitkan & diaudit (evidence.accessed)." });
+    } catch {
+      setFeedback({ kind: "err", text: "Gagal mengambil signed download URL." });
+    } finally {
+      setBusyKey(null);
+    }
+  }
+
+  const effectiveDeviceId = storedDevice?.device_id ?? activeDevices[0]?.id ?? null;
 
   return (
     <div className="admin-section">
@@ -111,6 +499,121 @@ export function InspectionsPanel({
           {feedback.text}
         </p>
       ) : null}
+
+      <section className="admin-panel" aria-labelledby="offline-queue-heading">
+        <div className="admin-item-header">
+          <h2 id="offline-queue-heading">Antrean Offline &amp; Sinkronisasi T-09 ({offlineOps.length}/50)</h2>
+          <span className={`status-badge ${effectiveDeviceId ? "status-badge-approved" : "status-badge-pending"}`}>
+            {effectiveDeviceId ? `DEVICE ${effectiveDeviceId.slice(0, 8)}…` : "PERANGKAT BELUM TERDAFTAR"}
+          </span>
+        </div>
+        <p className="rbac-meta">
+          Perubahan draft offline disimpan terikat batas maksimum 50 operasi di IndexedDB browser. Konflik versi
+          (`CONFLICT`) tidak pernah menimpa server secara diam-diam — pengguna harus memilih rebase eksplisit atau membuang draft lokal.
+        </p>
+
+        <div className="admin-inline">
+          <input
+            aria-label="Label perangkat T-09"
+            className="inline-input"
+            type="text"
+            value={deviceLabel}
+            onChange={(e) => setDeviceLabel(e.target.value)}
+            placeholder="Label perangkat lapangan"
+          />
+          <button
+            type="button"
+            className="auth-button auth-button-secondary admin-btn-sm"
+            disabled={busyKey !== null}
+            onClick={handleRegisterDevice}
+          >
+            Daftarkan Perangkat (T-09)
+          </button>
+          <button
+            type="button"
+            className="auth-button admin-btn-sm"
+            disabled={busyKey !== null || offlineOps.filter((o) => o.status === "PENDING").length === 0}
+            onClick={handleSyncOfflineBatch}
+          >
+            Sinkronkan Batch (CMD-035)
+          </button>
+          <button
+            type="button"
+            className="auth-button auth-button-secondary admin-btn-sm"
+            disabled={busyKey !== null}
+            onClick={async () => {
+              await purgeOfflineLocalState();
+              setStoredDevice(null);
+              setOfflineOps([]);
+              setFeedback({ kind: "ok", text: "Cache offline & ikatan perangkat lokal dibersihkan (shared-device purge)." });
+            }}
+          >
+            Purge Cache Lokal
+          </button>
+        </div>
+
+        {offlineOps.length > 0 ? (
+          <div className="admin-list">
+            {offlineOps.map((op) => {
+              const liveInsp = inspectionById.get(op.inspection_id);
+              return (
+                <article key={op.operation_id} className="admin-item">
+                  <div className="admin-item-header">
+                    <strong>
+                      {op.op_type} · Inspeksi {op.inspection_id.slice(0, 8)}… (target v{op.expected_row_version})
+                    </strong>
+                    <span
+                      className={`status-badge ${
+                        op.status === "APPLIED"
+                          ? "status-badge-approved"
+                          : op.status === "PENDING"
+                            ? "status-badge-pending"
+                            : "status-badge-rejected"
+                      }`}
+                    >
+                      {op.status}
+                    </span>
+                  </div>
+                  <p className="rbac-meta">
+                    Catatan: {op.payload.notes ?? "-"} · Diantrekan: {new Date(op.queued_at).toLocaleString("id-ID")}
+                    {op.last_error ? ` · Server: ${op.last_error}` : ""}
+                  </p>
+                  <div className="admin-inline">
+                    {op.status === "CONFLICT" && liveInsp ? (
+                      <button
+                        type="button"
+                        className="auth-button admin-btn-sm"
+                        disabled={busyKey !== null}
+                        onClick={async () => {
+                          await rebaseConflictOperation(op.operation_id, liveInsp.row_version);
+                          await refreshOfflineQueue();
+                          setFeedback({
+                            kind: "ok",
+                            text: `Konflik di-rebase ke versi terbaru server v${liveInsp.row_version}. Siap disinkronkan ulang.`
+                          });
+                        }}
+                      >
+                        Rebase ke v{liveInsp.row_version}
+                      </button>
+                    ) : null}
+                    <button
+                      type="button"
+                      className="auth-button auth-button-secondary admin-btn-sm"
+                      disabled={busyKey !== null}
+                      onClick={async () => {
+                        await getDefaultOfflineQueueStore().delete(op.operation_id);
+                        await refreshOfflineQueue();
+                      }}
+                    >
+                      Hapus dari Antrean
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : null}
+      </section>
 
       <section className="admin-panel" aria-labelledby="inspections-list-heading">
         <h2 id="inspections-list-heading">Daftar Inspeksi Unit ({inspections.length})</h2>
@@ -124,6 +627,15 @@ export function InspectionsPanel({
             {inspections.map((insp) => {
               const latestRev = latestRevisionByInspection.get(insp.id);
               const reason = (reasons[insp.id] ?? "").trim();
+              const note = (draftNotes[insp.id] ?? "").trim();
+              const inspAssets = evidenceAssets.filter((a) => a.inspection_id === insp.id);
+              const matchingSlots = evidenceSlots.filter((s) => s.instrument_version_id === insp.instrument_version_id);
+              const activeTemplates = documentTemplates.filter(
+                (t) => t.document_type === "INSPECTION_PDF" || t.document_type === "BA_PDF"
+              );
+              const editable =
+                insp.status === "DRAFT" || insp.status === "RETURNED" || insp.status === "REOPENED";
+
               return (
                 <article key={insp.id} className="admin-item">
                   <div className="admin-item-header">
@@ -135,8 +647,105 @@ export function InspectionsPanel({
                     </span>
                   </div>
                   <p className="rbac-meta">
-                    Diperbarui: {new Date(insp.updated_at).toLocaleString("id-ID")}
+                    Diperbarui: {new Date(insp.updated_at).toLocaleString("id-ID")} · Bukti: {inspAssets.length}
                   </p>
+
+                  {editable ? (
+                    <div className="rbac-card">
+                      <div className="rbac-field">
+                        <label htmlFor={`draft-${insp.id}`}>Catatan Draft Inspeksi (CMD-028 / Offline T-09)</label>
+                        <input
+                          id={`draft-${insp.id}`}
+                          type="text"
+                          value={draftNotes[insp.id] ?? ""}
+                          onChange={(e) =>
+                            setDraftNotes((prev) => ({ ...prev, [insp.id]: e.target.value }))
+                          }
+                          placeholder="Hasil pemeriksaan fisik IFP / Standing Bracket"
+                        />
+                      </div>
+                      <div className="admin-inline">
+                        <button
+                          type="button"
+                          className="auth-button admin-btn-sm"
+                          disabled={busyKey !== null}
+                          onClick={() =>
+                            callApi(
+                              `draft-${insp.id}`,
+                              "/api/v1/inspections/draft",
+                              {
+                                inspection_id: insp.id,
+                                expected_row_version: insp.row_version,
+                                draft_checklist: { inspected: true, updated_via: "web-ui" },
+                                notes: note || "Draft diperbarui dari UI"
+                              },
+                              "Draft inspeksi tersimpan di server"
+                            )
+                          }
+                        >
+                          Simpan Draft Online (CMD-028)
+                        </button>
+                        <button
+                          type="button"
+                          className="auth-button auth-button-secondary admin-btn-sm"
+                          disabled={busyKey !== null}
+                          onClick={() => handleEnqueueOfflineDraft(insp)}
+                        >
+                          Simpan ke Antrean Offline (T-09)
+                        </button>
+                      </div>
+
+                      {matchingSlots.length > 0 ? (
+                        <div className="admin-inline">
+                          <select
+                            aria-label={`Slot bukti ${insp.id}`}
+                            className="inline-input"
+                            value={selectedSlotByInsp[insp.id] ?? matchingSlots[0].id}
+                            onChange={(e) =>
+                              setSelectedSlotByInsp((prev) => ({ ...prev, [insp.id]: e.target.value }))
+                            }
+                          >
+                            {matchingSlots.map((slot) => (
+                              <option key={slot.id} value={slot.id}>
+                                {slot.code} — {slot.label}
+                              </option>
+                            ))}
+                          </select>
+                          <label className="auth-button auth-button-secondary admin-btn-sm file-upload-label">
+                            Unggah Bukti (JPEG/PNG/WebP/PDF)
+                            <input
+                              type="file"
+                              accept="image/jpeg,image/png,image/webp,application/pdf"
+                              disabled={busyKey !== null}
+                              style={{ display: "none" }}
+                              onChange={(e) => {
+                                const file = e.target.files?.[0] ?? null;
+                                void handleUploadEvidence(insp, file);
+                                e.currentTarget.value = "";
+                              }}
+                            />
+                          </label>
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : null}
+
+                  {inspAssets.length > 0 ? (
+                    <div className="admin-inline">
+                      {inspAssets.map((asset) => (
+                        <button
+                          key={asset.id}
+                          type="button"
+                          className="auth-button auth-button-secondary admin-btn-sm"
+                          disabled={busyKey !== null || asset.upload_status !== "FINALIZED"}
+                          onClick={() => handleAuditedDownloadEvidence(asset.id)}
+                        >
+                          Unduh Bukti {asset.id.slice(0, 6)} ({asset.upload_status} · {asset.observed_byte_size ?? asset.expected_byte_size}B)
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
+
                   <div className="rbac-field">
                     <label htmlFor={`reason-${insp.id}`}>Alasan aksi (return / reopen / abort)</label>
                     <input
@@ -149,10 +758,9 @@ export function InspectionsPanel({
                       placeholder="Catatan verifikasi atau alasan pengembalian/pembukaan ulang"
                     />
                   </div>
+
                   <div className="admin-inline">
-                    {insp.status === "DRAFT" ||
-                    insp.status === "RETURNED" ||
-                    insp.status === "REOPENED" ? (
+                    {editable ? (
                       <button
                         type="button"
                         className="auth-button admin-btn-sm"
@@ -218,26 +826,68 @@ export function InspectionsPanel({
                       </>
                     ) : null}
                     {insp.status === "APPROVED" && latestRev ? (
-                      <button
-                        type="button"
-                        className="auth-button auth-button-secondary admin-btn-sm"
-                        disabled={busyKey !== null}
-                        onClick={() =>
-                          callApi(
-                            `reo-${insp.id}`,
-                            "/api/v1/inspections/reopen",
-                            {
-                              inspection_id: insp.id,
-                              approved_revision_id: latestRev.id,
-                              expected_row_version: insp.row_version,
-                              reason
-                            },
-                            "Inspeksi dibuka ulang (klaim eksplisit diperlukan)"
-                          )
-                        }
-                      >
-                        Reopen (CMD-032)
-                      </button>
+                      <>
+                        {activeTemplates.length > 0 ? (
+                          <>
+                            <select
+                              aria-label={`Template PDF ${insp.id}`}
+                              className="inline-input"
+                              value={selectedTemplateByInsp[insp.id] ?? activeTemplates[0].id}
+                              onChange={(e) =>
+                                setSelectedTemplateByInsp((prev) => ({ ...prev, [insp.id]: e.target.value }))
+                              }
+                            >
+                              {activeTemplates.map((t) => (
+                                <option key={t.id} value={t.id}>
+                                  {t.document_type} · {t.template_key} v{t.version_no}
+                                </option>
+                              ))}
+                            </select>
+                            <button
+                              type="button"
+                              className="auth-button admin-btn-sm"
+                              disabled={busyKey !== null}
+                              onClick={() => {
+                                const tmplId = selectedTemplateByInsp[insp.id] ?? activeTemplates[0].id;
+                                const tmpl = activeTemplates.find((t) => t.id === tmplId) ?? activeTemplates[0];
+                                void callApi(
+                                  `pdf-${insp.id}`,
+                                  "/api/v1/documents/generate",
+                                  {
+                                    document_type: tmpl.document_type,
+                                    inspection_id: insp.id,
+                                    approved_revision_id: latestRev.id,
+                                    template_version_id: tmpl.id
+                                  },
+                                  "Dokumen PDF 1.4 berhasil dibuat & disimpan di Private Storage"
+                                );
+                              }}
+                            >
+                              Generate PDF (CMD-036)
+                            </button>
+                          </>
+                        ) : null}
+                        <button
+                          type="button"
+                          className="auth-button auth-button-secondary admin-btn-sm"
+                          disabled={busyKey !== null}
+                          onClick={() =>
+                            callApi(
+                              `reo-${insp.id}`,
+                              "/api/v1/inspections/reopen",
+                              {
+                                inspection_id: insp.id,
+                                approved_revision_id: latestRev.id,
+                                expected_row_version: insp.row_version,
+                                reason
+                              },
+                              "Inspeksi dibuka ulang (klaim eksplisit diperlukan)"
+                            )
+                          }
+                        >
+                          Reopen (CMD-032)
+                        </button>
+                      </>
                     ) : null}
                     {insp.status === "RETURNED" ? (
                       <button

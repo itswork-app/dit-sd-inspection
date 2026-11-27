@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { signOutAction } from "@/app/auth/actions";
 import { InspectionsPanel } from "@/app/inspections/inspections-panel";
+import { AppTopbar } from "@/components/app-topbar";
 import { loadSelfAccountSnapshot } from "@/lib/auth/account";
 import { getVerifiedIdentity } from "@/lib/auth/identity";
 import { createClient } from "@/lib/supabase/server";
@@ -25,10 +25,10 @@ export default async function InspectionsPage() {
     redirect("/auth/pending");
   }
 
-  const [inspRes, claimsRes, revRes, abortRes] = await Promise.all([
+  const [inspRes, claimsRes, revRes, abortRes, evRes, slotsRes, tmplRes, devRes] = await Promise.all([
     supabase
       .from("inspections")
-      .select("id, unit_id, project_id, status, current_revision_no, row_version, updated_at")
+      .select("id, unit_id, project_id, session_id, instrument_version_id, status, current_revision_no, row_version, updated_at")
       .order("updated_at", { ascending: false })
       .limit(100),
     supabase
@@ -45,40 +45,45 @@ export default async function InspectionsPage() {
       .from("inspection_abort_requests")
       .select("id, inspection_id, status, request_reason, row_version")
       .order("requested_at", { ascending: false })
-      .limit(50)
+      .limit(50),
+    supabase
+      .from("evidence_assets")
+      .select("id, inspection_id, slot_definition_id, mime_type, observed_byte_size, expected_byte_size, upload_status, created_at")
+      .order("created_at", { ascending: false })
+      .limit(200),
+    supabase
+      .from("evidence_slot_definitions")
+      .select("id, instrument_version_id, code, label, required")
+      .order("sort_order", { ascending: true })
+      .limit(200),
+    supabase
+      .from("document_template_versions")
+      .select("id, document_type, template_key, version_no, status")
+      .eq("status", "ACTIVE")
+      .order("version_no", { ascending: false })
+      .limit(50),
+    supabase
+      .from("device_bindings")
+      .select("id, label, status, bound_at")
+      .eq("status", "ACTIVE")
+      .order("bound_at", { ascending: false })
+      .limit(20)
   ]);
 
   const schemaMissing = Boolean(inspRes.error || claimsRes.error || revRes.error || abortRes.error);
 
   return (
     <main className="workspace">
-      <header className="topbar">
-        <Link className="brand" href="/" aria-label="Dit. SD Inspection home">
-          <span className="brand-mark">SD</span>
-          <span>
-            <strong>Dit. SD Inspection</strong>
-            <small>Field Inspections, Claims, Review &amp; SES-001</small>
-          </span>
-        </Link>
-        <div className="admin-inline">
-          <Link className="auth-link" href="/workspace">
-            Workspace
-          </Link>
-          <Link className="auth-link" href="/auth/pending">
-            Status Akun
-          </Link>
-          <form action={signOutAction}>
-            <button className="auth-button auth-button-secondary admin-btn-sm" type="submit">
-              Keluar
-            </button>
-          </form>
-        </div>
-      </header>
+      <AppTopbar
+        subtitle="Field Inspections, Evidence Storage, PDF & Offline Sync (T-09)"
+        activePath="/inspections"
+        canManageIdentity={selfSnapshot.canManageIdentity}
+      />
 
       {schemaMissing ? (
         <section className="auth-panel">
           <p className="eyebrow">SCHEMA UNAVAILABLE</p>
-          <h1>Skema inspeksi Slice 3 belum aktif pada basis data ini</h1>
+          <h1>Skema inspeksi belum aktif pada basis data ini</h1>
           <Link className="auth-link" href="/workspace">
             Kembali ke workspace
           </Link>
@@ -89,12 +94,16 @@ export default async function InspectionsPage() {
           activeClaims={(claimsRes.data ?? []).map((c) => ({ ...c, row_version: String(c.row_version) }))}
           revisions={revRes.data ?? []}
           abortRequests={(abortRes.data ?? []).map((a) => ({ ...a, row_version: String(a.row_version) }))}
+          evidenceAssets={evRes.data ?? []}
+          evidenceSlots={slotsRes.data ?? []}
+          documentTemplates={tmplRes.data ?? []}
+          activeDevices={devRes.data ?? []}
         />
       )}
 
       <footer className="footer">
-        <span>Dit. SD Inspection · CMD-026..035 &amp; SES-001 (CMD-055..056)</span>
-        <span>Server &amp; PostgreSQL RLS enforced</span>
+        <span>Dit. SD Inspection · CMD-026..036, SES-001 (CMD-055..056) &amp; T-09 Offline Sync</span>
+        <span>Server &amp; PostgreSQL RLS + Private Storage enforced</span>
       </footer>
     </main>
   );
