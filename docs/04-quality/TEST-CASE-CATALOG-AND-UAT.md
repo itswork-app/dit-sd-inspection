@@ -1113,7 +1113,7 @@ The following cases are design acceptance criteria only. All remain PLANNED / NO
 
 ## Catalogue inventory and execution-evidence reconciliation — 2026-11-27
 
-A line-start definition scan of this file on branch `docs/g11-evidence-closure-plan-2026-11-27` identified **560 test-definition rows** containing **558 distinct explicitly enumerated test-case IDs**. Three IDs have duplicate definition rows and require later deduplication or explicit cross-reference labelling: `TC-NOTIF-052`, `TC-NOTIF-053`, and `TC-NOTIF-054` (two rows each). The count is based on explicit IDs in definition rows; shorthand ranges such as `TC-IFP-CHK-001..004` are not expanded into synthetic IDs by this scan.
+A scan restricted to actual definition rows (bullet items and table rows) on branch `docs/g11-evidence-closure-plan-2026-11-27` identified **558 test-definition rows** containing **558 distinct explicitly enumerated test-case IDs**. No duplicate definition IDs were found. `TC-NOTIF-052`, `TC-NOTIF-053`, and `TC-NOTIF-054` also appear in explanatory cross-reference prose, but those mentions are not additional test definitions. Shorthand ranges such as `TC-IFP-CHK-001..004` are not expanded into synthetic IDs by this scan.
 
 This is an inventory count, not an execution count. A case remains PLANNED / NOT EXECUTED unless a case-specific execution record identifies its test ID, exact build/commit, environment, result, evidence, executor and timestamp. Aggregate local suite results and GitHub Actions workflow success do not automatically prove individual catalogue cases.
 
