@@ -157,7 +157,7 @@ function mapUserRoleRow(row: Record<string, unknown>): UserRoleRecord {
     valid_until: row.valid_until ? String(row.valid_until) : null,
     reason: String(row.reason ?? ""),
     row_version: normalizeRowVersion(row.row_version),
-    granted_at: String(row.granted_at),
+    granted_at: String(row.created_at),
     revoked_at: row.revoked_at ? String(row.revoked_at) : null
   };
 }
@@ -173,7 +173,7 @@ function mapScopeRow(row: Record<string, unknown>): UserScopeGrantRecord {
     valid_until: row.valid_until ? String(row.valid_until) : null,
     reason: String(row.reason ?? ""),
     row_version: normalizeRowVersion(row.row_version),
-    granted_at: String(row.granted_at),
+    granted_at: String(row.created_at),
     revoked_at: row.revoked_at ? String(row.revoked_at) : null
   };
 }
@@ -222,15 +222,15 @@ export async function loadSelfAccountSnapshot(
       .limit(20),
     supabase
       .from("user_roles")
-      .select("id, user_id, role_id, project_id, status, valid_from, valid_until, reason, row_version, granted_at, revoked_at, roles(code, name, scope_class)")
+      .select("id, user_id, role_id, project_id, status, valid_from, valid_until, reason, row_version, created_at, revoked_at, roles(code, name, scope_class)")
       .eq("user_id", user.id)
-      .order("granted_at", { ascending: false })
+      .order("created_at", { ascending: false })
       .limit(50),
     supabase
       .from("user_scope_grants")
-      .select("id, user_id, scope_type, scope_id, status, valid_from, valid_until, reason, row_version, granted_at, revoked_at")
+      .select("id, user_id, scope_type, scope_id, status, valid_from, valid_until, reason, row_version, created_at, revoked_at")
       .eq("user_id", user.id)
-      .order("granted_at", { ascending: false })
+      .order("created_at", { ascending: false })
       .limit(50)
   ]);
 
@@ -298,13 +298,13 @@ export async function loadAdminAccountsSnapshot(
       .order("code", { ascending: true }),
     supabase
       .from("user_roles")
-      .select("id, user_id, role_id, project_id, status, valid_from, valid_until, reason, row_version, granted_at, revoked_at, roles(code, name, scope_class)")
-      .order("granted_at", { ascending: false })
+      .select("id, user_id, role_id, project_id, status, valid_from, valid_until, reason, row_version, created_at, revoked_at, roles(code, name, scope_class)")
+      .order("created_at", { ascending: false })
       .limit(300),
     supabase
       .from("user_scope_grants")
-      .select("id, user_id, scope_type, scope_id, status, valid_from, valid_until, reason, row_version, granted_at, revoked_at")
-      .order("granted_at", { ascending: false })
+      .select("id, user_id, scope_type, scope_id, status, valid_from, valid_until, reason, row_version, created_at, revoked_at")
+      .order("created_at", { ascending: false })
       .limit(300)
   ]);
 
