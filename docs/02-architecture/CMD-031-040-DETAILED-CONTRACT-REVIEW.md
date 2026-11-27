@@ -1,8 +1,8 @@
 # CMD-031–040 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security/institutional review required; NOT approved for implementation  
-**Document version:** 0.2.4  
-**Date:** 2026-11-26  
+**Document version:** 0.2.5  
+**Date:** 2026-11-27  
 **Scope:** CMD-031 through CMD-040  
 **Repository phase:** Staged foundation implementation G9-F1/G10-F1; CMD-031–040 business operations remain feature-gated  
 **Controls:** T-08 attendance authority; T-09 limited offline direction; T-10 institutional records/privacy gate; T-13 print batch; T-15 append-only audit; T-18 Option A command boundary; G9-F1 FROZEN; G10-F1 ACTIVE for bounded foundation only; full-system G9 NOT READY; CMD-031–040 business mutations remain outside G10-F1.
@@ -737,6 +737,28 @@ Two-phase asynchronous workflow:
 
 The current schema does not specify the worker identity, job lease, retry policy, renderer provider, template storage or worker ACL. These are blockers, not defaults.
 
+#### 7.6.1 Canonical identity and replay
+
+Separate caller request idempotency from artifact-generation identity. The former is scoped to authenticated actor + command + idempotency key and binds a server-computed semantic request hash. The latter is a server-computed canonical tuple of document type, typed source identity, exact immutable source version/hash, template identity/version/hash, renderer profile/version and any explicitly versioned byte-affecting output options. Actor identity must not create a second artifact for the same content tuple. Same tuple requests converge on one durable job/document identity; same request key with changed semantic payload is rejected. Reissue semantics for the same tuple remain PO OPEN.
+
+#### 7.6.2 Lease fencing and at-least-once execution
+
+A worker claim increments a monotonic fencing generation and commits a bounded lease before external work. Heartbeat and finalization require the exact current owner/token-hash/generation and an unexpired lease. Reclaim increments the generation; an old worker can never finalize even if it later finishes rendering. Renderer execution is at-least-once; correctness is enforced by immutable generation identity, object reconciliation and one valid fenced finalization, not by claiming exactly-once external execution. Exact lease TTL, heartbeat, attempts/backoff and dead-letter values remain unset pending evidence.
+
+#### 7.6.3 Storage side effect and finalization
+
+Rendering and Storage I/O occur outside database locks. Use a server-generated private object identity and immutable/create-if-absent write semantics. A retry after uncertain Storage success must inspect the exact object and checksum before deciding whether to retry. A short finalization transaction revalidates the lease fence, pinned source/template identity, expected job/document version and server-observed object metadata, then atomically persists terminal attempt/job/document state plus required audit and idempotency outcome. Audit failure prevents GENERATED status; an external object left behind is an orphan for separate reconciliation, not a reason to expose it.
+
+#### 7.6.4 Source-reopen ambiguity — blocking
+
+CMD-032 requires preservation of an approved immutable revision and historical PDF/print history, but the repository does not decide whether a job accepted before reopen may finalize afterward as a historical artifact or must be stopped as stale. These policies have different business outcomes. Do not rebind to the current draft or infer either policy. Record this as C36-02 for explicit PO disposition; until resolved, the source-reopen race remains a blocker to CMD-036 certification.
+
+#### 7.6.5 Failure and access boundaries
+
+Classify retryable infrastructure errors separately from deterministic render/input errors, authorization/source invalidation, lease loss, object-integrity mismatch and audit failure. Retry only after reconciling uncertain external outcomes. Cancellation is not inferred from client disconnect, timeout or lease expiry. Generated artifact access remains a separate authorized read; no public or reusable signed URL is returned by the generation command. Worker identity is a distinct workload principal with separately reviewed exact ACL and Storage permissions, not a browser role, `document.generate` permission or broad `service_role`.
+
+
+
 ### 7.7 Audit and typed outcomes
 
 Event family: pdf.generated / ba.generated / attendance.generated, plus accepted/failed events if the audit catalogue is extended. Audit must link source resource, exact source revision, template version, output hash, document version, actor/request and timestamps. No raw PDF bytes or signed download URL.
@@ -1231,6 +1253,7 @@ The following findings are design gaps, not implementation defects. No live data
 | C35-01 | 035 | sync_batches exists but device registry/binding/revocation and durable per-operation outcome ledger are absent | Define device identity lifecycle and per-operation persistence; align T-09, offline threat model, physical schema and RLS |
 | C35-02 | 035 | The detailed contract and ledger proposal allow either per-operation transactions or savepoints, while promising independently durable per-operation outcomes and partial-batch recovery | Adopt one short transaction per operation as the candidate engineering boundary; treat savepoints only as intra-operation error handling; obtain Engineering/Database/Security review before schema or implementation admission |
 | C36-01 | 036 | documents lacks generic source type/id, template registry/version and renderer job/outbox lifecycle | Define source-to-document FK/provenance, template version storage, job state, lease, retry, worker identity and ACL |
+| C36-02 | 032, 036 | CMD-032 preserves an approved immutable revision/PDF history, but CMD-036 does not define whether an in-flight generation accepted before reopen may finalize afterward | PO must choose historical-artifact finalization vs stale/cancelled generation; until then, no silent rebind and CMD-036 certification remains blocked |
 | C37-01 | 037 | document version identity and print sequence counter/allocator are not fully represented by the physical schema | Define immutable document version key and lock-safe sequence allocation |
 | C38-01 | 038 | print_batches/print_events exist but full item manifest, stable item key and durable outcomes for invalid/unresolvable items are unclear | Decide whether print_batch_items is required; define worker/lease and aggregate reconciliation semantics |
 | C39-01 | 039 | attendance_records lacks location/assignment linkage; attendance_documents lacks upload-intent, MIME/size/version/replacement metadata | Define exact location scope relation and complete two-phase upload schema; align with T-08 and T-10 |

@@ -1,10 +1,10 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.14.2
-**Audit date:** 2026-11-26  
-**Branch reviewed:** `docs/cmd-035-operation-transaction-boundary-2026-11-26` (documentation-only branch based on main)  
-**Reviewed baseline HEAD:** `44dce2cbcc052c6e909e1b0a080062a5b60d94eb` (main commit used to create this documentation branch, 2026-11-26)  
+**Version:** 1.15.0
+**Audit date:** 2026-11-27  
+**Branch reviewed:** `docs/cmd-036-generation-lifecycle-2026-11-27` (documentation-only branch stacked on PR #32)  
+**Reviewed baseline HEAD:** `11089f10468089d7945b279d335c9a58072f4aa1` (PR #32 head used as the documentation baseline, 2026-11-26)  
 **Authority:** Master Implementation Blueprint MIB-001  
 **Status:** AUDIT IN PROGRESS — FULL-SYSTEM GATE NOT READY; G9-F1/G10-F1 FOUNDATION ACTIVE  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
@@ -1096,3 +1096,15 @@ The CMD-031–040 Detailed Contract Review v0.2.4, PostgreSQL Command Contract C
 - Device enrollment/binding/revocation, operation-ledger physical schema admission, exact event cardinality, lock-rank/implicit-edge review, RLS/ACL and adversarial concurrency evidence remain OPEN.
 - CMD-035 remains NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification remains 0/50; global graph acyclicity remains NOT PROVEN.
 - G9-F1 remains FROZEN and G10-F1 ACTIVE only for bounded foundation work. CMD-035 business mutation is outside G10-F1. No code, SQL, migration, grants/RLS, live database, automated test, CI, deployment or production data operation was performed by this documentation update.
+
+
+## CMD-036 document-generation lifecycle reconciliation — 2026-11-27
+
+The CMD-031–040 Detailed Contract Review v0.2.5, Durable Operation Ledger Proposal v0.2.0, PostgreSQL Command Contract Catalogue v0.4.10, LOCK-MANIFEST-001 v0.4.34 and LOCK-GRAPH-001 v0.4.27 now describe a consistent candidate CMD-036 lifecycle:
+
+- Caller request idempotency is separate from canonical artifact identity. The latter binds typed source identity and immutable source version/hash, template version/hash, renderer profile/version and byte-affecting output options. Same-tuple requests converge on one artifact/job identity.
+- Job claim/heartbeat/reclaim use a monotonic lease-fencing generation. Rendering and private Storage I/O occur outside DB locks. Finalization revalidates the current fence, exact source/template binding and server-observed object metadata before atomically committing artifact/job/attempt state with the required audit event.
+- Renderer execution is at-least-once; no exactly-once external side-effect claim is made. Uncertain Storage outcomes require reconciliation by immutable generation identity and checksum; stale workers cannot finalize after reclaim.
+- C36-02 records an unresolved Product Owner decision: whether a job accepted before CMD-032 reopen may finalize afterward as a historical artifact bound to the preserved approved revision, or must be treated as stale/cancelled. No silent rebind to a new draft is allowed.
+
+This is a documentation-level Engineering/Database/Security proposal, not a Product Owner decision, approved schema, worker design or implementation authorization. Template/source physical references, exact constraints/indexes, lock ranks/implicit FK-trigger edges, worker identity/ACL, Storage immutability guarantees, audit-event cardinality, retry limits and concurrency evidence remain OPEN. CMD-036 is NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification remains 0/50; global graph acyclicity remains NOT PROVEN. G9-F1 remains FROZEN and G10-F1 ACTIVE only for bounded foundation work; CMD-036 business mutation and rendering workers remain outside G10-F1. No code, SQL, migration, grants/RLS, automated test, CI, live database, deployment or production data operation was performed.

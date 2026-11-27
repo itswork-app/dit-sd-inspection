@@ -1,9 +1,9 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.26
+**Version:** 0.4.27
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
-**Date:** 2026-11-26  
+**Date:** 2026-11-27  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
 **Gate:** G3/G4/G5/G7/full-system G9 NOT READY; G9-F1 FOUNDATION SCOPE FROZEN; G10-F1 FOUNDATION ACTIVE for bounded foundation only; business-command lock protocol remains unapproved and feature-gated.
 
@@ -611,3 +611,20 @@ The CMD-031–040 detailed contract review v0.2.4, durable operation-ledger prop
 A savepoint may be used inside one operation transaction for local error handling, but it is not a substitute for an independently committed operation. This recommendation follows the existing CMD-035 response contract (durable per-operation results and APPLIED/PARTIAL/CONFLICTED outcomes); it does not create a new offline capability or expand T-09's allowlist.
 
 **Disposition:** engineering recommendation only; Engineering/Database/Security approval remains OPEN. Device binding/revocation, operation-ledger schema admission, exact event cardinality, L05 rank/participation, physical FK/index/trigger edges and adversarial concurrency evidence remain unresolved. CMD-035 lock certification remains NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification remains 0/50; global graph acyclicity remains NOT PROVEN. G9-F1 is FROZEN and G10-F1 ACTIVE only for bounded foundation; CMD-035 business mutation remains outside that authorization. No schema, SQL, migration, grant/RLS, source implementation, test execution or live database operation is authorized or claimed.
+
+
+## 33. CMD-036 generation identity, lease fencing and finalization boundary — 2026-11-27
+
+The CMD-036 review v0.2.5 and Durable Operation Ledger Proposal v0.2.0 now distinguish caller request idempotency from canonical artifact-generation identity. The artifact identity is based on the typed source and immutable source version/hash, immutable template version/hash, renderer profile/version and byte-affecting output options. Concurrent requests for the same canonical tuple must converge on one durable artifact/job identity; actor identity is not an artifact-content discriminator.
+
+Candidate transaction boundaries:
+1. **Enqueue:** one short transaction acquires the source aggregate/revision serialization point, validates the exact approved source and template, reserves the generation identity, persists the PENDING document/job/outbox and accepted audit/idempotency outcome.
+2. **Claim/heartbeat/reclaim:** isolated short job-lease transactions. Each claim/reclaim advances a monotonic fencing generation. No source/document aggregate lock is held during rendering.
+3. **Render/Storage:** external I/O outside database transactions and locks. Private object identity is server-generated and immutable; uncertain writes are reconciled by generation identity and checksum.
+4. **Finalize:** one short transaction revalidates the source binding, template identity, expected job/document version, current lease fence and server-observed object metadata before committing terminal job/document/attempt state and required audit atomically.
+
+The old worker is fenced after lease reclaim and cannot finalize. At-least-once renderer execution is accepted; exactly-once external execution is not claimed. A stale or uncertain Storage object remains private and is reconciled separately; it is never exposed as GENERATED without a successful relational finalization and audit append.
+
+**Blocking source-reopen ambiguity:** CMD-032 preserves the approved immutable revision and historical PDF/print history, but the current PO record does not say whether a generation job accepted before reopen may finish as a historical artifact or must be treated as stale. Do not silently rebind to the new draft. C36-02 is open for explicit PO disposition. This edge is not resolved by the proposed lease or lock order.
+
+**Disposition:** candidate Engineering/Database/Security protocol only. Exact PostgreSQL lock modes/ranks, source/template/job schema, unique indexes, worker identity and ACL, Storage immutability/provider guarantees, event cardinality, audit catalogue, retry limits and adversarial race evidence remain open. LG-20 remains a test scenario, not a certified edge. CMD-036 is NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification remains 0/50; global graph acyclicity remains NOT PROVEN. No schema, SQL, migration, RLS/grants, worker implementation, test execution, live database operation or production action is claimed.
