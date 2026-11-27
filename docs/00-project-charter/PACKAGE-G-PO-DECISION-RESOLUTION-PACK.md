@@ -1,7 +1,10 @@
 # Package G — Product Owner Decision Resolution Pack
 
-Status: Prepared for Product Owner decision — proposals are NOT approvals
-Version: 0.1.0
+> [!NOTE]
+> **Historical proposal pack note:** This document was an early decision-resolution packet (2026-11-23). Product Owner decisions have since been finalized in [DECISION-REGISTER.md](DECISION-REGISTER.md) and [POQ-001](PRODUCT-OWNER-OPEN-DECISION-PACKET.md).
+
+Status: Historical proposal pack — outcomes finalized in Decision Register  
+Version: 0.1.1  
 Date: 2026-11-23
 
 ## Purpose

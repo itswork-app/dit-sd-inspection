@@ -1,7 +1,10 @@
 # Package K — Security, Data Integrity & Production Readiness Audit
 
-**Status:** DOCUMENTATION AUDIT — NOT A SECURITY CERTIFICATION  
-**Version:** 0.1.0  
+> [!NOTE]
+> **Historical audit note:** This document is a historical security/integrity audit from 2026-11-23 on branch `docs/phase-0-foundation`. Current security threat modeling and verification matrices are maintained in [SECURITY-THREAT-MODEL.md](../02-architecture/SECURITY-THREAT-MODEL.md) and [DGA-001](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md).
+
+**Status:** Historical audit snapshot — superseded by Package S and Security Threat Model  
+**Version:** 0.1.1  
 **Date:** 2026-11-23  
 **Branch:** docs/phase-0-foundation
 

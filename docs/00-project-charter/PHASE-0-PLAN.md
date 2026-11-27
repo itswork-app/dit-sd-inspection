@@ -1,6 +1,9 @@
 # Phase 0 — Project Foundation
 
-Status: In progress  
+> [!NOTE]
+> **Historical baseline note:** Phase 0 governance baseline has been completed and superseded by the staged implementation baseline (G9-F1 / G10-F1). Controlling governance and roadmap are maintained in [IRG-001](IMPLEMENTATION-ROADMAP-AND-RELEASE-GOVERNANCE.md) and [MIB-001](MASTER-IMPLEMENTATION-BLUEPRINT.md).
+
+Status: Completed baseline — superseded by G9-F1 / G10-F1 staged roadmap  
 Exit condition: Project foundation reviewed and approved; open assumptions and owners are explicit.
 
 ## Confirmed management decisions

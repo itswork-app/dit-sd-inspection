@@ -1,8 +1,11 @@
 # Package F — Cross-Document Architecture Audit
 
-Status: Audit in progress — scope freeze NOT approved
-Version: 0.1.0
-Branch: docs/phase-0-foundation
+> [!NOTE]
+> **Historical snapshot note:** This document is a historical audit snapshot from 2026-11-23 on branch `docs/phase-0-foundation`. Current authority and open blocking gaps are governed by [DECISION-REGISTER.md](DECISION-REGISTER.md) and [DGA-001](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md).
+
+Status: Historical audit snapshot — superseded by Package S/T and canonical registers  
+Version: 0.1.1  
+Branch: docs/phase-0-foundation  
 Audit date: 2026-11-23
 
 ## 1. Scope
