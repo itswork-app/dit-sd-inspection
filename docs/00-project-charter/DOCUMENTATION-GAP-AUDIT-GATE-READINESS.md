@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 2.6.0
+**Version:** 2.7.0
 **Audit date:** 2026-11-27  
 **Branch reviewed:** `main` (post-merge PR #42; current baseline `ae271615bacae3c3b48eeaafee72ae1c6829fbf1`)  
 **Reviewed baseline HEAD:** `ae271615bacae3c3b48eeaafee72ae1c6829fbf1` (`main`, merge commit for PR #42; includes PRs #38–#42)  
@@ -1383,3 +1383,9 @@ Following Product Owner terminal linking (`supabase link --project-ref emqlbtnej
 - **Remote `pg_dump` schema export (`supabase db dump --remote --schema public,app_internal`):** **PASS** — `545,854 bytes`, SHA-256 `386fc2e29cfc3cd130578cdd18ba5127128bab169165778af81c98d0313c9a9a`, `DUMP_MS=112036` (temporary export deleted after hashing).
 
 **Limits & preserved blockers:** This establishes live staging schema/RLS/Storage provisioning and schema dump export only. Full managed PostgreSQL + Storage object restore with RPO/RTO sign-off (`DGA-B06`/`WP-03`), staging load/SLO (`DGA-B08`/`WP-05`), real-device offline UAT (`DGA-B07`/`WP-04`), repository ruleset activation (`DGA-B15`/`WP-02`), 558-ID QA mapping (`WP-06`), and `G12` production readiness (`DGA-B01..B05`, `T-10`/`T-12`) remain **OPEN / BLOCKED**.
+
+### 26.2 Dependency/secret scan & `WP-06` automated traceability manifest — 2026-11-27
+
+- **Dependency vulnerability scan (`npm audit --json`):** **PASS** — `0` vulnerabilities (`info:0, low:0, moderate:0, high:0, critical:0, total:0`).
+- **Static secret & `service_role` scan:** **PASS** — `git ls-files` contains `0` tracked `.env`/`.pem`/`.key`/credential files; `src/` contains `0` references to `service_role` or secret keys.
+- **`WP-06` remediation (`QA-TRACE-001` v1.0.0):** Added stable `TC-*` tags (`[TC-OFF-003]`, `[TC-OFF-008]`, `[TC-EVD-002]`, `[TC-EVD-004]`, `[TC-DOC-001]`, `[TC-CAP-005]`, `[TC-UNIT-016-003]`, `[TC-PRINT-005]`, `[TC-AUTH-002]`, `[TC-AUTH-003]`, `[TC-AUTH-009]`) directly in test sources and created [QA-AUTOMATED-TRACEABILITY-MANIFEST.md](../04-quality/QA-AUTOMATED-TRACEABILITY-MANIFEST.md) linking **24** verified catalogue IDs to exact assertions while explicitly keeping the remaining `534` IDs `PLANNED / NOT EXECUTED` or `EXTERNAL / BLOCKED`. `WP-06` and `G11` remain **PARTIAL**.

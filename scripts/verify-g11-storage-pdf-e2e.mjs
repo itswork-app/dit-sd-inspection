@@ -242,7 +242,7 @@ async function main() {
       draft_checklist: { [itemId]: "PASS" }
     });
 
-    // 4. Test forged HTML spoofed as PNG -> rejected by CMD-034 magic-byte verifier!
+    // 4. Test forged HTML spoofed as PNG -> rejected by CMD-034 magic-byte verifier! [TC-EVD-002]
     const forgedIntent = await postJson("/api/v1/evidence/intent", insp.cookie, "st-evi-forg", {
       inspection_id: inspId,
       slot_definition_id: slotId,
@@ -268,7 +268,7 @@ async function main() {
     assert.equal(confirmForged.json.status, "EVIDENCE_INVALID");
     console.log("    PASS: Spoofed HTML uploaded as PNG rejected server-side with 400 EVIDENCE_INVALID");
 
-    // 5. Upload real valid PNG -> server verifies SHA-256 + PNG magic bytes -> FINALIZED!
+    // 5. Upload real valid PNG -> server verifies SHA-256 + PNG magic bytes -> FINALIZED! [TC-EVD-004]
     const validIntent = await postJson("/api/v1/evidence/intent", insp.cookie, "st-evi-ok01", {
       inspection_id: inspId,
       slot_definition_id: slotId,
@@ -308,7 +308,7 @@ async function main() {
     assert.equal(createHash("sha256").update(downloadedPng).digest("hex"), VALID_PNG_SHA256);
     console.log("    PASS: Real PNG uploaded, server SHA-256/magic-byte verified, outsider 403 denied, audited 60s download matched exact bytes");
 
-    // 6. Submit, Approve, and Generate real %PDF-1.4 document into private Storage (CMD-036)!
+    // 6. Submit, Approve, and Generate real %PDF-1.4 document into private Storage (CMD-036)! [TC-DOC-001]
     const sub = await postJson("/api/v1/inspections/submit", insp.cookie, "st-sub-0001", {
       inspection_id: inspId,
       expected_row_version: "2",

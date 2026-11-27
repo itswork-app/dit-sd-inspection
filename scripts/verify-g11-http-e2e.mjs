@@ -159,13 +159,13 @@ async function main() {
     assert.equal(reqJson.status, "ACCEPTED");
     assert.equal(reqJson.account_status, "PENDING");
 
-    // Applicant MUST receive 403 on GET /api/v1/admin/accounts
+    // Applicant MUST receive 403 on GET /api/v1/admin/accounts [TC-AUTH-002][TC-AUTH-009]
     const deniedAdmin = await fetch(`${APP_URL}/api/v1/admin/accounts`, {
       headers: { cookie: applicant.cookie }
     });
     assert.equal(deniedAdmin.status, 403, "Pending applicant must get 403 on /api/v1/admin/accounts");
 
-    // 4. Super Admin reads admin queue & approves applicant via live Next.js POST /api/v1/admin/accounts/approve
+    // 4. Super Admin reads admin queue & approves applicant via live Next.js POST /api/v1/admin/accounts/approve [TC-AUTH-003]
     const queueRes = await fetch(`${APP_URL}/api/v1/admin/accounts`, {
       headers: { cookie: sa.cookie }
     });

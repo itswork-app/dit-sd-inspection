@@ -41,7 +41,7 @@ describe("T-09 offline sync queue", () => {
     ).rejects.toThrow(/maksimum 50/);
   });
 
-  it("preserves CONFLICT operations without silently overwriting and supports explicit rebase", async () => {
+  it("[TC-OFF-003][TC-OFF-008] preserves CONFLICT operations without silently overwriting and supports explicit rebase", async () => {
     const store = createMemoryQueueStore();
     const op1 = await enqueueDraftOperation(
       {
