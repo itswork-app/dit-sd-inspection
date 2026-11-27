@@ -1,7 +1,7 @@
 # G11 Evidence Closure Plan — Dit. SD Inspection
 
 **Document ID:** G11-ECP-001  
-**Version:** 1.0.0  
+**Version:** 1.0.1  
 **Status:** ACTIVE — evidence collection and external execution gates remain open  
 **Date:** 2026-11-27  
 **Baseline:** `main` merge commit `ae271615bacae3c3b48eeaafee72ae1c6829fbf1` (PR #42)  
@@ -36,7 +36,7 @@ Run #93 executed checkout, Node.js setup, dependency installation, and `npm run 
 | WP-03 Managed PostgreSQL + Storage recovery | B06 | On an authorized isolated managed-provider project, export/restore PostgreSQL and required Storage object bytes; checksum reconciliation; validate schema, RLS/grants, references, tombstones/legal holds; measure RPO/RTO | Signed drill report includes source/target, provider/region/plan, backup timestamp, checksums, measured RPO/RTO, validation, exceptions and operations sign-off | BLOCKED — provider ownership/plan/access and approval not established |
 | WP-04 Real-device offline UAT | B07 | Execute approved role-based scenarios on actual supported Android Chrome device(s); capture OS/device/browser build, offline edits, reconnect/replay, conflicts, logout/purge, device-loss recovery and evidence access controls | Traceable test IDs, sanitized logs/screenshots where useful, defects disposition, tester identity/role and PO/security acceptance | NOT EXECUTED — physical test devices and UAT participants required |
 | WP-05 Staging load/SLO | B08 | After authorized staging/provider setup and approved numeric SLOs, run representative workload at 10/25/50/75/100 concurrent authenticated users including photo upload, DB writes, reports and PDF | Reproducible report includes dataset/workload, environment/plan/region, p50/p95/p99, throughput, errors, DB/storage metrics, integrity checks, thresholds and approval | BLOCKED — staging and numeric SLO approval absent |
-| WP-06 Remaining QA catalogue | G11 | Map every planned test ID to executed result or explicit not-applicable/deferred rationale; prioritize critical security, authorization, data-integrity, offline, notification, document/print and recovery cases | No critical test unaccounted for; failures fixed/retested; deferred cases have owner, reason, compensating control and gate impact | PARTIAL — catalogue contains 413+ definitions; not all have execution evidence |
+| WP-06 Remaining QA catalogue | G11 | Map every planned test ID to executed result or explicit not-applicable/deferred rationale; prioritize critical security, authorization, data-integrity, offline, notification, document/print and recovery cases | No critical test unaccounted for; failures fixed/retested; deferred cases have owner, reason, compensating control and gate impact | PARTIAL — 558 distinct explicit IDs in 560 definition rows; case-level mapping incomplete |
 
 ## 3. Execution sequence
 
@@ -80,3 +80,17 @@ The ruleset must be changed only by an authorized repository administrator using
 G11 remains **PARTIAL**. The latest merge commit has a successful main-push CI run, which closes the narrow hosted execution proof for that commit. Repository enforcement (ruleset disabled), managed-provider PostgreSQL + Storage restore, real-device offline UAT, staging load/SLO and the unexecuted portion of the QA catalogue remain open. G12 remains **NOT VERIFIED / BLOCKED**.
 
 This plan is a sequencing and evidence-control artifact; it does not claim that any blocked external work package has been executed.
+
+
+## 7. WP-06 catalogue inventory checkpoint — 2026-11-27
+
+A static scan of `docs/04-quality/TEST-CASE-CATALOG-AND-UAT.md` identified 560 line-start test-definition rows and 558 distinct explicitly enumerated test-case IDs. The three repeated definition IDs are `TC-NOTIF-052`, `TC-NOTIF-053`, and `TC-NOTIF-054` (two rows each). Shorthand ranges are not expanded into synthetic IDs. The earlier 413-case figure in prior audit snapshots is superseded for the current catalogue; those historical snapshots remain intact.
+
+The catalogue was updated to v0.7.4 with an explicit note that case-level execution mapping is incomplete. PR #43 CI run #94 passed on head `682bc895591ff70775aa50c12668a7064ec57e8d`, but its workflow result does not identify which catalogue test IDs were executed. Therefore:
+- **Inventory:** reconciled at 558 distinct explicit IDs.
+- **Case-level execution:** not yet reconciled; no ID is marked PASS solely from aggregate CI.
+- **Local synthetic evidence:** retain only the exact test suites/scripts and assertions named in DGA-001 §§22–23; do not extrapolate to the full catalogue.
+- **Duplicate rows:** track the three repeated notification IDs as catalogue cleanup; do not count them as separate cases.
+- **Disposition:** each remaining ID must receive a case-specific evidence record or a reasoned, owned NOT APPLICABLE / DEFERRED disposition with gate impact.
+
+WP-06 remains PARTIAL. Critical test cases cannot be deferred without an approved compensating control and accountable owner.
