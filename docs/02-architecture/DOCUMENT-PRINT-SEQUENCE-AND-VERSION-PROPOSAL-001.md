@@ -1,7 +1,7 @@
 # Document Print Sequence and Version Identity — CMD-037
 
 **Document ID:** PRINT-SEQUENCE-PROPOSAL-001  
-**Version:** 0.1.0  
+**Version:** 0.1.1  
 **Date:** 2026-11-27  
 **Status:** Engineering / Database / Security review proposal — NOT APPROVED FOR IMPLEMENTATION  
 **Authority:** PO-approved T-13 option B; DOC-002; CMD-037 contract review  
@@ -96,9 +96,18 @@ The command records an application action; it does not wait for, call or attest 
 
 - Only an active `document.print` grant in the exact authorized project/session/location scope may record the action.
 - The exact immutable document version must be final and printable.
-- Whether a superseded/historical document version remains eligible for reprint is not explicitly decided by T-13/DOC-002. C37-02 is OPEN for PO disposition. Until decided, do not silently broaden reprint eligibility; fail closed for a version outside the approved current-printable policy.
+- **PO decision DOC-003 (2026-11-27):** an inspection-derived document can only be generated after its source session has started. Once a final immutable artifact has been generated from an eligible approved source, closing the source session does not revoke its print/reprint eligibility. The artifact becomes historical but remains printable; do not require session reopen or a currently ACTIVE session merely to print it. Current `document.print` permission, exact resource scope, artifact integrity and final immutable status are still mandatory.
+- DOC-003 does not decide whether a superseded/replaced artifact version remains printable when a newer version exists. C37-02 remains OPEN only for that distinct version-supersession policy; do not conflate session closure with version supersession.
 - Reauthorization is required on every new command and before disclosing an idempotent replay result.
 - Print events and audit history are append-only; correction is a new controlled event, never mutation/deletion of the historical row.
+
+
+### 5.1 Session-start and post-closure print rule — PO APPROVED DOC-003
+
+- An inspection-derived document must not be generated before its source inspection session has started. The source must have a durable session-start/activation fact; a DRAFT session is ineligible. The command must reject a pre-start generation request rather than create a pending job or artifact.
+- Once generated and finalized from the exact approved immutable inspection revision, the artifact remains a durable historical record. Transitioning the source session to CLOSED does not invalidate, hide, delete, regenerate or make that artifact unprintable.
+- A Print Officer may print/reprint that exact finalized artifact after session closure, subject to current `document.print` permission, current actor/account eligibility, exact resource scope and artifact-integrity checks. Session closure is not itself a denial reason; no session reopen is required just to print.
+- This rule does not authorize edits to the closed session or its inspection, and does not by itself approve new generation after closure. It does not decide whether superseded/replaced versions remain printable; that remains C37-02.
 
 ## 6. CMD-038 interaction
 
@@ -143,7 +152,7 @@ The audit catalogue must confirm exact event names, metadata schema, retention a
 - direct browser DML cannot mutate counter or print events;
 - overlapping CMD-038 batches processing shared documents cannot duplicate success or deadlock;
 - batch retry reprocesses failed items only and never duplicates prior success;
-- historical/superseded-version behavior follows the explicit PO decision.
+- post-session-closure print remains allowed under DOC-003; superseded/replaced-version eligibility remains an explicit open decision.
 
 Tests require an isolated synthetic-data database, deterministic barriers, declared transaction isolation, captured SQLSTATE/lock diagnostics and invariant snapshots. Existing TC-CMD-CONTRACT-024-037 and TC-FN-SEC-025-037 remain PLANNED / NOT EXECUTED.
 
@@ -152,7 +161,7 @@ Tests require an isolated synthetic-data database, deterministic barriers, decla
 | ID | Open issue | Required owner/disposition |
 |---|---|---|
 | C37-01 | Logical document vs immutable version identity; current physical schema has no version FK/table and print_events cannot bind a precise version | Engineering + Database; reconcile CMD-036, ERD, physical schema and API contract |
-| C37-02 | Whether historical/superseded document versions remain eligible for reprint | Product Owner |
+| C37-02 | Whether a superseded/replaced artifact version remains eligible when a newer version exists; session closure alone is not a print blocker under DOC-003 | Product Owner |
 | C37-03 | Meaning and storage location of `attempt_no` versus per-document `sequence_no` and CMD-038 item attempts | Engineering + Database |
 | C37-04 | Counter object/allocator, exact lock modes/ranks, unique indexes, FK/trigger edges and RLS/ACL | Database + Security |
 | C37-05 | Exact audit event metadata, retention and visibility | Audit/Records authority + Security |
