@@ -1,12 +1,16 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 1.0.0  
-Status: TECHNICAL SSOT SYNCHRONIZED — G9-TECH DESIGN RISKS/DEPENDENCIES RECONCILED; EXTERNAL/INSTITUTIONAL & G11 RUNTIME ITEMS REMAIN TRACKED  
+**Version:** 1.1.0  
+Status: TECHNICAL SSOT SYNCHRONIZED — G9-TECH FROZEN; G10 I1–I5 IMPLEMENTED ON SYNTHETIC LOCAL INFRASTRUCTURE; G11 PARTIAL; EXTERNAL/INSTITUTIONAL & G12 PRODUCTION GATES REMAIN OPEN  
 Baseline: Phase 0, 2026-11-23 | Technical SSOT Closure: 2026-11-27  
 Owner convention: accountable role is recorded; named individuals are not invented.
 
 ## Risks
+
+> **Current gate/evidence overlay (2026-11-27; main `706c654`):** `G9-F1` and `G9-TECH` are FROZEN; `G10` `I1→I5` is implemented on isolated synthetic infrastructure; `G11` is PARTIAL; `G12` is NOT VERIFIED / BLOCKED. Local test and rehearsal evidence is recorded in DGA-001 §§22–23 and PRs #39–#41, but does not close managed restore (`DGA-B06`), staging SLO/load (`DGA-B08`), real-device UAT (`DGA-B07`) or hosted CI (`DGA-B15`). The detailed post-merge audit is [PMA-001](POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md). Dated addenda below retain historical status snapshots; current gate status is governed by root `AGENTS.md` v1.3.0 §3.3 and DGA-001 v2.3.0.
+
+
 
 | ID | Type | Description | Impact | Likelihood | Mitigation / response | Accountable role | Status |
 |---|---|---|---|---|---|---|---|
@@ -87,7 +91,7 @@ Owner convention: accountable role is recorded; named individuals are not invent
 |---|---|---|---|---|---|---|
 | R-014 | Risk | Scope freeze or implementation begins while authoritative instrument, privacy, operations, security, and workflow decisions remain open | Critical | Enforce Package S freeze checklist; no implementation until blockers are approved or explicitly deferred with compensating controls | Product Owner / Project Sponsor / CTO | OPEN |
 | I-011 | Issue | Session creation/state transitions, offline device contract, report semantics, and UAT/pilot/rollback ownership remain unresolved | High | Resolve through explicit PO decisions and update all affected docs and tests | Product Owner | OPEN |
-| I-012 | Issue | Package S did not inspect live GitHub settings. 2026-11-27 re-audit inspected settings: no branch protection/rulesets on GitHub Free private plan; Dependabot/code/secret scanning disabled; Actions enabled but hosted runners do not start (PR #30 run fails in ~5s with no logs). Provider quota/billing still not independently verified | High | Keep DGA-B15 open until a required check actually runs to completion; raise GitHub plan or hosted-runner/billing if protection and Actions minutes are required | CTO / Repository Administrator | PARTIAL — SETTINGS INSPECTED; REQUIRED CHECKS NOT PASSED |
+| I-012 | Issue | Hosted workflow execution and required commit checks are not evidenced on audited `main` HEAD `706c654`; PR-triggered CI on the documentation review branch is separate and must be evaluated on the live PR. Earlier PR #30 runner failure cites account billing/spending limits. Branch protection/rulesets and scanning controls also require current-plan verification | High | Keep DGA-B15 open until hosted checks are verified on the relevant commit and repository controls are verified; resolve account billing/spending-limit blocker | CTO / Repository Administrator | MAIN HEAD EVIDENCE ABSENT; PR #42 CI IN PROGRESS — NOT YET VERIFIED |
 | D-009 | Dependency | Controlled instrument documents and institutional records/privacy/security approvals | Scope freeze and implementation authorization | Product Owner / Project Sponsor | BLOCKED |
 
 
@@ -175,7 +179,7 @@ Product Owner approved T-15 option A: INS-016 append-only audit events, atomic a
 
 ## Documentation Gate Audit — DGA-001 (2026-11-24)
 
-**D-025 — Dependency — Documentation gap closure.** The evidence-backed [Documentation Gap Audit — Gate Implementation Readiness](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) is the active closure queue for G1–G9. It records source authority, institutional approvals, permission/command completeness, ERD-only entities, exact RLS/grants, runtime JWT proof, offline/device security, report/notification lifecycle, provider/restore/SLO and CI evidence gaps. **Status: OPEN / BLOCKING SCOPE FREEZE.** Each DGA-Bxx item must be closed with referenced evidence or an explicitly authorized exclusion/deferment and compensating control; a status-only edit is insufficient.
+**D-025 — Dependency — Documentation gap closure.** The evidence-backed [Documentation Gap Audit — Gate Implementation Readiness](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) is the active closure queue for G1–G9. It records source authority, institutional approvals, permission/command completeness, ERD-only entities, exact RLS/grants, runtime JWT proof, offline/device security, report/notification lifecycle, provider/restore/SLO and CI evidence gaps. **Status: OPEN / BLOCKING REMAINING SOURCE, EXTERNAL/RUNTIME AND PRODUCTION GATES.** G9-TECH is frozen and G10 synthetic implementation is active; each remaining DGA-Bxx item must be closed with referenced evidence or an explicitly authorized exclusion/deferment and compensating control. A status-only edit is insufficient.
 
 **R-025 — Risk — premature implementation gate entry.** Entering implementation with incomplete source authority, unresolved command contracts, unapproved institutional policy or unverified security/operations controls may cause architectural rework or production data exposure. **Mitigation:** enforce MIB-001 G0–G12 and DGA-001; no implementation until G9 scope freeze and separate G10 authorization. **Status: OPEN / CRITICAL.**
 

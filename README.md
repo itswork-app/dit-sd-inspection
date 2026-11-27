@@ -18,11 +18,11 @@ Feature parity first; controlled improvements second. The legacy application is 
 Cost-first means optimizing total lifecycle cost without waiving security, privacy, data integrity, backup/recovery, or production reliability.
 
 ## Status
-**Current phase:** Full-System Synthetic Implementation (`G10` ACTIVE — `I1 → I5` & local `G11` synthetic verification completed on feature branches; `G12` production readiness remains BLOCKED). Coding is authorized only for isolated local/development environments using synthetic/test data.
+**Current phase:** Full-System Synthetic Implementation (`G10` ACTIVE — `I1 → I5` implemented on isolated synthetic infrastructure; `G11` PARTIAL (local verification evidence recorded; hosted CI/managed restore/staging SLO/real-device UAT remain open); `G12` production readiness remains BLOCKED). Coding is authorized only for isolated local/development environments using synthetic/test data.
 
 **Scope freeze / G9-F1:** FOUNDATION SCOPE FROZEN (2026-11-25)  
 **Full-system technical SSOT (`G9-TECH`):** FROZEN (2026-11-27; `PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001` — 14/14 technical DGA blockers closed; 62 canonical tables, 62/62 RLS parity & 52 app commands reconciled)  
-**G10 full-system synthetic implementation:** ACTIVE (2026-11-27; local `I1 → I5` slices implemented: 13 SQL migrations, `62/62` `ENABLE + FORCE RLS`, `T-18` `NOLOGIN` wrappers, private Storage RLS + PDF 1.4 renderer, 67 Next.js routes, synthetic data only)  
+**G10 full-system synthetic implementation:** ACTIVE (2026-11-27; local `I1 → I5` slices implemented: 13 SQL migrations, `62/62` `ENABLE + FORCE RLS`, `T-18` `NOLOGIN` wrappers, private Storage RLS + PDF 1.4 renderer, 68 Next.js routes, synthetic data only)  
 **G11 verification:** LOCAL SYNTHETIC SUITE PASS (unit/migration/build, SQL RLS/SoD/CAS/idempotency verifiers, multi-connection PostgreSQL concurrency races, live HTTP/JWT E2E, live Private Storage + PDF E2E, local backup/restore rehearsal, local 100-request load baseline — see `DGA-001` §23); Hosted GitHub Actions CI **ABSENT / BILLING BLOCKED (`DGA-B15`)**; managed-provider restore (`DGA-B06`), staging load test/SLO (`DGA-B08`) and real-device UAT (`DGA-B07`) **NOT EXECUTED**  
 **G12 production / real institutional data readiness:** NOT VERIFIED / BLOCKED (`DGA-B01..B06`, `B08`, `B15`, written `T-10`/`T-12` approvals)
 
@@ -32,7 +32,7 @@ Cost-first means optimizing total lifecycle cost without waiving security, priva
 The [Implementation Roadmap and Release Governance](docs/00-project-charter/IMPLEMENTATION-ROADMAP-AND-RELEASE-GOVERNANCE.md) defines pre-implementation phases, G9/G10 authorization, implementation phases I0–I7, release controls and Semantic Versioning 2.0.0.
 
 ## Documentation authority and delivery gates
-The comprehensive directory map of all 103 controlled documents under `docs/` is provided in the [Master Documentation Index & Architecture Map](docs/README.md).
+The comprehensive directory map of all 104 controlled documents under `docs/` is provided in the [Master Documentation Index & Architecture Map](docs/README.md).
 
 Start with the [Master Implementation Blueprint](docs/00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md). It defines source-of-truth precedence, non-negotiable engineering invariants, requirement traceability, delivery gates G0–G12, production-readiness evidence, and the next documentation workstreams.
 
@@ -40,7 +40,7 @@ The current [Documentation Gap Audit — Gate Implementation Readiness](docs/00-
 
 The [Decision Register](docs/00-project-charter/DECISION-REGISTER.md) is the index of approved and open Product Owner decisions. The [T-19 Repository Runtime Architecture Audit](docs/02-architecture/T19-REPOSITORY-RUNTIME-ARCHITECTURE-AUDIT.md) is a historical architecture baseline; the current staged foundation implementation status and scope are controlled by this README, root AGENTS.md, MIB-001 and DGA-001.
 
-Notification lifecycle design: [NLA-001 — Notification Lifecycle and Delivery Architecture](docs/02-architecture/NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md) documents the approved INS-015 product policy and POQ-01..04 semantics for recipient scope, channels, retries, audit and escalation. Technical selector, snapshot, dispatch, worker, schema, security and runtime admission remain open; this is not implementation authorization.
+Notification lifecycle design: [NLA-001 — Notification Lifecycle and Delivery Architecture](docs/02-architecture/NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md) documents the approved INS-015 product policy and POQ-01..04 semantics for recipient scope, channels, retries, audit and escalation. The technical design baseline is included in the frozen G9-TECH SSOT; local synthetic implementation and verification evidence is tracked in DGA-001. External provider dispatch remains gated by written `T-10`/`T-12` approvals, and hosted/runtime evidence remains subject to G11/G12 gates.
 
 For the complete proposed command inventory, see the [CMD-001–054 Cross-Command Reconciliation](docs/02-architecture/CMD-001-054-CROSS-COMMAND-RECONCILIATION.md) and its seven linked detailed command reviews. These are engineering proposals, not executable-contract approval. See docs/00-project-charter/, docs/01-product-requirements/, docs/02-architecture/, docs/03-functional-design/, docs/03-ux/, and docs/04-quality/ for detailed specifications.
 
@@ -51,11 +51,21 @@ The current static reconciliation is recorded in [SSOT-AUDIT-001](docs/00-projec
 **Governance:** `G10` Full-System Synthetic Implementation (`AGENTS.md` v1.3.0 §3 & §3.3) authorizes ordered `I1 → I5` engineering implementation and local verification on dedicated feature branches using synthetic/test data only. It strictly prohibits real institutional personal/evidence data, production/staging deployment, live hosted database mutation, enabling `CMD-044` (`export-audit`) or external notification provider dispatch adapters (`CMD-053` email/push / `INT-NOTIF-001`) prior to written `T-10`/`T-12` approvals, and creating any application surface for PO-excluded external control-plane IDs `CMD-045..048`. `GOV-MERGE-001` continues to govern documentation-only merges; code PRs require actual automated checks and documented solo-maintainer review.
 
 
-## Foundation branch checkpoint — 2026-11-27
+## Historical foundation branch checkpoint — 2026-11-27
+
+## Post-merge audit and current evidence checkpoint — 2026-11-27
+
+PRs #38–#41 are merged to `main`; audited `main` HEAD is `706c654a17d415913892b64fe71de59c2a09bafe`. Current gate state: `G9-F1`/`G9-TECH` FROZEN; `G10` ACTIVE with `I1→I5` implemented on synthetic local/development infrastructure; `G11` PARTIAL; `G12` NOT VERIFIED / BLOCKED. PR #41 records 68 Next.js build routes (the 67-route count in the older feature-branch checkpoint below is historical evidence from that earlier build).
+
+The local backup/restore rehearsal and local burst load baseline are documented in DGA-001 §23. They do not close managed-provider restore (`DGA-B06`) or staging SLO/load (`DGA-B08`). Real-device offline UAT (`DGA-B07`) remains NOT EXECUTED. GitHub API returned no workflow runs and no combined commit statuses for audited main HEAD; hosted CI is ABSENT/BLOCKED (`DGA-B15`), not PASS.
+
+See [PMA-001 — Post-Merge Repository Audit](docs/00-project-charter/POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md) for findings and remediation. PR #42 is the documentation-only audit/remediation review branch; its merge and CI status must be verified separately.
+
+
 
 PR #30 (`feat/foundation-bootstrap-v1-rebased`) is OPEN and unmerged. The branch is integrated with `main` through PR #37 (`5b7fdd9`), commits a verified `package-lock.json`, uses reproducible `npm ci --no-audit --no-fund` in `.github/workflows/ci.yml`, activates `src/proxy.ts` for Next.js 16 `src/app/` runtime, preserves `Referrer-Policy: no-referrer` on `/auth/callback`, disables `next dev` auto-modification of `AGENTS.md` (`agentRules: false`), and passes the full local quality gate (`npm ci --no-audit --no-fund && npm run check`), non-mutating live runtime smoke tests, and interactive development Google OAuth sign-in/sign-out round trip against `.env` (deny-by-default `/auth/pending` verified). Hosted GitHub Actions execution on PR #30 remains blocked by the repository account's billing/spending limit (GitHub Check Run `140276596713` annotation: *"The job was not started because recent account payments have failed or your spending limit needs to be increased"*). Do not interpret local checks as hosted GitHub Actions CI PASS, full-system G9 readiness, or production readiness.
 
-## Full-system synthetic implementation & local G11 checkpoint — 2026-11-27
+## Historical full-system synthetic implementation & local G11 checkpoint — 2026-11-27
 
 Following PO/sole-maintainer sign-off `PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001` (`AGENTS.md` v1.3.0), all four synthetic implementation slices (`I1 → I5`), local `G11` multi-connection concurrency & HTTP/JWT E2E suites, and private Supabase Storage + deterministic `%PDF-1.4` integration were implemented and locally verified on stacked branches culminating in `feat/i4-storage-and-pdf-renderer`:
 
