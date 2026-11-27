@@ -1,8 +1,8 @@
 # PostgreSQL Command Contract Catalogue
 
-**Status:** PO product semantics for CMD-011–020 APPROVED; CMD-045–048 external control-plane disposition PO APPROVED; remaining application command engineering/security contracts OPEN; NOT approved for implementation  
-**Version:** 0.4.14 | **Date:** 2026-11-27  
-**Decision basis:** T-14, T-15, T-16, T-17, T-18; Package L/M; canonical permission registry v0.2.2.
+**Status:** TECHNICAL SSOT CLOSED — READY FOR G9-TECH FREEZE (52 in-scope application commands `CMD-001..044`, `CMD-049..056` reconciled with `RBAC-003`, `SES-001`, `DOC-003`, `C36-02`, `IDC-O04..O10`, `NLA-MVP-001`, `CONCURRENCY-001` v1.0.0, `LOCK-MANIFEST-001` v1.0.0; `CMD-045..048` excluded external control plane; implementation & runtime QA gated to G11)  
+**Version:** 1.0.0 | **Date:** 2026-11-27  
+**Decision basis:** T-14, T-15, T-16, T-17, T-18, POQ-01..04, RBAC-003, SES-001, DOC-003, C36-02, IDC-O04..O10, NLA-MVP-001; Physical Schema v1.0.0 (62 tables); Canonical Permission Registry v1.0.0; Function Security v1.0.0.
 
 ## 1. Purpose and boundary
 
@@ -247,3 +247,22 @@ CMD-052 must consume only that immutable candidate set; it must not re-query cur
 The recommended technical boundary is a separately committed batch-acceptance transaction followed by one short PostgreSQL transaction per operation. Each operation targets one inspection and atomically commits its domain mutation (if any), terminal operation result, required domain/audit events and idempotency outcome. A later failure cannot roll back earlier committed operations. A savepoint is permitted only inside one operation transaction; it is not an alternative to per-operation durability.
 
 This is an Engineering/Database/Security review recommendation derived from the already specified durable per-operation result and APPLIED/PARTIAL/CONFLICTED response semantics. It does not alter PO-approved T-09 option B or authorize a device registry, new schema, RLS/grants, worker, route/RPC or business implementation. Final technical approval and adversarial concurrency evidence remain OPEN; CMD-035 is NOT CERTIFIED.
+
+
+## Technical SSOT Closure — SES-001 Commands (`CMD-055`/`CMD-056`) & Full 52-Command Reconciliation (2026-11-27)
+
+To close `DGA-B10`, `DGA-B14`, and `SES-T01..T10` without overloading `CMD-027` (release-only) or `CMD-013` (session transition), two dedicated command IDs are assigned for the PO-approved `SES-001` packed-unit ABORT workflow:
+
+| ID | Logical command | Permission | Request allowlist | Actor, scope & SoD | Physical read/write set | Lock order (`LPR-01` v1.0.0) | Idempotency | Audit event | Typed outcomes | Planned QA |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `CMD-055` | `request-inspection-abort` | `inspection.abort.request` | `inspection_id`, `returned_revision_id`, `expected_row_version`, `reason`, `packed_evidence_ref` | Original Inspector in originating active session; exact current `RETURNED_FOR_CORRECTION` revision; does NOT alter inspection state or release claim; at most one `PENDING` request | `inspections`, `inspection_revisions`, `review_events`, `inspection_abort_requests`, `audit_events`, `idempotency_records` | `L00` → `L30` (`FOR SHARE`) → `L50` (`FOR SHARE`) → `L90` (`FOR UPDATE`) → `L100` (`inspection_abort_requests`) → `L110` | `actor + CMD-055 + inspection_id + key` | `inspection.abort_requested` | `REQUESTED`; `ALREADY_PENDING`; `INVALID_STATE`; `STALE_VERSION`; `DENIED` | `TC-INS-DRAFT-021..024` |
+| `CMD-056` | `decide-inspection-abort` | `inspection.abort.decide` | `abort_request_id`, `decision` (`APPROVE`/`REJECT`), `expected_row_version`, `reason` | Admin/Korlap/Super Admin in assigned project/session scope; hard SoD `actor != requester_user_id`; `APPROVE` atomically records decision, transitions `inspections` to terminal `ABORTED`, closes active `inspection_draft_contexts`, releases active `unit_claims` if held, and appends `inspection_events` + `audit_events`; `REJECT` leaves inspection `RETURNED_FOR_CORRECTION` | `inspection_abort_requests`, `inspection_abort_decisions`, `inspections`, `inspection_draft_contexts`, `unit_claims`, `inspection_events`, `audit_events`, `idempotency_records` | `L00` → `L30` (`FOR SHARE`) → `L50` (`FOR SHARE`) → `L80` (`unit_claims FOR UPDATE`) → `L90` (`inspections FOR UPDATE`) → `L100` (`inspection_draft_contexts`, `inspection_abort_requests`) → `L110` (`inspection_abort_decisions`, `inspection_events`, `audit_events`) | `actor + CMD-056 + abort_request_id + key` | `inspection.abort_approved` / `inspection.abort_rejected` | `ABORTED`; `REJECTED`; `SOD_VIOLATION`; `STALE_REVISION`; `STALE_VERSION`; `DENIED` | `TC-INS-DRAFT-025..027`; `TC-SESSION-002..008` |
+
+### Synchronized Cross-Catalogue Closure Rules (`G9-TECH`)
+- **Total logical IDs:** 56 (`CMD-001..044`, `CMD-049..056` = **52 in-scope application commands**; `CMD-045..048` = **4 PO-approved excluded external control-plane IDs**).
+- **Version-token normalization (`CONCURRENCY-001` v1.0.0):** all CAS fields standardized to decimal-string `expected_row_version` (`CMD-005`, `CMD-007`, `CMD-009`, `CMD-010`, `CMD-012`, `CMD-013`, `CMD-016`, `CMD-017`, `CMD-019`, `CMD-020`, `CMD-021`, `CMD-024`, `CMD-027..032`, `CMD-035`, `CMD-040`, `CMD-055`, `CMD-056`); `CMD-030/031` require both `expected_revision_no` and `expected_row_version`; `CMD-020` requires both `expected_row_version` and `expected_draft_hash`.
+- **Reopen & session rules (`C36-02`, `IDC-O04..O10`):** `CMD-036` finalizer marks jobs accepted prior to `CMD-032` reopen as `STALE_CANCELLED`; a privilegedly reopened `CLOSED` session (`CMD-013`) accepts a brand-new `inspection_id` for a previously `ABORTED` unit while keeping the prior `ABORTED` attempt terminal; `CMD-032` requires explicit authorized claim/reassignment; `CMD-028/029` permit explicit immutable carry-forward links via `evidence_assets.origin_evidence_asset_id`.
+- **Print batch bounds (`C37-06` / `C38-01..05`):** default configurable `CMD-038` batch limit is 100 items per request (server-enforced hard cap 200); overlapping retry batches converge safely on per-document idempotency and `document_print_counters` unique `(document_id, sequence_no)`.
+- **Gated commands pending external `T-10`/`T-12`:** `CMD-044` (`export-audit`) and `CMD-053` external provider adapters remain runtime-disabled until written institutional/provider authorization exists.
+
+**Closure disposition (2026-11-27):** `DGA-B10` and `DGA-B14` technical command contracts are **CLOSED (52/52 application commands)** for `G9-TECH` freeze. SQL function implementation and runtime contract tests remain gated to `G11`.

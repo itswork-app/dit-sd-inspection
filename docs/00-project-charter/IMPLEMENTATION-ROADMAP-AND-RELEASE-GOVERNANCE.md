@@ -1,12 +1,12 @@
 # Implementation Roadmap and Release Governance
 
 **Document ID:** IRG-001  
-**Version:** 1.0.6  
-**Status:** CONTROLLED PLAN — STAGED FOUNDATION IMPLEMENTATION  
-**Date:** 2026-11-26  
-**Authority:** MIB-001, AGENTS.md, approved Decision Register and ADRs  
-**Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
-**G10-F1 foundation implementation:** ACTIVE (2026-11-25, following PR #26); full-system G9 NOT READY; later business-feature gates remain open
+**Version:** 1.1.0  
+**Status:** CONTROLLED PLAN — G9-TECH TECHNICAL SSOT READY FOR FREEZE SIGN-OFF; G10-F1 FOUNDATION ACTIVE  
+**Date:** 2026-11-27  
+**Authority:** MIB-001 v1.1.0, AGENTS.md v1.2.5, approved Decision Register (2026-11-27) and ADRs  
+**Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24); FINAL PO SEMANTIC DECISIONS APPROVED (2026-11-27)
+**G10-F1 foundation implementation:** ACTIVE (2026-11-25, following PR #26); G9-TECH full-system technical SSOT ready for PO/maintainer freeze sign-off; full-system synthetic G10 pending explicit activation record
 
 **Current gate interpretation (2026-11-26):** Historical sections 10–11 retain the pre-activation G10 NOT ACTIVE state as dated snapshots. The controlling state under AGENTS.md v1.2.5 is G9-F1 FOUNDATION SCOPE FROZEN and G10-F1 FOUNDATION IMPLEMENTATION ACTIVE for bounded foundation work only. Full-system G9, later business features and production operations remain separately gated.
 
@@ -312,3 +312,14 @@ This update aligns IRG-001 with root AGENTS.md v1.2.5, MIB-001 v1.0.16 and DGA-0
 - G10-F1 is limited to synthetic-data foundation work. It does not activate full-system G9, later business-feature implementation or production operations.
 - The CMD-035 transaction-boundary documentation update on the dedicated documentation branch is not executable business implementation and does not change the G10-F1 boundary.
 - Full-system G9 remains NOT READY; no production readiness, automated verification or release approval is claimed.
+
+
+## 13. Full-System Technical SSOT Closure (`G9-TECH`) & Ordered Implementation Sequence — 2026-11-27
+
+All 14 technical/engineering/security DGA blockers (`DGA-B07`, `DGA-B09..B14`, `DGA-B16..B22`) are now closed at the Technical SSOT Design level (`DGA-001` v2.0.0, `SSOT-AUDIT-001` v1.0.0, `MIB-001` v1.1.0). Upon explicit PO/maintainer sign-off of **`G9-TECH` Freeze** and activation of **`G10` Full-System Synthetic Implementation** (via update to root `AGENTS.md` §3.2), implementation proceeds strictly in ordered phases `I1 → I5` using synthetic data in isolated development environments:
+
+1. **`I1` / `I2` — Database Foundation, RBAC-003, Audit & Idempotency (`CMD-001..007`):** local Supabase CLI migrations, `app_cmd_definer`/`app_worker_definer` roles, 62-table DDL/RLS rollout in logical slices, `CMD-001..007` + negative RLS/SoD/last-admin integration tests, and Account Approval / Role Management UI.
+2. **`I3` — Project, Session, Assignment, Capacity `T-14`, Target & Extensible Instruments (`CMD-008..021`):** parent-fence `FOR UPDATE`/`FOR SHARE`, `T-14` `L10` serialization, and `CFG-001`/`T-17` declarative IFP & Standing Bracket configuration.
+3. **`I4` — Canonical Unit `T-16`, Claim, Inspection, Review, Abort `SES-001`, Evidence & Offline Sync (`CMD-022..035`, `CMD-055..056`):** `L20` serial arbitration, immutable revisions, `inspection_draft_contexts`, private Storage intents, packed-unit ABORT, and `T-09` bounded IndexedDB sync.
+4. **`I5` — Reports, PDF Generation (`C36-02`), Print (`T-13`/`DOC-003`), Attendance & Notifications (`NLA-MVP-001`) (`CMD-036..043`, `CMD-049..052`, `CMD-054`):** keeping `CMD-044` audit export and `CMD-053` external provider adapters disabled until written `T-10`/`T-12` approvals.
+5. **`I6` / `I7` — G11 Hardening & G12 Production Release:** `pg_catalog` security audit, `LPR-10` (`LG-01..LG-41`) adversarial concurrency tests, 100-user load testing, restore drills, real-device UAT, and PO institutional/provider readiness (`DGA-B01..B06`, `B08`, `B15`).

@@ -1,8 +1,8 @@
 # PostgreSQL Function Security & EXECUTE Grant Design
 
-**Status:** Security architecture proposal — T-18 Option A approved; per-function privilege review required; NOT approved for implementation  
-**Version:** 0.3.3 | **Date:** 2026-11-24  
-**Depends on:** T-18 option A; PostgreSQL Command Contract Catalogue v0.4.8; physical schema v0.4.4 and 48-table proposed RLS catalogue v0.2.5; canonical permission registry v0.2.5 draft.
+**Status:** TECHNICAL SSOT CLOSED — T-18 Option A Hybrid Function Security & Exact ACL Design finalized for G9-TECH freeze (live catalog introspection & runtime verification gated to G11)  
+**Version:** 1.0.0 | **Date:** 2026-11-27  
+**Depends on:** T-18 option A; PostgreSQL Command Contract Catalogue v1.0.0; Physical Schema v1.0.0 and 62-table RLS Catalogue v1.0.0; Canonical Permission Registry v1.0.0.
 
 ## 1. Purpose and strict boundary
 
@@ -158,6 +158,48 @@ Global tests must prove:
 6. Internal helper functions are not callable through exposed PostgREST paths.
 7. SECURITY DEFINER owner is NOLOGIN and not SUPERUSER/BYPASSRLS; function owner has no unrelated broad grants.
 8. search_path is pinned; untrusted schema shadowing cannot redirect object resolution.
+
+
+## 10. Technical SSOT Closure — Concrete T-18 Schema, Role Ownership & Per-Command ACL Matrix (2026-11-27)
+
+This section closes the technical design portion of `DGA-B12` for **Full-System Technical SSOT (`G9-TECH`)**. Live PostgreSQL catalog introspection (`pg_roles`, `pg_proc`, `information_schema`) and runtime negative-ACL tests remain mandatory `G11` build-time verification evidence.
+
+### 10.1 Schema & Non-Login Role Separation
+
+| Database schema / role | Type | Attributes / Exposure | Purpose |
+|---|---|---|---|
+| `public` (or dedicated `app_data` + PostgREST-exposed `app_rpc`) | Schema | Protected business/governance tables have `ENABLE ROW LEVEL SECURITY` + `FORCE ROW LEVEL SECURITY`; `REVOKE INSERT, UPDATE, DELETE, TRUNCATE ON ALL TABLES FROM PUBLIC, anon, authenticated` | Ensures browser callers can NEVER perform direct table DML |
+| `app_internal` | Schema | **NOT exposed in PostgREST**; `REVOKE ALL ON SCHEMA app_internal FROM PUBLIC, anon, authenticated` | Houses `F3` authorization helpers, `F4` immutability triggers, and `F5` internal worker functions (`CMD-052..054`, render finalizer) |
+| `app_migrator` | Role | Migration DDL owner only (not used at runtime) | Owns tables, indexes, constraints, and migrations |
+| `app_cmd_definer` | Role | `NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS NOINHERIT` | Dedicated owner of all `F1` narrow `SECURITY DEFINER` command functions (`CMD-001..040`, `CMD-050..051`, `CMD-055..056`). Receives ONLY explicit minimum table/sequence grants per reviewed command; does NOT own protected tables |
+| `app_worker_definer` | Role | `NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS NOINHERIT` | Dedicated owner of `F5` internal worker functions (`CMD-052..054`, `CMD-036` render finalizer). Zero browser/`authenticated` `EXECUTE` grants |
+
+### 10.2 Standardized Per-Command T-18 Function Classification (56 Stable IDs)
+
+| Command IDs | Logical function convention | Class | Security mode | Owner | `SET search_path` | Caller `EXECUTE` grant |
+|---|---|---|---|---|---|---|
+| `CMD-001..007` | `cmd_request_account_access_v1` .. `cmd_revoke_scope_v1` | F1 | `SECURITY DEFINER` | `app_cmd_definer` | `''` | Exact signature to `authenticated` only; `PUBLIC`/`anon` revoked |
+| `CMD-008..017` | `cmd_create_project_v1` .. `cmd_manage_target_plan_v1` | F1 | `SECURITY DEFINER` | `app_cmd_definer` | `''` | Exact signature to `authenticated` only; `PUBLIC`/`anon` revoked |
+| `CMD-018..021` | `cmd_create_instrument_v1` .. `cmd_deactivate_instrument_v1` | F1 | `SECURITY DEFINER` | `app_cmd_definer` | `''` | Exact signature to `authenticated` only; `PUBLIC`/`anon` revoked |
+| `CMD-022..032`, `CMD-055..056` | `cmd_register_canonical_unit_v1` .. `cmd_reopen_inspection_v1`, `cmd_request_inspection_abort_v1`, `cmd_decide_inspection_abort_v1` | F1 | `SECURITY DEFINER` | `app_cmd_definer` | `''` | Exact signature to `authenticated` only; `PUBLIC`/`anon` revoked |
+| `CMD-033..040` | `cmd_create_upload_intent_v1` .. `cmd_verify_attendance_v1` | F1 | `SECURITY DEFINER` | `app_cmd_definer` | `''` | Exact signature to `authenticated` only; `PUBLIC`/`anon` revoked |
+| `CMD-041..043`, `CMD-049` | `qry_get_actual_report_v1`, `qry_get_target_report_v1`, `qry_read_audit_v1`, `qry_list_own_notifications_v1` | F2 | `SECURITY INVOKER` | `app_migrator` | `''` | Exact signature to `authenticated` only; RLS enforced under caller JWT |
+| `CMD-044` | `cmd_export_audit_v1` | F1 (GATED) | `SECURITY DEFINER` | `app_cmd_definer` | `''` | **Not granted / runtime-disabled** until written `T-10` approval |
+| `CMD-045..048` | **NONE — External control plane (PO APPROVED)** | F6 | N/A | N/A | N/A | **No function created; zero grants** |
+| `CMD-050..051` | `cmd_mark_notification_read_v1`, `cmd_publish_notification_policy_v1` | F1 | `SECURITY DEFINER` | `app_cmd_definer` | `''` | Exact signature to `authenticated` only; `PUBLIC`/`anon` revoked |
+| `CMD-052..054` | `app_internal.wrk_fanout_notification_outbox_v1`, `wrk_dispatch_notification_delivery_v1` (external adapter disabled until `T-10`/`T-12`), `wrk_evaluate_notification_escalation_v1` | F5 | `SECURITY DEFINER` | `app_worker_definer` | `''` | Dedicated non-login worker role only; **zero `PUBLIC`/`anon`/`authenticated` grants** |
+
+### 10.3 Mandatory Per-Function Body Template Invariants
+
+Every `F1` function MUST execute in this fixed order before returning:
+1. Validate non-null `auth.uid()` from caller JWT; reject immediately if null.
+2. Validate input allowlist, bounds, and canonical types (zero dynamic SQL).
+3. Perform `L00` idempotency lookup/claim (`actor + command + scope + key + canonical_hash`). On completed replay: re-check current authorization, then return original result without mutation.
+4. Acquire locks strictly in ascending canonical rank order (`LOCK-PROTOCOL-DECISION-RESOLUTION-001` v1.0.0) with `SET LOCAL lock_timeout = '5s'` and `SET LOCAL statement_timeout = '15s'`.
+5. Revalidate `app_users.account_status = 'APPROVED'` (except `CMD-001`), canonical permission grant, explicit scope, grantor ceiling, resource state, SoD, and `expected_row_version` / hash under lock.
+6. Execute business mutation, append canonical domain event, append `audit_events` row, and store idempotency outcome in the same transaction; any error rolls back atomically (fail-closed).
+
+**Closure disposition (2026-11-27):** `DGA-B12` technical design is **CLOSED** for `G9-TECH` freeze. Deployed role/grant introspection and live caller-JWT positive/negative test execution remain gated to `G11`.
 9. Forged JWT/user metadata/client actor/role/scope cannot elevate authority.
 10. Revoked/expired role or permission takes effect at transaction time.
 11. Unauthorized function calls do not leak resource existence or sensitive state.

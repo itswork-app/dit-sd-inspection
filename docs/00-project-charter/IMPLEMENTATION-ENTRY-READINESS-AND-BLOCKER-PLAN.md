@@ -1,12 +1,12 @@
 # Implementation Entry Readiness and Remaining Blocker Plan
 
 **Document ID:** IER-001  
-**Version:** 0.1.3  
-**Status:** CONTROLLED READINESS PLAN — NOT AN IMPLEMENTATION AUTHORIZATION  
-**Date:** 2026-11-25  
-**Repository baseline:** `main` at `18ac4f91484a1afa5e7e5bf35fe9c7b6debfaaa5`  
-**Authority:** Root `AGENTS.md`, MIB-001, DGA-001, Decision Register, approved PRD/ADR, RTM-001, RAID-001 and QA Catalogue  
-**Current gates:** G9 NOT READY; G10 NOT ACTIVE
+**Version:** 1.0.0  
+**Status:** TECHNICAL SSOT CLOSURE COMPLETE — READY FOR G9-TECH FREEZE SIGN-OFF (PRODUCTION/INSTITUTIONAL & G11 RUNTIME GATES PRESERVED)  
+**Date:** 2026-11-27  
+**Repository baseline:** `docs/g9-technical-ssot-closure` (based on `main` `5b7fdd9`)  
+**Authority:** Root `AGENTS.md` v1.2.5, MIB-001 v1.1.0, DGA-001 v2.0.0, Decision Register (2026-11-27), approved PRD/ADRs, RTM-001, RAID-001 and QA Catalogue  
+**Current gates:** G9-F1 FROZEN; G10-F1 ACTIVE; G9-TECH READY FOR PO/MAINTAINER FREEZE SIGN-OFF; G10 FULL-SYSTEM SYNTHETIC IMPLEMENTATION PENDING EXPLICIT ACTIVATION; G12 PRODUCTION NOT VERIFIED
 
 ## 1. Purpose
 
@@ -149,3 +149,14 @@ Excluded: production operations/data; executable business mutations with unresol
 Upon merge of the governing Product Owner decision PR, implementation may proceed on a dedicated feature branch for the included foundation scope. This is a staged gate, not a declaration that full-system G9 is complete. F-03/F-04 and other command/security/domain workstreams remain feature-entry gates and must be closed before implementing the affected business mutations. QA results must be recorded only after execution.
 
 The Product Owner is the sole maintainer and accountable engineering decision owner. Documented self-review, automated checks and post-merge verification remain mandatory; independent reviewer availability is not a blocker.
+
+
+## 12. Full-System Technical SSOT Closure (`G9-TECH`) — 2026-11-27
+
+All technical/engineering/security design blockers required for synthetic-data full-system implementation (`DGA-B07`, `DGA-B09..B14`, `DGA-B16..B22`, `F-03`, `F-04`, `F05-T1..T5`, `SES-001`, `CONCURRENCY-001`, `RBAC-003`, `T-18` ACL, and 62/62 canonical physical-schema/RLS parity across 52 in-scope application commands) have been closed across synchronized v1.0.0 specifications following Product Owner approval of `C36-02`, `IDC-O10/SES-T10`, `IDC-O04..O06`, and `NLA-MVP-001`.
+
+**Explicit boundary preserved:**
+- **Ready for PO/Maintainer Freeze Sign-Off (`G9-TECH`):** Full-System Technical SSOT for synthetic-data implementation in isolated development environments.
+- **Still External / Production-Gated (per `PO-2026-11-25-IMPLEMENTATION-RESPONSIBILITY-001`):** `DGA-B01..B06`, `DGA-B08`, `DGA-B15` (institutional source/signatory/T-10 privacy/T-12 provider ownership, restore drills, numeric SLOs, hosted GitHub Actions billing). Real institutional data, irreversible retention/deletion, `CMD-044` audit export, `CMD-053` external notification provider adapters, and production deployment remain strictly prohibited.
+- **Still Gated to `G11`:** SQL migrations, deployed PostgreSQL `pg_catalog` introspection, RLS/negative-auth tests, `LPR-10` (`LG-01..LG-41`) adversarial concurrency tests, and UI/E2E/offline verification.
+- **G10 Full-System Synthetic Implementation Activation:** Requires explicit PO/maintainer sign-off and update of root `AGENTS.md` §3.2 after reviewing this `G9-TECH` baseline.

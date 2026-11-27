@@ -1,8 +1,8 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.2.1  
-Status: Baseline draft — requirements require source validation  
+**Version:** 1.0.0  
+Status: TECHNICAL SSOT SYNCHRONIZED — READY FOR G9-TECH FREEZE SIGN-OFF (ALL 52 APP COMMANDS & 62 TABLES MAPPED; EXTERNAL SOURCE AUTHORITY & G11 RUNTIME QA PRESERVED)  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
 ## Requirement ID convention
@@ -648,3 +648,11 @@ This traceability update does not certify any lock path or writer and does not a
 Decision Register RBAC-003 (distinct from RTM requirement RBAC-003) is PO-APPROVED without amendment. This RTM update adds AUTH-002 for request/decision history and RBAC-005 for role/scope governance, and makes AUTH-001 explicit about first verified sign-in and PENDING status.
 
 The controlling specification is [RBAC-003 — Account Lifecycle, Role and Scope Governance](../02-architecture/RBAC-003-ACCOUNT-LIFECYCLE-AND-ROLE-SCOPE-GOVERNANCE.md) v0.1.0. CMD-001–007 are reconciled at product-semantic level only. Physical schema, canonical permission registry, RLS/grants, break-glass recovery, version tokens, lock graph, concurrency behavior and QA execution remain open. T-14 is unchanged. No test execution or implementation verification is claimed.
+
+
+## Full-System Technical SSOT traceability closure (`G9-TECH`) — 2026-11-27
+
+All technical requirements across `AUTH`, `RBAC`, `PROJ`, `SES`, `CAP`, `INSTR`, `UNIT`, `CLAIM`, `INS`, `REV`, `EVD`, `SYNC`, `DOC`, `PRINT`, `ATT`, `RPT`, `AUD`, and `NOTIF` are now traced to reconciled v1.0.0 technical SSOT artifacts:
+- **PO decisions closed (2026-11-27):** `C36-02` (`STALE_CANCELLED` on reopen), `IDC-O10/SES-T10` (new `inspection_id` permitted in privilegedly reopened `CLOSED` session; prior `ABORTED` stays terminal), `IDC-O04..O06` (return owned by original Inspector; reopen requires explicit claim/reassignment; immutable evidence carry-forward linkage), `NLA-MVP-001` (in-app + atomic snapshot + `SENDING → RETRY_WAIT`; external provider adapters gated until `T-10`/`T-12`).
+- **Command & Schema traceability:** **52 in-scope application commands** (`CMD-001..044`, `CMD-049..056`, including `CMD-055`/`CMD-056` for `SES-001`; `CMD-045..048` excluded external control plane) mapped 1-to-1 to **62 canonical physical tables** (`Physical Schema v1.0.0`), **62/62 RLS policies** (`RLS Catalogue v1.0.0`), canonical permission/role/SoD matrix (`Permission Registry v1.0.0`), T-18 function ACLs (`Function Security v1.0.0`), CAS version tokens (`CONCURRENCY-001` v1.0.0), and normalized lock manifests (`LOCK-MANIFEST-001` v1.0.0).
+- **Evidence boundary preserved:** All `413+` QA catalogue test cases remain **PLANNED / NOT EXECUTED** until `G11`; institutional/external items (`DGA-B01..B06`, `B08`, `B15`) remain tracked as production/real-data gates.

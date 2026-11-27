@@ -1,169 +1,196 @@
 # Master Documentation Index & Architecture Map — Dit. SD Inspection
 
 **Document ID:** DOC-MAP-001  
-**Version:** 1.0.0  
-**Status:** CONTROLLED MASTER DOCUMENTATION MAP  
+**Version:** 1.1.0  
+**Status:** CONTROLLED MASTER DOCUMENTATION MAP — G9-TECH TECHNICAL SSOT READY FOR FREEZE SIGN-OFF  
+**Last updated:** 2026-11-27  
 **Applies to:** Repository `itswork-app/dit-sd-inspection`  
-**Governing Authority:** [AGENTS.md](../AGENTS.md) v1.2.5 & [Master Implementation Blueprint (MIB-001)](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md)
+**Governing Authority:** [AGENTS.md](../AGENTS.md) v1.2.5 & [Master Implementation Blueprint (MIB-001)](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) v1.1.0
 
 ---
 
 ## 1. Documentation Overview & Single Source of Truth (SSOT)
 
 This repository serves as both the **authoritative documentation repository** and the **application implementation repository**.
-Currently, documentation is organized into 6 functional directories containing 106 controlled documents.
+
+Documentation under `docs/` on this branch is organized into 6 functional directories containing **101** controlled documents (**102** Markdown files inside `docs/` including this index), complemented by root [AGENTS.md](../AGENTS.md) and root [README.md](../README.md). *(Foundation runtime docs `ADR-002` and `AUTHENTICATION-GOOGLE-OAUTH-SETUP.md` reside on PR #30 `feat/foundation-bootstrap-v1-rebased` until merged.)*
 
 ### Precedence Hierarchy (Source of Truth)
-When interpreting requirements, design, or architecture, adhere strictly to the following precedence hierarchy (defined in [MIB-001](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) §2):
+When interpreting requirements, design, or architecture, adhere strictly to the precedence hierarchy defined in [MIB-001](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) §1.1:
 1. **Product Owner Decisions & Approved Register:** [DECISION-REGISTER.md](00-project-charter/DECISION-REGISTER.md)
-2. **Approved Product Requirements & Instrument Specifications:** [PRD.md](01-product-requirements/PRD.md)
-3. **Approved Architecture Decision Records (ADRs):** [02-architecture/ADR-001-platform-stack.md](02-architecture/ADR-001-platform-stack.md)
-4. **Governing Blueprints & Roadmaps:** [MIB-001](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md), [DGA-001](00-project-charter/DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md), [IRG-001](00-project-charter/IMPLEMENTATION-ROADMAP-AND-RELEASE-GOVERNANCE.md)
-5. **Detailed Specifications:** Architecture, Domain, Security, API, Functional Design, and QA.
-6. **Historical Audit Packages & Working Proposals:** Informative background only; non-authoritative when superseded by higher registers.
+2. **Institutional Approvals:** Formal written approvals for matters reserved to institutional legal, records, privacy, security, finance, or operational authorities (PO approval cannot substitute for them).
+3. **Approved Product Requirements & Instrument Specifications:** [PRD.md](01-product-requirements/PRD.md), [ACCEPTANCE-CRITERIA.md](01-product-requirements/ACCEPTANCE-CRITERIA.md), and controlled source instruments.
+4. **Approved Architecture Decision Records (ADRs):** [ADR-001-platform-stack.md](02-architecture/ADR-001-platform-stack.md).
+5. **Governing Blueprints & Roadmaps:** [MIB-001](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md), [DGA-001](00-project-charter/DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md), [IRG-001](00-project-charter/IMPLEMENTATION-ROADMAP-AND-RELEASE-GOVERNANCE.md).
+6. **Detailed Specifications & Planned QA Catalogue:** Architecture, domain, security, API, functional design, UX, and planned verification catalogues.
+7. **Historical Audit Packages & Working Proposals:** Informative background only; non-authoritative when superseded by higher registers.
 
 ---
 
 ## 2. Document Classification Matrix
 
-| Directory | Scope | Canonical SSOT Files | Supporting / Historical / Proposals |
-|---|---|---|---|
-| [`00-project-charter/`](#3-project-charter--governance) | Governance, Charter, Gates & Traceability | `PROJECT-CHARTER.md`, `DECISION-REGISTER.md`, `MIB-001`, `DGA-001`, `IRG-001`, `RTM-001`, `RAID-REGISTER.md`, `RACI-MATRIX.md`, `ENGINEERING-GOVERNANCE.md` | Historical Audit Packages (`PACKAGE-F` through `PACKAGE-T`, `PHASE-0-PLAN.md`, `SSOT-CROSS-DOCUMENT-RECONCILIATION-AUDIT.md`) |
-| [`01-product-requirements/`](#4-product-requirements) | Functional Requirements & Instrument Specs | `PRD.md`, `ACCEPTANCE-CRITERIA.md`, `IFP-INSTRUMENT-SPECIFICATION.md`, `STANDING-BRACKET-INSTRUMENT-SPECIFICATION.md` | `PRD-SCOPE-AND-NOTIFICATION-DOMAIN-RECONCILIATION-001.md` |
-| [`02-architecture/`](#5-system-architecture--technical-specifications) | Architecture, Database, Security, Commands & Locks | `SYSTEM-ARCHITECTURE.md`, `ADR-001`, `DATA-MODEL-AND-ERD.md`, `PHYSICAL-DATABASE-SCHEMA...`, `SECURITY-THREAT-MODEL.md`, `RBAC-003...`, `COMMAND-LEVEL-LOCK-MANIFEST...`, `GLOBAL-LOCK-ORDER...`, `POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md` | 7 Detailed Command Reviews (`CMD-001`..`054`), Proposals (Durable Ledger, Print Sequence, Review Arbiter, etc.), Notification sub-registries |
-| [`03-functional-design/`](#6-functional-design) | Domain Business Workflows & Session Lifecycles | `INSPECTION-LIFECYCLE-AND-CLAIMS.md`, `PROJECT-SESSION-AND-ASSIGNMENT-MODEL.md`, `OFFLINE-SYNC-AND-RECOVERY.md`, `RBAC-AND-AUTHORIZATION.md`, `REPORTS-DOCUMENTS-AND-AUDIT.md` | Supporting domain narratives |
-| [`03-ux/`](#7-user-experience--design-system) | UI/UX, Navigation & Screen Wireframes | `DESIGN-SYSTEM-AND-RESPONSIVE-UX.md`, `INFORMATION-ARCHITECTURE-AND-NAVIGATION.md`, `SCREEN-FLOWS-AND-WIREFRAME-SPEC.md` | UI wireframes and token tables |
-| [`04-quality/`](#8-quality-assurance--testing) | QA Strategy, Test Catalogs & Verification | `TEST-STRATEGY-AND-QUALITY-GATES.md`, `TEST-CASE-CATALOG-AND-UAT.md`, `INSTRUMENT-REQUIREMENTS-VERIFICATION-MATRIX.md`, `CERT-001...` | `L05-TECHNICAL-REVIEW-001.md` |
+| Directory | Doc Count | Scope | Canonical SSOT Files (`v1.0.0+` G9-TECH Baseline) | Supporting / Historical / Proposals |
+|---|---:|---|---|---|
+| [`00-project-charter/`](#3-project-charter--governance) | 26 | Governance, Charter, Gates & Traceability | `PROJECT-CHARTER.md`, `DECISION-REGISTER.md`, `MIB-001` (v1.1.0), `DGA-001` (v2.0.0), `IRG-001` (v1.1.0), `IER-001` (v1.0.0), `PTCM-001` (v1.0.0), `RTM-001` (v1.0.0), `RAID-REGISTER.md` (v1.0.0), `SSOT-AUDIT-001` (v1.0.0), `RACI-MATRIX.md`, `ENGINEERING-GOVERNANCE.md`, `GOV-MERGE-001`, `EVID-EXT-001` | Historical Audit Packages (`PACKAGE-F` through `PACKAGE-T`), `PHASE-0-PLAN.md`, `FINAL-DOCUMENTATION-CLOSURE-AUDIT.md`, `AUTH-001`, `POQ-001`, `REFERENCE-EVIDENCE-INVENTORY.md` |
+| [`01-product-requirements/`](#4-product-requirements) | 5 | Functional Requirements & Instrument Specs | `PRD.md`, `ACCEPTANCE-CRITERIA.md`, `IFP-INSTRUMENT-SPECIFICATION.md`, `STANDING-BRACKET-INSTRUMENT-SPECIFICATION.md` | `PRD-SCOPE-AND-NOTIFICATION-DOMAIN-RECONCILIATION-001.md` |
+| [`02-architecture/`](#5-system-architecture--technical-specifications) | 57 | Architecture, Database (62 tables), Security, Commands (52 app) & Locks | `SYSTEM-ARCHITECTURE.md`, `ADR-001`, `DATA-MODEL-AND-ERD.md`, `PHYSICAL-DATABASE-SCHEMA...` (v1.0.0), `TABLE-BY-TABLE-RLS...` (v1.0.0), `CANONICAL-PERMISSION-REGISTRY...` (v1.0.0), `POSTGRESQL-FUNCTION-SECURITY...` (v1.0.0), `POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md` (v1.0.0), `CONCURRENCY-001` (v1.0.0), `LOCK-PROTOCOL-DECISION-RESOLUTION-001` (v1.0.0), `LOCK-GRAPH-001` (v1.0.0), `LOCK-MANIFEST-001` (v1.0.0), `NLA-001` (v1.0.0), `NLA-L05-WRITER-MATRIX-001` (v1.0.0) | 7 Detailed Command Reviews (`CMD-001`..`054`), Technical Proposals/RFCs, Notification sub-registries, Operational/Provider runbooks |
+| [`03-functional-design/`](#6-functional-design) | 5 | Domain Business Workflows & Session Lifecycles | `INSPECTION-LIFECYCLE-AND-CLAIMS.md`, `PROJECT-SESSION-AND-ASSIGNMENT-MODEL.md`, `OFFLINE-SYNC-AND-RECOVERY.md` (v1.0.0), `RBAC-AND-AUTHORIZATION.md`, `REPORTS-DOCUMENTS-AND-AUDIT.md` | Domain rules & state-machine semantics |
+| [`03-ux/`](#7-user-experience--design-system) | 3 | UI/UX, Navigation & Screen Wireframes | `DESIGN-SYSTEM-AND-RESPONSIVE-UX.md`, `INFORMATION-ARCHITECTURE-AND-NAVIGATION.md`, `SCREEN-FLOWS-AND-WIREFRAME-SPEC.md` | UI wireframes and token tables |
+| [`04-quality/`](#8-quality-assurance--testing) | 5 | QA Strategy, Test Catalogs & Verification | `TEST-STRATEGY-AND-QUALITY-GATES.md`, `TEST-CASE-CATALOG-AND-UAT.md`, `INSTRUMENT-REQUIREMENTS-VERIFICATION-MATRIX.md`, `CERT-001...` | `L05-TECHNICAL-REVIEW-001.md` |
 
 ---
 
-## 3. Project Charter & Governance (`00-project-charter/`)
+## 3. Project Charter & Governance (`00-project-charter/` — 26 documents)
 
-### 3.1 Active Baseline Registers (Living SSOT)
-- [PROJECT-CHARTER.md](00-project-charter/PROJECT-CHARTER.md): Project charter, stakeholder context, business objectives.
-- [MASTER-IMPLEMENTATION-BLUEPRINT.md](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) (**MIB-001**): Governance model, gate criteria G0–G12, source-of-truth definitions.
-- [DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md](00-project-charter/DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) (**DGA-001**): Active audit queue tracking all open blocking items (B01–B22).
-- [DECISION-REGISTER.md](00-project-charter/DECISION-REGISTER.md): Official Product Owner decisions (POQ, DOC, RBAC, etc.).
-- [IMPLEMENTATION-ROADMAP-AND-RELEASE-GOVERNANCE.md](00-project-charter/IMPLEMENTATION-ROADMAP-AND-RELEASE-GOVERNANCE.md) (**IRG-001**): Implementation phases I0–I7, gate transitions, SemVer policy.
-- [REQUIREMENTS-TRACEABILITY-MATRIX.md](00-project-charter/REQUIREMENTS-TRACEABILITY-MATRIX.md) (**RTM-001**): End-to-end trace from requirements to commands, tests, and evidence.
-- [RAID-REGISTER.md](00-project-charter/RAID-REGISTER.md) (**RAID-001**): Risks, Assumptions, Issues, Dependencies index.
+### 3.1 Active Baseline Registers & Evidence Indexes
+- [PROJECT-CHARTER.md](00-project-charter/PROJECT-CHARTER.md): Project charter, stakeholder context, and business objectives.
+- [MASTER-IMPLEMENTATION-BLUEPRINT.md](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) (**MIB-001** v1.1.0): Governance model, source-of-truth precedence, engineering invariants, and delivery gates G0–G12.
+- [DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md](00-project-charter/DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) (**DGA-001** v2.0.0): Active gap register (`DGA-B01`–`DGA-B22`; 14 technical blockers closed for `G9-TECH`; external/runtime gates preserved).
+- [DECISION-REGISTER.md](00-project-charter/DECISION-REGISTER.md): Canonical index of approved Product Owner decisions through 2026-11-27 (`T-01..T-18`, `POQ-01..04`, `LPR-02..06`, `RBAC-003`, `SES-001`, `DOC-003`, `C36-02`, `IDC-O04..O10`, `NLA-MVP-001`).
+- [IMPLEMENTATION-ROADMAP-AND-RELEASE-GOVERNANCE.md](00-project-charter/IMPLEMENTATION-ROADMAP-AND-RELEASE-GOVERNANCE.md) (**IRG-001** v1.1.0): Pre-implementation gates, ordered phases `I0–I7`, release controls, and SemVer 2.0.0 policy.
+- [REQUIREMENTS-TRACEABILITY-MATRIX.md](00-project-charter/REQUIREMENTS-TRACEABILITY-MATRIX.md) (**RTM-001** v1.0.0): End-to-end traceability from requirements to 52 commands, 62 tables, security controls, planned QA, and gates.
+- [RAID-REGISTER.md](00-project-charter/RAID-REGISTER.md) (**RAID-001** v1.0.0): Risks, Assumptions, Issues, and Dependencies register.
 - [RACI-MATRIX.md](00-project-charter/RACI-MATRIX.md): Roles and accountability matrix.
 - [ENGINEERING-GOVERNANCE.md](00-project-charter/ENGINEERING-GOVERNANCE.md): Engineering standards and documentation discipline.
-- [GOVERNANCE-DOCUMENTATION-ONLY-MERGE-EXCEPTION.md](00-project-charter/GOVERNANCE-DOCUMENTATION-ONLY-MERGE-EXCEPTION.md) (**GOV-MERGE-001**): Controlled rules for documentation-only merges before G10.
+- [GOVERNANCE-DOCUMENTATION-ONLY-MERGE-EXCEPTION.md](00-project-charter/GOVERNANCE-DOCUMENTATION-ONLY-MERGE-EXCEPTION.md) (**GOV-MERGE-001**): Narrow controlled merge policy for documentation-only PRs.
+- [EXTERNAL-INSPECTION-EVIDENCE-REGISTER-001.md](00-project-charter/EXTERNAL-INSPECTION-EVIDENCE-REGISTER-001.md) (**EVID-EXT-001**): Inventory of Product Owner-supplied external inspection evidence samples.
+- [REFERENCE-EVIDENCE-INVENTORY.md](00-project-charter/REFERENCE-EVIDENCE-INVENTORY.md): Inventory of legacy workflow and output reference artifacts.
 
-### 3.2 Historical Audit Snapshots (Archival / Contextual)
+### 3.2 Readiness Plans, Authority Packages & Historical Audit Snapshots
 > [!NOTE]
-> The following documents represent dated audit snapshots and decision resolution packets from earlier review cycles. While preserved for complete audit trails, their conclusions are superseded by the canonical registers above.
-- `PACKAGE-F-CROSS-DOCUMENT-AUDIT.md` (Package F audit baseline)
-- `PACKAGE-G-PO-DECISION-RESOLUTION-PACK.md` (Package G resolution pack)
-- `PACKAGE-H-FINAL-REQUIREMENTS-ARCHITECTURE-CONSISTENCY-AUDIT.md` (Package H audit)
-- `PACKAGE-I-FINAL-PO-DECISION-AND-SCOPE-FREEZE-PREP.md` (Package I prep)
-- `PACKAGE-K-SECURITY-DATA-INTEGRITY-PRODUCTION-READINESS-AUDIT.md` (Package K security audit)
-- `PACKAGE-S-FINAL-CROSS-DOCUMENT-AUDIT-AND-SCOPE-FREEZE-READINESS.md` (Package S snapshot)
-- `PACKAGE-T-PO-DECISION-CLOSURE-PACK.md` (Package T decision pack)
-- `PHASE-0-PLAN.md` (Initial Phase 0 roadmap)
-- `FINAL-DOCUMENTATION-CLOSURE-AUDIT.md` (Historical closure review)
-- `SSOT-CROSS-DOCUMENT-RECONCILIATION-AUDIT.md` (**SSOT-AUDIT-001**)
-- `PRE-IMPLEMENTATION-TECHNICAL-CLOSURE-MATRIX.md`
-- `IMPLEMENTATION-ENTRY-READINESS-AND-BLOCKER-PLAN.md`
-- `INSTITUTIONAL-AND-TECHNICAL-AUTHORITY-APPROVAL-PACKAGE.md` (**AUTH-001**)
-- `PRODUCT-OWNER-OPEN-DECISION-PACKET.md` (**POQ-001**)
+> Historical audit snapshots and decision packs below are preserved for complete auditability. Where superseded, the canonical active registers above govern current state.
+- [IMPLEMENTATION-ENTRY-READINESS-AND-BLOCKER-PLAN.md](00-project-charter/IMPLEMENTATION-ENTRY-READINESS-AND-BLOCKER-PLAN.md) (**IER-001** v1.0.0): G9/G10 readiness plan and `G9-TECH` closure record.
+- [PRE-IMPLEMENTATION-TECHNICAL-CLOSURE-MATRIX.md](00-project-charter/PRE-IMPLEMENTATION-TECHNICAL-CLOSURE-MATRIX.md) (**PTCM-001** v1.0.0): Technical closure matrix for `F-03`, `F-04`, and `SES-001`.
+- [SSOT-CROSS-DOCUMENT-RECONCILIATION-AUDIT.md](00-project-charter/SSOT-CROSS-DOCUMENT-RECONCILIATION-AUDIT.md) (**SSOT-AUDIT-001** v1.0.0): Cross-document reconciliation audit and `G9-TECH` checkpoint.
+- [INSTITUTIONAL-AND-TECHNICAL-AUTHORITY-APPROVAL-PACKAGE.md](00-project-charter/INSTITUTIONAL-AND-TECHNICAL-AUTHORITY-APPROVAL-PACKAGE.md) (**AUTH-001**): Institutional and external authority evidence requests.
+- [PRODUCT-OWNER-OPEN-DECISION-PACKET.md](00-project-charter/PRODUCT-OWNER-OPEN-DECISION-PACKET.md) (**POQ-001**): Notification product-semantic decision packet (closed at PO level).
+- [FINAL-DOCUMENTATION-CLOSURE-AUDIT.md](00-project-charter/FINAL-DOCUMENTATION-CLOSURE-AUDIT.md): Historical documentation closure review.
+- [PHASE-0-PLAN.md](00-project-charter/PHASE-0-PLAN.md): Historical Phase 0 work plan.
+- [PACKAGE-F-CROSS-DOCUMENT-AUDIT.md](00-project-charter/PACKAGE-F-CROSS-DOCUMENT-AUDIT.md): Historical Package F cross-document audit.
+- [PACKAGE-G-PO-DECISION-RESOLUTION-PACK.md](00-project-charter/PACKAGE-G-PO-DECISION-RESOLUTION-PACK.md): Historical Package G PO decision resolution pack.
+- [PACKAGE-H-FINAL-REQUIREMENTS-ARCHITECTURE-CONSISTENCY-AUDIT.md](00-project-charter/PACKAGE-H-FINAL-REQUIREMENTS-ARCHITECTURE-CONSISTENCY-AUDIT.md): Historical Package H requirements/architecture audit.
+- [PACKAGE-I-FINAL-PO-DECISION-AND-SCOPE-FREEZE-PREP.md](00-project-charter/PACKAGE-I-FINAL-PO-DECISION-AND-SCOPE-FREEZE-PREP.md): Historical Package I scope-freeze prep.
+- [PACKAGE-K-SECURITY-DATA-INTEGRITY-PRODUCTION-READINESS-AUDIT.md](00-project-charter/PACKAGE-K-SECURITY-DATA-INTEGRITY-PRODUCTION-READINESS-AUDIT.md): Historical Package K security/data-integrity audit.
+- [PACKAGE-S-FINAL-CROSS-DOCUMENT-AUDIT-AND-SCOPE-FREEZE-READINESS.md](00-project-charter/PACKAGE-S-FINAL-CROSS-DOCUMENT-AUDIT-AND-SCOPE-FREEZE-READINESS.md): Historical Package S audit with dated reconciliation addenda.
+- [PACKAGE-T-PO-DECISION-CLOSURE-PACK.md](00-project-charter/PACKAGE-T-PO-DECISION-CLOSURE-PACK.md): Historical Package T decision pack (outcomes in Decision Register).
 
 ---
 
-## 4. Product Requirements (`01-product-requirements/`)
+## 4. Product Requirements (`01-product-requirements/` — 5 documents)
 
-- [PRD.md](01-product-requirements/PRD.md): Product Requirements Document covering IFP and Standing Bracket inspections.
-- [ACCEPTANCE-CRITERIA.md](01-product-requirements/ACCEPTANCE-CRITERIA.md): Formal user acceptance criteria per requirement.
+- [PRD.md](01-product-requirements/PRD.md): Product Requirements Document covering IFP and Standing Bracket inspection workflows and configurable instruments.
+- [ACCEPTANCE-CRITERIA.md](01-product-requirements/ACCEPTANCE-CRITERIA.md): Formal acceptance criteria per requirement.
 - [IFP-INSTRUMENT-SPECIFICATION.md](01-product-requirements/IFP-INSTRUMENT-SPECIFICATION.md): Interactive Flat Panel inspection instrument sections, items, and response rules.
-- [STANDING-BRACKET-INSTRUMENT-SPECIFICATION.md](01-product-requirements/STANDING-BRACKET-INSTRUMENT-SPECIFICATION.md): Standing Bracket inspection instrument criteria.
-- [PRD-SCOPE-AND-NOTIFICATION-DOMAIN-RECONCILIATION-001.md](01-product-requirements/PRD-SCOPE-AND-NOTIFICATION-DOMAIN-RECONCILIATION-001.md): Reconciliation of notification requirements (INS-015) into PRD scope.
+- [STANDING-BRACKET-INSTRUMENT-SPECIFICATION.md](01-product-requirements/STANDING-BRACKET-INSTRUMENT-SPECIFICATION.md): Standing Bracket inspection instrument baseline criteria.
+- [PRD-SCOPE-AND-NOTIFICATION-DOMAIN-RECONCILIATION-001.md](01-product-requirements/PRD-SCOPE-AND-NOTIFICATION-DOMAIN-RECONCILIATION-001.md): Reconciliation of notification requirements (`INS-015`) into PRD scope.
 
 ---
 
-## 5. System Architecture & Technical Specifications (`02-architecture/`)
+## 5. System Architecture & Technical Specifications (`02-architecture/` — 57 documents)
 
-### 5.1 Core Architecture & Security Foundation
-- [SYSTEM-ARCHITECTURE.md](02-architecture/SYSTEM-ARCHITECTURE.md): System architecture, Vercel + Supabase topology, component boundaries.
-- [ADR-001-platform-stack.md](02-architecture/ADR-001-platform-stack.md): Architectural Decision Record 001 (Supabase + Next.js SSR + Vercel).
-- [DATA-MODEL-AND-ERD.md](02-architecture/DATA-MODEL-AND-ERD.md): Logical data model, entity relationships, and core schema rules.
-- [PHYSICAL-DATABASE-SCHEMA-AND-INTEGRITY-SPECIFICATION.md](02-architecture/PHYSICAL-DATABASE-SCHEMA-AND-INTEGRITY-SPECIFICATION.md): Canonical physical tables, constraints, column types, and indices.
-- [SECURITY-THREAT-MODEL.md](02-architecture/SECURITY-THREAT-MODEL.md): Threat modeling, trust boundaries, attack vectors, and mitigations.
-- [RLS-AND-AUTHORIZATION-DESIGN.md](02-architecture/RLS-AND-AUTHORIZATION-DESIGN.md) & [TABLE-BY-TABLE-RLS-POLICY-CATALOGUE.md](02-architecture/TABLE-BY-TABLE-RLS-POLICY-CATALOGUE.md): Row Level Security baseline and table policies.
-- [T18-EXECUTION-MODEL-SECURITY-REVIEW.md](02-architecture/T18-EXECUTION-MODEL-SECURITY-REVIEW.md): Privileged command execution model (T-18 Option A).
-- [T19-REPOSITORY-RUNTIME-ARCHITECTURE-AUDIT.md](02-architecture/T19-REPOSITORY-RUNTIME-ARCHITECTURE-AUDIT.md) (**T19-001**): Repository runtime audit and 2026-11-27 live inspection.
-- [RBAC-003-ACCOUNT-LIFECYCLE-AND-ROLE-SCOPE-GOVERNANCE.md](02-architecture/RBAC-003-ACCOUNT-LIFECYCLE-AND-ROLE-SCOPE-GOVERNANCE.md): Approved account state transitions, role classes, and scope enforcement.
-- [CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md](02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md): Definitive permission registry.
+### 5.1 Core Architecture, Physical Schema (62 Tables) & Security Foundation
+- [SYSTEM-ARCHITECTURE.md](02-architecture/SYSTEM-ARCHITECTURE.md): System architecture, Vercel + Supabase modular-monolith topology, and component boundaries.
+- [ADR-001-platform-stack.md](02-architecture/ADR-001-platform-stack.md): Approved ADR-001 (Vercel + Supabase PostgreSQL/Auth/RLS/Storage + GitHub).
+- [DATA-MODEL-AND-ERD.md](02-architecture/DATA-MODEL-AND-ERD.md): Conceptual/logical data model, entity relationships, and core schema rules.
+- [PHYSICAL-DATABASE-SCHEMA-AND-INTEGRITY-SPECIFICATION.md](02-architecture/PHYSICAL-DATABASE-SCHEMA-AND-INTEGRITY-SPECIFICATION.md) (**v1.0.0**): Canonical **62-table** physical specification, constraints, types, and indexes (`G9-TECH` design closed).
+- [PHYSICAL-COMMAND-SCHEMA-RECONCILIATION-001.md](02-architecture/PHYSICAL-COMMAND-SCHEMA-RECONCILIATION-001.md): Reconciliation between command contracts and physical schema objects.
+- [PHYSICAL-SCHEMA-RLS-COMMAND-RECONCILIATION.md](02-architecture/PHYSICAL-SCHEMA-RLS-COMMAND-RECONCILIATION.md): Crosswalk reconciling physical tables, RLS policies, and commands.
+- [SECURITY-THREAT-MODEL.md](02-architecture/SECURITY-THREAT-MODEL.md): Threat model, trust boundaries, abuse cases, and mitigations.
+- [RBAC-003-ACCOUNT-LIFECYCLE-AND-ROLE-SCOPE-GOVERNANCE.md](02-architecture/RBAC-003-ACCOUNT-LIFECYCLE-AND-ROLE-SCOPE-GOVERNANCE.md): PO-approved account lifecycle, role delegation ceiling, SoD, last-admin protection, and explicit non-inheriting scope semantics.
+- [CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md](02-architecture/CANONICAL-PERMISSION-REGISTRY-AND-COMMAND-AUTHORIZATION-MATRIX.md) (**v1.0.0**): Closed canonical permission registry, role-to-permission matrix, grantor delegation ceiling, and SoD rules (`G9-TECH`).
+- [COMMAND-AUTHORIZATION-VERIFICATION-MATRIX.md](02-architecture/COMMAND-AUTHORIZATION-VERIFICATION-MATRIX.md) (**v1.0.0**): Command-level authorization verification matrix reconciled to 62 tables and `CMD-055`/`CMD-056`.
+- [RLS-AND-AUTHORIZATION-DESIGN.md](02-architecture/RLS-AND-AUTHORIZATION-DESIGN.md): Row Level Security architecture and deny-by-default authorization design.
+- [TABLE-BY-TABLE-RLS-POLICY-CATALOGUE.md](02-architecture/TABLE-BY-TABLE-RLS-POLICY-CATALOGUE.md) (**v1.0.0**): Complete **62/62** table-by-table RLS policy catalogue (`G9-TECH` design closed).
+- [T18-EXECUTION-MODEL-SECURITY-REVIEW.md](02-architecture/T18-EXECUTION-MODEL-SECURITY-REVIEW.md): Security review for PO-approved T-18 Option A hybrid execution model.
+- [POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md](02-architecture/POSTGRESQL-FUNCTION-SECURITY-AND-EXECUTE-GRANT-DESIGN.md) (**v1.0.0**): Closed `T-18` `app_cmd_definer`/`app_worker_definer` role ownership, `search_path = ''`, and exact-signature `EXECUTE` ACL design.
+- [PRIVILEGED-COMMAND-BOUNDARY-AND-TRANSACTION-SPECIFICATION.md](02-architecture/PRIVILEGED-COMMAND-BOUNDARY-AND-TRANSACTION-SPECIFICATION.md): Route-to-PostgreSQL privileged command boundary, caller JWT propagation, and atomic commit/audit rules.
+- [API-AND-TRANSACTION-CONTRACTS.md](02-architecture/API-AND-TRANSACTION-CONTRACTS.md): Application API envelope, idempotency, error handling, and transaction contracts.
+- [AUDIT-EVENT-CATALOGUE-AND-GOVERNANCE.md](02-architecture/AUDIT-EVENT-CATALOGUE-AND-GOVERNANCE.md): Append-only audit event catalogue (`INS-016` / `T-15`) and privacy exclusions.
+- [T19-REPOSITORY-RUNTIME-ARCHITECTURE-AUDIT.md](02-architecture/T19-REPOSITORY-RUNTIME-ARCHITECTURE-AUDIT.md) (**T19-001**): Historical repository baseline and 2026-11-27 GitHub remote/control-plane re-audit.
 
-### 5.2 Command Contracts & Lock Manifests (CMD-001 through CMD-054)
-- [POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md](02-architecture/POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md): Master inventory of all 54 commands, input/output schemas, and atomicity semantics.
-- [COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md](02-architecture/COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) (**LOCK-MANIFEST-001**): Per-command lock acquisition sequence.
-- [GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md](02-architecture/GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md) (**LOCK-GRAPH-001**): Concurrency tiers L01–L20 and dead-lock prevention rules.
-- [CMD-001-054-CROSS-COMMAND-RECONCILIATION.md](02-architecture/CMD-001-054-CROSS-COMMAND-RECONCILIATION.md): Global command reconciliation report.
+### 5.2 Command Contracts (52 App Commands), Concurrency & Lock Manifests (`CMD-001`–`CMD-056`)
+- [POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md](02-architecture/POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md) (**v1.0.0**): Master inventory of all 56 IDs (**52 in-scope application commands** including `CMD-055`/`CMD-056` + 4 excluded external control-plane IDs `CMD-045..048`).
+- [CMD-001-054-CROSS-COMMAND-RECONCILIATION.md](02-architecture/CMD-001-054-CROSS-COMMAND-RECONCILIATION.md): Cross-command reconciliation synthesis.
+- [COMMAND-PHYSICAL-OBJECT-CROSSWALK-001.md](02-architecture/COMMAND-PHYSICAL-OBJECT-CROSSWALK-001.md): Mapping between logical commands and physical database objects.
+- [COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md](02-architecture/COMMAND-LEVEL-LOCK-MANIFEST-CMD-001-054.md) (**LOCK-MANIFEST-001** v1.0.0): Normalized lock manifests for all **52 application commands** (`G9-TECH` design closed; `LPR-10` gated to `G11`).
+- [COMMAND-LOCK-MANIFEST-NORMALIZATION-REGISTER-001.md](02-architecture/COMMAND-LOCK-MANIFEST-NORMALIZATION-REGISTER-001.md): Normalization tracking register for command lock manifests.
+- [GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md](02-architecture/GLOBAL-LOCK-ORDER-AND-CONCURRENCY-GRAPH.md) (**LOCK-GRAPH-001** v1.0.0): Total ascending lock hierarchy `L00–L110` with all 9 conflict classes (`F03-C01..C09`) resolved into a statically acyclic design DAG.
+- [LOCK-PROTOCOL-DECISION-RESOLUTION.md](02-architecture/LOCK-PROTOCOL-DECISION-RESOLUTION.md) (**LOCK-PROTOCOL-DECISION-RESOLUTION-001** v1.0.0): Resolution of `LPR-01..LPR-09` & `LPR-11` (`LPR-10` gated to `G11`).
+- [ENGINEERING-SECURITY-TECHNICAL-RESOLUTION-PACKAGE-LPR-001-011.md](02-architecture/ENGINEERING-SECURITY-TECHNICAL-RESOLUTION-PACKAGE-LPR-001-011.md) (**TECH-RESOLUTION-LPR-001**): Technical resolution decomposition for `LPR-01`–`LPR-11`.
+- [CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md](02-architecture/CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md) (**CONCURRENCY-001** v1.0.0): Closed `CV-01..CV-08` decimal-string `expected_row_version` CAS, hash, sequence, and worker lease contract.
+- [AGGREGATE-CONCURRENCY-RESOLUTION-001.md](02-architecture/AGGREGATE-CONCURRENCY-RESOLUTION-001.md): Aggregate-level concurrency and parent-fence analysis.
 - **Detailed Command Reviews:**
-  - [CMD-001-010-DETAILED-CONTRACT-REVIEW.md](02-architecture/CMD-001-010-DETAILED-CONTRACT-REVIEW.md): Authentication, user provisioning, project/session lifecycle.
-  - [CMD-011-020-DETAILED-CONTRACT-REVIEW.md](02-architecture/CMD-011-020-DETAILED-CONTRACT-REVIEW.md) & [PO Package](02-architecture/CMD-011-020-PO-DECISION-AND-ENGINEERING-REVIEW-PACKAGE.md): Inspection draft creation, checklist item responses, evidence attachments.
-  - [CMD-021-030-DETAILED-CONTRACT-REVIEW.md](02-architecture/CMD-021-030-DETAILED-CONTRACT-REVIEW.md): Finalization, signing, review assignment, review decisions.
-  - [CMD-031-040-DETAILED-CONTRACT-REVIEW.md](02-architecture/CMD-031-040-DETAILED-CONTRACT-REVIEW.md): Offline sync, document generation, printing, batch printing.
-  - [CMD-041-044-DETAILED-CONTRACT-REVIEW.md](02-architecture/CMD-041-044-DETAILED-CONTRACT-REVIEW.md): Project management, assignment re-allocation, template versioning.
-  - [CMD-045-048-DETAILED-CONTRACT-REVIEW.md](02-architecture/CMD-045-048-DETAILED-CONTRACT-REVIEW.md) & [Proposal](02-architecture/CMD-045-048-RESOLUTION-PROPOSAL.md): External control-plane resolution (PO approved: deferred/out of app scope).
-  - [CMD-049-054-DETAILED-CONTRACT-REVIEW.md](02-architecture/CMD-049-054-DETAILED-CONTRACT-REVIEW.md): Notification dispatch, candidate queuing, in-app read marks.
+  - [CMD-001-010-DETAILED-CONTRACT-REVIEW.md](02-architecture/CMD-001-010-DETAILED-CONTRACT-REVIEW.md): Account lifecycle, role/scope grants, and project creation/update/closure.
+  - [CMD-011-020-DETAILED-CONTRACT-REVIEW.md](02-architecture/CMD-011-020-DETAILED-CONTRACT-REVIEW.md) & [PO Package](02-architecture/CMD-011-020-PO-DECISION-AND-ENGINEERING-REVIEW-PACKAGE.md): Session lifecycle, team assignments, Inspector capacity (`T-14`), target plans, and instrument creation/draft/publication.
+  - [CMD-021-030-DETAILED-CONTRACT-REVIEW.md](02-architecture/CMD-021-030-DETAILED-CONTRACT-REVIEW.md): Instrument deactivation, canonical unit/project association/conflict handling, unit claims, inspection draft/submission, and review return.
+  - [CMD-031-040-DETAILED-CONTRACT-REVIEW.md](02-architecture/CMD-031-040-DETAILED-CONTRACT-REVIEW.md): Inspection approval/reopen, evidence upload/finalization, offline sync, document generation, individual/batch printing, and attendance verification.
+  - [CMD-041-044-DETAILED-CONTRACT-REVIEW.md](02-architecture/CMD-041-044-DETAILED-CONTRACT-REVIEW.md): Scoped read/reporting views, audit query, and governed audit export (`CMD-044` gated until `T-10`).
+  - [CMD-045-048-DETAILED-CONTRACT-REVIEW.md](02-architecture/CMD-045-048-DETAILED-CONTRACT-REVIEW.md) & [Proposal](02-architecture/CMD-045-048-RESOLUTION-PROPOSAL.md): External control-plane traceability IDs (PO-approved out of application command surface).
+  - [CMD-049-054-DETAILED-CONTRACT-REVIEW.md](02-architecture/CMD-049-054-DETAILED-CONTRACT-REVIEW.md): Notification policy management, outbox/dispatch/worker lifecycle, escalation, and recipient read acknowledgement.
 
-### 5.3 Technical Proposals & RFCs
-- [DURABLE-OPERATION-LEDGER-AND-ARTIFACT-LIFECYCLE-PROPOSAL-001.md](02-architecture/DURABLE-OPERATION-LEDGER-AND-ARTIFACT-LIFECYCLE-PROPOSAL-001.md): Manifest persistence and per-operation commit boundaries.
-- [DOCUMENT-PRINT-SEQUENCE-AND-VERSION-PROPOSAL-001.md](02-architecture/DOCUMENT-PRINT-SEQUENCE-AND-VERSION-PROPOSAL-001.md): Monotonic print sequences and current-version-only printing policy (DOC-003, merged into main).
-- [INSPECTION-DRAFT-CONTEXT-AND-REVISION-LIFECYCLE-PROPOSAL-001.md](02-architecture/INSPECTION-DRAFT-CONTEXT-AND-REVISION-LIFECYCLE-PROPOSAL-001.md)
-- [INSPECTION-REVIEWER-ASSIGNMENT-ENTITY-PROPOSAL-001.md](02-architecture/INSPECTION-REVIEWER-ASSIGNMENT-ENTITY-PROPOSAL-001.md)
-- [REVIEW-DECISION-ARBITER-TECHNICAL-PROPOSAL-001.md](02-architecture/REVIEW-DECISION-ARBITER-TECHNICAL-PROPOSAL-001.md)
+### 5.3 Technical Proposals & Admitted Lifecycle Designs
+- [DURABLE-OPERATION-LEDGER-AND-ARTIFACT-LIFECYCLE-PROPOSAL-001.md](02-architecture/DURABLE-OPERATION-LEDGER-AND-ARTIFACT-LIFECYCLE-PROPOSAL-001.md): Per-operation sync commits (`CMD-035`), document generation lifecycle (`CMD-036`, `C36-02`), and durable print-batch manifests (`CMD-038`).
+- [DOCUMENT-PRINT-SEQUENCE-AND-VERSION-PROPOSAL-001.md](02-architecture/DOCUMENT-PRINT-SEQUENCE-AND-VERSION-PROPOSAL-001.md): Monotonic per-document print sequences (`CMD-037`) and PO-approved current-version-only printing (`DOC-003`).
+- [INSPECTION-DRAFT-CONTEXT-AND-REVISION-LIFECYCLE-PROPOSAL-001.md](02-architecture/INSPECTION-DRAFT-CONTEXT-AND-REVISION-LIFECYCLE-PROPOSAL-001.md): Admitted `inspection_draft_contexts` separated from immutable submitted revisions (`IDC-O01..O10`).
+- [INSPECTION-REVIEWER-ASSIGNMENT-ENTITY-PROPOSAL-001.md](02-architecture/INSPECTION-REVIEWER-ASSIGNMENT-ENTITY-PROPOSAL-001.md): Admitted `inspection_reviewer_assignments` entity.
+- [REVIEW-DECISION-ARBITER-TECHNICAL-PROPOSAL-001.md](02-architecture/REVIEW-DECISION-ARBITER-TECHNICAL-PROPOSAL-001.md): Single terminal-decision-per-revision arbiter on `review_events`.
 
-### 5.4 Notification Architecture (NLA-001)
-- [NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md](02-architecture/NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md) (**NLA-001**): Approved INS-015 lifecycle (POQ-01..03).
-- Sub-specifications:
-  - `NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md`
-  - `NOTIFICATION-EVENT-CANDIDATE-TRIAGE-001.md`
-  - `NOTIFICATION-EVENT-REGISTRY-001.md` & `NOTIFICATION-EVENT-REGISTRY-TECHNICAL-RECONCILIATION-001.md`
-  - `NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md`
-  - `L05-ELIGIBILITY-WRITER-PARTICIPATION-MATRIX-001.md`
-  - `L05-EVENT-TO-SELECTOR-REGISTRY-001.md`
-  - `L05-SOURCE-EVENT-PATH-MAPPING-001.md`
+### 5.4 Notification Architecture (`NLA-001`)
+- [NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md](02-architecture/NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md) (**NLA-001** v1.0.0): Closed `INS-015` / `F05-T1..T5` / `NLA-MVP-001` technical design (`SENDING → RETRY_WAIT`, atomic `notification_outbox_recipients`; external provider adapters disabled until `T-10`/`T-12`).
+- [NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md](02-architecture/NOTIFICATION-AUDIENCE-GUARD-TECHNICAL-DECISION-RECORD-001.md) (**NLA-L05-TDR-001**): Selector grammar, dispatch matrix, suppression/retry taxonomy, audit evidence, and atomic snapshot rules (`F05-T1..T5`).
+- [NOTIFICATION-EVENT-CANDIDATE-TRIAGE-001.md](02-architecture/NOTIFICATION-EVENT-CANDIDATE-TRIAGE-001.md): Triage of candidate notification events.
+- [NOTIFICATION-EVENT-REGISTRY-001.md](02-architecture/NOTIFICATION-EVENT-REGISTRY-001.md): Notification event registry (`NREG-001..011`).
+- [NOTIFICATION-EVENT-REGISTRY-TECHNICAL-RECONCILIATION-001.md](02-architecture/NOTIFICATION-EVENT-REGISTRY-TECHNICAL-RECONCILIATION-001.md): Technical reconciliation of event producers and contracts.
+- [NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md](02-architecture/NOTIFICATION-RECIPIENT-RESOLVER-LOCK-SET-REVIEW-001.md): Lock-set review for notification recipient resolution.
+- [L05-ELIGIBILITY-WRITER-PARTICIPATION-MATRIX-001.md](02-architecture/L05-ELIGIBILITY-WRITER-PARTICIPATION-MATRIX-001.md) (**NLA-L05-WRITER-MATRIX-001** v1.0.0): Closed design-level `F-04` writer universe and zero-backward-lock snapshot rule.
+- [L05-EVENT-TO-SELECTOR-REGISTRY-001.md](02-architecture/L05-EVENT-TO-SELECTOR-REGISTRY-001.md): Event-to-selector mapping registry.
+- [L05-SOURCE-EVENT-PATH-MAPPING-001.md](02-architecture/L05-SOURCE-EVENT-PATH-MAPPING-001.md): Source-event producer path mapping.
 
----
-
-## 6. Functional Design (`03-functional-design/`)
-
-- [INSPECTION-LIFECYCLE-AND-CLAIMS.md](03-functional-design/INSPECTION-LIFECYCLE-AND-CLAIMS.md): Inspection states (DRAFT -> SUBMITTED -> UNDER_REVIEW -> APPROVED/REVISION_REQUESTED/REJECTED).
-- [OFFLINE-SYNC-AND-RECOVERY.md](03-functional-design/OFFLINE-SYNC-AND-RECOVERY.md): Offline storage, batch submission, conflict resolution (last-write-wins with version guard).
-- [PROJECT-SESSION-AND-ASSIGNMENT-MODEL.md](03-functional-design/PROJECT-SESSION-AND-ASSIGNMENT-MODEL.md): School assignment, session windows, inspector assignment.
-- [RBAC-AND-AUTHORIZATION.md](03-functional-design/RBAC-AND-AUTHORIZATION.md): Functional user roles, capabilities, and separation of duties.
-- [REPORTS-DOCUMENTS-AND-AUDIT.md](03-functional-design/REPORTS-DOCUMENTS-AND-AUDIT.md): Final inspection report generation, BA annexes, and print history.
+### 5.5 Evidence, Operations, Provider & Recovery Runbooks
+- [EVIDENCE-STORAGE-AND-MEDIA-LIFECYCLE.md](02-architecture/EVIDENCE-STORAGE-AND-MEDIA-LIFECYCLE.md): Private Storage upload-intent, verification, immutable originals, signed URLs, and orphan cleanup design.
+- [EVIDENCE-PRIVACY-RETENTION-DELETION-AND-RECOVERY.md](02-architecture/EVIDENCE-PRIVACY-RETENTION-DELETION-AND-RECOVERY.md): Evidence privacy, retention, legal hold, and disposition governance (`T-10` production gate).
+- [PERFORMANCE-AND-OPERATIONS-BASELINE.md](02-architecture/PERFORMANCE-AND-OPERATIONS-BASELINE.md): 100-concurrent-user acceptance load profile, operational baseline, and open numeric SLOs.
+- [BACKUP-RESTORE-AND-DISASTER-RECOVERY-PLAN.md](02-architecture/BACKUP-RESTORE-AND-DISASTER-RECOVERY-PLAN.md): PostgreSQL and Storage backup/restore plan and required `G11`/`G12` restore drills.
+- [PRODUCTION-ENVIRONMENT-SECRETS-AND-PROVIDER-GOVERNANCE.md](02-architecture/PRODUCTION-ENVIRONMENT-SECRETS-AND-PROVIDER-GOVERNANCE.md): Environment separation, secret boundaries, and provider ownership governance (`T-12` production gate).
+- [SUPABASE-LIVE-DATABASE-SECURITY-INVENTORY-RUNBOOK.md](02-architecture/SUPABASE-LIVE-DATABASE-SECURITY-INVENTORY-RUNBOOK.md): Runbook for live PostgreSQL `pg_catalog` schema, grants, RLS, and function privilege audit (`G11`).
 
 ---
 
-## 7. User Experience & Design System (`03-ux/`)
+## 6. Functional Design (`03-functional-design/` — 5 documents)
 
-- [DESIGN-SYSTEM-AND-RESPONSIVE-UX.md](03-ux/DESIGN-SYSTEM-AND-RESPONSIVE-UX.md): Typography, color palette, responsive breakpoints, mobile-first inspector layout.
-- [INFORMATION-ARCHITECTURE-AND-NAVIGATION.md](03-ux/INFORMATION-ARCHITECTURE-AND-NAVIGATION.md): App sitemap, route tree, drawer navigation, role-based visibility.
-- [SCREEN-FLOWS-AND-WIREFRAME-SPEC.md](03-ux/SCREEN-FLOWS-AND-WIREFRAME-SPEC.md): Step-by-step wireframe flows for inspector, reviewer, and admin screens.
+- [INSPECTION-LIFECYCLE-AND-CLAIMS.md](03-functional-design/INSPECTION-LIFECYCLE-AND-CLAIMS.md): Session-bound inspection attempts, per-unit claims, immutable submitted revisions, `RETURNED_FOR_CORRECTION`, `APPROVED`, privileged reopen, and the narrow `SES-001` packed-unit `ABORTED` exception (`CMD-055`/`CMD-056`).
+- [OFFLINE-SYNC-AND-RECOVERY.md](03-functional-design/OFFLINE-SYNC-AND-RECOVERY.md) (**v1.0.0**): Closed `T-09` Option B / `T-11` Option B offline draft editing for already-claimed units, device binding, local protection/purge, idempotent sync, and explicit conflict preservation (never silent overwrite).
+- [PROJECT-SESSION-AND-ASSIGNMENT-MODEL.md](03-functional-design/PROJECT-SESSION-AND-ASSIGNMENT-MODEL.md): Project/session lifecycle (`DRAFT`, `ACTIVE`, `PAUSED`, `CLOSED`), location/instrument configuration, team assignments, and `T-14` Inspector capacity.
+- [RBAC-AND-AUTHORIZATION.md](03-functional-design/RBAC-AND-AUTHORIZATION.md): Functional roles, explicit non-inheriting scopes, account approval, and separation of duties reconciled to `RBAC-003`.
+- [REPORTS-DOCUMENTS-AND-AUDIT.md](03-functional-design/REPORTS-DOCUMENTS-AND-AUDIT.md): Separate actual vs target reports, PDF generation (`C36-02`), per-document/batch print events (`T-13`, `DOC-002`, `DOC-003`), and append-only audit (`INS-016`).
 
 ---
 
-## 8. Quality Assurance & Testing (`04-quality/`)
+## 7. User Experience & Design System (`03-ux/` — 3 documents)
 
-- [TEST-STRATEGY-AND-QUALITY-GATES.md](04-quality/TEST-STRATEGY-AND-QUALITY-GATES.md): Quality gates, test tiers (unit, integration, RLS, concurrency, negative auth), SLOs.
-- [TEST-CASE-CATALOG-AND-UAT.md](04-quality/TEST-CASE-CATALOG-AND-UAT.md): Executable test case inventory (TC-AUTH, TC-INSP, TC-SYNC, TC-NOTIF, etc.).
-- [INSTRUMENT-REQUIREMENTS-VERIFICATION-MATRIX.md](04-quality/INSTRUMENT-REQUIREMENTS-VERIFICATION-MATRIX.md): Item-by-item verification against official Dit. SD instruments.
-- [CERT-001-TECHNICAL-CERTIFICATION-ASSESSMENT.md](04-quality/CERT-001-TECHNICAL-CERTIFICATION-ASSESSMENT.md): Pre-implementation certification status across all domains.
-- [L05-TECHNICAL-REVIEW-001.md](04-quality/L05-TECHNICAL-REVIEW-001.md): Technical review of L05 notification candidate lock tier.
+- [DESIGN-SYSTEM-AND-RESPONSIVE-UX.md](03-ux/DESIGN-SYSTEM-AND-RESPONSIVE-UX.md): Typography, color palette, responsive breakpoints, and mobile-first inspector layout.
+- [INFORMATION-ARCHITECTURE-AND-NAVIGATION.md](03-ux/INFORMATION-ARCHITECTURE-AND-NAVIGATION.md): App sitemap, route tree, navigation structure, and role-based UI visibility (never authorization).
+- [SCREEN-FLOWS-AND-WIREFRAME-SPEC.md](03-ux/SCREEN-FLOWS-AND-WIREFRAME-SPEC.md): Step-by-step wireframe flows for Inspector, Reviewer, Korlap, Print Officer, and Super Admin screens.
+
+---
+
+## 8. Quality Assurance & Testing (`04-quality/` — 5 documents)
+
+- [TEST-STRATEGY-AND-QUALITY-GATES.md](04-quality/TEST-STRATEGY-AND-QUALITY-GATES.md): Quality gates, risk-based test tiers (unit, integration, RLS, concurrency, negative auth, offline, recovery), and acceptance criteria.
+- [TEST-CASE-CATALOG-AND-UAT.md](04-quality/TEST-CASE-CATALOG-AND-UAT.md): Planned verification and UAT test-case specifications (`PLANNED / NOT EXECUTED` until `G11`).
+- [INSTRUMENT-REQUIREMENTS-VERIFICATION-MATRIX.md](04-quality/INSTRUMENT-REQUIREMENTS-VERIFICATION-MATRIX.md): Item-by-item verification matrix against IFP and Standing Bracket instrument requirements.
+- [CERT-001-TECHNICAL-CERTIFICATION-ASSESSMENT.md](04-quality/CERT-001-TECHNICAL-CERTIFICATION-ASSESSMENT.md): Pre-implementation technical certification assessment across domains.
+- [L05-TECHNICAL-REVIEW-001.md](04-quality/L05-TECHNICAL-REVIEW-001.md): Technical review of the L05 notification audience-guard specification.
 
 ---
 
 ## 9. Current Delivery Gate Status (Summary)
 
 ```
-[Phase 0] -> [G9-F1 Frozen] -> [G10-F1 Foundation Active] -> [Full-system G9 (Pending)] -> [Production G12 (Pending)]
+[Phase 0] -> [G9-F1 Frozen / G10-F1 Active] -> [G9-TECH Ready for Freeze Sign-Off] -> [G10 Synthetic Full-System (Pending)] -> [G11 Build/QA] -> [G12 Production (Blocked on External)]
 ```
 
-- **G9-F1 Foundation Scope Freeze:** **FROZEN** (2026-11-25)
-- **G10-F1 Foundation Implementation:** **ACTIVE** (Authorized on feature branch with synthetic data only)
-- **Full-system G9 Scope Freeze:** **NOT READY** (Business command handlers, provider accounts, and live DB remain gated)
-- **Production Readiness:** **NOT VERIFIED**
+- **G9-F1 Foundation Scope Freeze:** **FROZEN** (`G10-F1` ACTIVE)
+- **G9-TECH Full-System Technical SSOT (Synthetic-Data Baseline):** **READY FOR PO/MAINTAINER FREEZE SIGN-OFF** (2026-11-27; 14/14 technical DGA blockers design-closed; 62/62 canonical tables & RLS; 52/52 application commands normalized)
+- **G10 Full-System Synthetic Implementation:** **PENDING** explicit PO/maintainer sign-off & `AGENTS.md` §3.2 update
+- **G11 Runtime/DB Verification & G12 Production Readiness:** **NOT EXECUTED / NOT VERIFIED** (external/institutional gates `DGA-B01..B06`, `B08`, `B15` remain preserved)

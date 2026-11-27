@@ -1,9 +1,9 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 0.1.31  
-Status: Draft — review required  
-Baseline: Phase 0, 2026-11-23  
+**Version:** 1.0.0  
+Status: TECHNICAL SSOT SYNCHRONIZED — G9-TECH DESIGN RISKS/DEPENDENCIES RECONCILED; EXTERNAL/INSTITUTIONAL & G11 RUNTIME ITEMS REMAIN TRACKED  
+Baseline: Phase 0, 2026-11-23 | Technical SSOT Closure: 2026-11-27  
 Owner convention: accountable role is recorded; named individuals are not invented.
 
 ## Risks
@@ -489,3 +489,11 @@ TC-NOTIF-100..105 remain PLANNED / NOT EXECUTED. G9 NOT READY; G10 NOT ACTIVE. N
 ## F-03 / F-04 / SES-001 closure control synchronization — 2026-11-25
 
 PTCM-001 v0.1.0 now provides a single evidence-oriented closure index for the existing F-03, F-04 and SES-001 risks/dependencies; it does not create replacement IDs or close existing RAID entries. F-03 retains unresolved lock-order conflicts and unverified physical lock edges; F-04 retains zero certified eligibility writers and unproven direct-DML/privileged bypass prevention; SES-001 retains open technical command/SoD/evidence/atomicity/lock/RLS/QA decisions. Existing D-010, I-013, R-017 and R-037 remain OPEN/BLOCKING or CRITICAL as already recorded. QA remains PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE. No implementation, SQL, migration, live database inspection or runtime test is implied.
+
+
+## Full-System Technical SSOT closure synchronization (`G9-TECH`) — 2026-11-27
+
+Following PO approval of `C36-02`, `IDC-O10/SES-T10`, `IDC-O04..O06`, and `NLA-MVP-001` and synchronization of v1.0.0 technical SSOT specifications (`DGA-001` v2.0.0, `PTCM-001` v1.0.0, `Physical Schema` v1.0.0, `RLS Catalogue` v1.0.0, `Command Catalogue` v1.0.0, `Permission Registry` v1.0.0, `Function Security` v1.0.0, `CONCURRENCY-001` v1.0.0, `LOCK-PROTOCOL-DECISION-RESOLUTION-001` v1.0.0, `LOCK-GRAPH-001` v1.0.0, `LOCK-MANIFEST-001` v1.0.0, `NLA-001` v1.0.0, `OFFLINE-SYNC-AND-RECOVERY.md` v1.0.0):
+- Design-level specification risks/dependencies for `F-03` (`R-027/R-028/D-028`), `F-04`/`F-05` (`D-026/R-037`), `SES-001` (`R-016/I-010/D-008`), `RBAC-003` (`D-034/D-036`), and concurrency tokens (`CONCURRENCY-001`) transition from **DESIGN OPEN** to **DESIGN CLOSED — RUNTIME VERIFICATION GATED TO G11**.
+- External/institutional/operational risks and dependencies (`R-001`, `R-006`, `R-008`, `R-010`, `R-011`, `R-012`, `R-033`, `R-036`, `D-006`, `D-007`, `D-031`, `D-032`, `D-033`, `I-001..003`) remain **OPEN / EXTERNAL PRODUCTION GATES** owned by the Product Owner per `PO-2026-11-25-IMPLEMENTATION-RESPONSIBILITY-001`.
+- No runtime test, SQL migration, live DB inspection, or production readiness is claimed by this documentation closure.
