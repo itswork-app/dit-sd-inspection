@@ -1,10 +1,10 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.15.0
+**Version:** 1.16.0
 **Audit date:** 2026-11-27  
-**Branch reviewed:** `docs/cmd-036-generation-lifecycle-2026-11-27` (documentation-only branch stacked on PR #32)  
-**Reviewed baseline HEAD:** `11089f10468089d7945b279d335c9a58072f4aa1` (PR #32 head used as the documentation baseline, 2026-11-26)  
+**Branch reviewed:** `docs/cmd-037-print-sequence-contract-2026-11-27` (documentation-only branch stacked on PR #33)  
+**Reviewed baseline HEAD:** `92e7ae871e8ddeb0485bbe0e0110b6540c57c6eb` (PR #33 head used as the documentation baseline, 2026-11-27)  
 **Authority:** Master Implementation Blueprint MIB-001  
 **Status:** AUDIT IN PROGRESS — FULL-SYSTEM GATE NOT READY; G9-F1/G10-F1 FOUNDATION ACTIVE  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
@@ -1108,3 +1108,15 @@ The CMD-031–040 Detailed Contract Review v0.2.5, Durable Operation Ledger Prop
 - C36-02 records an unresolved Product Owner decision: whether a job accepted before CMD-032 reopen may finalize afterward as a historical artifact bound to the preserved approved revision, or must be treated as stale/cancelled. No silent rebind to a new draft is allowed.
 
 This is a documentation-level Engineering/Database/Security proposal, not a Product Owner decision, approved schema, worker design or implementation authorization. Template/source physical references, exact constraints/indexes, lock ranks/implicit FK-trigger edges, worker identity/ACL, Storage immutability guarantees, audit-event cardinality, retry limits and concurrency evidence remain OPEN. CMD-036 is NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification remains 0/50; global graph acyclicity remains NOT PROVEN. G9-F1 remains FROZEN and G10-F1 ACTIVE only for bounded foundation work; CMD-036 business mutation and rendering workers remain outside G10-F1. No code, SQL, migration, grants/RLS, automated test, CI, live database, deployment or production data operation was performed.
+
+
+## CMD-037 print sequence and version identity reconciliation — 2026-11-27
+
+CMD-037 has been reconciled across Detailed Contract Review v0.2.6, PostgreSQL Command Contract Catalogue v0.4.11, LOCK-MANIFEST-001 v0.4.35, LOCK-GRAPH-001 v0.4.28, Physical Database Schema v0.4.9 and PRINT-SEQUENCE-PROPOSAL-001 v0.1.0.
+
+- T-13 option B and DOC-002 semantics remain unchanged: individual + bounded batch print, per-document outcomes, failed-only retries, no duplicate successful print events, reprint count increments, and no claim of physical printer confirmation.
+- Candidate allocator uses one per-document counter and one short transaction for sequence increment, print event, audit and idempotency outcome. Same-key replay does not allocate; a new intentional reprint uses a new key. Audit failure rolls back the counter and event.
+- CMD-038 item processing must use the same per-document boundary, one document/counter lock at a time, with successful item outcomes immutable.
+- C37-01 remains OPEN for logical document vs immutable version identity; C37-02 for historical/superseded-version reprint eligibility; C37-03 for `attempt_no` semantics; C37-04 for counter/allocator, exact lock, constraint and RLS/ACL approval.
+
+The counter is a candidate-only object and is not admitted to the canonical 48-table inventory. The physical schema's canonical count remains unchanged. CMD-037 remains NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification 0/50; global graph acyclicity NOT PROVEN; LG-21 remains PLANNED / NOT EXECUTED. G9-F1 remains FROZEN and G10-F1 ACTIVE only for bounded foundation work; CMD-037 print mutations remain outside G10-F1. No SQL, migration, grants/RLS, handler, printer integration, automated test, CI, live database, deployment or production operation was performed.
