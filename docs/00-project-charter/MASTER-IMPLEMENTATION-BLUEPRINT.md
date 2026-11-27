@@ -209,15 +209,6 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 
 ## 11. Immediate next actions
 
-## 20. Post-merge gate and evidence checkpoint — 2026-11-27
-
-The current baseline is `main` HEAD `706c654a17d415913892b64fe71de59c2a09bafe` after PRs #38–#41. This section supersedes stale current-state summaries in historical sections above; those dated snapshots remain preserved for audit history.
-
-- `G9-F1` and `G9-TECH`: **FROZEN** under the approved PO sign-off in root `AGENTS.md` v1.3.0 §3.3.
-- `G10`: **ACTIVE**; ordered `I1→I5` synthetic implementation is merged to `main` and recorded in DGA-001 §§22–23.
-- `G11`: **PARTIAL**; local test suites and local operational rehearsals are recorded in PRs #39–#41. Hosted CI is **ABSENT/BLOCKED** (`DGA-B15`); managed PostgreSQL + Storage restore is **OPEN** (`DGA-B06`); staging SLO/load is **OPEN** (`DGA-B08`); real-device offline UAT is **NOT EXECUTED** (`DGA-B07`).
-- `G12`: **NOT VERIFIED / BLOCKED**; no production deployment or real institutional data operation is established.
-- `PMA-001` records the post-merge audit. PR #42 contains the documentation-only audit and SSOT remediation; mergeability and CI must be rechecked at review time. No merge or production action is implied by this document.
 
 
 
@@ -318,8 +309,19 @@ Full-system G9 remains NOT READY. F-03/F-04, command-level authorization, worker
 
 Following Product Owner approval of `C36-02`, `IDC-O10/SES-T10`, `IDC-O04..O06`, and `NLA-MVP-001` on 2026-11-27, all 14 technical/engineering/security DGA blockers (`DGA-B07`, `DGA-B09..B14`, `DGA-B16..B22`) are closed at the **Technical SSOT Design** level (`DGA-001` v2.0.0, `SSOT-AUDIT-001` v1.0.0, `PTCM-001` v1.0.0, `IER-001` v1.0.0, `RTM-001` v1.0.0, `RAID-001` v1.0.0, `Physical Schema` v1.0.0 [62 tables], `RLS Catalogue` v1.0.0 [62/62 parity], `Command Catalogue` v1.0.0 [52 app commands + 4 excluded external IDs], `Permission Registry` v1.0.0, `Function Security` v1.0.0, `CONCURRENCY-001` v1.0.0, `LOCK-PROTOCOL-DECISION-RESOLUTION-001` v1.0.0, `LOCK-GRAPH-001` v1.0.0, `LOCK-MANIFEST-001` v1.0.0, `NLA-001` v1.0.0, `OFFLINE-SYNC-AND-RECOVERY.md` v1.0.0).
 
-**Controlling gate disposition:**
+**Historical gate disposition at the time of this checkpoint (superseded by §20):**
 - `G9-F1` Foundation Scope: **FROZEN** (`G10-F1` ACTIVE).
 - `G9-TECH` Full-System Technical SSOT (synthetic-data development baseline): **READY FOR PO/MAINTAINER FREEZE SIGN-OFF**.
 - `G10` Full-System Synthetic Implementation: **PENDING** explicit PO/maintainer activation record and update of root `AGENTS.md` §3.2.
 - `G11` Runtime/DB/Security/Concurrency/QA Verification & `G12` Production Release: **NOT EXECUTED / NOT VERIFIED**; external/institutional gates (`DGA-B01..B06`, `B08`, `B15`) remain mandatory before real institutional data or production deployment.
+
+## 20. Post-merge gate and evidence checkpoint — 2026-11-27
+
+The current baseline is `main` HEAD `706c654a17d415913892b64fe71de59c2a09bafe` after PRs #38–#41. This section supersedes stale current-state summaries in historical sections above; those dated snapshots remain preserved for audit history.
+
+- `G9-F1` and `G9-TECH`: **FROZEN** under the approved PO sign-off in root `AGENTS.md` v1.3.0 §3.3.
+- `G10`: **ACTIVE**; ordered `I1→I5` synthetic implementation is merged to `main` and recorded in DGA-001 §§22–23.
+- `G11`: **PARTIAL**; local test suites and local operational rehearsals are recorded in PRs #39–#41. Hosted CI is **ABSENT/BLOCKED** (`DGA-B15`); managed PostgreSQL + Storage restore is **OPEN** (`DGA-B06`); staging SLO/load is **OPEN** (`DGA-B08`); real-device offline UAT is **NOT EXECUTED** (`DGA-B07`).
+- `G12`: **NOT VERIFIED / BLOCKED**; no production deployment or real institutional data operation is established.
+- `PMA-001` records the post-merge audit. PR #42 contains the documentation-only audit and SSOT remediation; mergeability and CI must be rechecked at review time. No merge or production action is implied by this document.
+
