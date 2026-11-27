@@ -23,7 +23,7 @@ Cost-first means optimizing total lifecycle cost without waiving security, priva
 **Scope freeze / G9-F1:** FOUNDATION SCOPE FROZEN (2026-11-25)  
 **Full-system technical SSOT (`G9-TECH`):** FROZEN (2026-11-27; `PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001` — 14/14 technical DGA blockers closed; 62 canonical tables, 62/62 RLS parity & 52 app commands reconciled)  
 **G10 full-system synthetic implementation:** ACTIVE (2026-11-27; local `I1 → I5` slices implemented: 13 SQL migrations, `62/62` `ENABLE + FORCE RLS`, `T-18` `NOLOGIN` wrappers, private Storage RLS + PDF 1.4 renderer, 67 Next.js routes, synthetic data only)  
-**G11 verification:** LOCAL SYNTHETIC SUITE PASS (unit/migration/build, SQL RLS/SoD/CAS/idempotency verifiers, multi-connection PostgreSQL concurrency races, live HTTP/JWT E2E, live Private Storage + PDF E2E); Hosted GitHub Actions CI **ABSENT / BILLING BLOCKED (`DGA-B15`)**; load/restore/real-device UAT **NOT EXECUTED**  
+**G11 verification:** LOCAL SYNTHETIC SUITE PASS (unit/migration/build, SQL RLS/SoD/CAS/idempotency verifiers, multi-connection PostgreSQL concurrency races, live HTTP/JWT E2E, live Private Storage + PDF E2E, local backup/restore rehearsal, local 100-request load baseline — see `DGA-001` §23); Hosted GitHub Actions CI **ABSENT / BILLING BLOCKED (`DGA-B15`)**; managed-provider restore (`DGA-B06`), staging load test/SLO (`DGA-B08`) and real-device UAT (`DGA-B07`) **NOT EXECUTED**  
 **G12 production / real institutional data readiness:** NOT VERIFIED / BLOCKED (`DGA-B01..B06`, `B08`, `B15`, written `T-10`/`T-12` approvals)
 
 ## Engineering instructions and delivery roadmap
