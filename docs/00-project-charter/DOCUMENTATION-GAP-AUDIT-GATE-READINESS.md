@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.16.2
+**Version:** 1.16.3
 **Audit date:** 2026-11-27  
 **Branch reviewed:** `docs/cmd-038-print-batch-lifecycle-2026-11-27` (documentation-only branch stacked on PR #34)
 **Reviewed baseline HEAD:** `f0aecb2b584a088fcc7531c9e67fbe5b799c3d2c` (PR #34 head used as the documentation baseline, 2026-11-27)
@@ -1142,4 +1142,4 @@ No source code, SQL, migration, route/RPC, worker, RLS/grant, live database, aut
 - Once a final immutable artifact has been generated from an eligible approved source, session closure makes it historical but does not revoke print/reprint eligibility. A current authorized Print Officer may print the exact artifact after CLOSED without reopening or mutating the session.
 - Current `document.print` authorization, exact resource scope, final immutable artifact state and integrity remain required. CLOSED itself is not a print denial reason.
 - DOC-003 does not approve new generation after closure and does not settle superseded/replaced artifact-version eligibility (C37-02 remains OPEN). It does not resolve C36-02 source-reopen finalization race.
-- Reconciled in CMD-031–040 Detailed Contract Review v0.2.8, Document Print Sequence Proposal v0.1.1, Durable Operation Ledger Proposal v0.3.1, PostgreSQL Command Contract Catalogue v0.4.13 and LOCK-MANIFEST-001 v0.4.37. No implementation/schema/security admission or test evidence is implied.
+- Reconciled in CMD-031–040 Detailed Contract Review v0.2.8, Document Print Sequence Proposal v0.1.1, Durable Operation Ledger Proposal v0.3.1, PostgreSQL Command Contract Catalogue v0.4.13 and LOCK-MANIFEST-001 v0.4.37. CMD-038 batch items explicitly inherit the post-CLOSED print rule and do not require an ACTIVE session predicate. No implementation/schema/security admission or test evidence is implied.
