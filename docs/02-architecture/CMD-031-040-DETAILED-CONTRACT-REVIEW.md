@@ -1414,6 +1414,7 @@ The batch projection must be idempotent and safe when two processors observe the
 ### 9.14 Authorization, scope and concurrency refinements
 
 - Recheck batch permission at acceptance and document.print permission, exact resource scope, account status and printable document/version state for every item at processing time.
+- DOC-003 applies to CMD-038 items as well as CMD-037 individual prints: a final artifact from a session that has started remains eligible for individual or batch print after the session is CLOSED. Do not add a current-session-ACTIVE predicate. Reauthorize the actor and exact historical resource scope for every item; closure does not waive permission or artifact-integrity checks.
 - A retry does not inherit authorization from the original batch. Reauthorize the current caller and each selected item.
 - Each item transaction locks at most one document aggregate/version and its print sequence allocator. Never hold multiple document locks or a batch-wide lock across item processing.
 - Two independent batches targeting the same document serialize through CMD-037's per-document sequence/idempotency boundary. Same-key replay never allocates a new sequence; intentional reprint requires a new key under CMD-037.
