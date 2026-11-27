@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SerialScanner } from "@/components/serial-scanner";
 import { ALLOWED_EVIDENCE_MIMES, MAX_EVIDENCE_BYTES } from "@/lib/api/inspection-validators";
+import { getRoleCapabilities, type CanonicalRoleCode } from "@/lib/auth/roles";
 import {
   enqueueDraftOperation,
   getDefaultOfflineQueueStore,
@@ -148,6 +149,7 @@ type UnitRow = {
 };
 
 type InspectionsPanelProps = {
+  activeRoles?: CanonicalRoleCode[];
   inspections: InspectionRow[];
   activeClaims: ClaimRow[];
   revisions: RevisionRow[];
@@ -218,6 +220,7 @@ function buildInitialDraftState(
 }
 
 export function InspectionsPanel({
+  activeRoles,
   inspections,
   activeClaims,
   revisions,
@@ -234,6 +237,7 @@ export function InspectionsPanel({
   instruments,
   units
 }: InspectionsPanelProps) {
+  const caps = getRoleCapabilities(activeRoles ?? ["super_admin"]);
   const initialDrafts = buildInitialDraftState(
     inspections,
     checklistSections,
@@ -778,7 +782,9 @@ export function InspectionsPanel({
         </p>
       ) : null}
 
-      <section className="admin-panel" aria-labelledby="scanner-heading">
+      {caps.canInspectField ? (
+        <>
+          <section className="admin-panel" aria-labelledby="scanner-heading">
         <div className="admin-item-header">
           <h2 id="scanner-heading">Scan QR / Input Serial Number → Klaim Unit</h2>
           <span className="status-badge status-badge-approved">SCAN KAMERA / OCR</span>
@@ -956,13 +962,17 @@ export function InspectionsPanel({
             })}
           </div>
         ) : null}
-      </section>
+          </section>
+        </>
+      ) : null}
 
       <section className="admin-panel" aria-labelledby="inspections-list-heading">
         <h2 id="inspections-list-heading">Daftar Inspeksi Unit ({inspections.length})</h2>
         {inspections.length === 0 ? (
           <p className="rbac-meta">
-            Belum ada inspeksi aktif. Scan QR/Barcode atau masukkan Nomor Seri unit di atas untuk memulai pemeriksaan.
+            {caps.canInspectField
+              ? "Belum ada inspeksi aktif. Scan QR/Barcode atau masukkan Nomor Seri unit di atas untuk memulai pemeriksaan."
+              : "Belum ada data inspeksi dalam cakupan akses Anda."}
           </p>
         ) : (
           <div className="admin-list">
@@ -1001,7 +1011,7 @@ export function InspectionsPanel({
                     Diperbarui: {new Date(insp.updated_at).toLocaleString("id-ID")} · Bukti: {inspAssets.length}
                   </p>
 
-                  {editable ? (
+                  {editable && caps.canInspectField ? (
                     <div className="rbac-card">
                       {matchingSections.map((sec) => {
                         const secItems = checklistItems.filter((it) => it.section_id === sec.id);
@@ -1218,21 +1228,23 @@ export function InspectionsPanel({
                     </div>
                   ) : null}
 
-                  <div className="rbac-field">
-                    <label htmlFor={`reason-${insp.id}`}>Alasan aksi (return / reopen / abort)</label>
-                    <input
-                      id={`reason-${insp.id}`}
-                      type="text"
-                      value={reasons[insp.id] ?? ""}
-                      onChange={(e) =>
-                        setReasons((prev) => ({ ...prev, [insp.id]: e.target.value }))
-                      }
-                      placeholder="Catatan verifikasi atau alasan pengembalian/pembukaan ulang"
-                    />
-                  </div>
+                  {caps.canInspectField || caps.canReviewInspections ? (
+                    <div className="rbac-field">
+                      <label htmlFor={`reason-${insp.id}`}>Alasan aksi (return / reopen / abort)</label>
+                      <input
+                        id={`reason-${insp.id}`}
+                        type="text"
+                        value={reasons[insp.id] ?? ""}
+                        onChange={(e) =>
+                          setReasons((prev) => ({ ...prev, [insp.id]: e.target.value }))
+                        }
+                        placeholder="Catatan verifikasi atau alasan pengembalian/pembukaan ulang"
+                      />
+                    </div>
+                  ) : null}
 
                   <div className="admin-inline">
-                    {editable ? (
+                    {editable && caps.canInspectField ? (
                       <button
                         type="button"
                         className="auth-button admin-btn-sm"
@@ -1271,7 +1283,7 @@ export function InspectionsPanel({
                         Kirim untuk Review
                       </button>
                     ) : null}
-                    {insp.status === "SUBMITTED" && latestRev ? (
+                    {caps.canReviewInspections && insp.status === "SUBMITTED" && latestRev ? (
                       <>
                         <button
                           type="button"
@@ -1315,9 +1327,11 @@ export function InspectionsPanel({
                         </button>
                       </>
                     ) : null}
-                    {insp.status === "APPROVED" && latestRev ? (
+                    {insp.status === "APPROVED" &&
+                    latestRev &&
+                    (caps.canGenerateOrPrintDocs || caps.canReviewInspections) ? (
                       <>
-                        {activeTemplates.length > 0 ? (
+                        {caps.canGenerateOrPrintDocs && activeTemplates.length > 0 ? (
                           <>
                             <select
                               aria-label={`Template PDF ${insp.id}`}
@@ -1357,29 +1371,31 @@ export function InspectionsPanel({
                             </button>
                           </>
                         ) : null}
-                        <button
-                          type="button"
-                          className="auth-button auth-button-secondary admin-btn-sm"
-                          disabled={busyKey !== null}
-                          onClick={() =>
-                            callApi(
-                              `reo-${insp.id}`,
-                              "/api/v1/inspections/reopen",
-                              {
-                                inspection_id: insp.id,
-                                approved_revision_id: latestRev.id,
-                                expected_row_version: insp.row_version,
-                                reason
-                              },
-                              "Inspeksi dibuka ulang (klaim eksplisit diperlukan)"
-                            )
-                          }
-                        >
-                          Buka Ulang
-                        </button>
+                        {caps.canReviewInspections ? (
+                          <button
+                            type="button"
+                            className="auth-button auth-button-secondary admin-btn-sm"
+                            disabled={busyKey !== null}
+                            onClick={() =>
+                              callApi(
+                                `reo-${insp.id}`,
+                                "/api/v1/inspections/reopen",
+                                {
+                                  inspection_id: insp.id,
+                                  approved_revision_id: latestRev.id,
+                                  expected_row_version: insp.row_version,
+                                  reason
+                                },
+                                "Inspeksi dibuka ulang (klaim eksplisit diperlukan)"
+                              )
+                            }
+                          >
+                            Buka Ulang
+                          </button>
+                        ) : null}
                       </>
                     ) : null}
-                    {insp.status === "RETURNED" ? (
+                    {caps.canInspectField && insp.status === "RETURNED" ? (
                       <button
                         type="button"
                         className="auth-button admin-btn-sm admin-btn-danger"
@@ -1404,114 +1420,116 @@ export function InspectionsPanel({
         )}
       </section>
 
-      <div className="admin-grid">
-        <section className="admin-panel" aria-labelledby="claims-heading">
-          <h2 id="claims-heading">Klaim Unit Aktif ({activeClaims.length})</h2>
-          {activeClaims.length === 0 ? (
-            <p className="rbac-meta">Tidak ada klaim unit aktif saat ini.</p>
-          ) : (
-            <div className="admin-list">
-              {activeClaims.map((claim) => (
-                <article key={claim.id} className="admin-item">
-                  <div className="admin-item-header">
-                    <strong>Unit {claim.unit_id.slice(0, 8)}…</strong>
-                    <span className="status-badge status-badge-approved">
-                      ACTIVE · v{claim.row_version}
-                    </span>
-                  </div>
-                  <p className="rbac-meta">
-                    Kedaluwarsa: {new Date(claim.expires_at).toLocaleString("id-ID")}
-                  </p>
-                  <button
-                    type="button"
-                    className="auth-button auth-button-secondary admin-btn-sm"
-                    disabled={busyKey !== null}
-                    onClick={() =>
-                      callApi(
-                        `rel-${claim.id}`,
-                        "/api/v1/claims/release",
-                        {
-                          claim_id: claim.id,
-                          expected_row_version: claim.row_version,
-                          reason: "Pelepasan klaim manual oleh pengguna"
-                        },
-                        "Klaim unit dilepas (draft & bukti tetap tersimpan)"
-                      )
-                    }
-                  >
-                    Lepas Klaim
-                  </button>
-                </article>
-              ))}
-            </div>
-          )}
-        </section>
-
-        <section className="admin-panel" aria-labelledby="aborts-heading">
-          <h2 id="aborts-heading">Permintaan Pembatalan Unit ({abortRequests.length})</h2>
-          {abortRequests.length === 0 ? (
-            <p className="rbac-meta">Tidak ada permintaan pembatalan unit terkemas.</p>
-          ) : (
-            <div className="admin-list">
-              {abortRequests.map((req) => (
-                <article key={req.id} className="admin-item">
-                  <div className="admin-item-header">
-                    <strong>Inspeksi {req.inspection_id.slice(0, 8)}…</strong>
-                    <span className="status-badge status-badge-pending">
-                      {req.status} · v{req.row_version}
-                    </span>
-                  </div>
-                  <p className="rbac-meta">{req.request_reason}</p>
-                  {req.status === "PENDING" ? (
-                    <div className="admin-inline">
-                      <button
-                        type="button"
-                        className="auth-button admin-btn-sm admin-btn-danger"
-                        disabled={busyKey !== null}
-                        onClick={() =>
-                          callApi(
-                            `ab-app-${req.id}`,
-                            "/api/v1/inspections/abort/decide",
-                            {
-                              abort_request_id: req.id,
-                              decision: "APPROVE",
-                              expected_row_version: req.row_version,
-                              reason: "Disetujui sesuai kondisi unit terkemas"
-                            },
-                            "Pembatalan unit disetujui"
-                          )
-                        }
-                      >
-                        Setujui Abort
-                      </button>
-                      <button
-                        type="button"
-                        className="auth-button auth-button-secondary admin-btn-sm"
-                        disabled={busyKey !== null}
-                        onClick={() =>
-                          callApi(
-                            `ab-rej-${req.id}`,
-                            "/api/v1/inspections/abort/decide",
-                            {
-                              abort_request_id: req.id,
-                              decision: "REJECT",
-                              expected_row_version: req.row_version,
-                              reason: "Unit masih dapat diperiksa ulang"
-                            },
-                            "Permintaan abort ditolak"
-                          )
-                        }
-                      >
-                        Tolak
-                      </button>
+      {caps.canInspectField || caps.canManageAborts ? (
+        <div className="admin-grid">
+          <section className="admin-panel" aria-labelledby="claims-heading">
+            <h2 id="claims-heading">Klaim Unit Aktif ({activeClaims.length})</h2>
+            {activeClaims.length === 0 ? (
+              <p className="rbac-meta">Tidak ada klaim unit aktif saat ini.</p>
+            ) : (
+              <div className="admin-list">
+                {activeClaims.map((claim) => (
+                  <article key={claim.id} className="admin-item">
+                    <div className="admin-item-header">
+                      <strong>Unit {claim.unit_id.slice(0, 8)}…</strong>
+                      <span className="status-badge status-badge-approved">
+                        ACTIVE · v{claim.row_version}
+                      </span>
                     </div>
-                  ) : null}
-                </article>
-              ))}
-            </div>
-          )}
-        </section>
-      </div>
+                    <p className="rbac-meta">
+                      Kedaluwarsa: {new Date(claim.expires_at).toLocaleString("id-ID")}
+                    </p>
+                    <button
+                      type="button"
+                      className="auth-button auth-button-secondary admin-btn-sm"
+                      disabled={busyKey !== null}
+                      onClick={() =>
+                        callApi(
+                          `rel-${claim.id}`,
+                          "/api/v1/claims/release",
+                          {
+                            claim_id: claim.id,
+                            expected_row_version: claim.row_version,
+                            reason: "Pelepasan klaim manual oleh pengguna"
+                          },
+                          "Klaim unit dilepas (draft & bukti tetap tersimpan)"
+                        )
+                      }
+                    >
+                      Lepas Klaim
+                    </button>
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section className="admin-panel" aria-labelledby="aborts-heading">
+            <h2 id="aborts-heading">Permintaan Pembatalan Unit ({abortRequests.length})</h2>
+            {abortRequests.length === 0 ? (
+              <p className="rbac-meta">Tidak ada permintaan pembatalan unit terkemas.</p>
+            ) : (
+              <div className="admin-list">
+                {abortRequests.map((req) => (
+                  <article key={req.id} className="admin-item">
+                    <div className="admin-item-header">
+                      <strong>Inspeksi {req.inspection_id.slice(0, 8)}…</strong>
+                      <span className="status-badge status-badge-pending">
+                        {req.status} · v{req.row_version}
+                      </span>
+                    </div>
+                    <p className="rbac-meta">{req.request_reason}</p>
+                    {caps.canManageAborts && req.status === "PENDING" ? (
+                      <div className="admin-inline">
+                        <button
+                          type="button"
+                          className="auth-button admin-btn-sm admin-btn-danger"
+                          disabled={busyKey !== null}
+                          onClick={() =>
+                            callApi(
+                              `ab-app-${req.id}`,
+                              "/api/v1/inspections/abort/decide",
+                              {
+                                abort_request_id: req.id,
+                                decision: "APPROVE",
+                                expected_row_version: req.row_version,
+                                reason: "Disetujui sesuai kondisi unit terkemas"
+                              },
+                              "Pembatalan unit disetujui"
+                            )
+                          }
+                        >
+                          Setujui Abort
+                        </button>
+                        <button
+                          type="button"
+                          className="auth-button auth-button-secondary admin-btn-sm"
+                          disabled={busyKey !== null}
+                          onClick={() =>
+                            callApi(
+                              `ab-rej-${req.id}`,
+                              "/api/v1/inspections/abort/decide",
+                              {
+                                abort_request_id: req.id,
+                                decision: "REJECT",
+                                expected_row_version: req.row_version,
+                                reason: "Unit masih dapat diperiksa ulang"
+                              },
+                              "Permintaan abort ditolak"
+                            )
+                          }
+                        >
+                          Tolak
+                        </button>
+                      </div>
+                    ) : null}
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+        </div>
+      ) : null}
     </div>
   );
 }

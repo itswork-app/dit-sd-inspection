@@ -108,7 +108,7 @@ async function main() {
     assert.ok(healthRes.headers.get("x-request-id"), "Proxy must inject X-Request-Id");
     assert.equal(healthRes.headers.get("cache-control"), "no-store");
 
-    for (const protectedPage of ["/auth/pending", "/admin/accounts", "/workspace", "/inspections", "/operations", "/notifications"]) {
+    for (const protectedPage of ["/dashboard", "/auth/pending", "/admin/accounts", "/workspace", "/inspections", "/operations", "/notifications"]) {
       const res = await fetch(`${APP_URL}${protectedPage}`, { redirect: "manual" });
       assert.equal(res.status, 307, `Expected 307 redirect on unauth ${protectedPage}, got ${res.status}`);
       assert.ok((res.headers.get("location") ?? "").includes("/login"), `Expected redirect to /login on ${protectedPage}`);
@@ -216,7 +216,7 @@ async function main() {
     assert.equal(instRes.status, 201);
 
     // 6. Verify authenticated SSR pages render HTTP 200 cleanly for SA with zero SCHEMA UNAVAILABLE
-    for (const authedPage of ["/auth/pending", "/admin/accounts", "/workspace", "/inspections", "/operations", "/notifications"]) {
+    for (const authedPage of ["/dashboard", "/auth/pending", "/admin/accounts", "/workspace", "/inspections", "/operations", "/notifications"]) {
       const pageRes = await fetch(`${APP_URL}${authedPage}`, {
         headers: { cookie: sa.cookie },
         redirect: "manual"

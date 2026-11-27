@@ -4,6 +4,7 @@ import { AdminAccountsPanel } from "@/app/admin/accounts/admin-accounts-panel";
 import { AppTopbar } from "@/components/app-topbar";
 import { loadAdminAccountsSnapshot } from "@/lib/auth/account";
 import { getVerifiedIdentity } from "@/lib/auth/identity";
+import { extractActiveRoles } from "@/lib/auth/roles";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -22,11 +23,17 @@ export default async function AdminAccountsPage() {
     }
   }
 
+  const activeRoles =
+    snapshot.status === "ok"
+      ? extractActiveRoles(snapshot.userRoles.filter((ur) => ur.user_id === snapshot.actorUserId))
+      : undefined;
+
   return (
     <main className="workspace">
       <AppTopbar
-        subtitle="Administrasi Akun &amp; Peran"
+        subtitle="Administrasi Akun & Peran"
         activePath="/admin/accounts"
+        activeRoles={activeRoles}
         canManageIdentity={snapshot.status === "ok"}
       />
 

@@ -4,6 +4,7 @@ import { NotificationsAndDocsPanel } from "@/app/notifications/notifications-doc
 import { AppTopbar } from "@/components/app-topbar";
 import { loadSelfAccountSnapshot } from "@/lib/auth/account";
 import { getVerifiedIdentity } from "@/lib/auth/identity";
+import { extractActiveRoles } from "@/lib/auth/roles";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -41,11 +42,14 @@ export default async function NotificationsAndDocumentsPage() {
 
   const schemaMissing = Boolean(notifRes.error || docsRes.error);
 
+  const activeRoles = extractActiveRoles(selfSnapshot.roles);
+
   return (
     <main className="workspace">
       <AppTopbar
         subtitle="Notifikasi & Dokumen Terbit"
         activePath="/notifications"
+        activeRoles={activeRoles}
         canManageIdentity={selfSnapshot.canManageIdentity}
       />
 

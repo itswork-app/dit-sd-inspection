@@ -161,15 +161,19 @@ async function main() {
     await waitForHealth();
     console.log("    Next.js server healthy on", APP_URL);
 
-    // 1. Seed Super Admin + Inspector via GoTrue & DB bootstrap
+    // 1. Seed Super Admin, Inspector, Multi-Role (Inspector + Reviewer), and Print Officer via GoTrue & DB
     const runTag = Date.now().toString(36);
     const sa = await createAndSignInLocalUser(`pw-sa-${runTag}@example.test`, "SyntheticPass123!");
     const insp = await createAndSignInLocalUser(`pw-insp-${runTag}@example.test`, "SyntheticPass123!");
+    const multi = await createAndSignInLocalUser(`pw-multi-${runTag}@example.test`, "SyntheticPass123!");
+    const printer = await createAndSignInLocalUser(`pw-print-${runTag}@example.test`, "SyntheticPass123!");
 
     const saAppId = crypto.randomUUID();
     const helperAppId = crypto.randomUUID();
     const helperAuthId = crypto.randomUUID();
     const inspAppId = crypto.randomUUID();
+    const multiAppId = crypto.randomUUID();
+    const printerAppId = crypto.randomUUID();
 
     await runPsql(`
       INSERT INTO auth.users (id, instance_id, aud, role, email, raw_app_meta_data, raw_user_meta_data, created_at, updated_at)
@@ -178,13 +182,15 @@ async function main() {
       VALUES
         ('${saAppId}', '${sa.userId}', 'PW Super Admin', 'APPROVED', 1),
         ('${inspAppId}', '${insp.userId}', 'PW Field Inspector', 'APPROVED', 1),
+        ('${multiAppId}', '${multi.userId}', 'PW Multi Reviewer Inspector', 'APPROVED', 1),
+        ('${printerAppId}', '${printer.userId}', 'PW Print Officer', 'APPROVED', 1),
         ('${helperAppId}', '${helperAuthId}', 'PW Bootstrap Helper', 'APPROVED', 1);
       INSERT INTO public.user_roles (user_id, role_id, project_id, status, granted_by, reason)
       SELECT '${saAppId}', r.id, NULL, 'ACTIVE', '${helperAppId}', 'PW SA bootstrap'
       FROM public.roles r WHERE r.code = 'super_admin';
     `);
 
-    // 2. Provision Project, Location, Team, Instrument + Draft (with EVD_DEFECT video) + Publish, Session + Assignment via live APIs
+    // 2. Provision Project, Roles, Location, Team, Instrument + Draft + Publish, Session + Assignment via live APIs
     const prj = await apiJson(
       sa.cookieStr,
       "/api/v1/projects",
@@ -198,9 +204,42 @@ async function main() {
         target_user_id: inspAppId,
         role_code: "inspector",
         project_id: prj.project_id,
-        reason: "Playwright synthetic inspector assignment"
+        reason: "Playwright synthetic inspector role"
       },
-      `pw-role-${runTag}`
+      `pw-role-insp-${runTag}`
+    );
+    await apiJson(
+      sa.cookieStr,
+      "/api/v1/admin/roles/grant",
+      {
+        target_user_id: multiAppId,
+        role_code: "reviewer",
+        project_id: prj.project_id,
+        reason: "Playwright synthetic multi reviewer role"
+      },
+      `pw-role-multi-rev-${runTag}`
+    );
+    await apiJson(
+      sa.cookieStr,
+      "/api/v1/admin/roles/grant",
+      {
+        target_user_id: multiAppId,
+        role_code: "print_officer",
+        project_id: prj.project_id,
+        reason: "Playwright synthetic multi print_officer role"
+      },
+      `pw-role-multi-print-${runTag}`
+    );
+    await apiJson(
+      sa.cookieStr,
+      "/api/v1/admin/roles/grant",
+      {
+        target_user_id: printerAppId,
+        role_code: "print_officer",
+        project_id: prj.project_id,
+        reason: "Playwright synthetic print_officer role"
+      },
+      `pw-role-print-${runTag}`
     );
     const loc = await apiJson(
       sa.cookieStr,
@@ -316,13 +355,16 @@ async function main() {
     await unauthPage.goto(`${APP_URL}/login`, { waitUntil: "networkidle" });
     assertNoForbiddenCodes("/login", await unauthPage.locator("body").innerText());
 
+    await unauthPage.goto(`${APP_URL}/dashboard`, { waitUntil: "networkidle" });
+    assert.ok(unauthPage.url().includes("/login"), `Expected /dashboard unauth redirect to /login, got ${unauthPage.url()}`);
+
     await unauthPage.goto(`${APP_URL}/inspections`, { waitUntil: "networkidle" });
     assert.ok(unauthPage.url().includes("/login"), `Expected /inspections unauth redirect to /login, got ${unauthPage.url()}`);
     assert.equal(unauthErrors.length, 0, `Unexpected unauth pageerrors: ${unauthErrors.join("; ")}`);
     await unauthCtx.close();
-    console.log("    PASS: Public pages & unauth redirect verified clean in Chromium");
+    console.log("    PASS: Public pages & unauth redirects verified clean in Chromium");
 
-    // 4. Super Admin check across operational routes
+    // 4. Super Admin check across /dashboard & operational routes
     const saCtx = await browser.newContext();
     await saCtx.addCookies([
       {
@@ -336,6 +378,10 @@ async function main() {
     const saErrors = [];
     saPage.on("pageerror", (e) => saErrors.push(e.message));
 
+    await saPage.goto(`${APP_URL}/dashboard`, { waitUntil: "networkidle" });
+    await saPage.getByRole("heading", { name: "Dashboard Super Admin" }).waitFor({ state: "visible" });
+    assertNoForbiddenCodes("/dashboard (super_admin)", await saPage.locator("body").innerText());
+
     for (const route of ["/admin/accounts", "/workspace", "/operations", "/notifications"]) {
       const resp = await saPage.goto(`${APP_URL}${route}`, { waitUntil: "networkidle" });
       assert.equal(resp?.status(), 200, `Expected 200 on ${route}`);
@@ -344,9 +390,9 @@ async function main() {
     }
     assert.equal(saErrors.length, 0, `Unexpected SA pageerrors: ${saErrors.join("; ")}`);
     await saCtx.close();
-    console.log("    PASS: Super Admin routes render with 200 and zero leaked internal codes");
+    console.log("    PASS: Super Admin /dashboard & routes render with 200 and zero leaked internal codes");
 
-    // 5. Mobile Inspector flow on /inspections
+    // 5. Single-role Mobile Inspector flow (/dashboard -> /inspections)
     const inspCtx = await browser.newContext({ viewport: { width: 412, height: 915 } });
     await inspCtx.addCookies([
       {
@@ -360,10 +406,17 @@ async function main() {
     const inspErrors = [];
     page.on("pageerror", (e) => inspErrors.push(e.message));
 
+    await page.goto(`${APP_URL}/dashboard`, { waitUntil: "networkidle" });
+    await page.getByRole("heading", { name: "Dashboard Inspector" }).waitFor({ state: "visible" });
+    assertNoForbiddenCodes("/dashboard (inspector)", await page.locator("body").innerText());
+    assert.equal(await page.getByRole("link", { name: "Kelola Akun" }).count(), 0, "Inspector must not see Kelola Akun");
+    assert.equal(await page.getByRole("link", { name: "Workspace" }).count(), 0, "Inspector must not see Workspace");
+    assert.equal(await page.getByRole("link", { name: "Dokumen & Laporan" }).count(), 0, "Inspector must not see Dokumen & Laporan");
+
     await page.goto(`${APP_URL}/inspections`, { waitUntil: "networkidle" });
     assertNoForbiddenCodes("/inspections (initial)", await page.locator("body").innerText());
 
-    // Verify camera QR/OCR controls exist
+    // Verify camera QR/OCR controls exist (and Reviewer buttons do NOT)
     await page.getByRole("button", { name: "Scan QR / OCR Kamera" }).waitFor({ state: "visible" });
     await page.getByRole("button", { name: "Foto Label (OCR)" }).waitFor({ state: "visible" });
 
@@ -411,12 +464,87 @@ async function main() {
     await page.getByRole("button", { name: "Kirim untuk Review" }).click();
     await page.getByText("Inspeksi berhasil disubmit (revisi baru dibuat)").waitFor({ state: "visible", timeout: 15000 });
     await page.getByText("SUBMITTED · rev 1").waitFor({ state: "visible", timeout: 15000 });
+    assert.equal(await page.getByRole("button", { name: "Setujui Hasil" }).count(), 0, "Inspector must not see Approve button");
 
     assertNoForbiddenCodes("/inspections (after submit)", await page.locator("body").innerText());
     assert.equal(inspErrors.length, 0, `Unexpected Inspector pageerrors: ${inspErrors.join("; ")}`);
     await inspCtx.close();
+    console.log("    PASS: Single-role Inspector dashboard & full mobile field flow verified!");
 
-    console.log("    PASS: Full mobile Inspector flow verified in real Chromium (Scanner UI, Claim, Pre-checked Checklist, Defect Guard, MP4 Video Upload, Submit)!");
+    // 6. Multi-Role User (Reviewer + Petugas Cetak): Role Switcher on /dashboard + Reviewer Approval + Print Officer Queue
+    const multiCtx = await browser.newContext();
+    await multiCtx.addCookies([
+      {
+        name: "sb-127-auth-token",
+        value: multi.cookieStr.replace("sb-127-auth-token=", ""),
+        domain: "127.0.0.1",
+        path: "/"
+      }
+    ]);
+    const multiPage = await multiCtx.newPage();
+    const multiErrors = [];
+    multiPage.on("pageerror", (e) => multiErrors.push(e.message));
+
+    await multiPage.goto(`${APP_URL}/dashboard`, { waitUntil: "networkidle" });
+    await multiPage.getByRole("tab", { name: "Ringkasan Semua Peran" }).waitFor({ state: "visible" });
+    await multiPage.getByRole("tab", { name: "Reviewer" }).waitFor({ state: "visible" });
+    await multiPage.getByRole("tab", { name: "Petugas Cetak" }).waitFor({ state: "visible" });
+    assert.equal(await multiPage.getByRole("tab", { name: "Inspector" }).count(), 0, "Reviewer+Print multi-role must not show unassigned Inspector tab");
+    assert.equal(await multiPage.getByRole("link", { name: "Workspace" }).count(), 0, "Reviewer+Print multi-role must not show Workspace nav");
+    assert.equal(await multiPage.getByRole("link", { name: "Kelola Akun" }).count(), 0, "Reviewer+Print multi-role must not show Kelola Akun nav");
+    assertNoForbiddenCodes("/dashboard (multi-role reviewer+print)", await multiPage.locator("body").innerText());
+
+    // Switch to Reviewer tab and verify the submitted inspection appears in Reviewer queue
+    await multiPage.getByRole("tab", { name: "Reviewer" }).click();
+    await multiPage.getByRole("heading", { name: "Dashboard Reviewer" }).waitFor({ state: "visible" });
+    await multiPage.getByText(`SN ${sn}`).waitFor({ state: "visible" });
+
+    // Open /inspections and approve the submitted unit as Reviewer (Scanner hidden, Approve visible)
+    await multiPage.goto(`${APP_URL}/inspections`, { waitUntil: "networkidle" });
+    assert.equal(await multiPage.getByRole("button", { name: "Scan QR / OCR Kamera" }).count(), 0, "Reviewer+Print multi-role without Inspector must not see Scanner");
+    await multiPage.getByRole("button", { name: "Setujui Hasil" }).waitFor({ state: "visible" });
+    await multiPage.getByRole("button", { name: "Setujui Hasil" }).click();
+    await multiPage.getByText("Revisi inspeksi disetujui").waitFor({ state: "visible", timeout: 15000 });
+    await multiPage.getByText("APPROVED · rev 1").waitFor({ state: "visible", timeout: 15000 });
+
+    // Return to /dashboard and switch to Petugas Cetak tab -> sees the newly APPROVED unit ready for PDF/print
+    await multiPage.goto(`${APP_URL}/dashboard`, { waitUntil: "networkidle" });
+    await multiPage.getByRole("tab", { name: "Petugas Cetak" }).click();
+    await multiPage.getByRole("heading", { name: "Dashboard Petugas Cetak" }).waitFor({ state: "visible" });
+    await multiPage.getByText(`SN ${sn}`).waitFor({ state: "visible" });
+    assert.equal(multiErrors.length, 0, `Unexpected Multi-Role pageerrors: ${multiErrors.join("; ")}`);
+    await multiCtx.close();
+    console.log("    PASS: Multi-role Switcher (/dashboard: Reviewer + Petugas Cetak) & Reviewer Approve workflow verified!");
+
+    // 7. Single-role Print Officer: sees Dashboard Petugas Cetak + APPROVED unit ready for PDF/print, without Inspector/Admin clutter
+    const printCtx = await browser.newContext();
+    await printCtx.addCookies([
+      {
+        name: "sb-127-auth-token",
+        value: printer.cookieStr.replace("sb-127-auth-token=", ""),
+        domain: "127.0.0.1",
+        path: "/"
+      }
+    ]);
+    const printPage = await printCtx.newPage();
+    const printErrors = [];
+    printPage.on("pageerror", (e) => printErrors.push(e.message));
+
+    await printPage.goto(`${APP_URL}/dashboard`, { waitUntil: "networkidle" });
+    await printPage.getByRole("heading", { name: "Dashboard Petugas Cetak" }).waitFor({ state: "visible" });
+    await printPage.getByText(`SN ${sn}`).waitFor({ state: "visible" });
+    assertNoForbiddenCodes("/dashboard (print_officer)", await printPage.locator("body").innerText());
+    assert.equal(await printPage.getByRole("link", { name: "Kelola Akun" }).count(), 0, "Print Officer must not see Kelola Akun");
+    assert.equal(await printPage.getByRole("link", { name: "Workspace" }).count(), 0, "Print Officer must not see Workspace");
+
+    await printPage.goto(`${APP_URL}/inspections`, { waitUntil: "networkidle" });
+    await printPage.getByText("APPROVED · rev 1").waitFor({ state: "visible" });
+    assert.equal(await printPage.getByRole("button", { name: "Scan QR / OCR Kamera" }).count(), 0, "Print Officer must not see Scanner");
+    assert.equal(await printPage.getByRole("button", { name: "Setujui Hasil" }).count(), 0, "Print Officer must not see Approve button");
+    assert.equal(printErrors.length, 0, `Unexpected Print Officer pageerrors: ${printErrors.join("; ")}`);
+    await printCtx.close();
+    console.log("    PASS: Single-role Print Officer dashboard & role-filtered /inspections view verified!");
+
     console.log("\nALL_PLAYWRIGHT_UI_E2E_ASSERTIONS_PASSED");
   } finally {
     if (browser) {

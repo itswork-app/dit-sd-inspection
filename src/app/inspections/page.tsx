@@ -4,6 +4,7 @@ import { InspectionsPanel } from "@/app/inspections/inspections-panel";
 import { AppTopbar } from "@/components/app-topbar";
 import { loadSelfAccountSnapshot } from "@/lib/auth/account";
 import { getVerifiedIdentity } from "@/lib/auth/identity";
+import { extractActiveRoles } from "@/lib/auth/roles";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -121,11 +122,14 @@ export default async function InspectionsPage() {
 
   const schemaMissing = Boolean(inspRes.error || claimsRes.error || revRes.error || abortRes.error);
 
+  const activeRoles = extractActiveRoles(selfSnapshot.roles);
+
   return (
     <main className="workspace">
       <AppTopbar
         subtitle="Scan Serial, Checklist Lapangan & Bukti Foto/Video"
         activePath="/inspections"
+        activeRoles={activeRoles}
         canManageIdentity={selfSnapshot.canManageIdentity}
       />
 
@@ -139,6 +143,7 @@ export default async function InspectionsPage() {
         </section>
       ) : (
         <InspectionsPanel
+          activeRoles={activeRoles}
           inspections={(inspRes.data ?? []).map((i) => ({ ...i, row_version: String(i.row_version) }))}
           activeClaims={(claimsRes.data ?? []).map((c) => ({ ...c, row_version: String(c.row_version) }))}
           revisions={revRes.data ?? []}

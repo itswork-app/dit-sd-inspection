@@ -16,6 +16,24 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (error) return redirectTo(request, "/login?error=oauth_callback");
+
+    try {
+      const userRes = await supabase.auth.getUser?.();
+      const authUserId = userRes?.data?.user?.id;
+      if (authUserId && typeof supabase.from === "function") {
+        const { data: appUser } = await supabase
+          .from("app_users")
+          .select("account_status")
+          .eq("auth_user_id", authUserId)
+          .maybeSingle();
+        if (appUser?.account_status === "APPROVED") {
+          return redirectTo(request, "/dashboard");
+        }
+      }
+    } catch {
+      // Fail closed to /auth/pending if status lookup is unavailable
+    }
+
     return redirectTo(request, "/auth/pending");
   } catch {
     return redirectTo(request, "/login?error=oauth_callback");

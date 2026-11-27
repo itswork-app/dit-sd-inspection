@@ -4,6 +4,7 @@ import { WorkspacePanel } from "@/app/workspace/workspace-panel";
 import { AppTopbar } from "@/components/app-topbar";
 import { loadSelfAccountSnapshot } from "@/lib/auth/account";
 import { getVerifiedIdentity } from "@/lib/auth/identity";
+import { extractActiveRoles } from "@/lib/auth/roles";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -118,11 +119,14 @@ export default async function OperationalWorkspacePage() {
     projectsRes.error || sessionsRes.error || capacitiesRes.error || instrumentsRes.error || conflictsRes.error
   );
 
+  const activeRoles = extractActiveRoles(selfSnapshot.roles);
+
   return (
     <main className="workspace">
       <AppTopbar
         subtitle="Workspace Operasional · Proyek, Sesi, Instrumen & Unit"
         activePath="/workspace"
+        activeRoles={activeRoles}
         canManageIdentity={selfSnapshot.canManageIdentity}
       />
 
