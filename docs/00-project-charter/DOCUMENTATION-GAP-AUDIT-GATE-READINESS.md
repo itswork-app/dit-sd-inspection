@@ -1327,7 +1327,7 @@ GitHub returned repository ruleset `main` ID `28208385` with enforcement `disabl
 
 ### 25.3 Remaining G11 work packages
 
-The execution/evidence sequence is controlled by [G11-ECP-001 — G11 Evidence Closure Plan](G11-EVIDENCE-CLOSURE-PLAN.md) v1.0.1:
+The execution/evidence sequence is controlled by [G11-ECP-001 — G11 Evidence Closure Plan](G11-EVIDENCE-CLOSURE-PLAN.md) v1.0.2:
 - `DGA-B15`: main-push CI pass is recorded; ruleset and branch enforcement remain OPEN.
 - `DGA-B06`: managed-provider PostgreSQL + Storage restore, checksums, measured RPO/RTO and operations sign-off remain OPEN. The existing local PostgreSQL rehearsal excluded Storage object bytes.
 - `DGA-B07`: real-device offline UAT remains NOT EXECUTED; actual supported device/browser builds and approved participants are required.
