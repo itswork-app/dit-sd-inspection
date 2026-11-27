@@ -25,7 +25,20 @@ export default async function InspectionsPage() {
     redirect("/auth/pending");
   }
 
-  const [inspRes, claimsRes, revRes, abortRes, evRes, slotsRes, tmplRes, devRes] = await Promise.all([
+  const [
+    inspRes,
+    claimsRes,
+    revRes,
+    abortRes,
+    evRes,
+    slotsRes,
+    tmplRes,
+    devRes,
+    secRes,
+    itemRes,
+    specRes,
+    draftCtxRes
+  ] = await Promise.all([
     supabase
       .from("inspections")
       .select("id, unit_id, project_id, session_id, instrument_version_id, status, current_revision_no, row_version, updated_at")
@@ -67,7 +80,26 @@ export default async function InspectionsPage() {
       .select("id, label, status, bound_at")
       .eq("status", "ACTIVE")
       .order("bound_at", { ascending: false })
-      .limit(20)
+      .limit(20),
+    supabase
+      .from("checklist_sections")
+      .select("id, instrument_version_id, code, label, sort_order")
+      .order("sort_order", { ascending: true })
+      .limit(200),
+    supabase
+      .from("checklist_items")
+      .select("id, section_id, code, label, answer_type, required, sort_order")
+      .order("sort_order", { ascending: true })
+      .limit(500),
+    supabase
+      .from("specification_fields")
+      .select("id, instrument_version_id, code, label, value_type, expected_value, unit, required, sort_order")
+      .order("sort_order", { ascending: true })
+      .limit(200),
+    supabase
+      .from("inspection_draft_contexts")
+      .select("inspection_id, draft_checklist, draft_specifications, notes")
+      .limit(100)
   ]);
 
   const schemaMissing = Boolean(inspRes.error || claimsRes.error || revRes.error || abortRes.error);
@@ -98,6 +130,15 @@ export default async function InspectionsPage() {
           evidenceSlots={slotsRes.data ?? []}
           documentTemplates={tmplRes.data ?? []}
           activeDevices={devRes.data ?? []}
+          checklistSections={secRes.data ?? []}
+          checklistItems={itemRes.data ?? []}
+          specFields={specRes.data ?? []}
+          draftContexts={(draftCtxRes.data ?? []).map((d) => ({
+            inspection_id: d.inspection_id,
+            draft_checklist: (d.draft_checklist ?? {}) as Record<string, unknown>,
+            draft_specifications: (d.draft_specifications ?? {}) as Record<string, unknown>,
+            notes: d.notes ?? null
+          }))}
         />
       )}
 

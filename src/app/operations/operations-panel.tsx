@@ -611,22 +611,91 @@ export function OperationsPanel({
             </button>
           </div>
 
-          {targetReport ? (
-            <div className="rbac-card">
-              <p className="rbac-meta">
-                <strong>Laporan Target (CMD-041):</strong>
-              </p>
-              <pre className="json-pre">{JSON.stringify(targetReport, null, 2)}</pre>
-            </div>
-          ) : null}
-          {actualReport ? (
-            <div className="rbac-card">
-              <p className="rbac-meta">
-                <strong>Laporan Aktual (CMD-042):</strong>
-              </p>
-              <pre className="json-pre">{JSON.stringify(actualReport, null, 2)}</pre>
-            </div>
-          ) : null}
+          {targetReport || actualReport ? (() => {
+            const totalTarget = Number(targetReport?.total_target_quantity ?? 0);
+            const allocations = Array.isArray(targetReport?.allocations)
+              ? (targetReport.allocations as Array<Record<string, unknown>>)
+              : [];
+            const actualCounts = (
+              actualReport?.actual_counts_by_status &&
+              typeof actualReport.actual_counts_by_status === "object"
+                ? actualReport.actual_counts_by_status
+                : {}
+            ) as Record<string, number>;
+            const approvedCount = Number(actualCounts.APPROVED ?? 0);
+            const submittedCount = Number(actualCounts.SUBMITTED ?? 0);
+            const draftCount = Number(actualCounts.DRAFT ?? 0) + Number(actualCounts.RETURNED ?? 0) + Number(actualCounts.REOPENED ?? 0);
+            const abortedCount = Number(actualCounts.ABORTED ?? 0);
+            const totalActual = Object.values(actualCounts).reduce((sum, v) => sum + Number(v || 0), 0);
+            const pctApproved = totalTarget > 0 ? Math.min(999, Math.round((approvedCount / totalTarget) * 100)) : 0;
+
+            return (
+              <div className="admin-list">
+                <div className="kpi-grid">
+                  <div className="kpi-card">
+                    <span className="kpi-label">Total Target (CMD-042)</span>
+                    <strong className="kpi-value">{totalTarget}</strong>
+                  </div>
+                  <div className="kpi-card">
+                    <span className="kpi-label">Total Inspeksi (CMD-041)</span>
+                    <strong className="kpi-value">{totalActual}</strong>
+                  </div>
+                  <div className="kpi-card">
+                    <span className="kpi-label">Disetujui (APPROVED)</span>
+                    <strong className="kpi-value">{approvedCount}</strong>
+                  </div>
+                  <div className="kpi-card">
+                    <span className="kpi-label">Capaian Target</span>
+                    <strong className="kpi-value">{totalTarget > 0 ? `${pctApproved}%` : "-"}</strong>
+                  </div>
+                  <div className="kpi-card">
+                    <span className="kpi-label">Submitted / Draft</span>
+                    <strong className="kpi-value">{submittedCount} / {draftCount}</strong>
+                  </div>
+                  <div className="kpi-card">
+                    <span className="kpi-label">Aborted (SES-001)</span>
+                    <strong className="kpi-value">{abortedCount}</strong>
+                  </div>
+                </div>
+
+                {allocations.length > 0 ? (
+                  <div className="ops-table-wrap">
+                    <table className="ops-table">
+                      <thead>
+                        <tr>
+                          <th>Tanggal Target</th>
+                          <th>Versi Plan</th>
+                          <th>Assignment</th>
+                          <th>Kuantitas</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {allocations.map((row, idx) => (
+                          <tr key={`${String(row.assignment_id ?? idx)}-${String(row.target_date ?? idx)}`}>
+                            <td>{String(row.target_date ?? "-")}</td>
+                            <td>v{String(row.version ?? 1)}</td>
+                            <td>{String(row.assignment_id ?? "").slice(0, 8)}…</td>
+                            <td><strong>{String(row.quantity ?? 0)}</strong></td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p className="rbac-meta">Belum ada Target Plan PUBLISHED pada cakupan proyek/sesi ini.</p>
+                )}
+
+                <details>
+                  <summary className="rbac-meta" style={{ cursor: "pointer" }}>
+                    Lihat payload JSON mentah (CMD-041 &amp; CMD-042)
+                  </summary>
+                  <pre className="json-pre">
+                    {JSON.stringify({ targetReport, actualReport }, null, 2)}
+                  </pre>
+                </details>
+              </div>
+            );
+          })() : null}
         </section>
       </div>
 
