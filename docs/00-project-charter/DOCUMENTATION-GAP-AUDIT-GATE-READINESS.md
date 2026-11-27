@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 2.4.1
+**Version:** 2.4.2
 **Audit date:** 2026-11-27  
 **Branch reviewed:** `main` (post-merge PR #42; current baseline `ae271615bacae3c3b48eeaafee72ae1c6829fbf1`)  
 **Reviewed baseline HEAD:** `ae271615bacae3c3b48eeaafee72ae1c6829fbf1` (`main`, merge commit for PR #42; includes PRs #38–#42)  
@@ -1343,6 +1343,15 @@ The execution/evidence sequence is controlled by [G11-ECP-001 — G11 Evidence C
 
 A fresh scan restricted to actual bullet/table definition rows in `docs/04-quality/TEST-CASE-CATALOG-AND-UAT.md` on the PR #43 branch found 558 definition rows and 558 distinct explicitly enumerated test-case IDs, with no duplicate definition IDs. `TC-NOTIF-052`, `TC-NOTIF-053`, and `TC-NOTIF-054` also appear in explanatory prose but are not additional definitions. Shorthand ranges are counted as written and are not expanded. This replaces the older 413-case current-count statement; earlier dated snapshots are retained as historical records.
 
-The catalogue metadata is updated to v0.7.4 and now states that case-level execution mapping is incomplete. PR #43 Actions run #94 on head `682bc895591ff70775aa50c12668a7064ec57e8d` completed SUCCESS, including the configured quality-check job. The available workflow result does not expose a test-ID-to-case mapping, so it is pipeline-level evidence only. The local synthetic suites and rehearsals in §§22–23 remain valid only for the exact scripts, suites and assertions explicitly named in those sections.
+The catalogue metadata is updated to v0.7.5 and states that case-level execution mapping is incomplete. PR #43 Actions run #104 on head `347c97e29482c5bb80252bff69f512bb14d3b4e4` completed SUCCESS, including the configured Quality checks job. A static scan of 25 current test-source files (6 JavaScript scripts, 4 SQL verification scripts, 15 TypeScript test files) found zero explicit `TC-*` catalogue-ID references. CI is pipeline-level evidence only; local synthetic suites and rehearsals in §§22–23 remain valid only for the exact scripts, suites and assertions explicitly named there.
 
-**WP-06 disposition:** inventory count reconciled; all 558 IDs still require a case-specific result or an explicit, owned NOT APPLICABLE / DEFERRED disposition. No catalogue case is promoted to PASS by aggregate CI success or by this static scan. The three duplicate definition rows are a catalogue hygiene item, not additional unique test cases. G11 remains PARTIAL.
+**WP-06 disposition:** inventory count reconciled; 558 IDs remain without case-level execution mapping. No catalogue case is promoted to PASS by aggregate CI success or by this static scan. The source scan establishes a traceability gap, not a test failure. Introduce stable catalogue IDs into automated test names/metadata or a reviewed mapping manifest tied to concrete assertions before assigning case-level results. Any NOT APPLICABLE / DEFERRED disposition must have an owner, rationale, compensating control and gate impact. G11 remains PARTIAL.
+
+
+### 25.6 Automated test-source traceability scan — 2026-11-27
+
+Read-only inspection on PR #43 HEAD `347c97e29482c5bb80252bff69f512bb14d3b4e4` covered 25 automated test/verification source files: 6 JavaScript `.mjs` scripts, 4 SQL verification scripts and 15 TypeScript `.test.ts` files. None contains an explicit catalogue ID matching `TC-[A-Z0-9-]+-NNN`.
+
+The source files contain behavioral assertions and the latest PR CI run #104 passes; however, there is no reliable machine-readable or source-level mapping from those assertions to the 558 catalogue definitions. Semantic similarity is insufficient to claim coverage. This is a **traceability/control gap**, not evidence that the automated tests failed.
+
+**Required remediation:** introduce stable test IDs in test names/metadata or a reviewed mapping manifest that references actual test assertions; then produce case-level execution records with exact commit, environment, run, result and evidence. Until then, keep the 558 catalogue definitions PLANNED / NOT EXECUTED except where a separate case-specific record exists. WP-06 remains PARTIAL.
