@@ -1,11 +1,11 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.30
-**Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
+**Version:** 1.0.0
+**Status:** TECHNICAL SSOT DESIGN CLOSED — ALL 9 CONFLICT CLASSES (F03-C01..C09) RESOLVED AT DESIGN LEVEL; STATICALLY ACYCLIC DAG UNDER LPR-01 v1.0.0 (PHYSICAL CATALOG & LPR-10 EXECUTION GATED TO G11)  
 **Date:** 2026-11-27  
-**Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
-**Gate:** G3/G4/G5/G7/full-system G9 NOT READY; G9-F1 FOUNDATION SCOPE FROZEN; G10-F1 FOUNDATION ACTIVE for bounded foundation only; business-command lock protocol remains unapproved and feature-gated.
+**Scope:** CMD-001–056; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
+**Gate:** G9-TECH DESIGN CLOSED; G11 PHYSICAL CATALOG & ADVERSARIAL CONCURRENCY VERIFICATION PENDING.
 
 **Current gate interpretation (2026-11-26):** Dated historical sections below that say “G10 NOT ACTIVE” or “G10 NOT AUTHORIZED” are preserved snapshots from before the staged foundation activation. The current controlling state under AGENTS.md v1.2.5 is G9-F1 FOUNDATION SCOPE FROZEN and G10-F1 FOUNDATION IMPLEMENTATION ACTIVE. Full-system G9 remains NOT READY; later business-command features, including CMD-031–040, remain feature-gated and are not authorized by G10-F1.
 
@@ -652,3 +652,22 @@ The batch envelope is not held locked across item processing. A projection lock,
 Failed-only retry derives eligible items from durable prior item results and creates a new immutable retry batch; successful source items are excluded server-side. Concurrent retry batches still converge on the CMD-037 per-document idempotency/sequence arbiter, but whether overlapping retries are permitted remains C38-02/C38-04. Item attempt_no is distinct from document sequence_no; its relationship to legacy print_events.attempt_no is unresolved (C38-03).
 
 No new global lock rank, object, FK/trigger edge or acyclicity claim is admitted. The effective database lock graph remains NOT PROVEN. Candidate manifest/result tables remain NOT ADMITTED; application lock certification remains 0/50; LG-21 remains PLANNED / NOT EXECUTED.
+
+
+## Technical SSOT Closure — F03-C01 through F03-C09 Design Resolution (2026-11-27)
+
+Under `LOCK-PROTOCOL-DECISION-RESOLUTION-001` v1.0.0, all nine previously recorded source-level lock-order conflicts are resolved at the design level:
+
+| Conflict ID | Binding Technical SSOT Resolution |
+|---|---|
+| `F03-C01` (`CMD-022..027`) | All legacy unit-first/association-first recipes are superseded. Mandatory sequence: `L00` → `L20` (canonical `(instrument_type, serial_normalized)` advisory xact lock) → `L30` (`projects`/`sessions` `FOR SHARE`) → `L40` (`instruments`/`instrument_versions` `FOR SHARE`) → `L50` → `L60` (`units`) → `L70` (`unit_project_associations`) → `L80` (`unit_claims`) → `L90` (`inspections`) → `L100` → `L110`. |
+| `F03-C02` (`CMD-009..016`) | Parent closures (`CMD-010`, `CMD-013` final close) acquire `L30` (`projects`/`sessions`) `FOR UPDATE`; every child writer/finalizer acquires `L30` `FOR SHARE` before child writes and revalidates parent state. PostgreSQL `FOR SHARE` strictly conflicts with `FOR UPDATE`, preventing close-vs-child races. |
+| `F03-C03` (`T-14` capacity) | Every Inspector-eligibility writer (`CMD-002/003` state change on active Inspector, `CMD-004/005` Inspector role, `CMD-014/015` Inspector membership, `CMD-016` cap update) acquires `L10` (`project_capacity_settings` `FOR UPDATE`) strictly before `L15..L17` and `L55`. |
+| `F03-C04` (`CMD-014/018..021`) | `CMD-014` acquires `L30` (`FOR SHARE`) → `L40` (`instruments`/`instrument_versions` `FOR SHARE`) → `L50`. `CMD-020`/`CMD-021` acquire `L40` (`FOR UPDATE`) only and never acquire `L30`/`L50` afterward. |
+| `F03-C05` (`CMD-026..032`, `CMD-055..056`) | Mandatory sequence: `L00` → `L30` (`FOR SHARE`) → `L50` (`FOR SHARE`) → `L60` → `L70` (`FOR SHARE`) → `L80` (`unit_claims` `FOR UPDATE`) → `L90` (`inspections` `FOR UPDATE`) → `L100` (`inspection_draft_contexts` / `inspection_abort_requests`) → `L110` (`inspection_revisions` / `review_events` / `inspection_abort_decisions` / `inspection_events` / `audit_events`). Unique constraint on `review_events(inspection_revision_id)` arbitrates single terminal decision. |
+| `F03-C06` (`CMD-035`) | One short batch-acceptance transaction (`L00` → `L100` `sync_batches`), followed by one independent short transaction per sync operation following `F03-C05` (`L30` → `L80` → `L90` → `L100` `inspection_draft_contexts`/`sync_operation_results` → `L110`). |
+| `F03-C07` (`CMD-036..040`) | External render/Storage I/O occurs strictly outside DB locks. `CMD-036` finalizer reacquires `L30` (`FOR SHARE`) → `L90` (`FOR SHARE`) → `L100` (`document_generation_jobs`/`documents`/`document_versions`) and marks job `STALE/CANCELLED` if `inspections` was reopened (`C36-02`). `CMD-037` and each `CMD-038` item run in a single-document short transaction (`L00` → `L100` `documents`/`document_versions` `FOR SHARE` → `document_print_counters` `FOR UPDATE` → `L110` `print_events`/`audit_events`) with zero multi-document locking; overlapping retry batches converge safely on per-document idempotency and sequence unique constraint. |
+| `F03-C08` (`CMD-049..054`) | Source commands persist `notification_outbox` + `notification_outbox_recipients` at `L100`/`L110` inside their own transaction without backward locks (`NLA-L05-WRITER-MATRIX-001` v1.0.0 §11.2). Workers claim queues in isolated short `SKIP LOCKED` transactions with monotonic `lease_generation` fencing. |
+| `F03-C09` (Implicit FK/trigger edges) | All FKs referencing parent tables (`projects`, `sessions`, `instruments`, `units`, `inspections`) point strictly downward from higher ranks to lower ranks (already locked in `FOR SHARE`/`FOR UPDATE`), so implicit `FOR KEY SHARE` checks never invert rank order. Triggers are restricted to append-only immutability checks and never acquire lower-rank locks. Exact `pg_catalog` verification remains a `G11` post-migration check. |
+
+**Closure disposition (2026-11-27):** `DGA-B18` design-level lock graph is **CLOSED (statically acyclic DAG)** for `G9-TECH` freeze. Deployed PostgreSQL catalog verification and `LG-01..LG-41` runtime execution remain gated to `G11`.

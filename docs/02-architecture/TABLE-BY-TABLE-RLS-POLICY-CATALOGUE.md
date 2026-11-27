@@ -1,9 +1,9 @@
 # Table-by-Table RLS Policy Catalogue
 
-**Status:** Security policy design draft — security review and implementation approval required  
-**Version:** 0.2.5
+**Status:** TECHNICAL SSOT CLOSED — READY FOR G9-TECH FREEZE (62/62 table-by-table RLS policy parity reconciled with Physical Schema v1.0.0; live RLS testing gated to G11)  
+**Version:** 1.0.0
 **Package:** M — RLS and Authorization Policy Catalogue  
-**Date:** 2026-11-23
+**Date:** 2026-11-27
 
 
 ## Physical schema reconciliation reference
@@ -333,3 +333,27 @@ The candidate annex is excluded from the 48-table canonical inventory. T-10 auth
 Candidate immutable fields: outbox_id, recipient_user_id, project/session/location/assignment scope references, scope_snapshot_hash and resolved_at. The snapshot must be complete before outbox work is claimable. Candidate rows cannot be updated to replace recipients after source-event time; current dispatch restrictions are represented by channel suppression outcomes, not snapshot edits.
 
 The workload identity, function owner, exact EXECUTE ACL, caller-JWT propagation, RLS interaction and lease predicate remain T-18 review items. No worker may impersonate service_role or receive an authenticated-user permission. Candidate relation is NOT ADMITTED and does not change the canonical 48-table count.
+
+
+## 10. Technical SSOT Closure — Admitted 14-Table RLS Policy Extension (Total 62/62 Parity, 2026-11-27)
+
+All 62 canonical tables in `Physical Schema v1.0.0` MUST have `ENABLE ROW LEVEL SECURITY` and `FORCE ROW LEVEL SECURITY`, with zero direct browser `INSERT`/`UPDATE`/`DELETE`/`TRUNCATE` grants (`CMD` = `app_cmd_definer` / `app_worker_definer` only).
+
+| # | Table | SELECT | INSERT | UPDATE | DELETE | Policy Guard |
+|---:|---|---|---|---|---|---|
+| 49 | `account_requests` | `R-self; R-admin` | `CMD` | `CMD` | `NONE` | Applicant reads own requests; `super_admin` reads approval queue |
+| 50 | `inspection_draft_contexts` | `R-scope` (own active claim / assigned supervisor) | `CMD` | `CMD` | `NONE` | Mutable draft context bound to active claim/session |
+| 51 | `inspection_reviewer_assignments` | `R-scope; R-admin` | `CMD` | `CMD` | `NONE` | Assigned reviewer and project/session supervisors only |
+| 52 | `inspection_abort_requests` | `R-scope; R-admin` | `CMD-055` | `CMD-056` | `NONE` | Original Inspector + assigned Admin/Korlap/Super Admin |
+| 53 | `inspection_abort_decisions` | `R-scope; R-admin` | `CMD-056` | `NONE` | `NONE` | Append-only; `decider_user_id != requester_user_id` |
+| 54 | `device_bindings` | `R-self; R-admin` | `CMD` | `CMD` | `NONE` | User sees own bound devices only |
+| 55 | `sync_operation_results` | `R-self` (via own `sync_batch`) | `CMD-035` | `NONE` | `NONE` | Append-only per-operation sync outcomes |
+| 56 | `document_versions` | `R-scope; R-admin` | `CMD-036` | `CMD-036` (`SUPERSEDED` flag only) | `NONE` | Immutable artifact hash/key; Print Officer sees authorized scope |
+| 57 | `document_generation_jobs` | `R-scope` (safe status only); worker internal | `CMD-036` | Worker `app_worker_definer` | `NONE` | No browser DML; lease columns internal |
+| 58 | `document_print_counters` | `NONE` | `CMD-037/038` | `CMD-037/038` | `NONE` | Internal sequence allocator; zero browser access |
+| 59 | `print_batch_items` | `R-scope` (authorized Print Officer/Admin) | `CMD-038` | `NONE` | `NONE` | Immutable ordered manifest |
+| 60 | `print_batch_item_results` | `R-scope` (authorized Print Officer/Admin) | `CMD-038` | `NONE` | `NONE` | Append-only per-item attempt outcomes |
+| 61 | `attendance_verification_events` | `R-scope` (assigned location Korlap/Admin) | `CMD-040` | `NONE` | `NONE` | Append-only attendance verification decisions |
+| 62 | `notification_outbox_recipients` | `NONE` (browser roles); worker `app_worker_definer` only | Source `CMD` | `NONE` | `NONE` | Immutable event-time candidate snapshot (`POQ-01` / `F05-T5`) |
+
+**Closure disposition (2026-11-27):** Exact **62/62** physical-schema-to-RLS design parity is **CLOSED** for `G9-TECH` freeze. Deployed RLS verification and negative-access test execution remain gated to `G11`.

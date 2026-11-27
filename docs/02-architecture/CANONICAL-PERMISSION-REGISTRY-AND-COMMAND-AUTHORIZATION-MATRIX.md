@@ -1,8 +1,8 @@
 # Canonical Permission Registry and Command Authorization Matrix
 
-**Status:** Draft technical registry — RBAC-003 product semantics PO-APPROVED; exact permission/grant/RLS design NOT approved for implementation  
-**Version:** 0.3.0 | **Package:** M/N | **Date:** 2026-11-25  
-**Authority:** Decision Register RBAC-003; RBAC-001/002; T-14, T-15, T-17, T-18; legacy RBAC catalogue and privileged command inventory
+**Status:** TECHNICAL SSOT CLOSED — READY FOR G9-TECH FREEZE (RBAC-003 PO-approved; role/permission/grantor/SoD matrix technically closed; live seed/RLS/runtime verification gated to G11)  
+**Version:** 1.0.0 | **Package:** M/N | **Date:** 2026-11-27  
+**Authority:** Decision Register RBAC-003, SES-001, CMD-045–048, POQ-01..03, NLA-MVP-001; RBAC-001/002; T-14, T-15, T-17, T-18
 
 ## 1. Purpose and mandatory rules
 
@@ -47,6 +47,8 @@ All codes are proposed unless explicitly identified as T-17 decisions. Immutable
 | inspection.submit | Submit complete inspection revision | INSPECTION_OWNER | Own claim; required answers/evidence; no conflicts | submit-inspection | inspection.submitted |
 | inspection.review | Return or approve submitted revision | ASSIGNED_REVIEW | Assigned reviewer; expected revision; no self-review | return-inspection/approve-inspection | inspection.returned_for_correction/approved |
 | inspection.reopen | Reopen approved inspection | PROJECT_INSPECTION | Explicit Super Admin or separately authorized Admin; reason; preserve prior revision | reopen-inspection | inspection.reopened |
+| inspection.abort.request | Request exceptional packed-unit ABORT after Reviewer return (`SES-001`) | INSPECTION_OWNER | Original Inspector in originating active session; exact returned revision; packed-state reason/evidence required; never changes state alone | request-inspection-abort (`CMD-055`) | inspection.abort_requested |
+| inspection.abort.decide | Approve or reject packed-unit ABORT request (`SES-001`) | PROJECT_SESSION | Admin or Korlap in assigned project/session scope; strict SoD (`approver != requester`); terminal `ABORTED` only on explicit approval | decide-inspection-abort (`CMD-056`) | inspection.abort_approved / inspection.abort_rejected |
 | evidence.upload | Create upload intent and finalize upload | INSPECTION_EVIDENCE | Exact slot, assignment, private storage, checksum/size/quota validation | create-upload-intent/confirm-upload | evidence.uploaded |
 | evidence.read | View/read evidence | INSPECTION_HISTORY | Explicit history authority; short-lived access; access audited | access-evidence | evidence.accessed/downloaded |
 | evidence.export | Export evidence package | PROJECT_EVIDENCE_EXPORT | Separate explicit export authority; purpose/scope/limits; audit | export-evidence | evidence.exported |
@@ -264,3 +266,86 @@ The Product Owner approved RBAC-003 without amendment. This registry must confor
 10. T-14 capacity is unchanged: only login-enabled APPROVED accounts with an active Inspector role and at least one effective operational assignment qualify; every eligibility-changing path must share the same serialization point.
 
 **Technical boundary remains open:** the exact permission codes and role-to-permission matrix, grantor/SoD mapping, physical account/request/decision/role/scope schema, account recovery/break-glass procedure, row-version tokens, RLS, grants, function ACL, lock graph, capacity writer inventory and negative/concurrency QA. This update does not approve a permission seed, grant, RLS policy, RPC, SQL, migration or implementation.
+
+
+## 9. Technical SSOT Closure — Canonical Role-to-Permission, Delegation Ceiling & SoD Matrix (2026-11-27)
+
+This section closes `DGA-B09` and the technical permission/grantor/SoD design portion of `DGA-B22` for **Full-System Technical SSOT (`G9-TECH`)**. It supersedes earlier "NOT APPROVED / DRAFT" qualifiers above for technical specification purposes. Live SQL seeding, PostgreSQL grants, RLS deployment, and runtime negative-authorization execution remain gated to `G11`.
+
+### 9.1 Canonical Application Roles & Scope Classes
+
+| Role code | Scope class | Intended authority | Explicit exclusions |
+|---|---|---|---|
+| `super_admin` | `GLOBAL` | Global identity/account lifecycle, global role/scope governance, global instrument catalog (`T-17`), project creation/closure (`T-06`), session creation/final-close/reopen (`T-07`), capacity cap (`T-14`), notification policy management, scoped audit read | Does NOT automatically hold operational `inspector`, `reviewer`, `korlap`, or `print_officer` assignments; cannot bypass SoD; cannot self-approve/self-grant; cannot execute `CMD-045..048` external control-plane actions |
+| `admin` | `PROJECT` | Delegated project operations within assigned project scope: assignment staffing (within delegation ceiling), target planning, unit association/conflict review, inspection reopen (if explicitly delegated), `SES-001` ABORT decision (`CMD-056`), project report read | No global catalog (`instrument.*`), no `project.close`, no `capacity.manage`, no global role/account approval, no `audit.export` |
+| `korlap` | `PROJECT` | Field coordinator within explicitly assigned project/session/location scope: `session.transition` (activate/pause/resume/request closure only — NEVER final close or reopen), `attendance.upload`, `attendance.verify`, `inspection.abort.decide` (`CMD-056`), scoped `report.read` | No session create/final-close/reopen, no project/role/scope administration, no `evidence.export`, no `audit.export` |
+| `reviewer` | `PROJECT` | Assigned inspection reviewer within explicit project/session/assignment scope: `inspection.review` (return/approve), `evidence.read`, `document.generate`, scoped `report.read` | Hard SoD: `reviewer_id != revision.author_id`; cannot edit draft, cannot claim/submit as reviewer, cannot export evidence/audit |
+| `inspector` | `PROJECT` | Field inspector within explicit active assignment scope: `unit.register`, `inspection.claim`, `inspection.edit`, `inspection.submit`, `inspection.abort.request` (`CMD-055`), `evidence.upload`, `evidence.read` (own claimed/submitted work), `sync.apply` | Cannot approve/return own or others' inspections, cannot read unassigned units/projects, cannot create sessions/assignments |
+| `print_officer` | `PROJECT` | Printing specialist within explicit project/session scope: `document.print`, `document.print.batch`, `document.generate` (for approved documents if explicitly granted), scoped `report.read` | Cannot alter inspection/revision/evidence data, cannot print superseded versions (`DOC-003`), cannot reopen sessions |
+
+*Applicant / `PENDING` authenticated principal:* holds only `SELF`-scoped `account.request` (`CMD-001`) and `notification.read` (`CMD-049`/`CMD-050` for own account-status notices only). Zero operational project/inspection/evidence permissions.
+
+### 9.2 Canonical Role-to-Permission Assignment Matrix (In-Scope Application Commands)
+
+| Permission code | Commands | `super_admin` (`GLOBAL`) | `admin` (`PROJECT`) | `korlap` (`PROJECT`) | `reviewer` (`PROJECT`) | `inspector` (`PROJECT`) | `print_officer` (`PROJECT`) |
+|---|---|---|---|---|---|---|---|
+| `account.request` | `CMD-001` | Self only | Self only | Self only | Self only | Self only | Self only |
+| `account.approve` | `CMD-002`, `CMD-003` (+ state transitions) | **YES** (`actor != target`) | NO | NO | NO | NO | NO |
+| `role.manage` | `CMD-004`, `CMD-005` | **YES** (ceiling) | Delegated project roles only | NO | NO | NO | NO |
+| `scope.manage` | `CMD-006`, `CMD-007` | **YES** (ceiling) | **YES** (own project ceiling) | NO | NO | NO | NO |
+| `project.manage` | `CMD-008`, `CMD-009` | **YES** | `CMD-009` only if delegated | NO | NO | NO | NO |
+| `project.close` | `CMD-010` | **YES** (`T-06`) | NO | NO | NO | NO | NO |
+| `session.manage` | `CMD-011`, `CMD-012` | **YES** (`T-07`) | NO | NO | NO | NO | NO |
+| `session.transition` | `CMD-013` | **YES** (all incl. final close & reopen) | NO | **YES** (activate/pause/resume/request-close only) | NO | NO | NO |
+| `assignment.manage` | `CMD-014`, `CMD-015` | **YES** (`T-07`/`T-14`) | NO (Super Admin per `T-14` clarification) | NO | NO | NO | NO |
+| `capacity.manage` | `CMD-016` | **YES** (`T-14`, 1..100) | NO | NO | NO | NO | NO |
+| `target.manage` | `CMD-017` | **YES** | **YES** (assigned project) | NO | NO | NO | NO |
+| `instrument.manage` | `CMD-018`, `CMD-019` | **YES** (`T-17`) | NO | NO | NO | NO | NO |
+| `instrument.publish` | `CMD-020` | **YES** (separate explicit grant, `T-17`) | NO | NO | NO | NO | NO |
+| `instrument.deactivate` | `CMD-021` | **YES** (separate explicit grant, `T-17`) | NO | NO | NO | NO | NO |
+| `unit.register` | `CMD-022` | **YES** | **YES** (project) | **YES** (assigned scope) | NO | **YES** (active assignment) | NO |
+| `unit.associate` | `CMD-023` | **YES** | **YES** (project) | **YES** (assigned scope) | NO | NO | NO |
+| `unit.association.end` | `CMD-024` | **YES** | **YES** (project) | NO | NO | NO | NO |
+| `unit.identity.resolve` | `CMD-025` | **YES** | **YES** (designated reviewer) | NO | NO | NO | NO |
+| `inspection.claim` | `CMD-026`, `CMD-027` | Release only (`CMD-027` supervisor) | Release only (`CMD-027`) | Release only (`CMD-027`) | NO | **YES** (own active assignment) | NO |
+| `inspection.edit` | `CMD-028` | NO | NO | NO | NO | **YES** (own active claim) | NO |
+| `inspection.submit` | `CMD-029` | NO | NO | NO | NO | **YES** (own active claim) | NO |
+| `inspection.review` | `CMD-030`, `CMD-031` | NO (unless explicitly assigned `reviewer`) | NO | NO | **YES** (`actor != author`) | NO | NO |
+| `inspection.reopen` | `CMD-032` | **YES** (reasoned & audited) | Explicit delegation only | NO | NO | NO | NO |
+| `inspection.abort.request` | `CMD-055` | NO | NO | NO | NO | **YES** (original Inspector, returned revision) | NO |
+| `inspection.abort.decide` | `CMD-056` | **YES** (`actor != requester`) | **YES** (project, `actor != requester`) | **YES** (session, `actor != requester`) | NO | NO | NO |
+| `evidence.upload` | `CMD-033`, `CMD-034` | NO | NO | NO | NO | **YES** (own active claim) | NO |
+| `evidence.read` | Read path | Scoped explicit grant | Project scope | Session/location scope | Assigned review scope | Own inspection scope | NO |
+| `evidence.export` | Export path | Explicit grant only (`T-10` gated) | NO | NO | NO | NO | NO |
+| `sync.apply` | `CMD-035` | NO | NO | NO | NO | **YES** (own bound device & claimed draft) | NO |
+| `document.generate` | `CMD-036` | **YES** | **YES** (project) | **YES** (session) | **YES** (approved revision) | NO | **YES** (approved scope) |
+| `document.print` | `CMD-037` | NO (unless granted `print_officer`) | NO | NO | NO | NO | **YES** (latest finalized version, `DOC-003`) |
+| `document.print.batch` | `CMD-038` | NO (unless granted `print_officer`) | NO | NO | NO | NO | **YES** (bounded batch, per-item reauth) |
+| `attendance.upload` | `CMD-039` | **YES** | **YES** (project) | **YES** (assigned location) | NO | NO | NO |
+| `attendance.verify` | `CMD-040` | NO (assigns authority per `T-08`) | NO | **YES** (assigned location; `verifier != uploader` where required) | NO | NO | NO |
+| `report.read` | `CMD-041`, `CMD-042` | **YES** | **YES** (project) | **YES** (session/location) | **YES** (assigned scope) | Own summary only | **YES** (print queue scope) |
+| `audit.read` | `CMD-043` | **YES** (purpose-bound; `T-10` scope rules) | NO | NO | NO | NO | NO |
+| `audit.export` | `CMD-044` | **GATED OFF until written `T-10` approval** | NO | NO | NO | NO | NO |
+| `notification.read` | `CMD-049`, `CMD-050` | Self only | Self only | Self only | Self only | Self only | Self only |
+| `notification.policy.manage` | `CMD-051` | **YES** (explicit config grant) | NO | NO | NO | NO | NO |
+
+*Retired / Out-of-App-Scope Permissions (excluded from application seed per `CMD-045..048`):* `retention.manage`, `security.review`, `provider.manage`, `release.manage`.  
+*Internal Worker Operations (no user role permission):* `CMD-052`, `CMD-053` (external adapter disabled until `T-10`/`T-12`), `CMD-054`, and document-render worker finalization (`CMD-036` async worker).
+
+### 9.3 Grantor Delegation Ceiling, SoD & Break-Glass Rules
+
+1. **Grantor Delegation Ceiling (`RBAC-003` §4.2):**
+   - `super_admin` may grant/revoke all canonical roles (`super_admin`, `admin`, `korlap`, `reviewer`, `inspector`, `print_officer`) and scopes, subject to `actor != target` and last-active-`super_admin` protection.
+   - `admin` (within an explicitly assigned project) may grant/revoke ONLY project-scoped operational scopes (`user_scope_grants` within that same project) and non-admin project roles (`korlap`, `reviewer`, `inspector`, `print_officer`) if explicitly delegated `role.manage`; `admin` can NEVER grant/revoke `super_admin`, `admin`, `instrument.*`, `project.close`, `capacity.manage`, or cross-project scopes.
+   - `korlap`, `reviewer`, `inspector`, and `print_officer` have **zero** delegation ceiling (`role.manage` and `scope.manage` denied).
+2. **Mandatory Server/DB Separation of Duties (SoD):**
+   - `CMD-002` / `CMD-003`: `actor_user_id != target_user_id` (no self-approval/self-rejection).
+   - `CMD-004` / `CMD-005` / `CMD-006` / `CMD-007`: `actor_user_id != target_user_id` (no self-role or self-scope grant/revoke).
+   - `CMD-005` / `CMD-002..003` (suspend/disable): reject if active login-enabled `super_admin` count would drop to `0`.
+   - `CMD-030` / `CMD-031`: `reviewer_user_id != inspection_revision.author_id` (no self-review/self-approval, even for multi-role accounts).
+   - `CMD-056`: `decider_user_id != abort_request.requester_id` (no self-approval of packed-unit ABORT).
+   - `CMD-040`: `attendance.verify` is distinct from `attendance.upload`; upload never auto-verifies (`T-08`), and if `attendance_document.uploaded_by = actor`, require explicit non-uploader verifier where institutional policy mandates it.
+3. **Legacy Permission Disposition:** All legacy aliases (`account.review`, `role.assign`, `scope.assign`, `config.manage`, `inspection.approve`, `inspection.return`, `report.view`, `report.validate`, `document.upload`, `audit.view`) are **RETIRED / DENIED** in this greenfield implementation; only canonical codes in §9.2 are valid.
+4. **Last-Admin Break-Glass Recovery:** Executed strictly out-of-band by the designated database/platform custodian via audited migration/maintenance runbook with documented rationale and post-recovery audit entry — never exposed as an application route or browser RPC.
+
+**Closure disposition (2026-11-27):** `DGA-B09` and `DGA-B22` technical authorization design are **CLOSED** for `G9-TECH` freeze. Runtime SQL seed, PostgreSQL RLS, and negative-authorization test execution remain gated to `G11`.

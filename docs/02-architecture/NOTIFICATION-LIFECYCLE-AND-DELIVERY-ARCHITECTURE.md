@@ -1,10 +1,10 @@
 # Notification Lifecycle and Delivery Architecture
 
 **Document ID:** NLA-001  
-**Version:** 0.1.25  
-**Status:** ENGINEERING DESIGN PROPOSAL — PO SEMANTICS APPROVED; ENGINEERING/SECURITY REVIEW REQUIRED  
-**Date:** 2026-11-25  
-**Product authority:** INS-015 — APPROVED  
+**Version:** 1.0.0  
+**Status:** TECHNICAL SSOT CLOSED — READY FOR G9-TECH FREEZE (POQ-01..04 & NLA-MVP-001 APPROVED; F05-T1..T5 DESIGN CLOSED; EXTERNAL PROVIDER ADAPTERS GATED UNTIL T-10/T-12; RUNTIME QA GATED TO G11)  
+**Date:** 2026-11-27  
+**Product authority:** INS-015, POQ-01..04, NLA-MVP-001 — APPROVED  
 **Related controls:** INS-016 / T-15, T-18, T-10, MIB-001, DGA-001  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)  
 **G10 implementation activation:** NOT ACTIVE — pending verified G9 and a separate G10 activation record
@@ -595,3 +595,21 @@ TC-NOTIF-100..105 are planned acceptance cases only. F05-T5 and F-05 remain OPEN
 The current F05-T4/T5 candidate specifications and their remaining technical admission criteria are consolidated in [IER-001](../00-project-charter/IMPLEMENTATION-ENTRY-READINESS-AND-BLOCKER-PLAN.md) v0.1.0 and DGA-001 v1.13.1. Current linked baselines: NLA-L05-TDR-001 v0.1.14; QA v0.7.3; RTM-001 v0.1.32; RAID-001 v0.1.29.
 
 F05-T1..T5 remain OPEN; no event candidate is technically admitted or enabled. F-04 writer inventory is incomplete; F-03 resolver certification is 0/40, application lock certification 0/50 and global graph acyclicity is NOT PROVEN. F05-T3 retry transition, F05-T4 physical evidence/T-10 approval and F05-T5 producer/snapshot/lock proof remain blocking. G9 NOT READY; G10 NOT ACTIVE. This pointer does not authorize event publication, physical schema, SQL, migration, grants/RLS, provider setup or runtime behavior.
+
+
+## 29. Technical SSOT Closure — F05-T1 through F05-T5 & NLA-MVP-001 Admission (2026-11-27)
+
+Pursuant to Product Owner decision `NLA-MVP-001` (2026-11-27), this section closes the technical design of `DGA-B13` and `F05-T1` through `F05-T5` for **Full-System Technical SSOT (`G9-TECH`)**:
+
+1. **`F05-T1` (Selector Grammar):** Canonical JSON selector grammar v1 (strict object keys, duplicate-key rejection before parsing, exact canonical role/scope identifiers, `ROLE_SCOPE` and `EVENT_PARTICIPANT` clauses, deterministic sorting) is adopted for `NREG-001..011`.
+2. **`F05-T2` (Event-Specific Dispatch Profiles):** All eleven `NREG-001..011` source events emit to the transactional `notification_outbox` + immutable `notification_outbox_recipients` snapshot inside their owning source command (`CMD-002/003`, `CMD-010`, `CMD-013`, `CMD-014/015`, `CMD-029/030/031/032`, `CMD-055/056`). In-app delivery is enabled in MVP; external email/push channels remain feature-flagged OFF until `T-10`/`T-12`.
+3. **`F05-T3` (Retry State Machine — `SENDING` Gap Closed):** The canonical `notification_deliveries.status` state graph is formally closed as:
+   - `PENDING → SENDING` (claimed under `lease_generation`)
+   - `SENDING → SENT | DELIVERED | SUPPRESSED | UNKNOWN | RETRY_WAIT | FAILED | DEAD_LETTER`
+   - `RETRY_WAIT → SENDING` (when `now() >= next_retry_at` and `attempt_count < max_attempts`; bounded exponential backoff defaults: `max_attempts = 5`, max retry horizon 24h, configurable per immutable policy version)
+   - `UNKNOWN → DELIVERED | FAILED | DEAD_LETTER` (via authenticated reconciliation / `INT-NOTIF-001` once external provider is approved).
+   - Quiet hours defer eligible external delivery only (`RETRY_WAIT`) and never pause or reset `ELAPSED_UTC` SLA (`POQ-02`).
+4. **`F05-T4` (Append-Only Audit & Attempt Evidence):** `notification_delivery_attempts` and `notification_escalation_events` are append-only (`NONE` browser DML, `app_worker_definer` insert-only), storing sanitized reason codes, correlation IDs, lease generation, and server UTC timestamps with zero secrets, signed URLs, or sensitive message payloads. Retention/purge remains disabled until written `T-10` approval.
+5. **`F05-T5` (Atomic Snapshot Binding):** `notification_outbox_recipients` is formally admitted into `Physical Schema v1.0.0` (table #62) and `RLS Catalogue v1.0.0`. Source commands capture one DB UTC `audience_evaluated_at` and write source state + canonical event + audit + idempotency + `notification_outbox` + `notification_outbox_recipients` atomically without backward lock acquisition (`NLA-L05-WRITER-MATRIX-001` v1.0.0 §11.2). Empty evaluated audiences are explicitly marked `audience_empty = true` on `notification_outbox` to distinguish from incomplete materialization.
+
+**Closure disposition (2026-11-27):** `DGA-B13` technical design (`F05-T1..T5`) is **CLOSED** for `G9-TECH` freeze. External provider dispatch (`CMD-053` external adapters & `INT-NOTIF-001`) remains gated until `T-10`/`T-12`; `TC-NOTIF-001..105` execution remains gated to `G11`.

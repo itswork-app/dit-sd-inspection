@@ -416,3 +416,27 @@ The Product Owner approves the following product semantics:
 **Existing T-14 capacity decision is unchanged and is not reopened.** Its approved 1–100 combined capacity (default 50), distinct-account counting predicate and serialization requirement remain controlling.
 
 **Implementation boundary:** RBAC-003 approves product semantics only. It does not approve a physical schema, role/permission seed, route/RPC, PostgreSQL grant, RLS policy, SECURITY DEFINER function, lock mode, concurrency proof, production access or executable business mutation. CMD-001–007 must be reconciled to these semantics; canonical permission and object-privilege matrices, LPR-11/lock certification, version-token parity, RLS and negative/concurrency tests remain open. No implementation or test result is implied.
+
+
+## Product Owner decisions — Full-System Technical SSOT closure pack (2026-11-27)
+
+**Approval record:** The Product Owner / sole repository maintainer explicitly approved the four remaining product-semantic decisions on 2026-11-27 to unblock Full-System Technical SSOT closure (`G9-TECH`). These decisions preserve all prior approved decisions (`T-01..T-18`, `POQ-01..04`, `LPR-02..06`, `SES-001`, `DOC-003`, `RBAC-003`, `CMD-045..048`) without reopening them.
+
+| ID | Decision | State | Binding product semantics |
+|---|---|---|---|
+| C36-02 | In-flight PDF generation accepted before `CMD-032` reopen | **PO APPROVED (Option A)** | If a document generation job was accepted prior to `CMD-032` reopen and finishes afterward, finalization MUST mark the job `STALE` / `CANCELLED` (requiring a fresh authorized generation after the new approval). Silent rebinding to a draft or new revision is strictly prohibited. |
+| IDC-O10 / SES-T10 | Privileged reopen of a `CLOSED` session after a prior `ABORTED` unit attempt | **PO APPROVED (Option A)** | A privilegedly reopened `CLOSED` session MAY accept a brand-new inspection attempt (new `inspection_id`) for a unit that had a prior `ABORTED` attempt. The prior `ABORTED` attempt remains permanently terminal, immutable, and non-reactivatable. |
+| IDC-O04..O06 | Draft ownership, claim lifecycle, and evidence carry-forward after `RETURNED_FOR_CORRECTION` / `REOPENED` | **PO APPROVED (Option A)** | Returned drafts remain owned by the original Inspector under their active claim in the originating active session (consistent with `WF-001` and `SES-001`). Reopened inspections (`CMD-032`) require explicit authorized claim/reassignment (no silent transfer). Prior-revision evidence may be explicitly carried forward by immutable reference link without duplicating, overwriting, or mutating original evidence records. |
+| NLA-MVP-001 | Notification scope & retry state progression for MVP Technical SSOT | **PO APPROVED (Option A)** | Admit in-app notifications, atomic event-time candidate snapshot (`notification_outbox_recipients`), and an explicit retryable delivery transition (`SENDING → RETRY_WAIT → SENDING`) into the MVP Technical SSOT. External provider dispatch adapters (`CMD-053` email/push providers and `INT-NOTIF-001` external callbacks) remain explicitly disabled and non-operational until `T-10` institutional policy and `T-12` provider credentials/ownership are approved. |
+
+**Authority boundary:** These decisions close all remaining Product Owner product-semantic open questions for Full-System Technical SSOT design. Institutional/external obligations (`DGA-B01..B06`, `DGA-B08`, `DGA-B15`) remain owned by the Product Owner per `PO-2026-11-25-IMPLEMENTATION-RESPONSIBILITY-001` and remain production/real-data gates; live database/runtime/concurrency verification remains gated to `G11` execution after implementation authorization.
+
+
+## Product Owner sign-off — G9-TECH Freeze & G10 Full-System Synthetic Implementation (2026-11-27)
+
+- **Decision ID:** `PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001`
+- **Status:** **APPROVED BY PRODUCT OWNER / SOLE MAINTAINER**
+- **Effective date:** 2026-11-27
+- **G9-TECH Freeze:** Full-System Technical SSOT baseline (`v1.0.0+` across 62 canonical tables, 62/62 RLS policies, 52 in-scope application commands, `T-18` ACLs, `CONCURRENCY-001`, `LPR-01..09/11`, `F-03`/`F-04`/`F05-T1..T5`, `SES-001`, `OFFLINE-SYNC-AND-RECOVERY.md`) is **FROZEN** for synthetic-data engineering development.
+- **G10 Activation:** **ACTIVE** for ordered `IRG-001` phases `I1 → I5` on dedicated feature branches using isolated synthetic/test data only, starting with `I1/I2` (Database foundation, `RBAC-003`, `T-15` audit, idempotency, `CMD-001..007`, API & Admin UI).
+- **Preserved Prohibitions:** No real institutional personal/evidence data, no `CMD-044` audit export, no external `CMD-053` provider dispatch, no `CMD-045..048` app surfaces, no production deployment, and no unexecuted test reported as PASS. Recorded in root `AGENTS.md` v1.3.0.

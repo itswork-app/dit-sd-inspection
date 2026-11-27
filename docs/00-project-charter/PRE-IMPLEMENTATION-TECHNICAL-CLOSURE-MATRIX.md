@@ -1,12 +1,12 @@
 # Pre-Implementation Technical Closure Matrix — F-03, F-04 and SES-001
 
 **Document ID:** PTCM-001  
-**Version:** 0.1.2  
-**Status:** CONTROLLED STATIC CLOSURE MATRIX — REVIEW REQUIRED; NOT APPROVED FOR IMPLEMENTATION  
-**Date:** 2026-11-25  
-**Repository baseline:** `main` at `18ac4f91484a1afa5e7e5bf35fe9c7b6debfaaa5`  
-**Authority:** AGENTS.md v1.2.3; MIB-001; DGA-001; LOCK-GRAPH-001 v0.4.25; LOCK-MANIFEST-001 v0.4.32; LOCK-NORMALIZATION-001 v0.1.1; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v0.3.14; NLA-L05-TDR-001 v0.1.14; NLA-L05-WRITER-MATRIX-001 v0.1.6; SES-001 Decision Register; QA v0.7.3  
-**Gate:** G9 NOT READY; G10 NOT ACTIVE
+**Version:** 1.0.0  
+**Status:** TECHNICAL SSOT DESIGN CLOSED — F-03, F-04 & SES-001 TECHNICAL CONTRACTS CLOSED FOR G9-TECH FREEZE (LIVE CATALOG & LPR-10 RUNTIME CERTIFICATION GATED TO G11)  
+**Date:** 2026-11-27  
+**Repository baseline:** `docs/g9-technical-ssot-closure` (based on `main` `5b7fdd9`)  
+**Authority:** AGENTS.md v1.2.5; MIB-001 v1.1.0; DGA-001 v2.0.0; LOCK-GRAPH-001 v1.0.0; LOCK-MANIFEST-001 v1.0.0; LOCK-PROTOCOL-DECISION-RESOLUTION-001 v1.0.0; NLA-L05-WRITER-MATRIX-001 v1.0.0; Physical Schema v1.0.0; Command Catalogue v1.0.0; Decision Register (2026-11-27)  
+**Gate:** G9-TECH READY FOR PO/MAINTAINER FREEZE SIGN-OFF; G11 RUNTIME/LIVE DB VERIFICATION PENDING
 
 ## 1. Purpose and boundary
 
@@ -186,3 +186,13 @@ Any change to approved SES-001 semantics requires a new PO decision. Any institu
 ## 9. Post-PR #24 baseline reconciliation — 2026-11-25
 
 PTCM-001 v0.1.2 is reviewed against `main` at `18ac4f91484a1afa5e7e5bf35fe9c7b6debfaaa5`, after PR #24 merged. Its referenced LOCK-GRAPH-001 baseline is v0.4.25. The underlying F-03/F-04/SES-001 dispositions are unchanged: F-03 NOT PROVEN ACYCLIC; F-04 0 writers certified; SES-001 technical contract OPEN; QA PLANNED / NOT EXECUTED; G9 NOT READY; G10 NOT ACTIVE. This version update reconciles document provenance only and does not close evidence requirements or authorize implementation.
+
+
+## 10. Technical SSOT Closure Checkpoint — 2026-11-27
+
+All design-level items tracked in `PTCM-001` are now closed for **Full-System Technical SSOT (`G9-TECH`)**:
+- **`F-03` (`F03-C01..C09`):** All 9 source-level lock-order conflicts resolved under the strictly ascending `LPR-01` v1.0.0 total order (`LOCK-GRAPH-001` v1.0.0 & `LOCK-MANIFEST-001` v1.0.0, **52/52 application commands** normalized, statically acyclic DAG; `CMD-045..048` excluded external control plane). Physical `pg_catalog` inspection and `LPR-10` (`LG-01..LG-41`) adversarial execution remain `G11` gates.
+- **`F-04` (Eligibility Writers):** Complete logical writer universe and zero-backward-lock snapshot rule (`NLA-L05-WRITER-MATRIX-001` v1.0.0 §11) plus browser direct-DML revocation closed at design level. Deployed catalog certification remains a `G11` gate.
+- **`SES-001` (`SES-T01..T10`):** Closed via dedicated `CMD-055` (`request-inspection-abort` / `inspection.abort.request`) and `CMD-056` (`decide-inspection-abort` / `inspection.abort.decide`), admitted tables `inspection_abort_requests` (#52) and `inspection_abort_decisions` (#53), strict `approver != requester` SoD, atomic approval/claim-release write set, `LPR-01` lock order, and PO-approved `IDC-O10/SES-T10` (reopened `CLOSED` session may accept a brand-new `inspection_id`, while prior `ABORTED` stays terminal). Operational/institutional evidence format for `SES-T03` (packed-state proof) uses private `evidence_assets` upload in synthetic development and remains subject to PO operational guidelines before production.
+
+**Disposition (2026-11-27):** `F-03`, `F-04`, and `SES-001` technical design contracts are **CLOSED** for `G9-TECH` freeze. Runtime/deployed-database verification (`G11`) and production/institutional readiness (`G12`) remain **NOT EXECUTED / NOT VERIFIED**.

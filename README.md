@@ -21,9 +21,9 @@ Cost-first means optimizing total lifecycle cost without waiving security, priva
 **Current phase:** Staged foundation implementation (G10-F1 ACTIVE). The repository contains authoritative documentation and is now authorized to receive application implementation. Coding is authorized only for the bounded foundation scope using synthetic/test data.
 
 **Scope freeze / G9-F1:** FOUNDATION SCOPE FROZEN (2026-11-25)  
-**Full-system G9:** NOT READY — business-feature gates remain open  
-**G10-F1 foundation implementation:** ACTIVE (2026-11-25; PR #26)  
-**Full-system / production readiness:** NOT VERIFIED
+**Full-system technical SSOT (`G9-TECH`):** READY FOR PO/MAINTAINER FREEZE SIGN-OFF (2026-11-27; 14/14 technical DGA blockers design-closed; 62 tables & 52 app commands reconciled)  
+**G10-F1 foundation implementation:** ACTIVE (2026-11-25; PR #26); full-system synthetic G10 pending explicit sign-off  
+**Full-system runtime (`G11`) / production readiness (`G12`):** NOT EXECUTED / NOT VERIFIED
 
 ## Engineering instructions and delivery roadmap
 **Mandatory:** Every contributor and coding agent must read the root [AGENTS.md](AGENTS.md) before each new work session and substantive task. If it cannot be read, repository edits must stop. The file defines authority, authorization boundaries, security invariants, implementation workflow, SemVer and reporting rules.

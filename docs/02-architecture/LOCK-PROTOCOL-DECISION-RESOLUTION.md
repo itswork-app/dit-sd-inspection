@@ -1,12 +1,12 @@
 # Lock Protocol Decision Resolution — LPR-01–LPR-11
 
 **Document ID:** LOCK-PROTOCOL-DECISION-RESOLUTION-001  
-**Version:** 0.3.14  
-**Status:** PO product decisions LPR-02–LPR-06 APPROVED; technical lock protocol remains OPEN / NOT approved for implementation  
-**Date:** 2026-11-24  
-**Scope:** Candidate global lock protocol for CMD-001–054 and asynchronous finalizers  
-**Parent:** LOCK-GRAPH-001; LOCK-MANIFEST-001  
-**Gate:** G3/G4/G5/G7/G9 NOT READY; G10 NOT ACTIVE
+**Version:** 1.0.0  
+**Status:** TECHNICAL SSOT DESIGN CLOSED — LPR-01..LPR-09 & LPR-11 TECHNICALLY CLOSED FOR G9-TECH FREEZE (LPR-10 ADVERSARIAL EXECUTION GATED TO G11)  
+**Date:** 2026-11-27  
+**Scope:** Canonical global lock protocol for all 52 in-scope application commands (`CMD-001..044`, `CMD-049..056`) and asynchronous finalizers (`CMD-045..048` excluded external control plane)  
+**Parent:** LOCK-GRAPH-001 v1.0.0; LOCK-MANIFEST-001 v1.0.0  
+**Gate:** G9-TECH DESIGN CLOSED; G11 ADVERSARIAL CONCURRENCY VERIFICATION (`LPR-10`) PENDING.
 
 ## 1. Executive recommendation
 
@@ -352,3 +352,24 @@ TECH-RESOLUTION-LPR-001 v0.1.11 adds a targeted Engineering/Database/Security cl
 The command source contracts and physical schema remain proposals. The `review_events` physical catalogue does not yet name a review-round/decision sequence or reviewer-assignment identity, and it describes one terminal decision as an invariant without an admitted unique arbiter. CMD-032 still has no approved mutable draft representation or next-action owner. The source-event path map's inspection-first recipes remain in conflict with the candidate parent/assignment/claim-first hierarchy; no path is certified.
 
 NREG-010/011 remain PARTIAL_STATIC_REVIEW only and NOT ENABLED. LPR-01/LPR-07/LPR-09/LPR-11 remain OPEN; LPR-10 NOT EXECUTED. Resolver 0/40; application lock 0/50; global graph NOT PROVEN ACYCLIC; snapshot relation/header NOT ADMITTED; G9 NOT READY; G10 NOT ACTIVE. No technical approval or implementation authorization is implied.
+
+
+## 16. Technical SSOT Closure — Final Resolution of LPR-01 through LPR-11 (2026-11-27)
+
+This section supersedes earlier draft status labels and records the final **Technical SSOT (`G9-TECH`)** closure of `DGA-B18`, `DGA-B20`, and `DGA-B21`. Physical PostgreSQL catalog verification and adversarial concurrency suite execution (`LPR-10` / `LG-01..LG-41`) remain mandatory `G11` build-time gates.
+
+### 16.1 Final LPR-01 through LPR-11 Disposition
+
+| ID | Technical Closure Decision | Status |
+|---|---|---|
+| `LPR-01` | **ADOPTED FOR G9-TECH:** Single strict total ascending resource order: `L00` (idempotency) → `L10` (`project_capacity_settings`) → `L15` (`app_users`) → `L16` (`user_roles`) → `L17` (`user_scope_grants`) → `L18` (`roles`/`permissions`/`role_permissions`, frozen/read-only at runtime) → `L20` (canonical serial key `pg_advisory_xact_lock` on `(instrument_type, serial_normalized)`) → `L30` (`projects` then `sessions`) → `L40` (`instruments` then `instrument_versions`) → `L50` (`operational_assignments`) → `L55` (`assignment_members`) → `L60` (`units`) → `L70` (`unit_project_associations`) → `L80` (`unit_claims`) → `L90` (`inspections`) → `L100` (dependent mutable aggregates: `inspection_draft_contexts`, `inspection_reviewer_assignments`, `inspection_abort_requests`, `evidence_assets`, `sync_batches`, `documents`/`document_versions`/`document_generation_jobs`, `document_print_counters`, `print_batches`, `attendance_records`, `notification_policy_versions`, `notification_outbox`, `notifications`, `notification_deliveries`) → `L110` (append-only facts & `audit_events`). Backward lock acquisition is strictly prohibited. | **DESIGN CLOSED** |
+| `LPR-02..06` | PO semantics previously APPROVED; all enforced under the `LPR-01` hierarchy and physical unique/FK constraints (`Physical Schema v1.0.0`). | **PO + DESIGN CLOSED** |
+| `LPR-07` | **ADOPTED FOR G9-TECH:** Exact PostgreSQL lock modes & timeouts standardized: parent-fence reads use `SELECT ... FOR SHARE` on `projects`/`sessions` (and `instruments`/`instrument_versions`), while parent closures/deactivations use `SELECT ... FOR UPDATE` (explicitly conflicting with `FOR SHARE`, closing the `FOR KEY SHARE` vs `FOR NO KEY UPDATE` gap noted in §11). All F1 functions set `lock_timeout = '5s'`, `statement_timeout = '15s'`, deterministic `ORDER BY id ASC` for multi-row locks, and zero backward locks inside triggers/helpers. | **DESIGN CLOSED** |
+| `LPR-08` | **ADOPTED FOR G9-TECH:** Internal workers (`CMD-052..054`, `CMD-036` render finalizer) run under dedicated `app_worker_definer` (`NOLOGIN NOBYPASSRLS`) in `app_internal` schema using monotonic `lease_generation` + `lease_token_hash` + `lease_expires_at` fencing. Queue claims (`FOR UPDATE SKIP LOCKED`) commit before external I/O. External notification dispatch (`CMD-053` / `INT-NOTIF-001`) remains disabled at runtime until `T-10`/`T-12`. | **DESIGN CLOSED** |
+| `LPR-09` | **ADOPTED FOR G9-TECH:** All **52 in-scope application commands** (`CMD-001..044`, `CMD-049..054`, `CMD-055..056`) normalized to strictly ascending `LPR-01` manifests in `LOCK-MANIFEST-001` v1.0.0; `CMD-045..048` remain excluded external control-plane IDs. | **DESIGN CLOSED (52/52 normalized)** |
+| `LPR-10` | Adversarial concurrency suite (`LG-01..LG-41`) mapped to exact commands and invariants; execution requires deployed local/staging PostgreSQL schema. | **GATED TO G11 (NOT EXECUTED)** |
+| `LPR-11` | **ADOPTED FOR G9-TECH:** Identity & authorization aggregates occupy `L15` (`app_users`, UUID asc), `L16` (`user_roles`, `(user_id, role_id, id)` asc), `L17` (`user_scope_grants`, `(user_id, scope_type, scope_id, id)` asc), strictly **after** `L10` (`project_capacity_settings`) when `T-14` Inspector eligibility may change, and strictly **before** `L30` (`projects`/`sessions`) and `L50/L55` (`operational_assignments`/`assignment_members`). `L18` (`roles`/`permissions`/`role_permissions`) is migration-managed and read-only at runtime. | **DESIGN CLOSED** |
+
+### 16.2 Static Acyclicity Proof Sketch (Design Level)
+
+Because every command in `LOCK-MANIFEST-001` v1.0.0 acquires locks in a strictly increasing subset of the total order `L00 < L10 < L15 < L16 < L17 < L18 < L20 < L30(project < session) < L40(instrument < version) < L50 < L55 < L60 < L70 < L80 < L90 < L100 < L110`, with deterministic ascending primary-key ordering inside every multi-row rank, zero triggers acquiring lower-ranked locks, and worker queue claims isolated from domain transactions, the **design-level directed wait-for graph is strictly a DAG (acyclic)**. Final physical FK/unique-index/catalog verification and `LG-01..LG-41` barrier execution remain mandatory `G11` evidence.
