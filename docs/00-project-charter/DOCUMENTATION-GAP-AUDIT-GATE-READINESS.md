@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 2.5.0
+**Version:** 2.6.0
 **Audit date:** 2026-11-27  
 **Branch reviewed:** `main` (post-merge PR #42; current baseline `ae271615bacae3c3b48eeaafee72ae1c6829fbf1`)  
 **Reviewed baseline HEAD:** `ae271615bacae3c3b48eeaafee72ae1c6829fbf1` (`main`, merge commit for PR #42; includes PRs #38–#42)  
@@ -1365,3 +1365,21 @@ The source files contain behavioral assertions and the latest PR CI run #104 pas
 - **Status at recording:** AUTHORIZED; NOT YET EXECUTED. The repository is not linked to any hosted project; no hosted migration, seed, deployment or test has been run.
 - **Evidence classes:** staging results will be recorded separately from local results and must not be cited as production evidence.
 - **Unchanged:** `G12` NOT VERIFIED / BLOCKED; `DGA-B05` (ownership/billing/region/quota evidence) OPEN; `DGA-B06` (`WP-03`) and `DGA-B08` (`WP-05`) OPEN until managed-provider restore and staging load/SLO evidence exist; `DGA-B15` (`WP-02` ruleset enforcement) OPEN; `WP-06` (558-ID QA traceability) PARTIAL.
+
+### 26.1 Staging migration & read-only security audit checkpoint (`emqlbtnejinbqlxpoakd`) — 2026-11-27
+
+Following Product Owner terminal linking (`supabase link --project-ref emqlbtnejinbqlxpoakd`) under `PO-2026-11-27-STAGING-SYNTHETIC-001` (`AGENTS.md` v1.4.0 §3.4):
+
+- **Forward-only migration push (`supabase db push --remote --yes`):** **PASS** — all **13/13** immutable SQL migrations (`20261127050000`–`20261127090000`) applied cleanly on first run; `supabase migration list --remote` confirms 13/13 local-to-remote parity.
+- **Read-only PostgreSQL catalog audit (`supabase db query --remote --read-only`):** **PASS**
+  - `public_tables`: `62/62`, `rls_enabled`: `62/62`, `rls_forced`: `62/62`
+  - `roles_seeded`: `6`, `permissions_seeded`: `39`
+  - `private_bucket_exists`: `1` (`inspection-private`, `public = false`)
+  - `definer_roles_safe`: `2` (`app_cmd_definer`, `app_worker_definer` — `NOLOGIN NOBYPASSRLS NOINHERIT NOSUPERUSER`), `definer_schema_create_grants`: `0`
+  - `forbidden_cmd044_or_045_048_funcs`: `0`
+- **External unauthenticated default-deny probes (`https://emqlbtnejinbqlxpoakd.supabase.co`):** **PASS**
+  - `GET /rest/v1/projects?select=id` & `/rest/v1/app_users?select=id` with publishable key: **HTTP 401** (`SQLSTATE 42501 permission denied`)
+  - `GET /storage/v1/object/public/inspection-private/nonexistent.png`: **HTTP 400** (private bucket)
+- **Remote `pg_dump` schema export (`supabase db dump --remote --schema public,app_internal`):** **PASS** — `545,854 bytes`, SHA-256 `386fc2e29cfc3cd130578cdd18ba5127128bab169165778af81c98d0313c9a9a`, `DUMP_MS=112036` (temporary export deleted after hashing).
+
+**Limits & preserved blockers:** This establishes live staging schema/RLS/Storage provisioning and schema dump export only. Full managed PostgreSQL + Storage object restore with RPO/RTO sign-off (`DGA-B06`/`WP-03`), staging load/SLO (`DGA-B08`/`WP-05`), real-device offline UAT (`DGA-B07`/`WP-04`), repository ruleset activation (`DGA-B15`/`WP-02`), 558-ID QA mapping (`WP-06`), and `G12` production readiness (`DGA-B01..B05`, `T-10`/`T-12`) remain **OPEN / BLOCKED**.
