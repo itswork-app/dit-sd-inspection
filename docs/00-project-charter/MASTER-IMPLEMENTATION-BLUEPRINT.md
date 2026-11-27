@@ -1,15 +1,15 @@
 # Master Implementation Blueprint — Dit. SD Inspection
 
 **Document ID:** MIB-001  
-**Status:** CONTROLLED BASELINE — G9-TECH FULL-SYSTEM TECHNICAL SSOT READY FOR FREEZE SIGN-OFF; G10-F1 FOUNDATION ACTIVE  
-**Version:** 1.1.0  
+**Status:** CONTROLLED BASELINE — G9-TECH FROZEN; G10 FULL-SYSTEM SYNTHETIC IMPLEMENTATION ACTIVE; G11 PARTIAL; G12 BLOCKED  
+**Version:** 1.2.0  
 **Last reviewed:** 2026-11-27  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24); FINAL PO SEMANTIC DECISIONS APPROVED (2026-11-27)
-**G10-F1 foundation implementation activation:** ACTIVE (2026-11-25, after PR #26); G10 full-system synthetic implementation pending explicit G9-TECH freeze & G10 activation record  
-**Scope-freeze status:** G9-F1 FOUNDATION SCOPE FROZEN; G9-TECH FULL-SYSTEM TECHNICAL SSOT READY FOR PO/MAINTAINER FREEZE SIGN-OFF; PRODUCTION G12 NOT VERIFIED
+**G10 full-system synthetic implementation activation:** ACTIVE (2026-11-27; PO sign-off recorded in root `AGENTS.md` §3.3 and Decision Register; phases I1–I5 implemented on isolated synthetic infrastructure)  
+**Scope-freeze status:** G9-F1 FOUNDATION SCOPE FROZEN; G9-TECH FULL-SYSTEM TECHNICAL SSOT FROZEN; G10 ACTIVE; G11 PARTIAL; PRODUCTION G12 NOT VERIFIED / BLOCKED
 
-**Current gate interpretation (2026-11-25):** Historical sections below that record G9 NOT READY/G10 NOT ACTIVE predate the staged G9-F1/G10-F1 decision. The controlling state is G9-F1 FOUNDATION SCOPE FROZEN and G10-F1 FOUNDATION IMPLEMENTATION ACTIVE. Full-system G9 remains NOT READY; later business features and production operations remain gated.
+**Current gate interpretation (2026-11-27; post-merge baseline `main` `706c654`):** G9-F1 and G9-TECH are FROZEN; G10 full-system synthetic implementation is ACTIVE (I1–I5 implemented locally with synthetic data); G11 is PARTIAL (local verification evidence recorded, hosted CI absent, managed restore/staging SLO/real-device UAT open); G12 is NOT VERIFIED / BLOCKED. Dated sections below that state G9 NOT READY or G10 NOT ACTIVE are historical snapshots superseded by this current status and root `AGENTS.md` v1.3.0 §3.3.
 
 ## 1. Purpose and authority
 
@@ -76,10 +76,10 @@ A phase is complete only when its exit evidence is recorded and reviewed. A docu
 | G6 | UX and accessibility closure | Role journeys, responsive states, offline/error/recovery states, accessibility acceptance | NOT READY |
 | G7 | Quality strategy closure | Full RTM, acceptance criteria, test cases, risk-based coverage and test data strategy | NOT READY |
 | G8 | Production operations closure | Environments, ownership, region, quotas, backups, restore, monitoring, incident response, cost envelope | NOT READY |
-| G9 | Final SSOT and scope-freeze review | Cross-document consistency, no unresolved critical ambiguity, signed scope freeze | Full-system NOT READY; G9-F1 foundation scope frozen |
-| G10 | Implementation authorization | Verified scope freeze and explicit activation record for the applicable implementation stage | G10-F1 foundation ACTIVE; later business-feature stages remain gated |
-| G11 | Build and verification | CI evidence, functional/security/performance/accessibility/recovery test results | NOT STARTED |
-| G12 | Production release approval | Deployment, restore/rollback proof, operational ownership, UAT and go-live acceptance | NOT STARTED |
+| G9 | Final SSOT and scope-freeze review | Cross-document consistency, no unresolved critical ambiguity, signed scope freeze | G9-F1 and G9-TECH technical SSOT FROZEN; external/source/institutional production gates remain open |
+| G10 | Implementation authorization | Verified scope freeze and explicit activation record for the applicable implementation stage | FULL-SYSTEM SYNTHETIC IMPLEMENTATION ACTIVE; I1–I5 implemented locally on synthetic data |
+| G11 | Build and verification | CI evidence, functional/security/performance/accessibility/recovery test results | PARTIAL — local synthetic verification and operational rehearsals recorded; hosted CI, managed restore, staging SLO and real-device UAT remain open |
+| G12 | Production release approval | Deployment, restore/rollback proof, operational ownership, UAT and go-live acceptance | NOT VERIFIED / BLOCKED — no production deployment or real institutional data operation |
 
 No gate is passed by inference. G9 cannot pass while any blocker affecting scope, authority, safety, data integrity, or production operation remains unresolved. G10 is a separate explicit authorization and is not implied by G9.
 
@@ -191,25 +191,25 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 ## 10. Current project status
 
 - Repository intent: **DOCUMENTATION AND APPLICATION IN ONE REPOSITORY — CONFIRMED BY PRODUCT OWNER**
-- Documentation gap audit: **DGA-001 v1.18.0 RECORDED; blocking closure IN PROGRESS**
-- Mandatory agent instructions: **AGENTS.md v1.2.5 — READ BEFORE EVERY WORK SESSION/TASK**
+- Documentation gap audit: **DGA-001 v2.3.0 — current gate and evidence register; external/runtime blockers remain open**
+- Mandatory agent instructions: **AGENTS.md v1.3.0 — READ BEFORE EVERY WORK SESSION/TASK**
 - Implementation roadmap: **IRG-001 v1.0.10 — CONTROLLED PLAN, NOT AUTHORIZATION**
 - SemVer policy: **2.0.0 adopted; application version not assigned before release**
-- Full-system implementation readiness: **NOT READY — see DGA-001; G10-F1 foundation implementation ACTIVE**
-- Current phase: **STAGED FOUNDATION IMPLEMENTATION — G9-F1 / G10-F1**
-- Application source code: **FOUNDATION BOOTSTRAP LOCALLY VERIFIED on `feat/foundation-bootstrap-v1-rebased` (PR #30 OPEN; `npm ci && npm run check` PASS 2026-11-27; hosted Actions blocked on account billing/spending limit)**
+- Full-system synthetic implementation: **G10 ACTIVE; I1–I5 implemented on isolated synthetic infrastructure; G11 PARTIAL; G12 NOT VERIFIED / BLOCKED**
+- Current phase: **G10 FULL-SYSTEM SYNTHETIC IMPLEMENTATION; G11 LOCAL VERIFICATION PARTIAL**
+- Application source code: **I1–I5 implementation merged to `main` through PRs #39–#41; local verification evidence recorded in DGA-001 §§22–23; hosted Actions remain ABSENT/BLOCKED (`DGA-B15`)**
 - T-18 hybrid execution model: **PO-APPROVED DESIGN; implementation conformance NOT VERIFIED**
 - Notification product semantics: **POQ-01..03 APPROVED; engineering/security/institutional closure OPEN**
 - Live Supabase inspection: **NOT EXECUTED**
-- Hosted CI, live OAuth, restore, performance and UAT evidence: **NOT EXECUTED / BLOCKED**
-- Foundation scope freeze: **G9-F1 FROZEN; full-system G9 NOT READY**
+- Hosted CI: **ABSENT/BLOCKED**; managed-provider DB + Storage restore: **OPEN**; staging load/SLO: **OPEN**; real-device offline UAT: **NOT EXECUTED**; production readiness: **NOT VERIFIED**
+- Scope freeze: **G9-F1 and G9-TECH FROZEN**
 - Product Owner authorization: **CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)**
-- G10 implementation activation: **G10-F1 ACTIVE (2026-11-25, following PR #26); later business-feature stages remain gated**
+- G10 implementation activation: **FULL-SYSTEM SYNTHETIC IMPLEMENTATION ACTIVE (2026-11-27; PO sign-off in AGENTS.md §3.3)**
 - Production readiness: **NOT VERIFIED**
 
 ## 11. Immediate next actions
 
-1. Treat [Documentation Gap Audit — Gate Implementation Readiness](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) as the active evidence-backed closure queue; do not claim readiness while any blocking row remains open.
+1. Treat [DGA-001](DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) v2.3.0 as the active evidence-backed register; do not collapse local verification into hosted, managed-provider, staging, UAT or production evidence.
 2. Reconcile historical status language in Package T, Package S, Decision Register, RTM and RAID without changing approved decision meaning.
 3. Close instrument source/evidence-slot and BA/template authority dependencies with controlled source evidence.
 4. Reconcile the approved POQ-01..03 notification semantics across NLA-001, command/API/schema/RLS/RTM/QA; close durable audience snapshot/checkpoint and selector design, worker identity/ACL, policy grants/SoD, provider callback security, retry horizons and T-10/provider dependencies; then obtain independent technical review of the six notification tables plus T-13 `print_batches` constraints, locks and tests.
