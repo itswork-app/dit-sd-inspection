@@ -1,7 +1,7 @@
 # Physical Database Schema and Integrity Specification
 
 **Status:** Engineering specification draft — approval required before migrations  
-**Version:** 0.4.10  
+**Version:** 0.4.11  
 **Package:** L — Physical Data Model and Integrity  
 **Date:** 2026-11-27
 
@@ -469,7 +469,7 @@ The current `documents` row does not establish whether it represents a logical d
 
 The existing `print_events.attempt_no` has no agreed semantics relative to `sequence_no` or CMD-038 item retry attempts. Do not use it as an independent reprint counter. The exact decision, field location and uniqueness rules remain OPEN.
 
-Historical/superseded-version reprint eligibility is a PO decision not stated in T-13/DOC-002; no new eligibility is inferred. The candidate counter object, exact allocator SQL, lock ranks, constraints, FK/trigger edges, RLS/ACL and concurrency proof remain unapproved. Canonical table count remains 48; no live database state is asserted.
+PO-approved DOC-003/C37-02 semantics (2026-11-27): only the latest finalized/current immutable version of a logical document is eligible for new print/reprint actions; a superseded/replaced version is historical-only and cannot be printed individually or in a batch. Existing artifact bytes and print-event history remain immutable. This is a product rule, not physical schema admission: canonical version identity/current-version pointer or equivalent arbitration, counter object, allocator SQL, lock ranks, constraints, FK/trigger edges, RLS/ACL and concurrency proof remain unapproved. Canonical table count remains 48; no live database state is asserted.
 
 ## CMD-038 print batch manifest/result integrity addendum — 2026-11-27
 
