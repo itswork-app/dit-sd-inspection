@@ -4,6 +4,7 @@ import { OperationsPanel } from "@/app/operations/operations-panel";
 import { AppTopbar } from "@/components/app-topbar";
 import { loadSelfAccountSnapshot } from "@/lib/auth/account";
 import { getVerifiedIdentity } from "@/lib/auth/identity";
+import { extractActiveRoles } from "@/lib/auth/roles";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -56,11 +57,14 @@ export default async function OperationsPage() {
     projectsRes.error || sessionsRes.error || docsRes.error || attRecRes.error
   );
 
+  const activeRoles = extractActiveRoles(selfSnapshot.roles);
+
   return (
     <main className="workspace">
       <AppTopbar
         subtitle="Dokumen, Cetak, Absensi, Laporan & Audit"
         activePath="/operations"
+        activeRoles={activeRoles}
         canManageIdentity={selfSnapshot.canManageIdentity}
       />
 

@@ -6,6 +6,8 @@ import { GET } from "./route";
 vi.mock("@/lib/supabase/server", () => ({ createClient: vi.fn() }));
 
 const exchangeCodeForSession = vi.fn();
+const getUser = vi.fn();
+const maybeSingle = vi.fn();
 
 function request(url: string) {
   return new NextRequest(url);
@@ -14,17 +16,33 @@ function request(url: string) {
 describe("GET /auth/callback", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    getUser.mockResolvedValue({ data: { user: { id: "auth-1" } } });
+    maybeSingle.mockResolvedValue({ data: { account_status: "PENDING" } });
     vi.mocked(createClient).mockResolvedValue({
-      auth: { exchangeCodeForSession }
+      auth: { exchangeCodeForSession, getUser },
+      from: vi.fn(() => ({
+        select: vi.fn(() => ({
+          eq: vi.fn(() => ({ maybeSingle }))
+        }))
+      }))
     } as never);
   });
 
-  it("exchanges the one-time code and redirects to the pending-access screen", async () => {
+  it("exchanges the one-time code and redirects pending/new users to /auth/pending", async () => {
     exchangeCodeForSession.mockResolvedValue({ error: null });
     const response = await GET(request("https://inspection.example/auth/callback?code=one-time-code"));
 
     expect(exchangeCodeForSession).toHaveBeenCalledWith("one-time-code");
     expect(response.headers.get("location")).toBe("https://inspection.example/auth/pending");
+    expect(response.headers.get("cache-control")).toBe("no-store");
+  });
+
+  it("redirects APPROVED users directly to /dashboard after login", async () => {
+    exchangeCodeForSession.mockResolvedValue({ error: null });
+    maybeSingle.mockResolvedValueOnce({ data: { account_status: "APPROVED" } });
+    const response = await GET(request("https://inspection.example/auth/callback?code=one-time-code"));
+
+    expect(response.headers.get("location")).toBe("https://inspection.example/dashboard");
     expect(response.headers.get("cache-control")).toBe("no-store");
   });
 

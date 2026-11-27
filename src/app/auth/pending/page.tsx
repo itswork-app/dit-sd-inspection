@@ -213,7 +213,10 @@ export default async function PendingAccessPage({ searchParams }: PendingPagePro
               </p>
             </div>
             <div className="rbac-actions">
-              <Link className="auth-button rbac-link-button" href="/workspace">
+              <Link className="auth-button rbac-link-button" href="/dashboard">
+                Buka Dashboard Peran
+              </Link>
+              <Link className="auth-button auth-button-secondary rbac-link-button" href="/workspace">
                 Buka Workspace Operasional
               </Link>
               {snapshot.canManageIdentity ? (
