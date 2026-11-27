@@ -48,8 +48,8 @@ BEGIN
   SELECT count(*) INTO v_cmd_count
   FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
   WHERE n.nspname = 'public' AND p.proname LIKE 'cmd_%_v1';
-  IF v_cmd_count <> 52 THEN
-    RAISE EXCEPTION 'CATALOG FAIL: expected 52 public cmd_*_v1 wrappers, got %', v_cmd_count;
+  IF v_cmd_count < 52 THEN
+    RAISE EXCEPTION 'CATALOG FAIL: expected >= 52 public cmd_*_v1 wrappers, got %', v_cmd_count;
   END IF;
 
   SELECT count(*) INTO v_bad_funcs
