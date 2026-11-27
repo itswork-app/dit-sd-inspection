@@ -1,16 +1,16 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 2.3.0
+**Version:** 2.4.2
 **Audit date:** 2026-11-27  
-**Branch reviewed:** `main` (post-merge PRs #38–#41; audit baseline `706c654a17d415913892b64fe71de59c2a09bafe`)  
-**Reviewed baseline HEAD:** `706c654a17d415913892b64fe71de59c2a09bafe` (`main`, merge commit for PR #41; includes PRs #38–#41)  
+**Branch reviewed:** `main` (post-merge PR #42; current baseline `ae271615bacae3c3b48eeaafee72ae1c6829fbf1`)  
+**Reviewed baseline HEAD:** `ae271615bacae3c3b48eeaafee72ae1c6829fbf1` (`main`, merge commit for PR #42; includes PRs #38–#42)  
 **Authority:** Master Implementation Blueprint MIB-001  
-**Status:** `G9-F1` + `G9-TECH` FROZEN; `G10` FULL-SYSTEM SYNTHETIC IMPLEMENTATION (`I1→I5`) ACTIVE/IMPLEMENTED; `G11` PARTIAL (LOCAL EVIDENCE); HOSTED CI ABSENT (`DGA-B15`); `G12` NOT VERIFIED / BLOCKED  
+**Status:** `G9-F1` + `G9-TECH` FROZEN; `G10` FULL-SYSTEM SYNTHETIC IMPLEMENTATION (`I1→I5`) ACTIVE/IMPLEMENTED; `G11` PARTIAL (LOCAL EVIDENCE + MAIN-PUSH CI PASS; REPOSITORY RULESET DISABLED); `G12` NOT VERIFIED / BLOCKED  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24); PO RESPONSIBILITY CLARIFICATION (2026-11-25); FINAL PO SEMANTIC DECISIONS & `PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001` FREEZE/ACTIVATION SIGN-OFF (2026-11-27)
 **G10 implementation status:** `G10-F1` ACTIVE (2026-11-25); `G10` FULL-SYSTEM SYNTHETIC IMPLEMENTATION ACTIVE (2026-11-27; local `I1→I5` slices & local `G11` verification passed on isolated synthetic stack)
 
-**Current gate interpretation (2026-11-27; post-merge `main` `706c654`):** `G9-F1` and `G9-TECH` are FROZEN; `G10` full-system synthetic implementation `I1→I5` is ACTIVE and implemented on isolated local/development infrastructure with synthetic data; `G11` is PARTIAL (local verification evidence exists, but hosted CI is ABSENT, managed-provider restore and staging SLO remain OPEN, and real-device offline UAT is NOT EXECUTED); `G12` is NOT VERIFIED / BLOCKED. Historical sections with earlier `G9 NOT READY` / `G10 NOT ACTIVE` language are dated snapshots, not current gate state. Current status is governed by root `AGENTS.md` v1.3.0 §3.3 and the latest checkpoint in §§22–24.
+**Current gate interpretation (2026-11-27; post-merge `main` `ae271615`):** `G9-F1` and `G9-TECH` are FROZEN; `G10` full-system synthetic implementation `I1→I5` is ACTIVE and implemented on isolated local/development infrastructure with synthetic data; `G11` is PARTIAL (main-push GitHub Actions CI passed on merge commit `ae271615` in run #93, but the `main` repository ruleset is DISABLED; managed-provider restore and staging SLO remain OPEN, and real-device offline UAT is NOT EXECUTED); `G12` is NOT VERIFIED / BLOCKED. Historical sections with earlier gate statements are dated snapshots, not current gate state. Current status is governed by root `AGENTS.md` v1.3.0 §3.3 and the latest checkpoint in §§22–25.
 
 ## 1. Executive conclusion
 
@@ -30,9 +30,9 @@ These states must not be collapsed.
 
 Reviewed root `AGENTS.md` v1.3.0, MIB-001, README, DOC-MAP-001, Decision Register, RTM, RAID, PRs #38–#41 merge metadata and changed-file inventories, the exact `main` HEAD diff, and GitHub workflow/combined-status records for the audited commit. The full source diff of PR #39 was not independently re-reviewed line by line in this audit.
 
-The QA catalogue contains 413 distinct test-case definitions by line-level ID scan. TC-LOAD-001 and TC-NOTIF-001 each appear more than once as a cross-reference plus a test definition; this does not create additional unique cases. Major planned series include 48 original command-contract cases, 40 command-authorization cases, 48 table/RLS cases, 69 function-security cases, 12 T-18 execution-model cases, 10 live-inventory cases, 8 repository-audit cases, 29 notification lifecycle cases and 8 T-13 print-batch cases. They are specifications only unless an execution record explicitly proves otherwise.
+The current QA catalogue inventory was re-scanned on 2026-11-27 using only actual definition rows (bullet items and table rows): 558 definition rows contain 558 distinct explicitly enumerated test-case IDs; no duplicate definition IDs were found. `TC-NOTIF-052`, `TC-NOTIF-053`, and `TC-NOTIF-054` also appear in explanatory cross-reference prose, not as duplicate definitions. This supersedes the older 413-case count recorded in prior audit snapshots; historical counts remain unchanged. Shorthand ranges are not expanded by this count. These are specifications only unless a case-specific execution record explicitly proves otherwise.
 
-This documentation audit did not execute application code, migrations, live Supabase inspection, deployed RLS/grants verification, Vercel runtime checks, production provider actions, tests, backup/restore, load tests or UAT. PR-recorded local evidence is summarized in §§22–23; it is not claimed as newly executed by this audit. GitHub API returned no workflow runs and no combined commit statuses for audited main HEAD `706c654`; hosted CI is ABSENT, not PASS.
+This documentation audit did not execute application code, migrations, live Supabase inspection, deployed RLS/grants verification, Vercel runtime checks, production provider actions, tests, backup/restore, load tests or UAT. PR-recorded local evidence is summarized in §§22–23; it is not claimed as newly executed by this audit. The earlier workflow-run wrapper exposed only PR-triggered runs and therefore did not show the main-push run. A direct GitHub Actions API query subsequently identified main-push run #77 (`45953256570`) on `706c654`, completed SUCCESS; its Quality checks job and `npm run check` step passed. The combined commit-status endpoint returned no entries, which is not evidence that the Actions workflow did not run.
 
 ## 3. Blocking gaps
 
@@ -52,7 +52,7 @@ This documentation audit did not execute application code, migrations, live Supa
 | DGA-B12 | T-18 execution model | Option A is PO-approved, but function-by-function owner, effective privileges, search_path, exact EXECUTE ACL, JWT forwarding and real route-to-PostgREST path have no runtime evidence | Per-function security review, live inventory, route design, end-to-end caller-JWT negative/positive test | Engineering + security | NOT VERIFIED |
 | DGA-B13 | Audit/INS-015 notifications | NLA-001 v0.1.5 and CMD-049–054 review v0.1.3 reflect POQ-01..03 approvals: hybrid event-time candidate audience with no widening, per-policy SLA with ELAPSED_UTC initial default and quiet-hours delivery deferral only, and no dismiss/archive in MVP. Candidate notification_outbox_recipients and outbox snapshot header remain NOT ADMITTED; exact selector grammar, source-event transaction bounds, lock-order/implicit FK edges, worker identity/ACL, policy grants/SoD, provider callback security, retry horizons and T-10 retention/privacy remain open | Engineering/Security design of durable candidate snapshot/checkpoint and selector grammar; worker principal/ACL; provider capability and callback evidence; institutional T-10 policy; live schema/RLS and tests after G10 | PO (semantics approved) + engineering + institution + Security/Operations | PO SEMANTICS APPROVED; ENGINEERING/EXTERNAL APPROVALS AND RUNTIME EVIDENCE OPEN |
 | DGA-B14 | Reports/project closure | T-05/T-06 metrics, BA/serial annex and closure graph remain open. CMD-038 now has a candidate immutable ordered item manifest + append-only per-item result model, independent item transactions, derived batch projection and server-derived failed-only retry. Candidate objects are NOT ADMITTED; batch size, mixed-scope, retry/terminal policy, attempt/event cardinality, worker/lease, RLS/ACL and concurrency evidence remain open. CMD-010 project closure also lacks a proven parent-fence protocol against CMD-011–015 child writers | Metric definitions, PO decisions and technical admission of CMD-038 candidate objects; retry/projection/lock contract and adversarial tests; project/session parent-fence lock modes and child-writer order | PO + engineering + security | PARTIAL; CMD-038 LOGICAL CANDIDATE RECONCILED, PHYSICAL/PO/TEST GATES OPEN; CLOSURE FENCE OPEN |
-| DGA-B15 | CI/repository governance | Audited main HEAD `706c654`: GitHub API returned no workflow runs and no combined commit statuses. PR-triggered CI on the documentation review branch is separate evidence and must be checked on the live PR; it does not change the audited main-head evidence. Previous PR #30 hosted runner failure cites account billing/spending limits. Required hosted checks and repository protection/scanning evidence remain unproven | Successful required-check run on an actual hosted runner; verify branch protection/rulesets and scanning controls against the current plan | Repository administrator | MAIN HEAD EVIDENCE ABSENT; PR #42 CI IN PROGRESS — NOT YET VERIFIED |
+| DGA-B15 | CI/repository governance | Main-push GitHub Actions run #93 (`45965232365`) on merge commit `ae271615` completed SUCCESS; the Quality checks job and `npm run check` step passed. Repository ruleset `main` (ID `28208385`) is currently `disabled`. Branch-protection endpoint returned HTTP 403 to the available integration, so its configuration could not be independently inspected. Earlier PR #30 billing/spending failure is historical and is not proof of a current billing blocker | Preserve successful main-push/PR run evidence; repository administrator must enable and verify the intended `main` ruleset/required checks and review scanning controls; independently inspect branch protection | Repository administrator | MAIN-PUSH CI PASS; RULESET DISABLED; REPOSITORY ENFORCEMENT OPEN |
 | DGA-B16 | Scope/authority document freshness | Package S §9.15 is preserved as a historical snapshot; §9.16 now reconciles current DGA/QA counts and links current cross-document audit. Package T is confirmed as a historical decision pack with Decision Register as current authority. RTM T-13 print test mapping was corrected against QA. Remaining source/requirement/RAID crosswalk and independent G9 review remain open | Controlled status addenda; reconciled Decision Register/Package S/T/RTM/RAID crosswalk; independent evidence review | Document owner + PO | PARTIAL — DOCUMENTATION RECONCILIATION UPDATED; SOURCE/REQUIREMENT CLOSURE OPEN |
 | DGA-B17 | Concurrency/version token contract | `expected_version`, `expected_row_version`, business version, revision, hash and print sequence are not consistently mapped to physical aggregates; CMD-005/007/035/040 retain field/target mismatches. CMD-050 expected_version has been removed because notifications has no row-version field. CMD-052/053 now have candidate owner/token-hash/generation/expiry lease fields, but physical enforcement and worker ACL remain unverified. | PO/Security decisions on [Concurrency and Version Token Reconciliation](../02-architecture/CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md), followed by synchronized schema/catalogue/review/QA updates | PO + engineering + security; institution for attendance authority | OPEN — PROPOSAL DOCUMENTED, DECISIONS PENDING |
 | DGA-B18 | Global lock order and concurrency graph | PO product semantics LPR-02–LPR-06 are approved; candidate L15–L18 identity/authorization ranks and project/session parent-fence proposal are now cross-document aligned, but lock modes, all command paths, implicit database edges and effective graph remain technically unapproved/unverified | Resolve LPR-01, LPR-07–LPR-11 in [LOCK-PROTOCOL-DECISION-RESOLUTION-001](../02-architecture/LOCK-PROTOCOL-DECISION-RESOLUTION.md), validate candidate ranks/parent fences, normalize all command/worker manifests, then provide acyclic-graph and adversarial concurrency evidence | Engineering + Security + PO; Operations/Institution where applicable | PARTIAL — CANDIDATE DESIGN RECONCILED; TECHNICAL APPROVAL/GRAPH PROOF OPEN |
@@ -1239,7 +1239,7 @@ Following explicit Product Owner approval of the final four remaining product-se
 - **`G9-F1` Foundation Scope:** **FROZEN** (`G10-F1` ACTIVE).
 - **`G9-TECH` (Full-System Technical SSOT for Synthetic-Data Implementation):** **FROZEN** by PO/sole-maintainer sign-off `PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001`; all 14 technical/engineering/security DGA blockers (`B07`, `B09..B14`, `B16..B22`) closed at design level across synchronized v1.0.0 artifacts.
 - **`G10` (Full-System Synthetic Implementation Activation):** **ACTIVE** under root `AGENTS.md` v1.3.0 §3.3; `I1→I5` implemented on isolated local/development infrastructure with synthetic data.
-- **`G11` (Build, Migration, RLS, Concurrency & QA Verification):** **PARTIAL** — local synthetic verification evidence is recorded in §§22–23; the full QA catalogue is not executed, hosted CI remains ABSENT, managed restore/staging SLO/real-device UAT remain open.
+- **`G11` (Build, Migration, RLS, Concurrency & QA Verification):** **PARTIAL** — local synthetic verification evidence is recorded in §§22–23; the full QA catalogue is not executed; main-push hosted CI passed on runs #77 and #93, but repository ruleset enforcement remains DISABLED; managed restore/staging SLO/real-device UAT remain open.
 - **`G12` (Production Release & Real Institutional Data):** **NOT VERIFIED / BLOCKED** on institutional/provider/operational items (`DGA-B01..B06`, `B08`, `B15`) and written `T-10`/`T-12` approvals for `CMD-044` and external `CMD-053` providers.
 
 ---
@@ -1261,7 +1261,7 @@ Following explicit Product Owner / sole-maintainer sign-off `PO-2026-11-27-G9-TE
 ### 22.1 Updated Gate Disposition (2026-11-27 — Post Local `G11` Synthetic Suite)
 - **`G9-F1` & `G9-TECH`:** **FROZEN** (`PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001`).
 - **`G10` (Full-System Synthetic Implementation):** **ACTIVE / LOCAL SLICES `I1 → I5` IMPLEMENTED** (isolated local synthetic stack only).
-- **`G11` (Build, Migration, RLS, Concurrency & QA Verification):** **PARTIAL — LOCAL SYNTHETIC SUITE + LOCAL OPERATIONAL REHEARSALS RECORDED** (see §§22–23). **Still OPEN / NOT EXECUTED for full `G11`:** hosted GitHub Actions CI (`DGA-B15` ABSENT/BLOCKED); remaining planned QA cases across the 413-case catalogue; managed-provider PostgreSQL + Storage restore (`DGA-B06`); approved numeric SLO and staging load test (`DGA-B08`); real-device offline UAT (`DGA-B07`). The local backup/restore rehearsal and local burst benchmark in §23 do not close their corresponding managed/staging gates.
+- **`G11` (Build, Migration, RLS, Concurrency & QA Verification):** **PARTIAL — LOCAL SYNTHETIC SUITE + LOCAL OPERATIONAL REHEARSALS RECORDED** (see §§22–23). **Still OPEN / NOT EXECUTED for full `G11`:** main-push hosted CI PASS on runs #77/#93 but `main` ruleset enforcement DISABLED (`DGA-B15`); remaining planned QA cases across the 558-ID catalogue; managed-provider PostgreSQL + Storage restore (`DGA-B06`); approved numeric SLO and staging load test (`DGA-B08`); real-device offline UAT (`DGA-B07`). The local backup/restore rehearsal and local burst benchmark in §23 do not close their corresponding managed/staging gates.
 - **`G12` (Production Release & Real Institutional Data):** **NOT VERIFIED / BLOCKED** on institutional/provider/operational items (`DGA-B01..B06`, `B08`, `B15`) and written `T-10`/`T-12` approvals for `CMD-044` and external `CMD-053` providers. No real institutional data, hosted database mutation, or staging/production deployment was performed as part of this audit.
 
 ---
@@ -1287,18 +1287,71 @@ Against `next start` + local Supabase, 10 synthetic Super Admin sessions:
 **Limits of this evidence:** single burst on one local machine, no network latency, tiny dataset; benchmark setup seeds roles and activates the instrument directly through local SQL rather than through `CMD-004`/`CMD-019`. These numbers are **not** an SLO and must not be cited as production capacity. **`DGA-B08` remains OPEN** — approved numeric SLOs and a staging load test on the target provider plan are still required.
 
 ### 23.4 Gate disposition (local evidence boundary preserved)
-`G11`: PARTIAL — local synthetic suite and local backup/restore + load rehearsals are recorded; these do not establish managed-provider recovery, staging capacity/SLO, full QA completion or hosted CI. `G12`: NOT VERIFIED / BLOCKED (`DGA-B01..B06`, `B08`, `B15`, `T-10`, `T-12`). Hosted CI: ABSENT (`DGA-B15`).
+`G11`: PARTIAL — local synthetic suite and local backup/restore + load rehearsals are recorded; these do not establish managed-provider recovery, staging capacity/SLO, full QA completion or hosted CI. `G12`: NOT VERIFIED / BLOCKED (`DGA-B01..B06`, `B08`, `B15`, `T-10`, `T-12`). Hosted CI: PASS on main-push runs #77/#93; `main` ruleset enforcement DISABLED (`DGA-B15`).
 
 ## 24. Post-merge repository and documentation audit checkpoint — 2026-11-27
 
-The post-merge audit `PMA-001` reviewed `main` at `706c654a17d415913892b64fe71de59c2a09bafe` after PRs #38–#41. It confirmed the current gate state above and identified stale current-state summaries in MIB-001, DGA-001, README, RTM and RAID. DOC-MAP-001 was reconciled in PR #42; this DGA-001 v2.3.0 update reconciles the DGA header, executive conclusion, blocker status and the distinction between local rehearsal evidence and managed/staging acceptance evidence.
+The post-merge audit `PMA-001` initially reviewed `main` at `706c654a17d415913892b64fe71de59c2a09bafe` after PRs #38–#41. Its initial workflow-run wrapper query missed the main-push run #77; the correction is recorded in PMA-001 v1.2.0 and this DGA-001 v2.4.0. PR #42 then merged as `ae271615` with successful main-push run #93. DOC-MAP-001, MIB-001, DGA-001, RAID-001 and README now carry the current evidence state.
 
-- PRs #38–#41 are merged to `main`; PR #42 carries this audit and documentation-only remediation. Its merge status and CI must be checked separately; no merge is implied by this record.
+- PRs #38–#42 are merged to `main`; PR #42 merge commit `ae271615` has successful main-push workflow run #93. The current G11 evidence and remaining closure sequence are recorded in §25 and G11-ECP-001.
 - Local synthetic test and rehearsal results in §§22–23 are historical evidence recorded by merged PRs; this documentation update did not rerun them.
-- GitHub API returned no workflow runs and no combined commit statuses for audited `main` HEAD `706c654`. PR #42 has a separate PR-triggered CI workflow; its live status must be checked at review time and is not evidence that the audited `main` HEAD had CI.
+- The initial workflow-run wrapper exposed only PR-triggered runs and missed the main-push run on `706c654`. A direct Actions API query subsequently identified main-push run #77 (`45953256570`), completed SUCCESS; its Quality checks job and `npm run check` step passed. The combined commit-status endpoint returned no entries, which is not evidence that the Actions workflow did not run.
 - `DGA-B06`: local PostgreSQL restore rehearsal recorded; managed PostgreSQL + Storage restore remains OPEN.
 - `DGA-B07`: real-device offline UAT remains NOT EXECUTED.
 - `DGA-B08`: local burst baseline recorded; approved SLO and staging load test remain OPEN.
 - `G9-F1`/`G9-TECH`: FROZEN; `G10`: ACTIVE with `I1→I5` implemented on synthetic local/development infrastructure; `G11`: PARTIAL; `G12`: NOT VERIFIED / BLOCKED.
 
 See [PMA-001](POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md) for the detailed scope, PR inventory, findings, limits and remediation sequence. This checkpoint does not close external/runtime blockers or authorize staging/production actions.
+
+
+## 25. Post-PR #42 CI and G11 evidence closure plan — 2026-11-27
+
+The current baseline is `main` merge commit `ae271615bacae3c3b48eeaafee72ae1c6829fbf1` (PR #42). This section supersedes the earlier §24 statement that PR #42 CI was still in progress and the earlier DGA-B15 disposition that hosted CI was absent for the audited main baseline.
+
+### 25.1 Hosted CI — main push verified
+
+- Main commit `706c654a17d415913892b64fe71de59c2a09bafe` (PR #41 merge): main-push run #77 (`45953256570`) completed SUCCESS; its Quality checks job and `npm run check` step passed.
+- PR #42 head `390855b248d28c36e0fd47feae7fb9758788da82`: GitHub Actions run #92 (`45961872626`) completed SUCCESS.
+- Main merge commit `ae271615bacae3c3b48eeaafee72ae1c6829fbf1`: GitHub Actions run #93 (`45965232365`), event `push`, branch `main`, completed SUCCESS.
+- Run #93 Quality checks job (`140392214314`) completed SUCCESS. Checkout, Node.js setup, dependency installation, and `npm run check` all completed SUCCESS.
+- Workflow: `.github/workflows/ci.yml`; run evidence: [GitHub Actions run #93](https://github.com/itswork-app/dit-sd-inspection/actions/runs/45965232365).
+- Combined commit status endpoint returned no status entries for the merge SHA. The successful Actions run is separately evidenced and is not erased by that empty status response.
+
+### 25.2 Repository enforcement — still open
+
+GitHub returned repository ruleset `main` ID `28208385` with enforcement `disabled`. The available integration received HTTP 403 when requesting the branch-protection endpoint, so branch protection details could not be independently read. Therefore:
+- hosted CI execution for the merge commit is PASS;
+- branch protection / required-check enforcement is NOT VERIFIED;
+- the ruleset is explicitly DISABLED and must be enabled/reviewed by an authorized repository administrator;
+- do not claim DGA-B15 fully closed until enforcement and required-check behavior are verified.
+
+### 25.3 Remaining G11 work packages
+
+The execution/evidence sequence is controlled by [G11-ECP-001 — G11 Evidence Closure Plan](G11-EVIDENCE-CLOSURE-PLAN.md) v1.0.2:
+- `DGA-B15`: main-push CI pass is recorded; ruleset and branch enforcement remain OPEN.
+- `DGA-B06`: managed-provider PostgreSQL + Storage restore, checksums, measured RPO/RTO and operations sign-off remain OPEN. The existing local PostgreSQL rehearsal excluded Storage object bytes.
+- `DGA-B07`: real-device offline UAT remains NOT EXECUTED; actual supported device/browser builds and approved participants are required.
+- `DGA-B08`: approved numeric SLOs and representative staging load test remain OPEN; 100 concurrent users is a test target, not a capacity promise.
+- Remaining QA catalogue cases require individual execution evidence or explicit justified disposition; catalogue definitions are not test results.
+
+### 25.4 Gate disposition
+
+`G11` remains **PARTIAL**. The successful main-push CI run closes the narrow hosted workflow execution proof for merge commit `ae271615`, but does not close repository enforcement, managed recovery, real-device UAT, staging SLO/load or the remaining QA catalogue. `G12` remains **NOT VERIFIED / BLOCKED**. No provider account, managed database, staging environment, production data, deployment, secret or institutional record was accessed or modified in this documentation/evidence review.
+
+
+### 25.5 QA catalogue inventory reconciliation — 2026-11-27
+
+A fresh scan restricted to actual bullet/table definition rows in `docs/04-quality/TEST-CASE-CATALOG-AND-UAT.md` on the PR #43 branch found 558 definition rows and 558 distinct explicitly enumerated test-case IDs, with no duplicate definition IDs. `TC-NOTIF-052`, `TC-NOTIF-053`, and `TC-NOTIF-054` also appear in explanatory prose but are not additional definitions. Shorthand ranges are counted as written and are not expanded. This replaces the older 413-case current-count statement; earlier dated snapshots are retained as historical records.
+
+The catalogue metadata is updated to v0.7.5 and states that case-level execution mapping is incomplete. PR #43 Actions run #104 on head `347c97e29482c5bb80252bff69f512bb14d3b4e4` completed SUCCESS, including the configured Quality checks job. A static scan of 25 current test-source files (6 JavaScript scripts, 4 SQL verification scripts, 15 TypeScript test files) found zero explicit `TC-*` catalogue-ID references. CI is pipeline-level evidence only; local synthetic suites and rehearsals in §§22–23 remain valid only for the exact scripts, suites and assertions explicitly named there.
+
+**WP-06 disposition:** inventory count reconciled; 558 IDs remain without case-level execution mapping. No catalogue case is promoted to PASS by aggregate CI success or by this static scan. The source scan establishes a traceability gap, not a test failure. Introduce stable catalogue IDs into automated test names/metadata or a reviewed mapping manifest tied to concrete assertions before assigning case-level results. Any NOT APPLICABLE / DEFERRED disposition must have an owner, rationale, compensating control and gate impact. G11 remains PARTIAL.
+
+
+### 25.6 Automated test-source traceability scan — 2026-11-27
+
+Read-only inspection on PR #43 HEAD `347c97e29482c5bb80252bff69f512bb14d3b4e4` covered 25 automated test/verification source files: 6 JavaScript `.mjs` scripts, 4 SQL verification scripts and 15 TypeScript `.test.ts` files. None contains an explicit catalogue ID matching `TC-[A-Z0-9-]+-NNN`.
+
+The source files contain behavioral assertions and the latest PR CI run #104 passes; however, there is no reliable machine-readable or source-level mapping from those assertions to the 558 catalogue definitions. Semantic similarity is insufficient to claim coverage. This is a **traceability/control gap**, not evidence that the automated tests failed.
+
+**Required remediation:** introduce stable test IDs in test names/metadata or a reviewed mapping manifest that references actual test assertions; then produce case-level execution records with exact commit, environment, run, result and evidence. Until then, keep the 558 catalogue definitions PLANNED / NOT EXECUTED except where a separate case-specific record exists. WP-06 remains PARTIAL.

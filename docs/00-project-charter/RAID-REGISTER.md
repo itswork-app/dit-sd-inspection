@@ -1,14 +1,14 @@
 # RAID Register — Dit. SD Inspection
 
 **Document ID:** RAID-001  
-**Version:** 1.1.0  
-Status: TECHNICAL SSOT SYNCHRONIZED — G9-TECH FROZEN; G10 I1–I5 IMPLEMENTED ON SYNTHETIC LOCAL INFRASTRUCTURE; G11 PARTIAL; EXTERNAL/INSTITUTIONAL & G12 PRODUCTION GATES REMAIN OPEN  
+**Version:** 1.2.2  
+Status: TECHNICAL SSOT SYNCHRONIZED — G9-TECH FROZEN; G10 I1–I5 IMPLEMENTED ON SYNTHETIC LOCAL INFRASTRUCTURE; G11 PARTIAL (MAIN-PUSH CI PASS; RULESET DISABLED); EXTERNAL/INSTITUTIONAL & G12 PRODUCTION GATES REMAIN OPEN  
 Baseline: Phase 0, 2026-11-23 | Technical SSOT Closure: 2026-11-27  
 Owner convention: accountable role is recorded; named individuals are not invented.
 
 ## Risks
 
-> **Current gate/evidence overlay (2026-11-27; main `706c654`):** `G9-F1` and `G9-TECH` are FROZEN; `G10` `I1→I5` is implemented on isolated synthetic infrastructure; `G11` is PARTIAL; `G12` is NOT VERIFIED / BLOCKED. Local test and rehearsal evidence is recorded in DGA-001 §§22–23 and PRs #39–#41, but does not close managed restore (`DGA-B06`), staging SLO/load (`DGA-B08`), real-device UAT (`DGA-B07`) or hosted CI (`DGA-B15`). The detailed post-merge audit is [PMA-001](POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md). Dated addenda below retain historical status snapshots; current gate status is governed by root `AGENTS.md` v1.3.0 §3.3 and DGA-001 v2.3.0.
+> **Current gate/evidence overlay (2026-11-27; main `ae271615`):** `G9-F1` and `G9-TECH` are FROZEN; `G10` `I1→I5` is implemented on isolated synthetic infrastructure; `G11` is PARTIAL; `G12` is NOT VERIFIED / BLOCKED. Main-push GitHub Actions run #93 on merge commit `ae271615` passed, but repository ruleset `main` (ID `28208385`) is DISABLED. Managed restore (`DGA-B06`), staging SLO/load (`DGA-B08`) and real-device UAT (`DGA-B07`) remain open. See [G11-ECP-001 v1.0.2](G11-EVIDENCE-CLOSURE-PLAN.md) and [PMA-001](POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md). Dated addenda below retain historical status snapshots; current gate status is governed by root `AGENTS.md` v1.3.0 §3.3 and DGA-001 v2.4.2.
 
 
 
@@ -91,7 +91,7 @@ Owner convention: accountable role is recorded; named individuals are not invent
 |---|---|---|---|---|---|---|
 | R-014 | Risk | Scope freeze or implementation begins while authoritative instrument, privacy, operations, security, and workflow decisions remain open | Critical | Enforce Package S freeze checklist; no implementation until blockers are approved or explicitly deferred with compensating controls | Product Owner / Project Sponsor / CTO | OPEN |
 | I-011 | Issue | Session creation/state transitions, offline device contract, report semantics, and UAT/pilot/rollback ownership remain unresolved | High | Resolve through explicit PO decisions and update all affected docs and tests | Product Owner | OPEN |
-| I-012 | Issue | Hosted workflow execution and required commit checks are not evidenced on audited `main` HEAD `706c654`; PR-triggered CI on the documentation review branch is separate and must be evaluated on the live PR. Earlier PR #30 runner failure cites account billing/spending limits. Branch protection/rulesets and scanning controls also require current-plan verification | High | Keep DGA-B15 open until hosted checks are verified on the relevant commit and repository controls are verified; resolve account billing/spending-limit blocker | CTO / Repository Administrator | MAIN HEAD EVIDENCE ABSENT; PR #42 CI IN PROGRESS — NOT YET VERIFIED |
+| I-012 | Issue | Main-push GitHub Actions run #93 (`45965232365`) on merge commit `ae271615` passed; repository ruleset `main` (ID `28208385`) is DISABLED. Branch-protection endpoint could not be read by the available integration (HTTP 403). Earlier PR #30 billing/spending failure is historical and not proof of a current billing blocker | High | Preserve successful CI evidence; repository administrator must enable and verify ruleset/required checks and inspect branch protection/scanning controls | CTO / Repository Administrator | MAIN-PUSH CI PASS; RULESET DISABLED; GOVERNANCE ENFORCEMENT OPEN |
 | D-009 | Dependency | Controlled instrument documents and institutional records/privacy/security approvals | Scope freeze and implementation authorization | Product Owner / Project Sponsor | BLOCKED |
 
 

@@ -1,7 +1,7 @@
 # Post-Merge Repository Audit — Dit. SD Inspection
 
 **Document ID:** PMA-001  
-**Version:** 1.1.0  
+**Version:** 1.2.0  
 **Audit date:** 2026-11-27  
 **Status:** AUDIT COMPLETE — SSOT DOCUMENTATION REMEDIATION INCLUDED; RUNTIME / EXTERNAL GATES OPEN  
 **Repository:** `itswork-app/dit-sd-inspection`  
@@ -20,7 +20,7 @@ Current gate interpretation must follow root `AGENTS.md` v1.3.0 and the approved
 - **G9-F1:** FROZEN.
 - **G9-TECH:** FROZEN.
 - **G10 full-system synthetic implementation:** ACTIVE; I1–I5 are implemented on isolated local/development infrastructure with synthetic data.
-- **G11:** PARTIAL; local synthetic verification has passed for the recorded suites, but hosted CI and several broader operational/UAT checks remain absent or not executed.
+- **G11:** PARTIAL; local synthetic verification has passed for the recorded suites; main-push hosted CI is now confirmed PASS on audited HEAD `706c654` (run #77), while repository enforcement and several broader operational/UAT checks remain open or not executed.
 - **G12:** NOT VERIFIED / BLOCKED. No production release or real institutional data readiness is established.
 
 This audit does not change any Product Owner decision, authorize production activity, or convert local test evidence into hosted/staging/production evidence.
@@ -82,7 +82,7 @@ PR #41 records:
 Evidence limitations are explicit and remain binding:
 - The restore is a local synthetic rehearsal using minimal auth stubs and `--no-owner --no-privileges`; Storage object bytes are not included. It does **not** close DGA-B06.
 - The load result is a single local burst on a small dataset, with 10 synthetic authenticated sessions and local SQL setup. It is **not** a 100-user production capacity result or an approved SLO. It does **not** close DGA-B08.
-- Hosted GitHub Actions CI is not evidenced. The exact HEAD returned no workflow runs and no combined commit statuses through the GitHub API. Treat CI as **ABSENT**, not PASS.
+- The initial workflow-run wrapper exposed only PR-triggered runs and therefore did not surface main-push run #77. A direct Actions API query later confirmed run #77 (`45953256570`) on exact HEAD `706c654`, event `push`, conclusion SUCCESS; its Quality checks job and `npm run check` step passed. The combined commit-status endpoint returned no entries, but that is not evidence that the Actions workflow did not run.
 - Real-device offline UAT and G12 production readiness remain open.
 
 ## 5. Findings
@@ -94,7 +94,7 @@ Evidence limitations are explicit and remain binding:
 | PMA-F03 | MEDIUM | DGA-001 audit provenance points to an old feature branch and baseline | DGA-001 header still identifies `feat/i4-storage-and-pdf-renderer` and baseline `5b7fdd9`, although the current reviewed main includes PRs #38–#41 and is at `706c654`. | **Remediated in this PR branch:** DGA-001 v2.3.0 identifies audited `main` HEAD `706c654`; prior branch/commit provenance remains in historical checkpoint sections. |
 | PMA-F04 | MEDIUM | DOC-MAP-001 metadata is behind governing documents | The index identified AGENTS.md v1.2.5 and DGA-001 v2.0.0, and its gate summary said G9-TECH was awaiting sign-off and G10 pending. | **Remediated in this PR branch:** DOC-MAP-001 v1.2.0 identifies AGENTS.md v1.3.0, MIB-001 v1.2.0, DGA-001 v2.3.0, RTM-001 v1.1.0, RAID-001 v1.1.0 and current gate status. |
 | PMA-F05 | LOW | README route-count metadata differs from the latest recorded build | Root README's current implementation summary reported 67 Next.js routes, while PR #41 records 68 routes. | **Remediated as a documentation discrepancy in this PR branch:** root README now reports 68 routes from the PR #41 recorded build. No fresh build was run by this audit; the older 67-route feature-branch checkpoint is explicitly labelled historical. |
-| PMA-F06 | INFO | Hosted CI evidence is absent on the audited main HEAD | GitHub returned an empty workflow-run list and empty combined commit-status list for `706c654`. This is not a failed test and is not a pass. | Keep DGA-B15 BLOCKED/ABSENT until a hosted runner actually executes the required workflow successfully. |
+| PMA-F06 | INFO | Initial audit query missed the main-push workflow run | The workflow-run wrapper used in the initial audit returned only PR-triggered runs. A direct Actions API query later found main-push run #77 (`45953256570`) on `706c654`, completed SUCCESS; its Quality checks job and `npm run check` step passed. The combined commit-status endpoint remains empty. | Correct the audit record; retain DGA-B15 as PARTIAL until repository ruleset/required-check enforcement is enabled and verified. |
 
 ## 6. Current risk and gate disposition
 
@@ -106,7 +106,7 @@ Evidence limitations are explicit and remain binding:
 | DGA-B06 managed backup + Storage restore | OPEN — local rehearsal is not provider restore evidence |
 | DGA-B07 real-device offline UAT | NOT EXECUTED |
 | DGA-B08 staging load/SLO | OPEN — local baseline is not an SLO |
-| DGA-B15 hosted CI/repository governance | BLOCKED / ABSENT — no workflow run or commit status for audited HEAD |
+| DGA-B15 hosted CI/repository governance | MAIN-PUSH CI PASS on run #77; repository ruleset/required-check enforcement remains OPEN |
 | G12 production / real institutional data | NOT VERIFIED / BLOCKED; no production deployment or real-data operation authorized by this audit |
 
 ## 7. Remediation sequence
@@ -138,3 +138,18 @@ The following current-state documentation drift is corrected in the same documen
 | Root README | Current status | G11 corrected to PARTIAL, route count reconciled to the PR #41 recorded 68-route build, document count updated to 104, and stale notification status corrected. |
 
 The audited main HEAD still has no workflow/status evidence (`DGA-B15`). A separate PR-triggered CI check was observed in progress while this report was revised; it was not treated as a passing result. Check the live PR #42 status at review time. Managed PostgreSQL + Storage restore (`DGA-B06`), real-device offline UAT (`DGA-B07`), staging SLO/load (`DGA-B08`), and G12 production readiness remain open/blocked. This documentation remediation does not close them. The complete seven-file diff is subject to PR #42 maintainer review; no merge has been performed.
+
+
+## 10. Audit evidence correction — main-push workflow run discovered
+
+A follow-up read-only GitHub API query identified a main-push Actions run that the initial workflow-run wrapper did not return. That wrapper filters to PR-triggered runs; its empty result was incorrectly interpreted in the original PMA-F06 finding as absence of a main-push workflow.
+
+Corrected evidence for the audited baseline:
+- Main commit `706c654a17d415913892b64fe71de59c2a09bafe` (PR #41 merge) had main-push workflow run #77 (`45953256570`), event `push`, conclusion **SUCCESS**.
+- Quality checks job `140353765385` completed **SUCCESS**; checkout, Node.js setup, dependency installation and `npm run check` completed successfully.
+- The combined commit-status endpoint returned no entries. This does not negate the separately evidenced GitHub Actions workflow run.
+- The subsequent PR #42 merge commit `ae271615` also has main-push run #93 (`45965232365`) with Quality checks **SUCCESS**.
+
+The original PMA-F06 “hosted CI absent” conclusion is therefore **SUPERSEDED / CORRECTED**. DGA-B15 is not fully closed: the repository ruleset `main` (ID `28208385`) is currently `disabled`; the available integration cannot read the branch-protection endpoint (HTTP 403). Successful workflow execution and enforced branch governance are separate controls.
+
+This correction is documented in PMA-001 v1.2.0, DGA-001 v2.4.0 and G11-ECP-001 v1.0.0. It does not change G11 PARTIAL or G12 NOT VERIFIED / BLOCKED.

@@ -1,11 +1,11 @@
 # Master Documentation Index & Architecture Map — Dit. SD Inspection
 
 **Document ID:** DOC-MAP-001  
-**Version:** 1.2.0  
-**Status:** CONTROLLED MASTER DOCUMENTATION MAP — G9-TECH FROZEN; G10 ACTIVE; G11 PARTIAL; G12 BLOCKED  
+**Version:** 1.3.3  
+**Status:** CONTROLLED MASTER DOCUMENTATION MAP — G9-TECH FROZEN; G10 ACTIVE; G11 PARTIAL (main-push CI PASS; main ruleset DISABLED); G12 BLOCKED  
 **Last updated:** 2026-11-27  
 **Applies to:** Repository `itswork-app/dit-sd-inspection`  
-**Governing Authority:** [AGENTS.md](../AGENTS.md) v1.3.0 & [Master Implementation Blueprint (MIB-001)](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) v1.1.0
+**Governing Authority:** [AGENTS.md](../AGENTS.md) v1.3.2 & [Master Implementation Blueprint (MIB-001)](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) v1.3.1
 
 ---
 
@@ -13,7 +13,7 @@
 
 This repository serves as both the **authoritative documentation repository** and the **application implementation repository**.
 
-Documentation under `docs/` on this branch is organized into 6 functional directories containing **104** controlled documents (**105** Markdown files inside `docs/` including this index), complemented by root [AGENTS.md](../AGENTS.md), root [README.md](../README.md), and [supabase/migrations/README.md](../supabase/migrations/README.md).
+Documentation under `docs/` on this branch is organized into 6 functional directories containing **105** controlled documents (**106** Markdown files inside `docs/` including this index), complemented by root [AGENTS.md](../AGENTS.md), root [README.md](../README.md), and [supabase/migrations/README.md](../supabase/migrations/README.md).
 
 ### Precedence Hierarchy (Source of Truth)
 When interpreting requirements, design, or architecture, adhere strictly to the precedence hierarchy defined in [MIB-001](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) §1.1:
@@ -31,7 +31,7 @@ When interpreting requirements, design, or architecture, adhere strictly to the 
 
 | Directory | Doc Count | Scope | Canonical SSOT Files (`v1.0.0+` G9-TECH Baseline) | Supporting / Historical / Proposals |
 |---|---:|---|---|---|
-| [`00-project-charter/`](#3-project-charter--governance) | 27 | Governance, Charter, Gates & Traceability | `PROJECT-CHARTER.md`, `DECISION-REGISTER.md`, `MIB-001` (v1.2.0), `DGA-001` (v2.3.0), `IRG-001` (v1.1.0), `IER-001` (v1.0.0), `PTCM-001` (v1.0.0), `RTM-001` (v1.1.0), `RAID-REGISTER.md` (v1.1.0), `SSOT-AUDIT-001` (v1.0.0), `RACI-MATRIX.md`, `ENGINEERING-GOVERNANCE.md`, `GOV-MERGE-001`, `EVID-EXT-001` | Historical Audit Packages (`PACKAGE-F` through `PACKAGE-T`), `PHASE-0-PLAN.md`, `FINAL-DOCUMENTATION-CLOSURE-AUDIT.md`, `AUTH-001`, `POQ-001`, `REFERENCE-EVIDENCE-INVENTORY.md` |
+| [`00-project-charter/`](#3-project-charter--governance) | 28 | Governance, Charter, Gates & Traceability | `PROJECT-CHARTER.md`, `DECISION-REGISTER.md`, `MIB-001` (v1.3.2), `DGA-001` (v2.4.2), `IRG-001` (v1.1.0), `IER-001` (v1.0.0), `PTCM-001` (v1.0.0), `RTM-001` (v1.1.0), `RAID-REGISTER.md` (v1.1.0), `SSOT-AUDIT-001` (v1.0.0), `RACI-MATRIX.md`, `ENGINEERING-GOVERNANCE.md`, `GOV-MERGE-001`, `EVID-EXT-001` | Historical Audit Packages (`PACKAGE-F` through `PACKAGE-T`), `PHASE-0-PLAN.md`, `FINAL-DOCUMENTATION-CLOSURE-AUDIT.md`, `AUTH-001`, `POQ-001`, `REFERENCE-EVIDENCE-INVENTORY.md` |
 | [`01-product-requirements/`](#4-product-requirements) | 5 | Functional Requirements & Instrument Specs | `PRD.md`, `ACCEPTANCE-CRITERIA.md`, `IFP-INSTRUMENT-SPECIFICATION.md`, `STANDING-BRACKET-INSTRUMENT-SPECIFICATION.md` | `PRD-SCOPE-AND-NOTIFICATION-DOMAIN-RECONCILIATION-001.md` |
 | [`02-architecture/`](#5-system-architecture--technical-specifications) | 59 | Architecture, Database (62 tables), Security, Commands (52 app) & Locks | `SYSTEM-ARCHITECTURE.md`, `ADR-001`, `DATA-MODEL-AND-ERD.md`, `PHYSICAL-DATABASE-SCHEMA...` (v1.0.0), `TABLE-BY-TABLE-RLS...` (v1.0.0), `CANONICAL-PERMISSION-REGISTRY...` (v1.0.0), `POSTGRESQL-FUNCTION-SECURITY...` (v1.0.0), `POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md` (v1.0.0), `CONCURRENCY-001` (v1.0.0), `LOCK-PROTOCOL-DECISION-RESOLUTION-001` (v1.0.0), `LOCK-GRAPH-001` (v1.0.0), `LOCK-MANIFEST-001` (v1.0.0), `NLA-001` (v1.0.0), `NLA-L05-WRITER-MATRIX-001` (v1.0.0) | 7 Detailed Command Reviews (`CMD-001`..`054`), Technical Proposals/RFCs, Notification sub-registries, Operational/Provider runbooks |
 | [`03-functional-design/`](#6-functional-design) | 5 | Domain Business Workflows & Session Lifecycles | `INSPECTION-LIFECYCLE-AND-CLAIMS.md`, `PROJECT-SESSION-AND-ASSIGNMENT-MODEL.md`, `OFFLINE-SYNC-AND-RECOVERY.md` (v1.0.0), `RBAC-AND-AUTHORIZATION.md`, `REPORTS-DOCUMENTS-AND-AUDIT.md` | Domain rules & state-machine semantics |
@@ -40,13 +40,14 @@ When interpreting requirements, design, or architecture, adhere strictly to the 
 
 ---
 
-## 3. Project Charter & Governance (`00-project-charter/` — 27 documents)
+## 3. Project Charter & Governance (`00-project-charter/` — 28 documents)
 
 ### 3.1 Active Baseline Registers & Evidence Indexes
 - [PROJECT-CHARTER.md](00-project-charter/PROJECT-CHARTER.md): Project charter, stakeholder context, and business objectives.
-- [MASTER-IMPLEMENTATION-BLUEPRINT.md](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) (**MIB-001** v1.2.0): Governance model, source-of-truth precedence, engineering invariants, and delivery gates G0–G12.
-- [DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md](00-project-charter/DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) (**DGA-001** v2.3.0): Active gap register (`DGA-B01`–`DGA-B22`; local G11 evidence and external/runtime gates preserved).
-- [POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md](00-project-charter/POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md) (**PMA-001** v1.1.0): Post-merge audit of PRs #38–#41, main HEAD `706c654`, SSOT remediation across MIB/DGA/README/RTM/RAID, and remaining external/runtime gates.
+- [MASTER-IMPLEMENTATION-BLUEPRINT.md](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) (**MIB-001** v1.3.2): Governance model, source-of-truth precedence, engineering invariants, and delivery gates G0–G12.
+- [DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md](00-project-charter/DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) (**DGA-001** v2.4.2): Active gap register (`DGA-B01`–`DGA-B22`; local G11 evidence and external/runtime gates preserved).
+- [POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md](00-project-charter/POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md) (**PMA-001** v1.2.0): Post-merge audit of PRs #38–#41, main HEAD `706c654`, SSOT remediation, and correction of the initial CI evidence query (main-push run #77 PASS).
+- [G11-EVIDENCE-CLOSURE-PLAN.md](00-project-charter/G11-EVIDENCE-CLOSURE-PLAN.md) (**G11-ECP-001** v1.0.2): Execution/evidence plan for hosted CI, repository enforcement, managed PostgreSQL + Storage recovery, real-device offline UAT, staging load/SLO and QA catalogue closure.
 - [DECISION-REGISTER.md](00-project-charter/DECISION-REGISTER.md): Canonical index of approved Product Owner decisions through 2026-11-27 (`T-01..T-18`, `POQ-01..04`, `LPR-02..06`, `RBAC-003`, `SES-001`, `DOC-003`, `C36-02`, `IDC-O04..O10`, `NLA-MVP-001`).
 - [IMPLEMENTATION-ROADMAP-AND-RELEASE-GOVERNANCE.md](00-project-charter/IMPLEMENTATION-ROADMAP-AND-RELEASE-GOVERNANCE.md) (**IRG-001** v1.1.0): Pre-implementation gates, ordered phases `I0–I7`, release controls, and SemVer 2.0.0 policy.
 - [REQUIREMENTS-TRACEABILITY-MATRIX.md](00-project-charter/REQUIREMENTS-TRACEABILITY-MATRIX.md) (**RTM-001** v1.1.0): End-to-end traceability from requirements to 52 commands, 62 tables, security controls, planned QA, and gates.
@@ -180,7 +181,7 @@ When interpreting requirements, design, or architecture, adhere strictly to the 
 ## 8. Quality Assurance & Testing (`04-quality/` — 5 documents)
 
 - [TEST-STRATEGY-AND-QUALITY-GATES.md](04-quality/TEST-STRATEGY-AND-QUALITY-GATES.md): Quality gates, risk-based test tiers (unit, integration, RLS, concurrency, negative auth, offline, recovery), and acceptance criteria.
-- [TEST-CASE-CATALOG-AND-UAT.md](04-quality/TEST-CASE-CATALOG-AND-UAT.md): Planned verification and UAT test-case specifications (`PLANNED / NOT EXECUTED` until `G11`).
+- [TEST-CASE-CATALOG-AND-UAT.md](04-quality/TEST-CASE-CATALOG-AND-UAT.md): Planned verification and UAT test-case specifications (`v0.7.5`; 558 distinct explicit IDs; source-to-catalogue traceability gap recorded; case-level execution mapping incomplete).
 - [INSTRUMENT-REQUIREMENTS-VERIFICATION-MATRIX.md](04-quality/INSTRUMENT-REQUIREMENTS-VERIFICATION-MATRIX.md): Item-by-item verification matrix against IFP and Standing Bracket instrument requirements.
 - [CERT-001-TECHNICAL-CERTIFICATION-ASSESSMENT.md](04-quality/CERT-001-TECHNICAL-CERTIFICATION-ASSESSMENT.md): Pre-implementation technical certification assessment across domains.
 - [L05-TECHNICAL-REVIEW-001.md](04-quality/L05-TECHNICAL-REVIEW-001.md): Technical review of the L05 notification audience-guard specification.
@@ -196,5 +197,5 @@ When interpreting requirements, design, or architecture, adhere strictly to the 
 - **G9-F1 Foundation Scope Freeze:** **FROZEN** (`G10-F1` ACTIVE)
 - **G9-TECH Full-System Technical SSOT:** **FROZEN** (2026-11-27; PO sign-off recorded in `AGENTS.md` §3.3 and `DECISION-REGISTER.md`).
 - **G10 Full-System Synthetic Implementation:** **ACTIVE**; I1–I5 implemented on isolated local/development infrastructure with synthetic data.
-- **G11 Runtime/DB Verification:** **PARTIAL** — local synthetic suites and rehearsals are recorded in DGA-001 §22–§23; hosted CI is ABSENT (`DGA-B15`), real-device UAT is NOT EXECUTED (`DGA-B07`), managed restore remains OPEN (`DGA-B06`), and staging SLO/load remains OPEN (`DGA-B08`).
+- **G11 Runtime/DB Verification:** **PARTIAL** — local synthetic suites and rehearsals are recorded in DGA-001 §22–§23; main-push hosted CI passed on merge commit `ae271615`, but the `main` ruleset is DISABLED (`DGA-B15`), real-device UAT is NOT EXECUTED (`DGA-B07`), managed restore remains OPEN (`DGA-B06`), and staging SLO/load remains OPEN (`DGA-B08`).
 - **G12 Production Readiness:** **NOT VERIFIED / BLOCKED** on institutional, provider, operational and hosted CI evidence (`DGA-B01..B06`, `B08`, `B15`, `T-10`, `T-12`).

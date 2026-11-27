@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
-Status: Test catalog draft — execution not started
-Version: 0.7.3
+Status: Test catalog draft — case-level execution mapping incomplete
+Version: 0.7.5
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -1109,3 +1109,26 @@ The following cases are design acceptance criteria only. All remain PLANNED / NO
 | TC-NOTIF-105 | Run fan-out/retry workers while candidate rows are being written or after lease reclaim; inject provider timeout after source commit | Workers see only a fully committed immutable snapshot; retries preserve candidate/policy/checkpoint lineage; provider I/O is outside the source transaction; stale workers cannot alter candidates or checkpoint | PLANNED / NOT EXECUTED |
 
 **Execution boundary:** these cases do not approve a physical table/header, digest, uniqueness key, isolation setting, L05 key/rank, SQL function, provider or migration. They must be mapped to exact admitted DDL, producer contracts and lock graph before execution. Static review is not a test pass.
+
+
+## Catalogue inventory and execution-evidence reconciliation — 2026-11-27
+
+A scan restricted to actual definition rows (bullet items and table rows) on branch `docs/g11-evidence-closure-plan-2026-11-27` identified **558 test-definition rows** containing **558 distinct explicitly enumerated test-case IDs**. No duplicate definition IDs were found. `TC-NOTIF-052`, `TC-NOTIF-053`, and `TC-NOTIF-054` also appear in explanatory cross-reference prose, but those mentions are not additional test definitions. Shorthand ranges such as `TC-IFP-CHK-001..004` are not expanded into synthetic IDs by this scan.
+
+This is an inventory count, not an execution count. A case remains PLANNED / NOT EXECUTED unless a case-specific execution record identifies its test ID, exact build/commit, environment, result, evidence, executor and timestamp. Aggregate local suite results and GitHub Actions workflow success do not automatically prove individual catalogue cases.
+
+PR #43 CI run #104 on head `347c97e29482c5bb80252bff69f512bb14d3b4e4` completed SUCCESS for the workflow's Quality checks job, including lint, typecheck, unit tests and production build. A static traceability scan of 25 test-source files present on that same branch/HEAD (6 JavaScript verification/test scripts, 4 SQL verification scripts and 15 TypeScript test files) found **zero explicit `TC-*` catalogue-ID references**. The test sources contain behavioral assertions, but they do not carry stable catalogue IDs; therefore no reliable one-to-one case mapping can be inferred from names or similar intent. Existing local synthetic evidence in DGA-001 §§22–23 remains bounded to the scripts/suites and assertion IDs explicitly named there. No unlinked catalogue case is promoted to PASS.
+
+**Disposition:** inventory reconciled; case-level execution mapping remains PARTIAL. Critical authorization, RLS, data-integrity, offline, notification, document/print, recovery and external-device/provider scenarios remain governed by their individual prerequisites and G11 work packages.
+
+
+## Source-to-catalogue traceability scan — 2026-11-27
+
+On PR #43 HEAD `347c97e29482c5bb80252bff69f512bb14d3b4e4`, a read-only scan covered 25 test-source files:
+- 6 JavaScript `.mjs` verification/test scripts;
+- 4 SQL verification scripts;
+- 15 TypeScript `.test.ts` files.
+
+The scan found **zero explicit references to catalogue IDs matching `TC-[A-Z0-9-]+-NNN`** in those source files. This does not mean the tests have no value: they exercise behaviors and invariants. It means the repository currently lacks machine-verifiable traceability from individual catalogue IDs to specific automated test cases/assertions. Similar wording or inferred semantic overlap is not accepted as a mapping.
+
+**WP-06 next control:** introduce stable catalogue IDs into test names/metadata or a reviewed machine-readable mapping manifest; each mapping must point to an actual assertion and be reviewed for coverage/negative controls. Record exact CI/local run, commit, environment and result. Do not bulk-mark cases PASS from aggregate suites. The 558 catalogue cases remain PLANNED / NOT EXECUTED unless independently evidenced.
