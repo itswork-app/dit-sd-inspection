@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 2.1.0
+**Version:** 2.2.0
 **Audit date:** 2026-11-27  
 **Branch reviewed:** `feat/i4-storage-and-pdf-renderer` (cumulative `G9-TECH` + `G10` `I1→I5` synthetic implementation + local `G11` verification from `main` `5b7fdd9`)  
 **Reviewed baseline HEAD:** `5b7fdd9` (`main` through PR #37) + `G9-TECH` freeze (`14329d2`) + `G10` synthetic implementation & local `G11` verification (`81c2234`)  
@@ -1263,3 +1263,28 @@ Following explicit Product Owner / sole-maintainer sign-off `PO-2026-11-27-G9-TE
 - **`G10` (Full-System Synthetic Implementation):** **ACTIVE / LOCAL SLICES `I1 → I5` IMPLEMENTED** (isolated local synthetic stack only).
 - **`G11` (Build, Migration, RLS, Concurrency & QA Verification):** **PARTIAL — LOCAL SYNTHETIC SUITE PASS** (13 migrations, `62/62` `ENABLE + FORCE RLS`, `T-18` ACL catalog assertions, 4 DB verifiers, 6 parallel race classes, live HTTP/JWT E2E, live Private Storage + PDF E2E, `npm run check` PASS). **NOT EXECUTED / OPEN for full `G11`:** hosted GitHub Actions CI (`DGA-B15` billing blocked — **ABSENT**), remaining planned QA cases across full 413-case catalogue, numeric 100-user load/SLO test (`DGA-B08`), managed backup/restore drill (`DGA-B06`), and real-device offline UAT (`DGA-B07`).
 - **`G12` (Production Release & Real Institutional Data):** **NOT VERIFIED / BLOCKED** on external institutional/provider/operational items (`DGA-B01..B06`, `B08`, `B15`) and written `T-10`/`T-12` approvals for `CMD-044` and external `CMD-053` providers. No real institutional data, hosted database mutation, or staging/production deployment was executed.
+
+---
+
+## 23. Local Operational UI, Backup/Restore Rehearsal & Load Baseline — 2026-11-27
+
+### 23.1 Operational UI & `T-09` offline queue (PR #40, `main` `48ea1b5`)
+Added the `/operations` page (`CMD-036..043`), evidence upload/download and PDF generation controls on `/inspections`, a bounded IndexedDB offline queue (max 50 operations, `CONFLICT` preserved with explicit rebase/discard, shared-device purge), and a unified topbar with online/offline indicator. Verified locally: `npm run check` PASS (Vitest `15/15` suites / `90/90` tests, `68` routes) and live SSR E2E across 6 protected pages. Real-device offline UAT (`DGA-B07`) remains **NOT EXECUTED**.
+
+### 23.2 Local backup/restore rehearsal (`scripts/verify-g11-backup-restore-drill.mjs`) — PASS
+`pg_dump --format=custom` of `public` + `app_internal` restored into a fresh isolated database on the local PostgreSQL container: `62/62` tables, `62/62` `ENABLE + FORCE RLS`, identical row counts and identical canonical data SHA-256 (`fdfaf4e9…`). Measured locally: backup 188 ms, restore 2,406 ms, archive 765,770 bytes.
+
+**Limits of this evidence:** synthetic, near-empty dataset on a developer machine; restore target uses minimal `auth.uid()`/`auth.role()`/`auth.users` stubs and `--no-owner --no-privileges` (grants are re-applied by migrations, not by the dump); Storage objects were **not** included. This is a procedure rehearsal, not provider capability evidence. **`DGA-B06` remains OPEN** — a managed-provider PostgreSQL + Storage restore with measured RPO/RTO and sign-off is still required.
+
+### 23.3 Local load baseline (`scripts/verify-g11-load-benchmark.mjs`) — PASS
+Against `next start` + local Supabase, 10 synthetic Super Admin sessions:
+
+| Wave | Requests | Errors | p50 | p95 | p99 | Max | Throughput |
+|---|---|---|---|---|---|---|---|
+| Mixed authenticated reads (`/account/me`, `/projects`, `/notifications`, `/health`) | 100 concurrent | 0 | 624 ms | 756 ms | 763 ms | 766 ms | 128 req/s |
+| Protected `T-18` writes (`CMD-022` unique unit registration) | 40 concurrent | 0 | 257 ms | 258 ms | 258 ms | 258 ms | 153 req/s |
+
+**Limits of this evidence:** single burst on one local machine, no network latency, tiny dataset; benchmark setup seeds roles and activates the instrument directly through local SQL rather than through `CMD-004`/`CMD-019`. These numbers are **not** an SLO and must not be cited as production capacity. **`DGA-B08` remains OPEN** — approved numeric SLOs and a staging load test on the target provider plan are still required.
+
+### 23.4 Gate disposition (unchanged)
+`G11`: PARTIAL — local synthetic suite PASS (now including backup/restore rehearsal and load baseline). `G12`: NOT VERIFIED / BLOCKED (`DGA-B01..B06`, `B08`, `B15`, `T-10`, `T-12`). Hosted CI: ABSENT (`DGA-B15`).
