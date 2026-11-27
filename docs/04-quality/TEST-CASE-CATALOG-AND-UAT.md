@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
 Status: Test catalog draft — case-level execution mapping incomplete
-Version: 0.7.4
+Version: 0.7.5
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -1117,6 +1117,18 @@ A scan restricted to actual definition rows (bullet items and table rows) on bra
 
 This is an inventory count, not an execution count. A case remains PLANNED / NOT EXECUTED unless a case-specific execution record identifies its test ID, exact build/commit, environment, result, evidence, executor and timestamp. Aggregate local suite results and GitHub Actions workflow success do not automatically prove individual catalogue cases.
 
-PR #43 CI run #94 on head `682bc895591ff70775aa50c12668a7064ec57e8d` completed SUCCESS for the workflow's quality-check job. That proves the configured lint, typecheck, unit-test and production-build steps passed for that commit; the workflow output does not provide a mapping from its executed tests to these 558 catalogue IDs. Existing local synthetic evidence in DGA-001 §§22–23 remains bounded to the scripts/suites and cases explicitly named there. No unlisted catalogue case is promoted to PASS by this reconciliation.
+PR #43 CI run #104 on head `347c97e29482c5bb80252bff69f512bb14d3b4e4` completed SUCCESS for the workflow's Quality checks job, including lint, typecheck, unit tests and production build. A static traceability scan of 25 test-source files present on that same branch/HEAD (6 JavaScript verification/test scripts, 4 SQL verification scripts and 15 TypeScript test files) found **zero explicit `TC-*` catalogue-ID references**. The test sources contain behavioral assertions, but they do not carry stable catalogue IDs; therefore no reliable one-to-one case mapping can be inferred from names or similar intent. Existing local synthetic evidence in DGA-001 §§22–23 remains bounded to the scripts/suites and assertion IDs explicitly named there. No unlinked catalogue case is promoted to PASS.
 
 **Disposition:** inventory reconciled; case-level execution mapping remains PARTIAL. Critical authorization, RLS, data-integrity, offline, notification, document/print, recovery and external-device/provider scenarios remain governed by their individual prerequisites and G11 work packages.
+
+
+## Source-to-catalogue traceability scan — 2026-11-27
+
+On PR #43 HEAD `347c97e29482c5bb80252bff69f512bb14d3b4e4`, a read-only scan covered 25 test-source files:
+- 6 JavaScript `.mjs` verification/test scripts;
+- 4 SQL verification scripts;
+- 15 TypeScript `.test.ts` files.
+
+The scan found **zero explicit references to catalogue IDs matching `TC-[A-Z0-9-]+-NNN`** in those source files. This does not mean the tests have no value: they exercise behaviors and invariants. It means the repository currently lacks machine-verifiable traceability from individual catalogue IDs to specific automated test cases/assertions. Similar wording or inferred semantic overlap is not accepted as a mapping.
+
+**WP-06 next control:** introduce stable catalogue IDs into test names/metadata or a reviewed machine-readable mapping manifest; each mapping must point to an actual assertion and be reviewed for coverage/negative controls. Record exact CI/local run, commit, environment and result. Do not bulk-mark cases PASS from aggregate suites. The 558 catalogue cases remain PLANNED / NOT EXECUTED unless independently evidenced.
