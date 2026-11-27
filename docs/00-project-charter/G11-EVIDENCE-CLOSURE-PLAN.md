@@ -1,7 +1,7 @@
 # G11 Evidence Closure Plan — Dit. SD Inspection
 
 **Document ID:** G11-ECP-001  
-**Version:** 1.0.1  
+**Version:** 1.0.2  
 **Status:** ACTIVE — evidence collection and external execution gates remain open  
 **Date:** 2026-11-27  
 **Baseline:** `main` merge commit `ae271615bacae3c3b48eeaafee72ae1c6829fbf1` (PR #42)  
@@ -86,11 +86,20 @@ This plan is a sequencing and evidence-control artifact; it does not claim that 
 
 A scan restricted to actual bullet/table definition rows in `docs/04-quality/TEST-CASE-CATALOG-AND-UAT.md` identified 558 definition rows and 558 distinct explicitly enumerated test-case IDs, with no duplicate definition IDs. `TC-NOTIF-052`, `TC-NOTIF-053`, and `TC-NOTIF-054` also appear in explanatory prose but are not additional definitions. Shorthand ranges are not expanded into synthetic IDs. The earlier 413-case figure in prior audit snapshots is superseded for the current catalogue; those historical snapshots remain intact.
 
-The catalogue was updated to v0.7.4 with an explicit note that case-level execution mapping is incomplete. PR #43 CI run #94 passed on head `682bc895591ff70775aa50c12668a7064ec57e8d`, but its workflow result does not identify which catalogue test IDs were executed. Therefore:
+The catalogue was updated to v0.7.5 with an explicit note that case-level execution mapping is incomplete. PR #43 CI run #104 passed on head `347c97e29482c5bb80252bff69f512bb14d3b4e4`. A static scan of 25 test-source files (6 JavaScript scripts, 4 SQL verification scripts, 15 TypeScript test files) found zero explicit `TC-*` catalogue-ID references. Therefore:
 - **Inventory:** reconciled at 558 distinct explicit IDs.
 - **Case-level execution:** not yet reconciled; no ID is marked PASS solely from aggregate CI.
 - **Local synthetic evidence:** retain only the exact test suites/scripts and assertions named in DGA-001 §§22–23; do not extrapolate to the full catalogue.
-- **Duplicate rows:** track the three repeated notification IDs as catalogue cleanup; do not count them as separate cases.
+- **Source traceability:** automated assertions are not currently labelled with catalogue IDs; no inferred test-to-case mapping is accepted.
 - **Disposition:** each remaining ID must receive a case-specific evidence record or a reasoned, owned NOT APPLICABLE / DEFERRED disposition with gate impact.
 
 WP-06 remains PARTIAL. Critical test cases cannot be deferred without an approved compensating control and accountable owner.
+
+
+### 7.1 WP-06 source-to-catalogue traceability checkpoint — 2026-11-27
+
+The current PR #43 HEAD `347c97e29482c5bb80252bff69f512bb14d3b4e4` was inspected across 25 automated test/verification source files: 6 JavaScript `.mjs` scripts, 4 SQL verification scripts and 15 TypeScript `.test.ts` files. None contains an explicit catalogue identifier matching `TC-[A-Z0-9-]+-NNN`.
+
+CI run #104 completed SUCCESS for the configured Quality checks job. This proves the configured pipeline steps passed at that commit, not which catalogue definitions were covered. The automated tests contain behavioral assertions, but stable test-ID metadata or a reviewed mapping manifest is absent. Do not infer mappings from similar names or expected behavior.
+
+**Required WP-06 remediation:** add stable IDs to automated test names/metadata or a reviewed manifest linking each ID to concrete assertions; capture exact run/commit/environment/results; review negative controls and coverage. Keep all 558 catalogue cases unexecuted unless separate case-specific evidence exists. WP-06 remains PARTIAL.
