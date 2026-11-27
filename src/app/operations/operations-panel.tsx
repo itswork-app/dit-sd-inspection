@@ -106,7 +106,7 @@ export function OperationsPanel({
         return;
       }
       window.open(payload.signed_download_url, "_blank", "noopener,noreferrer");
-      setFeedback({ kind: "ok", text: "Signed URL PDF 60 detik diterbitkan & diaudit (document.accessed)." });
+      setFeedback({ kind: "ok", text: "Tautan unduh PDF aman (berlaku 60 detik) berhasil diterbitkan." });
     } catch {
       setFeedback({ kind: "err", text: "Koneksi server terputus saat mengunduh dokumen." });
     } finally {
@@ -285,7 +285,7 @@ export function OperationsPanel({
       if (!res.ok) {
         setFeedback({
           kind: "err",
-          text: `Verifikasi absensi ditolak (${payload?.status ?? res.status}): ${payload?.error?.message ?? "Periksa SoD / izin."}`
+          text: `Verifikasi absensi ditolak (${payload?.status ?? res.status}): ${payload?.error?.message ?? "Periksa hak akses Anda."}`
         });
         return;
       }
@@ -314,12 +314,12 @@ export function OperationsPanel({
       const aJson = (await aRes.json().catch(() => null)) as Record<string, unknown> | null;
 
       if (!tRes.ok || !aRes.ok) {
-        setFeedback({ kind: "err", text: "Gagal memuat laporan target/aktual (periksa izin report.read)." });
+        setFeedback({ kind: "err", text: "Gagal memuat laporan target/aktual (periksa izin laporan)." });
         return;
       }
       setTargetReport(tJson);
       setActualReport(aJson);
-      setFeedback({ kind: "ok", text: "Laporan Target (CMD-041) & Aktual (CMD-042) dimuat." });
+      setFeedback({ kind: "ok", text: "Laporan Target & Aktual berhasil dimuat." });
     } catch {
       setFeedback({ kind: "err", text: "Koneksi terputus saat memuat laporan." });
     } finally {
@@ -330,7 +330,7 @@ export function OperationsPanel({
   async function handleReadAudit() {
     if (busyKey) return;
     if (auditPurpose.trim().length < 5) {
-      setFeedback({ kind: "err", text: "Tujuan pembacaan audit minimal 5 karakter (CMD-043)." });
+      setFeedback({ kind: "err", text: "Tujuan pembacaan riwayat audit minimal 5 karakter." });
       return;
     }
     setBusyKey("audit-read");
@@ -382,15 +382,15 @@ export function OperationsPanel({
             disabled={busyKey !== null || Object.values(selectedDocIds).every((v) => !v)}
             onClick={handleBatchPrint}
           >
-            Cetak Batch Terpilih (CMD-038)
+            Cetak Batch Terpilih
           </button>
         </div>
         <p className="rbac-meta">
-          Unduhan PDF menggunakan signed URL 60 detik berbasis caller JWT (`document.accessed` diaudit). Hanya
-          versi `CURRENT` yang dapat dicetak (`DOC-003`).
+          Unduhan PDF menggunakan tautan aman sementara (60 detik) dan tercatat otomatis. Hanya
+          versi dokumen aktif terbaru yang dapat dicetak.
         </p>
         {documents.length === 0 ? (
-          <p className="rbac-meta">Belum ada dokumen PDF yang digenerate.</p>
+          <p className="rbac-meta">Belum ada dokumen PDF yang dibuat.</p>
         ) : (
           <div className="admin-list">
             {documents.map((doc) => (
@@ -415,7 +415,7 @@ export function OperationsPanel({
                       doc.is_current ? "status-badge-approved" : "status-badge-disabled"
                     }`}
                   >
-                    {doc.is_current ? "CURRENT" : doc.status}
+                    {doc.is_current ? "VERSI AKTIF" : doc.status}
                   </span>
                 </div>
                 <p className="rbac-meta">
@@ -428,7 +428,7 @@ export function OperationsPanel({
                     disabled={busyKey !== null}
                     onClick={() => handleDownloadDocument(doc.id)}
                   >
-                    Unduh PDF Teraudit (60s)
+                    Unduh PDF (60 dtk)
                   </button>
                   {doc.is_current ? (
                     <button
@@ -437,7 +437,7 @@ export function OperationsPanel({
                       disabled={busyKey !== null}
                       onClick={() => handleSinglePrint(doc)}
                     >
-                      Catat Cetak (CMD-037)
+                      Catat Cetak
                     </button>
                   ) : null}
                 </div>
@@ -458,7 +458,7 @@ export function OperationsPanel({
 
       <div className="admin-grid">
         <section className="admin-panel" aria-labelledby="ops-att-heading">
-          <h2 id="ops-att-heading">Absensi Sesi &amp; Verifikasi (CMD-039..040)</h2>
+          <h2 id="ops-att-heading">Absensi Sesi &amp; Verifikasi</h2>
           <div className="rbac-form">
             <div className="rbac-field">
               <label htmlFor="att-project">Proyek</label>
@@ -513,7 +513,7 @@ export function OperationsPanel({
               />
             </div>
             <label className="auth-button admin-btn-sm file-upload-label">
-              Pilih File Absensi &amp; Catat (CMD-039)
+              Pilih File Absensi &amp; Catat
               <input
                 type="file"
                 accept="image/jpeg,image/png,image/webp,application/pdf"
@@ -549,7 +549,7 @@ export function OperationsPanel({
                         disabled={busyKey !== null}
                         onClick={() => handleVerifyAttendance(rec, activeDoc, "VERIFY")}
                       >
-                        Verifikasi (CMD-040)
+                        Verifikasi
                       </button>
                       <button
                         type="button"
@@ -568,7 +568,7 @@ export function OperationsPanel({
         </section>
 
         <section className="admin-panel" aria-labelledby="ops-reports-heading">
-          <h2 id="ops-reports-heading">Laporan Target vs Aktual (CMD-041..042)</h2>
+          <h2 id="ops-reports-heading">Laporan Target vs Aktual</h2>
           <div className="rbac-form">
             <div className="rbac-field">
               <label htmlFor="rep-project">Proyek</label>
@@ -633,11 +633,11 @@ export function OperationsPanel({
               <div className="admin-list">
                 <div className="kpi-grid">
                   <div className="kpi-card">
-                    <span className="kpi-label">Total Target (CMD-042)</span>
+                    <span className="kpi-label">Total Target</span>
                     <strong className="kpi-value">{totalTarget}</strong>
                   </div>
                   <div className="kpi-card">
-                    <span className="kpi-label">Total Inspeksi (CMD-041)</span>
+                    <span className="kpi-label">Total Inspeksi</span>
                     <strong className="kpi-value">{totalActual}</strong>
                   </div>
                   <div className="kpi-card">
@@ -653,7 +653,7 @@ export function OperationsPanel({
                     <strong className="kpi-value">{submittedCount} / {draftCount}</strong>
                   </div>
                   <div className="kpi-card">
-                    <span className="kpi-label">Aborted (SES-001)</span>
+                    <span className="kpi-label">Dibatalkan (Aborted)</span>
                     <strong className="kpi-value">{abortedCount}</strong>
                   </div>
                 </div>
@@ -665,7 +665,7 @@ export function OperationsPanel({
                         <tr>
                           <th>Tanggal Target</th>
                           <th>Versi Plan</th>
-                          <th>Assignment</th>
+                          <th>Penugasan</th>
                           <th>Kuantitas</th>
                         </tr>
                       </thead>
@@ -682,12 +682,12 @@ export function OperationsPanel({
                     </table>
                   </div>
                 ) : (
-                  <p className="rbac-meta">Belum ada Target Plan PUBLISHED pada cakupan proyek/sesi ini.</p>
+                  <p className="rbac-meta">Belum ada Rencana Target aktif pada cakupan proyek/sesi ini.</p>
                 )}
 
                 <details>
                   <summary className="rbac-meta" style={{ cursor: "pointer" }}>
-                    Lihat payload JSON mentah (CMD-041 &amp; CMD-042)
+                    Lihat detail data laporan
                   </summary>
                   <pre className="json-pre">
                     {JSON.stringify({ targetReport, actualReport }, null, 2)}
@@ -701,8 +701,8 @@ export function OperationsPanel({
 
       <section className="admin-panel" aria-labelledby="ops-audit-heading">
         <div className="admin-item-header">
-          <h2 id="ops-audit-heading">Audit Trail Read-Only (CMD-043)</h2>
-          <span className="status-badge status-badge-pending">EXPORT CMD-044 DISABLED (T-10)</span>
+          <h2 id="ops-audit-heading">Riwayat Audit Aktivitas</h2>
+          <span className="status-badge status-badge-pending">MODE BACA SAJA</span>
         </div>
         <div className="admin-inline">
           <input
@@ -714,12 +714,12 @@ export function OperationsPanel({
             placeholder="Tujuan pembacaan audit (wajib min. 5 karakter)"
           />
           <input
-            aria-label="Filter event_type audit"
+            aria-label="Filter jenis aktivitas audit"
             className="inline-input"
             type="text"
             value={auditEventFilter}
             onChange={(e) => setAuditEventFilter(e.target.value)}
-            placeholder="Filter event_type (opsional, mis. document.accessed)"
+            placeholder="Filter jenis aktivitas (opsional)"
           />
           <button
             type="button"
@@ -727,7 +727,7 @@ export function OperationsPanel({
             disabled={busyKey !== null}
             onClick={handleReadAudit}
           >
-            Baca Audit (CMD-043)
+            Baca Riwayat Audit
           </button>
         </div>
         {auditRows.length > 0 ? (

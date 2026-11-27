@@ -31,7 +31,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         <GoogleSignInButton configured={isSupabaseConfigured()} />
         <p className="auth-note">Login hanya memverifikasi identitas. Akun baru tetap memerlukan persetujuan dan penetapan role sebelum akses operasional diberikan.</p>
       </section>
-      <footer className="footer"><span>Dit. SD Inspection · Development foundation</span><span><Link href="/">Kembali ke beranda</Link></span></footer>
+      <footer className="footer"><span>Dit. SD Inspection · Portal Inspeksi</span><span><Link href="/">Kembali ke beranda</Link></span></footer>
     </main>
   );
 }

@@ -340,7 +340,7 @@ export function InspectionsPanel({
         setFeedback({
           kind: "err",
           text: `Registrasi SN gagal (${regPayload?.status ?? regRes.status}): ${
-            regPayload?.error?.message ?? "Kemungkinan konflik lintas proyek T-16 atau izin ditolak."
+            regPayload?.error?.message ?? "Kemungkinan Nomor Seri terdaftar di proyek lain atau izin ditolak."
           }`
         });
         return;
@@ -377,7 +377,7 @@ export function InspectionsPanel({
       setScanSerial("");
       setFeedback({
         kind: "ok",
-        text: `SN ${regPayload.serial_normalized ?? rawSn} diklaim (${claimPayload?.status ?? "CLAIMED"}). Checklist pre-checked siap untuk dokumentasi!`
+        text: `SN ${regPayload.serial_normalized ?? rawSn} diklaim (${claimPayload?.status ?? "CLAIMED"}). Checklist siap untuk dokumentasi!`
       });
       router.refresh();
     } catch {
@@ -414,7 +414,7 @@ export function InspectionsPanel({
         setFeedback({
           kind: "err",
           text: `Perintah ditolak (${payload?.status ?? payload?.error?.code ?? response.status}): ${
-            payload?.error?.message ?? "Periksa klaim aktif, kelengkapan, izin, atau SoD."
+            payload?.error?.message ?? "Periksa klaim aktif, kelengkapan, atau hak akses."
           }`
         });
         return;
@@ -425,7 +425,7 @@ export function InspectionsPanel({
     } catch {
       setFeedback({
         kind: "err",
-        text: "Koneksi server terputus. Gunakan antrean offline T-09 untuk menyimpan draft lokal."
+        text: "Koneksi server terputus. Gunakan antrean offline untuk menyimpan draft lokal."
       });
     } finally {
       setBusyKey(null);
@@ -433,8 +433,25 @@ export function InspectionsPanel({
   }
 
   function buildDraftPayloads(inspectionId: string) {
-    const rawCl = checklistAnswers[inspectionId] ?? {};
     const draft_checklist: Record<string, unknown> = {};
+    const insp = inspectionById.get(inspectionId);
+    if (insp) {
+      const secIds = new Set(
+        checklistSections
+          .filter((s) => s.instrument_version_id === insp.instrument_version_id)
+          .map((s) => s.id)
+      );
+      for (const item of checklistItems) {
+        if (!secIds.has(item.section_id)) continue;
+        if (item.answer_type === "PASS_FAIL") {
+          draft_checklist[item.id] = "PASS";
+        } else if (item.answer_type === "YES_NO") {
+          draft_checklist[item.id] = "YA";
+        }
+      }
+    }
+
+    const rawCl = checklistAnswers[inspectionId] ?? {};
     for (const [k, v] of Object.entries(rawCl)) {
       if (v.trim() !== "") draft_checklist[k] = v.trim();
     }
@@ -529,7 +546,7 @@ export function InspectionsPanel({
       };
       saveStoredDeviceBinding(binding);
       setStoredDevice(binding);
-      setFeedback({ kind: "ok", text: `Perangkat terdaftar untuk T-09 sync (${binding.device_id.slice(0, 8)}…).` });
+      setFeedback({ kind: "ok", text: `Perangkat terdaftar untuk sinkronisasi offline (${binding.device_id.slice(0, 8)}…).` });
       router.refresh();
     } catch {
       setFeedback({ kind: "err", text: "Gagal menghubungi server saat mendaftarkan perangkat." });
@@ -544,7 +561,7 @@ export function InspectionsPanel({
     if (!activeDeviceId) {
       setFeedback({
         kind: "err",
-        text: "Daftarkan perangkat terlebih dahulu sebelum menjalankan sinkronisasi batch T-09."
+        text: "Daftarkan perangkat terlebih dahulu sebelum menjalankan sinkronisasi antrean offline."
       });
       return;
     }
@@ -716,7 +733,7 @@ export function InspectionsPanel({
 
       setFeedback({
         kind: "ok",
-        text: `Bukti terunggah & terverifikasi SHA-256/magic-byte (${confirmPayload?.status ?? "FINALIZED"}).`
+        text: `Bukti berhasil diunggah & terverifikasi (${confirmPayload?.status ?? "FINALIZED"}).`
       });
       router.refresh();
     } catch {
@@ -743,9 +760,9 @@ export function InspectionsPanel({
         return;
       }
       window.open(payload.signed_download_url, "_blank", "noopener,noreferrer");
-      setFeedback({ kind: "ok", text: "Signed URL bukti 60 detik diterbitkan & diaudit (evidence.accessed)." });
+      setFeedback({ kind: "ok", text: "Tautan unduh bukti aman (berlaku 60 detik) berhasil dibuat." });
     } catch {
-      setFeedback({ kind: "err", text: "Gagal mengambil signed download URL." });
+      setFeedback({ kind: "err", text: "Gagal mengambil tautan unduh bukti." });
     } finally {
       setBusyKey(null);
     }
@@ -763,12 +780,12 @@ export function InspectionsPanel({
 
       <section className="admin-panel" aria-labelledby="scanner-heading">
         <div className="admin-item-header">
-          <h2 id="scanner-heading">Scan QR / Input Serial Number → Klaim Unit (INS-005 / CMD-022 → CMD-026)</h2>
-          <span className="status-badge status-badge-approved">PRIMARY KEY: (TYPE, SN)</span>
+          <h2 id="scanner-heading">Scan QR / Input Serial Number → Klaim Unit</h2>
+          <span className="status-badge status-badge-approved">SCAN KAMERA / OCR</span>
         </div>
         <p className="rbac-meta">
-          Arahkan kamera HP ke QR/Barcode unit (atau ketik manual SN). Jika unit belum diklaim, sistem
-          otomatis mengklaim unit atas nama Anda dan membuka form inspeksi dengan checklist default-OK (PO 1B).
+          Arahkan kamera HP ke QR/Barcode unit, gunakan baca teks OCR, atau ketik manual SN. Jika unit belum diklaim,
+          sistem otomatis mengklaim unit atas nama Anda dan membuka formulir pemeriksaan siap dokumentasi.
         </p>
         {assignments.length === 0 ? (
           <p className="rbac-meta">
@@ -828,19 +845,19 @@ export function InspectionsPanel({
 
       <section className="admin-panel" aria-labelledby="offline-queue-heading">
         <div className="admin-item-header">
-          <h2 id="offline-queue-heading">Antrean Offline &amp; Sinkronisasi T-09 ({offlineOps.length}/50)</h2>
+          <h2 id="offline-queue-heading">Antrean Offline &amp; Sinkronisasi ({offlineOps.length}/50)</h2>
           <span className={`status-badge ${effectiveDeviceId ? "status-badge-approved" : "status-badge-pending"}`}>
-            {effectiveDeviceId ? `DEVICE ${effectiveDeviceId.slice(0, 8)}…` : "PERANGKAT BELUM TERDAFTAR"}
+            {effectiveDeviceId ? `PERANGKAT ${effectiveDeviceId.slice(0, 8)}…` : "PERANGKAT BELUM TERDAFTAR"}
           </span>
         </div>
         <p className="rbac-meta">
-          Perubahan draft offline disimpan terikat batas maksimum 50 operasi di IndexedDB browser. Konflik versi
-          (`CONFLICT`) tidak pernah menimpa server secara diam-diam — pengguna harus memilih rebase eksplisit atau membuang draft lokal.
+          Perubahan draft offline disimpan di perangkat (maksimum 50 antrean). Jika terjadi konflik versi
+          di server, Anda dapat meninjau dan menyelaraskan ulang sebelum sinkronisasi.
         </p>
 
         <div className="admin-inline">
           <input
-            aria-label="Label perangkat T-09"
+            aria-label="Label perangkat inspeksi"
             className="inline-input"
             type="text"
             value={deviceLabel}
@@ -853,7 +870,7 @@ export function InspectionsPanel({
             disabled={busyKey !== null}
             onClick={handleRegisterDevice}
           >
-            Daftarkan Perangkat (T-09)
+            Daftarkan Perangkat
           </button>
           <button
             type="button"
@@ -861,7 +878,7 @@ export function InspectionsPanel({
             disabled={busyKey !== null || offlineOps.filter((o) => o.status === "PENDING").length === 0}
             onClick={handleSyncOfflineBatch}
           >
-            Sinkronkan Batch (CMD-035)
+            Sinkronkan Antrean
           </button>
           <button
             type="button"
@@ -871,10 +888,10 @@ export function InspectionsPanel({
               await purgeOfflineLocalState();
               setStoredDevice(null);
               setOfflineOps([]);
-              setFeedback({ kind: "ok", text: "Cache offline & ikatan perangkat lokal dibersihkan (shared-device purge)." });
+              setFeedback({ kind: "ok", text: "Cache offline & ikatan perangkat lokal dibersihkan." });
             }}
           >
-            Purge Cache Lokal
+            Bersihkan Cache Lokal
           </button>
         </div>
 
@@ -945,8 +962,7 @@ export function InspectionsPanel({
         <h2 id="inspections-list-heading">Daftar Inspeksi Unit ({inspections.length})</h2>
         {inspections.length === 0 ? (
           <p className="rbac-meta">
-            Belum ada inspeksi dalam cakupan proyek Anda. Klaim unit aktif melalui API `CMD-026`
-            untuk memulai draft inspeksi.
+            Belum ada inspeksi aktif. Scan QR/Barcode atau masukkan Nomor Seri unit di atas untuk memulai pemeriksaan.
           </p>
         ) : (
           <div className="admin-list">
@@ -995,7 +1011,7 @@ export function InspectionsPanel({
                               <strong>
                                 {sec.code} — {sec.label}
                               </strong>{" "}
-                              (PO 1B: tercentang baik; hilangkan centang bila ada kekurangan)
+                              (tercentang baik; hilangkan centang bila ada kekurangan)
                             </p>
                             {secItems.map((item) => {
                               const isBoolLike = item.answer_type === "PASS_FAIL" || item.answer_type === "YES_NO";
@@ -1107,7 +1123,7 @@ export function InspectionsPanel({
                       ) : null}
 
                       <div className="rbac-field">
-                        <label htmlFor={`draft-${insp.id}`}>Catatan Draft Inspeksi (CMD-028 / Offline T-09)</label>
+                        <label htmlFor={`draft-${insp.id}`}>Catatan Draft Inspeksi</label>
                         <input
                           id={`draft-${insp.id}`}
                           type="text"
@@ -1115,7 +1131,7 @@ export function InspectionsPanel({
                           onChange={(e) =>
                             setDraftNotes((prev) => ({ ...prev, [insp.id]: e.target.value }))
                           }
-                          placeholder="Hasil pemeriksaan fisik IFP / Standing Bracket"
+                          placeholder="Hasil pemeriksaan fisik unit"
                         />
                       </div>
                       <div className="admin-inline">
@@ -1139,7 +1155,7 @@ export function InspectionsPanel({
                             );
                           }}
                         >
-                          Simpan Draft Online (CMD-028)
+                          Simpan Draft Online
                         </button>
                         <button
                           type="button"
@@ -1147,7 +1163,7 @@ export function InspectionsPanel({
                           disabled={busyKey !== null}
                           onClick={() => handleEnqueueOfflineDraft(insp)}
                         >
-                          Simpan ke Antrean Offline (T-09)
+                          Simpan ke Antrean Offline
                         </button>
                       </div>
 
@@ -1252,7 +1268,7 @@ export function InspectionsPanel({
                           );
                         }}
                       >
-                        Submit (CMD-029)
+                        Kirim untuk Review
                       </button>
                     ) : null}
                     {insp.status === "SUBMITTED" && latestRev ? (
@@ -1275,7 +1291,7 @@ export function InspectionsPanel({
                             )
                           }
                         >
-                          Approve (CMD-031)
+                          Setujui Hasil
                         </button>
                         <button
                           type="button"
@@ -1295,7 +1311,7 @@ export function InspectionsPanel({
                             )
                           }
                         >
-                          Return (CMD-030)
+                          Kembalikan untuk Perbaikan
                         </button>
                       </>
                     ) : null}
@@ -1333,11 +1349,11 @@ export function InspectionsPanel({
                                     approved_revision_id: latestRev.id,
                                     template_version_id: tmpl.id
                                   },
-                                  "Dokumen PDF 1.4 berhasil dibuat & disimpan di Private Storage"
+                                  "Dokumen PDF berhasil dibuat & disimpan"
                                 );
                               }}
                             >
-                              Generate PDF (CMD-036)
+                              Buat Dokumen PDF
                             </button>
                           </>
                         ) : null}
@@ -1359,7 +1375,7 @@ export function InspectionsPanel({
                             )
                           }
                         >
-                          Reopen (CMD-032)
+                          Buka Ulang
                         </button>
                       </>
                     ) : null}
@@ -1373,11 +1389,11 @@ export function InspectionsPanel({
                             `abr-${insp.id}`,
                             "/api/v1/inspections/abort/request",
                             { inspection_id: insp.id, reason },
-                            "Permintaan SES-001 packed-unit abort diajukan"
+                            "Permintaan pembatalan unit terkemas diajukan"
                           )
                         }
                       >
-                        Ajukan Abort SES-001 (CMD-055)
+                        Ajukan Pembatalan Unit
                       </button>
                     ) : null}
                   </div>
@@ -1423,7 +1439,7 @@ export function InspectionsPanel({
                       )
                     }
                   >
-                    Lepas Klaim (CMD-027)
+                    Lepas Klaim
                   </button>
                 </article>
               ))}
@@ -1432,9 +1448,9 @@ export function InspectionsPanel({
         </section>
 
         <section className="admin-panel" aria-labelledby="aborts-heading">
-          <h2 id="aborts-heading">Permintaan Abort SES-001 ({abortRequests.length})</h2>
+          <h2 id="aborts-heading">Permintaan Pembatalan Unit ({abortRequests.length})</h2>
           {abortRequests.length === 0 ? (
-            <p className="rbac-meta">Tidak ada permintaan packed-unit abort.</p>
+            <p className="rbac-meta">Tidak ada permintaan pembatalan unit terkemas.</p>
           ) : (
             <div className="admin-list">
               {abortRequests.map((req) => (
@@ -1460,9 +1476,9 @@ export function InspectionsPanel({
                               abort_request_id: req.id,
                               decision: "APPROVE",
                               expected_row_version: req.row_version,
-                              reason: "Disetujui sesuai kondisi unit terkemas SES-001"
+                              reason: "Disetujui sesuai kondisi unit terkemas"
                             },
-                            "Packed-unit abort disetujui (ABORTED)"
+                            "Pembatalan unit disetujui"
                           )
                         }
                       >

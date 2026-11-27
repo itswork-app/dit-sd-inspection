@@ -121,7 +121,7 @@ export default async function OperationalWorkspacePage() {
   return (
     <main className="workspace">
       <AppTopbar
-        subtitle="Operational Workspace · Projects, Sessions, Instruments & Units"
+        subtitle="Workspace Operasional · Proyek, Sesi, Instrumen & Unit"
         activePath="/workspace"
         canManageIdentity={selfSnapshot.canManageIdentity}
       />
@@ -131,7 +131,7 @@ export default async function OperationalWorkspacePage() {
           <p className="eyebrow">SCHEMA UNAVAILABLE</p>
           <h1>Skema operasional belum aktif pada basis data ini</h1>
           <p className="auth-description">
-            Basis data yang terhubung belum menjalankan migrasi domain Slice 2. Akses operasional
+            Basis data yang terhubung belum siap untuk operasi proyek dan inspeksi. Akses
             tetap ditolak secara aman.
           </p>
           <Link className="auth-link" href="/auth/pending">
@@ -156,8 +156,8 @@ export default async function OperationalWorkspacePage() {
       )}
 
       <footer className="footer">
-        <span>Dit. SD Inspection · Projects, Sessions, Instruments &amp; Canonical Units</span>
-        <span>Server &amp; PostgreSQL RLS enforced</span>
+        <span>Dit. SD Inspection · Proyek, Sesi, Instrumen &amp; Unit</span>
+        <span>Data dilindungi kontrol akses server</span>
       </footer>
     </main>
   );

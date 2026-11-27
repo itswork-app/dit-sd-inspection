@@ -339,7 +339,7 @@ export function WorkspacePanel({
         spec_fields: preset.spec_fields,
         evidence_slots: preset.evidence_slots
       },
-      "Draft versi instrumen tersimpan (CMD-019)"
+      "Draft versi instrumen tersimpan"
     );
   }
 
@@ -365,7 +365,7 @@ export function WorkspacePanel({
         ends_at: new Date(sess.ends_at).toISOString(),
         members: [{ user_id: asgnUserId, operational_role: asgnRole }]
       },
-      "Penugasan operasional dipublikasikan (CMD-014)"
+      "Penugasan operasional dipublikasikan"
     );
   }
 
@@ -435,7 +435,7 @@ export function WorkspacePanel({
                       </span>
                     </div>
                     <p className="rbac-meta">
-                      Zona waktu: {p.timezone} · Kapasitas Inspector (T-14):{" "}
+                      Zona waktu: {p.timezone} · Kapasitas Inspector:{" "}
                       {cap ? `${cap.inspector_cap} (v${cap.row_version})` : "50"}
                     </p>
                     {cap ? (
@@ -463,13 +463,13 @@ export function WorkspacePanel({
                                 project_id: p.id,
                                 inspector_cap: Number.parseInt(capVal, 10) || 50,
                                 expected_row_version: cap.row_version,
-                                reason: "Penyesuaian kapasitas T-14 melalui workspace"
+                                reason: "Penyesuaian kapasitas melalui workspace"
                               },
-                              `Kapasitas ${p.code} diperbarui (CMD-016)`
+                              `Kapasitas ${p.code} diperbarui`
                             )
                           }
                         >
-                          Simpan Kapasitas (CMD-016)
+                          Simpan Kapasitas
                         </button>
                       </div>
                     ) : null}
@@ -481,7 +481,7 @@ export function WorkspacePanel({
 
           <form className="rbac-form" onSubmit={handleCreateProject}>
             <div className="rbac-field">
-              <label htmlFor="proj-code">Kode proyek (CMD-008)</label>
+              <label htmlFor="proj-code">Kode proyek</label>
               <input
                 id="proj-code"
                 required
@@ -591,7 +591,7 @@ export function WorkspacePanel({
           {projects.length > 0 ? (
             <form className="rbac-form" onSubmit={handleCreateSession}>
               <div className="rbac-field">
-                <label htmlFor="sess-proj">Proyek (CMD-011)</label>
+                <label htmlFor="sess-proj">Proyek</label>
                 <select
                   id="sess-proj"
                   required
@@ -719,7 +719,7 @@ export function WorkspacePanel({
           </section>
 
           <section className="admin-panel" aria-labelledby="asgn-heading">
-            <h2 id="asgn-heading">Penugasan Operasional ({assignments.length}) · CMD-014</h2>
+            <h2 id="asgn-heading">Penugasan Operasional ({assignments.length})</h2>
             <form className="rbac-form" onSubmit={handlePublishAssignment}>
               <div className="admin-inline">
                 <select aria-label="Proyek assignment" className="inline-input" value={asgnProjectId} onChange={(e) => setAsgnProjectId(e.target.value)}>
@@ -797,7 +797,7 @@ export function WorkspacePanel({
                   <input aria-label="Tanggal target" className="inline-input" type="date" value={targetDate} onChange={(e) => setTargetDate(e.target.value)} />
                   <input aria-label="Jumlah target" className="inline-input" type="number" min={1} max={10000} value={targetQty} onChange={(e) => setTargetQty(e.target.value)} />
                   <button className="auth-button auth-button-secondary admin-btn-sm" type="submit" disabled={busyKey !== null}>
-                    Buat Target Plan (CMD-017)
+                    Buat Rencana Target
                   </button>
                 </div>
               </form>
@@ -847,11 +847,11 @@ export function WorkspacePanel({
                                   expected_draft_hash: v.draft_hash,
                                   change_summary: "Publikasi versi instrumen dari workspace"
                                 },
-                                `Versi v${v.version_number} dipublikasikan (T-17 immutable)`
+                                `Versi v${v.version_number} dipublikasikan`
                               )
                             }
                           >
-                            Publish v{v.version_number} (CMD-020)
+                            Publikasikan v{v.version_number}
                           </button>
                         ) : null}
                       </div>
@@ -865,7 +865,7 @@ export function WorkspacePanel({
           {instruments.length > 0 ? (
             <form className="rbac-form" onSubmit={handleSaveInstrumentDraft}>
               <div className="rbac-field">
-                <label htmlFor="draft-inst">Simpan Draft Checklist/Spec/Slot (CMD-019)</label>
+                <label htmlFor="draft-inst">Simpan Draft Checklist, Spesifikasi &amp; Slot Bukti</label>
                 <div className="admin-inline">
                   <select id="draft-inst" className="inline-input" value={draftInstId} onChange={(e) => setDraftInstId(e.target.value)}>
                     <option value="">-- Pilih Instrumen --</option>
@@ -887,7 +887,7 @@ export function WorkspacePanel({
 
           <form className="rbac-form" onSubmit={handleCreateInstrument}>
             <div className="rbac-field">
-              <label htmlFor="inst-type">Tipe kanonik T-16 (CMD-018)</label>
+              <label htmlFor="inst-type">Tipe perangkat</label>
               <input
                 id="inst-type"
                 required
@@ -923,10 +923,10 @@ export function WorkspacePanel({
         </section>
 
         <section className="admin-panel" aria-labelledby="units-heading">
-          <h2 id="units-heading">Registrasi Unit, Klaim &amp; Konflik Serial (T-16)</h2>
+          <h2 id="units-heading">Registrasi Unit, Klaim &amp; Konflik Serial</h2>
           <form className="rbac-form" onSubmit={handleRegisterUnit}>
             <div className="rbac-field">
-              <label htmlFor="unit-proj">Proyek (CMD-022)</label>
+              <label htmlFor="unit-proj">Proyek</label>
               <select
                 id="unit-proj"
                 required
@@ -967,11 +967,11 @@ export function WorkspacePanel({
               />
             </div>
             <button className="auth-button admin-btn-sm" type="submit" disabled={busyKey !== null}>
-              Daftarkan Unit Kanonik
+              Daftarkan Unit
             </button>
           </form>
 
-          <h3>Unit Terasosiasi ({unitAssociations.length}) — Siap Klaim (CMD-026)</h3>
+          <h3>Unit Terasosiasi ({unitAssociations.length}) — Siap Klaim</h3>
           {unitAssociations.length === 0 ? (
             <p className="rbac-meta">Belum ada unit terasosiasi aktif.</p>
           ) : (
@@ -1018,12 +1018,12 @@ export function WorkspacePanel({
                                 assignment_id: selectedAsgn,
                                 claim_ttl_minutes: 120
                               },
-                              "Unit diklaim (CMD-026) — membuka halaman inspeksi",
+                              "Unit diklaim — membuka halaman inspeksi",
                               () => router.push("/inspections")
                             )
                           }
                         >
-                          Klaim &amp; Mulai Inspeksi (CMD-026)
+                          Klaim &amp; Mulai Inspeksi
                         </button>
                       </div>
                     ) : (

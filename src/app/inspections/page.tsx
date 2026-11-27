@@ -124,7 +124,7 @@ export default async function InspectionsPage() {
   return (
     <main className="workspace">
       <AppTopbar
-        subtitle="Field Scanner, Pre-Checked Checklist (1B), Photo/Video Evidence (2A) & Offline Sync"
+        subtitle="Scan Serial, Checklist Lapangan & Bukti Foto/Video"
         activePath="/inspections"
         canManageIdentity={selfSnapshot.canManageIdentity}
       />
@@ -163,8 +163,8 @@ export default async function InspectionsPage() {
       )}
 
       <footer className="footer">
-        <span>Dit. SD Inspection · CMD-026..036, SES-001 (CMD-055..056) &amp; T-09 Offline Sync</span>
-        <span>Server &amp; PostgreSQL RLS + Private Storage enforced</span>
+        <span>Dit. SD Inspection · Pemeriksaan Unit &amp; Sinkronisasi Offline</span>
+        <span>Penyimpanan bukti privat terenkripsi</span>
       </footer>
     </main>
   );

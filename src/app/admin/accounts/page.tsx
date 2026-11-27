@@ -25,7 +25,7 @@ export default async function AdminAccountsPage() {
   return (
     <main className="workspace">
       <AppTopbar
-        subtitle="Identity & RBAC Administration (RBAC-003)"
+        subtitle="Administrasi Akun &amp; Peran"
         activePath="/admin/accounts"
         canManageIdentity={snapshot.status === "ok"}
       />
@@ -35,7 +35,7 @@ export default async function AdminAccountsPage() {
           <p className="eyebrow">SERVICE UNAVAILABLE</p>
           <h1 id="admin-unavailable-title">Layanan administrasi belum tersedia</h1>
           <p className="auth-description">
-            Status otorisasi atau skema RBAC tidak dapat diverifikasi pada lingkungan ini. Akses
+            Status otorisasi atau data akun tidak dapat diverifikasi pada lingkungan ini. Akses
             tetap ditolak secara default.
           </p>
           <Link className="auth-link" href="/auth/pending">
@@ -67,8 +67,8 @@ export default async function AdminAccountsPage() {
       )}
 
       <footer className="footer">
-        <span>Dit. SD Inspection · RBAC-003 Command Runtime (CMD-001..007)</span>
-        <span>Server &amp; PostgreSQL RLS enforced</span>
+        <span>Dit. SD Inspection · Administrasi Akun &amp; Hak Akses</span>
+        <span>Otorisasi terproteksi server</span>
       </footer>
     </main>
   );

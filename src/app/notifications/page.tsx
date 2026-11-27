@@ -44,7 +44,7 @@ export default async function NotificationsAndDocumentsPage() {
   return (
     <main className="workspace">
       <AppTopbar
-        subtitle="In-App Notifications, Documents & Print (POQ-03)"
+        subtitle="Notifikasi & Dokumen Terbit"
         activePath="/notifications"
         canManageIdentity={selfSnapshot.canManageIdentity}
       />
@@ -52,7 +52,7 @@ export default async function NotificationsAndDocumentsPage() {
       {schemaMissing ? (
         <section className="auth-panel">
           <p className="eyebrow">SCHEMA UNAVAILABLE</p>
-          <h1>Skema dokumen &amp; notifikasi Slice 4 belum aktif</h1>
+          <h1>Skema dokumen &amp; notifikasi belum aktif</h1>
           <Link className="auth-link" href="/workspace">
             Kembali ke workspace
           </Link>
@@ -65,8 +65,8 @@ export default async function NotificationsAndDocumentsPage() {
       )}
 
       <footer className="footer">
-        <span>Dit. SD Inspection · 62/62 Tables · CMD-036..043 &amp; CMD-049..051</span>
-        <span>CMD-044 &amp; external CMD-053 disabled until T-10/T-12</span>
+        <span>Dit. SD Inspection · Notifikasi &amp; Dokumen Resmi</span>
+        <span>Riwayat notifikasi dalam aplikasi</span>
       </footer>
     </main>
   );
