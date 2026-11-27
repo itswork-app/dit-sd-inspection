@@ -1,9 +1,9 @@
 # Physical Database Schema and Integrity Specification
 
 **Status:** Engineering specification draft — approval required before migrations  
-**Version:** 0.4.8  
+**Version:** 0.4.11  
 **Package:** L — Physical Data Model and Integrity  
-**Date:** 2026-11-23
+**Date:** 2026-11-27
 
 
 ## Schema/RLS reconciliation reference
@@ -440,3 +440,51 @@ Minimum logical integrity requirements (names/types/constraints are intentionall
 9. Historical inspection/revision/evidence records are never deleted, rewritten or automatically reused by a later attempt.
 
 Exact table/column names, enum values, FK/partial-unique/CAS strategy, event vocabulary, evidence policy, RLS and command function grants remain OPEN. The canonical table count and physical schema inventory are unchanged.
+
+
+## CMD-037 print sequence candidate integrity addendum — 2026-11-27
+
+**Authority:** T-13 option B and DOC-002 are PO APPROVED. This addendum is candidate-only. It does not admit a table, column, enum, index, constraint, FK, RLS policy or grant into the canonical 48-table inventory. No migration is authorized.
+
+### Candidate object: `document_print_counters`
+
+Purpose: serialize a per-logical-document print/reprint sequence without mutating the immutable generated PDF/version record.
+
+Candidate fields:
+- `document_id`: PK/FK to the logical document aggregate;
+- `last_sequence_no`: nonnegative integer, initialized to zero;
+- `updated_at`: server timestamp.
+
+Candidate invariants:
+1. One counter per logical document; creation must be idempotent and safe under concurrent first print.
+2. A successful new application print action atomically increments the counter and receives the returned sequence number.
+3. The same transaction appends the immutable `print_events` row, required `audit_events` row and idempotency result.
+4. A failed event/audit/idempotency write rolls back the counter increment; rejected requests do not consume a sequence.
+5. Unique `(document_id, sequence_no)` on `print_events` remains a final guard.
+6. The counter is not exposed for browser DML. Only the individually reviewed command boundary may mutate it.
+
+### Existing print-event model gaps
+
+The current `documents` row does not establish whether it represents a logical document or one immutable generated version. CMD-037 carries both `document_id` and `document_version`, but `print_events` has no explicit version FK. Database/Engineering must reconcile the exact identity model with CMD-036 and the ERD before admission.
+
+The existing `print_events.attempt_no` has no agreed semantics relative to `sequence_no` or CMD-038 item retry attempts. Do not use it as an independent reprint counter. The exact decision, field location and uniqueness rules remain OPEN.
+
+PO-approved DOC-003/C37-02 semantics (2026-11-27): only the latest finalized/current immutable version of a logical document is eligible for new print/reprint actions; a superseded/replaced version is historical-only and cannot be printed individually or in a batch. Existing artifact bytes and print-event history remain immutable. This is a product rule, not physical schema admission: canonical version identity/current-version pointer or equivalent arbitration, counter object, allocator SQL, lock ranks, constraints, FK/trigger edges, RLS/ACL and concurrency proof remain unapproved. Canonical table count remains 48; no live database state is asserted.
+
+## CMD-038 print batch manifest/result integrity addendum — 2026-11-27
+
+**Candidate-only; NOT ADMITTED.** The canonical physical inventory remains 48 proposed tables. This addendum does not add columns, tables, indexes, constraints, FK edges, enums, RLS policies or grants to that inventory and does not authorize DDL or migration.
+
+Candidate print_batch_items requirements:
+- immutable accepted manifest row with batch FK, stable item_key, request position, requested document/version identity (including unresolved request identity), canonical item hash, and resolved document/version reference only when valid;
+- unique (batch_id, item_key) and (batch_id, request_position);
+- no update/delete path after acceptance; server-derived item count reconciles exactly to manifest row count;
+- preserve invalid/unresolvable items as durable manifest entries and terminal outcomes, rather than dropping them.
+
+Candidate print_batch_item_results requirements:
+- append-only per-item attempt/outcome rows with unique (batch_item_id, attempt_no), safe result code, timestamps, idempotency reference and optional print_event_id/sequence reference for a recorded print action;
+- one successful result references exactly one committed print event; uniqueness must prevent one event from being attached to multiple item results;
+- result history is not overwritten; retry appends a new attempt/result;
+- candidate attempt_no is not print_events.attempt_no and is not CMD-037 sequence_no.
+
+The batch aggregate status/counts are derived from manifest + result rows. Exact status enum, aggregate projection storage (if any), lock/serialization strategy, RLS/ACL, worker identity/lease (if any), FK/index/check/trigger design, canonical item hash, result/audit cardinality, retry policy and retention remain OPEN. The two candidate objects remain excluded from the canonical 48-table inventory and ERD/RLS parity count.

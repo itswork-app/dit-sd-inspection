@@ -1,11 +1,13 @@
 # Durable Operation Ledgers and Artifact Lifecycle — CMD-035/036/038/039/040
 
 **Document ID:** DURABLE-OPERATION-LEDGER-PROPOSAL-001  
-**Version:** 0.1.0  
-**Date:** 2026-11-24  
+**Version:** 0.3.2  
+**Date:** 2026-11-27  
 **Status:** Engineering / Database / Security / Product review proposal — NOT APPROVED FOR IMPLEMENTATION  
 **Scope:** Offline sync operation outcomes, document generation jobs, print batch manifests/results, attendance document versions and verification history  
-**Gate:** G9 NOT READY; G10 NOT ACTIVE
+**Gate:** G9-F1 FROZEN; G10-F1 ACTIVE for bounded foundation only; full-system G9 NOT READY; CMD-035/036/038/039/040 business mutations and workers remain feature-gated.
+
+**Current gate interpretation (2026-11-26):** Historical G10 NOT ACTIVE labels in the dated body are snapshots from before staged foundation activation. G10-F1 does not authorize these business mutations, candidate schema objects, workers or provider operations.
 
 ## 1. Purpose and boundary
 
@@ -54,13 +56,13 @@ A separate device-binding object is required because the current model has no du
 
 ### 2.3 Transaction and replay model
 
-1. Accept a bounded batch envelope and persist the full ordered operation manifest with canonical semantic hashes.
-2. Apply each operation in its own short transaction or an explicitly approved bounded savepoint model; no partial operation mutation may exist without its terminal ledger result.
-3. For each operation, reauthorize the user and bound device, acquire the target inspection aggregate lock in stable inspection UUID order, compare expected row version and validate current claim/assignment/scope.
+1. Accept the bounded batch envelope and persist the full ordered operation manifest, operation IDs and server-canonical semantic hashes in one short acceptance transaction. Acceptance does not mutate inspection drafts.
+2. Process each operation in its own short PostgreSQL transaction. Each operation targets exactly one inspection; no transaction holds inspection locks across multiple operations or across the batch.
+3. In that operation transaction, arbitrate/lock the operation identity, reauthorize the user and bound device, validate current claim/assignment/scope, acquire the target inspection aggregate, and compare the expected row version.
 4. Apply only permitted draft response mutations; increment the inspection row version exactly once for a semantic mutation.
-5. Persist APPLIED/CONFLICTED/REJECTED outcome and the corresponding domain/audit events atomically with that operation's mutation.
-6. Derive batch terminal/partial state from operation results; a lost client acknowledgement is recovered by replaying the same batch and operation IDs.
-7. Duplicate operation ID with different semantic hash is rejected without applying a second effect.
+5. Atomically persist the APPLIED result, corresponding domain/audit events and idempotency outcome with the operation mutation. For a business conflict/rejection, persist a terminal CONFLICTED/REJECTED result without a domain mutation in that same operation transaction.
+6. An unexpected infrastructure failure rolls back only the current operation transaction and leaves its ledger entry non-terminal/retryable. Previously committed operation outcomes remain durable. Batch state is derived from the operation ledger; a lost acknowledgement is recovered by replaying the same batch and operation IDs.
+7. A savepoint may be used inside one operation transaction for local error handling, but it is not an alternative batch-level commit model and does not provide independently durable operation outcomes. Duplicate operation ID with a different semantic hash is rejected without applying a second effect.
 
 CMD-035 remains restricted to previously claimed draft work. No offline claim, submit, review, approval, print, attendance verification or administrative mutation is introduced by this proposal.
 
@@ -100,6 +102,14 @@ A candidate `document_generation_jobs` object should include:
 
 A candidate `document_generation_attempts` object should preserve attempt number, job ID, worker correlation, start/finish time, outcome, sanitized error code and output hash/reference when successful. It must not store secrets, access tokens, signed URLs, full renderer responses or source document bodies.
 
+### 3.3A Inspection-session start and post-closure print policy — DOC-003
+
+For inspection-derived documents, generation eligibility requires that the source session has durably started (the session has transitioned from DRAFT through its authorized activation path) and that the exact source inspection revision is approved and immutable. A pre-start request is rejected; it must not reserve an artifact identity or enqueue a generation job. This does not require the session to remain ACTIVE indefinitely.
+
+Once a final artifact is generated, it remains immutable evidence. Only the latest finalized/current version of the logical document may receive new print/reprint actions. A later finalized version supersedes the prior version for print eligibility; the superseded artifact becomes historical-only, cannot be printed individually or in a batch, and retains all prior print events unchanged. A pending/unfinalized replacement does not make the old version eligible again. CMD-037 and CMD-038 must revalidate current-version eligibility at processing time and reject a superseded version without consuming a print sequence.
+
+Session closure does not revoke printability of the latest finalized/current version. CMD-037 may record print/reprint after `CLOSED` if the caller is currently authorized in the exact resource scope and the artifact is final/current and integrity-valid. Printing after closure does not reopen or mutate the session. DOC-003 does not authorize new generation after closure. C37-02 is CLOSED at PO semantics level; physical version identity and concurrency enforcement remain open under C37-01/C37-04. C36-02 source-reopen race remains separate and unresolved.
+
 ### 3.3 Source identity and immutable artifact provenance
 
 Avoid an unconstrained polymorphic source ID with no FK. Engineering/Database should select one of:
@@ -117,6 +127,74 @@ At minimum, generated output must bind to an exact approved source version/hash 
 - Retries are bounded and idempotent by generation key; uncertain renderer completion is reconciled by checking the immutable artifact identity/hash before retry.
 - Worker identity and EXECUTE/table ACL are separate Security decisions; browser roles receive no queue access.
 - CMD-036 acceptance, generated, failed and retry outcomes must be auditable without exposing document content or secrets.
+
+### 3.5 Canonical generation identity and idempotency
+
+The request idempotency key and the generation identity solve different problems and must not be conflated.
+
+- **Request idempotency** identifies one caller command submission. Its scope is the authenticated actor, command, and caller-supplied idempotency key. The server computes a canonical semantic request hash. Reuse with the same hash returns the prior accepted/result reference after current read authorization; reuse with a different hash returns `IDEMPOTENCY_KEY_REUSED`.
+- **Generation identity** identifies the artifact that should exist for a specific immutable input tuple. Candidate canonical tuple: document type + typed source identity + exact immutable source version/hash + template identity/version/hash + renderer profile/version + explicitly versioned output options that can change bytes (for example locale or page profile, if supported). The server computes the stable generation key from this normalized tuple.
+- A uniqueness arbiter must prevent concurrent requests from creating two active or completed artifact identities for the same generation tuple. A second authorized request for the same tuple resolves to the existing job/document identity rather than creating a duplicate render.
+- Actor identity is an authorization/audit attribute, not part of the artifact's content identity. It must not let two authorized actors create duplicate copies merely by changing caller identity.
+- A deliberate new render after a renderer/template correction must have a materially different, immutable renderer/template version in the tuple. Do not add an opaque client nonce to bypass deduplication. If a business correction requires a second artifact for the same source/template tuple, the allowed supersession/reissue semantics require explicit Product Owner approval and a distinct versioned reason/identity.
+- The canonical hash excludes transport-only fields, timestamps, caller-supplied output metadata and fields that cannot change rendered bytes.
+
+The exact unique key, idempotency retention horizon and reissue semantics remain Engineering/Database/Product decisions; this is a candidate identity model, not an approved uniqueness constraint.
+
+### 3.6 Job state, lease and fencing protocol
+
+The following is a candidate transition model; exact enum names and retry limits remain open:
+
+`QUEUED → PROCESSING → COMPLETED`, with `PROCESSING → RETRY_WAIT → PROCESSING` for retryable failures and terminal `FAILED` or `CANCELLED` only through controlled transitions. A terminal attempt record is append-only; a job projection may change only through a compare-and-swap transition.
+
+- Claim is a short database transaction. It selects eligible queued/retry-due work, increments a monotonic lease generation/fencing counter, assigns a server-issued opaque lease token (persist only a hash where feasible), sets lease expiry and records the attempt start. Claim commits before rendering begins.
+- A worker heartbeat may extend the lease only when job ID, lease owner, token hash, generation and current unexpired lease all match. Heartbeat is a compare-and-swap update; it cannot revive an expired or superseded lease.
+- Reclaim after expiry increments the fencing generation. The previous worker is permanently stale even if it later completes rendering.
+- The worker identity is a distinct non-human workload identity. It is not `document.generate`, `authenticated`, `service_role` or a browser session. Its exact authentication, function/table privileges, Storage access, network egress and secret custody require Security/Operations approval.
+- Claim, heartbeat, retry scheduling and finalization each use bounded transactions. No source/document/job row lock is held during renderer or Storage I/O.
+- A worker may render more than once under at-least-once delivery. The invariant is one accepted immutable artifact identity and one valid finalization, not exactly-once execution of the external renderer.
+
+Lease duration, heartbeat interval, maximum attempts, backoff schedule, dead-letter policy, queue fairness and worker concurrency are deliberately unset pending workload/provider/SLO evidence.
+
+### 3.7 Rendering, object storage and guarded finalization
+
+1. The worker loads only the server-pinned immutable source snapshot/reference and immutable template version/hash. It must not re-resolve a mutable "latest" template or accept client-supplied source content at render time.
+2. It renders outside PostgreSQL transactions. Renderer input is bounded and schema-validated; template content is declarative and reviewed. Executable macros/scripts, arbitrary remote includes and unbounded network fetches are prohibited.
+3. The worker writes to a server-generated private Storage object identity using create-if-absent/immutable semantics where supported. It computes or independently verifies the output checksum and obtains server-observed object metadata. A retry must reconcile an existing object by exact generation identity and checksum; it must never overwrite an existing finalized object.
+4. Finalization runs in a short transaction and checks the current lease fencing tuple, expected job state/version, exact document/generation identity, pinned source version/hash, pinned template version/hash and server-observed output object identity/checksum/size/MIME. It appends the generation attempt outcome, updates the document/job terminal projection, appends the required audit event and records the durable result atomically.
+5. If the lease is expired/reclaimed, the source binding no longer matches, or object metadata does not match, finalization fails closed. The artifact is not exposed as GENERATED. Any orphan private object is reconciled by a separate idempotent process; no immediate delete is inferred.
+6. A failed audit append rolls back the relational finalization. The external object may remain as an orphan for reconciliation, but no successful document pointer/status may commit without its required audit event.
+
+**Source-reopen race remains a separate Product Owner decision (C36-02).** DOC-003 establishes only the session-start generation gate and post-closure printability; it does not decide whether an in-flight generation accepted before reopen may finalize afterward.  CMD-032 requires preserving an already approved immutable revision and its historical PDF/print history, but current documentation does not settle what to do when a generation job was accepted before reopen and finishes after the inspection is reopened. Two possible policies have different user-visible outcomes: (A) permit finalization as a historical artifact bound to the still-approved immutable revision, or (B) mark the job stale/cancelled and require a separately authorized request. Do not infer either. Until this edge is decided, finalization must not silently rebind to a new draft/current revision; the race remains blocked and must fail closed or remain pending for controlled resolution.
+
+### 3.8 Retry, cancellation and uncertain outcomes
+
+- Classify failures as retryable infrastructure/provider failure, deterministic render/input failure, authorization/source invalidation, lease loss, object-integrity mismatch or audit failure. The taxonomy and retryability are server-owned.
+- Retry only when the prior attempt is known not to have finalized. If renderer/Storage completion is uncertain, first reconcile by generation identity, object key and checksum. Never blindly create a new artifact or overwrite the previous object.
+- A retry creates a new append-only attempt number and fencing generation; it does not erase prior attempt evidence.
+- Terminal failure is reached only after the approved bounded retry policy or a non-retryable condition. Dead-letter/reconciliation is explicit and observable.
+- Cancellation, if exposed, is a separately authorized command/policy. A client disconnect, browser timeout, lease expiry or source update is not itself proof that an external render stopped.
+- Access to a generated artifact is a separate scoped read decision. The generation response must not return a durable public URL or reusable signed URL.
+
+### 3.9 Required observability and acceptance evidence
+
+The worker and command should emit privacy-safe correlation fields: generation key/reference, job ID, attempt number, fencing generation, state transition, source version ID/hash, template version/hash, renderer version, duration, safe error code and output checksum. Never log source content, PDF bytes, JWTs, lease tokens, signed URLs, credentials or personal evidence payloads.
+
+Minimum test scenarios (all PLANNED / NOT EXECUTED):
+- concurrent same-tuple requests resolve to one generation identity and one durable job;
+- same caller idempotency key/same semantic request replays; changed semantic request is rejected;
+- template publication/revocation or renderer-version change cannot mutate a pinned in-flight request;
+- worker crash before render, during render, after Storage write and before finalization;
+- lease expiry/reclaim while old worker is still running; stale worker cannot finalize;
+- heartbeat racing with reclaim; only the current fencing generation remains valid;
+- duplicate renderer execution and uncertain Storage response reconcile without overwriting;
+- source revision/reopen race follows the explicit PO decision and never rebinds to a newer draft;
+- checksum, MIME, size, private bucket and object-key mismatch fail closed;
+- audit failure prevents GENERATED state; orphan object is discoverable and reconciled;
+- authorization revocation before enqueue/finalization is enforced at the defined boundary;
+- no browser identity can claim, heartbeat, retry, finalize or read the worker queue.
+
+These cases require exact physical schema, function/worker ACL, Storage policy, event cardinality and concurrency harness approval before execution. No test result is claimed.
 
 ## 4. CMD-038 — durable print batch manifest and item outcomes
 
@@ -253,3 +331,54 @@ Every candidate object requires:
 - G9: **NOT READY**.
 - G10: **NOT ACTIVE**.
 
+### 4.4 CMD-038 lifecycle reconciliation — 2026-11-27
+
+**Status:** candidate engineering contract only; no Product Owner approval of remaining policy values and no schema admission. This subsection refines §§4.2–4.3; it does not change the candidate-only status of either object.
+
+#### Durable acceptance and immutable manifest
+
+1. Batch submission is one short acceptance transaction. It authenticates the caller, validates the batch-level permission and request envelope, arbitrates actor + command + idempotency key against a server-computed canonical request hash, creates the batch envelope, persists every ordered manifest item, and commits the stored acceptance result atomically.
+2. Same key + same canonical hash replays the same batch identity and accepted manifest. Same key + different hash returns IDEMPOTENCY_KEY_REUSED; it must not create or mutate a batch.
+3. The server derives requested_count from the persisted manifest. It is not accepted from the caller. Client-supplied count, status, result, success assertion, sequence, actor identity and retry eligibility are forbidden.
+4. The accepted manifest is immutable: stable item_key, request position, original document/version request, and canonical item hash are retained even when the document cannot be resolved or authorized. A stable key is unique within a batch; request position is unique within a batch. Duplicate item keys or duplicate canonical item identity are rejected according to an explicit normalization rule; the normalization rule remains an engineering decision.
+5. The maximum item count, request-byte limit, per-actor rate limit, acceptance expiry and retention are not assigned here. The configured maximum must be evidence-based and approved before implementation; do not substitute an arbitrary number or an unbounded array.
+
+#### Item outcome authority and attempt identity
+
+- print_batch_items is the durable identity of each requested item; print_batch_item_results is the append-only history of processing attempts/outcomes. The latest eligible terminal result is a projection input, not a mutable overwrite.
+- A result attempt is identified by (batch_item_id, attempt_no) as a candidate uniqueness rule. attempt_no is an item-processing attempt ordinal only; it is not print_events.attempt_no, not sequence_no, and not a reprint count.
+- print_events remains the authoritative per-document application print/reprint event stream. A result that records a successful application print action references exactly one committed print_event; one print_event may be referenced by at most one authoritative item result. A rejected/failed item with no recorded application print action has no successful print event. Whether failed print_events rows are retained for resolvable documents, and exact audit event cardinality for rejected items, remain open (C38-03).
+- An item result is never rewritten from failed to successful. A later retry appends a new attempt/result. A successful result is terminal for that batch item and cannot be selected by a failed-only retry.
+
+#### Processing and transaction boundaries
+
+1. Batch acceptance and item processing are separate transactions. Acceptance does not claim that any item has printed.
+2. Each item is authorized and processed in its own short database transaction. Revalidate the current caller authority and exact document/version/scope at the item boundary; enqueue-time permission is not a permanent authorization grant.
+3. One item transaction locks at most one document aggregate/version and its sequence allocator. It must not hold a batch-wide lock or multiple document locks while processing items. CMD-037 candidate sequence increment, print_event, required audit fact and idempotency outcome commit atomically; audit failure rolls back that item's sequence/event/idempotency mutation.
+4. Persist the item result and its idempotency linkage in the same transaction as the item outcome. A committed success followed by a lost acknowledgement is recovered by replaying the same batch/item identity and returns the same event/sequence; it does not allocate another sequence.
+5. A process crash before item commit leaves that item uncommitted/retryable and cannot roll back prior committed items. A crash after commit but before response is resolved by reading/replaying the committed item result. No transaction or database lock spans browser rendering, PDF delivery, or physical printer I/O.
+6. Batch aggregate status/counts are derived from the immutable manifest and durable item results. They are a projection only; they must never be accepted from the caller or used as a substitute for item-level evidence. The projection update/reconciliation path must be idempotent and must not overwrite item history.
+
+#### Failed-only retry and partial recovery
+
+- A retry request identifies the prior batch and requests failed-only retry. The server derives the eligible subset from the source batch's durable results; the caller cannot submit a list of items claimed to have failed.
+- The retry creates a new batch envelope with a new batch idempotency key and a new immutable manifest containing only eligible failed items, retaining source batch/item references. Original batches, manifests and results remain unchanged.
+- Previously successful items are excluded server-side even if the caller includes their item keys or asserts that they failed. A batch with no eligible failed items returns a stable no-op/rejection outcome and creates no print event; exact response code remains open.
+- A retryable failure classification must be explicit and deterministic. Authorization denial, invalid/non-printable document, stale version, scope mismatch, audit failure and transient infrastructure failure must not be collapsed into one generic retryable state. Retry limits, backoff, expiry, cancellation and manual requeue policy remain OPEN.
+- If two retry batches race from the same partial batch, per-document sequence/idempotency arbitration prevents duplicate successful print events. Whether the product permits overlapping retry batches or serializes them at batch/item eligibility level remains C38-04.
+- A batch may remain incomplete while item results are pending. Exact PROCESSING/PARTIAL/SUCCEEDED/REJECTED terminal transition rules and stale-batch recovery authority require approval; do not infer a lease or worker principal. A worker/lease is not authorized by this proposal.
+
+#### Privacy, access and retention
+
+The accepted manifest and item results contain document identifiers, version references, safe error codes and actor/batch references only as needed for reconciliation. They must not duplicate PDF bytes, evidence, raw request bodies, tokens, or unrestricted Storage object keys. Batch-result reads require actor- and resource-scope authorization; candidate tables receive no browser DML and no broad worker/table access. Retention, expiry and legal-hold disposition remain governed by T-10 and are not set here.
+
+#### Open blockers
+
+- C38-01: candidate manifest/result objects, exact PK/FK/index/check constraints, canonical item hash and identity normalization, and admission to the physical schema/RLS/ERD.
+- C38-02: batch/item worker or synchronous orchestration model, lease/fencing (if any), recovery ownership, and whether concurrent/overlapping retry batches are permitted.
+- C38-03: authoritative attempt identity across item results, print_events.attempt_no, CMD-037 sequence_no, and audit event cardinality for failed/rejected items.
+- C38-04: PO decision on mixed-scope batches (reject vs partition), retry limits/expiry/cancellation, empty failed-only retry, and exact terminal batch-state semantics.
+- C38-05: approved numeric maximum batch size, request/rate/processing bounds and retention; no numeric values are inferred.
+- C37-01..04 remain independent CMD-037 blockers and continue to constrain CMD-038.
+
+No candidate table, function, worker, permission, RLS policy, grant, route, migration, SQL or runtime behavior is approved by this addendum.

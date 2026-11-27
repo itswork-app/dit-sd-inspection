@@ -1,13 +1,13 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.25
+**Version:** 0.4.30
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
-**Date:** 2026-11-24  
+**Date:** 2026-11-27  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
-**Gate:** G3 NOT READY; G4 NOT READY; G5 NOT READY; G7 NOT READY; G9 NOT READY; G10 NOT ACTIVE (conditional PO authorization received; activation remains gated by verified G9 and a separate G10 activation record).
+**Gate:** G3/G4/G5/G7/full-system G9 NOT READY; G9-F1 FOUNDATION SCOPE FROZEN; G10-F1 FOUNDATION ACTIVE for bounded foundation only; business-command lock protocol remains unapproved and feature-gated.
 
-**Current gate interpretation (2026-11-24):** Dated historical sections below that say “G10 NOT AUTHORIZED” are preserved snapshots from before the Product Owner's conditional implementation authorization. The current controlling state is G9 NOT READY and G10 NOT ACTIVE; implementation remains gated by verified G9 and a separate G10 activation record.
+**Current gate interpretation (2026-11-26):** Dated historical sections below that say “G10 NOT ACTIVE” or “G10 NOT AUTHORIZED” are preserved snapshots from before the staged foundation activation. The current controlling state under AGENTS.md v1.2.5 is G9-F1 FOUNDATION SCOPE FROZEN and G10-F1 FOUNDATION IMPLEMENTATION ACTIVE. Full-system G9 remains NOT READY; later business-command features, including CMD-031–040, remain feature-gated and are not authorized by G10-F1.
 
 ## 1. Executive conclusion
 
@@ -602,3 +602,53 @@ This pointer does not resolve the reviewer assignment/SoD matrix or the differin
 The nine conflict classes cover: (1) CMD-022–027 canonical identity/association/claim ordering, including CMD-023 and CMD-026 contradictory recipes; (2) CMD-009–016 parent/session/child writer fence; (3) CMD-004/005/014/015/016 T-14 capacity writer coverage; (4) CMD-014/018–021 instrument/assignment order; (5) CMD-026–034 claim/inspection/revision/review/evidence ordering; (6) CMD-035 sync operation transaction boundary; (7) CMD-036–040 worker/finalizer/print/attendance boundaries; (8) CMD-049–054 notification/L05/worker/provider boundaries; and (9) all unverified physical FK/unique/trigger/cascade/deferred/helper edges.
 
 These are source-level contradictions and missing proofs, not reproduced deadlocks. No graph edge is certified by this addendum. LPR-01 and LPR-07–LPR-11 remain OPEN; LPR-10 NOT EXECUTED; resolver certification 0/40; application lock certification 0/50; graph NOT PROVEN ACYCLIC; G9 NOT READY; G10 NOT ACTIVE.
+
+
+## 32. CMD-035 per-operation transaction-boundary recommendation — 2026-11-26
+
+The CMD-031–040 detailed contract review v0.2.4, durable operation-ledger proposal v0.1.1 and lock manifest v0.4.33 now use one short PostgreSQL transaction per offline sync operation as the recommended candidate boundary. Batch acceptance persists the ordered manifest separately; each operation transaction owns its inspection mutation, terminal operation result, required domain/audit events and idempotency outcome. A later operation failure cannot roll back earlier committed operations. Unexpected infrastructure failure rolls back only the current operation and leaves its ledger entry retryable.
+
+A savepoint may be used inside one operation transaction for local error handling, but it is not a substitute for an independently committed operation. This recommendation follows the existing CMD-035 response contract (durable per-operation results and APPLIED/PARTIAL/CONFLICTED outcomes); it does not create a new offline capability or expand T-09's allowlist.
+
+**Disposition:** engineering recommendation only; Engineering/Database/Security approval remains OPEN. Device binding/revocation, operation-ledger schema admission, exact event cardinality, L05 rank/participation, physical FK/index/trigger edges and adversarial concurrency evidence remain unresolved. CMD-035 lock certification remains NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification remains 0/50; global graph acyclicity remains NOT PROVEN. G9-F1 is FROZEN and G10-F1 ACTIVE only for bounded foundation; CMD-035 business mutation remains outside that authorization. No schema, SQL, migration, grant/RLS, source implementation, test execution or live database operation is authorized or claimed.
+
+
+## 33. CMD-036 generation identity, lease fencing and finalization boundary — 2026-11-27
+
+The CMD-036 review v0.2.5 and Durable Operation Ledger Proposal v0.2.0 now distinguish caller request idempotency from canonical artifact-generation identity. The artifact identity is based on the typed source and immutable source version/hash, immutable template version/hash, renderer profile/version and byte-affecting output options. Concurrent requests for the same canonical tuple must converge on one durable artifact/job identity; actor identity is not an artifact-content discriminator.
+
+Candidate transaction boundaries:
+1. **Enqueue:** one short transaction acquires the source aggregate/revision serialization point, validates the exact approved source and template, reserves the generation identity, persists the PENDING document/job/outbox and accepted audit/idempotency outcome.
+2. **Claim/heartbeat/reclaim:** isolated short job-lease transactions. Each claim/reclaim advances a monotonic fencing generation. No source/document aggregate lock is held during rendering.
+3. **Render/Storage:** external I/O outside database transactions and locks. Private object identity is server-generated and immutable; uncertain writes are reconciled by generation identity and checksum.
+4. **Finalize:** one short transaction revalidates the source binding, template identity, expected job/document version, current lease fence and server-observed object metadata before committing terminal job/document/attempt state and required audit atomically.
+
+The old worker is fenced after lease reclaim and cannot finalize. At-least-once renderer execution is accepted; exactly-once external execution is not claimed. A stale or uncertain Storage object remains private and is reconciled separately; it is never exposed as GENERATED without a successful relational finalization and audit append.
+
+**Blocking source-reopen ambiguity:** CMD-032 preserves the approved immutable revision and historical PDF/print history, but the current PO record does not say whether a generation job accepted before reopen may finish as a historical artifact or must be treated as stale. Do not silently rebind to the new draft. C36-02 is open for explicit PO disposition. This edge is not resolved by the proposed lease or lock order.
+
+**Disposition:** candidate Engineering/Database/Security protocol only. Exact PostgreSQL lock modes/ranks, source/template/job schema, unique indexes, worker identity and ACL, Storage immutability/provider guarantees, event cardinality, audit catalogue, retry limits and adversarial race evidence remain open. LG-20 remains a test scenario, not a certified edge. CMD-036 is NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification remains 0/50; global graph acyclicity remains NOT PROVEN. No schema, SQL, migration, RLS/grants, worker implementation, test execution, live database operation or production action is claimed.
+
+
+## 34. CMD-037 per-document print sequence and audit atomicity — 2026-11-27
+
+PRINT-SEQUENCE-PROPOSAL-001 v0.1.0 defines the candidate CMD-037 serialization boundary. T-13 option B and DOC-002 require individual and bounded batch printing, append-only per-document outcomes, failed-only batch retry, no duplicate successful events and an incrementing reprint count. A print event remains an application action, not proof of physical paper output.
+
+Candidate per-command lock sequence: idempotency arbitration → exact document/version and authorization scope → per-document counter → print event/audit/idempotency commit. The counter increment, `print_events` row, audit append and idempotency result must commit atomically. Unique `(document_id, sequence_no)` remains the final integrity guard. `expected_sequence` is defined as the caller's expected current last sequence; stale values reject without consuming a number. Same-key replay returns the stored event and sequence; a deliberate reprint uses a new key.
+
+CMD-038 must process each item in its own short transaction, locking one document/counter at a time. Batch retries target failed items only; successful outcomes are immutable and never generate a duplicate print event. The meaning of `print_events.attempt_no` remains unresolved and cannot be a second reprint counter.
+
+**Open cross-document blockers:** C37-01 logical-document vs immutable-version identity/current-version arbitration; C37-03 `attempt_no` semantics; C37-04 counter object/allocator and exact lock/constraint/RLS/ACL review. C37-02 superseded-version eligibility is CLOSED at PO semantics level: only the latest finalized/current version may be printed/reprinted; superseded versions are historical-only and rejected. LG-21 remains an unexecuted concurrency scenario, not a certified graph edge. CMD-037 remains NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification 0/50; graph acyclicity NOT PROVEN. No physical object is admitted, no SQL/migration/RLS/grant or handler is authorized, and no concurrency test is claimed.
+
+## CMD-038 durable manifest and per-item transaction overlay — 2026-11-27
+
+The CMD-038 candidate protocol is now normalized as two non-overlapping phases:
+
+1. **Acceptance:** one short transaction arbitrates the batch idempotency key/hash and persists the batch envelope plus the complete immutable ordered manifest. No document sequence is allocated during acceptance.
+2. **Item processing:** one short transaction per item, with current authorization revalidation, item idempotency, one document aggregate/version and one per-document sequence allocator. It atomically records the application print event, required audit fact and item outcome/idempotency. A transaction never locks more than one document/counter. Batch status/counts are a derived, idempotent projection.
+
+The batch envelope is not held locked across item processing. A projection lock, if required, is acquired only after item transaction completion in a separate bounded operation; its exact rank and lock path remain OPEN. No lock is held across PDF delivery, browser activity or physical printer I/O. There is no physical printer integration in this contract.
+
+Failed-only retry derives eligible items from durable prior item results and creates a new immutable retry batch; successful source items are excluded server-side. Concurrent retry batches still converge on the CMD-037 per-document idempotency/sequence arbiter, but whether overlapping retries are permitted remains C38-02/C38-04. Item attempt_no is distinct from document sequence_no; its relationship to legacy print_events.attempt_no is unresolved (C38-03).
+
+No new global lock rank, object, FK/trigger edge or acyclicity claim is admitted. The effective database lock graph remains NOT PROVEN. Candidate manifest/result tables remain NOT ADMITTED; application lock certification remains 0/50; LG-21 remains PLANNED / NOT EXECUTED.

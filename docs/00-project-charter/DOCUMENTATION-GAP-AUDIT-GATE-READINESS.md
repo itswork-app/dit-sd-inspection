@@ -1,10 +1,10 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.14.4
-**Audit date:** 2026-11-25  
-**Branch reviewed:** `feat/foundation-bootstrap-v1-rebased` (foundation branch integrated with current main)  
-**Reviewed baseline HEAD:** `ca933fe47c4ee44cf2eba262eb80522c6075bfbf` (foundation branch HEAD at the 2026-11-25 documentation and static-review checkpoint)  
+**Version:** 1.17.1
+**Audit date:** 2026-11-27  
+**Branch reviewed:** `feat/foundation-bootstrap-v1-rebased` (integrated with `main` through PR #37)  
+**Reviewed baseline HEAD:** `5b7fdd9` (`main` through PR #37) + `f8a9b54` (foundation branch pre-merge HEAD)  
 **Authority:** Master Implementation Blueprint MIB-001  
 **Status:** AUDIT IN PROGRESS — FULL-SYSTEM GATE NOT READY; G9-F1/G10-F1 FOUNDATION ACTIVE  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
@@ -51,8 +51,8 @@ No application code, migrations, live Supabase database, deployed RLS/grants, Ve
 | DGA-B11 | Database/RLS/ERD | Static documentation inventory remains 48/48; notification field vocabulary now aligns safe_payload and worker lease fencing fields across NLA-001/physical schema/RLS/ERD. Exact composite constraints, grants, RLS predicates, views, functions, triggers, sequences and Storage policies remain unverified | Independent technical review of 48-table crosswalk, all constraints/privileges/RLS and live inventory before implementation | Engineering + security | DESIGN RECONCILED; LIVE VERIFICATION OPEN |
 | DGA-B12 | T-18 execution model | Option A is PO-approved, but function-by-function owner, effective privileges, search_path, exact EXECUTE ACL, JWT forwarding and real route-to-PostgREST path have no runtime evidence | Per-function security review, live inventory, route design, end-to-end caller-JWT negative/positive test | Engineering + security | NOT VERIFIED |
 | DGA-B13 | Audit/INS-015 notifications | NLA-001 v0.1.5 and CMD-049–054 review v0.1.3 reflect POQ-01..03 approvals: hybrid event-time candidate audience with no widening, per-policy SLA with ELAPSED_UTC initial default and quiet-hours delivery deferral only, and no dismiss/archive in MVP. Candidate notification_outbox_recipients and outbox snapshot header remain NOT ADMITTED; exact selector grammar, source-event transaction bounds, lock-order/implicit FK edges, worker identity/ACL, policy grants/SoD, provider callback security, retry horizons and T-10 retention/privacy remain open | Engineering/Security design of durable candidate snapshot/checkpoint and selector grammar; worker principal/ACL; provider capability and callback evidence; institutional T-10 policy; live schema/RLS and tests after G10 | PO (semantics approved) + engineering + institution + Security/Operations | PO SEMANTICS APPROVED; ENGINEERING/EXTERNAL APPROVALS AND RUNTIME EVIDENCE OPEN |
-| DGA-B14 | Reports/project closure | T-05/T-06 metrics, BA/serial annex and closure graph remain open. T-13 print batch persistence is mapped to `print_batches` + append-only per-document `print_events`; eight dedicated print-batch cases are now specified, but projection, retry and concurrency tests remain unexecuted. CMD-010 project closure also lacks a proven parent-fence protocol against CMD-011–015 child writers | Metric definitions, closure gates, project/session parent-fence lock modes and child-writer order, print schema/command review and execution evidence | PO + engineering + security | PARTIAL; PRINT DESIGN SPECIFIED, CLOSURE FENCE OPEN |
-| DGA-B15 | CI/repository governance | Required CI jobs, branch protection, review requirements, secrets scanning, migration checks and actual workflow run were not verified | Live GitHub ruleset/workflow evidence and successful required-check run | Repository administrator | NOT VERIFIED |
+| DGA-B14 | Reports/project closure | T-05/T-06 metrics, BA/serial annex and closure graph remain open. CMD-038 now has a candidate immutable ordered item manifest + append-only per-item result model, independent item transactions, derived batch projection and server-derived failed-only retry. Candidate objects are NOT ADMITTED; batch size, mixed-scope, retry/terminal policy, attempt/event cardinality, worker/lease, RLS/ACL and concurrency evidence remain open. CMD-010 project closure also lacks a proven parent-fence protocol against CMD-011–015 child writers | Metric definitions, PO decisions and technical admission of CMD-038 candidate objects; retry/projection/lock contract and adversarial tests; project/session parent-fence lock modes and child-writer order | PO + engineering + security | PARTIAL; CMD-038 LOGICAL CANDIDATE RECONCILED, PHYSICAL/PO/TEST GATES OPEN; CLOSURE FENCE OPEN |
+| DGA-B15 | CI/repository governance | 2026-11-27 live GitHub inspection: private solo-maintainer repo; branch protection/rulesets unavailable on Free+private; secret/code/Dependabot scanning disabled; Actions enabled but hosted runners never start (PR #30 CI fails in seconds with empty runner and no logs). Required-check success, secrets scanning and migration checks remain unproven | Successful required-check run on an actual hosted runner; branch protection/rulesets once the GitHub plan allows them; scanning/migration checks as configured | Repository administrator | PARTIAL — SETTINGS INSPECTED; REQUIRED CHECKS NOT PASSED |
 | DGA-B16 | Scope/authority document freshness | Package S §9.15 is preserved as a historical snapshot; §9.16 now reconciles current DGA/QA counts and links current cross-document audit. Package T is confirmed as a historical decision pack with Decision Register as current authority. RTM T-13 print test mapping was corrected against QA. Remaining source/requirement/RAID crosswalk and independent G9 review remain open | Controlled status addenda; reconciled Decision Register/Package S/T/RTM/RAID crosswalk; independent evidence review | Document owner + PO | PARTIAL — DOCUMENTATION RECONCILIATION UPDATED; SOURCE/REQUIREMENT CLOSURE OPEN |
 | DGA-B17 | Concurrency/version token contract | `expected_version`, `expected_row_version`, business version, revision, hash and print sequence are not consistently mapped to physical aggregates; CMD-005/007/035/040 retain field/target mismatches. CMD-050 expected_version has been removed because notifications has no row-version field. CMD-052/053 now have candidate owner/token-hash/generation/expiry lease fields, but physical enforcement and worker ACL remain unverified. | PO/Security decisions on [Concurrency and Version Token Reconciliation](../02-architecture/CONCURRENCY-AND-VERSION-TOKEN-RECONCILIATION.md), followed by synchronized schema/catalogue/review/QA updates | PO + engineering + security; institution for attendance authority | OPEN — PROPOSAL DOCUMENTED, DECISIONS PENDING |
 | DGA-B18 | Global lock order and concurrency graph | PO product semantics LPR-02–LPR-06 are approved; candidate L15–L18 identity/authorization ranks and project/session parent-fence proposal are now cross-document aligned, but lock modes, all command paths, implicit database edges and effective graph remain technically unapproved/unverified | Resolve LPR-01, LPR-07–LPR-11 in [LOCK-PROTOCOL-DECISION-RESOLUTION-001](../02-architecture/LOCK-PROTOCOL-DECISION-RESOLUTION.md), validate candidate ranks/parent fences, normalize all command/worker manifests, then provide acyclic-graph and adversarial concurrency evidence | Engineering + Security + PO; Operations/Institution where applicable | PARTIAL — CANDIDATE DESIGN RECONCILED; TECHNICAL APPROVAL/GRAPH PROOF OPEN |
@@ -67,7 +67,7 @@ The Product Owner approved [CMD-045–048 Control-Plane Resolution Proposal](../
 - CMD-045: DEFERRED_EXTERNAL_CONTROL_PLANE — institutional records/legal/privacy control plane; T-10 remains BLOCKED.
 - CMD-046: DEFERRED_EXTERNAL_CONTROL_PLANE — designated institutional incident-response control plane; incident RACI remains OPEN.
 - CMD-047: OUT_OF_APPLICATION_SCOPE_EXTERNAL_PROVIDER_CONTROL — provider-native/approved secret-management control plane; T-12 evidence remains BLOCKED.
-- CMD-048: OUT_OF_APPLICATION_SCOPE_EXTERNAL_RELEASE_CONTROL — protected repository/deployment control plane; DGA-B15 remains NOT VERIFIED.
+- CMD-048: OUT_OF_APPLICATION_SCOPE_EXTERNAL_RELEASE_CONTROL — protected repository/deployment control plane; DGA-B15 remains PARTIAL — SETTINGS INSPECTED; REQUIRED CHECKS NOT PASSED.
 
 **Application design disposition:** CLOSED for the four command surfaces. No application permission, route, RPC, function, table, worker, generic CRUD or app transaction/lock set is to be created for CMD-045–048. Future narrow integrations require a new requirement/command ID and separate review.
 
@@ -1130,3 +1130,59 @@ Findings:
 - Lint, TypeScript, migration validation, Vitest, Node migration tests and production build remain NOT VERIFIED on the exact current HEAD. No CI quota exhaustion diagnosis is asserted.
 
 **Disposition:** keep PR #30 open and unmerged until an authentic generated lockfile is committed and exact-HEAD checks are executed and reviewed. No source behavior, database schema, grants/RLS, privileged RPC, production data or deployment scope is expanded by this checkpoint.
+
+## CMD-035 operation transaction-boundary reconciliation — 2026-11-26
+
+The CMD-031–040 Detailed Contract Review v0.2.4, PostgreSQL Command Contract Catalogue v0.4.9, Durable Operation Ledger Proposal v0.1.1, LOCK-MANIFEST-001 v0.4.33 and LOCK-GRAPH-001 v0.4.26 now consistently recommend a separately committed batch-acceptance transaction followed by one short transaction per sync operation. This matches the existing durable per-operation result and partial-batch contract. Savepoints are limited to intra-operation error handling and are not treated as an equivalent commit model.
+
+- This is a documentation-level engineering recommendation, not a Product Owner change to T-09 and not a technical approval.
+- Device enrollment/binding/revocation, operation-ledger physical schema admission, exact event cardinality, lock-rank/implicit-edge review, RLS/ACL and adversarial concurrency evidence remain OPEN.
+- CMD-035 remains NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification remains 0/50; global graph acyclicity remains NOT PROVEN.
+- G9-F1 remains FROZEN and G10-F1 ACTIVE only for bounded foundation work. CMD-035 business mutation is outside G10-F1. No code, SQL, migration, grants/RLS, live database, automated test, CI, deployment or production data operation was performed by this documentation update.
+
+
+## CMD-036 document-generation lifecycle reconciliation — 2026-11-27
+
+The CMD-031–040 Detailed Contract Review v0.2.5, Durable Operation Ledger Proposal v0.2.0, PostgreSQL Command Contract Catalogue v0.4.10, LOCK-MANIFEST-001 v0.4.34 and LOCK-GRAPH-001 v0.4.27 now describe a consistent candidate CMD-036 lifecycle:
+
+- Caller request idempotency is separate from canonical artifact identity. The latter binds typed source identity and immutable source version/hash, template version/hash, renderer profile/version and byte-affecting output options. Same-tuple requests converge on one artifact/job identity.
+- Job claim/heartbeat/reclaim use a monotonic lease-fencing generation. Rendering and private Storage I/O occur outside DB locks. Finalization revalidates the current fence, exact source/template binding and server-observed object metadata before atomically committing artifact/job/attempt state with the required audit event.
+- Renderer execution is at-least-once; no exactly-once external side-effect claim is made. Uncertain Storage outcomes require reconciliation by immutable generation identity and checksum; stale workers cannot finalize after reclaim.
+- C36-02 records an unresolved Product Owner decision: whether a job accepted before CMD-032 reopen may finalize afterward as a historical artifact bound to the preserved approved revision, or must be treated as stale/cancelled. No silent rebind to a new draft is allowed.
+
+This is a documentation-level Engineering/Database/Security proposal, not a Product Owner decision, approved schema, worker design or implementation authorization. Template/source physical references, exact constraints/indexes, lock ranks/implicit FK-trigger edges, worker identity/ACL, Storage immutability guarantees, audit-event cardinality, retry limits and concurrency evidence remain OPEN. CMD-036 is NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification remains 0/50; global graph acyclicity remains NOT PROVEN. G9-F1 remains FROZEN and G10-F1 ACTIVE only for bounded foundation work; CMD-036 business mutation and rendering workers remain outside G10-F1. No code, SQL, migration, grants/RLS, automated test, CI, live database, deployment or production data operation was performed.
+
+
+## CMD-037 print sequence and version identity reconciliation — 2026-11-27
+
+CMD-037 has been reconciled across Detailed Contract Review v0.2.6, PostgreSQL Command Contract Catalogue v0.4.11, LOCK-MANIFEST-001 v0.4.35, LOCK-GRAPH-001 v0.4.28, Physical Database Schema v0.4.9 and PRINT-SEQUENCE-PROPOSAL-001 v0.1.0.
+
+- T-13 option B and DOC-002 semantics remain unchanged: individual + bounded batch print, per-document outcomes, failed-only retries, no duplicate successful print events, reprint count increments, and no claim of physical printer confirmation.
+- Candidate allocator uses one per-document counter and one short transaction for sequence increment, print event, audit and idempotency outcome. Same-key replay does not allocate; a new intentional reprint uses a new key. Audit failure rolls back the counter and event.
+- CMD-038 item processing must use the same per-document boundary, one document/counter lock at a time, with successful item outcomes immutable.
+- C37-01 remains OPEN for logical document vs immutable version identity; C37-02 is CLOSED at PO semantics level (latest finalized/current version only; superseded versions historical-only and not printable); C37-03 remains OPEN for `attempt_no` semantics; C37-04 remains OPEN for counter/allocator, exact lock, constraint and RLS/ACL approval.
+
+The counter is a candidate-only object and is not admitted to the canonical 48-table inventory. The physical schema's canonical count remains unchanged. CMD-037 remains NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification 0/50; global graph acyclicity NOT PROVEN; LG-21 remains PLANNED / NOT EXECUTED. G9-F1 remains FROZEN and G10-F1 ACTIVE only for bounded foundation work; CMD-037 print mutations remain outside G10-F1. No SQL, migration, grants/RLS, handler, printer integration, automated test, CI, live database, deployment or production operation was performed.
+
+## CMD-038 batch print lifecycle reconciliation — 2026-11-27
+
+CMD-038 has been reconciled across CMD-031–040 Detailed Contract Review v0.2.7, Durable Operation Ledger Proposal v0.3.0, PostgreSQL Command Contract Catalogue v0.4.12, LOCK-MANIFEST-001 v0.4.36, LOCK-GRAPH-001 v0.4.29 and Physical Database Schema v0.4.10.
+
+- Candidate batch acceptance is one short transaction persisting the batch envelope, immutable ordered manifest and request idempotency result.
+- Every item is independently reauthorized and processed in its own short transaction; one document/counter at a time. CMD-037 sequence/event/audit/idempotency atomicity remains the per-document boundary.
+- Item results are append-only and distinct from print_events; batch counts/status are derived projections. Failed-only retries are server-derived from durable outcomes, create a new retry batch, and exclude prior successes.
+- Invalid/unresolvable requested items remain in the durable manifest and receive item-level outcomes; a count-only batch is insufficient.
+- print_batch_items and print_batch_item_results remain candidate-only and NOT ADMITTED. Canonical physical inventory remains 48 tables; no schema/RLS admission is claimed.
+- C38-01..05 remain OPEN. C37-01..04 remain open dependencies. Numeric batch limits, mixed-scope handling, retry limits/expiry/cancellation, attempt/event cardinality, worker/lease model and exact physical/security controls are unresolved.
+- CMD-038 remains NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification remains 0/50; global graph acyclicity remains NOT PROVEN; LG-21 remains PLANNED / NOT EXECUTED.
+- G9-F1 remains FROZEN and G10-F1 remains ACTIVE only for bounded foundation scope. CMD-038 business mutation and workers remain outside G10-F1.
+
+No source code, SQL, migration, route/RPC, worker, RLS/grant, live database, automated test, CI, deployment, production data or physical printer operation was performed or claimed.
+
+## DOC-003 — inspection-session start and historical artifact printability (PO APPROVED, 2026-11-27)
+
+- Decision Register DOC-003 records that inspection-derived generation is prohibited before the source session has durably started; a pre-start request must not create a generation job/artifact.
+- Once a final immutable artifact has been generated from an eligible approved source, session closure makes it historical but does not revoke print/reprint eligibility. A current authorized Print Officer may print the exact artifact after CLOSED without reopening or mutating the session.
+- Current `document.print` authorization, exact resource scope, final immutable artifact state and integrity remain required. CLOSED itself is not a print denial reason.
+- DOC-003 does not approve new generation after closure. PO clarification now resolves C37-02: only the latest finalized/current version is eligible for individual or batch print/reprint; superseded/replaced versions remain immutable historical-only artifacts, cannot be printed again, and retain prior print events. A pending/unfinalized replacement does not restore old-version eligibility. C36-02 source-reopen finalization race remains separate and OPEN.
+- Reconciled in CMD-031–040 Detailed Contract Review v0.2.9, Document Print Sequence Proposal v0.1.2, Durable Operation Ledger Proposal v0.3.2, PostgreSQL Command Contract Catalogue v0.4.14 and LOCK-MANIFEST-001 v0.4.38. CMD-037 and CMD-038 require latest finalized/current version eligibility; superseded versions are rejected. Post-CLOSED print remains allowed for the current version without an ACTIVE-session predicate. C37-02 is closed only at PO semantics level; technical identity/arbitration and evidence remain open. No implementation/schema/security admission or test evidence is implied.

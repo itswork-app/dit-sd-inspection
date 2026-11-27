@@ -1,12 +1,14 @@
 # Implementation Roadmap and Release Governance
 
 **Document ID:** IRG-001  
-**Version:** 1.0.8  
+**Version:** 1.0.9  
 **Status:** CONTROLLED PLAN — STAGED FOUNDATION IMPLEMENTATION  
-**Date:** 2026-11-25  
+**Date:** 2026-11-27  
 **Authority:** MIB-001, AGENTS.md, approved Decision Register and ADRs  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
-**G10-F1 foundation implementation:** ACTIVE — bounded synthetic-data foundation scope only; full-system G10 and later business-feature stages remain gated
+**G10-F1 foundation implementation:** ACTIVE (2026-11-25, following PR #26) — bounded synthetic-data foundation scope only; full-system G9 NOT READY; later business-feature gates remain open
+
+**Current gate interpretation (2026-11-27):** Historical sections 10–11 retain the pre-activation G10 NOT ACTIVE state as dated snapshots. The controlling state under AGENTS.md v1.2.5 is G9-F1 FOUNDATION SCOPE FROZEN and G10-F1 FOUNDATION IMPLEMENTATION ACTIVE for bounded foundation work only. Full-system G9, later business features and production operations remain separately gated.
 
 ## 1. Purpose
 
@@ -269,13 +271,14 @@ G12 production approval is an explicit sign-off, not an automatic result of a su
 
 ## 8. Current status
 
-- Pre-implementation documentation phases 0–6: **IN PROGRESS; DGA-001 v1.13.1 blockers remain**.
-- POQ-01..03 notification product semantics: **APPROVED 2026-11-24; technical and institutional dependencies remain OPEN**.
-- G9 scope freeze: **NOT READY**.
-- Product Owner authorization: **CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)**.
-- G10 implementation activation: **NOT ACTIVE — pending verified G9 and the required G10 activation record**.
-- I0–I7 implementation: **NOT STARTED / NOT AUTHORIZED**.
-- Current SSOT audit: **SSOT-AUDIT-001 v0.1.5 — closure PARTIAL**.
+- G9-F1 foundation scope: **FROZEN**.
+- G10-F1 foundation implementation: **ACTIVE** under AGENTS.md v1.2.5 and the governing PR #26 decision; limited to repository/app bootstrap, development configuration, CI, authentication shell, development-only database foundation/migrations, typed API boundary, observability and automated tests using synthetic data.
+- Full-system G9: **NOT READY**; later business-feature entry gates remain open.
+- CMD-031–040 business mutations, unresolved privileged RPCs, domain schema/RLS/grants, evidence/attendance workflows and worker/provider paths are **NOT AUTHORIZED BY G10-F1** until their feature-entry contracts and approvals are complete.
+- POQ-01..03 notification product semantics: **APPROVED 2026-11-24; technical, security and institutional dependencies remain OPEN**.
+- Product Owner conditional implementation authorization: **RECEIVED (2026-11-24)**; staged G9-F1/G10-F1 activation is recorded separately.
+- Foundation implementation verification: **NOT VERIFIED** where CI runner, runtime, typecheck, tests or build evidence is absent.
+- Current SSOT audit: **DGA-001 v1.14.2 — full-system gate NOT READY; G9-F1/G10-F1 foundation active**.
 - Application SemVer: **not assigned yet**; no release tag exists.
 - Target stable release: **v1.0.0 only after G12 acceptance**.
 
@@ -302,7 +305,6 @@ The next work is documentation and independent evidence closure, not feature cod
 
 **Current status:** G9 NOT READY; G10 NOT ACTIVE; I0–I7 NOT STARTED / NOT AUTHORIZED. QA remains PLANNED / NOT EXECUTED; CI/workflow evidence is ABSENT where unavailable. No implementation activity is permitted until G9 passes and a separate G10 activation record is approved. Production changes and deployment require separate authorization.
 
-
 ## 12. Current staged implementation status — 2026-11-25
 
 This status index supersedes earlier roadmap status snapshots in §§3, 4, 8, 10 and 11 wherever they describe G10 as inactive or implementation as wholly unauthorized. Historical decision records and their original dates remain preserved.
@@ -324,3 +326,13 @@ This status index supersedes earlier roadmap status snapshots in §§3, 4, 8, 10
 The current branch `feat/foundation-bootstrap-v1-rebased` is at `ca933fe47c4ee44cf2eba262eb80522c6075bfbf`, 103 commits ahead and zero behind main at the checkpoint. PR #30 remains open and unmerged.
 
 GitHub Actions has not supplied a usable verification result for this latest head. The Product Owner suspects the Actions quota may be exhausted, but this was not independently verified. No rerun was performed. Static source review is permitted as engineering analysis but is not runtime evidence. `package-lock.json` remains absent; lint, typecheck, Vitest, migration checks and build remain NOT VERIFIED. Continue only with bounded foundation review and non-executing changes until a usable Node/npm environment and Actions capacity are available.
+
+
+## 14. Staged foundation and feature-entry status reconciliation — 2026-11-26
+
+This update aligns IRG-001 with root AGENTS.md v1.2.5, MIB-001 v1.0.16 and DGA-001 v1.14.2. Historical sections 10–11 retain the gate state recorded on their original dates; they are not the current authorization state.
+
+- G9-F1 foundation scope is FROZEN; G10-F1 foundation implementation is ACTIVE following PR #26.
+- G10-F1 is limited to synthetic-data foundation work. It does not activate full-system G9, later business-feature implementation or production operations.
+- The CMD-035 transaction-boundary documentation update on the dedicated documentation branch is not executable business implementation and does not change the G10-F1 boundary.
+- Full-system G9 remains NOT READY; no production readiness, automated verification or release approval is claimed.
