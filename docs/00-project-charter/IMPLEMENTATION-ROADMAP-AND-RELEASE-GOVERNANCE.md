@@ -1,7 +1,7 @@
 # Implementation Roadmap and Release Governance
 
 **Document ID:** IRG-001  
-**Version:** 1.0.9  
+**Version:** 1.0.10  
 **Status:** CONTROLLED PLAN — STAGED FOUNDATION IMPLEMENTATION  
 **Date:** 2026-11-27  
 **Authority:** MIB-001, AGENTS.md, approved Decision Register and ADRs  
@@ -277,8 +277,8 @@ G12 production approval is an explicit sign-off, not an automatic result of a su
 - CMD-031–040 business mutations, unresolved privileged RPCs, domain schema/RLS/grants, evidence/attendance workflows and worker/provider paths are **NOT AUTHORIZED BY G10-F1** until their feature-entry contracts and approvals are complete.
 - POQ-01..03 notification product semantics: **APPROVED 2026-11-24; technical, security and institutional dependencies remain OPEN**.
 - Product Owner conditional implementation authorization: **RECEIVED (2026-11-24)**; staged G9-F1/G10-F1 activation is recorded separately.
-- Foundation implementation verification: **NOT VERIFIED** where CI runner, runtime, typecheck, tests or build evidence is absent.
-- Current SSOT audit: **DGA-001 v1.14.2 — full-system gate NOT READY; G9-F1/G10-F1 foundation active**.
+- Foundation implementation verification: **LOCALLY VERIFIED** on `feat/foundation-bootstrap-v1-rebased` (`npm ci && npm run check` PASS, 2026-11-27); hosted GitHub Actions CI remains **BLOCKED** by account billing/spending limit (Check Run `140276596713`).
+- Current SSOT audit: **DGA-001 v1.18.0 — full-system gate NOT READY; G9-F1/G10-F1 foundation active**.
 - Application SemVer: **not assigned yet**; no release tag exists.
 - Target stable release: **v1.0.0 only after G12 acceptance**.
 
@@ -336,3 +336,10 @@ This update aligns IRG-001 with root AGENTS.md v1.2.5, MIB-001 v1.0.16 and DGA-0
 - G10-F1 is limited to synthetic-data foundation work. It does not activate full-system G9, later business-feature implementation or production operations.
 - The CMD-035 transaction-boundary documentation update on the dedicated documentation branch is not executable business implementation and does not change the G10-F1 boundary.
 - Full-system G9 remains NOT READY; no production readiness, automated verification or release approval is claimed.
+
+
+## 15. Foundation verification and main integration checkpoint — 2026-11-27
+
+Branch `feat/foundation-bootstrap-v1-rebased` (PR #30) has integrated `main` through PR #37 (`5b7fdd9`), committed a reproducible `package-lock.json`, hardened `.github/workflows/ci.yml` to run `npm ci --no-audit --no-fund` with `contents: read`, fixed the `@supabase/ssr@0.7.0` `setAll` runtime/type defect and test typing/config issues, and passed the full local quality gate (`npm ci && npm run check`: ESLint, TypeScript, migration check, 63/63 Vitest tests, 5/5 Node migration tests, Next.js 16.4.6 production build).
+
+Hosted GitHub Actions remains blocked externally by the account billing/spending limit (GitHub Check Run `140276596713`). Maintain all later feature-entry gates: full-system G9 remains NOT READY, business mutations and production operations remain NOT AUTHORIZED, and production readiness remains NOT VERIFIED.

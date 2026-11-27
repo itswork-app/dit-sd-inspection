@@ -2,7 +2,7 @@
 
 **Document ID:** MIB-001  
 **Status:** CONTROLLED BASELINE — STAGED FOUNDATION IMPLEMENTATION  
-**Version:** 1.0.18  
+**Version:** 1.0.19  
 **Last reviewed:** 2026-11-27  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
@@ -191,17 +191,17 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 ## 10. Current project status
 
 - Repository intent: **DOCUMENTATION AND APPLICATION IN ONE REPOSITORY — CONFIRMED BY PRODUCT OWNER**
-- Documentation gap audit: **DGA-001 v1.17.0 RECORDED; blocking closure IN PROGRESS**
+- Documentation gap audit: **DGA-001 v1.18.0 RECORDED; blocking closure IN PROGRESS**
 - Mandatory agent instructions: **AGENTS.md v1.2.5 — READ BEFORE EVERY WORK SESSION/TASK**
-- Implementation roadmap: **IRG-001 v1.0.4 — CONTROLLED PLAN, NOT AUTHORIZATION**
+- Implementation roadmap: **IRG-001 v1.0.10 — CONTROLLED PLAN, NOT AUTHORIZATION**
 - SemVer policy: **2.0.0 adopted; application version not assigned before release**
 - Full-system implementation readiness: **NOT READY — see DGA-001; G10-F1 foundation implementation ACTIVE**
 - Current phase: **STAGED FOUNDATION IMPLEMENTATION — G9-F1 / G10-F1**
-- Application source code: **FOUNDATION BOOTSTRAP IN PROGRESS on feat/foundation-bootstrap-v1; runtime verification pending**
+- Application source code: **FOUNDATION BOOTSTRAP LOCALLY VERIFIED on `feat/foundation-bootstrap-v1-rebased` (PR #30 OPEN; `npm ci && npm run check` PASS 2026-11-27; hosted Actions blocked on account billing/spending limit)**
 - T-18 hybrid execution model: **PO-APPROVED DESIGN; implementation conformance NOT VERIFIED**
 - Notification product semantics: **POQ-01..03 APPROVED; engineering/security/institutional closure OPEN**
 - Live Supabase inspection: **NOT EXECUTED**
-- CI, runtime, restore, performance and UAT evidence: **NOT EXECUTED**
+- Hosted CI, live OAuth, restore, performance and UAT evidence: **NOT EXECUTED / BLOCKED**
 - Foundation scope freeze: **G9-F1 FROZEN; full-system G9 NOT READY**
 - Product Owner authorization: **CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)**
 - G10 implementation activation: **G10-F1 ACTIVE (2026-11-25, following PR #26); later business-feature stages remain gated**

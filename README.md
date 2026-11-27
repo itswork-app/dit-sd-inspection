@@ -31,7 +31,7 @@ Cost-first means optimizing total lifecycle cost without waiving security, priva
 The [Implementation Roadmap and Release Governance](docs/00-project-charter/IMPLEMENTATION-ROADMAP-AND-RELEASE-GOVERNANCE.md) defines pre-implementation phases, G9/G10 authorization, implementation phases I0–I7, release controls and Semantic Versioning 2.0.0.
 
 ## Documentation authority and delivery gates
-The comprehensive directory map of all 106 documents across the repository is provided in the [Master Documentation Index & Architecture Map](docs/README.md).
+The comprehensive directory map of all 103 controlled documents under `docs/` is provided in the [Master Documentation Index & Architecture Map](docs/README.md).
 
 Start with the [Master Implementation Blueprint](docs/00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md). It defines source-of-truth precedence, non-negotiable engineering invariants, requirement traceability, delivery gates G0–G12, production-readiness evidence, and the next documentation workstreams.
 
@@ -50,6 +50,6 @@ The current static reconciliation is recorded in [SSOT-AUDIT-001](docs/00-projec
 **Governance:** G10-F1 authorizes bounded foundation source code and development-only schema/migrations on a dedicated feature branch, using synthetic data. It does not authorize unresolved business command handlers, production data, production provider operations, deployment, release or production activation. F-03/F-04 and command/security/physical-schema contracts remain feature-entry gates. GOV-MERGE-001 continues to govern documentation-only merges; code PRs require actual automated checks and maintainer review.
 
 
-## Foundation branch checkpoint — 2026-11-25
+## Foundation branch checkpoint — 2026-11-27
 
-PR #30 (`feat/foundation-bootstrap-v1-rebased`) is OPEN and unmerged. The last verified branch checkpoint before this documentation consistency pass is `6108a45fac2d1cad185143986809fdf89ca71568`, compared with main at 107 commits ahead and zero behind. This pass will advance the branch head. Foundation code is present, but exact-head automated checks have not been verified. GitHub Actions has not returned a usable verification result for that head; the reason is not established here. No lockfile is committed. Do not interpret this status as CI PASS or merge readiness.
+PR #30 (`feat/foundation-bootstrap-v1-rebased`) is OPEN and unmerged. The branch is integrated with `main` through PR #37 (`5b7fdd9`), commits a verified `package-lock.json`, uses reproducible `npm ci --no-audit --no-fund` in `.github/workflows/ci.yml`, and passes the full local quality gate (`npm ci --no-audit --no-fund && npm run check`: ESLint, TypeScript `tsc --noEmit`, migration filename check, 63 Vitest unit tests, 5 Node migration tests, and Next.js 16.4.6 production build) on Node v22.12.0 / npm 10.9.0. Hosted GitHub Actions execution on PR #30 remains blocked by the repository account's billing/spending limit (GitHub Check Run `140276596713` annotation: *"The job was not started because recent account payments have failed or your spending limit needs to be increased"*). Do not interpret local checks as hosted GitHub Actions CI PASS, full-system G9 readiness, or production readiness.

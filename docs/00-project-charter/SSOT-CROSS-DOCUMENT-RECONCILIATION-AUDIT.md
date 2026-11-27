@@ -1,15 +1,15 @@
 # SSOT Cross-Document Reconciliation Audit — Dit. SD Inspection
 
 **Document ID:** SSOT-AUDIT-001  
-**Version:** 0.2.0  
+**Version:** 0.2.1  
 **Status:** STATIC CROSS-DOCUMENT AUDIT COMPLETED — CLOSURE PARTIAL  
 **Initial audit date:** 2026-11-24  
-**Latest reconciliation:** 2026-11-25  
+**Latest reconciliation:** 2026-11-27  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Original audit branch:** `docs/audit-lock-and-identity-reconciliation`  
 **Latest reconciliation branch:** `feat/foundation-bootstrap-v1-rebased`  
 **Original audit PR:** #3 — Draft / Open  
-**Latest reconciliation PR:** #31 — Merged  
+**Latest reconciliation PR:** #37 — Merged on `main`; PR #30 — Open foundation branch  
 **Authority snapshot reviewed:** AGENTS.md v1.2.1; MIB-001 v1.0.8; DGA-001 v1.11.28; IRG-001 v1.0.3  
 **Implementation authorization (historical source snapshot):** NOT GRANTED
 
@@ -249,3 +249,14 @@ This addendum updates the live repository/PR evidence after the RBAC-003 documen
 - Static code review is not test execution. `package-lock.json` remains absent and lint, typecheck, Vitest, migration validation and production build remain NOT VERIFIED.
 
 **Gate status:** G9-F1 FROZEN; G10-F1 ACTIVE for bounded synthetic-data foundation only; full-system G9 NOT READY; later feature gates open; production readiness NOT VERIFIED. PR #30 is NOT READY TO MERGE.
+
+
+## 15. Post-PR #37 integration and foundation verification checkpoint — 2026-11-27
+
+- Current branch: `feat/foundation-bootstrap-v1-rebased` (PR #30 OPEN), integrated with `main` through PR #37 (`5b7fdd9`).
+- Current governance pointers: `MIB-001` v1.0.19, `DGA-001` v1.18.0, `IRG-001` v1.0.10, `DOC-MAP-001` (`docs/README.md`) v1.1.0, `ADR-002` v1.9.0.
+- `docs/README.md` now indexes all 103 controlled documents under `docs/` with zero missing documents and zero broken links, and corrects earlier summary discrepancies against `AGENTS.md`, `MIB-001`, `DECISION-REGISTER.md`, and `DGA-001`.
+- Foundation code/build/lockfile/CI blockers (`src/lib/supabase/proxy.ts`, `src/lib/api/json.test.ts`, `vitest.config.mts`, `package-lock.json`, `.github/workflows/ci.yml`) are resolved and locally verified via `npm ci --no-audit --no-fund && npm run check` (ESLint, TypeScript, migration check, 63/63 Vitest tests, 5/5 Node tests, Next.js 16.4.6 production build).
+- Hosted GitHub Actions execution on PR #30 remains blocked by GitHub account billing/spending limits (verified via Check Run `140276596713` annotation).
+
+**Gate status:** G9-F1 FROZEN; G10-F1 ACTIVE for bounded synthetic-data foundation only; full-system G9 NOT READY; later feature gates open; production readiness NOT VERIFIED. PR #30 awaits GitHub Actions billing resolution (or explicit solo-maintainer merge decision with recorded local verification evidence) and maintainer full-diff review.

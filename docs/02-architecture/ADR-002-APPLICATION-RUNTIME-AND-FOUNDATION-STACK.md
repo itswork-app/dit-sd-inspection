@@ -1,8 +1,9 @@
 # ADR-002 — Application Runtime and Foundation Stack
 
 - Status: ACCEPTED FOR G9-F1/G10-F1 FOUNDATION
-- Version: 1.8.0
+- Version: 1.9.0
 - Decision date: 2026-11-25
+- Last verified: 2026-11-27
 - Decision owner: Product Owner
 - Implementation owner: Solo maintainer with AI engineering partner
 
@@ -14,7 +15,7 @@ The repository has an approved Vercel + Supabase architecture but no application
 
 1. Use Next.js 16 App Router with TypeScript strict mode as the web/PWA application runtime.
 2. Target Node.js 22 LTS for local development and CI.
-3. Use npm as the package manager. Commit a generated package-lock.json before relying on reproducible installs.
+3. Use npm as the package manager with a committed, `npm ci`-verified `package-lock.json` for reproducible installs.
 4. Use Supabase PostgreSQL as the only application database and Supabase Auth for identity. No Firebase or parallel database.
 5. Use @supabase/ssr with separate browser and server clients. Server-side identity verification must use verified claims, not session-cookie contents.
 6. Use the Next.js 16 proxy entry point to refresh Supabase sessions. Keep service-role/secret keys out of browser code; foundation code uses only the public publishable key.
@@ -61,7 +62,18 @@ The repository has an approved Vercel + Supabase architecture but no application
 
 ## Verification
 
-CI is configured to execute ESLint, TypeScript, migration filename validation, Vitest (including Node's built-in test runner for migration validation) and a production Next.js build. The environment parser has unit cases for absent/partial configuration, HTTPS origin validation, whitespace normalization, embedded credentials, URL path/query/fragment rejection, insecure non-local URLs and loopback development URLs. The health endpoint has tests for its status/body timestamp contract and no-store/nosniff headers. The API error contract has tests for HTTP mapping, safe public envelopes, no-store/security headers and malformed/missing correlation IDs. The JSON request parser has source tests for valid JSON, missing/unsupported media type, malformed JSON, schema rejection, validator exception containment, declared/actual streamed size limits, strict UTF-8, Content-Length syntax and consistency, already-locked/empty streams, stalled cancellation hooks and lower/upper internal size bounds. The migration validator has Node test cases for an empty foundation directory, valid names, malformed names, invalid calendar timestamps and duplicate timestamps. The verified-identity resolver has unit cases for a verified subject, missing session, invalid JWT, malformed subject, provider errors and thrown exceptions. The OAuth callback has unit cases for successful code exchange, missing code, provider error redaction and thrown exceptions. The proxy session-refresh adapter has unit cases for absent configuration, claim refresh invocation and containment of thrown refresh exceptions. The structured logger has unit cases for allow-listed output, correlation/numeric validation and exclusion of unexpected sensitive properties. These tests are specified in source but remain NOT VERIFIED until they execute successfully. Supabase CLI startup/reset has not been executed, and no migration has been applied. A successful foundation CI run is not evidence of production readiness or business feature correctness.
+CI (`.github/workflows/ci.yml`) is configured with `permissions: contents: read`, `npm ci --no-audit --no-fund`, and `npm run check` (ESLint, TypeScript `tsc --noEmit`, migration filename validation, Vitest via `vitest.config.mts`, Node's built-in test runner for migration validation, and a production Next.js build).
+
+On 2026-11-27 on branch `feat/foundation-bootstrap-v1-rebased` (Node v22.12.0 / npm 10.9.0), the full local pipeline passed cleanly after fixing the `@supabase/ssr@0.7.0` `setAll(cookiesToSet)` signature/runtime defect in `src/lib/supabase/proxy.ts`, tightening the `JsonBodyValidator` test predicate in `src/lib/api/json.test.ts`, converting `vitest.config.ts` to ESM `vitest.config.mts`, and committing an authentic `package-lock.json`:
+- `npm ci --no-audit --no-fund`: PASS (391 packages installed reproducibly).
+- `npm run lint` (`eslint .`): PASS (0 errors, 0 warnings).
+- `npm run typecheck` (`tsc --noEmit`): PASS (0 errors).
+- `npm run db:migrations:check`: PASS (0 SQL migrations).
+- `vitest run`: PASS (8 test files, 63/63 tests, including refreshed cookie propagation and `X-Request-Id` preservation in `src/lib/supabase/proxy.test.ts`).
+- `npm run test:node`: PASS (5/5 migration validator tests).
+- `npm run build` (`next build`, Next.js 16.4.6 Turbopack): PASS (6/6 routes built).
+
+Hosted GitHub Actions execution on PR #30 remains NOT VERIFIED because GitHub blocked job start at the billing/spending-limit layer (Check Run `140276596713`). Live Google OAuth round trip, Supabase CLI local startup/reset, and any SQL migration application remain NOT VERIFIED. A passing foundation build/test run is not evidence of full-system G9 readiness, business feature correctness, or production readiness.
 
 ## References
 

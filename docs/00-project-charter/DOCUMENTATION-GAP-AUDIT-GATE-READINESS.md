@@ -1,10 +1,10 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.17.1
+**Version:** 1.18.0
 **Audit date:** 2026-11-27  
 **Branch reviewed:** `feat/foundation-bootstrap-v1-rebased` (integrated with `main` through PR #37)  
-**Reviewed baseline HEAD:** `5b7fdd9` (`main` through PR #37) + `f8a9b54` (foundation branch pre-merge HEAD)  
+**Reviewed baseline HEAD:** `9b855d6` (post-merge integration of `main` `5b7fdd9` into foundation branch) + subsequent foundation blocker-closure commits  
 **Authority:** Master Implementation Blueprint MIB-001  
 **Status:** AUDIT IN PROGRESS — FULL-SYSTEM GATE NOT READY; G9-F1/G10-F1 FOUNDATION ACTIVE  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
@@ -1186,3 +1186,18 @@ No source code, SQL, migration, route/RPC, worker, RLS/grant, live database, aut
 - Current `document.print` authorization, exact resource scope, final immutable artifact state and integrity remain required. CLOSED itself is not a print denial reason.
 - DOC-003 does not approve new generation after closure. PO clarification now resolves C37-02: only the latest finalized/current version is eligible for individual or batch print/reprint; superseded/replaced versions remain immutable historical-only artifacts, cannot be printed again, and retain prior print events. A pending/unfinalized replacement does not restore old-version eligibility. C36-02 source-reopen finalization race remains separate and OPEN.
 - Reconciled in CMD-031–040 Detailed Contract Review v0.2.9, Document Print Sequence Proposal v0.1.2, Durable Operation Ledger Proposal v0.3.2, PostgreSQL Command Contract Catalogue v0.4.14 and LOCK-MANIFEST-001 v0.4.38. CMD-037 and CMD-038 require latest finalized/current version eligibility; superseded versions are rejected. Post-CLOSED print remains allowed for the current version without an ACTIVE-session predicate. C37-02 is closed only at PO semantics level; technical identity/arbitration and evidence remain open. No implementation/schema/security admission or test evidence is implied.
+
+## 21. Foundation blocker closure, main integration and local verification checkpoint — 2026-11-27
+
+- Integrated `main` through PR #37 (`5b7fdd9`, carrying PRs #32–#37: CMD-035..038, DOC-003, `docs/README.md`, T-19 re-audit, and early-package historical notes) into `feat/foundation-bootstrap-v1-rebased` (merge commit `9b855d6`) with zero lost history.
+- Resolved concrete foundation code, lockfile, and CI blockers discovered by executable verification:
+  - Fixed `src/lib/supabase/proxy.ts` `setAll(cookiesToSet)` to match `@supabase/ssr@0.7.0` (`SetAllCookies`), removing an invalid second `headers` parameter that caused 9 TypeScript errors and a runtime `TypeError` when session cookies were written; added regression test coverage in `src/lib/supabase/proxy.test.ts` proving cookie and `X-Request-Id` propagation.
+  - Fixed `TS2322` type-predicate mismatch in `src/lib/api/json.test.ts`.
+  - Migrated `vitest.config.ts` to ESM `vitest.config.mts`, eliminating the Vite CJS/ESM deprecation warning.
+  - Regenerated and committed an authentic `package-lock.json` verified via `npm ci --no-audit --no-fund` (replacing an out-of-sync untracked lockfile).
+  - Hardened `.github/workflows/ci.yml`: removed the temporary one-time `bootstrap-lockfile` job and its `contents: write` grant; switched `quality` to reproducible `npm ci --no-audit --no-fund` with `cache: npm`.
+- Reconciled `docs/README.md` (`DOC-MAP-001` v1.1.0) to index all **103** controlled documents under `docs/` (previously missing 23 files and misreporting count as 106), corrected `MIB-001 §1.1` precedence citation, `CMD-011..044` descriptions, `OFFLINE-SYNC-AND-RECOVERY.md` (no silent overwrite / no last-write-wins), `INSPECTION-LIFECYCLE-AND-CLAIMS.md`, `LOCK-GRAPH-001`, and `TEST-CASE-CATALOG-AND-UAT.md` (`PLANNED / NOT EXECUTED`).
+- **Local verification evidence (2026-11-27, Node v22.12.0 / npm 10.9.0):** `npm ci --no-audit --no-fund` PASS (391 packages); `eslint .` PASS (0 errors, 0 warnings); `tsc --noEmit` PASS (0 errors); `db:migrations:check` PASS (0 SQL migrations); `vitest run` PASS (8 files, 63/63 tests); `node --test scripts/check-migrations.test.mjs` PASS (5/5 tests); `next build` (Next.js 16.4.6 Turbopack) PASS (6/6 routes).
+- **Hosted CI evidence (`DGA-B15`):** GitHub API check-run annotation for Run `45732607600` / Check Run `140276596713` confirms the exact hosted Actions failure cause: *"The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings."* `DGA-B15` remains **PARTIAL / NOT VERIFIED** until account billing/spending limits allow hosted Actions execution and repository governance controls are verified.
+
+**Disposition:** Foundation code/build/lockfile/documentation blockers on `feat/foundation-bootstrap-v1-rebased` are resolved and locally verified. Hosted GitHub Actions execution remains blocked externally by GitHub account billing/spending limits. G9-F1 remains **FROZEN**; G10-F1 remains **ACTIVE** for bounded synthetic-data foundation work only; full-system G9 remains **NOT READY**; later business-feature gates (`DGA-B01..B22`, `F-03/F-04/F-05`, `CMD-001..054`, physical schema/RLS/grants) remain **OPEN/BLOCKED**; production readiness remains **NOT VERIFIED**. No business schema, grants/RLS, privileged RPC, production data, or deployment was introduced.
