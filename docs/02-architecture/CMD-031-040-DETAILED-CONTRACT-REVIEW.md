@@ -803,7 +803,7 @@ Required:
 - idempotency_key.
 
 Optional:
-- expected_sequence: positive integer for clients that want stale-sequence detection;
+- expected_sequence: nonnegative integer representing the caller's expected current last sequence (zero before first print);
 - client_print_signal: small allowlisted signal describing the application UI action, never a printer attestation.
 
 Forbidden:
@@ -815,7 +815,6 @@ Outcome RECORDED returns:
 - document_id;
 - document_version;
 - sequence_no;
-- attempt_no;
 - print_event_id;
 - resulting document completion projection if safely available;
 - audit_event_id;
