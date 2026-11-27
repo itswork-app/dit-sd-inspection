@@ -1,9 +1,9 @@
 # Physical Database Schema and Integrity Specification
 
 **Status:** Engineering specification draft — approval required before migrations  
-**Version:** 0.4.8  
+**Version:** 0.4.9  
 **Package:** L — Physical Data Model and Integrity  
-**Date:** 2026-11-23
+**Date:** 2026-11-27
 
 
 ## Schema/RLS reconciliation reference
@@ -440,3 +440,33 @@ Minimum logical integrity requirements (names/types/constraints are intentionall
 9. Historical inspection/revision/evidence records are never deleted, rewritten or automatically reused by a later attempt.
 
 Exact table/column names, enum values, FK/partial-unique/CAS strategy, event vocabulary, evidence policy, RLS and command function grants remain OPEN. The canonical table count and physical schema inventory are unchanged.
+
+
+## CMD-037 print sequence candidate integrity addendum — 2026-11-27
+
+**Authority:** T-13 option B and DOC-002 are PO APPROVED. This addendum is candidate-only. It does not admit a table, column, enum, index, constraint, FK, RLS policy or grant into the canonical 48-table inventory. No migration is authorized.
+
+### Candidate object: `document_print_counters`
+
+Purpose: serialize a per-logical-document print/reprint sequence without mutating the immutable generated PDF/version record.
+
+Candidate fields:
+- `document_id`: PK/FK to the logical document aggregate;
+- `last_sequence_no`: nonnegative integer, initialized to zero;
+- `updated_at`: server timestamp.
+
+Candidate invariants:
+1. One counter per logical document; creation must be idempotent and safe under concurrent first print.
+2. A successful new application print action atomically increments the counter and receives the returned sequence number.
+3. The same transaction appends the immutable `print_events` row, required `audit_events` row and idempotency result.
+4. A failed event/audit/idempotency write rolls back the counter increment; rejected requests do not consume a sequence.
+5. Unique `(document_id, sequence_no)` on `print_events` remains a final guard.
+6. The counter is not exposed for browser DML. Only the individually reviewed command boundary may mutate it.
+
+### Existing print-event model gaps
+
+The current `documents` row does not establish whether it represents a logical document or one immutable generated version. CMD-037 carries both `document_id` and `document_version`, but `print_events` has no explicit version FK. Database/Engineering must reconcile the exact identity model with CMD-036 and the ERD before admission.
+
+The existing `print_events.attempt_no` has no agreed semantics relative to `sequence_no` or CMD-038 item retry attempts. Do not use it as an independent reprint counter. The exact decision, field location and uniqueness rules remain OPEN.
+
+Historical/superseded-version reprint eligibility is a PO decision not stated in T-13/DOC-002; no new eligibility is inferred. The candidate counter object, exact allocator SQL, lock ranks, constraints, FK/trigger edges, RLS/ACL and concurrency proof remain unapproved. Canonical table count remains 48; no live database state is asserted.

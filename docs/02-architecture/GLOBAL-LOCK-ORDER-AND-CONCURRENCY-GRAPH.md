@@ -1,7 +1,7 @@
 # Global Lock-Order and Concurrency Graph Reconciliation
 
 **Document ID:** LOCK-GRAPH-001  
-**Version:** 0.4.27
+**Version:** 0.4.28
 **Status:** Engineering proposal — PO/Engineering/Security review required; NOT approved for implementation  
 **Date:** 2026-11-27  
 **Scope:** CMD-001–054; shared aggregates, cross-command locks, asynchronous workers, idempotency and transaction boundaries  
@@ -628,3 +628,14 @@ The old worker is fenced after lease reclaim and cannot finalize. At-least-once 
 **Blocking source-reopen ambiguity:** CMD-032 preserves the approved immutable revision and historical PDF/print history, but the current PO record does not say whether a generation job accepted before reopen may finish as a historical artifact or must be treated as stale. Do not silently rebind to the new draft. C36-02 is open for explicit PO disposition. This edge is not resolved by the proposed lease or lock order.
 
 **Disposition:** candidate Engineering/Database/Security protocol only. Exact PostgreSQL lock modes/ranks, source/template/job schema, unique indexes, worker identity and ACL, Storage immutability/provider guarantees, event cardinality, audit catalogue, retry limits and adversarial race evidence remain open. LG-20 remains a test scenario, not a certified edge. CMD-036 is NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification remains 0/50; global graph acyclicity remains NOT PROVEN. No schema, SQL, migration, RLS/grants, worker implementation, test execution, live database operation or production action is claimed.
+
+
+## 34. CMD-037 per-document print sequence and audit atomicity — 2026-11-27
+
+PRINT-SEQUENCE-PROPOSAL-001 v0.1.0 defines the candidate CMD-037 serialization boundary. T-13 option B and DOC-002 require individual and bounded batch printing, append-only per-document outcomes, failed-only batch retry, no duplicate successful events and an incrementing reprint count. A print event remains an application action, not proof of physical paper output.
+
+Candidate per-command lock sequence: idempotency arbitration → exact document/version and authorization scope → per-document counter → print event/audit/idempotency commit. The counter increment, `print_events` row, audit append and idempotency result must commit atomically. Unique `(document_id, sequence_no)` remains the final integrity guard. `expected_sequence` is defined as the caller's expected current last sequence; stale values reject without consuming a number. Same-key replay returns the stored event and sequence; a deliberate reprint uses a new key.
+
+CMD-038 must process each item in its own short transaction, locking one document/counter at a time. Batch retries target failed items only; successful outcomes are immutable and never generate a duplicate print event. The meaning of `print_events.attempt_no` remains unresolved and cannot be a second reprint counter.
+
+**Open cross-document blockers:** C37-01 logical-document vs immutable-version identity; C37-02 historical/superseded-version reprint eligibility; C37-03 `attempt_no` semantics; C37-04 counter object/allocator and exact lock/constraint/RLS/ACL review. LG-21 remains an unexecuted concurrency scenario, not a certified graph edge. CMD-037 remains NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification 0/50; graph acyclicity NOT PROVEN. No physical object is admitted, no SQL/migration/RLS/grant or handler is authorized, and no concurrency test is claimed.

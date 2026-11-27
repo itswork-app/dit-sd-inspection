@@ -1,7 +1,7 @@
 # CMD-031–040 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security/institutional review required; NOT approved for implementation  
-**Document version:** 0.2.5  
+**Document version:** 0.2.6  
 **Date:** 2026-11-27  
 **Scope:** CMD-031 through CMD-040  
 **Repository phase:** Staged foundation implementation G9-F1/G10-F1; CMD-031–040 business operations remain feature-gated  
@@ -803,7 +803,7 @@ Required:
 - idempotency_key.
 
 Optional:
-- expected_sequence: positive integer for clients that want stale-sequence detection;
+- expected_sequence: nonnegative integer representing the caller's expected current last sequence (zero before first print);
 - client_print_signal: small allowlisted signal describing the application UI action, never a printer attestation.
 
 Forbidden:
@@ -815,7 +815,6 @@ Outcome RECORDED returns:
 - document_id;
 - document_version;
 - sequence_no;
-- attempt_no;
 - print_event_id;
 - resulting document completion projection if safely available;
 - audit_event_id;
@@ -862,6 +861,22 @@ The physical schema does not list document_version as a documents key column or 
 - A failed audit insert must roll back sequence allocation and print event.
 - If expected_sequence is supplied and does not match current sequence, return STALE_SEQUENCE without consuming a sequence.
 - A retry with the same idempotency key must not increment the sequence a second time.
+
+#### 8.6.1 Canonical sequence and replay boundary
+
+T-13 option B and DOC-002 require an append-only application print action and a monotonic reprint count. Candidate semantics: `sequence_no` is the per-logical-document ordinal of successfully recorded print actions; first event is `document.printed`, later distinct events are `document.reprinted`. A same-key replay returns the stored event/sequence and never allocates another number. An intentional reprint uses a new key. Rejected validation/authorization/stale-sequence requests do not consume a sequence.
+
+The existing physical design has a unique `(document_id, sequence_no)` guard but no allocator. PRINT-SEQUENCE-PROPOSAL-001 v0.1.0 recommends a per-document counter row with atomic increment, event insert, audit append and idempotency completion in one transaction. A failed audit append rolls the counter back. Do not use an unprotected `MAX(sequence_no)+1`.
+
+Define `expected_sequence` as the caller's expected current last sequence (zero before the first print); compare before allocation. A mismatch returns `STALE_SEQUENCE` without consuming a sequence. Same idempotency key + same canonical request hash replays; same key + changed hash rejects. Reauthorization is required before returning a document-scoped replay result.
+
+#### 8.6.2 Version identity and batch interaction
+
+The current physical schema does not decide whether `documents.id` is a logical document or one immutable printable version, while this request carries both `document_id` and `document_version`. C37-01 remains open: choose a stable logical-document + immutable-version FK model or one-row-per-immutable-version model, then reconcile CMD-036, ERD, physical schema and API. Every print event must bind the exact immutable output version/hash.
+
+CMD-038 must use the same per-document authorization/idempotency/sequence boundary. Each batch item runs in its own short transaction and locks only one document/counter at a time. Do not hold multiple document locks across the batch. Failed-only retries append item-attempt results; a previously successful item must never create a second successful print event. C37-02 records the still-open policy for reprinting historical/superseded versions. C37-03 records the undefined meaning of `attempt_no`; it must not become a second independent reprint counter.
+
+The existing permission registry already maps `document.print` to RESOURCE_DOCUMENT and `document.print.batch` to RESOURCE_DOCUMENT_BATCH. This review does not grant new roles or infer print authority from generic Admin/Super Admin.
 
 ### 8.7 Audit and typed outcomes
 
@@ -1254,7 +1269,10 @@ The following findings are design gaps, not implementation defects. No live data
 | C35-02 | 035 | The detailed contract and ledger proposal allow either per-operation transactions or savepoints, while promising independently durable per-operation outcomes and partial-batch recovery | Adopt one short transaction per operation as the candidate engineering boundary; treat savepoints only as intra-operation error handling; obtain Engineering/Database/Security review before schema or implementation admission |
 | C36-01 | 036 | documents lacks generic source type/id, template registry/version and renderer job/outbox lifecycle | Define source-to-document FK/provenance, template version storage, job state, lease, retry, worker identity and ACL |
 | C36-02 | 032, 036 | CMD-032 preserves an approved immutable revision/PDF history, but CMD-036 does not define whether an in-flight generation accepted before reopen may finalize afterward | PO must choose historical-artifact finalization vs stale/cancelled generation; until then, no silent rebind and CMD-036 certification remains blocked |
-| C37-01 | 037 | document version identity and print sequence counter/allocator are not fully represented by the physical schema | Define immutable document version key and lock-safe sequence allocation |
+| C37-01 | 037 | Physical schema does not resolve logical document vs immutable printable-version identity; CMD-037 accepts both document_id and document_version without a corresponding version FK/table | Choose one canonical identity model and bind each print event to exact immutable output version/hash; reconcile CMD-036, ERD, physical schema and API |
+| C37-02 | 037 | T-13/DOC-002 do not explicitly state whether historical/superseded versions remain eligible for reprint | PO disposition required; until decided, fail closed outside approved current-printable policy |
+| C37-03 | 037/038 | print_events.attempt_no is not distinguished from per-document sequence_no or batch-item retry attempts | Define/remove attempt_no; batch retry attempt identity belongs to durable item-result model and must not duplicate successful print events |
+| C37-04 | 037 | print_events has unique (document_id, sequence_no) but no concurrency-safe sequence allocator | Review per-document counter + atomic increment/event/audit/idempotency transaction; exact object/lock/index/RLS admission remains open |
 | C38-01 | 038 | print_batches/print_events exist but full item manifest, stable item key and durable outcomes for invalid/unresolvable items are unclear | Decide whether print_batch_items is required; define worker/lease and aggregate reconciliation semantics |
 | C39-01 | 039 | attendance_records lacks location/assignment linkage; attendance_documents lacks upload-intent, MIME/size/version/replacement metadata | Define exact location scope relation and complete two-phase upload schema; align with T-08 and T-10 |
 | C40-01 | 040 | No explicit attendance verification history object; attendance.rejected event is not clearly in the event catalogue | Define immutable decision history, exact state machine, rejection event and re-verification rules |
