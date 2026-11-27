@@ -150,3 +150,84 @@ a { color: inherit; text-decoration: none; }
 .topbar .auth-link { text-decoration: none; }
 
 .auth-success { margin: 0 0 16px; color: #83e2b5; font-size: 12px; line-height: 1.6; }
+
+.rbac-form { display: grid; gap: 14px; margin: 20px 0 8px; }
+.rbac-field { display: grid; gap: 6px; }
+.rbac-field label { font-size: 12px; font-weight: 700; color: #cbd8ea; }
+.rbac-field input,
+.rbac-field textarea,
+.rbac-field select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(13, 22, 36, 0.92);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+}
+.rbac-field input:focus-visible,
+.rbac-field textarea:focus-visible,
+.rbac-field select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.rbac-card {
+  margin: 18px 0;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(20, 33, 54, .9), rgba(13, 22, 36, .88));
+  display: grid;
+  gap: 8px;
+}
+.rbac-card-warn { border-color: rgba(255, 170, 167, 0.35); }
+.rbac-meta { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.rbac-meta strong { color: var(--text); }
+.rbac-actions { margin: 18px 0 6px; display: flex; flex-wrap: wrap; gap: 10px; }
+.rbac-link-button { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+.rbac-footer-actions { margin-top: 22px; display: grid; gap: 10px; }
+
+.admin-section { padding: 26px 0 42px; display: grid; gap: 22px; }
+.admin-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.admin-panel {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(20, 33, 54, .9), rgba(13, 22, 36, .88));
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+.admin-panel h2 { margin: 0; font-size: 16px; }
+.admin-list { display: grid; gap: 12px; }
+.admin-item {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(8, 14, 25, 0.55);
+  display: grid;
+  gap: 10px;
+}
+.admin-item-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+.status-badge-approved { border-color: rgba(91, 214, 160, .4); color: #8be8be; }
+.status-badge-pending { border-color: rgba(226, 189, 117, .4); color: #ebd094; }
+.status-badge-rejected,
+.status-badge-suspended,
+.status-badge-disabled { border-color: rgba(255, 170, 167, .4); color: #ffaaa7; }
+.admin-inline { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.admin-btn-sm { min-height: 34px; padding: 0 12px; font-size: 12px; }
+.admin-btn-danger { background: rgba(153, 27, 27, 0.72); border-color: rgba(255, 170, 167, 0.45); }
+.admin-btn-danger:hover:not(:disabled) { background: rgba(185, 28, 28, 0.85); }
+
+@media (max-width: 820px) {
+  .admin-grid { grid-template-columns: 1fr; }
+}

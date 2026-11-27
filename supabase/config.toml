@@ -2,9 +2,15 @@
 # Do not add hosted project references, credentials, or production settings here.
 project_id = "dit-sd-inspection"
 
+[api]
+enabled = true
+port = 54421
+schemas = ["public"]
+extra_search_path = []
+
 [db]
-port = 54322
-shadow_port = 54320
+port = 54422
+shadow_port = 54420
 
 [db.migrations]
 enabled = true
