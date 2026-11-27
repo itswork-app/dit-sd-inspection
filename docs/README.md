@@ -1,11 +1,11 @@
 # Master Documentation Index & Architecture Map — Dit. SD Inspection
 
 **Document ID:** DOC-MAP-001  
-**Version:** 1.1.0  
-**Status:** CONTROLLED MASTER DOCUMENTATION MAP — G9-TECH TECHNICAL SSOT READY FOR FREEZE SIGN-OFF  
+**Version:** 1.2.0  
+**Status:** CONTROLLED MASTER DOCUMENTATION MAP — G9-TECH FROZEN; G10 ACTIVE; G11 PARTIAL; G12 BLOCKED  
 **Last updated:** 2026-11-27  
 **Applies to:** Repository `itswork-app/dit-sd-inspection`  
-**Governing Authority:** [AGENTS.md](../AGENTS.md) v1.2.5 & [Master Implementation Blueprint (MIB-001)](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) v1.1.0
+**Governing Authority:** [AGENTS.md](../AGENTS.md) v1.3.0 & [Master Implementation Blueprint (MIB-001)](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) v1.1.0
 
 ---
 
@@ -13,7 +13,7 @@
 
 This repository serves as both the **authoritative documentation repository** and the **application implementation repository**.
 
-Documentation under `docs/` on this branch is organized into 6 functional directories containing **103** controlled documents (**104** Markdown files inside `docs/` including this index), complemented by root [AGENTS.md](../AGENTS.md), root [README.md](../README.md), and [supabase/migrations/README.md](../supabase/migrations/README.md).
+Documentation under `docs/` on this branch is organized into 6 functional directories containing **104** controlled documents (**105** Markdown files inside `docs/` including this index), complemented by root [AGENTS.md](../AGENTS.md), root [README.md](../README.md), and [supabase/migrations/README.md](../supabase/migrations/README.md).
 
 ### Precedence Hierarchy (Source of Truth)
 When interpreting requirements, design, or architecture, adhere strictly to the precedence hierarchy defined in [MIB-001](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) §1.1:
@@ -31,7 +31,7 @@ When interpreting requirements, design, or architecture, adhere strictly to the 
 
 | Directory | Doc Count | Scope | Canonical SSOT Files (`v1.0.0+` G9-TECH Baseline) | Supporting / Historical / Proposals |
 |---|---:|---|---|---|
-| [`00-project-charter/`](#3-project-charter--governance) | 26 | Governance, Charter, Gates & Traceability | `PROJECT-CHARTER.md`, `DECISION-REGISTER.md`, `MIB-001` (v1.1.0), `DGA-001` (v2.0.0), `IRG-001` (v1.1.0), `IER-001` (v1.0.0), `PTCM-001` (v1.0.0), `RTM-001` (v1.0.0), `RAID-REGISTER.md` (v1.0.0), `SSOT-AUDIT-001` (v1.0.0), `RACI-MATRIX.md`, `ENGINEERING-GOVERNANCE.md`, `GOV-MERGE-001`, `EVID-EXT-001` | Historical Audit Packages (`PACKAGE-F` through `PACKAGE-T`), `PHASE-0-PLAN.md`, `FINAL-DOCUMENTATION-CLOSURE-AUDIT.md`, `AUTH-001`, `POQ-001`, `REFERENCE-EVIDENCE-INVENTORY.md` |
+| [`00-project-charter/`](#3-project-charter--governance) | 27 | Governance, Charter, Gates & Traceability | `PROJECT-CHARTER.md`, `DECISION-REGISTER.md`, `MIB-001` (v1.1.0), `DGA-001` (v2.2.0), `IRG-001` (v1.1.0), `IER-001` (v1.0.0), `PTCM-001` (v1.0.0), `RTM-001` (v1.0.0), `RAID-REGISTER.md` (v1.0.0), `SSOT-AUDIT-001` (v1.0.0), `RACI-MATRIX.md`, `ENGINEERING-GOVERNANCE.md`, `GOV-MERGE-001`, `EVID-EXT-001` | Historical Audit Packages (`PACKAGE-F` through `PACKAGE-T`), `PHASE-0-PLAN.md`, `FINAL-DOCUMENTATION-CLOSURE-AUDIT.md`, `AUTH-001`, `POQ-001`, `REFERENCE-EVIDENCE-INVENTORY.md` |
 | [`01-product-requirements/`](#4-product-requirements) | 5 | Functional Requirements & Instrument Specs | `PRD.md`, `ACCEPTANCE-CRITERIA.md`, `IFP-INSTRUMENT-SPECIFICATION.md`, `STANDING-BRACKET-INSTRUMENT-SPECIFICATION.md` | `PRD-SCOPE-AND-NOTIFICATION-DOMAIN-RECONCILIATION-001.md` |
 | [`02-architecture/`](#5-system-architecture--technical-specifications) | 59 | Architecture, Database (62 tables), Security, Commands (52 app) & Locks | `SYSTEM-ARCHITECTURE.md`, `ADR-001`, `DATA-MODEL-AND-ERD.md`, `PHYSICAL-DATABASE-SCHEMA...` (v1.0.0), `TABLE-BY-TABLE-RLS...` (v1.0.0), `CANONICAL-PERMISSION-REGISTRY...` (v1.0.0), `POSTGRESQL-FUNCTION-SECURITY...` (v1.0.0), `POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md` (v1.0.0), `CONCURRENCY-001` (v1.0.0), `LOCK-PROTOCOL-DECISION-RESOLUTION-001` (v1.0.0), `LOCK-GRAPH-001` (v1.0.0), `LOCK-MANIFEST-001` (v1.0.0), `NLA-001` (v1.0.0), `NLA-L05-WRITER-MATRIX-001` (v1.0.0) | 7 Detailed Command Reviews (`CMD-001`..`054`), Technical Proposals/RFCs, Notification sub-registries, Operational/Provider runbooks |
 | [`03-functional-design/`](#6-functional-design) | 5 | Domain Business Workflows & Session Lifecycles | `INSPECTION-LIFECYCLE-AND-CLAIMS.md`, `PROJECT-SESSION-AND-ASSIGNMENT-MODEL.md`, `OFFLINE-SYNC-AND-RECOVERY.md` (v1.0.0), `RBAC-AND-AUTHORIZATION.md`, `REPORTS-DOCUMENTS-AND-AUDIT.md` | Domain rules & state-machine semantics |
@@ -40,12 +40,13 @@ When interpreting requirements, design, or architecture, adhere strictly to the 
 
 ---
 
-## 3. Project Charter & Governance (`00-project-charter/` — 26 documents)
+## 3. Project Charter & Governance (`00-project-charter/` — 27 documents)
 
 ### 3.1 Active Baseline Registers & Evidence Indexes
 - [PROJECT-CHARTER.md](00-project-charter/PROJECT-CHARTER.md): Project charter, stakeholder context, and business objectives.
 - [MASTER-IMPLEMENTATION-BLUEPRINT.md](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) (**MIB-001** v1.1.0): Governance model, source-of-truth precedence, engineering invariants, and delivery gates G0–G12.
-- [DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md](00-project-charter/DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) (**DGA-001** v2.0.0): Active gap register (`DGA-B01`–`DGA-B22`; 14 technical blockers closed for `G9-TECH`; external/runtime gates preserved).
+- [DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md](00-project-charter/DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) (**DGA-001** v2.2.0): Active gap register (`DGA-B01`–`DGA-B22`; local G11 evidence and external/runtime gates preserved).
+- [POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md](00-project-charter/POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md) (**PMA-001** v1.0.0): Post-merge audit of PRs #38–#41, main HEAD `706c654`, and current-state documentation drift.
 - [DECISION-REGISTER.md](00-project-charter/DECISION-REGISTER.md): Canonical index of approved Product Owner decisions through 2026-11-27 (`T-01..T-18`, `POQ-01..04`, `LPR-02..06`, `RBAC-003`, `SES-001`, `DOC-003`, `C36-02`, `IDC-O04..O10`, `NLA-MVP-001`).
 - [IMPLEMENTATION-ROADMAP-AND-RELEASE-GOVERNANCE.md](00-project-charter/IMPLEMENTATION-ROADMAP-AND-RELEASE-GOVERNANCE.md) (**IRG-001** v1.1.0): Pre-implementation gates, ordered phases `I0–I7`, release controls, and SemVer 2.0.0 policy.
 - [REQUIREMENTS-TRACEABILITY-MATRIX.md](00-project-charter/REQUIREMENTS-TRACEABILITY-MATRIX.md) (**RTM-001** v1.0.0): End-to-end traceability from requirements to 52 commands, 62 tables, security controls, planned QA, and gates.
@@ -189,10 +190,11 @@ When interpreting requirements, design, or architecture, adhere strictly to the 
 ## 9. Current Delivery Gate Status (Summary)
 
 ```
-[Phase 0] -> [G9-F1 Frozen / G10-F1 Active] -> [G9-TECH Ready for Freeze Sign-Off] -> [G10 Synthetic Full-System (Pending)] -> [G11 Build/QA] -> [G12 Production (Blocked on External)]
+[Phase 0] -> [G9-F1 + G9-TECH Frozen] -> [G10 Full-System Synthetic Active] -> [G11 Local Verification Partial] -> [G12 Production (Blocked)]
 ```
 
 - **G9-F1 Foundation Scope Freeze:** **FROZEN** (`G10-F1` ACTIVE)
-- **G9-TECH Full-System Technical SSOT (Synthetic-Data Baseline):** **READY FOR PO/MAINTAINER FREEZE SIGN-OFF** (2026-11-27; 14/14 technical DGA blockers design-closed; 62/62 canonical tables & RLS; 52/52 application commands normalized)
-- **G10 Full-System Synthetic Implementation:** **PENDING** explicit PO/maintainer sign-off & `AGENTS.md` §3.2 update
-- **G11 Runtime/DB Verification & G12 Production Readiness:** **NOT EXECUTED / NOT VERIFIED** (external/institutional gates `DGA-B01..B06`, `B08`, `B15` remain preserved)
+- **G9-TECH Full-System Technical SSOT:** **FROZEN** (2026-11-27; PO sign-off recorded in `AGENTS.md` §3.3 and `DECISION-REGISTER.md`).
+- **G10 Full-System Synthetic Implementation:** **ACTIVE**; I1–I5 implemented on isolated local/development infrastructure with synthetic data.
+- **G11 Runtime/DB Verification:** **PARTIAL** — local synthetic suites and rehearsals are recorded in DGA-001 §22–§23; hosted CI is ABSENT (`DGA-B15`), real-device UAT is NOT EXECUTED (`DGA-B07`), managed restore remains OPEN (`DGA-B06`), and staging SLO/load remains OPEN (`DGA-B08`).
+- **G12 Production Readiness:** **NOT VERIFIED / BLOCKED** on institutional, provider, operational and hosted CI evidence (`DGA-B01..B06`, `B08`, `B15`, `T-10`, `T-12`).
