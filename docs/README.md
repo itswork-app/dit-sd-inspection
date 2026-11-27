@@ -1,11 +1,11 @@
 # Master Documentation Index & Architecture Map — Dit. SD Inspection
 
 **Document ID:** DOC-MAP-001  
-**Version:** 1.3.1  
+**Version:** 1.3.2  
 **Status:** CONTROLLED MASTER DOCUMENTATION MAP — G9-TECH FROZEN; G10 ACTIVE; G11 PARTIAL (main-push CI PASS; main ruleset DISABLED); G12 BLOCKED  
 **Last updated:** 2026-11-27  
 **Applies to:** Repository `itswork-app/dit-sd-inspection`  
-**Governing Authority:** [AGENTS.md](../AGENTS.md) v1.3.0 & [Master Implementation Blueprint (MIB-001)](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) v1.3.0
+**Governing Authority:** [AGENTS.md](../AGENTS.md) v1.3.1 & [Master Implementation Blueprint (MIB-001)](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) v1.3.1
 
 ---
 
@@ -31,7 +31,7 @@ When interpreting requirements, design, or architecture, adhere strictly to the 
 
 | Directory | Doc Count | Scope | Canonical SSOT Files (`v1.0.0+` G9-TECH Baseline) | Supporting / Historical / Proposals |
 |---|---:|---|---|---|
-| [`00-project-charter/`](#3-project-charter--governance) | 28 | Governance, Charter, Gates & Traceability | `PROJECT-CHARTER.md`, `DECISION-REGISTER.md`, `MIB-001` (v1.3.0), `DGA-001` (v2.4.1), `IRG-001` (v1.1.0), `IER-001` (v1.0.0), `PTCM-001` (v1.0.0), `RTM-001` (v1.1.0), `RAID-REGISTER.md` (v1.1.0), `SSOT-AUDIT-001` (v1.0.0), `RACI-MATRIX.md`, `ENGINEERING-GOVERNANCE.md`, `GOV-MERGE-001`, `EVID-EXT-001` | Historical Audit Packages (`PACKAGE-F` through `PACKAGE-T`), `PHASE-0-PLAN.md`, `FINAL-DOCUMENTATION-CLOSURE-AUDIT.md`, `AUTH-001`, `POQ-001`, `REFERENCE-EVIDENCE-INVENTORY.md` |
+| [`00-project-charter/`](#3-project-charter--governance) | 28 | Governance, Charter, Gates & Traceability | `PROJECT-CHARTER.md`, `DECISION-REGISTER.md`, `MIB-001` (v1.3.1), `DGA-001` (v2.4.1), `IRG-001` (v1.1.0), `IER-001` (v1.0.0), `PTCM-001` (v1.0.0), `RTM-001` (v1.1.0), `RAID-REGISTER.md` (v1.1.0), `SSOT-AUDIT-001` (v1.0.0), `RACI-MATRIX.md`, `ENGINEERING-GOVERNANCE.md`, `GOV-MERGE-001`, `EVID-EXT-001` | Historical Audit Packages (`PACKAGE-F` through `PACKAGE-T`), `PHASE-0-PLAN.md`, `FINAL-DOCUMENTATION-CLOSURE-AUDIT.md`, `AUTH-001`, `POQ-001`, `REFERENCE-EVIDENCE-INVENTORY.md` |
 | [`01-product-requirements/`](#4-product-requirements) | 5 | Functional Requirements & Instrument Specs | `PRD.md`, `ACCEPTANCE-CRITERIA.md`, `IFP-INSTRUMENT-SPECIFICATION.md`, `STANDING-BRACKET-INSTRUMENT-SPECIFICATION.md` | `PRD-SCOPE-AND-NOTIFICATION-DOMAIN-RECONCILIATION-001.md` |
 | [`02-architecture/`](#5-system-architecture--technical-specifications) | 59 | Architecture, Database (62 tables), Security, Commands (52 app) & Locks | `SYSTEM-ARCHITECTURE.md`, `ADR-001`, `DATA-MODEL-AND-ERD.md`, `PHYSICAL-DATABASE-SCHEMA...` (v1.0.0), `TABLE-BY-TABLE-RLS...` (v1.0.0), `CANONICAL-PERMISSION-REGISTRY...` (v1.0.0), `POSTGRESQL-FUNCTION-SECURITY...` (v1.0.0), `POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md` (v1.0.0), `CONCURRENCY-001` (v1.0.0), `LOCK-PROTOCOL-DECISION-RESOLUTION-001` (v1.0.0), `LOCK-GRAPH-001` (v1.0.0), `LOCK-MANIFEST-001` (v1.0.0), `NLA-001` (v1.0.0), `NLA-L05-WRITER-MATRIX-001` (v1.0.0) | 7 Detailed Command Reviews (`CMD-001`..`054`), Technical Proposals/RFCs, Notification sub-registries, Operational/Provider runbooks |
 | [`03-functional-design/`](#6-functional-design) | 5 | Domain Business Workflows & Session Lifecycles | `INSPECTION-LIFECYCLE-AND-CLAIMS.md`, `PROJECT-SESSION-AND-ASSIGNMENT-MODEL.md`, `OFFLINE-SYNC-AND-RECOVERY.md` (v1.0.0), `RBAC-AND-AUTHORIZATION.md`, `REPORTS-DOCUMENTS-AND-AUDIT.md` | Domain rules & state-machine semantics |
@@ -44,7 +44,7 @@ When interpreting requirements, design, or architecture, adhere strictly to the 
 
 ### 3.1 Active Baseline Registers & Evidence Indexes
 - [PROJECT-CHARTER.md](00-project-charter/PROJECT-CHARTER.md): Project charter, stakeholder context, and business objectives.
-- [MASTER-IMPLEMENTATION-BLUEPRINT.md](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) (**MIB-001** v1.3.0): Governance model, source-of-truth precedence, engineering invariants, and delivery gates G0–G12.
+- [MASTER-IMPLEMENTATION-BLUEPRINT.md](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) (**MIB-001** v1.3.1): Governance model, source-of-truth precedence, engineering invariants, and delivery gates G0–G12.
 - [DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md](00-project-charter/DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) (**DGA-001** v2.4.1): Active gap register (`DGA-B01`–`DGA-B22`; local G11 evidence and external/runtime gates preserved).
 - [POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md](00-project-charter/POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md) (**PMA-001** v1.2.0): Post-merge audit of PRs #38–#41, main HEAD `706c654`, SSOT remediation, and correction of the initial CI evidence query (main-push run #77 PASS).
 - [G11-EVIDENCE-CLOSURE-PLAN.md](00-project-charter/G11-EVIDENCE-CLOSURE-PLAN.md) (**G11-ECP-001** v1.0.1): Execution/evidence plan for hosted CI, repository enforcement, managed PostgreSQL + Storage recovery, real-device offline UAT, staging load/SLO and QA catalogue closure.
