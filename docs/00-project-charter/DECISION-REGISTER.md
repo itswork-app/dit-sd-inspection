@@ -440,3 +440,14 @@ The Product Owner approves the following product semantics:
 - **G9-TECH Freeze:** Full-System Technical SSOT baseline (`v1.0.0+` across 62 canonical tables, 62/62 RLS policies, 52 in-scope application commands, `T-18` ACLs, `CONCURRENCY-001`, `LPR-01..09/11`, `F-03`/`F-04`/`F05-T1..T5`, `SES-001`, `OFFLINE-SYNC-AND-RECOVERY.md`) is **FROZEN** for synthetic-data engineering development.
 - **G10 Activation:** **ACTIVE** for ordered `IRG-001` phases `I1 → I5` on dedicated feature branches using isolated synthetic/test data only, starting with `I1/I2` (Database foundation, `RBAC-003`, `T-15` audit, idempotency, `CMD-001..007`, API & Admin UI).
 - **Preserved Prohibitions:** No real institutional personal/evidence data, no `CMD-044` audit export, no external `CMD-053` provider dispatch, no `CMD-045..048` app surfaces, no production deployment, and no unexecuted test reported as PASS. Recorded in root `AGENTS.md` v1.3.0.
+
+
+## Product Owner authorization — bounded synthetic staging (2026-11-27)
+
+- **Decision ID:** `PO-2026-11-27-STAGING-SYNTHETIC-001`
+- **Status:** **APPROVED BY PRODUCT OWNER / SOLE MAINTAINER** (selected "Option A" in the project conversation on 2026-11-27)
+- **Staging target:** Supabase project `emqlbtnejinbqlxpoakd` (the project already referenced by the repository `.env` for development Google OAuth).
+- **PO attestation:** the project is non-production, will not be promoted to production, and contains no real institutional personal data or inspection evidence.
+- **Permitted:** PO-performed `supabase link`; forward-only `supabase db push` of reviewed repository migrations; synthetic accounts and data; G11 verification against staging; `pg_dump` export for restore rehearsal into isolated local databases; Vercel preview deployments bound to this project with environment variables entered by the PO in the Vercel dashboard.
+- **Prohibited:** production deployment; real institutional data; `supabase db reset --linked` or other destructive staging operations without separate per-action PO confirmation; editing applied migrations; `service_role` in app runtime; secrets in chat/logs/commits; `CMD-044`, external `CMD-053`, `CMD-045..048`.
+- **Gate effect:** none on `G12`; `DGA-B05` and `DGA-B15` remain open. Recorded in root `AGENTS.md` v1.4.0 §3.4.

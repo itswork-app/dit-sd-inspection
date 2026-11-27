@@ -1,7 +1,7 @@
 # Repository Agent Instructions — Dit. SD Inspection
 
 **Document ID:** ENG-AGENT-001  
-**Version:** 1.3.0  
+**Version:** 1.4.0  
 **Status:** MANDATORY ENGINEERING POLICY  
 **Applies to:** Every human contributor, coding agent, reviewer and automation working in this repository.
 
@@ -43,7 +43,7 @@ G10 Full-System Synthetic Implementation permits ordered implementation of phase
 
 Still STRICTLY PROHIBITED under G10 Synthetic Implementation:
 - production data/evidence collection or processing real institutional personal data in development;
-- production/staging deployment, live hosted database mutation without explicit authorization, irreversible retention/deletion or legal-hold disposition;
+- production deployment; staging deployment or live hosted database mutation outside the bounded staging authorization in §3.4; irreversible retention/deletion or legal-hold disposition;
 - enabling `CMD-044` (`export-audit`) or external notification provider dispatch adapters (`CMD-053` email/push / `INT-NOTIF-001`) before written `T-10` and `T-12` approvals;
 - creating any application surface for PO-excluded external control-plane IDs `CMD-045..048`;
 - handling or requesting secrets in chat, or committing `.env` / credentials;
@@ -196,7 +196,7 @@ F-03/F-04, command-level authorization, notification worker/provider security, p
 
 The Product Owner is the sole maintainer and accountable engineering decision owner for this repository. Independent reviewer availability is not a prerequisite for development. Each PR must still receive documented maintainer self-review, full-diff inspection, automated checks where configured, and post-merge verification. Self-review cannot turn unexecuted tests or unverified runtime behavior into PASS.
 
-Root policy version: 1.3.0. Section 3 and §3.3 below are the controlling authorization for G9-TECH / G10 full-system synthetic-data implementation.
+Root policy version: 1.4.0. Section 3, §3.3 and §3.4 below are the controlling authorization for G9-TECH / G10 full-system synthetic-data implementation and bounded synthetic staging.
 
 ## 3.3 Product Owner sign-off — G9-TECH Freeze and G10 Full-System Synthetic Implementation (2026-11-27)
 
@@ -205,3 +205,20 @@ On 2026-11-27, the Product Owner / sole repository maintainer explicitly approve
 2. **G10 FULL-SYSTEM SYNTHETIC IMPLEMENTATION ACTIVE:** Authorizing ordered implementation of `IRG-001` phases `I1 → I5` on dedicated feature branches using synthetic/test data in isolated local/development environments (beginning with `I1/I2` Identity, RBAC-003, Audit, Idempotency & `CMD-001..007`).
 
 All production/real-data/external gates (`DGA-B01..B06`, `B08`, `B15`, `T-10`, `T-12`, `CMD-044`, external `CMD-053` providers, and `G12`) remain strictly enforced. Every implemented slice must prove clean local PostgreSQL migration, RLS negative tests, SoD/CAS/idempotency tests, and `npm run check` PASS before progressing.
+
+## 3.4 Product Owner authorization — bounded synthetic staging (2026-11-27)
+
+Decision ID: `PO-2026-11-27-STAGING-SYNTHETIC-001` (canonical record: `docs/00-project-charter/DECISION-REGISTER.md`).
+
+**Designated staging target:** Supabase project `emqlbtnejinbqlxpoakd` only. The Product Owner attests that this project is non-production, will not be promoted to production, and contains no real institutional personal data or inspection evidence.
+
+**Permitted on the staging target only:**
+1. Linking the repository with `supabase link --project-ref emqlbtnejinbqlxpoakd`, performed by the Product Owner in their own terminal so that access tokens and database passwords never pass through chat, logs or commits.
+2. Applying the repository's reviewed, immutable migrations (`supabase db push`) in order, forward-only.
+3. Creating synthetic test accounts and synthetic operational data; existing Product Owner Google sign-in may remain.
+4. Running G11 verification against staging (RLS/negative auth, HTTP E2E, Storage/PDF, load baseline) and taking `pg_dump` exports from staging for restore rehearsal into isolated local databases.
+5. Vercel preview deployments bound to this staging project, with environment variables entered by the Product Owner directly in the Vercel dashboard.
+
+**Still prohibited:** production deployment or any production project; real institutional personal data or evidence; `supabase db reset --linked` or any destructive/irreversible operation on staging without a separate explicit per-action confirmation from the Product Owner; editing already-applied migrations; `service_role` in application runtime or browser; requesting, printing or committing secrets; enabling `CMD-044`, external `CMD-053` / `INT-NOTIF-001`, or any `CMD-045..048` surface; claiming `G12`, production readiness or hosted CI PASS from staging results.
+
+**Gate effect:** none on `G12`. `DGA-B05` (provider ownership/billing/region evidence) and `DGA-B15` remain open. Staging results are recorded as staging evidence, distinct from local and production evidence.
