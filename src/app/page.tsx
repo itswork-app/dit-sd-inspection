@@ -50,7 +50,9 @@ export default function HomePage() {
           <span className="meta-check"><span aria-hidden="true">✓</span> Application shell loaded</span>
           <span className={supabaseConfigured ? "meta-check" : "meta-pending"}>
             <span aria-hidden="true">{supabaseConfigured ? "✓" : "○"}</span>
-            Supabase environment {supabaseConfigured ? "configured" : "awaiting development credentials"}
+            {supabaseConfigured
+              ? "Supabase environment configured"
+              : "Supabase environment awaiting development credentials"}
           </span>
         </div>
       </section>

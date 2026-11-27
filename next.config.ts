@@ -22,6 +22,10 @@ const nextConfig: NextConfig = {
       {
         source: "/:path*",
         headers: securityHeaders
+      },
+      {
+        source: "/auth/callback",
+        headers: [{ key: "Referrer-Policy", value: "no-referrer" }]
       }
     ];
   }

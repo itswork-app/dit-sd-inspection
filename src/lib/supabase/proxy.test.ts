@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { readSupabasePublicConfig } from "@/lib/env";
 import { updateSession } from "./proxy";
-import { proxy as rootProxy } from "../../../proxy";
+import { proxy as rootProxy } from "@/proxy";
 
 vi.mock("@supabase/ssr", () => ({ createServerClient: vi.fn() }));
 vi.mock("@/lib/env", () => ({ readSupabasePublicConfig: vi.fn() }));
