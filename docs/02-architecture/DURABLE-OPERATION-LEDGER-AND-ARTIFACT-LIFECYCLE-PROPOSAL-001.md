@@ -1,11 +1,13 @@
 # Durable Operation Ledgers and Artifact Lifecycle — CMD-035/036/038/039/040
 
 **Document ID:** DURABLE-OPERATION-LEDGER-PROPOSAL-001  
-**Version:** 0.1.0  
-**Date:** 2026-11-24  
+**Version:** 0.1.1  
+**Date:** 2026-11-26  
 **Status:** Engineering / Database / Security / Product review proposal — NOT APPROVED FOR IMPLEMENTATION  
 **Scope:** Offline sync operation outcomes, document generation jobs, print batch manifests/results, attendance document versions and verification history  
-**Gate:** G9 NOT READY; G10 NOT ACTIVE
+**Gate:** G9-F1 FROZEN; G10-F1 ACTIVE for bounded foundation only; full-system G9 NOT READY; CMD-035/036/038/039/040 business mutations and workers remain feature-gated.
+
+**Current gate interpretation (2026-11-26):** Historical G10 NOT ACTIVE labels in the dated body are snapshots from before staged foundation activation. G10-F1 does not authorize these business mutations, candidate schema objects, workers or provider operations.
 
 ## 1. Purpose and boundary
 
@@ -54,13 +56,13 @@ A separate device-binding object is required because the current model has no du
 
 ### 2.3 Transaction and replay model
 
-1. Accept a bounded batch envelope and persist the full ordered operation manifest with canonical semantic hashes.
-2. Apply each operation in its own short transaction or an explicitly approved bounded savepoint model; no partial operation mutation may exist without its terminal ledger result.
-3. For each operation, reauthorize the user and bound device, acquire the target inspection aggregate lock in stable inspection UUID order, compare expected row version and validate current claim/assignment/scope.
+1. Accept the bounded batch envelope and persist the full ordered operation manifest, operation IDs and server-canonical semantic hashes in one short acceptance transaction. Acceptance does not mutate inspection drafts.
+2. Process each operation in its own short PostgreSQL transaction. Each operation targets exactly one inspection; no transaction holds inspection locks across multiple operations or across the batch.
+3. In that operation transaction, arbitrate/lock the operation identity, reauthorize the user and bound device, validate current claim/assignment/scope, acquire the target inspection aggregate, and compare the expected row version.
 4. Apply only permitted draft response mutations; increment the inspection row version exactly once for a semantic mutation.
-5. Persist APPLIED/CONFLICTED/REJECTED outcome and the corresponding domain/audit events atomically with that operation's mutation.
-6. Derive batch terminal/partial state from operation results; a lost client acknowledgement is recovered by replaying the same batch and operation IDs.
-7. Duplicate operation ID with different semantic hash is rejected without applying a second effect.
+5. Atomically persist the APPLIED result, corresponding domain/audit events and idempotency outcome with the operation mutation. For a business conflict/rejection, persist a terminal CONFLICTED/REJECTED result without a domain mutation in that same operation transaction.
+6. An unexpected infrastructure failure rolls back only the current operation transaction and leaves its ledger entry non-terminal/retryable. Previously committed operation outcomes remain durable. Batch state is derived from the operation ledger; a lost acknowledgement is recovered by replaying the same batch and operation IDs.
+7. A savepoint may be used inside one operation transaction for local error handling, but it is not an alternative batch-level commit model and does not provide independently durable operation outcomes. Duplicate operation ID with a different semantic hash is rejected without applying a second effect.
 
 CMD-035 remains restricted to previously claimed draft work. No offline claim, submit, review, approval, print, attendance verification or administrative mutation is introduced by this proposal.
 
