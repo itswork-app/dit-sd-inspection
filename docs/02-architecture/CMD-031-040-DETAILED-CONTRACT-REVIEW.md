@@ -1,7 +1,7 @@
 # CMD-031–040 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security/institutional review required; NOT approved for implementation  
-**Document version:** 0.2.7  
+**Document version:** 0.2.8  
 **Date:** 2026-11-27  
 **Scope:** CMD-031 through CMD-040  
 **Repository phase:** Staged foundation implementation G9-F1/G10-F1; CMD-031–040 business operations remain feature-gated  
@@ -753,6 +753,14 @@ Rendering and Storage I/O occur outside database locks. Use a server-generated p
 
 CMD-032 requires preservation of an approved immutable revision and historical PDF/print history, but the repository does not decide whether a job accepted before reopen may finalize afterward as a historical artifact or must be stopped as stale. These policies have different business outcomes. Do not rebind to the current draft or infer either policy. Record this as C36-02 for explicit PO disposition; until resolved, the source-reopen race remains a blocker to CMD-036 certification.
 
+#### 7.6.5 Session-start generation gate and historical print — PO APPROVED DOC-003
+
+An inspection-derived document cannot be generated before its source session has started. Generation requires a durable session activation/start fact and the exact approved immutable inspection revision; a DRAFT/not-yet-started session returns `SESSION_NOT_STARTED` and must not create a generation job or artifact. This is a source eligibility gate, not a requirement that the session remain ACTIVE forever.
+
+After successful finalization, the generated artifact is immutable historical evidence. Closing the source session does not revoke its print eligibility. CMD-037 print/reprint of that exact final artifact remains permitted after `CLOSED` when the actor still has active `document.print` authority in the exact resource scope and the artifact passes integrity/final-state checks. No session reopen is required for printing, and print must not mutate session/inspection state.
+
+DOC-003 does not approve new generation after closure and does not settle whether a superseded/replaced artifact version remains printable. That distinct version policy remains C37-02 OPEN. C36-02 (a generation job accepted before inspection reopen) remains a separate unresolved race; this clarification does not authorize rebinding to a new draft or decide that race.
+
 #### 7.6.5 Failure and access boundaries
 
 Classify retryable infrastructure errors separately from deterministic render/input errors, authorization/source invalidation, lease loss, object-integrity mismatch and audit failure. Retry only after reconciling uncertain external outcomes. Cancellation is not inferred from client disconnect, timeout or lease expiry. Generated artifact access remains a separate authorized read; no public or reusable signed URL is returned by the generation command. Worker identity is a distinct workload principal with separately reviewed exact ACL and Storage permissions, not a browser role, `document.generate` permission or broad `service_role`.
@@ -1268,9 +1276,9 @@ The following findings are design gaps, not implementation defects. No live data
 | C35-01 | 035 | sync_batches exists but device registry/binding/revocation and durable per-operation outcome ledger are absent | Define device identity lifecycle and per-operation persistence; align T-09, offline threat model, physical schema and RLS |
 | C35-02 | 035 | The detailed contract and ledger proposal allow either per-operation transactions or savepoints, while promising independently durable per-operation outcomes and partial-batch recovery | Adopt one short transaction per operation as the candidate engineering boundary; treat savepoints only as intra-operation error handling; obtain Engineering/Database/Security review before schema or implementation admission |
 | C36-01 | 036 | documents lacks generic source type/id, template registry/version and renderer job/outbox lifecycle | Define source-to-document FK/provenance, template version storage, job state, lease, retry, worker identity and ACL |
-| C36-02 | 032, 036 | CMD-032 preserves an approved immutable revision/PDF history, but CMD-036 does not define whether an in-flight generation accepted before reopen may finalize afterward | PO must choose historical-artifact finalization vs stale/cancelled generation; until then, no silent rebind and CMD-036 certification remains blocked |
+| C36-02 | 032, 036 | In-flight generation accepted before inspection reopen may race with reopen | Still OPEN: PO must choose historical-artifact finalization vs stale/cancelled generation; DOC-003 does not resolve this race; no silent rebind |
 | C37-01 | 037 | Physical schema does not resolve logical document vs immutable printable-version identity; CMD-037 accepts both document_id and document_version without a corresponding version FK/table | Choose one canonical identity model and bind each print event to exact immutable output version/hash; reconcile CMD-036, ERD, physical schema and API |
-| C37-02 | 037 | T-13/DOC-002 do not explicitly state whether historical/superseded versions remain eligible for reprint | PO disposition required; until decided, fail closed outside approved current-printable policy |
+| C37-02 | 037 | Session-closure eligibility is decided by DOC-003; whether a superseded/replaced artifact remains printable when a newer version exists is still undefined | PO decision required only for superseded/replaced-version policy; do not treat CLOSED session status as a print denial |
 | C37-03 | 037/038 | print_events.attempt_no is not distinguished from per-document sequence_no or batch-item retry attempts | Define/remove attempt_no; batch retry attempt identity belongs to durable item-result model and must not duplicate successful print events |
 | C37-04 | 037 | print_events has unique (document_id, sequence_no) but no concurrency-safe sequence allocator | Review per-document counter + atomic increment/event/audit/idempotency transaction; exact object/lock/index/RLS admission remains open |
 | C38-01 | 038 | Candidate child manifest/result model is now the logical engineering recommendation, but is not admitted to the physical schema | Approve canonical item identity/hash, exact PK/FK/index/check/RLS/ACL and manifest/result admission; retain candidate-only status until approved |
