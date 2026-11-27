@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { signOutAction } from "@/app/auth/actions";
 import { NotificationsAndDocsPanel } from "@/app/notifications/notifications-docs-panel";
+import { AppTopbar } from "@/components/app-topbar";
 import { loadSelfAccountSnapshot } from "@/lib/auth/account";
 import { getVerifiedIdentity } from "@/lib/auth/identity";
 import { createClient } from "@/lib/supabase/server";
@@ -43,28 +43,11 @@ export default async function NotificationsAndDocumentsPage() {
 
   return (
     <main className="workspace">
-      <header className="topbar">
-        <Link className="brand" href="/" aria-label="Dit. SD Inspection home">
-          <span className="brand-mark">SD</span>
-          <span>
-            <strong>Dit. SD Inspection</strong>
-            <small>In-App Notifications, Documents &amp; Print (I4/I5)</small>
-          </span>
-        </Link>
-        <div className="admin-inline">
-          <Link className="auth-link" href="/workspace">
-            Workspace
-          </Link>
-          <Link className="auth-link" href="/inspections">
-            Inspeksi
-          </Link>
-          <form action={signOutAction}>
-            <button className="auth-button auth-button-secondary admin-btn-sm" type="submit">
-              Keluar
-            </button>
-          </form>
-        </div>
-      </header>
+      <AppTopbar
+        subtitle="In-App Notifications, Documents & Print (POQ-03)"
+        activePath="/notifications"
+        canManageIdentity={selfSnapshot.canManageIdentity}
+      />
 
       {schemaMissing ? (
         <section className="auth-panel">

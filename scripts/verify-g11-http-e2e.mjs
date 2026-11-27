@@ -108,7 +108,7 @@ async function main() {
     assert.ok(healthRes.headers.get("x-request-id"), "Proxy must inject X-Request-Id");
     assert.equal(healthRes.headers.get("cache-control"), "no-store");
 
-    for (const protectedPage of ["/auth/pending", "/admin/accounts", "/workspace", "/inspections", "/notifications"]) {
+    for (const protectedPage of ["/auth/pending", "/admin/accounts", "/workspace", "/inspections", "/operations", "/notifications"]) {
       const res = await fetch(`${APP_URL}${protectedPage}`, { redirect: "manual" });
       assert.equal(res.status, 307, `Expected 307 redirect on unauth ${protectedPage}, got ${res.status}`);
       assert.ok((res.headers.get("location") ?? "").includes("/login"), `Expected redirect to /login on ${protectedPage}`);
@@ -215,8 +215,8 @@ async function main() {
     });
     assert.equal(instRes.status, 201);
 
-    // 6. Verify authenticated SSR pages render HTTP 200 cleanly for SA
-    for (const authedPage of ["/auth/pending", "/admin/accounts", "/workspace", "/inspections", "/notifications"]) {
+    // 6. Verify authenticated SSR pages render HTTP 200 cleanly for SA with zero SCHEMA UNAVAILABLE
+    for (const authedPage of ["/auth/pending", "/admin/accounts", "/workspace", "/inspections", "/operations", "/notifications"]) {
       const pageRes = await fetch(`${APP_URL}${authedPage}`, {
         headers: { cookie: sa.cookie },
         redirect: "manual"
@@ -224,6 +224,14 @@ async function main() {
       assert.equal(pageRes.status, 200, `Expected 200 on authed ${authedPage}, got ${pageRes.status}`);
       const html = await pageRes.text();
       assert.ok(html.includes("Dit. SD Inspection"), `Missing workspace header on ${authedPage}`);
+      assert.ok(!html.includes("SCHEMA UNAVAILABLE"), `Unexpected SCHEMA UNAVAILABLE on ${authedPage}`);
+      if (authedPage === "/inspections") {
+        assert.ok(html.includes("Antrean Offline"), "Missing T-09 Offline Queue section on /inspections");
+      }
+      if (authedPage === "/operations") {
+        assert.ok(html.includes("Dokumen PDF"), "Missing Documents & Batch Print section on /operations");
+        assert.ok(html.includes("EXPORT CMD-044 DISABLED"), "Missing CMD-044 disabled badge on /operations");
+      }
     }
 
     // 7. Verify applicant sees 200 on /notifications and /api/v1/notifications (empty inbox, zero cross-user leakage)

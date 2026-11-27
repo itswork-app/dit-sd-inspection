@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { signOutAction } from "@/app/auth/actions";
 import { WorkspacePanel } from "@/app/workspace/workspace-panel";
+import { AppTopbar } from "@/components/app-topbar";
 import { loadSelfAccountSnapshot } from "@/lib/auth/account";
 import { getVerifiedIdentity } from "@/lib/auth/identity";
 import { createClient } from "@/lib/supabase/server";
@@ -71,36 +71,11 @@ export default async function OperationalWorkspacePage() {
 
   return (
     <main className="workspace">
-      <header className="topbar">
-        <Link className="brand" href="/" aria-label="Dit. SD Inspection home">
-          <span className="brand-mark">SD</span>
-          <span>
-            <strong>Dit. SD Inspection</strong>
-            <small>Operational Workspace · Slice 2 (I2/I3)</small>
-          </span>
-        </Link>
-        <div className="admin-inline">
-          <Link className="auth-link" href="/inspections">
-            Inspeksi
-          </Link>
-          <Link className="auth-link" href="/notifications">
-            Dokumen &amp; Notifikasi
-          </Link>
-          <Link className="auth-link" href="/auth/pending">
-            Status Akun
-          </Link>
-          {selfSnapshot.canManageIdentity ? (
-            <Link className="auth-link" href="/admin/accounts">
-              Admin RBAC
-            </Link>
-          ) : null}
-          <form action={signOutAction}>
-            <button className="auth-button auth-button-secondary admin-btn-sm" type="submit">
-              Keluar
-            </button>
-          </form>
-        </div>
-      </header>
+      <AppTopbar
+        subtitle="Operational Workspace · Projects, Sessions, Instruments & Units"
+        activePath="/workspace"
+        canManageIdentity={selfSnapshot.canManageIdentity}
+      />
 
       {schemaMissing ? (
         <section className="auth-panel">

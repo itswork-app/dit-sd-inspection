@@ -97,6 +97,31 @@ export function NotificationsAndDocsPanel({
     }
   }
 
+  async function handleDownloadPdf(docId: string) {
+    if (busyId) return;
+    setBusyId(`dl-${docId}`);
+    setFeedback(null);
+    try {
+      const response = await fetch(`/api/v1/documents/${docId}/download`, { method: "GET" });
+      const payload = (await response.json().catch(() => null)) as
+        | { signed_download_url?: string; status?: string }
+        | null;
+      if (!response.ok || !payload?.signed_download_url) {
+        setFeedback({
+          kind: "err",
+          text: `Unduh PDF ditolak (${payload?.status ?? response.status}).`
+        });
+        return;
+      }
+      window.open(payload.signed_download_url, "_blank", "noopener,noreferrer");
+      setFeedback({ kind: "ok", text: "Signed URL PDF 60 detik diterbitkan & diaudit (document.accessed)." });
+    } catch {
+      setFeedback({ kind: "err", text: "Koneksi server terputus." });
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   return (
     <div className="admin-section">
       {feedback ? (
@@ -174,16 +199,26 @@ export function NotificationsAndDocsPanel({
                   <p className="rbac-meta">
                     Dibuat: {new Date(doc.generated_at).toLocaleString("id-ID")}
                   </p>
-                  {doc.is_current ? (
+                  <div className="admin-inline">
                     <button
                       type="button"
-                      className="auth-button auth-button-secondary admin-btn-sm"
+                      className="auth-button admin-btn-sm"
                       disabled={busyId !== null}
-                      onClick={() => handleRecordPrint(doc)}
+                      onClick={() => handleDownloadPdf(doc.id)}
                     >
-                      Catat Cetak (CMD-037)
+                      Unduh PDF (60s)
                     </button>
-                  ) : null}
+                    {doc.is_current ? (
+                      <button
+                        type="button"
+                        className="auth-button auth-button-secondary admin-btn-sm"
+                        disabled={busyId !== null}
+                        onClick={() => handleRecordPrint(doc)}
+                      >
+                        Catat Cetak (CMD-037)
+                      </button>
+                    ) : null}
+                  </div>
                 </article>
               ))}
             </div>
