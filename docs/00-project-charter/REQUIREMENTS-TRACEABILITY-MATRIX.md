@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 0.2.0  
+**Version:** 0.2.1  
 Status: Baseline draft — requirements require source validation  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
@@ -278,7 +278,7 @@ QA cases TC-LIVE-INV-026-001..010 define the evidence checks for target environm
 
 ## SEC-007 — Application repository runtime implementation evidence
 
-T-19 read-only tree audit on 2026-11-24 found 54 blobs on `docs/t17-instrument-governance-t18-command-boundary`, limited to `AGENTS.md`, `README.md` and `docs/`; zero source/configuration files were found in the scanned implementation extensions. The default branch `main` contained only `README.md` at the inspected ref. Therefore Vercel route handlers, Supabase client separation, caller-JWT propagation, migrations, PostgreSQL functions/grants/RLS, CI tests and deployment configuration cannot be verified in this repository. This is an absence-of-evidence finding, not a code defect or proof that no implementation exists elsewhere. Confirm the canonical application repository/branch before implementation or further runtime claims. See [T-19 Repository Runtime Architecture Audit](../02-architecture/T19-REPOSITORY-RUNTIME-ARCHITECTURE-AUDIT.md). QA cases TC-REPO-AUDIT-028-001..008 are BLOCKED / NOT EXECUTED. Scope freeze remains NOT READY; implementation remains NOT AUTHORIZED.
+T-19 (T19-001 v1.1.0) records two snapshots. The 2026-11-24 inspection found 54 blobs on `docs/t17-instrument-governance-t18-command-boundary` and a `main` that contained only `README.md`. The 2026-11-27 re-audit found `main` at `44dce2c` with 102 markdown blobs and still zero implementation/config files on the default branch. Canonical repository identity is confirmed as `itswork-app/dit-sd-inspection`. Vercel route handlers, Supabase client separation, caller-JWT propagation, migrations, PostgreSQL functions/grants/RLS and passing CI still cannot be verified from `main`. This remains an absence-of-runtime-evidence finding, not a code defect. See [T-19 Repository Runtime Architecture Audit](../02-architecture/T19-REPOSITORY-RUNTIME-ARCHITECTURE-AUDIT.md). TC-REPO-AUDIT-028-001 is PARTIAL; TC-REPO-AUDIT-028-002..008 remain BLOCKED / NOT EXECUTED. Full-system G9 remains NOT READY; G10-F1 is limited to bounded foundation work.
 
 ## INS-015 notification traceability — NLA-001 (2026-11-24)
 

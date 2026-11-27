@@ -1,12 +1,16 @@
 # T-19 Repository Runtime Architecture Audit
 
-**Status:** AUDIT COMPLETE — DOCUMENTATION-PHASE BASELINE CONFIRMED  
+**Document ID:** T19-001  
+**Version:** 1.1.0  
+**Status:** AUDIT COMPLETE — DOCUMENTATION-PHASE BASELINE CONFIRMED; 2026-11-27 RE-AUDIT RECORDED  
 **Audit date:** 2026-11-24  
+**Re-audit date:** 2026-11-27  
 **Repository:** `itswork-app/dit-sd-inspection`  
-**Audited branch:** `docs/t17-instrument-governance-t18-command-boundary`  
-**Audited branch HEAD:** `843bef813d55d0e82246052bf498b9f282f55a2a`  
+**Original audited branch:** `docs/t17-instrument-governance-t18-command-boundary`  
+**Original audited branch HEAD:** `843bef813d55d0e82246052bf498b9f282f55a2a`  
 **Default branch:** `main`  
-**Scope:** Read-only GitHub repository tree and selected documentation inspection. No source code, configuration, database, CI execution, or deployment was changed or executed.
+**Current default-branch HEAD at re-audit:** `44dce2cbcc052c6e909e1b0a080062a5b60d94eb`  
+**Scope:** Read-only GitHub repository tree, selected documentation inspection, and 2026-11-27 live GitHub settings/workflow inspection. No application source, database, provider account, or production system was changed.
 
 ## 1. Executive finding
 
@@ -83,4 +87,50 @@ All eight cases are **BLOCKED / NOT EXECUTED** because the corresponding impleme
 - Scope freeze: **NOT READY**.
 - Feature implementation, migrations, grants and deployment: **NOT AUTHORIZED**.
 - Repository purpose (documentation and future application in one repository): **CONFIRMED BY PRODUCT OWNER, 2026-11-24**.
+
+## 7. Re-audit of GitHub remote and default-branch tree — 2026-11-27
+
+This addendum supersedes only the dated file-count and GitHub-settings observations below. Sections 1–6 remain the 2026-11-24 historical snapshot. They must not be cited as the current `main` inventory.
+
+**Method:** read-only `gh` inspection of `itswork-app/dit-sd-inspection` as account `itswork-app`, plus local clone of `main` at `44dce2c`. Org audit-log API is unavailable because the owner is a GitHub **User**, not an Organization.
+
+### 7.1 Default-branch tree
+
+| Check | 2026-11-24 snapshot | 2026-11-27 observation |
+|---|---|---|
+| `main` recursive blobs | 1 (`README.md`) | **102** blobs |
+| Top-level entries | `README.md` | `AGENTS.md`, `README.md`, `docs/` |
+| Implementation/config extensions (`.ts`, `.tsx`, `.js`, `.jsx`, `.sql`, `.prisma`, `.json`, `.yaml`, `.yml`, `.toml`, `.kt`, `.go`, `.rs`, `.py`) on `main` | 0 | **0** |
+| Canonical repository identity | Confirmed PO intent | Unchanged: `itswork-app/dit-sd-inspection`, private, default `main` |
+
+`main` is now the documentation SSOT, not a README-only stub. Absence of application source on `main` remains intentional for the documentation baseline. Foundation source, if any, lives only on the unmerged feature PR and is **not** present on `main`.
+
+### 7.2 GitHub control-plane evidence (DGA-B15)
+
+| Control | Observation | Disposition |
+|---|---|---|
+| Visibility | Private | Confirmed |
+| Collaborators | `itswork-app` admin only; no teams | Confirmed solo-maintainer |
+| Branch protection / rulesets | API 403: not available on GitHub Free + private repository | **NOT CONFIGURABLE on current plan** |
+| Dependabot / vulnerability / code / secret scanning | Disabled | **NOT ENABLED** |
+| GitHub Pages, deploy keys, webhooks, Actions secrets, environments | Absent | Confirmed |
+| Actions permissions | Enabled; `allowed_actions: all`; SHA pinning not required; default workflow token **read** | Enabled, not hardened |
+| `delete_branch_on_merge` | Enabled 2026-11-27 | Confirmed |
+| Default-branch HEAD commits | Latest `main` commits include verified signatures; older commits include unsigned | Mixed |
+| Orphan workflow `bootstrap-npm-lockfile.yml` | File absent on current foundation PR; workflow disabled 2026-11-27 | Disabled |
+
+Branch hygiene 2026-11-27: 34 merged/closed remote heads deleted. Remaining heads: `main`, four open documentation PRs (`docs/cmd-035`…`cmd-038` = PR #32–#35), and `feat/foundation-bootstrap-v1-rebased` (PR #30). Historical names `feat/foundation-bootstrap-v1` and PR #28 are closed/deleted and must not be cited as current.
+
+### 7.3 CI execution evidence
+
+PR #30 workflow `.github/workflows/ci.yml` exists on the foundation branch. Re-run of Actions run `45732607600` on 2026-11-27 still concluded **failure in ~5 seconds** with empty `runner_name`, empty job steps, and no job logs (`BlobNotFound`). This is **runner provisioning failure**, not an npm/lint/test result. It is **not PASS** and does not satisfy DGA-B15 required-check evidence.
+
+### 7.4 Gate impact
+
+- G9-F1 / G10-F1 remain as recorded in root `AGENTS.md` §3.2.
+- Full-system G9 remains **NOT READY**.
+- Production readiness remains **NOT VERIFIED**.
+- T-18 implementation conformance remains **NOT VERIFIED**.
+- TC-REPO-AUDIT-028-001 repository identity is **PARTIAL** (canonical repo confirmed; `main` tree inventoried). TC-REPO-AUDIT-028-002..008 remain **BLOCKED / NOT EXECUTED**.
+- DGA-B15 is **PARTIAL — SETTINGS INSPECTED; REQUIRED CHECKS NOT PASSED**. Live branch protection cannot be created on the current GitHub plan; Actions hosted runners did not start.
 
