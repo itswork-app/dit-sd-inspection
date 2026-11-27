@@ -1,7 +1,7 @@
 # Durable Operation Ledgers and Artifact Lifecycle — CMD-035/036/038/039/040
 
 **Document ID:** DURABLE-OPERATION-LEDGER-PROPOSAL-001  
-**Version:** 0.2.0  
+**Version:** 0.3.0  
 **Date:** 2026-11-27  
 **Status:** Engineering / Database / Security / Product review proposal — NOT APPROVED FOR IMPLEMENTATION  
 **Scope:** Offline sync operation outcomes, document generation jobs, print batch manifests/results, attendance document versions and verification history  
