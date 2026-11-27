@@ -1,7 +1,7 @@
 # Physical Database Schema and Integrity Specification
 
 **Status:** Engineering specification draft — approval required before migrations  
-**Version:** 0.4.9  
+**Version:** 0.4.10  
 **Package:** L — Physical Data Model and Integrity  
 **Date:** 2026-11-27
 
