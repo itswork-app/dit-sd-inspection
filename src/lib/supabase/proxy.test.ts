@@ -47,6 +47,32 @@ describe("updateSession", () => {
     expect(getClaims).toHaveBeenCalledOnce();
   });
 
+  it("propagates refreshed cookies to request and response while preserving request ID", async () => {
+    vi.mocked(createServerClient).mockImplementation((_url, _key, options) => {
+      return {
+        auth: {
+          getClaims: async () => {
+            if ("setAll" in options.cookies && options.cookies.setAll) {
+              await options.cookies.setAll([
+                { name: "sb-access-token", value: "synthetic-token", options: { path: "/" } }
+              ]);
+            }
+            return { data: null, error: null };
+          }
+        }
+      } as never;
+    });
+
+    const incoming = request();
+    const response = await rootProxy(incoming);
+    const requestId = incoming.headers.get("x-request-id");
+
+    expect(incoming.cookies.get("sb-access-token")?.value).toBe("synthetic-token");
+    expect(response.cookies.get("sb-access-token")?.value).toBe("synthetic-token");
+    expect(requestId).toMatch(/^[A-Za-z0-9._:-]{8,128}$/);
+    expect(response.headers.get("X-Request-Id")).toBe(requestId);
+  });
+
   it("does not make public navigation fail when refresh throws", async () => {
     getClaims.mockRejectedValue(new Error("provider detail must not escape"));
     const response = await updateSession(request());
