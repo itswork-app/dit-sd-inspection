@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 2.4.0
+**Version:** 2.4.1
 **Audit date:** 2026-11-27  
 **Branch reviewed:** `main` (post-merge PR #42; current baseline `ae271615bacae3c3b48eeaafee72ae1c6829fbf1`)  
 **Reviewed baseline HEAD:** `ae271615bacae3c3b48eeaafee72ae1c6829fbf1` (`main`, merge commit for PR #42; includes PRs #38–#42)  
@@ -30,7 +30,7 @@ These states must not be collapsed.
 
 Reviewed root `AGENTS.md` v1.3.0, MIB-001, README, DOC-MAP-001, Decision Register, RTM, RAID, PRs #38–#41 merge metadata and changed-file inventories, the exact `main` HEAD diff, and GitHub workflow/combined-status records for the audited commit. The full source diff of PR #39 was not independently re-reviewed line by line in this audit.
 
-The QA catalogue contains 413 distinct test-case definitions by line-level ID scan. TC-LOAD-001 and TC-NOTIF-001 each appear more than once as a cross-reference plus a test definition; this does not create additional unique cases. Major planned series include 48 original command-contract cases, 40 command-authorization cases, 48 table/RLS cases, 69 function-security cases, 12 T-18 execution-model cases, 10 live-inventory cases, 8 repository-audit cases, 29 notification lifecycle cases and 8 T-13 print-batch cases. They are specifications only unless an execution record explicitly proves otherwise.
+The current QA catalogue inventory was re-scanned on 2026-11-27: 560 line-start definition rows contain 558 distinct explicitly enumerated test-case IDs. Three IDs (`TC-NOTIF-052`, `TC-NOTIF-053`, `TC-NOTIF-054`) each have two definition rows and require deduplication or explicit cross-reference labelling. This supersedes the older 413-case count recorded in prior audit snapshots; historical counts remain unchanged. Shorthand ranges are not expanded by this count. These are specifications only unless a case-specific execution record explicitly proves otherwise.
 
 This documentation audit did not execute application code, migrations, live Supabase inspection, deployed RLS/grants verification, Vercel runtime checks, production provider actions, tests, backup/restore, load tests or UAT. PR-recorded local evidence is summarized in §§22–23; it is not claimed as newly executed by this audit. The earlier workflow-run wrapper exposed only PR-triggered runs and therefore did not show the main-push run. A direct GitHub Actions API query subsequently identified main-push run #77 (`45953256570`) on `706c654`, completed SUCCESS; its Quality checks job and `npm run check` step passed. The combined commit-status endpoint returned no entries, which is not evidence that the Actions workflow did not run.
 
@@ -1261,7 +1261,7 @@ Following explicit Product Owner / sole-maintainer sign-off `PO-2026-11-27-G9-TE
 ### 22.1 Updated Gate Disposition (2026-11-27 — Post Local `G11` Synthetic Suite)
 - **`G9-F1` & `G9-TECH`:** **FROZEN** (`PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001`).
 - **`G10` (Full-System Synthetic Implementation):** **ACTIVE / LOCAL SLICES `I1 → I5` IMPLEMENTED** (isolated local synthetic stack only).
-- **`G11` (Build, Migration, RLS, Concurrency & QA Verification):** **PARTIAL — LOCAL SYNTHETIC SUITE + LOCAL OPERATIONAL REHEARSALS RECORDED** (see §§22–23). **Still OPEN / NOT EXECUTED for full `G11`:** main-push hosted CI PASS on runs #77/#93 but `main` ruleset enforcement DISABLED (`DGA-B15`); remaining planned QA cases across the 413-case catalogue; managed-provider PostgreSQL + Storage restore (`DGA-B06`); approved numeric SLO and staging load test (`DGA-B08`); real-device offline UAT (`DGA-B07`). The local backup/restore rehearsal and local burst benchmark in §23 do not close their corresponding managed/staging gates.
+- **`G11` (Build, Migration, RLS, Concurrency & QA Verification):** **PARTIAL — LOCAL SYNTHETIC SUITE + LOCAL OPERATIONAL REHEARSALS RECORDED** (see §§22–23). **Still OPEN / NOT EXECUTED for full `G11`:** main-push hosted CI PASS on runs #77/#93 but `main` ruleset enforcement DISABLED (`DGA-B15`); remaining planned QA cases across the 558-ID catalogue; managed-provider PostgreSQL + Storage restore (`DGA-B06`); approved numeric SLO and staging load test (`DGA-B08`); real-device offline UAT (`DGA-B07`). The local backup/restore rehearsal and local burst benchmark in §23 do not close their corresponding managed/staging gates.
 - **`G12` (Production Release & Real Institutional Data):** **NOT VERIFIED / BLOCKED** on institutional/provider/operational items (`DGA-B01..B06`, `B08`, `B15`) and written `T-10`/`T-12` approvals for `CMD-044` and external `CMD-053` providers. No real institutional data, hosted database mutation, or staging/production deployment was performed as part of this audit.
 
 ---
@@ -1337,3 +1337,12 @@ The execution/evidence sequence is controlled by [G11-ECP-001 — G11 Evidence C
 ### 25.4 Gate disposition
 
 `G11` remains **PARTIAL**. The successful main-push CI run closes the narrow hosted workflow execution proof for merge commit `ae271615`, but does not close repository enforcement, managed recovery, real-device UAT, staging SLO/load or the remaining QA catalogue. `G12` remains **NOT VERIFIED / BLOCKED**. No provider account, managed database, staging environment, production data, deployment, secret or institutional record was accessed or modified in this documentation/evidence review.
+
+
+### 25.5 QA catalogue inventory reconciliation — 2026-11-27
+
+A fresh scan of `docs/04-quality/TEST-CASE-CATALOG-AND-UAT.md` on the PR #43 branch found 560 line-start definition rows and 558 distinct explicitly enumerated test-case IDs. The repeated definition IDs are `TC-NOTIF-052`, `TC-NOTIF-053`, and `TC-NOTIF-054` (two rows each). Shorthand ranges are counted as written and are not expanded. This replaces the older 413-case current-count statement; earlier dated snapshots are retained as historical records.
+
+The catalogue metadata is updated to v0.7.4 and now states that case-level execution mapping is incomplete. PR #43 Actions run #94 on head `682bc895591ff70775aa50c12668a7064ec57e8d` completed SUCCESS, including the configured quality-check job. The available workflow result does not expose a test-ID-to-case mapping, so it is pipeline-level evidence only. The local synthetic suites and rehearsals in §§22–23 remain valid only for the exact scripts, suites and assertions explicitly named in those sections.
+
+**WP-06 disposition:** inventory count reconciled; all 558 IDs still require a case-specific result or an explicit, owned NOT APPLICABLE / DEFERRED disposition. No catalogue case is promoted to PASS by aggregate CI success or by this static scan. The three duplicate definition rows are a catalogue hygiene item, not additional unique test cases. G11 remains PARTIAL.
