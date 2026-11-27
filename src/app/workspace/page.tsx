@@ -80,6 +80,9 @@ export default async function OperationalWorkspacePage() {
           </span>
         </Link>
         <div className="admin-inline">
+          <Link className="auth-link" href="/inspections">
+            Inspeksi
+          </Link>
           <Link className="auth-link" href="/auth/pending">
             Status Akun
           </Link>

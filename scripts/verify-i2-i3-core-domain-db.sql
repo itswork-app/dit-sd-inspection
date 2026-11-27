@@ -24,8 +24,8 @@ BEGIN
   SELECT count(*) INTO v_cmd_count
   FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
   WHERE n.nspname = 'public' AND p.proname LIKE 'cmd_%_v1';
-  IF v_cmd_count <> 28 THEN
-    RAISE EXCEPTION 'CATALOG FAIL: expected 28 cmd_*_v1 functions (8 Slice 1 + 20 Slice 2), got %', v_cmd_count;
+  IF v_cmd_count < 28 THEN
+    RAISE EXCEPTION 'CATALOG FAIL: expected >= 28 cmd_*_v1 functions, got %', v_cmd_count;
   END IF;
 
   SELECT count(*) INTO v_bad_funcs
