@@ -199,7 +199,7 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 - Current phase: **G10 FULL-SYSTEM SYNTHETIC IMPLEMENTATION; G11 LOCAL VERIFICATION PARTIAL**
 - Application source code: **I1–I5 implementation merged to `main` through PRs #39–#41; local verification evidence recorded in DGA-001 §§22–23; hosted Actions remain ABSENT/BLOCKED (`DGA-B15`)**
 - T-18 hybrid execution model: **PO-APPROVED DESIGN; implementation conformance NOT VERIFIED**
-- Notification product semantics: **POQ-01..03 APPROVED; engineering/security/institutional closure OPEN**
+- Notification product semantics: **POQ-01..03 APPROVED; G9-TECH technical design baseline FROZEN; local synthetic implementation evidence recorded; external provider dispatch and hosted/runtime verification remain gated by T-10/T-12 and G11/G12**
 - Live Supabase inspection: **NOT EXECUTED**
 - Hosted CI: **ABSENT/BLOCKED**; managed-provider DB + Storage restore: **OPEN**; staging load/SLO: **OPEN**; real-device offline UAT: **NOT EXECUTED**; production readiness: **NOT VERIFIED**
 - Scope freeze: **G9-F1 and G9-TECH FROZEN**
@@ -208,6 +208,18 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 - Production readiness: **NOT VERIFIED**
 
 ## 11. Immediate next actions
+
+## 20. Post-merge gate and evidence checkpoint — 2026-11-27
+
+The current baseline is `main` HEAD `706c654a17d415913892b64fe71de59c2a09bafe` after PRs #38–#41. This section supersedes stale current-state summaries in historical sections above; those dated snapshots remain preserved for audit history.
+
+- `G9-F1` and `G9-TECH`: **FROZEN** under the approved PO sign-off in root `AGENTS.md` v1.3.0 §3.3.
+- `G10`: **ACTIVE**; ordered `I1→I5` synthetic implementation is merged to `main` and recorded in DGA-001 §§22–23.
+- `G11`: **PARTIAL**; local test suites and local operational rehearsals are recorded in PRs #39–#41. Hosted CI is **ABSENT/BLOCKED** (`DGA-B15`); managed PostgreSQL + Storage restore is **OPEN** (`DGA-B06`); staging SLO/load is **OPEN** (`DGA-B08`); real-device offline UAT is **NOT EXECUTED** (`DGA-B07`).
+- `G12`: **NOT VERIFIED / BLOCKED**; no production deployment or real institutional data operation is established.
+- `PMA-001` records the post-merge audit. PR #42 contains the documentation-only audit and SSOT remediation; mergeability and CI must be rechecked at review time. No merge or production action is implied by this document.
+
+
 
 **Current post-merge remediation sequence (2026-11-27):** (a) complete this controlled SSOT reconciliation across MIB-001, DGA-001, README, DOC-MAP-001, RTM and RAID; (b) map G11 remaining QA and external verification to exact evidence while preserving `DGA-B06`, `B07`, `B08` and `B15` as open/absent where applicable; (c) prepare G12 provider/institutional/privacy/operations and rollback evidence without staging/production actions. The post-merge baseline and findings are recorded in [PMA-001](POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md).
 
