@@ -5,7 +5,7 @@
 **Status:** CONTROLLED MASTER DOCUMENTATION MAP — G9-TECH FROZEN; G10 ACTIVE; G11 PARTIAL (main-push CI PASS; main ruleset DISABLED); G12 BLOCKED  
 **Last updated:** 2026-11-27  
 **Applies to:** Repository `itswork-app/dit-sd-inspection`  
-**Governing Authority:** [AGENTS.md](../AGENTS.md) v1.3.0 & [Master Implementation Blueprint (MIB-001)](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) v1.1.0
+**Governing Authority:** [AGENTS.md](../AGENTS.md) v1.3.0 & [Master Implementation Blueprint (MIB-001)](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) v1.3.0
 
 ---
 
