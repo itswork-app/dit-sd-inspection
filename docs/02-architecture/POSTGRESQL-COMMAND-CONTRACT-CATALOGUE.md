@@ -1,7 +1,7 @@
 # PostgreSQL Command Contract Catalogue
 
 **Status:** PO product semantics for CMD-011–020 APPROVED; CMD-045–048 external control-plane disposition PO APPROVED; remaining application command engineering/security contracts OPEN; NOT approved for implementation  
-**Version:** 0.4.11 | **Date:** 2026-11-27  
+**Version:** 0.4.12 | **Date:** 2026-11-27  
 **Decision basis:** T-14, T-15, T-16, T-17, T-18; Package L/M; canonical permission registry v0.2.2.
 
 ## 1. Purpose and boundary
