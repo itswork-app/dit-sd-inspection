@@ -1,10 +1,10 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.16.0
+**Version:** 1.16.1
 **Audit date:** 2026-11-27  
-**Branch reviewed:** `docs/cmd-037-print-sequence-contract-2026-11-27` (documentation-only branch stacked on PR #33)  
-**Reviewed baseline HEAD:** `92e7ae871e8ddeb0485bbe0e0110b6540c57c6eb` (PR #33 head used as the documentation baseline, 2026-11-27)  
+**Branch reviewed:** `docs/cmd-038-print-batch-lifecycle-2026-11-27` (documentation-only branch stacked on PR #34) (documentation-only branch stacked on PR #33)  
+**Reviewed baseline HEAD:** `f0aecb2b584a088fcc7531c9e67fbe5b799c3d2c` (PR #34 head used as the documentation baseline, 2026-11-27) (PR #33 head used as the documentation baseline, 2026-11-27)  
 **Authority:** Master Implementation Blueprint MIB-001  
 **Status:** AUDIT IN PROGRESS — FULL-SYSTEM GATE NOT READY; G9-F1/G10-F1 FOUNDATION ACTIVE  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)
