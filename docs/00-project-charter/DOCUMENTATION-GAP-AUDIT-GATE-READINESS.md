@@ -32,7 +32,7 @@ Reviewed root `AGENTS.md` v1.3.0, MIB-001, README, DOC-MAP-001, Decision Registe
 
 The QA catalogue contains 413 distinct test-case definitions by line-level ID scan. TC-LOAD-001 and TC-NOTIF-001 each appear more than once as a cross-reference plus a test definition; this does not create additional unique cases. Major planned series include 48 original command-contract cases, 40 command-authorization cases, 48 table/RLS cases, 69 function-security cases, 12 T-18 execution-model cases, 10 live-inventory cases, 8 repository-audit cases, 29 notification lifecycle cases and 8 T-13 print-batch cases. They are specifications only unless an execution record explicitly proves otherwise.
 
-This documentation audit did not execute application code, migrations, live Supabase inspection, deployed RLS/grants verification, Vercel runtime checks, production provider actions, tests, backup/restore, load tests or UAT. PR-recorded local evidence is summarized in §§22–23; it is not claimed as newly executed by this audit. GitHub API returned no workflow runs and no combined commit statuses for audited main HEAD `706c654`; hosted CI is ABSENT, not PASS.
+This documentation audit did not execute application code, migrations, live Supabase inspection, deployed RLS/grants verification, Vercel runtime checks, production provider actions, tests, backup/restore, load tests or UAT. PR-recorded local evidence is summarized in §§22–23; it is not claimed as newly executed by this audit. The earlier workflow-run wrapper exposed only PR-triggered runs and therefore did not show the main-push run. A direct GitHub Actions API query subsequently identified main-push run #77 (`45953256570`) on `706c654`, completed SUCCESS; its Quality checks job and `npm run check` step passed. The combined commit-status endpoint returned no entries, which is not evidence that the Actions workflow did not run.
 
 ## 3. Blocking gaps
 
@@ -1310,6 +1310,7 @@ The current baseline is `main` merge commit `ae271615bacae3c3b48eeaafee72ae1c682
 
 ### 25.1 Hosted CI — main push verified
 
+- Main commit `706c654a17d415913892b64fe71de59c2a09bafe` (PR #41 merge): main-push run #77 (`45953256570`) completed SUCCESS; its Quality checks job and `npm run check` step passed.
 - PR #42 head `390855b248d28c36e0fd47feae7fb9758788da82`: GitHub Actions run #92 (`45961872626`) completed SUCCESS.
 - Main merge commit `ae271615bacae3c3b48eeaafee72ae1c6829fbf1`: GitHub Actions run #93 (`45965232365`), event `push`, branch `main`, completed SUCCESS.
 - Run #93 Quality checks job (`140392214314`) completed SUCCESS. Checkout, Node.js setup, dependency installation, and `npm run check` all completed SUCCESS.
