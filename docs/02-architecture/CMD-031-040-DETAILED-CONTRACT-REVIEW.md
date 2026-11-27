@@ -1,7 +1,7 @@
 # CMD-031–040 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security/institutional review required; NOT approved for implementation  
-**Document version:** 0.2.8  
+**Document version:** 0.2.9  
 **Date:** 2026-11-27  
 **Scope:** CMD-031 through CMD-040  
 **Repository phase:** Staged foundation implementation G9-F1/G10-F1; CMD-031–040 business operations remain feature-gated  
@@ -757,9 +757,9 @@ CMD-032 requires preservation of an approved immutable revision and historical P
 
 An inspection-derived document cannot be generated before its source session has started. Generation requires a durable session activation/start fact and the exact approved immutable inspection revision; a DRAFT/not-yet-started session returns `SESSION_NOT_STARTED` and must not create a generation job or artifact. This is a source eligibility gate, not a requirement that the session remain ACTIVE forever.
 
-After successful finalization, the generated artifact is immutable historical evidence. Closing the source session does not revoke its print eligibility. CMD-037 print/reprint of that exact final artifact remains permitted after `CLOSED` when the actor still has active `document.print` authority in the exact resource scope and the artifact passes integrity/final-state checks. No session reopen is required for printing, and print must not mutate session/inspection state.
+After successful finalization, the generated artifact is immutable evidence. Of all versions for one logical document, only the latest finalized/current version is eligible for print/reprint. A later finalized version created after a permitted revision/reopen supersedes the prior version for new print actions; the prior artifact and all its existing print events remain immutable historical records but cannot be printed/reprinted again, individually or in a batch. A pending/unfinalized replacement does not restore eligibility to the older version. CMD-037 and every CMD-038 item must validate current-version eligibility at processing time.
 
-DOC-003 does not approve new generation after closure and does not settle whether a superseded/replaced artifact version remains printable. That distinct version policy remains C37-02 OPEN. C36-02 (a generation job accepted before inspection reopen) remains a separate unresolved race; this clarification does not authorize rebinding to a new draft or decide that race.
+Closing the source session does not revoke print eligibility of the latest finalized/current version. Printing that version after `CLOSED` requires current `document.print` authority in exact scope and artifact integrity/final-state checks; no session reopen is required and print must not mutate session/inspection state. DOC-003 does not approve new generation after closure. C37-02 is CLOSED at PO-semantics level; exact version identity/current-version arbitration remains technical work under C37-01/C37-04. C36-02 (a generation job accepted before inspection reopen) remains a separate unresolved race; this clarification does not authorize rebinding to a new draft or decide that race.
 
 #### 7.6.5 Failure and access boundaries
 
@@ -882,7 +882,7 @@ Define `expected_sequence` as the caller's expected current last sequence (zero 
 
 The current physical schema does not decide whether `documents.id` is a logical document or one immutable printable version, while this request carries both `document_id` and `document_version`. C37-01 remains open: choose a stable logical-document + immutable-version FK model or one-row-per-immutable-version model, then reconcile CMD-036, ERD, physical schema and API. Every print event must bind the exact immutable output version/hash.
 
-CMD-038 must use the same per-document authorization/idempotency/sequence boundary. Each batch item runs in its own short transaction and locks only one document/counter at a time. Do not hold multiple document locks across the batch. Failed-only retries append item-attempt results; a previously successful item must never create a second successful print event. C37-02 records the still-open policy for reprinting historical/superseded versions. C37-03 records the undefined meaning of `attempt_no`; it must not become a second independent reprint counter.
+CMD-038 must use the same per-document authorization/idempotency/sequence boundary. Each batch item runs in its own short transaction and locks only one document/counter at a time. Do not hold multiple document locks across the batch. Failed-only retries append item-attempt results; a previously successful item must never create a second successful print event. DOC-003/C37-02 allows only the latest finalized/current version; superseded versions are historical-only and rejected for new individual or batch print, while their prior print history remains preserved. C37-03 records the undefined meaning of `attempt_no`; it must not become a second independent reprint counter.
 
 The existing permission registry already maps `document.print` to RESOURCE_DOCUMENT and `document.print.batch` to RESOURCE_DOCUMENT_BATCH. This review does not grant new roles or infer print authority from generic Admin/Super Admin.
 
@@ -1278,7 +1278,7 @@ The following findings are design gaps, not implementation defects. No live data
 | C36-01 | 036 | documents lacks generic source type/id, template registry/version and renderer job/outbox lifecycle | Define source-to-document FK/provenance, template version storage, job state, lease, retry, worker identity and ACL |
 | C36-02 | 032, 036 | In-flight generation accepted before inspection reopen may race with reopen | Still OPEN: PO must choose historical-artifact finalization vs stale/cancelled generation; DOC-003 does not resolve this race; no silent rebind |
 | C37-01 | 037 | Physical schema does not resolve logical document vs immutable printable-version identity; CMD-037 accepts both document_id and document_version without a corresponding version FK/table | Choose one canonical identity model and bind each print event to exact immutable output version/hash; reconcile CMD-036, ERD, physical schema and API |
-| C37-02 | 037 | Session-closure eligibility is decided by DOC-003; whether a superseded/replaced artifact remains printable when a newer version exists is still undefined | PO decision required only for superseded/replaced-version policy; do not treat CLOSED session status as a print denial |
+| C37-02 | 037/038 | Superseded/replaced-version print eligibility | CLOSED — PO APPROVED (2026-11-27): only the latest finalized/current version may be printed/reprinted; superseded versions are historical-only and rejected individually/in batches. Existing print history is retained. Technical current-version identity/arbitration remains C37-01/C37-04. |
 | C37-03 | 037/038 | print_events.attempt_no is not distinguished from per-document sequence_no or batch-item retry attempts | Define/remove attempt_no; batch retry attempt identity belongs to durable item-result model and must not duplicate successful print events |
 | C37-04 | 037 | print_events has unique (document_id, sequence_no) but no concurrency-safe sequence allocator | Review per-document counter + atomic increment/event/audit/idempotency transaction; exact object/lock/index/RLS admission remains open |
 | C38-01 | 038 | Candidate child manifest/result model is now the logical engineering recommendation, but is not admitted to the physical schema | Approve canonical item identity/hash, exact PK/FK/index/check/RLS/ACL and manifest/result admission; retain candidate-only status until approved |
