@@ -1364,3 +1364,62 @@ PO decision SES-001 is APPROVED. CMD-030 return does not authorize cross-session
 ABORT is not a general cleanup path for incomplete or hanging work. It is eligible only after a Reviewer has returned the exact submitted revision for an identified error and the physical unit is already packed/boxed and prepared for shipment such that correction/reinspection is impracticable. The responsible Inspector must submit an ABORT request with a reason; Admin/Korlap must explicitly approve or reject it. Only an approved request may transition the attempt to terminal ABORTED. If the unit remains practically accessible, the same Inspector must correct and resubmit through WF-001 in the original active session. An incomplete/hanging attempt without the qualifying Reviewer-returned packed-unit facts remains unresolved and blocks FINAL_CLOSE.
 
 ABORTED preserves the submitted revision, Reviewer return decision, evidence and audit history; it is not approval, inspection completion, a good/defective classification or print completion. A later session must create a new inspection attempt with a distinct inspection_id. CMD-013 cannot initiate, approve or bulk-apply ABORT and cannot use it to bypass unrelated closure gates. These constraints do not resolve the CMD-032 explicit authority, claim, finalizer, lock graph, RLS/ACL or physical schema blockers. No implementation or schema admission is implied.
+
+## CMD-038 batch lifecycle reconciliation addendum — 2026-11-27
+
+**Status:** proposal only; this addendum supersedes the unresolved design question in §9.5 only at the logical-contract level. It selects a durable child manifest and append-only item-result model as the engineering candidate, not as an admitted physical schema or PO-approved policy. CMD-038 remains NOT CERTIFIED.
+
+### 9.10 Durable batch acceptance
+
+- One short acceptance transaction persists the batch envelope, the complete ordered immutable item manifest, canonical request/item hashes and the batch request idempotency result.
+- The server computes requested_count; it is not accepted from the caller. Same actor/command/key/hash replays the same batch; same key with a different hash returns IDEMPOTENCY_KEY_REUSED.
+- The manifest includes stable item_key, request position and original requested document/version identity. It retains invalid or unresolvable requests as manifest items with durable rejection outcomes; it must not silently drop them.
+- Duplicate item_key and duplicate request position are rejected. Exact canonical item identity/hash serialization remains an engineering blocker.
+- Batch size, request-byte limit, rate limit, processing deadline, retry limit and retention are OPEN. No arbitrary numeric bound is introduced.
+
+### 9.11 Per-item state and idempotency
+
+print_batch_item_results is the candidate append-only attempt/result history. Each item attempt has a monotonically increasing candidate attempt_no scoped to the batch item; this is not the per-document sequence_no and must not reuse the unresolved print_events.attempt_no semantics.
+
+Each item is independently authorized and committed in its own short transaction. The same item identity + semantic request hash returns the committed result after current read authorization. A changed semantic request cannot reuse the same idempotency identity. A committed success references exactly one print_event and its sequence; replay returns that reference without incrementing the sequence.
+
+The item result is the authoritative outcome for the requested manifest item. print_events is the authoritative per-document application print/reprint event stream. A failed/rejected item with no recorded print action has no successful print event. Exact treatment of failed print_events rows and audit cardinality for rejected items remains OPEN (C38-03).
+
+### 9.12 Failed-only retry contract
+
+- retry_failed_only is server-evaluated against the referenced source batch's durable item-result history. The caller cannot supply or assert the eligible failed-item list.
+- A retry creates a new batch identity and immutable manifest derived only from source items whose latest result is explicitly classified as retryable. It stores source batch/item references and leaves the original manifest/results immutable.
+- Successful items are excluded regardless of client-supplied item keys or claims. They cannot produce another success event through retry.
+- A retry batch requires its own batch idempotency key. Duplicate submission of that retry key/hash returns the same retry batch.
+- Retryable vs terminal failure taxonomy, maximum attempts, backoff, expiry, cancellation, empty-eligible-set response and concurrent overlapping retries are OPEN. No automatic worker, lease or cancellation semantics are inferred.
+
+### 9.13 Partial recovery and aggregate projection
+
+Batch status and counts are derived from persisted manifest items and their durable result histories. They are not caller input and do not replace item outcomes. A partial process failure cannot roll back previously committed item transactions. Recovery reads the durable manifest and resumes only items with no committed terminal success; a lost acknowledgement after item commit returns the existing result and event/sequence.
+
+The batch projection must be idempotent and safe when two processors observe the same completion. No batch-wide lock may be held while processing documents. The exact projection lock, worker/synchronous execution model, lease fencing, and terminal state machine remain open.
+
+### 9.14 Authorization, scope and concurrency refinements
+
+- Recheck batch permission at acceptance and document.print permission, exact resource scope, account status and printable document/version state for every item at processing time.
+- A retry does not inherit authorization from the original batch. Reauthorize the current caller and each selected item.
+- Each item transaction locks at most one document aggregate/version and its print sequence allocator. Never hold multiple document locks or a batch-wide lock across item processing.
+- Two independent batches targeting the same document serialize through CMD-037's per-document sequence/idempotency boundary. Same-key replay never allocates a new sequence; intentional reprint requires a new key under CMD-037.
+- Mixed-scope batches remain rejected unless a PO-approved partitioning rule is explicitly recorded. No cross-scope authorization is inferred.
+
+### 9.15 Audit and outcome boundaries
+
+Batch-created/completed/partial projection events are distinct from per-document document.printed/document.reprinted events. Each successful item result references one per-document print event; the event and required audit/idempotency outcome are atomic under CMD-037. A batch event never substitutes for item-level audit. Do not report physical printer success.
+
+The exact event cardinality and whether failed/rejected items create a print event or only a durable item result plus a safe audit fact remain open. An audit failure must not allow a successful print sequence/event to commit without its required audit record.
+
+### 9.16 Open blockers and certification
+
+- C38-01: manifest/result object admission, exact identity/hash/FK/index/check/RLS/ACL model.
+- C38-02: processing model, worker identity/lease fencing (if applicable), recovery ownership and overlapping retry concurrency.
+- C38-03: item attempt vs print_events.attempt_no vs CMD-037 sequence_no, and failed/rejected audit/event cardinality.
+- C38-04: PO decisions for mixed-scope handling, retry limits/expiry/cancellation, empty retry and terminal batch states.
+- C38-05: numeric batch/request/rate/processing bounds and T-10 retention.
+- C37-01..04 remain blocking dependencies.
+
+Required tests remain PLANNED / NOT EXECUTED: immutable manifest replay and key/hash mismatch; invalid/unresolvable item retention; per-item partial commit; crash before/after commit; same-document concurrent batches; overlapping failed-only retries; successful-item exclusion; projection races; audit failure; authorization revocation between enqueue and item execution; mixed-scope and over-limit rejection. CMD-038 remains NOT CERTIFIED; CMD-031–040 certification remains 0/10.
