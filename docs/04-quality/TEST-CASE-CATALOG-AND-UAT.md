@@ -1,7 +1,7 @@
 # Test Case Catalog and UAT Plan
 
-Status: Test catalog draft — execution not started
-Version: 0.7.3
+Status: Test catalog draft — case-level execution mapping incomplete
+Version: 0.7.4
 
 ## 1. Test case format
 Each executed case records ID, build SHA, environment, preconditions, steps, expected result, actual result, evidence, tester, timestamp, and defect reference.
@@ -1109,3 +1109,14 @@ The following cases are design acceptance criteria only. All remain PLANNED / NO
 | TC-NOTIF-105 | Run fan-out/retry workers while candidate rows are being written or after lease reclaim; inject provider timeout after source commit | Workers see only a fully committed immutable snapshot; retries preserve candidate/policy/checkpoint lineage; provider I/O is outside the source transaction; stale workers cannot alter candidates or checkpoint | PLANNED / NOT EXECUTED |
 
 **Execution boundary:** these cases do not approve a physical table/header, digest, uniqueness key, isolation setting, L05 key/rank, SQL function, provider or migration. They must be mapped to exact admitted DDL, producer contracts and lock graph before execution. Static review is not a test pass.
+
+
+## Catalogue inventory and execution-evidence reconciliation — 2026-11-27
+
+A line-start definition scan of this file on branch `docs/g11-evidence-closure-plan-2026-11-27` identified **560 test-definition rows** containing **558 distinct explicitly enumerated test-case IDs**. Three IDs have duplicate definition rows and require later deduplication or explicit cross-reference labelling: `TC-NOTIF-052`, `TC-NOTIF-053`, and `TC-NOTIF-054` (two rows each). The count is based on explicit IDs in definition rows; shorthand ranges such as `TC-IFP-CHK-001..004` are not expanded into synthetic IDs by this scan.
+
+This is an inventory count, not an execution count. A case remains PLANNED / NOT EXECUTED unless a case-specific execution record identifies its test ID, exact build/commit, environment, result, evidence, executor and timestamp. Aggregate local suite results and GitHub Actions workflow success do not automatically prove individual catalogue cases.
+
+PR #43 CI run #94 on head `682bc895591ff70775aa50c12668a7064ec57e8d` completed SUCCESS for the workflow's quality-check job. That proves the configured lint, typecheck, unit-test and production-build steps passed for that commit; the workflow output does not provide a mapping from its executed tests to these 558 catalogue IDs. Existing local synthetic evidence in DGA-001 §§22–23 remains bounded to the scripts/suites and cases explicitly named there. No unlisted catalogue case is promoted to PASS by this reconciliation.
+
+**Disposition:** inventory reconciled; case-level execution mapping remains PARTIAL. Critical authorization, RLS, data-integrity, offline, notification, document/print, recovery and external-device/provider scenarios remain governed by their individual prerequisites and G11 work packages.
