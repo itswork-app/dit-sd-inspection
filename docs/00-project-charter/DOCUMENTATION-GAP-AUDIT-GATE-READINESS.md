@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 1.16.3
+**Version:** 1.16.4
 **Audit date:** 2026-11-27  
 **Branch reviewed:** `docs/cmd-038-print-batch-lifecycle-2026-11-27` (documentation-only branch stacked on PR #34)
 **Reviewed baseline HEAD:** `f0aecb2b584a088fcc7531c9e67fbe5b799c3d2c` (PR #34 head used as the documentation baseline, 2026-11-27)
@@ -1117,7 +1117,7 @@ CMD-037 has been reconciled across Detailed Contract Review v0.2.6, PostgreSQL C
 - T-13 option B and DOC-002 semantics remain unchanged: individual + bounded batch print, per-document outcomes, failed-only retries, no duplicate successful print events, reprint count increments, and no claim of physical printer confirmation.
 - Candidate allocator uses one per-document counter and one short transaction for sequence increment, print event, audit and idempotency outcome. Same-key replay does not allocate; a new intentional reprint uses a new key. Audit failure rolls back the counter and event.
 - CMD-038 item processing must use the same per-document boundary, one document/counter lock at a time, with successful item outcomes immutable.
-- C37-01 remains OPEN for logical document vs immutable version identity; C37-02 for historical/superseded-version reprint eligibility; C37-03 for `attempt_no` semantics; C37-04 for counter/allocator, exact lock, constraint and RLS/ACL approval.
+- C37-01 remains OPEN for logical document vs immutable version identity; C37-02 is CLOSED at PO semantics level (latest finalized/current version only; superseded versions historical-only and not printable); C37-03 remains OPEN for `attempt_no` semantics; C37-04 remains OPEN for counter/allocator, exact lock, constraint and RLS/ACL approval.
 
 The counter is a candidate-only object and is not admitted to the canonical 48-table inventory. The physical schema's canonical count remains unchanged. CMD-037 remains NOT CERTIFIED; CMD-031–040 remains 0/10 certified; application lock certification 0/50; global graph acyclicity NOT PROVEN; LG-21 remains PLANNED / NOT EXECUTED. G9-F1 remains FROZEN and G10-F1 ACTIVE only for bounded foundation work; CMD-037 print mutations remain outside G10-F1. No SQL, migration, grants/RLS, handler, printer integration, automated test, CI, live database, deployment or production operation was performed.
 
@@ -1141,5 +1141,5 @@ No source code, SQL, migration, route/RPC, worker, RLS/grant, live database, aut
 - Decision Register DOC-003 records that inspection-derived generation is prohibited before the source session has durably started; a pre-start request must not create a generation job/artifact.
 - Once a final immutable artifact has been generated from an eligible approved source, session closure makes it historical but does not revoke print/reprint eligibility. A current authorized Print Officer may print the exact artifact after CLOSED without reopening or mutating the session.
 - Current `document.print` authorization, exact resource scope, final immutable artifact state and integrity remain required. CLOSED itself is not a print denial reason.
-- DOC-003 does not approve new generation after closure and does not settle superseded/replaced artifact-version eligibility (C37-02 remains OPEN). It does not resolve C36-02 source-reopen finalization race.
-- Reconciled in CMD-031–040 Detailed Contract Review v0.2.8, Document Print Sequence Proposal v0.1.1, Durable Operation Ledger Proposal v0.3.1, PostgreSQL Command Contract Catalogue v0.4.13 and LOCK-MANIFEST-001 v0.4.37. CMD-038 batch items explicitly inherit the post-CLOSED print rule and do not require an ACTIVE session predicate. No implementation/schema/security admission or test evidence is implied.
+- DOC-003 does not approve new generation after closure. PO clarification now resolves C37-02: only the latest finalized/current version is eligible for individual or batch print/reprint; superseded/replaced versions remain immutable historical-only artifacts, cannot be printed again, and retain prior print events. A pending/unfinalized replacement does not restore old-version eligibility. C36-02 source-reopen finalization race remains separate and OPEN.
+- Reconciled in CMD-031–040 Detailed Contract Review v0.2.9, Document Print Sequence Proposal v0.1.2, Durable Operation Ledger Proposal v0.3.2, PostgreSQL Command Contract Catalogue v0.4.14 and LOCK-MANIFEST-001 v0.4.38. CMD-037 and CMD-038 require latest finalized/current version eligibility; superseded versions are rejected. Post-CLOSED print remains allowed for the current version without an ACTIVE-session predicate. C37-02 is closed only at PO semantics level; technical identity/arbitration and evidence remain open. No implementation/schema/security admission or test evidence is implied.
