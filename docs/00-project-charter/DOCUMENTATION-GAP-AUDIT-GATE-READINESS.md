@@ -1,14 +1,14 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 2.0.0
+**Version:** 2.1.0
 **Audit date:** 2026-11-27  
-**Branch reviewed:** `docs/g9-technical-ssot-closure` (Full-System Technical SSOT Closure from `main` `5b7fdd9`)  
-**Reviewed baseline HEAD:** `5b7fdd9` (`main` through PR #37) + Full-System Technical SSOT closure pack  
+**Branch reviewed:** `feat/i4-storage-and-pdf-renderer` (cumulative `G9-TECH` + `G10` `I1→I5` synthetic implementation + local `G11` verification from `main` `5b7fdd9`)  
+**Reviewed baseline HEAD:** `5b7fdd9` (`main` through PR #37) + `G9-TECH` freeze (`14329d2`) + `G10` synthetic implementation & local `G11` verification (`81c2234`)  
 **Authority:** Master Implementation Blueprint MIB-001  
-**Status:** TECHNICAL SSOT DESIGN CLOSURE COMPLETE (G9-TECH READY FOR PO/MAINTAINER FREEZE SIGN-OFF); EXTERNAL/INSTITUTIONAL & G11 RUNTIME GATES PRESERVED  
-**Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24); PO RESPONSIBILITY CLARIFICATION (2026-11-25); FINAL PO SEMANTIC DECISIONS APPROVED (2026-11-27)
-**G10-F1 foundation implementation:** ACTIVE (2026-11-25, following PR #26); G10 full-system synthetic implementation pending explicit G9-TECH freeze & G10 activation record
+**Status:** `G9-TECH` FROZEN; `G10` FULL-SYSTEM SYNTHETIC IMPLEMENTATION (`I1→I5`) & LOCAL `G11` SYNTHETIC SUITE PASS; HOSTED CI (`DGA-B15`) & `G12` PRODUCTION/INSTITUTIONAL GATES PRESERVED AS BLOCKED  
+**Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24); PO RESPONSIBILITY CLARIFICATION (2026-11-25); FINAL PO SEMANTIC DECISIONS & `PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001` FREEZE/ACTIVATION SIGN-OFF (2026-11-27)
+**G10 implementation status:** `G10-F1` ACTIVE (2026-11-25); `G10` FULL-SYSTEM SYNTHETIC IMPLEMENTATION ACTIVE (2026-11-27; local `I1→I5` slices & local `G11` verification passed on isolated synthetic stack)
 
 **Current gate interpretation (2026-11-25):** Historical sections below that say “G10 NOT ACTIVE” or “implementation not authorized” are dated snapshots superseded for the bounded foundation scope by the 2026-11-25 staged decision. Current state: G9-F1 foundation scope FROZEN; G10-F1 foundation implementation ACTIVE; full-system G9 NOT READY; later business-feature gates remain open; production readiness NOT VERIFIED.
 
@@ -1088,6 +1088,49 @@ The Product Owner approved all eleven RBAC-003 recommendations without amendment
 **Disposition:** RBAC-003 PO semantics APPROVED; DGA-B09 PARTIAL; DGA-B10 OPEN; DGA-B21 PARTIAL; DGA-B22 PO SEMANTICS APPROVED / TECHNICAL DESIGN OPEN. Full-system G9 remains NOT READY; G10-F1 remains limited to foundation implementation; business-feature entry gates remain applicable.
 
 
+## Current foundation implementation and verification status — 2026-11-25
+
+This addendum updates repository/implementation evidence only. It does not close the full-system DGA blockers or alter the authority of the Product Owner, institution, Engineering, Security, Database, QA or Operations.
+
+- Current review branch at checkpoint: `feat/foundation-bootstrap-v1-rebased`; baseline HEAD: `0537ef51bccacfa277a6eeab3ccaef4a0cd45979`.
+- PR #31, which records RBAC-003 Product Owner approval and documentation reconciliation, is **MERGED** to main at `44dce2cbcc052c6e909e1b0a080062a5b60d94eb`.
+- PR #30 contains the bounded foundation bootstrap and is **OPEN / NOT MERGED**. Its branch was integrated with PR #31's main commit; compare at this checkpoint reports zero commits behind main.
+- Foundation source includes the Next.js/Supabase SSR shell, verified-claims identity helper, Google OAuth callback/sign-out, request correlation, bounded JSON parser, structured allow-listed logging, local-only Supabase configuration and migration-name validator. Presence of source is not proof of runtime correctness.
+- Exact integrated HEAD CI run #60 (`45615875469`) completed as failure. The Quality checks job returned no step summaries and the job-log artifact was unavailable (404 BlobNotFound). The precise cause is undetermined. Do not classify this as a source test failure or a passing check.
+- `package-lock.json` is absent. Lint, typecheck, Vitest, Node migration tests, migration validation and production build have **NOT BEEN VERIFIED** on the exact integrated HEAD. Regression tests committed for fragmented JSON streams and request-ID propagation remain unexecuted.
+- No Supabase CLI startup/reset, migration application, hosted database operation, production deployment, production data handling, business schema, grant/RLS or privileged RPC was performed or authorized by this checkpoint.
+
+**Disposition:** G9-F1 remains FROZEN and G10-F1 remains ACTIVE only for bounded synthetic-data foundation work. Full-system G9 remains NOT READY; later feature-entry gates remain open; production readiness remains NOT VERIFIED. PR #30 is NOT READY TO MERGE until the authentic lockfile, reproducible exact-HEAD quality checks and maintainer review are complete.
+
+
+## Post-governance/static-review checkpoint — 2026-11-25
+
+- Current foundation branch: `feat/foundation-bootstrap-v1-rebased`; HEAD `ca933fe47c4ee44cf2eba262eb80522c6075bfbf`.
+- PR #30 compare to main: 103 commits ahead, 0 behind; 45 changed files at this checkpoint. PR remains OPEN / NOT MERGED.
+- MIB-001 v1.0.17, IRG-001 v1.0.6 and SSOT-AUDIT-001 v0.1.9 have been reconciled to staged G10-F1 foundation authorization. README's T-19 reference is now explicitly historical rather than describing the current repository as source-free.
+- Static source inspection covered auth claim resolution, OAuth callback/sign-out, SSR client boundaries, proxy session refresh/request correlation, JSON body parsing, safe structured logging, environment validation, health endpoint, migration-name validator and CI workflow definition. This is source review only; no code was executed and no test result is inferred.
+- CI workflow uses GitHub-hosted Actions and the latest documentation-only head has no returned workflow run evidence. The Product Owner suspects Actions quota may be exhausted; quota status was not independently confirmed. No workflow rerun was requested or performed in this continuation.
+- `package-lock.json` is still absent. No authentic dependency lock was generated. Lint, typecheck, Vitest, migration checks and production build remain NOT VERIFIED on the current head.
+
+**Disposition:** continue with CI-independent static foundation review and documentation reconciliation only. G9-F1 remains FROZEN; G10-F1 remains ACTIVE for synthetic-data foundation scope; full-system G9 remains NOT READY; later feature gates remain open; production readiness remains NOT VERIFIED. PR #30 is NOT READY TO MERGE.
+
+## 20. CI-independent static review checkpoint — 2026-11-25
+
+**Review baseline:** foundation branch commit `6108a45fac2d1cad185143986809fdf89ca71568` (107 commits ahead of `main`, zero behind at the time of review). This is a documentation/source review checkpoint, not a claim that the current branch HEAD remains this SHA after this addendum.
+
+A CI-independent static review revisited the authentication claims resolver, server-only identity helper, Supabase SSR clients, proxy session refresh and request correlation, OAuth callback and sign-out, pending-access boundary, environment validation, structured logger, bounded JSON parser, health endpoint, migration validator, package scripts and CI workflow.
+
+Findings:
+- The reviewed foundation continues to separate verified identity from authorization; successful Google authentication does not grant operational access.
+- Proxy refresh remains best-effort for public navigation; protected handlers must independently verify identity and fail closed.
+- The reviewed callback uses a fixed same-origin redirect path and generic error response; provider details are not exposed.
+- The JSON parser enforces the actual streamed byte limit, strict UTF-8 and a caller-supplied type guard.
+- No additional source-code defect was sufficiently established by static inspection to justify a speculative patch without executable verification.
+- `package-lock.json` is absent. The configured workflow currently uses `npm install`; dependency resolution is therefore not reproducible from a committed lockfile.
+- Lint, TypeScript, migration validation, Vitest, Node migration tests and production build remain NOT VERIFIED on the exact current HEAD. No CI quota exhaustion diagnosis is asserted.
+
+**Disposition:** keep PR #30 open and unmerged until an authentic generated lockfile is committed and exact-HEAD checks are executed and reviewed. No source behavior, database schema, grants/RLS, privileged RPC, production data or deployment scope is expanded by this checkpoint.
+
 ## CMD-035 operation transaction-boundary reconciliation — 2026-11-26
 
 The CMD-031–040 Detailed Contract Review v0.2.4, PostgreSQL Command Contract Catalogue v0.4.9, Durable Operation Ledger Proposal v0.1.1, LOCK-MANIFEST-001 v0.4.33 and LOCK-GRAPH-001 v0.4.26 now consistently recommend a separately committed batch-acceptance transaction followed by one short transaction per sync operation. This matches the existing durable per-operation result and partial-batch contract. Savepoints are limited to intra-operation error handling and are not treated as an equivalent commit model.
@@ -1144,6 +1187,22 @@ No source code, SQL, migration, route/RPC, worker, RLS/grant, live database, aut
 - DOC-003 does not approve new generation after closure. PO clarification now resolves C37-02: only the latest finalized/current version is eligible for individual or batch print/reprint; superseded/replaced versions remain immutable historical-only artifacts, cannot be printed again, and retain prior print events. A pending/unfinalized replacement does not restore old-version eligibility. C36-02 source-reopen finalization race remains separate and OPEN.
 - Reconciled in CMD-031–040 Detailed Contract Review v0.2.9, Document Print Sequence Proposal v0.1.2, Durable Operation Ledger Proposal v0.3.2, PostgreSQL Command Contract Catalogue v0.4.14 and LOCK-MANIFEST-001 v0.4.38. CMD-037 and CMD-038 require latest finalized/current version eligibility; superseded versions are rejected. Post-CLOSED print remains allowed for the current version without an ACTIVE-session predicate. C37-02 is closed only at PO semantics level; technical identity/arbitration and evidence remain open. No implementation/schema/security admission or test evidence is implied.
 
+## 21. Foundation blocker closure, main integration and local verification checkpoint — 2026-11-27
+
+- Integrated `main` through PR #37 (`5b7fdd9`, carrying PRs #32–#37: CMD-035..038, DOC-003, `docs/README.md`, T-19 re-audit, and early-package historical notes) into `feat/foundation-bootstrap-v1-rebased` (merge commit `9b855d6`) with zero lost history.
+- Resolved concrete foundation code, lockfile, and CI blockers discovered by executable verification:
+  - Fixed `src/lib/supabase/proxy.ts` `setAll(cookiesToSet)` to match `@supabase/ssr@0.7.0` (`SetAllCookies`), removing an invalid second `headers` parameter that caused 9 TypeScript errors and a runtime `TypeError` when session cookies were written; added regression test coverage in `src/lib/supabase/proxy.test.ts` proving cookie and `X-Request-Id` propagation.
+  - Fixed `TS2322` type-predicate mismatch in `src/lib/api/json.test.ts`.
+  - Migrated `vitest.config.ts` to ESM `vitest.config.mts`, eliminating the Vite CJS/ESM deprecation warning.
+  - Regenerated and committed an authentic `package-lock.json` verified via `npm ci --no-audit --no-fund` (replacing an out-of-sync untracked lockfile).
+  - Hardened `.github/workflows/ci.yml`: removed the temporary one-time `bootstrap-lockfile` job and its `contents: write` grant; switched `quality` to reproducible `npm ci --no-audit --no-fund` with `cache: npm`.
+- Reconciled `docs/README.md` (`DOC-MAP-001` v1.1.0) to index all **103** controlled documents under `docs/` (previously missing 23 files and misreporting count as 106), corrected `MIB-001 §1.1` precedence citation, `CMD-011..044` descriptions, `OFFLINE-SYNC-AND-RECOVERY.md` (no silent overwrite / no last-write-wins), `INSPECTION-LIFECYCLE-AND-CLAIMS.md`, `LOCK-GRAPH-001`, and `TEST-CASE-CATALOG-AND-UAT.md` (`PLANNED / NOT EXECUTED`).
+- **Local verification evidence (2026-11-27, Node v22.12.0 / npm 10.9.0):** `npm ci --no-audit --no-fund` PASS (391 packages); `eslint .` PASS (0 errors, 0 warnings); `tsc --noEmit` PASS (0 errors); `db:migrations:check` PASS (0 SQL migrations); `vitest run` PASS (8 files, 63/63 tests); `node --test scripts/check-migrations.test.mjs` PASS (5/5 tests); `next build` (Next.js 16.4.6 Turbopack) PASS (6/6 routes + `ƒ Proxy (Middleware)`).
+- **Live development runtime & Google OAuth verification (2026-11-27):** Moving root `proxy.ts` to `src/proxy.ts` resolved a live Next.js 16 `src/app/` defect where the proxy was previously ignored; adding a route-specific `Referrer-Policy: no-referrer` rule in `next.config.ts` prevented the global header rule from overwriting `/auth/callback`'s stricter policy; setting `agentRules: false` in `next.config.ts` prevents `next dev` from mutating root `AGENTS.md`. Live smoke assertions against the local production server with `.env` passed for `/`, `/api/health`, `/login`, unauthenticated `/auth/pending` (fail-closed `307 /login?error=session`), and `/auth/callback` (generic `307 /login?error=oauth_callback` with `no-referrer`). Interactive browser Google OAuth round trip on local `npm run dev` also passed end-to-end (`/login` → Google OAuth → `/auth/callback` → `/auth/pending` verified claims deny-by-default → `signOutAction` → `/login?status=signed_out`).
+- **Hosted CI evidence (`DGA-B15`):** GitHub API check-run annotation for Run `45732607600` / Check Run `140276596713` confirms the exact hosted Actions failure cause: *"The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings."* `DGA-B15` remains **PARTIAL / NOT VERIFIED** until account billing/spending limits allow hosted Actions execution and repository governance controls are verified.
+
+**Disposition:** Foundation code/build/lockfile/documentation blockers on `feat/foundation-bootstrap-v1-rebased` are resolved and locally verified. Hosted GitHub Actions execution remains blocked externally by GitHub account billing/spending limits. G9-F1 remains **FROZEN**; G10-F1 remains **ACTIVE** for bounded synthetic-data foundation work only; full-system G9 remains **NOT READY**; later business-feature gates (`DGA-B01..B22`, `F-03/F-04/F-05`, `CMD-001..054`, physical schema/RLS/grants) remain **OPEN/BLOCKED**; production readiness remains **NOT VERIFIED**. No business schema, grants/RLS, privileged RPC, production data, or deployment was introduced.
+
 
 ## 20. Full-System Technical SSOT Closure Audit (`G9-TECH`) — 2026-11-27
 
@@ -1182,3 +1241,25 @@ Following explicit Product Owner approval of the final four remaining product-se
 - **`G10` (Full-System Synthetic Implementation Activation):** **PENDING** explicit PO/maintainer sign-off & root `AGENTS.md` §3.2 update after approving this `G9-TECH` freeze.
 - **`G11` (Build, Migration, RLS, Concurrency & QA Verification):** **NOT STARTED** for business features (`413+` planned QA cases remain `PLANNED / NOT EXECUTED`).
 - **`G12` (Production Release & Real Institutional Data):** **NOT VERIFIED / BLOCKED** on external institutional/provider/operational items (`DGA-B01..B06`, `B08`, `B15`).
+
+---
+
+## 22. Full-System Synthetic Implementation (`I1`–`I5`) & Local `G11` Verification Checkpoint — 2026-11-27
+
+Following explicit Product Owner / sole-maintainer sign-off `PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001` (`DECISION-REGISTER.md`, root `AGENTS.md` v1.3.0, commit `14329d2`), ordered implementation of `IRG-001` phases `I1 → I5` and local `G11` verification was completed on isolated synthetic infrastructure across stacked feature branches:
+
+| Slice / Branch | Commit | Scope Delivered | Local Verification Executed |
+|---|---|---|---|
+| `docs/g9-technical-ssot-closure` | `14329d2` | `G9-TECH` freeze & `G10` synthetic activation (`AGENTS.md` v1.3.0, `DECISION-REGISTER.md`) | Diff & traceability audit PASS |
+| `feat/i1-i2-identity-rbac-foundation` | `ec72a5f` | Migrations 1–3 (`10` tables, `T-18` `NOLOGIN` `app_cmd_definer`/`app_worker_definer`, `RBAC-003`, `CMD-001..007`, 10 APIs, `/auth/pending`, `/admin/accounts`) | `scripts/verify-i1-i2-db.sql` PASS; `npm run check` PASS |
+| `feat/i2-i3-core-domain-projects-sessions-units` | `5060c84` | Migrations 4–6 (`19` tables, `T-14` capacity, `T-16` canonical identity, `CFG-001`/`T-17` instruments, `CMD-008..025`, 20 APIs, `/workspace`) | `scripts/verify-i2-i3-core-domain-db.sql` PASS; `npm run check` PASS |
+| `feat/i3-i4-inspection-evidence-offline-sync` | `1d014c0` | Migrations 7–9 (`14` tables, claims, immutable revisions, review SoD, `SES-001` `CMD-055/056`, evidence intent/confirm, `T-09` offline sync, `CMD-026..035`, 14 APIs, `/inspections`) | `scripts/verify-i3-i4-inspection-sync-db.sql` PASS; `npm run check` PASS |
+| `feat/i4-i5-documents-print-attendance-notifications` | `cdd1e00` | Migrations 10–12 (final `19` tables → exact `62/62` canonical `public` tables & `62/62` `ENABLE + FORCE RLS`, `CMD-036..043`, `CMD-049..052`, `CMD-054`, `POQ-01`/`POQ-03` enforcement, 11 APIs, `/notifications`; ZERO surfaces for `CMD-044`, external `CMD-053`, `CMD-045..048`) | `scripts/verify-i4-i5-docs-print-notif-db.sql` PASS; `npm run check` PASS |
+| `feat/g11-local-concurrency-and-e2e-verification` | `b66cccb` | Multi-connection parallel PostgreSQL race suite + live HTTP/JWT E2E + fix `account.ts` `created_at` column defect caught live | `scripts/verify-g11-concurrency.mjs` (`LG-01/03`, `LG-16`, `LG-21`, `LG-31`, `LG-33`, `LG-41`) PASS; `scripts/verify-g11-http-e2e.mjs` PASS; 12-migration core `pg_dump` SHA-256 `73b7db59234856ca6599522ede39afa092ffa9af3e6fae37607a31c036cb2f2e` |
+| `feat/i4-storage-and-pdf-renderer` | `81c2234` | Migration 13 (`inspection-private` bucket + `storage.objects` caller-JWT RLS + immutable originals + `cmd_authorize_artifact_download_v1`), server-side SHA-256 & magic-byte validator, deterministic `%PDF-1.4` renderer, audited 60s signed download routes (zero `service_role`) | `scripts/verify-g11-storage-pdf-e2e.mjs` PASS (MIME spoof rejected `400 EVIDENCE_INVALID`, PNG/PDF SHA-256 matched, outsider `403`, `evidence.accessed` & `document.accessed` audited); `npm run check` PASS (`13` migrations, `14/14` Vitest `87/87` tests, `5/5` Node tests, `67` Next.js 16.4.6 routes + `ƒ Proxy`) |
+
+### 22.1 Updated Gate Disposition (2026-11-27 — Post Local `G11` Synthetic Suite)
+- **`G9-F1` & `G9-TECH`:** **FROZEN** (`PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001`).
+- **`G10` (Full-System Synthetic Implementation):** **ACTIVE / LOCAL SLICES `I1 → I5` IMPLEMENTED** (isolated local synthetic stack only).
+- **`G11` (Build, Migration, RLS, Concurrency & QA Verification):** **PARTIAL — LOCAL SYNTHETIC SUITE PASS** (13 migrations, `62/62` `ENABLE + FORCE RLS`, `T-18` ACL catalog assertions, 4 DB verifiers, 6 parallel race classes, live HTTP/JWT E2E, live Private Storage + PDF E2E, `npm run check` PASS). **NOT EXECUTED / OPEN for full `G11`:** hosted GitHub Actions CI (`DGA-B15` billing blocked — **ABSENT**), remaining planned QA cases across full 413-case catalogue, numeric 100-user load/SLO test (`DGA-B08`), managed backup/restore drill (`DGA-B06`), and real-device offline UAT (`DGA-B07`).
+- **`G12` (Production Release & Real Institutional Data):** **NOT VERIFIED / BLOCKED** on external institutional/provider/operational items (`DGA-B01..B06`, `B08`, `B15`) and written `T-10`/`T-12` approvals for `CMD-044` and external `CMD-053` providers. No real institutional data, hosted database mutation, or staging/production deployment was executed.

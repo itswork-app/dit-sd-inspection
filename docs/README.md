@@ -13,14 +13,14 @@
 
 This repository serves as both the **authoritative documentation repository** and the **application implementation repository**.
 
-Documentation under `docs/` on this branch is organized into 6 functional directories containing **101** controlled documents (**102** Markdown files inside `docs/` including this index), complemented by root [AGENTS.md](../AGENTS.md) and root [README.md](../README.md). *(Foundation runtime docs `ADR-002` and `AUTHENTICATION-GOOGLE-OAUTH-SETUP.md` reside on PR #30 `feat/foundation-bootstrap-v1-rebased` until merged.)*
+Documentation under `docs/` on this branch is organized into 6 functional directories containing **103** controlled documents (**104** Markdown files inside `docs/` including this index), complemented by root [AGENTS.md](../AGENTS.md), root [README.md](../README.md), and [supabase/migrations/README.md](../supabase/migrations/README.md).
 
 ### Precedence Hierarchy (Source of Truth)
 When interpreting requirements, design, or architecture, adhere strictly to the precedence hierarchy defined in [MIB-001](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md) §1.1:
 1. **Product Owner Decisions & Approved Register:** [DECISION-REGISTER.md](00-project-charter/DECISION-REGISTER.md)
 2. **Institutional Approvals:** Formal written approvals for matters reserved to institutional legal, records, privacy, security, finance, or operational authorities (PO approval cannot substitute for them).
 3. **Approved Product Requirements & Instrument Specifications:** [PRD.md](01-product-requirements/PRD.md), [ACCEPTANCE-CRITERIA.md](01-product-requirements/ACCEPTANCE-CRITERIA.md), and controlled source instruments.
-4. **Approved Architecture Decision Records (ADRs):** [ADR-001-platform-stack.md](02-architecture/ADR-001-platform-stack.md).
+4. **Approved Architecture Decision Records (ADRs):** [ADR-001-platform-stack.md](02-architecture/ADR-001-platform-stack.md) and [ADR-002-APPLICATION-RUNTIME-AND-FOUNDATION-STACK.md](02-architecture/ADR-002-APPLICATION-RUNTIME-AND-FOUNDATION-STACK.md).
 5. **Governing Blueprints & Roadmaps:** [MIB-001](00-project-charter/MASTER-IMPLEMENTATION-BLUEPRINT.md), [DGA-001](00-project-charter/DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md), [IRG-001](00-project-charter/IMPLEMENTATION-ROADMAP-AND-RELEASE-GOVERNANCE.md).
 6. **Detailed Specifications & Planned QA Catalogue:** Architecture, domain, security, API, functional design, UX, and planned verification catalogues.
 7. **Historical Audit Packages & Working Proposals:** Informative background only; non-authoritative when superseded by higher registers.
@@ -33,7 +33,7 @@ When interpreting requirements, design, or architecture, adhere strictly to the 
 |---|---:|---|---|---|
 | [`00-project-charter/`](#3-project-charter--governance) | 26 | Governance, Charter, Gates & Traceability | `PROJECT-CHARTER.md`, `DECISION-REGISTER.md`, `MIB-001` (v1.1.0), `DGA-001` (v2.0.0), `IRG-001` (v1.1.0), `IER-001` (v1.0.0), `PTCM-001` (v1.0.0), `RTM-001` (v1.0.0), `RAID-REGISTER.md` (v1.0.0), `SSOT-AUDIT-001` (v1.0.0), `RACI-MATRIX.md`, `ENGINEERING-GOVERNANCE.md`, `GOV-MERGE-001`, `EVID-EXT-001` | Historical Audit Packages (`PACKAGE-F` through `PACKAGE-T`), `PHASE-0-PLAN.md`, `FINAL-DOCUMENTATION-CLOSURE-AUDIT.md`, `AUTH-001`, `POQ-001`, `REFERENCE-EVIDENCE-INVENTORY.md` |
 | [`01-product-requirements/`](#4-product-requirements) | 5 | Functional Requirements & Instrument Specs | `PRD.md`, `ACCEPTANCE-CRITERIA.md`, `IFP-INSTRUMENT-SPECIFICATION.md`, `STANDING-BRACKET-INSTRUMENT-SPECIFICATION.md` | `PRD-SCOPE-AND-NOTIFICATION-DOMAIN-RECONCILIATION-001.md` |
-| [`02-architecture/`](#5-system-architecture--technical-specifications) | 57 | Architecture, Database (62 tables), Security, Commands (52 app) & Locks | `SYSTEM-ARCHITECTURE.md`, `ADR-001`, `DATA-MODEL-AND-ERD.md`, `PHYSICAL-DATABASE-SCHEMA...` (v1.0.0), `TABLE-BY-TABLE-RLS...` (v1.0.0), `CANONICAL-PERMISSION-REGISTRY...` (v1.0.0), `POSTGRESQL-FUNCTION-SECURITY...` (v1.0.0), `POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md` (v1.0.0), `CONCURRENCY-001` (v1.0.0), `LOCK-PROTOCOL-DECISION-RESOLUTION-001` (v1.0.0), `LOCK-GRAPH-001` (v1.0.0), `LOCK-MANIFEST-001` (v1.0.0), `NLA-001` (v1.0.0), `NLA-L05-WRITER-MATRIX-001` (v1.0.0) | 7 Detailed Command Reviews (`CMD-001`..`054`), Technical Proposals/RFCs, Notification sub-registries, Operational/Provider runbooks |
+| [`02-architecture/`](#5-system-architecture--technical-specifications) | 59 | Architecture, Database (62 tables), Security, Commands (52 app) & Locks | `SYSTEM-ARCHITECTURE.md`, `ADR-001`, `DATA-MODEL-AND-ERD.md`, `PHYSICAL-DATABASE-SCHEMA...` (v1.0.0), `TABLE-BY-TABLE-RLS...` (v1.0.0), `CANONICAL-PERMISSION-REGISTRY...` (v1.0.0), `POSTGRESQL-FUNCTION-SECURITY...` (v1.0.0), `POSTGRESQL-COMMAND-CONTRACT-CATALOGUE.md` (v1.0.0), `CONCURRENCY-001` (v1.0.0), `LOCK-PROTOCOL-DECISION-RESOLUTION-001` (v1.0.0), `LOCK-GRAPH-001` (v1.0.0), `LOCK-MANIFEST-001` (v1.0.0), `NLA-001` (v1.0.0), `NLA-L05-WRITER-MATRIX-001` (v1.0.0) | 7 Detailed Command Reviews (`CMD-001`..`054`), Technical Proposals/RFCs, Notification sub-registries, Operational/Provider runbooks |
 | [`03-functional-design/`](#6-functional-design) | 5 | Domain Business Workflows & Session Lifecycles | `INSPECTION-LIFECYCLE-AND-CLAIMS.md`, `PROJECT-SESSION-AND-ASSIGNMENT-MODEL.md`, `OFFLINE-SYNC-AND-RECOVERY.md` (v1.0.0), `RBAC-AND-AUTHORIZATION.md`, `REPORTS-DOCUMENTS-AND-AUDIT.md` | Domain rules & state-machine semantics |
 | [`03-ux/`](#7-user-experience--design-system) | 3 | UI/UX, Navigation & Screen Wireframes | `DESIGN-SYSTEM-AND-RESPONSIVE-UX.md`, `INFORMATION-ARCHITECTURE-AND-NAVIGATION.md`, `SCREEN-FLOWS-AND-WIREFRAME-SPEC.md` | UI wireframes and token tables |
 | [`04-quality/`](#8-quality-assurance--testing) | 5 | QA Strategy, Test Catalogs & Verification | `TEST-STRATEGY-AND-QUALITY-GATES.md`, `TEST-CASE-CATALOG-AND-UAT.md`, `INSTRUMENT-REQUIREMENTS-VERIFICATION-MATRIX.md`, `CERT-001...` | `L05-TECHNICAL-REVIEW-001.md` |
@@ -86,11 +86,13 @@ When interpreting requirements, design, or architecture, adhere strictly to the 
 
 ---
 
-## 5. System Architecture & Technical Specifications (`02-architecture/` — 57 documents)
+## 5. System Architecture & Technical Specifications (`02-architecture/` — 59 documents)
 
 ### 5.1 Core Architecture, Physical Schema (62 Tables) & Security Foundation
 - [SYSTEM-ARCHITECTURE.md](02-architecture/SYSTEM-ARCHITECTURE.md): System architecture, Vercel + Supabase modular-monolith topology, and component boundaries.
 - [ADR-001-platform-stack.md](02-architecture/ADR-001-platform-stack.md): Approved ADR-001 (Vercel + Supabase PostgreSQL/Auth/RLS/Storage + GitHub).
+- [ADR-002-APPLICATION-RUNTIME-AND-FOUNDATION-STACK.md](02-architecture/ADR-002-APPLICATION-RUNTIME-AND-FOUNDATION-STACK.md): Accepted ADR-002 foundation runtime stack (Next.js 16, strict TS, `@supabase/ssr`, verified claims, local migrations).
+- [AUTHENTICATION-GOOGLE-OAUTH-SETUP.md](02-architecture/AUTHENTICATION-GOOGLE-OAUTH-SETUP.md): Development Google OAuth setup and verified interactive round-trip runbook.
 - [DATA-MODEL-AND-ERD.md](02-architecture/DATA-MODEL-AND-ERD.md): Conceptual/logical data model, entity relationships, and core schema rules.
 - [PHYSICAL-DATABASE-SCHEMA-AND-INTEGRITY-SPECIFICATION.md](02-architecture/PHYSICAL-DATABASE-SCHEMA-AND-INTEGRITY-SPECIFICATION.md) (**v1.0.0**): Canonical **62-table** physical specification, constraints, types, and indexes (`G9-TECH` design closed).
 - [PHYSICAL-COMMAND-SCHEMA-RECONCILIATION-001.md](02-architecture/PHYSICAL-COMMAND-SCHEMA-RECONCILIATION-001.md): Reconciliation between command contracts and physical schema objects.

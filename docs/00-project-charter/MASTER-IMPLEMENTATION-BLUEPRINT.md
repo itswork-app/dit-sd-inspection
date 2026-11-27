@@ -41,7 +41,7 @@ If two documents at the same authority level conflict, implementation is blocked
 - PostgreSQL is the single source of truth for application data.
 - Architecture: modular monolith unless measured evidence justifies another topology.
 - Engineering priority: cost-first lifecycle optimization without waiving security, privacy, integrity, backup, recovery, or reliability.
-- Repository: this repository is intended to hold both documentation and implementation. Documentation remains the only authorized work product in the current phase.
+- Repository: this repository is intended to hold both documentation and implementation. Documentation remains authoritative; G10-F1 also authorizes only the bounded foundation source-code and development-configuration work defined in AGENTS.md §3.2, using synthetic/test data on a dedicated branch. Later business-feature implementation and production operations remain gated.
 
 ## 3. Non-negotiable engineering invariants
 
@@ -191,17 +191,17 @@ This list is not exhaustive; the latest RAID, Decision Register, RTM and Package
 ## 10. Current project status
 
 - Repository intent: **DOCUMENTATION AND APPLICATION IN ONE REPOSITORY — CONFIRMED BY PRODUCT OWNER**
-- Documentation gap audit: **DGA-001 v1.17.0 RECORDED; blocking closure IN PROGRESS**
+- Documentation gap audit: **DGA-001 v1.18.0 RECORDED; blocking closure IN PROGRESS**
 - Mandatory agent instructions: **AGENTS.md v1.2.5 — READ BEFORE EVERY WORK SESSION/TASK**
-- Implementation roadmap: **IRG-001 v1.0.4 — CONTROLLED PLAN, NOT AUTHORIZATION**
+- Implementation roadmap: **IRG-001 v1.0.10 — CONTROLLED PLAN, NOT AUTHORIZATION**
 - SemVer policy: **2.0.0 adopted; application version not assigned before release**
 - Full-system implementation readiness: **NOT READY — see DGA-001; G10-F1 foundation implementation ACTIVE**
 - Current phase: **STAGED FOUNDATION IMPLEMENTATION — G9-F1 / G10-F1**
-- Application source code: **FOUNDATION BOOTSTRAP IN PROGRESS on feat/foundation-bootstrap-v1; runtime verification pending**
+- Application source code: **FOUNDATION BOOTSTRAP LOCALLY VERIFIED on `feat/foundation-bootstrap-v1-rebased` (PR #30 OPEN; `npm ci && npm run check` PASS 2026-11-27; hosted Actions blocked on account billing/spending limit)**
 - T-18 hybrid execution model: **PO-APPROVED DESIGN; implementation conformance NOT VERIFIED**
 - Notification product semantics: **POQ-01..03 APPROVED; engineering/security/institutional closure OPEN**
 - Live Supabase inspection: **NOT EXECUTED**
-- CI, runtime, restore, performance and UAT evidence: **NOT EXECUTED**
+- Hosted CI, live OAuth, restore, performance and UAT evidence: **NOT EXECUTED / BLOCKED**
 - Foundation scope freeze: **G9-F1 FROZEN; full-system G9 NOT READY**
 - Product Owner authorization: **CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24)**
 - G10 implementation activation: **G10-F1 ACTIVE (2026-11-25, following PR #26); later business-feature stages remain gated**
@@ -289,7 +289,7 @@ PTCM-001 consolidates the evidence-oriented closure work for F-03, F-04 and the 
 **Gate disposition remains unchanged:** PO CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED; G9 NOT READY; G10 NOT ACTIVE; implementation NOT STARTED / NOT AUTHORIZED. The next permitted work remains documentation, read-only repository inspection and static consistency analysis. No source code, SQL, migration, grants/RLS, live database inspection, provider change, runtime test, deployment or production data mutation is authorized.
 
 
-## 18. Staged implementation gate update — 2026-11-25
+## 19. Staged implementation gate update — 2026-11-25
 
 PR #26 (merge commit 4ef6fb49fcd4c4e83cc4a328a1e2125f96f6dcc2) records Product Owner decision PO-2026-11-25-IMPLEMENTATION-RESPONSIBILITY-001 and activates G9-F1/G10-F1. The Product Owner owns institutional authorization, coordination and compliance; separate institutional approval artifacts are not a prerequisite for bounded engineering development. This is not a claim that an external institution has issued written approval.
 

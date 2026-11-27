@@ -226,6 +226,41 @@ The cross-document reconciliation now records:
 **Current gate status:** G9-F1 foundation scope FROZEN; G10-F1 foundation implementation ACTIVE for the bounded synthetic-data scope; full-system G9 NOT READY; later business-feature gates remain open; production readiness NOT VERIFIED.
 
 
+## 13. Post-PR #31 integration and foundation verification checkpoint — 2026-11-25
+
+This addendum updates the live repository/PR evidence after the RBAC-003 documentation merge. Earlier sections remain historical snapshots and are not rewritten as if they were reviewed against the current implementation branch.
+
+- PR #31 (RBAC-003 and documentation reconciliation) is **MERGED** to main at `44dce2cbcc052c6e909e1b0a080062a5b60d94eb`.
+- PR #30 (bounded foundation bootstrap) is **OPEN / NOT MERGED**. Its branch `feat/foundation-bootstrap-v1-rebased` was integrated with the PR #31 main commit and compared at zero commits behind main at HEAD `0537ef51bccacfa277a6eeab3ccaef4a0cd45979`.
+- The foundation branch contains 41 implementation paths. This is source-presence evidence only; it does not prove successful build, runtime behavior, database security or production readiness.
+- Exact-head CI run #60 (`45615875469`) completed as failure, but the Quality checks job exposed no steps and the job-log artifact was unavailable. Root cause remains undetermined; no quality-check PASS is claimed.
+- `package-lock.json` remains absent. Lint, typecheck, Vitest, migration checks and production build remain NOT VERIFIED on the exact integrated HEAD. The newly added fragmented-stream and request-correlation regression tests have not been executed.
+- No hosted Supabase operation, SQL migration application, production data operation, deployment or later business-feature implementation is evidenced or authorized by this checkpoint.
+
+**Current gate disposition:** G9-F1 foundation scope FROZEN; G10-F1 foundation implementation ACTIVE only for bounded synthetic-data work; full-system G9 NOT READY; full-system G10 and later business-feature entry NOT AUTHORIZED; production readiness NOT VERIFIED. PR #30 remains NOT READY TO MERGE pending authentic lockfile, reproducible exact-head quality checks and maintainer review.
+
+
+## 14. Current foundation branch and CI-capacity checkpoint — 2026-11-25
+
+- Current branch: `feat/foundation-bootstrap-v1-rebased`; HEAD `ca933fe47c4ee44cf2eba262eb80522c6075bfbf`.
+- PR #30 remains OPEN / NOT MERGED; compare to main is 103 commits ahead, 0 behind, 45 changed files.
+- MIB-001 v1.0.17, IRG-001 v1.0.6 and DGA-001 v1.14.3 are the current governance pointers.
+- The latest HEAD has no usable GitHub Actions verification result returned. The Product Owner suspects quota exhaustion; this has not been independently established. No rerun was attempted during this continuation.
+- Static code review is not test execution. `package-lock.json` remains absent and lint, typecheck, Vitest, migration validation and production build remain NOT VERIFIED.
+
+**Gate status:** G9-F1 FROZEN; G10-F1 ACTIVE for bounded synthetic-data foundation only; full-system G9 NOT READY; later feature gates open; production readiness NOT VERIFIED. PR #30 is NOT READY TO MERGE.
+
+
+## 15. Post-PR #37 integration and foundation verification checkpoint — 2026-11-27
+
+- Current branch: `feat/foundation-bootstrap-v1-rebased` (PR #30 OPEN), integrated with `main` through PR #37 (`5b7fdd9`).
+- Current governance pointers: `MIB-001` v1.0.19, `DGA-001` v1.18.0, `IRG-001` v1.0.10, `DOC-MAP-001` (`docs/README.md`) v1.1.0, `ADR-002` v1.9.0.
+- `docs/README.md` now indexes all 103 controlled documents under `docs/` with zero missing documents and zero broken links, and corrects earlier summary discrepancies against `AGENTS.md`, `MIB-001`, `DECISION-REGISTER.md`, and `DGA-001`.
+- Foundation code/build/lockfile/CI blockers (`src/lib/supabase/proxy.ts`, `src/lib/api/json.test.ts`, `vitest.config.mts`, `package-lock.json`, `.github/workflows/ci.yml`) are resolved and locally verified via `npm ci --no-audit --no-fund && npm run check` (ESLint, TypeScript, migration check, 63/63 Vitest tests, 5/5 Node tests, Next.js 16.4.6 production build).
+- Hosted GitHub Actions execution on PR #30 remains blocked by GitHub account billing/spending limits (verified via Check Run `140276596713` annotation).
+
+**Gate status:** G9-F1 FROZEN; G10-F1 ACTIVE for bounded synthetic-data foundation only; full-system G9 NOT READY; later feature gates open; production readiness NOT VERIFIED. PR #30 awaits GitHub Actions billing resolution (or explicit solo-maintainer merge decision with recorded local verification evidence) and maintainer full-diff review.
+
 ## 13. Full-System Technical SSOT Reconciliation (`G9-TECH`) — 2026-11-27
 
 A full cross-document technical closure pass was executed on `docs/g9-technical-ssot-closure` (from `main` `5b7fdd9`) after the Product Owner approved the final four open product-semantic decisions (`C36-02`, `IDC-O10/SES-T10`, `IDC-O04..O06`, `NLA-MVP-001`).

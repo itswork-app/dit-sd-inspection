@@ -1,7 +1,7 @@
 # T-19 Repository Runtime Architecture Audit
 
 **Document ID:** T19-001  
-**Version:** 1.1.0  
+**Version:** 1.1.1  
 **Status:** AUDIT COMPLETE — DOCUMENTATION-PHASE BASELINE CONFIRMED; 2026-11-27 RE-AUDIT RECORDED  
 **Audit date:** 2026-11-24  
 **Re-audit date:** 2026-11-27  
@@ -123,7 +123,7 @@ Branch hygiene 2026-11-27: 34 merged/closed remote heads deleted. Remaining head
 
 ### 7.3 CI execution evidence
 
-PR #30 workflow `.github/workflows/ci.yml` exists on the foundation branch. Re-run of Actions run `45732607600` on 2026-11-27 still concluded **failure in ~5 seconds** with empty `runner_name`, empty job steps, and no job logs (`BlobNotFound`). This is **runner provisioning failure**, not an npm/lint/test result. It is **not PASS** and does not satisfy DGA-B15 required-check evidence.
+PR #30 workflow `.github/workflows/ci.yml` exists on the foundation branch. Re-run of Actions run `45732607600` on 2026-11-27 concluded **failure in ~3–5 seconds** with empty `runner_name`, empty job steps, and no job logs (`BlobNotFound`). Inspection of the GitHub Check Run annotation (`check-runs/140276596713/annotations`) establishes the exact cause: *"The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings."* This is an **account billing/spending-limit block before job start**, not an npm/lint/test failure. It is **not PASS** and does not satisfy DGA-B15 hosted CI required-check evidence.
 
 ### 7.4 Gate impact
 
