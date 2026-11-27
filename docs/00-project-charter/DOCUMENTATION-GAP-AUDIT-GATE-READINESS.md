@@ -1,14 +1,14 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 2.0.0
+**Version:** 2.1.0
 **Audit date:** 2026-11-27  
-**Branch reviewed:** `docs/g9-technical-ssot-closure` (Full-System Technical SSOT Closure from `main` `5b7fdd9`)  
-**Reviewed baseline HEAD:** `5b7fdd9` (`main` through PR #37) + Full-System Technical SSOT closure pack  
+**Branch reviewed:** `feat/i4-storage-and-pdf-renderer` (cumulative `G9-TECH` + `G10` `I1→I5` synthetic implementation + local `G11` verification from `main` `5b7fdd9`)  
+**Reviewed baseline HEAD:** `5b7fdd9` (`main` through PR #37) + `G9-TECH` freeze (`14329d2`) + `G10` synthetic implementation & local `G11` verification (`81c2234`)  
 **Authority:** Master Implementation Blueprint MIB-001  
-**Status:** TECHNICAL SSOT DESIGN CLOSURE COMPLETE (G9-TECH READY FOR PO/MAINTAINER FREEZE SIGN-OFF); EXTERNAL/INSTITUTIONAL & G11 RUNTIME GATES PRESERVED  
-**Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24); PO RESPONSIBILITY CLARIFICATION (2026-11-25); FINAL PO SEMANTIC DECISIONS APPROVED (2026-11-27)
-**G10-F1 foundation implementation:** ACTIVE (2026-11-25, following PR #26); G10 full-system synthetic implementation pending explicit G9-TECH freeze & G10 activation record
+**Status:** `G9-TECH` FROZEN; `G10` FULL-SYSTEM SYNTHETIC IMPLEMENTATION (`I1→I5`) & LOCAL `G11` SYNTHETIC SUITE PASS; HOSTED CI (`DGA-B15`) & `G12` PRODUCTION/INSTITUTIONAL GATES PRESERVED AS BLOCKED  
+**Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24); PO RESPONSIBILITY CLARIFICATION (2026-11-25); FINAL PO SEMANTIC DECISIONS & `PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001` FREEZE/ACTIVATION SIGN-OFF (2026-11-27)
+**G10 implementation status:** `G10-F1` ACTIVE (2026-11-25); `G10` FULL-SYSTEM SYNTHETIC IMPLEMENTATION ACTIVE (2026-11-27; local `I1→I5` slices & local `G11` verification passed on isolated synthetic stack)
 
 **Current gate interpretation (2026-11-25):** Historical sections below that say “G10 NOT ACTIVE” or “implementation not authorized” are dated snapshots superseded for the bounded foundation scope by the 2026-11-25 staged decision. Current state: G9-F1 foundation scope FROZEN; G10-F1 foundation implementation ACTIVE; full-system G9 NOT READY; later business-feature gates remain open; production readiness NOT VERIFIED.
 
@@ -1241,3 +1241,25 @@ Following explicit Product Owner approval of the final four remaining product-se
 - **`G10` (Full-System Synthetic Implementation Activation):** **PENDING** explicit PO/maintainer sign-off & root `AGENTS.md` §3.2 update after approving this `G9-TECH` freeze.
 - **`G11` (Build, Migration, RLS, Concurrency & QA Verification):** **NOT STARTED** for business features (`413+` planned QA cases remain `PLANNED / NOT EXECUTED`).
 - **`G12` (Production Release & Real Institutional Data):** **NOT VERIFIED / BLOCKED** on external institutional/provider/operational items (`DGA-B01..B06`, `B08`, `B15`).
+
+---
+
+## 22. Full-System Synthetic Implementation (`I1`–`I5`) & Local `G11` Verification Checkpoint — 2026-11-27
+
+Following explicit Product Owner / sole-maintainer sign-off `PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001` (`DECISION-REGISTER.md`, root `AGENTS.md` v1.3.0, commit `14329d2`), ordered implementation of `IRG-001` phases `I1 → I5` and local `G11` verification was completed on isolated synthetic infrastructure across stacked feature branches:
+
+| Slice / Branch | Commit | Scope Delivered | Local Verification Executed |
+|---|---|---|---|
+| `docs/g9-technical-ssot-closure` | `14329d2` | `G9-TECH` freeze & `G10` synthetic activation (`AGENTS.md` v1.3.0, `DECISION-REGISTER.md`) | Diff & traceability audit PASS |
+| `feat/i1-i2-identity-rbac-foundation` | `ec72a5f` | Migrations 1–3 (`10` tables, `T-18` `NOLOGIN` `app_cmd_definer`/`app_worker_definer`, `RBAC-003`, `CMD-001..007`, 10 APIs, `/auth/pending`, `/admin/accounts`) | `scripts/verify-i1-i2-db.sql` PASS; `npm run check` PASS |
+| `feat/i2-i3-core-domain-projects-sessions-units` | `5060c84` | Migrations 4–6 (`19` tables, `T-14` capacity, `T-16` canonical identity, `CFG-001`/`T-17` instruments, `CMD-008..025`, 20 APIs, `/workspace`) | `scripts/verify-i2-i3-core-domain-db.sql` PASS; `npm run check` PASS |
+| `feat/i3-i4-inspection-evidence-offline-sync` | `1d014c0` | Migrations 7–9 (`14` tables, claims, immutable revisions, review SoD, `SES-001` `CMD-055/056`, evidence intent/confirm, `T-09` offline sync, `CMD-026..035`, 14 APIs, `/inspections`) | `scripts/verify-i3-i4-inspection-sync-db.sql` PASS; `npm run check` PASS |
+| `feat/i4-i5-documents-print-attendance-notifications` | `cdd1e00` | Migrations 10–12 (final `19` tables → exact `62/62` canonical `public` tables & `62/62` `ENABLE + FORCE RLS`, `CMD-036..043`, `CMD-049..052`, `CMD-054`, `POQ-01`/`POQ-03` enforcement, 11 APIs, `/notifications`; ZERO surfaces for `CMD-044`, external `CMD-053`, `CMD-045..048`) | `scripts/verify-i4-i5-docs-print-notif-db.sql` PASS; `npm run check` PASS |
+| `feat/g11-local-concurrency-and-e2e-verification` | `b66cccb` | Multi-connection parallel PostgreSQL race suite + live HTTP/JWT E2E + fix `account.ts` `created_at` column defect caught live | `scripts/verify-g11-concurrency.mjs` (`LG-01/03`, `LG-16`, `LG-21`, `LG-31`, `LG-33`, `LG-41`) PASS; `scripts/verify-g11-http-e2e.mjs` PASS; 12-migration core `pg_dump` SHA-256 `73b7db59234856ca6599522ede39afa092ffa9af3e6fae37607a31c036cb2f2e` |
+| `feat/i4-storage-and-pdf-renderer` | `81c2234` | Migration 13 (`inspection-private` bucket + `storage.objects` caller-JWT RLS + immutable originals + `cmd_authorize_artifact_download_v1`), server-side SHA-256 & magic-byte validator, deterministic `%PDF-1.4` renderer, audited 60s signed download routes (zero `service_role`) | `scripts/verify-g11-storage-pdf-e2e.mjs` PASS (MIME spoof rejected `400 EVIDENCE_INVALID`, PNG/PDF SHA-256 matched, outsider `403`, `evidence.accessed` & `document.accessed` audited); `npm run check` PASS (`13` migrations, `14/14` Vitest `87/87` tests, `5/5` Node tests, `67` Next.js 16.4.6 routes + `ƒ Proxy`) |
+
+### 22.1 Updated Gate Disposition (2026-11-27 — Post Local `G11` Synthetic Suite)
+- **`G9-F1` & `G9-TECH`:** **FROZEN** (`PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001`).
+- **`G10` (Full-System Synthetic Implementation):** **ACTIVE / LOCAL SLICES `I1 → I5` IMPLEMENTED** (isolated local synthetic stack only).
+- **`G11` (Build, Migration, RLS, Concurrency & QA Verification):** **PARTIAL — LOCAL SYNTHETIC SUITE PASS** (13 migrations, `62/62` `ENABLE + FORCE RLS`, `T-18` ACL catalog assertions, 4 DB verifiers, 6 parallel race classes, live HTTP/JWT E2E, live Private Storage + PDF E2E, `npm run check` PASS). **NOT EXECUTED / OPEN for full `G11`:** hosted GitHub Actions CI (`DGA-B15` billing blocked — **ABSENT**), remaining planned QA cases across full 413-case catalogue, numeric 100-user load/SLO test (`DGA-B08`), managed backup/restore drill (`DGA-B06`), and real-device offline UAT (`DGA-B07`).
+- **`G12` (Production Release & Real Institutional Data):** **NOT VERIFIED / BLOCKED** on external institutional/provider/operational items (`DGA-B01..B06`, `B08`, `B15`) and written `T-10`/`T-12` approvals for `CMD-044` and external `CMD-053` providers. No real institutional data, hosted database mutation, or staging/production deployment was executed.
