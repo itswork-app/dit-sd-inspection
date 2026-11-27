@@ -80,6 +80,6 @@ Following PO/sole-maintainer sign-off `PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001` 
 
 Current `main` HEAD is `ae271615bacae3c3b48eeaafee72ae1c6829fbf1`. Main-push GitHub Actions run #93 (`45965232365`) completed SUCCESS on this merge commit; its Quality checks job and `npm run check` step passed. [View run #93](https://github.com/itswork-app/dit-sd-inspection/actions/runs/45965232365).
 
-Repository ruleset `main` (ID `28208385`) is currently DISABLED. Therefore CI execution is verified, but branch enforcement is not. G11 remains PARTIAL: managed PostgreSQL + Storage restore, real-device offline UAT, staging SLO/load and case-level execution mapping for the 558-ID QA catalogue remain open. G12 remains NOT VERIFIED / BLOCKED.
+Repository ruleset `main` (ID `28208385`) is currently DISABLED. Therefore CI execution is verified, but branch enforcement is not. G11 remains PARTIAL: managed PostgreSQL + Storage restore, real-device offline UAT, staging SLO/load and case-level execution mapping for the 558-ID QA catalogue remains open; 25 test-source files were scanned and contain no explicit catalogue-ID references. G12 remains NOT VERIFIED / BLOCKED.
 
-See [DGA-001 v2.4.1](docs/00-project-charter/DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) and [G11-ECP-001 v1.0.1](docs/00-project-charter/G11-EVIDENCE-CLOSURE-PLAN.md) for the evidence boundaries, execution sequence and acceptance criteria.
+See [DGA-001 v2.4.2](docs/00-project-charter/DOCUMENTATION-GAP-AUDIT-GATE-READINESS.md) and [G11-ECP-001 v1.0.2](docs/00-project-charter/G11-EVIDENCE-CLOSURE-PLAN.md) for the evidence boundaries, execution sequence and acceptance criteria.
