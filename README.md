@@ -40,7 +40,7 @@ The current [Documentation Gap Audit — Gate Implementation Readiness](docs/00-
 
 The [Decision Register](docs/00-project-charter/DECISION-REGISTER.md) is the index of approved and open Product Owner decisions. The [T-19 Repository Runtime Architecture Audit](docs/02-architecture/T19-REPOSITORY-RUNTIME-ARCHITECTURE-AUDIT.md) is a historical architecture baseline; the current staged foundation implementation status and scope are controlled by this README, root AGENTS.md, MIB-001 and DGA-001.
 
-Notification lifecycle design: [NLA-001 — Notification Lifecycle and Delivery Architecture](docs/02-architecture/NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md) documents the approved INS-015 product policy and POQ-01..04 semantics for recipient scope, channels, retries, audit and escalation. Technical selector, snapshot, dispatch, worker, schema, security and runtime admission remain open; this is not implementation authorization.
+Notification lifecycle design: [NLA-001 — Notification Lifecycle and Delivery Architecture](docs/02-architecture/NOTIFICATION-LIFECYCLE-AND-DELIVERY-ARCHITECTURE.md) documents the approved INS-015 product policy and POQ-01..04 semantics for recipient scope, channels, retries, audit and escalation. The technical design baseline is included in the frozen G9-TECH SSOT; local synthetic implementation and verification evidence is tracked in DGA-001. External provider dispatch remains gated by written `T-10`/`T-12` approvals, and hosted/runtime evidence remains subject to G11/G12 gates.
 
 For the complete proposed command inventory, see the [CMD-001–054 Cross-Command Reconciliation](docs/02-architecture/CMD-001-054-CROSS-COMMAND-RECONCILIATION.md) and its seven linked detailed command reviews. These are engineering proposals, not executable-contract approval. See docs/00-project-charter/, docs/01-product-requirements/, docs/02-architecture/, docs/03-functional-design/, docs/03-ux/, and docs/04-quality/ for detailed specifications.
 
@@ -51,7 +51,7 @@ The current static reconciliation is recorded in [SSOT-AUDIT-001](docs/00-projec
 **Governance:** `G10` Full-System Synthetic Implementation (`AGENTS.md` v1.3.0 §3 & §3.3) authorizes ordered `I1 → I5` engineering implementation and local verification on dedicated feature branches using synthetic/test data only. It strictly prohibits real institutional personal/evidence data, production/staging deployment, live hosted database mutation, enabling `CMD-044` (`export-audit`) or external notification provider dispatch adapters (`CMD-053` email/push / `INT-NOTIF-001`) prior to written `T-10`/`T-12` approvals, and creating any application surface for PO-excluded external control-plane IDs `CMD-045..048`. `GOV-MERGE-001` continues to govern documentation-only merges; code PRs require actual automated checks and documented solo-maintainer review.
 
 
-## Foundation branch checkpoint — 2026-11-27
+## Historical foundation branch checkpoint — 2026-11-27
 
 ## Post-merge audit and current evidence checkpoint — 2026-11-27
 
@@ -65,7 +65,7 @@ See [PMA-001 — Post-Merge Repository Audit](docs/00-project-charter/POST-MERGE
 
 PR #30 (`feat/foundation-bootstrap-v1-rebased`) is OPEN and unmerged. The branch is integrated with `main` through PR #37 (`5b7fdd9`), commits a verified `package-lock.json`, uses reproducible `npm ci --no-audit --no-fund` in `.github/workflows/ci.yml`, activates `src/proxy.ts` for Next.js 16 `src/app/` runtime, preserves `Referrer-Policy: no-referrer` on `/auth/callback`, disables `next dev` auto-modification of `AGENTS.md` (`agentRules: false`), and passes the full local quality gate (`npm ci --no-audit --no-fund && npm run check`), non-mutating live runtime smoke tests, and interactive development Google OAuth sign-in/sign-out round trip against `.env` (deny-by-default `/auth/pending` verified). Hosted GitHub Actions execution on PR #30 remains blocked by the repository account's billing/spending limit (GitHub Check Run `140276596713` annotation: *"The job was not started because recent account payments have failed or your spending limit needs to be increased"*). Do not interpret local checks as hosted GitHub Actions CI PASS, full-system G9 readiness, or production readiness.
 
-## Full-system synthetic implementation & local G11 checkpoint — 2026-11-27
+## Historical full-system synthetic implementation & local G11 checkpoint — 2026-11-27
 
 Following PO/sole-maintainer sign-off `PO-2026-11-27-G9-TECH-G10-SYNTHETIC-001` (`AGENTS.md` v1.3.0), all four synthetic implementation slices (`I1 → I5`), local `G11` multi-connection concurrency & HTTP/JWT E2E suites, and private Supabase Storage + deterministic `%PDF-1.4` integration were implemented and locally verified on stacked branches culminating in `feat/i4-storage-and-pdf-renderer`:
 
