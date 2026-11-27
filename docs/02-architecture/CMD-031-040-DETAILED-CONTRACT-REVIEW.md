@@ -1,7 +1,7 @@
 # CMD-031–040 Detailed Contract Review
 
 **Status:** Engineering contract review — proposal only; PO/security/institutional review required; NOT approved for implementation  
-**Document version:** 0.2.6  
+**Document version:** 0.2.7  
 **Date:** 2026-11-27  
 **Scope:** CMD-031 through CMD-040  
 **Repository phase:** Staged foundation implementation G9-F1/G10-F1; CMD-031–040 business operations remain feature-gated  
@@ -1273,7 +1273,11 @@ The following findings are design gaps, not implementation defects. No live data
 | C37-02 | 037 | T-13/DOC-002 do not explicitly state whether historical/superseded versions remain eligible for reprint | PO disposition required; until decided, fail closed outside approved current-printable policy |
 | C37-03 | 037/038 | print_events.attempt_no is not distinguished from per-document sequence_no or batch-item retry attempts | Define/remove attempt_no; batch retry attempt identity belongs to durable item-result model and must not duplicate successful print events |
 | C37-04 | 037 | print_events has unique (document_id, sequence_no) but no concurrency-safe sequence allocator | Review per-document counter + atomic increment/event/audit/idempotency transaction; exact object/lock/index/RLS admission remains open |
-| C38-01 | 038 | print_batches/print_events exist but full item manifest, stable item key and durable outcomes for invalid/unresolvable items are unclear | Decide whether print_batch_items is required; define worker/lease and aggregate reconciliation semantics |
+| C38-01 | 038 | Candidate child manifest/result model is now the logical engineering recommendation, but is not admitted to the physical schema | Approve canonical item identity/hash, exact PK/FK/index/check/RLS/ACL and manifest/result admission; retain candidate-only status until approved |
+| C38-02 | 038 | Item orchestration/recovery ownership and lease model are undefined; overlapping retries may race | Decide synchronous vs worker processing, recovery authority, lease/fencing if needed, and whether overlapping retry batches are permitted |
+| C38-03 | 037/038 | Item attempt identity, print_events.attempt_no, CMD-037 sequence_no and failed-item audit/event cardinality are not aligned | Define one authoritative attempt identity and exact success/failure audit/event cardinality; preserve CMD-037 sequence as reprint ordinal |
+| C38-04 | 038 | Mixed-scope behavior, retry limits/expiry/cancellation, empty retry and terminal batch states are unresolved | PO must approve mixed-scope reject/partition policy and retry/terminal lifecycle semantics |
+| C38-05 | 038 | Numeric batch/request/rate/processing bounds and retention are not evidenced | Derive numeric bounds from workload/UX/provider evidence; T-10 governs retention; do not invent values |
 | C39-01 | 039 | attendance_records lacks location/assignment linkage; attendance_documents lacks upload-intent, MIME/size/version/replacement metadata | Define exact location scope relation and complete two-phase upload schema; align with T-08 and T-10 |
 | C40-01 | 040 | No explicit attendance verification history object; attendance.rejected event is not clearly in the event catalogue | Define immutable decision history, exact state machine, rejection event and re-verification rules |
 | C40-02 | 040 | Uploader/verifier SoD and actual institutional verifier authority remain unresolved | Obtain written institutional authority; do not invent or silently waive SoD |
