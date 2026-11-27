@@ -2,14 +2,14 @@
 
 **Document ID:** MIB-001  
 **Status:** CONTROLLED BASELINE — G9-TECH FROZEN; G10 FULL-SYSTEM SYNTHETIC IMPLEMENTATION ACTIVE; G11 PARTIAL; G12 BLOCKED  
-**Version:** 1.2.0  
+**Version:** 1.3.0  
 **Last reviewed:** 2026-11-27  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Product Owner authorization:** CONDITIONAL IMPLEMENTATION AUTHORIZATION RECEIVED (2026-11-24); FINAL PO SEMANTIC DECISIONS APPROVED (2026-11-27)
 **G10 full-system synthetic implementation activation:** ACTIVE (2026-11-27; PO sign-off recorded in root `AGENTS.md` §3.3 and Decision Register; phases I1–I5 implemented on isolated synthetic infrastructure)  
 **Scope-freeze status:** G9-F1 FOUNDATION SCOPE FROZEN; G9-TECH FULL-SYSTEM TECHNICAL SSOT FROZEN; G10 ACTIVE; G11 PARTIAL; PRODUCTION G12 NOT VERIFIED / BLOCKED
 
-**Current gate interpretation (2026-11-27; post-merge baseline `main` `706c654`):** G9-F1 and G9-TECH are FROZEN; G10 full-system synthetic implementation is ACTIVE (I1–I5 implemented locally with synthetic data); G11 is PARTIAL (local verification evidence recorded, hosted CI absent, managed restore/staging SLO/real-device UAT open); G12 is NOT VERIFIED / BLOCKED. Dated sections below that state G9 NOT READY or G10 NOT ACTIVE are historical snapshots superseded by this current status and root `AGENTS.md` v1.3.0 §3.3.
+**Current gate interpretation (2026-11-27; post-merge baseline `main` `ae271615`):** G9-F1 and G9-TECH are FROZEN; G10 full-system synthetic implementation is ACTIVE (I1–I5 implemented locally with synthetic data); G11 is PARTIAL (main-push hosted CI passed on merge commit `ae271615` in run #93, but the `main` ruleset is DISABLED; managed restore/staging SLO/real-device UAT remain open); G12 is NOT VERIFIED / BLOCKED. Dated sections below that state earlier gate dispositions are historical snapshots superseded by this current status and root `AGENTS.md` v1.3.0 §3.3.
 
 ## 1. Purpose and authority
 
@@ -317,11 +317,26 @@ Following Product Owner approval of `C36-02`, `IDC-O10/SES-T10`, `IDC-O04..O06`,
 
 ## 20. Post-merge gate and evidence checkpoint — 2026-11-27
 
-The current baseline is `main` HEAD `706c654a17d415913892b64fe71de59c2a09bafe` after PRs #38–#41. This section supersedes stale current-state summaries in historical sections above; those dated snapshots remain preserved for audit history.
+The baseline recorded in this historical checkpoint was `main` HEAD `706c654a17d415913892b64fe71de59c2a09bafe` after PRs #38–#41. Section §21 supersedes its main-head and CI status; this section remains preserved for audit history.
 
 - `G9-F1` and `G9-TECH`: **FROZEN** under the approved PO sign-off in root `AGENTS.md` v1.3.0 §3.3.
 - `G10`: **ACTIVE**; ordered `I1→I5` synthetic implementation is merged to `main` and recorded in DGA-001 §§22–23.
-- `G11`: **PARTIAL**; local test suites and local operational rehearsals are recorded in PRs #39–#41. Hosted CI is **ABSENT/BLOCKED** (`DGA-B15`); managed PostgreSQL + Storage restore is **OPEN** (`DGA-B06`); staging SLO/load is **OPEN** (`DGA-B08`); real-device offline UAT is **NOT EXECUTED** (`DGA-B07`).
+- `G11`: **PARTIAL**; local test suites and local operational rehearsals are recorded in PRs #39–#41. Hosted main-push CI passed on PR #42 merge commit in run #93; repository ruleset enforcement is **DISABLED** (`DGA-B15`); managed PostgreSQL + Storage restore is **OPEN** (`DGA-B06`); staging SLO/load is **OPEN** (`DGA-B08`); real-device offline UAT is **NOT EXECUTED** (`DGA-B07`).
 - `G12`: **NOT VERIFIED / BLOCKED**; no production deployment or real institutional data operation is established.
-- `PMA-001` records the post-merge audit. PR #42 contains the documentation-only audit and SSOT remediation; mergeability and CI must be rechecked at review time. No merge or production action is implied by this document.
+- `PMA-001` records the post-merge audit. PR #42 is merged. Current G11 evidence and the remaining closure sequence are recorded in DGA-001 v2.4.0 and G11-ECP-001. No production action is implied by this document.
 
+
+
+## 21. Post-PR #42 CI and G11 evidence checkpoint — 2026-11-27
+
+The current `main` baseline is merge commit `ae271615bacae3c3b48eeaafee72ae1c6829fbf1` (PR #42). The hosted CI workflow `.github/workflows/ci.yml` ran on the main push as run #93 (`45965232365`) and completed SUCCESS. Its Quality checks job and `npm run check` step passed. PR #42 head run #92 also completed SUCCESS. See [run #93](https://github.com/itswork-app/dit-sd-inspection/actions/runs/45965232365).
+
+The repository ruleset named `main` (ID `28208385`) was returned by GitHub with enforcement `disabled`. The available integration could not read the branch-protection endpoint (HTTP 403); no claim is made about settings that could not be inspected. Therefore hosted workflow execution is evidenced, but repository enforcement is not closed.
+
+Current disposition:
+- `G9-F1` / `G9-TECH`: **FROZEN**.
+- `G10`: **ACTIVE**; `I1→I5` implemented on isolated synthetic infrastructure.
+- `G11`: **PARTIAL**; main-push CI run #93 PASS; ruleset enforcement DISABLED; managed PostgreSQL + Storage restore, real-device offline UAT, staging load/SLO and remaining QA catalogue evidence remain open.
+- `G12`: **NOT VERIFIED / BLOCKED**.
+
+The detailed execution and evidence acceptance matrix is [G11-ECP-001 — G11 Evidence Closure Plan](G11-EVIDENCE-CLOSURE-PLAN.md) v1.0.0 and the active gap queue is DGA-001 v2.4.0. This checkpoint does not authorize provider changes, staging/production deployment, real institutional data use or production operations.
