@@ -1,9 +1,9 @@
 # Post-Merge Repository Audit — Dit. SD Inspection
 
 **Document ID:** PMA-001  
-**Version:** 1.0.0  
+**Version:** 1.1.0  
 **Audit date:** 2026-11-27  
-**Status:** AUDIT COMPLETE — DOCUMENTATION REMEDIATION OPEN  
+**Status:** AUDIT COMPLETE — SSOT DOCUMENTATION REMEDIATION INCLUDED; RUNTIME / EXTERNAL GATES OPEN  
 **Repository:** `itswork-app/dit-sd-inspection`  
 **Reviewed branch:** `main`  
 **Reviewed HEAD:** `706c654a17d415913892b64fe71de59c2a09bafe`  
@@ -89,11 +89,11 @@ Evidence limitations are explicit and remain binding:
 
 | ID | Severity | Finding | Evidence / impact | Required disposition |
 |---|---|---|---|---|
-| PMA-F01 | HIGH | MIB-001 current-state header is stale | MIB-001 still says G9-TECH is ready for freeze sign-off and G10 full-system implementation is pending. Root AGENTS.md §3.3 and DGA-001 §22 record the approved freeze and active G10 implementation. This can misdirect future work authorization. | Update MIB-001 metadata and current gate summary; preserve dated historical snapshots. |
-| PMA-F02 | HIGH | DGA-001 executive summary and blocker table are not reconciled to §22–§23 | DGA-001 §1 and early blocker/gate sections retain pre-implementation conclusions. §22 records G9-TECH frozen and G10 active; §23 records local backup/restore and load rehearsals, while §22.1 still says those drills were not executed. Readers may mistake local evidence as absent or treat old conclusions as current. | Publish a controlled DGA-001 revision: current executive disposition, current main HEAD/branch metadata, explicit local-vs-managed/staging evidence boundaries, and historical labels for superseded snapshots. Do not close DGA-B06/B08/B15 or G12. |
-| PMA-F03 | MEDIUM | DGA-001 audit provenance points to an old feature branch and baseline | DGA-001 header still identifies `feat/i4-storage-and-pdf-renderer` and baseline `5b7fdd9`, although the current reviewed main includes PRs #38–#41 and is at `706c654`. | Update reviewed branch/HEAD metadata in the next DGA revision; retain the old baseline in its historical section. |
-| PMA-F04 | MEDIUM | DOC-MAP-001 metadata is behind governing documents | The index identifies AGENTS.md v1.2.5 and DGA-001 v2.0.0, and its gate summary says G9-TECH is awaiting sign-off and G10 is pending. Actual current versions/status are AGENTS.md v1.3.0, DGA-001 v2.2.0, G9-TECH frozen and G10 active. | Corrected in this audit branch: DOC-MAP-001 v1.2.0 updates authority/version and current gate summary, and indexes this audit. |
-| PMA-F05 | LOW | README route-count metadata differs from the latest recorded build | README reports 67 Next.js routes; PR #40 and DGA-001 §23.1 record 68 routes. | Reconcile against a fresh build or the exact PR #40 build artifact; then update README and any repeated route counts consistently. |
+| PMA-F01 | HIGH | MIB-001 current-state header is stale | MIB-001 still says G9-TECH is ready for freeze sign-off and G10 full-system implementation is pending. Root AGENTS.md §3.3 and DGA-001 §22 record the approved freeze and active G10 implementation. This can misdirect future work authorization. | **Remediated in this PR branch:** MIB-001 v1.2.0 updates authority, gate table, current status and post-merge checkpoint; dated snapshots remain preserved. |
+| PMA-F02 | HIGH | DGA-001 executive summary and blocker table are not reconciled to §22–§23 | DGA-001 §1 and early blocker/gate sections retain pre-implementation conclusions. §22 records G9-TECH frozen and G10 active; §23 records local backup/restore and load rehearsals, while §22.1 still says those drills were not executed. Readers may mistake local evidence as absent or treat old conclusions as current. | **Remediated in this PR branch:** DGA-001 v2.3.0 updates executive disposition, main HEAD/branch metadata, blocker statuses and local-vs-managed/staging evidence boundaries; remaining external/runtime gates stay open. |
+| PMA-F03 | MEDIUM | DGA-001 audit provenance points to an old feature branch and baseline | DGA-001 header still identifies `feat/i4-storage-and-pdf-renderer` and baseline `5b7fdd9`, although the current reviewed main includes PRs #38–#41 and is at `706c654`. | **Remediated in this PR branch:** DGA-001 v2.3.0 identifies audited `main` HEAD `706c654`; prior branch/commit provenance remains in historical checkpoint sections. |
+| PMA-F04 | MEDIUM | DOC-MAP-001 metadata is behind governing documents | The index identified AGENTS.md v1.2.5 and DGA-001 v2.0.0, and its gate summary said G9-TECH was awaiting sign-off and G10 pending. | **Remediated in this PR branch:** DOC-MAP-001 v1.2.0 identifies AGENTS.md v1.3.0, MIB-001 v1.2.0, DGA-001 v2.3.0, RTM-001 v1.1.0, RAID-001 v1.1.0 and current gate status. |
+| PMA-F05 | LOW | README route-count metadata differs from the latest recorded build | Root README's current implementation summary reported 67 Next.js routes, while PR #41 records 68 routes. | **Remediated as a documentation discrepancy in this PR branch:** root README now reports 68 routes from the PR #41 recorded build. No fresh build was run by this audit; the older 67-route feature-branch checkpoint is explicitly labelled historical. |
 | PMA-F06 | INFO | Hosted CI evidence is absent on the audited main HEAD | GitHub returned an empty workflow-run list and empty combined commit-status list for `706c654`. This is not a failed test and is not a pass. | Keep DGA-B15 BLOCKED/ABSENT until a hosted runner actually executes the required workflow successfully. |
 
 ## 6. Current risk and gate disposition
@@ -118,9 +118,23 @@ Evidence limitations are explicit and remain binding:
 ## 8. Audit declaration
 
 - Reviewed branch/HEAD: `main` / `706c654a17d415913892b64fe71de59c2a09bafe`.
-- Files changed by this audit: this report and DOC-MAP-001 only.
+- Files changed by this audit/remediation PR branch: `README.md`, `docs/README.md` (DOC-MAP-001), `MIB-001`, `DGA-001`, `RTM-001`, `RAID-001`, and this PMA-001 report (7 files total).
 - Application source, scripts, SQL migrations, schema, grants/RLS, secrets, hosted database, deployment and production data: **not changed**.
 - Tests rerun by this audit: **none**. PR-recorded results are identified as previously recorded evidence, not new execution.
 - Decisions made: no new product or technical decision; gate state follows existing PO sign-off and AGENTS.md.
 - Decisions still required: no new PO semantic decision identified by this audit; remediation and external/runtime evidence remain open as listed.
 - Out-of-scope actions: **none**.
+## 9. SSOT remediation completed in PR #42 branch
+
+The following current-state documentation drift is corrected in the same documentation-only review branch:
+
+| Artifact | Updated version/state | Remediation |
+|---|---|---|
+| MIB-001 | v1.2.0 | Current G9/G10/G11/G12 state, authority, gate table and post-merge checkpoint updated; dated snapshots retained as historical. |
+| DGA-001 | v2.3.0 | Executive summary, audited main HEAD, B06/B07/B08/B15 dispositions and local-versus-managed/staging evidence boundary reconciled. |
+| DOC-MAP-001 | v1.2.0 | Governing versions, current gate summary, controlled document counts and audit index updated. |
+| RTM-001 | v1.1.0 | Current evidence overlay added; remaining planned cases distinguished from local execution evidence. |
+| RAID-001 | v1.1.0 | Current gate/evidence overlay added; I-012 and D-025 CI/scope wording reconciled. |
+| Root README | Current status | G11 corrected to PARTIAL, route count reconciled to the PR #41 recorded 68-route build, document count updated to 104, and stale notification status corrected. |
+
+The remaining hosted CI absence (`DGA-B15`), managed PostgreSQL + Storage restore (`DGA-B06`), real-device offline UAT (`DGA-B07`), staging SLO/load (`DGA-B08`), and G12 production readiness remain open/blocked. This documentation remediation does not close them. The complete seven-file diff is subject to PR #42 maintainer review; no merge has been performed.
