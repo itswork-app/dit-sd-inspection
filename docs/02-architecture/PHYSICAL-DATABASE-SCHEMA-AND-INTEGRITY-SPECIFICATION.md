@@ -470,3 +470,21 @@ The current `documents` row does not establish whether it represents a logical d
 The existing `print_events.attempt_no` has no agreed semantics relative to `sequence_no` or CMD-038 item retry attempts. Do not use it as an independent reprint counter. The exact decision, field location and uniqueness rules remain OPEN.
 
 Historical/superseded-version reprint eligibility is a PO decision not stated in T-13/DOC-002; no new eligibility is inferred. The candidate counter object, exact allocator SQL, lock ranks, constraints, FK/trigger edges, RLS/ACL and concurrency proof remain unapproved. Canonical table count remains 48; no live database state is asserted.
+
+## CMD-038 print batch manifest/result integrity addendum — 2026-11-27
+
+**Candidate-only; NOT ADMITTED.** The canonical physical inventory remains 48 proposed tables. This addendum does not add columns, tables, indexes, constraints, FK edges, enums, RLS policies or grants to that inventory and does not authorize DDL or migration.
+
+Candidate print_batch_items requirements:
+- immutable accepted manifest row with batch FK, stable item_key, request position, requested document/version identity (including unresolved request identity), canonical item hash, and resolved document/version reference only when valid;
+- unique (batch_id, item_key) and (batch_id, request_position);
+- no update/delete path after acceptance; server-derived item count reconciles exactly to manifest row count;
+- preserve invalid/unresolvable items as durable manifest entries and terminal outcomes, rather than dropping them.
+
+Candidate print_batch_item_results requirements:
+- append-only per-item attempt/outcome rows with unique (batch_item_id, attempt_no), safe result code, timestamps, idempotency reference and optional print_event_id/sequence reference for a recorded print action;
+- one successful result references exactly one committed print event; uniqueness must prevent one event from being attached to multiple item results;
+- result history is not overwritten; retry appends a new attempt/result;
+- candidate attempt_no is not print_events.attempt_no and is not CMD-037 sequence_no.
+
+The batch aggregate status/counts are derived from manifest + result rows. Exact status enum, aggregate projection storage (if any), lock/serialization strategy, RLS/ACL, worker identity/lease (if any), FK/index/check/trigger design, canonical item hash, result/audit cardinality, retry policy and retention remain OPEN. The two candidate objects remain excluded from the canonical 48-table inventory and ERD/RLS parity count.
