@@ -83,6 +83,9 @@ export default async function OperationalWorkspacePage() {
           <Link className="auth-link" href="/inspections">
             Inspeksi
           </Link>
+          <Link className="auth-link" href="/notifications">
+            Dokumen &amp; Notifikasi
+          </Link>
           <Link className="auth-link" href="/auth/pending">
             Status Akun
           </Link>
