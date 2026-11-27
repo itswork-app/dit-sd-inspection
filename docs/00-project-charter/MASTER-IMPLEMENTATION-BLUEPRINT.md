@@ -339,4 +339,4 @@ Current disposition:
 - `G11`: **PARTIAL**; main-push CI run #93 PASS; ruleset enforcement DISABLED; managed PostgreSQL + Storage restore, real-device offline UAT, staging load/SLO and remaining QA catalogue evidence remain open.
 - `G12`: **NOT VERIFIED / BLOCKED**.
 
-The detailed execution and evidence acceptance matrix is [G11-ECP-001 — G11 Evidence Closure Plan](G11-EVIDENCE-CLOSURE-PLAN.md) v1.0.1 and the active gap queue is DGA-001 v2.4.2. This checkpoint does not authorize provider changes, staging/production deployment, real institutional data use or production operations.
+The detailed execution and evidence acceptance matrix is [G11-ECP-001 — G11 Evidence Closure Plan](G11-EVIDENCE-CLOSURE-PLAN.md) v1.0.2 and the active gap queue is DGA-001 v2.4.2. This checkpoint does not authorize provider changes, staging/production deployment, real institutional data use or production operations.
