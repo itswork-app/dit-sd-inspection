@@ -1,7 +1,7 @@
 # Documentation Gap Audit — Gate Implementation Readiness
 
 **Document ID:** DGA-001  
-**Version:** 2.4.2
+**Version:** 2.5.0
 **Audit date:** 2026-11-27  
 **Branch reviewed:** `main` (post-merge PR #42; current baseline `ae271615bacae3c3b48eeaafee72ae1c6829fbf1`)  
 **Reviewed baseline HEAD:** `ae271615bacae3c3b48eeaafee72ae1c6829fbf1` (`main`, merge commit for PR #42; includes PRs #38–#42)  
@@ -1355,3 +1355,13 @@ Read-only inspection on PR #43 HEAD `347c97e29482c5bb80252bff69f512bb14d3b4e4` c
 The source files contain behavioral assertions and the latest PR CI run #104 passes; however, there is no reliable machine-readable or source-level mapping from those assertions to the 558 catalogue definitions. Semantic similarity is insufficient to claim coverage. This is a **traceability/control gap**, not evidence that the automated tests failed.
 
 **Required remediation:** introduce stable test IDs in test names/metadata or a reviewed mapping manifest that references actual test assertions; then produce case-level execution records with exact commit, environment, run, result and evidence. Until then, keep the 558 catalogue definitions PLANNED / NOT EXECUTED except where a separate case-specific record exists. WP-06 remains PARTIAL.
+
+---
+
+## 26. Bounded synthetic staging authorized — 2026-11-27
+
+`PO-2026-11-27-STAGING-SYNTHETIC-001` (root `AGENTS.md` v1.4.0 §3.4) designates Supabase project `emqlbtnejinbqlxpoakd` as a non-production staging target for synthetic data, forward-only migrations, G11 verification (`WP-03` / `WP-05` staging rehearsals) and Vercel preview deployments.
+
+- **Status at recording:** AUTHORIZED; NOT YET EXECUTED. The repository is not linked to any hosted project; no hosted migration, seed, deployment or test has been run.
+- **Evidence classes:** staging results will be recorded separately from local results and must not be cited as production evidence.
+- **Unchanged:** `G12` NOT VERIFIED / BLOCKED; `DGA-B05` (ownership/billing/region/quota evidence) OPEN; `DGA-B06` (`WP-03`) and `DGA-B08` (`WP-05`) OPEN until managed-provider restore and staging load/SLO evidence exist; `DGA-B15` (`WP-02` ruleset enforcement) OPEN; `WP-06` (558-ID QA traceability) PARTIAL.
