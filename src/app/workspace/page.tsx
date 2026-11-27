@@ -38,7 +38,20 @@ export default async function OperationalWorkspacePage() {
     redirect("/auth/pending");
   }
 
-  const [projectsRes, sessionsRes, capacitiesRes, instrumentsRes, conflictsRes] = await Promise.all([
+  const [
+    projectsRes,
+    sessionsRes,
+    capacitiesRes,
+    instrumentsRes,
+    conflictsRes,
+    locationsRes,
+    teamsRes,
+    versionsRes,
+    assignmentsRes,
+    usersRes,
+    unitsRes,
+    assocRes
+  ] = await Promise.all([
     supabase
       .from("projects")
       .select("id, code, name, status, timezone, row_version")
@@ -62,7 +75,43 @@ export default async function OperationalWorkspacePage() {
       .from("unit_identity_conflicts")
       .select("id, instrument_type, serial_normalized, proposed_project_id, status, row_version")
       .order("created_at", { ascending: false })
-      .limit(100)
+      .limit(100),
+    supabase
+      .from("locations")
+      .select("id, project_id, code, name, status")
+      .order("created_at", { ascending: false })
+      .limit(100),
+    supabase
+      .from("teams")
+      .select("id, project_id, code, name, status")
+      .order("created_at", { ascending: false })
+      .limit(100),
+    supabase
+      .from("instrument_versions")
+      .select("id, instrument_id, version_number, status, draft_hash")
+      .order("version_number", { ascending: false })
+      .limit(100),
+    supabase
+      .from("operational_assignments")
+      .select("id, project_id, session_id, location_id, instrument_id, instrument_version_id, team_id, status")
+      .order("created_at", { ascending: false })
+      .limit(100),
+    supabase
+      .from("app_users")
+      .select("id, display_name, account_status")
+      .eq("account_status", "APPROVED")
+      .order("display_name", { ascending: true })
+      .limit(200),
+    supabase
+      .from("units")
+      .select("id, instrument_type, serial_raw, serial_normalized")
+      .order("created_at", { ascending: false })
+      .limit(100),
+    supabase
+      .from("unit_project_associations")
+      .select("id, unit_id, project_id, status")
+      .eq("status", "ACTIVE")
+      .limit(200)
   ]);
 
   const schemaMissing = Boolean(
@@ -96,6 +145,13 @@ export default async function OperationalWorkspacePage() {
           capacities={(capacitiesRes.data ?? []).map((c) => ({ ...c, row_version: String(c.row_version) }))}
           instruments={(instrumentsRes.data ?? []).map((i) => ({ ...i, row_version: String(i.row_version) }))}
           conflicts={(conflictsRes.data ?? []).map((c) => ({ ...c, row_version: String(c.row_version) }))}
+          locations={locationsRes.data ?? []}
+          teams={teamsRes.data ?? []}
+          instrumentVersions={versionsRes.data ?? []}
+          assignments={assignmentsRes.data ?? []}
+          approvedUsers={usersRes.data ?? []}
+          units={unitsRes.data ?? []}
+          unitAssociations={assocRes.data ?? []}
         />
       )}
 

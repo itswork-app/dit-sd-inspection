@@ -85,6 +85,43 @@ type DeviceBindingRow = {
   bound_at: string;
 };
 
+type ChecklistSectionRow = {
+  id: string;
+  instrument_version_id: string;
+  code: string;
+  label: string;
+  sort_order: number;
+};
+
+type ChecklistItemRow = {
+  id: string;
+  section_id: string;
+  code: string;
+  label: string;
+  answer_type: string;
+  required: boolean;
+  sort_order: number;
+};
+
+type SpecFieldRow = {
+  id: string;
+  instrument_version_id: string;
+  code: string;
+  label: string;
+  value_type: string;
+  expected_value: string | null;
+  unit: string | null;
+  required: boolean;
+  sort_order: number;
+};
+
+type DraftContextRow = {
+  inspection_id: string;
+  draft_checklist: Record<string, unknown>;
+  draft_specifications: Record<string, unknown>;
+  notes: string | null;
+};
+
 type InspectionsPanelProps = {
   inspections: InspectionRow[];
   activeClaims: ClaimRow[];
@@ -94,9 +131,36 @@ type InspectionsPanelProps = {
   evidenceSlots: EvidenceSlotRow[];
   documentTemplates: TemplateRow[];
   activeDevices: DeviceBindingRow[];
+  checklistSections: ChecklistSectionRow[];
+  checklistItems: ChecklistItemRow[];
+  specFields: SpecFieldRow[];
+  draftContexts: DraftContextRow[];
 };
 
 const ALLOWED_MIME_SET = new Set(["image/jpeg", "image/png", "image/webp", "application/pdf"]);
+
+function buildInitialDraftState(draftContexts: DraftContextRow[]) {
+  const notesMap: Record<string, string> = {};
+  const checklistMap: Record<string, Record<string, string>> = {};
+  const specsMap: Record<string, Record<string, string>> = {};
+
+  for (const ctx of draftContexts) {
+    if (ctx.notes) notesMap[ctx.inspection_id] = ctx.notes;
+    const cl: Record<string, string> = {};
+    for (const [k, v] of Object.entries(ctx.draft_checklist ?? {})) {
+      if (v !== null && v !== undefined) cl[k] = String(v);
+    }
+    checklistMap[ctx.inspection_id] = cl;
+
+    const sp: Record<string, string> = {};
+    for (const [k, v] of Object.entries(ctx.draft_specifications ?? {})) {
+      if (v !== null && v !== undefined) sp[k] = String(v);
+    }
+    specsMap[ctx.inspection_id] = sp;
+  }
+
+  return { notesMap, checklistMap, specsMap };
+}
 
 export function InspectionsPanel({
   inspections,
@@ -106,13 +170,24 @@ export function InspectionsPanel({
   evidenceAssets,
   evidenceSlots,
   documentTemplates,
-  activeDevices
+  activeDevices,
+  checklistSections,
+  checklistItems,
+  specFields,
+  draftContexts
 }: InspectionsPanelProps) {
+  const initialDrafts = buildInitialDraftState(draftContexts);
   const router = useRouter();
   const [busyKey, setBusyKey] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
   const [reasons, setReasons] = useState<Record<string, string>>({});
-  const [draftNotes, setDraftNotes] = useState<Record<string, string>>({});
+  const [draftNotes, setDraftNotes] = useState<Record<string, string>>(initialDrafts.notesMap);
+  const [checklistAnswers, setChecklistAnswers] = useState<Record<string, Record<string, string>>>(
+    initialDrafts.checklistMap
+  );
+  const [specValues, setSpecValues] = useState<Record<string, Record<string, string>>>(
+    initialDrafts.specsMap
+  );
   const [selectedSlotByInsp, setSelectedSlotByInsp] = useState<Record<string, string>>({});
   const [selectedTemplateByInsp, setSelectedTemplateByInsp] = useState<Record<string, string>>({});
 
@@ -199,16 +274,32 @@ export function InspectionsPanel({
     }
   }
 
+  function buildDraftPayloads(inspectionId: string) {
+    const rawCl = checklistAnswers[inspectionId] ?? {};
+    const draft_checklist: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(rawCl)) {
+      if (v.trim() !== "") draft_checklist[k] = v.trim();
+    }
+    const rawSp = specValues[inspectionId] ?? {};
+    const draft_specifications: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(rawSp)) {
+      if (v.trim() !== "") draft_specifications[k] = v.trim();
+    }
+    return { draft_checklist, draft_specifications };
+  }
+
   async function handleEnqueueOfflineDraft(insp: InspectionRow) {
     if (busyKey) return;
     setBusyKey(`off-${insp.id}`);
     setFeedback(null);
     try {
       const note = (draftNotes[insp.id] ?? "").trim();
+      const { draft_checklist, draft_specifications } = buildDraftPayloads(insp.id);
       const op = await enqueueDraftOperation({
         inspection_id: insp.id,
         expected_row_version: insp.row_version,
-        draft_checklist: { saved_offline: true, updated_at: new Date().toISOString() },
+        draft_checklist,
+        draft_specifications,
         notes: note || "Draft offline tersimpan lokal"
       });
       await refreshOfflineQueue();
@@ -636,6 +727,13 @@ export function InspectionsPanel({
               const editable =
                 insp.status === "DRAFT" || insp.status === "RETURNED" || insp.status === "REOPENED";
 
+              const matchingSections = checklistSections.filter(
+                (s) => s.instrument_version_id === insp.instrument_version_id
+              );
+              const matchingSpecs = specFields.filter(
+                (f) => f.instrument_version_id === insp.instrument_version_id
+              );
+
               return (
                 <article key={insp.id} className="admin-item">
                   <div className="admin-item-header">
@@ -652,6 +750,108 @@ export function InspectionsPanel({
 
                   {editable ? (
                     <div className="rbac-card">
+                      {matchingSections.map((sec) => {
+                        const secItems = checklistItems.filter((it) => it.section_id === sec.id);
+                        return (
+                          <div key={sec.id} className="checklist-group">
+                            <p className="rbac-meta">
+                              <strong>
+                                {sec.code} — {sec.label}
+                              </strong>
+                            </p>
+                            {secItems.map((item) => {
+                              const currentVal = checklistAnswers[insp.id]?.[item.id] ?? "";
+                              return (
+                                <div key={item.id} className="checklist-row">
+                                  <label htmlFor={`ci-${insp.id}-${item.id}`} className="rbac-meta">
+                                    {item.label} {item.required ? "*" : ""}
+                                  </label>
+                                  {item.answer_type === "PASS_FAIL" || item.answer_type === "YES_NO" ? (
+                                    <select
+                                      id={`ci-${insp.id}-${item.id}`}
+                                      className="inline-input"
+                                      value={currentVal}
+                                      onChange={(e) =>
+                                        setChecklistAnswers((prev) => ({
+                                          ...prev,
+                                          [insp.id]: {
+                                            ...(prev[insp.id] ?? {}),
+                                            [item.id]: e.target.value
+                                          }
+                                        }))
+                                      }
+                                    >
+                                      <option value="">-- Pilih --</option>
+                                      {item.answer_type === "PASS_FAIL" ? (
+                                        <>
+                                          <option value="PASS">PASS</option>
+                                          <option value="FAIL">FAIL</option>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <option value="YA">YA</option>
+                                          <option value="TIDAK">TIDAK</option>
+                                        </>
+                                      )}
+                                    </select>
+                                  ) : (
+                                    <input
+                                      id={`ci-${insp.id}-${item.id}`}
+                                      className="inline-input"
+                                      type={item.answer_type === "NUMBER" ? "number" : "text"}
+                                      value={currentVal}
+                                      onChange={(e) =>
+                                        setChecklistAnswers((prev) => ({
+                                          ...prev,
+                                          [insp.id]: {
+                                            ...(prev[insp.id] ?? {}),
+                                            [item.id]: e.target.value
+                                          }
+                                        }))
+                                      }
+                                      placeholder="Isi jawaban"
+                                    />
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        );
+                      })}
+
+                      {matchingSpecs.length > 0 ? (
+                        <div className="checklist-group">
+                          <p className="rbac-meta">
+                            <strong>Spesifikasi Teknis</strong>
+                          </p>
+                          {matchingSpecs.map((sp) => (
+                            <div key={sp.id} className="checklist-row">
+                              <label htmlFor={`sp-${insp.id}-${sp.id}`} className="rbac-meta">
+                                {sp.label}
+                                {sp.unit ? ` (${sp.unit})` : ""}
+                                {sp.expected_value ? ` · standar: ${sp.expected_value}` : ""}
+                              </label>
+                              <input
+                                id={`sp-${insp.id}-${sp.id}`}
+                                className="inline-input"
+                                type="text"
+                                value={specValues[insp.id]?.[sp.id] ?? ""}
+                                onChange={(e) =>
+                                  setSpecValues((prev) => ({
+                                    ...prev,
+                                    [insp.id]: {
+                                      ...(prev[insp.id] ?? {}),
+                                      [sp.id]: e.target.value
+                                    }
+                                  }))
+                                }
+                                placeholder={sp.expected_value ?? "Nilai aktual"}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      ) : null}
+
                       <div className="rbac-field">
                         <label htmlFor={`draft-${insp.id}`}>Catatan Draft Inspeksi (CMD-028 / Offline T-09)</label>
                         <input
@@ -669,19 +869,21 @@ export function InspectionsPanel({
                           type="button"
                           className="auth-button admin-btn-sm"
                           disabled={busyKey !== null}
-                          onClick={() =>
-                            callApi(
+                          onClick={() => {
+                            const { draft_checklist, draft_specifications } = buildDraftPayloads(insp.id);
+                            void callApi(
                               `draft-${insp.id}`,
                               "/api/v1/inspections/draft",
                               {
                                 inspection_id: insp.id,
                                 expected_row_version: insp.row_version,
-                                draft_checklist: { inspected: true, updated_via: "web-ui" },
+                                draft_checklist,
+                                draft_specifications,
                                 notes: note || "Draft diperbarui dari UI"
                               },
                               "Draft inspeksi tersimpan di server"
-                            )
-                          }
+                            );
+                          }}
                         >
                           Simpan Draft Online (CMD-028)
                         </button>
