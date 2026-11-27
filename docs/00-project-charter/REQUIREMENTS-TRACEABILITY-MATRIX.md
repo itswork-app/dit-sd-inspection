@@ -1,11 +1,15 @@
 # Requirements Traceability Matrix — Dit. SD Inspection
 
 **Document ID:** RTM-001  
-**Version:** 1.0.0  
-Status: TECHNICAL SSOT SYNCHRONIZED — READY FOR G9-TECH FREEZE SIGN-OFF (ALL 52 APP COMMANDS & 62 TABLES MAPPED; EXTERNAL SOURCE AUTHORITY & G11 RUNTIME QA PRESERVED)  
+**Version:** 1.1.0  
+Status: TECHNICAL SSOT SYNCHRONIZED — G9-TECH FROZEN; G10 I1–I5 IMPLEMENTED ON SYNTHETIC LOCAL INFRASTRUCTURE; G11 PARTIAL; G12 BLOCKED (ALL 52 APP COMMANDS & 62 TABLES MAPPED; EXTERNAL/RUNTIME EVIDENCE GATES PRESERVED)  
 Purpose: Link product intent to specifications, implementation units, and verification evidence. This matrix is a control index, not a substitute for detailed specifications or test cases.
 
 ## Requirement ID convention
+
+> **Current evidence overlay (2026-11-27; main `706c654`):** The technical traceability baseline is frozen under `G9-TECH`. `G10` synthetic implementation slices `I1→I5` are implemented on isolated local/development infrastructure. `G11` is **PARTIAL**: local unit/integration/database/concurrency/HTTP-JWT/Storage-PDF checks and local operational rehearsals are recorded in merged PRs #39–#41 and DGA-001 §§22–23; they were not re-executed by this RTM update. Hosted CI is **ABSENT/BLOCKED** (`DGA-B15`); managed PostgreSQL + Storage restore remains **OPEN** (`DGA-B06`); approved SLO and staging load test remain **OPEN** (`DGA-B08`); real-device offline UAT is **NOT EXECUTED** (`DGA-B07`). `G12` remains **NOT VERIFIED / BLOCKED**. Individual requirement rows and dated addenda below preserve their original approval/verification state; do not reinterpret a design status as runtime PASS. See [PMA-001](POST-MERGE-REPOSITORY-AUDIT-2026-11-27.md) and DGA-001 v2.3.0.
+
+
 
 - **GOV:** governance and project constraints.
 - **AUTH:** authentication and account lifecycle.
