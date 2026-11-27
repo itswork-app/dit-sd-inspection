@@ -1,7 +1,7 @@
 # ADR-002 — Application Runtime and Foundation Stack
 
 - Status: ACCEPTED FOR G9-F1/G10-F1 FOUNDATION
-- Version: 1.9.0
+- Version: 1.9.1
 - Decision date: 2026-11-25
 - Last verified: 2026-11-27
 - Decision owner: Product Owner
@@ -71,9 +71,10 @@ On 2026-11-27 on branch `feat/foundation-bootstrap-v1-rebased` (Node v22.12.0 / 
 - `npm run db:migrations:check`: PASS (0 SQL migrations).
 - `vitest run`: PASS (8 test files, 63/63 tests, including refreshed cookie propagation and `X-Request-Id` preservation in `src/lib/supabase/proxy.test.ts`).
 - `npm run test:node`: PASS (5/5 migration validator tests).
-- `npm run build` (`next build`, Next.js 16.4.6 Turbopack): PASS (6/6 routes built).
+- `npm run build` (`next build`, Next.js 16.4.6 Turbopack): PASS (6/6 routes + `ƒ Proxy (Middleware)` via `src/proxy.ts`).
+- Live local production-server smoke verification against development `.env` (2026-11-27): PASS for `/` (`Supabase environment configured`, baseline headers, `X-Request-Id` echo), `/api/health` (`200`, `no-store`, malformed `X-Request-Id` replaced with UUID), `/login`, unauthenticated `/auth/pending` (`307 /login?error=session` fail-closed via live `getClaims()`), and `/auth/callback` (missing/invalid synthetic code -> `307 /login?error=oauth_callback` with `no-store` and `Referrer-Policy: no-referrer` preserved via `next.config.ts`). Read-only `/auth/v1/health` and `/auth/v1/settings` returned HTTP `200`, with `external.google = false` on the development project.
 
-Hosted GitHub Actions execution on PR #30 remains NOT VERIFIED because GitHub blocked job start at the billing/spending-limit layer (Check Run `140276596713`). Live Google OAuth round trip, Supabase CLI local startup/reset, and any SQL migration application remain NOT VERIFIED. A passing foundation build/test run is not evidence of full-system G9 readiness, business feature correctness, or production readiness.
+Hosted GitHub Actions execution on PR #30 remains NOT VERIFIED because GitHub blocked job start at the billing/spending-limit layer (Check Run `140276596713`). Live interactive Google OAuth round trip (blocked until Google provider is enabled in the development Supabase dashboard), Supabase CLI local startup/reset, and any SQL migration application remain NOT VERIFIED. A passing foundation build/test run is not evidence of full-system G9 readiness, business feature correctness, or production readiness.
 
 ## References
 

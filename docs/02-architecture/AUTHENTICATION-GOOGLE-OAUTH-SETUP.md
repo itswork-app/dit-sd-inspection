@@ -38,4 +38,10 @@ Do not add a production project reference, production secrets, service-role key,
 
 ## Verification boundary
 
-The source includes tests for the OAuth callback's successful exchange, missing code, generic provider failure, and thrown exception handling. These tests remain NOT VERIFIED until executed in a working Node 22 dependency environment. A live Google OAuth round trip also remains NOT VERIFIED until a development Supabase project and Google provider are configured by the maintainer.
+- **Unit & build verification (2026-11-27, Node v22.12.0 / npm 10.9.0):** PASS via `npm run check` — OAuth callback unit tests (successful exchange, missing code, generic provider failure, thrown exceptions), verified-claims unit tests, and `src/proxy.ts` session-refresh/request-ID tests all pass (63/63 Vitest tests).
+- **Live development runtime smoke verification (2026-11-27, local Next.js production server against `.env`):** PASS for non-mutating foundation paths:
+  - Development Supabase Auth `/auth/v1/health` and `/auth/v1/settings` returned HTTP `200`.
+  - `src/proxy.ts` (`ƒ Proxy (Middleware)`) active on all matched routes, propagating valid `X-Request-Id` and replacing malformed inbound IDs with UUIDs.
+  - `/auth/pending` (unauthenticated) failed closed via live `getClaims()` and redirected `307` to `/login?error=session`.
+  - `/auth/callback` (missing code and synthetic invalid code) redirected `307` to `/login?error=oauth_callback` with `Cache-Control: no-store` and `Referrer-Policy: no-referrer`, leaking zero provider details.
+- **Remaining OAuth blocker:** Read-only inspection of `/auth/v1/settings` on the configured development Supabase project reports `external.google = false`. Enable the Google provider and configure the redirect allow-list in the Supabase dashboard (Steps 1–4 above) before executing a live interactive Google OAuth round trip. Live Google OAuth round trip remains **NOT VERIFIED**.
